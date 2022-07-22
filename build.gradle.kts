@@ -94,13 +94,14 @@ allprojects {
 //                mingwX64()
             }
         }
+    }
 
-        apply<DokkaPlugin>()
-        tasks.withType<DokkaTask> {
-            // TODO
-        }
-        dependencies {
-            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:$dokkaVersion")
-        }
+    apply<DokkaPlugin>()
+    tasks.withType<DokkaTask> {
+        // TODO
+    }
+
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:$dokkaVersion")
     }
 }
