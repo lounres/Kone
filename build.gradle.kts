@@ -1,13 +1,26 @@
+import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.*
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
+
+plugins {
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
+    id("org.jetbrains.kotlinx.kover")
+    id("org.jetbrains.dokka")
+}
+
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
 val kotlinVersion: String by project
+val dokkaVersion: String by project
+val kotestVersion: String by project
 
 fun <T> Iterable<T>.withEach(action: T.() -> Unit) {
     for (element in this) element.apply(action)
@@ -30,12 +43,17 @@ fun KotlinProjectExtension.configureBase() {
                 useJUnitPlatform()
             }
     }
-}
 
-plugins {
-    id("org.jetbrains.kotlinx.kover") version "0.5.0"
-    kotlin("jvm") apply false
-    kotlin("multiplatform") apply false
+    sourceSets.withEach {
+        if (name.endsWith("test")) {
+            dependencies {
+                implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+                implementation("io.kotest:kotest-framework-engine:$kotestVersion")
+                implementation("io.kotest:kotest-assertions-core:$kotestVersion")
+                implementation("io.kotest:kotest-property:$kotestVersion")
+            }
+        }
+    }
 }
 
 allprojects {
@@ -63,7 +81,7 @@ allprojects {
                 }
             }
         } else {
-            apply(plugin = "org.jetbrains.kotlin.multiplatform")
+            apply<KotlinMultiplatformPlugin>()
             configure<KotlinMultiplatformExtension> {
 
                 jvm ()
@@ -75,6 +93,14 @@ allprojects {
 //
 //                mingwX64()
             }
+        }
+
+        apply<DokkaPlugin>()
+        tasks.withType<DokkaTask> {
+            // TODO
+        }
+        dependencies {
+            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:$dokkaVersion")
         }
     }
 }
