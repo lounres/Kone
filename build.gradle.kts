@@ -1,19 +1,41 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.*
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.targets
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
 val kotlinVersion: String by project
-val kotlinCompilerArgs: List<String> = listOf(
-    "-Xcontext-receivers",
-//    "-Xuse-k2",
-)
-val explicitApiMode = Warning
-val jvmTargetVersion = "11"
+
+fun <T> Iterable<T>.withEach(action: T.() -> Unit) {
+    for (element in this) element.apply(action)
+}
+fun KotlinProjectExtension.configureBase() {
+    explicitApi = Warning
+
+    targets.withEach {
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs += listOf(
+                    "-Xcontext-receivers",
+//                    "-Xuse-k2",
+                )
+                if (this is KotlinJvmOptions) jvmTarget = "11"
+            }
+        }
+        if (this is KotlinJvmTarget)
+            testRuns["test"].executionTask.configure {
+                useJUnitPlatform()
+            }
+    }
+}
 
 plugins {
     id("org.jetbrains.kotlinx.kover") version "0.5.0"
-    `kotlin-dsl`
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
 }
 
 allprojects {
@@ -27,21 +49,14 @@ allprojects {
         if (contextReceiversSupportCrunch) {
             apply(plugin = "org.jetbrains.kotlin.jvm")
             configure<KotlinJvmProjectExtension> {
-                explicitApi = explicitApiMode
-
-                target.compilations.all {
-                    kotlinOptions {
-                        freeCompilerArgs += kotlinCompilerArgs
-                        jvmTarget = jvmTargetVersion
-                    }
-                }
+                configureBase()
 
                 sourceSets {
-                    main {
+                    val main by getting {
                         kotlin.setSrcDirs(listOf("src/commonMain/kotlin"))
                         resources.setSrcDirs(listOf("src/commonMain/resources"))
                     }
-                    test {
+                    val test by getting {
                         kotlin.setSrcDirs(listOf("src/commonTest/kotlin"))
                         resources.setSrcDirs(listOf("src/commonTest/resources"))
                     }
@@ -50,19 +65,8 @@ allprojects {
         } else {
             apply(plugin = "org.jetbrains.kotlin.multiplatform")
             configure<KotlinMultiplatformExtension> {
-                explicitApi = explicitApiMode
 
-                jvm {
-                    compilations.all {
-                        kotlinOptions {
-                            jvmTarget = jvmTargetVersion
-                        }
-                    }
-
-                    testRuns["test"].executionTask.configure {
-                        useJUnitPlatform()
-                    }
-                }
+                jvm ()
 
 //                js(IR) {
 //                    browser()
@@ -70,14 +74,6 @@ allprojects {
 //                }
 //
 //                mingwX64()
-
-                targets.all {
-                    compilations.all {
-                        kotlinOptions {
-                            freeCompilerArgs += kotlinCompilerArgs
-                        }
-                    }
-                }
             }
         }
     }
