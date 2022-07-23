@@ -1,0 +1,32 @@
+[versions]
+kotlin = "1.7.10"
+kotest = "5.3.0"
+dokka = "1.7.10"
+kover = "0.5.1"
+benchmark = "0.4.4"
+binary-compatibility-validator = "0.11.0"
+kmath = "0.3.0"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "benchmark" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
+
+[libraries]
+# Kotest
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+
+# Dokka
+dokka-base = { module = "org.jetbrains.dokka:dokka-base", version.ref = "dokka" }
+
+# KMath
+kmath-core = { module = "space.kscience:kmath-core", version.ref = "kmath" }

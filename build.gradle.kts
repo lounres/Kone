@@ -1,26 +1,47 @@
+import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.*
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm") apply false
-    kotlin("multiplatform") apply false
-    id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.dokka")
+    with(libs.plugins) {
+        alias(kotlin.jvm) apply false
+        alias(kotlin.multiplatform) apply false
+        alias(kotest.multiplatform) apply false
+        alias(kover)
+        alias(dokka)
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://repo.kotlin.link")
+//        maven("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+
+    apply<DokkaPlugin>()
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${properties["dokkaVersion"]}")
+    }
+    tasks.withType<DokkaTask> {
+        // TODO
+    }
+
+    group = "com.lounres.kone"
+    version = "0.1.0"
 }
 
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
-val kotlinVersion: String by project
-val dokkaVersion: String by project
-val kotestVersion: String by project
 
 fun <T> Iterable<T>.withEach(action: T.() -> Unit) {
     for (element in this) element.apply(action)
@@ -35,34 +56,45 @@ fun KotlinProjectExtension.configureBase() {
                     "-Xcontext-receivers",
 //                    "-Xuse-k2",
                 )
-                if (this is KotlinJvmOptions) jvmTarget = "11"
+                if (this is KotlinJvmOptions) jvmTarget = properties["jvmTarget"] as String
             }
         }
-        if (this is KotlinJvmTarget)
-            testRuns["test"].executionTask.configure {
+        if (this is KotlinJvmTarget) {
+            testRuns["test"].executionTask {
                 useJUnitPlatform()
             }
+            sourceSets.configureEach {
+                if (name.endsWith("test", ignoreCase = true)) {
+                    dependencies {
+                        implementation(libs.kotest.runner.junit5)
+                    }
+                }
+            }
+        }
+
+        sourceSets {
+            all {
+                languageSettings {
+                    progressiveMode = true
+                    optIn("kotlin.contracts.ExperimentalContracts")
+                }
+            }
+        }
     }
 
-    sourceSets.withEach {
-        if (name.endsWith("test")) {
+    sourceSets.configureEach {
+        if (name.endsWith("test", ignoreCase = true)) {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-                implementation("io.kotest:kotest-framework-engine:$kotestVersion")
-                implementation("io.kotest:kotest-assertions-core:$kotestVersion")
-                implementation("io.kotest:kotest-property:$kotestVersion")
+                implementation(libs.kotest.framework.engine)
+                implementation(libs.kotest.framework.datatest)
+                implementation(libs.kotest.assertions.core)
+                implementation(libs.kotest.property)
             }
         }
     }
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-//        maven("https://repo.kotlin.link")
-//        maven("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-
+subprojects {
     if (name.startsWith("kone-", ignoreCase = true)) {
         if (contextReceiversSupportCrunch) {
             apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -81,8 +113,10 @@ allprojects {
                 }
             }
         } else {
+            apply<KotestMultiplatformCompilerGradlePlugin>()
             apply<KotlinMultiplatformPlugin>()
             configure<KotlinMultiplatformExtension> {
+                configureBase()
 
                 jvm ()
 
@@ -91,17 +125,10 @@ allprojects {
 //                    nodejs()
 //                }
 //
+//                linuxX64()
 //                mingwX64()
+//                macosX64()
             }
         }
-    }
-
-    apply<DokkaPlugin>()
-    tasks.withType<DokkaTask> {
-        // TODO
-    }
-
-    dependencies {
-        dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:$dokkaVersion")
     }
 }
