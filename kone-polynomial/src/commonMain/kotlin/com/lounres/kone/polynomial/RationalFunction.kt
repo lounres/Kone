@@ -989,6 +989,12 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
             this * other.numerator,
             other.denominator
         )
+    @JvmName("divVariableRational")
+    public override operator fun V.div(other: R): R =
+        constructRationalFunction(
+            this * other.denominator,
+            other.numerator
+        )
 
     @JvmName("plusRationalVariable")
     public override operator fun R.plus(other: V): R =
@@ -1007,5 +1013,11 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
         constructRationalFunction(
             numerator * other,
             denominator
+        )
+    @JvmName("divRationalVariable")
+    public override operator fun R.div(other: V): R =
+        constructRationalFunction(
+            numerator,
+            denominator * other
         )
 }

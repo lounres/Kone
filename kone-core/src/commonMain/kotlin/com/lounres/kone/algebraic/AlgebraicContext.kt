@@ -14,9 +14,19 @@ public interface AlgebraicContext
 
 
 @OptIn(ExperimentalContracts::class)
-public inline operator fun <A: AlgebraicContext, R> A.invoke(block: context(A) () -> R): R {
+public inline operator fun <A: AlgebraicContext, R> A.invoke(block: A.() -> R): R {
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
     return run(block)
 }
+
+
+//
+//@OptIn(ExperimentalContracts::class)
+//public inline operator fun <A: AlgebraicContext, R> A.invoke(block: context(A) () -> R): R {
+////    contract {
+////        callsInPlace(block, EXACTLY_ONCE)
+////    }
+//    return run(block)
+//}
