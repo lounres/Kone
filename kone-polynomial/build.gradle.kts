@@ -6,16 +6,21 @@ if (contextReceiversSupportCrunch) {
             main {
                 dependencies {
                     api(projects.koneCore)
+                    implementation(projects.mapUtil)
+                    implementation(libs.kmath.core)
                 }
             }
         }
     }
 } else {
     kotlin {
+        @Suppress("UNUSED_VARIABLE")
         sourceSets {
             val commonMain by getting {
                 dependencies {
                     api(projects.koneCore)
+                    implementation(projects.mapUtil)
+                    implementation(libs.kmath.core)
                 }
             }
             val commonTest by getting {

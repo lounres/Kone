@@ -42,6 +42,7 @@ allprojects {
 }
 
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
+val onlyJvmTarget: Boolean = (properties["onlyJvmTarget"] as String).toBoolean()
 
 fun <T> Iterable<T>.withEach(action: T.() -> Unit) {
     for (element in this) element.apply(action)
@@ -101,6 +102,7 @@ subprojects {
             configure<KotlinJvmProjectExtension> {
                 configureBase()
 
+                @Suppress("UNUSED_VARIABLE")
                 sourceSets {
                     val main by getting {
                         kotlin.setSrcDirs(listOf("src/commonMain/kotlin"))
@@ -120,14 +122,16 @@ subprojects {
 
                 jvm ()
 
-//                js(IR) {
-//                    browser()
-//                    nodejs()
-//                }
-//
-//                linuxX64()
-//                mingwX64()
-//                macosX64()
+                if (!onlyJvmTarget) {
+                    js(IR) {
+                        browser()
+                        nodejs()
+                    }
+
+                    linuxX64()
+                    mingwX64()
+                    macosX64()
+                }
             }
         }
     }
