@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.7.10"
-kotest = "5.3.0"
+kotest = "5.4.0"
 dokka = "1.7.10"
 kover = "0.5.1"
 benchmark = "0.4.4"
