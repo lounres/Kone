@@ -13,5 +13,6 @@ dependencyResolutionManagement {
 
 include(rootDir.listFiles { file -> file.isDirectory && file.name.startsWith("kone-", ignoreCase = true) }!!.map { it.name })
 include(
+    "docs",
     "mapUtil",
 )

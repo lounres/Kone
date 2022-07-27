@@ -29,12 +29,14 @@ allprojects {
 //        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    apply<DokkaPlugin>()
-    dependencies {
-        dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${properties["dokkaVersion"]}")
-    }
-    tasks.withType<DokkaTask> {
-        // TODO
+    if (name != "docs") {
+        apply<DokkaPlugin>()
+        dependencies {
+            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${properties["dokkaVersion"]}")
+        }
+        tasks.withType<DokkaTask> {
+            // TODO
+        }
     }
 
     group = "com.lounres.kone"
