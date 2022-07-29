@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="550mm"
+   height="250mm"
+   viewBox="0 0 550 250"
+   version="1.1"
+   id="svg6375"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="kone-logo.inkscape.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview6377"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="true"
+     showborder="false"
+     inkscape:zoom="0.25929167"
+     inkscape:cx="829.18207"
+     inkscape:cy="175.47807"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid6495"
+       units="mm"
+       spacingx="25"
+       spacingy="25"
+       enabled="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs6372" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g985"
+       style="fill:#fec260;fill-opacity:1;stroke:none"
+       transform="translate(300)">
+      <path
+         style="fill:#5f2798;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 0,0 h 100 l -50,50 50,50 H 0 Z"
+         id="path977"
+         sodipodi:nodetypes="cccccc" />
+      <circle
+         style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
+         id="circle979"
+         cx="200"
+         cy="50"
+         r="49.593826" />
+      <path
+         style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 0,150 V 250 H 50 V 150 h 50 v 100 z"
+         id="path981"
+         sodipodi:nodetypes="ccccccc" />
+      <path
+         style="fill:#5f2798;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 150,150 h 100 l -25,25 25,25 -25,25 25,25 -100,0.3383 z"
+         id="path983"
+         sodipodi:nodetypes="cccccccc" />
+    </g>
+    <g
+       id="g5031"
+       inkscape:label="5-Symbol colored"
+       transform="matrix(1.6666667,0,0,1.6666667,-2416.6667,-458.33334)">
+      <path
+         style="fill:#5f2798;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 1450,399.99999 50,25 L 1525,275 Z"
+         id="path5025" />
+      <path
+         style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 1500,424.99999 50,-25 L 1525,275 Z"
+         id="path5027" />
+      <path
+         style="fill:#5f2798;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 1550,399.99999 50,25 L 1525,275 Z"
+         id="path5029" />
+    </g>
+  </g>
+</svg>
