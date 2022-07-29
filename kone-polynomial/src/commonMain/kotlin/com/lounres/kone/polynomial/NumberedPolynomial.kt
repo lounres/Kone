@@ -192,7 +192,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
                 }
             }
         ) // TODO: To optimize boxing
-    override fun power(base: NumberedPolynomial<C>, exponent: UInt): NumberedPolynomial<C> = super.power(arg, exponent)
+    override fun power(base: NumberedPolynomial<C>, exponent: UInt): NumberedPolynomial<C> = super.power(base, exponent)
 
     public val NumberedPolynomial<C>.lastVariable: Int
         get() = coefficients.keys.maxOfOrNull { degs -> degs.lastIndex } ?: -1
