@@ -268,6 +268,21 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             mapOf(other to 1U) to this@times,
         )
 
+    override operator fun LabeledPolynomial<C>.plus(other: C): LabeledPolynomial<C> =
+        if (coefficients.isEmpty()) other.asLabeledPolynomial()
+        else LabeledPolynomialAsIs(
+            coefficients.withPutOrChanged(emptyMap(), other) { it -> it + other }
+        )
+    override operator fun LabeledPolynomial<C>.minus(other: C): LabeledPolynomial<C> =
+        if (coefficients.isEmpty()) other.asLabeledPolynomial()
+        else LabeledPolynomialAsIs(
+            coefficients.withPutOrChanged(emptyMap(), -other) { it -> it - other }
+        )
+    override operator fun LabeledPolynomial<C>.times(other: C): LabeledPolynomial<C> =
+        LabeledPolynomialAsIs(
+            coefficients.mapValues { it.value * other }
+        )
+
     override operator fun C.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         if (other.coefficients.isEmpty()) this@plus.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
@@ -284,21 +299,6 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
     override operator fun C.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             other.coefficients.mapValues { this@times * it.value }
-        )
-
-    override operator fun LabeledPolynomial<C>.plus(other: C): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.asLabeledPolynomial()
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), other) { it -> it + other }
-        )
-    override operator fun LabeledPolynomial<C>.minus(other: C): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.asLabeledPolynomial()
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), -other) { it -> it - other }
-        )
-    override operator fun LabeledPolynomial<C>.times(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            coefficients.mapValues { it.value * other }
         )
 
     public override operator fun Symbol.unaryPlus(): LabeledPolynomial<C> =
