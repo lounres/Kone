@@ -5,13 +5,11 @@
 
 @file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
 
-package com.lounres.kone.numberTheory
-
-import com.lounres.kone.algebraic.Ring
+package com.lounres.kone.algebraic
 
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
-public class IntModuloRing public constructor(modulus: Int) : Ring<Int> {
+public class IntModuloRing(modulus: Int) : Ring<Int> {
 
     public val modulus: Int
 

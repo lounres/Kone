@@ -41,7 +41,6 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
     public override fun LabeledPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
     public override fun LabeledPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
 
-//    @JvmName("valueOfConstant")
     public override fun valueOf(value: C): LabeledPolynomial<C> = value.asLabeledPolynomial()
 
     public override operator fun Symbol.plus(other: Int): LabeledPolynomial<C> =

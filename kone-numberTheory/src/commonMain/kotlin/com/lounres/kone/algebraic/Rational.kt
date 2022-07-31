@@ -43,6 +43,10 @@ public class Rational {
     override fun hashCode(): Int = 31 * numerator.hashCode() + denominator.hashCode()
 
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
+
+    public companion object {
+        public val field: RationalField = RationalField
+    }
 }
 
 public object RationalField : Field<Rational> {

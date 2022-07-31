@@ -113,6 +113,9 @@ subprojects {
                     val test by getting {
                         kotlin.setSrcDirs(listOf("src/commonTest/kotlin"))
                         resources.setSrcDirs(listOf("src/commonTest/resources"))
+                        dependencies {
+                            implementation(kotlin("test"))
+                        }
                     }
                 }
             }
@@ -133,6 +136,15 @@ subprojects {
                     linuxX64()
                     mingwX64()
                     macosX64()
+                }
+
+                @Suppress("UNUSED_VARIABLE")
+                sourceSets {
+                    val commonTest by getting {
+                        dependencies {
+                            implementation(kotlin("test"))
+                        }
+                    }
                 }
             }
         }

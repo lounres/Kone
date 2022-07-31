@@ -10,6 +10,11 @@ if (contextReceiversSupportCrunch) {
                     implementation(libs.kmath.core)
                 }
             }
+            test {
+                dependencies {
+                    implementation(projects.koneNumberTheory)
+                }
+            }
         }
     }
 } else {
@@ -25,7 +30,7 @@ if (contextReceiversSupportCrunch) {
             }
             val commonTest by getting {
                 dependencies {
-
+                    implementation(projects.koneNumberTheory)
                 }
             }
         }
