@@ -1,0 +1,112 @@
+site_name: Kone
+
+# Meta tags (placed in header)
+site_description: Kone is a Kotlin library for pure mathematics
+site_author: Gleb Minaev
+site_url: https://github.com/lounres/Kone
+
+# Repository (add link to repository on each page)
+repo_name: Kone
+repo_url: https://github.com/lounres/kone
+edit_uri: edit/master/docs/src/doc/docs/
+
+#Copyright (shown at the footer)
+copyright: 'Copyright &copy; 2022 Gleb Minaev <br> All rights reserved. Licensed under the Apache License, Version 2.0'
+
+# Meterial theme
+theme:
+  name: 'material'
+  favicon: logo-orange.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+#  features:
+    #- navigation.tabs
+    #- navigation.tabs.sticky
+    #- navigation.instant
+    #- navigation.tracking
+    #- navigation.top
+
+#plugins:
+#  - search
+#    Required for variables support (https://github.com/rosscdh/mkdocs-markdownextradata-plugin)
+#  - markdownextradata
+
+#extra:
+#  palette:
+#    primary: 'indigo'
+#    accent: 'indigo'
+
+#  version:
+#    provider: mike
+
+#  social:
+#    - icon: fontawesome/brands/github
+#      link: https://github.com/you
+#    - icon: fontawesome/brands/twitter
+#      link: https://twitter.com/you
+#
+# Google Analytics
+#  analytics:
+#    provider: google
+#    property: UA-XXXXXXXX-X
+
+markdown_extensions:
+  # Python Markdown
+#  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+
+  # Python Markdown Extensions
+#  - pymdownx.arithmatex:
+#      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+#  - pymdownx.details
+#  - pymdownx.emoji:
+#      emoji_index: !!python/name:materialx.emoji.twemoji
+#      emoji_generator: !!python/name:materialx.emoji.to_svg
+#  - pymdownx.highlight
+  - pymdownx.inlinehilite
+#  - pymdownx.keys
+#  - pymdownx.mark
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+#      custom_fences:
+#        - name: mermaid
+#          class: mermaid
+#          format: !!python/name:pymdownx.superfences.fence_code_format
+#  - pymdownx.tabbed:
+#      alternate_style: true
+#  - pymdownx.tasklist:
+#      custom_checkbox: true
+#  - pymdownx.tilde
+
+# Dev server binding
+#dev_addr: 127.0.0.1:3001
+
+nav:
+  - Home: index.md
+  - User guide:
+      - Installation: guide/installation.md
+  - About:
+      - Release notes: about/history.md
+
+extra_css:
+  - colors.css
