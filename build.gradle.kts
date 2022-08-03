@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.targets
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
