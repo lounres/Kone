@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.7.10"
+kotlin = "1.7.20-Beta"
 kotest = "5.4.0"
 dokka = "1.7.10"
 mkdocs-gradle-plugin = "2.4.0"
