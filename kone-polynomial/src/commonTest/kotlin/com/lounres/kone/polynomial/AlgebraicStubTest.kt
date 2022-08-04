@@ -5,585 +5,330 @@
 
 package com.lounres.kone.polynomial
 
-
 import com.lounres.kone.algebraic.invoke
-import com.lounres.kone.algebraic.Field
-import kotlin.jvm.JvmInline
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import com.lounres.kone.polynomial.testUtils.StringExprRing
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.datatest.WithDataTestName
+import io.kotest.datatest.withData
+import io.kotest.matchers.shouldBe
 
-@JvmInline
-value class Expr(val expr: String)
 
-object ExprRing : Field<Expr> {
-    override val zero: Expr = Expr("0")
-    override val one: Expr = Expr("1")
-    override fun Expr.unaryMinus(): Expr = Expr("-${expr}")
-    override fun Expr.plus(other: Expr): Expr = Expr("(${this.expr} + ${other.expr})")
-    override fun Expr.minus(other: Expr): Expr = Expr("(${this.expr} - ${other.expr})")
-    override fun Expr.times(other: Expr): Expr = Expr("(${this.expr} * ${other.expr})")
-    override fun Expr.div(other: Expr): Expr = Expr("(${this.expr} / ${other.expr})")
-}
-
-class AlgebraicStubTest {
-    @Test
-    fun test_addMultipliedBySquaring_for_UInt() {
-        ExprRing {
-            assertEquals(
-                "57",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 0u).expr,
-                "tried addMultipliedBySquaring(57, 179, 0u)"
-            )
-            assertEquals(
-                "(57 + 179)",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 1u).expr,
-                "tried addMultipliedBySquaring(57, 179, 1u)"
-            )
-            assertEquals(
-                "(57 + (179 + 179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 2u).expr,
-                "tried addMultipliedBySquaring(57, 179, 2u)"
-            )
-            assertEquals(
-                "((57 + 179) + (179 + 179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 3u).expr,
-                "tried addMultipliedBySquaring(57, 179, 3u)"
-            )
-            assertEquals(
-                "(57 + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 4u).expr,
-                "tried addMultipliedBySquaring(57, 179, 4u)"
-            )
-            assertEquals(
-                "((57 + 179) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 5u).expr,
-                "tried addMultipliedBySquaring(57, 179, 5u)"
-            )
-            assertEquals(
-                "((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 6u).expr,
-                "tried addMultipliedBySquaring(57, 179, 6u)"
-            )
-            assertEquals(
-                "(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 7u).expr,
-                "tried addMultipliedBySquaring(57, 179, 7u)"
-            )
-            assertEquals(
-                "(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 8u).expr,
-                "tried addMultipliedBySquaring(57, 179, 8u)"
-            )
+class AlgebraicStubTest: FreeSpec({
+    data class TestData<M, R>(val argument: M, val result: R) : WithDataTestName {
+        override fun dataTestName(): String = "argument $argument"
+    }
+    StringExprRing {
+        "UInt" - {
+            "addMultipliedBySquaring" - {
+                withData(
+                    TestData(0u, !"57"),
+                    TestData(1u, !"(57 + 179)"),
+                    TestData(2u, !"(57 + (179 + 179))"),
+                    TestData(3u, !"((57 + 179) + (179 + 179))"),
+                    TestData(4u, !"(57 + ((179 + 179) + (179 + 179)))"),
+                    TestData(5u, !"((57 + 179) + ((179 + 179) + (179 + 179)))"),
+                    TestData(6u, !"((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(7u, !"(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(8u, !"(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))"),
+                ) {(multiplier, result) ->
+                    addMultipliedByDoubling(!57, !179, multiplier) shouldBe result
+                }
+            }
+            "multiplyBySquaring" - {
+                withData(
+                    TestData(0u, !"0"),
+                    TestData(1u, !"57"),
+                    TestData(2u, !"(57 + 57)"),
+                    TestData(3u, !"(57 + (57 + 57))"),
+                    TestData(4u, !"((57 + 57) + (57 + 57))"),
+                    TestData(5u, !"(57 + ((57 + 57) + (57 + 57)))"),
+                    TestData(6u, !"((57 + 57) + ((57 + 57) + (57 + 57)))"),
+                    TestData(7u, !"((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(8u, !"(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                ) {(multiplier, result) ->
+                    multiplyByDoubling(!"57", multiplier) shouldBe result
+                }
+            }
+            "multiplyExponentiatedBySquaring" - {
+                withData(
+                    TestData(0u, !"57"),
+                    TestData(1u, !"(57 * 179)"),
+                    TestData(2u, !"(57 * (179 * 179))"),
+                    TestData(3u, !"((57 * 179) * (179 * 179))"),
+                    TestData(4u, !"(57 * ((179 * 179) * (179 * 179)))"),
+                    TestData(5u, !"((57 * 179) * ((179 * 179) * (179 * 179)))"),
+                    TestData(6u, !"((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(7u, !"(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(8u, !"(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))"),
+                ) {(exponent, result) ->
+                    multiplyExponentiatedBySquaring(!"57", !"179", exponent) shouldBe result
+                }
+            }
+            "exponentiateBySquaring" - {
+                withData(
+                    TestData(0u, !"1"),
+                    TestData(1u, !"57"),
+                    TestData(2u, !"(57 * 57)"),
+                    TestData(3u, !"(57 * (57 * 57))"),
+                    TestData(4u, !"((57 * 57) * (57 * 57))"),
+                    TestData(5u, !"(57 * ((57 * 57) * (57 * 57)))"),
+                    TestData(6u, !"((57 * 57) * ((57 * 57) * (57 * 57)))"),
+                    TestData(7u, !"((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(8u, !"(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                ) {(exponent, result) ->
+                    exponentiateBySquaring(!"57", exponent) shouldBe result
+                }
+            }
+        }
+        "Int" - {
+            "addMultipliedBySquaring" - {
+                withData(
+                    TestData(0, !"57"),
+                    TestData(1, !"(57 + 179)"),
+                    TestData(-1, !"(57 + -179)"),
+                    TestData(2, !"(57 + (179 + 179))"),
+                    TestData(-2, !"(57 + (-179 + -179))"),
+                    TestData(3, !"((57 + 179) + (179 + 179))"),
+                    TestData(-3, !"((57 + -179) + (-179 + -179))"),
+                    TestData(4, !"(57 + ((179 + 179) + (179 + 179)))"),
+                    TestData(-4, !"(57 + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(5, !"((57 + 179) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-5, !"((57 + -179) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(6, !"((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-6, !"((57 + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(7, !"(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-7, !"(((57 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(8, !"(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))"),
+                    TestData(-8, !"(57 + (((-179 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179))))"),
+                ) {(multiplier, result) ->
+                    addMultipliedByDoubling(!"57", !"179", multiplier) shouldBe result
+                }
+            }
+            "multiplyBySquaring" - {
+                withData(
+                    TestData(0, !"0"),
+                    TestData(1, !"57"),
+                    TestData(-1, !"-57"),
+                    TestData(2, !"(57 + 57)"),
+                    TestData(-2, !"(-57 + -57)"),
+                    TestData(3, !"(57 + (57 + 57))"),
+                    TestData(-3, !"(-57 + (-57 + -57))"),
+                    TestData(4, !"((57 + 57) + (57 + 57))"),
+                    TestData(-4, !"((-57 + -57) + (-57 + -57))"),
+                    TestData(5, !"(57 + ((57 + 57) + (57 + 57)))"),
+                    TestData(-5, !"(-57 + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(6, !"((57 + 57) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-6, !"((-57 + -57) + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(7, !"((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-7, !"((-57 + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(8, !"(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-8, !"(((-57 + -57) + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))"),
+                ) {(multiplier, result) ->
+                    multiplyByDoubling(!"57", multiplier) shouldBe result
+                }
+            }
+            "multiplyExponentiatedBySquaring" - {
+                withData(
+                    TestData(0, !"57"),
+                    TestData(1, !"(57 * 179)"),
+                    TestData(-1, !"(57 * (1 / 179))"),
+                    TestData(2, !"(57 * (179 * 179))"),
+                    TestData(-2, !"(57 * ((1 / 179) * (1 / 179)))"),
+                    TestData(3, !"((57 * 179) * (179 * 179))"),
+                    TestData(-3, !"((57 * (1 / 179)) * ((1 / 179) * (1 / 179)))"),
+                    TestData(4, !"(57 * ((179 * 179) * (179 * 179)))"),
+                    TestData(-4, !"(57 * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(5, !"((57 * 179) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-5, !"((57 * (1 / 179)) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(6, !"((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-6, !"((57 * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(7, !"(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-7, !"(((57 * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(8, !"(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))"),
+                    TestData(-8, !"(57 * ((((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179)))))"),
+                ) {(exponent, result) ->
+                    multiplyExponentiatedBySquaring(!"57", !"179", exponent) shouldBe result
+                }
+            }
+            "exponentiateBySquaring" - {
+                withData(
+                    TestData(0, !"1"),
+                    TestData(1, !"57"),
+                    TestData(-1, !"(1 / 57)"),
+                    TestData(2, !"(57 * 57)"),
+                    TestData(-2, !"((1 / 57) * (1 / 57))"),
+                    TestData(3, !"(57 * (57 * 57))"),
+                    TestData(-3, !"((1 / 57) * ((1 / 57) * (1 / 57)))"),
+                    TestData(4, !"((57 * 57) * (57 * 57))"),
+                    TestData(-4, !"(((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57)))"),
+                    TestData(5, !"(57 * ((57 * 57) * (57 * 57)))"),
+                    TestData(-5, !"((1 / 57) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(6, !"((57 * 57) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-6, !"(((1 / 57) * (1 / 57)) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(7, !"((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-7, !"(((1 / 57) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(8, !"(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-8, !"((((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                ) {(exponent, result) ->
+                    exponentiateBySquaring(!"57", exponent) shouldBe result
+                }
+            }
+        }
+        "ULong" - {
+            "addMultipliedBySquaring" - {
+                withData(
+                    TestData(0uL, !"57"),
+                    TestData(1uL, !"(57 + 179)"),
+                    TestData(2uL, !"(57 + (179 + 179))"),
+                    TestData(3uL, !"((57 + 179) + (179 + 179))"),
+                    TestData(4uL, !"(57 + ((179 + 179) + (179 + 179)))"),
+                    TestData(5uL, !"((57 + 179) + ((179 + 179) + (179 + 179)))"),
+                    TestData(6uL, !"((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(7uL, !"(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(8uL, !"(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))"),
+                ) {(multiplier, result) ->
+                    addMultipliedByDoubling(!57, !179, multiplier) shouldBe result
+                }
+            }
+            "multiplyBySquaring" - {
+                withData(
+                    TestData(0uL, !"0"),
+                    TestData(1uL, !"57"),
+                    TestData(2uL, !"(57 + 57)"),
+                    TestData(3uL, !"(57 + (57 + 57))"),
+                    TestData(4uL, !"((57 + 57) + (57 + 57))"),
+                    TestData(5uL, !"(57 + ((57 + 57) + (57 + 57)))"),
+                    TestData(6uL, !"((57 + 57) + ((57 + 57) + (57 + 57)))"),
+                    TestData(7uL, !"((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(8uL, !"(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                ) {(multiplier, result) ->
+                    multiplyByDoubling(!"57", multiplier) shouldBe result
+                }
+            }
+            "multiplyExponentiatedBySquaring" - {
+                withData(
+                    TestData(0uL, !"57"),
+                    TestData(1uL, !"(57 * 179)"),
+                    TestData(2uL, !"(57 * (179 * 179))"),
+                    TestData(3uL, !"((57 * 179) * (179 * 179))"),
+                    TestData(4uL, !"(57 * ((179 * 179) * (179 * 179)))"),
+                    TestData(5uL, !"((57 * 179) * ((179 * 179) * (179 * 179)))"),
+                    TestData(6uL, !"((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(7uL, !"(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(8uL, !"(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))"),
+                ) {(exponent, result) ->
+                    multiplyExponentiatedBySquaring(!"57", !"179", exponent) shouldBe result
+                }
+            }
+            "exponentiateBySquaring" - {
+                withData(
+                    TestData(0uL, !"1"),
+                    TestData(1uL, !"57"),
+                    TestData(2uL, !"(57 * 57)"),
+                    TestData(3uL, !"(57 * (57 * 57))"),
+                    TestData(4uL, !"((57 * 57) * (57 * 57))"),
+                    TestData(5uL, !"(57 * ((57 * 57) * (57 * 57)))"),
+                    TestData(6uL, !"((57 * 57) * ((57 * 57) * (57 * 57)))"),
+                    TestData(7uL, !"((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(8uL, !"(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                ) {(exponent, result) ->
+                    exponentiateBySquaring(!"57", exponent) shouldBe result
+                }
+            }
+        }
+        "Long" - {
+            "addMultipliedBySquaring" - {
+                withData(
+                    TestData(0L, !"57"),
+                    TestData(1L, !"(57 + 179)"),
+                    TestData(-1L, !"(57 + -179)"),
+                    TestData(2L, !"(57 + (179 + 179))"),
+                    TestData(-2L, !"(57 + (-179 + -179))"),
+                    TestData(3L, !"((57 + 179) + (179 + 179))"),
+                    TestData(-3L, !"((57 + -179) + (-179 + -179))"),
+                    TestData(4L, !"(57 + ((179 + 179) + (179 + 179)))"),
+                    TestData(-4L, !"(57 + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(5L, !"((57 + 179) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-5L, !"((57 + -179) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(6L, !"((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-6L, !"((57 + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(7L, !"(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))"),
+                    TestData(-7L, !"(((57 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))"),
+                    TestData(8L, !"(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))"),
+                    TestData(-8L, !"(57 + (((-179 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179))))"),
+                ) {(multiplier, result) ->
+                    addMultipliedByDoubling(!"57", !"179", multiplier) shouldBe result
+                }
+            }
+            "multiplyBySquaring" - {
+                withData(
+                    TestData(0L, !"0"),
+                    TestData(1L, !"57"),
+                    TestData(-1L, !"-57"),
+                    TestData(2L, !"(57 + 57)"),
+                    TestData(-2L, !"(-57 + -57)"),
+                    TestData(3L, !"(57 + (57 + 57))"),
+                    TestData(-3L, !"(-57 + (-57 + -57))"),
+                    TestData(4L, !"((57 + 57) + (57 + 57))"),
+                    TestData(-4L, !"((-57 + -57) + (-57 + -57))"),
+                    TestData(5L, !"(57 + ((57 + 57) + (57 + 57)))"),
+                    TestData(-5L, !"(-57 + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(6L, !"((57 + 57) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-6L, !"((-57 + -57) + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(7L, !"((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-7L, !"((-57 + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))"),
+                    TestData(8L, !"(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))"),
+                    TestData(-8L, !"(((-57 + -57) + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))"),
+                ) {(multiplier, result) ->
+                    multiplyByDoubling(!"57", multiplier) shouldBe result
+                }
+            }
+            "multiplyExponentiatedBySquaring" - {
+                withData(
+                    TestData(0L, !"57"),
+                    TestData(1L, !"(57 * 179)"),
+                    TestData(-1L, !"(57 * (1 / 179))"),
+                    TestData(2L, !"(57 * (179 * 179))"),
+                    TestData(-2L, !"(57 * ((1 / 179) * (1 / 179)))"),
+                    TestData(3L, !"((57 * 179) * (179 * 179))"),
+                    TestData(-3L, !"((57 * (1 / 179)) * ((1 / 179) * (1 / 179)))"),
+                    TestData(4L, !"(57 * ((179 * 179) * (179 * 179)))"),
+                    TestData(-4L, !"(57 * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(5L, !"((57 * 179) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-5L, !"((57 * (1 / 179)) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(6L, !"((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-6L, !"((57 * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(7L, !"(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))"),
+                    TestData(-7L, !"(((57 * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))"),
+                    TestData(8L, !"(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))"),
+                    TestData(-8L, !"(57 * ((((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179)))))"),
+                ) {(exponent, result) ->
+                    multiplyExponentiatedBySquaring(!"57", !"179", exponent) shouldBe result
+                }
+            }
+            "exponentiateBySquaring" - {
+                withData(
+                    TestData(0L, !"1"),
+                    TestData(1L, !"57"),
+                    TestData(-1L, !"(1 / 57)"),
+                    TestData(2L, !"(57 * 57)"),
+                    TestData(-2L, !"((1 / 57) * (1 / 57))"),
+                    TestData(3L, !"(57 * (57 * 57))"),
+                    TestData(-3L, !"((1 / 57) * ((1 / 57) * (1 / 57)))"),
+                    TestData(4L, !"((57 * 57) * (57 * 57))"),
+                    TestData(-4L, !"(((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57)))"),
+                    TestData(5L, !"(57 * ((57 * 57) * (57 * 57)))"),
+                    TestData(-5L, !"((1 / 57) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(6L, !"((57 * 57) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-6L, !"(((1 / 57) * (1 / 57)) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(7L, !"((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-7L, !"(((1 / 57) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                    TestData(8L, !"(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))"),
+                    TestData(-8L, !"((((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))"),
+                ) {(exponent, result) ->
+                    exponentiateBySquaring(!"57", exponent) shouldBe result
+                }
+            }
         }
     }
-    @Test
-    fun test_multiplyBySquaring_for_UInt() {
-        ExprRing {
-            assertEquals(
-                "0",
-                multiplyByDoubling(Expr("57"), 0u).expr,
-                "tried multiplyBySquaring(57, 0u)"
-            )
-            assertEquals(
-                "57",
-                multiplyByDoubling(Expr("57"), 1u).expr,
-                "tried multiplyBySquaring(57, 1u)"
-            )
-            assertEquals(
-                "(57 + 57)",
-                multiplyByDoubling(Expr("57"), 2u).expr,
-                "tried multiplyBySquaring(57, 2u)"
-            )
-            assertEquals(
-                "(57 + (57 + 57))",
-                multiplyByDoubling(Expr("57"), 3u).expr,
-                "tried multiplyBySquaring(57, 3u)"
-            )
-            assertEquals(
-                "((57 + 57) + (57 + 57))",
-                multiplyByDoubling(Expr("57"), 4u).expr,
-                "tried multiplyBySquaring(57, 4u)"
-            )
-            assertEquals(
-                "(57 + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 5u).expr,
-                "tried multiplyBySquaring(57, 5u)"
-            )
-            assertEquals(
-                "((57 + 57) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 6u).expr,
-                "tried multiplyBySquaring(57, 6u)"
-            )
-            assertEquals(
-                "((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 7u).expr,
-                "tried multiplyBySquaring(57, 7u)"
-            )
-            assertEquals(
-                "(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 8u).expr,
-                "tried multiplyBySquaring(57, 8u)"
-            )
-        }
-    }
-    @Test
-    fun test_addMultipliedBySquaring_for_Int() {
-        ExprRing {
-            assertEquals(
-                "57",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 0).expr,
-                "tried addMultipliedBySquaring(57, 179, 0)"
-            )
-            assertEquals(
-                "(57 + 179)",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 1).expr,
-                "tried addMultipliedBySquaring(57, 179, 1)"
-            )
-            assertEquals(
-                "(57 + -179)",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -1).expr,
-                "tried addMultipliedBySquaring(57, 179, -1)"
-            )
-            assertEquals(
-                "(57 + (179 + 179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 2).expr,
-                "tried addMultipliedBySquaring(57, 179, 2)"
-            )
-            assertEquals(
-                "(57 + (-179 + -179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -2).expr,
-                "tried addMultipliedBySquaring(57, 179, -2)"
-            )
-            assertEquals(
-                "((57 + 179) + (179 + 179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 3).expr,
-                "tried addMultipliedBySquaring(57, 179, 3)"
-            )
-            assertEquals(
-                "((57 + -179) + (-179 + -179))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -3).expr,
-                "tried addMultipliedBySquaring(57, 179, -3)"
-            )
-            assertEquals(
-                "(57 + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 4).expr,
-                "tried addMultipliedBySquaring(57, 179, 4)"
-            )
-            assertEquals(
-                "(57 + ((-179 + -179) + (-179 + -179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -4).expr,
-                "tried addMultipliedBySquaring(57, 179, -4)"
-            )
-            assertEquals(
-                "((57 + 179) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 5).expr,
-                "tried addMultipliedBySquaring(57, 179, 5)"
-            )
-            assertEquals(
-                "((57 + -179) + ((-179 + -179) + (-179 + -179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -5).expr,
-                "tried addMultipliedBySquaring(57, 179, -5)"
-            )
-            assertEquals(
-                "((57 + (179 + 179)) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 6).expr,
-                "tried addMultipliedBySquaring(57, 179, 6)"
-            )
-            assertEquals(
-                "((57 + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -6).expr,
-                "tried addMultipliedBySquaring(57, 179, -6)"
-            )
-            assertEquals(
-                "(((57 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 7).expr,
-                "tried addMultipliedBySquaring(57, 179, 7)"
-            )
-            assertEquals(
-                "(((57 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179)))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -7).expr,
-                "tried addMultipliedBySquaring(57, 179, -7)"
-            )
-            assertEquals(
-                "(57 + (((179 + 179) + (179 + 179)) + ((179 + 179) + (179 + 179))))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), 8).expr,
-                "tried addMultipliedBySquaring(57, 179, 8)"
-            )
-            assertEquals(
-                "(57 + (((-179 + -179) + (-179 + -179)) + ((-179 + -179) + (-179 + -179))))",
-                addMultipliedByDoubling(Expr("57"), Expr("179"), -8).expr,
-                "tried addMultipliedBySquaring(57, 179, -8)"
-            )
-        }
-    }
-    @Test
-    fun test_multiplyBySquaring_for_Int() {
-        ExprRing {
-            assertEquals(
-                "0",
-                multiplyByDoubling(Expr("57"), 0).expr,
-                "tried multiplyBySquaring(57, 0)"
-            )
-            assertEquals(
-                "57",
-                multiplyByDoubling(Expr("57"), 1).expr,
-                "tried multiplyBySquaring(57, 1)"
-            )
-            assertEquals(
-                "-57",
-                multiplyByDoubling(Expr("57"), -1).expr,
-                "tried multiplyBySquaring(57, -1)"
-            )
-            assertEquals(
-                "(57 + 57)",
-                multiplyByDoubling(Expr("57"), 2).expr,
-                "tried multiplyBySquaring(57, 2)"
-            )
-            assertEquals(
-                "(-57 + -57)",
-                multiplyByDoubling(Expr("57"), -2).expr,
-                "tried multiplyBySquaring(57, -2)"
-            )
-            assertEquals(
-                "(57 + (57 + 57))",
-                multiplyByDoubling(Expr("57"), 3).expr,
-                "tried multiplyBySquaring(57, 3)"
-            )
-            assertEquals(
-                "(-57 + (-57 + -57))",
-                multiplyByDoubling(Expr("57"), -3).expr,
-                "tried multiplyBySquaring(57, -3)"
-            )
-            assertEquals(
-                "((57 + 57) + (57 + 57))",
-                multiplyByDoubling(Expr("57"), 4).expr,
-                "tried multiplyBySquaring(57, 4)"
-            )
-            assertEquals(
-                "((-57 + -57) + (-57 + -57))",
-                multiplyByDoubling(Expr("57"), -4).expr,
-                "tried multiplyBySquaring(57, -4)"
-            )
-            assertEquals(
-                "(57 + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 5).expr,
-                "tried multiplyBySquaring(57, 5)"
-            )
-            assertEquals(
-                "(-57 + ((-57 + -57) + (-57 + -57)))",
-                multiplyByDoubling(Expr("57"), -5).expr,
-                "tried multiplyBySquaring(57, -5)"
-            )
-            assertEquals(
-                "((57 + 57) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 6).expr,
-                "tried multiplyBySquaring(57, 6)"
-            )
-            assertEquals(
-                "((-57 + -57) + ((-57 + -57) + (-57 + -57)))",
-                multiplyByDoubling(Expr("57"), -6).expr,
-                "tried multiplyBySquaring(57, -6)"
-            )
-            assertEquals(
-                "((57 + (57 + 57)) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 7).expr,
-                "tried multiplyBySquaring(57, 7)"
-            )
-            assertEquals(
-                "((-57 + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))",
-                multiplyByDoubling(Expr("57"), -7).expr,
-                "tried multiplyBySquaring(57, -7)"
-            )
-            assertEquals(
-                "(((57 + 57) + (57 + 57)) + ((57 + 57) + (57 + 57)))",
-                multiplyByDoubling(Expr("57"), 8).expr,
-                "tried multiplyBySquaring(57, 8)"
-            )
-            assertEquals(
-                "(((-57 + -57) + (-57 + -57)) + ((-57 + -57) + (-57 + -57)))",
-                multiplyByDoubling(Expr("57"), -8).expr,
-                "tried multiplyBySquaring(57, -8)"
-            )
-        }
-    }
-    @Test
-    fun test_multiplyExponentiationBySquaring_for_UInt() {
-        ExprRing {
-            assertEquals(
-                "57",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 0u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 0u)"
-            )
-            assertEquals(
-                "(57 * 179)",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 1u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 1u)"
-            )
-            assertEquals(
-                "(57 * (179 * 179))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 2u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 2u)"
-            )
-            assertEquals(
-                "((57 * 179) * (179 * 179))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 3u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 3u)"
-            )
-            assertEquals(
-                "(57 * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 4u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 4u)"
-            )
-            assertEquals(
-                "((57 * 179) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 5u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 5u)"
-            )
-            assertEquals(
-                "((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 6u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 6u)"
-            )
-            assertEquals(
-                "(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 7u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 7u)"
-            )
-            assertEquals(
-                "(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 8u).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 8u)"
-            )
-        }
-    }
-    @Test
-    fun test_exponentiationBySquaring_for_UInt() {
-        ExprRing {
-            assertEquals(
-                "0",
-                exponentiateBySquaring(Expr("57"), 0u).expr,
-                "tried exponentiationBySquaring(57, 0u)"
-            )
-            assertEquals(
-                "57",
-                exponentiateBySquaring(Expr("57"), 1u).expr,
-                "tried exponentiationBySquaring(57, 1u)"
-            )
-            assertEquals(
-                "(57 * 57)",
-                exponentiateBySquaring(Expr("57"), 2u).expr,
-                "tried exponentiationBySquaring(57, 2u)"
-            )
-            assertEquals(
-                "(57 * (57 * 57))",
-                exponentiateBySquaring(Expr("57"), 3u).expr,
-                "tried exponentiationBySquaring(57, 3u)"
-            )
-            assertEquals(
-                "((57 * 57) * (57 * 57))",
-                exponentiateBySquaring(Expr("57"), 4u).expr,
-                "tried exponentiationBySquaring(57, 4u)"
-            )
-            assertEquals(
-                "(57 * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 5u).expr,
-                "tried exponentiationBySquaring(57, 5u)"
-            )
-            assertEquals(
-                "((57 * 57) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 6u).expr,
-                "tried exponentiationBySquaring(57, 6u)"
-            )
-            assertEquals(
-                "((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 7u).expr,
-                "tried exponentiationBySquaring(57, 7u)"
-            )
-            assertEquals(
-                "(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 8u).expr,
-                "tried exponentiationBySquaring(57, 8u)"
-            )
-        }
-    }
-    @Test
-    fun test_multiplyExponentiationBySquaring_for_Int() {
-        ExprRing {
-            assertEquals(
-                "57",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 0).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 0)"
-            )
-            assertEquals(
-                "(57 * 179)",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 1).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 1)"
-            )
-            assertEquals(
-                "(57 * (1 / 179))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -1).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -1)"
-            )
-            assertEquals(
-                "(57 * (179 * 179))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 2).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 2)"
-            )
-            assertEquals(
-                "(57 * ((1 / 179) * (1 / 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -2).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -2)"
-            )
-            assertEquals(
-                "((57 * 179) * (179 * 179))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 3).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 3)"
-            )
-            assertEquals(
-                "((57 * (1 / 179)) * ((1 / 179) * (1 / 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -3).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -3)"
-            )
-            assertEquals(
-                "(57 * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 4).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 4)"
-            )
-            assertEquals(
-                "(57 * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -4).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -4)"
-            )
-            assertEquals(
-                "((57 * 179) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 5).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 5)"
-            )
-            assertEquals(
-                "((57 * (1 / 179)) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -5).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -5)"
-            )
-            assertEquals(
-                "((57 * (179 * 179)) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 6).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 6)"
-            )
-            assertEquals(
-                "((57 * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -6).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -6)"
-            )
-            assertEquals(
-                "(((57 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179)))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 7).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 7)"
-            )
-            assertEquals(
-                "(((57 * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -7).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -7)"
-            )
-            assertEquals(
-                "(57 * (((179 * 179) * (179 * 179)) * ((179 * 179) * (179 * 179))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), 8).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, 8)"
-            )
-            assertEquals(
-                "(57 * ((((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179))) * (((1 / 179) * (1 / 179)) * ((1 / 179) * (1 / 179)))))",
-                multiplyExponentiatedBySquaring(Expr("57"), Expr("179"), -8).expr,
-                "tried multiplyExponentiationBySquaring(57, 179, -8)"
-            )
-        }
-    }
-    @Test
-    fun test_exponentiationBySquaring_for_Int() {
-        ExprRing {
-            assertEquals(
-                "0",
-                exponentiateBySquaring(Expr("57"), 0).expr,
-                "tried exponentiationBySquaring(57, 0)"
-            )
-            assertEquals(
-                "57",
-                exponentiateBySquaring(Expr("57"), 1).expr,
-                "tried exponentiationBySquaring(57, 1)"
-            )
-            assertEquals(
-                "(1 / 57)",
-                exponentiateBySquaring(Expr("57"), -1).expr,
-                "tried exponentiationBySquaring(57, -1)"
-            )
-            assertEquals(
-                "(57 * 57)",
-                exponentiateBySquaring(Expr("57"), 2).expr,
-                "tried exponentiationBySquaring(57, 2)"
-            )
-            assertEquals(
-                "((1 / 57) * (1 / 57))",
-                exponentiateBySquaring(Expr("57"), -2).expr,
-                "tried exponentiationBySquaring(57, -2)"
-            )
-            assertEquals(
-                "(57 * (57 * 57))",
-                exponentiateBySquaring(Expr("57"), 3).expr,
-                "tried exponentiationBySquaring(57, 3)"
-            )
-            assertEquals(
-                "((1 / 57) * ((1 / 57) * (1 / 57)))",
-                exponentiateBySquaring(Expr("57"), -3).expr,
-                "tried exponentiationBySquaring(57, -3)"
-            )
-            assertEquals(
-                "((57 * 57) * (57 * 57))",
-                exponentiateBySquaring(Expr("57"), 4).expr,
-                "tried exponentiationBySquaring(57, 4)"
-            )
-            assertEquals(
-                "(((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57)))",
-                exponentiateBySquaring(Expr("57"), -4).expr,
-                "tried exponentiationBySquaring(57, -4)"
-            )
-            assertEquals(
-                "(57 * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 5).expr,
-                "tried exponentiationBySquaring(57, 5)"
-            )
-            assertEquals(
-                "((1 / 57) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))",
-                exponentiateBySquaring(Expr("57"), -5).expr,
-                "tried exponentiationBySquaring(57, -5)"
-            )
-            assertEquals(
-                "((57 * 57) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 6).expr,
-                "tried exponentiationBySquaring(57, 6)"
-            )
-            assertEquals(
-                "(((1 / 57) * (1 / 57)) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))",
-                exponentiateBySquaring(Expr("57"), -6).expr,
-                "tried exponentiationBySquaring(57, -6)"
-            )
-            assertEquals(
-                "((57 * (57 * 57)) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 7).expr,
-                "tried exponentiationBySquaring(57, 7)"
-            )
-            assertEquals(
-                "(((1 / 57) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))",
-                exponentiateBySquaring(Expr("57"), -7).expr,
-                "tried exponentiationBySquaring(57, -7)"
-            )
-            assertEquals(
-                "(((57 * 57) * (57 * 57)) * ((57 * 57) * (57 * 57)))",
-                exponentiateBySquaring(Expr("57"), 8).expr,
-                "tried exponentiationBySquaring(57, 8)"
-            )
-            assertEquals(
-                "((((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))) * (((1 / 57) * (1 / 57)) * ((1 / 57) * (1 / 57))))",
-                exponentiateBySquaring(Expr("57"), -8).expr,
-                "tried exponentiationBySquaring(57, -8)"
-            )
-        }
-    }
-}
+})

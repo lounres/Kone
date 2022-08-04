@@ -1,3 +1,5 @@
+@file:Suppress("SuspiciousCollectionReassignment")
+
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -7,6 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinWithJavaTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -74,6 +77,15 @@ fun KotlinProjectExtension.configureBase() {
                 }
             }
         }
+        if (this is KotlinWithJavaTarget<*>) {
+            sourceSets.configureEach {
+                if (name.endsWith("test", ignoreCase = true)) {
+                    dependencies {
+                        implementation(libs.kotest.runner.junit5)
+                    }
+                }
+            }
+        }
 
         sourceSets {
             all {
@@ -118,6 +130,10 @@ subprojects {
                         }
                     }
                 }
+            }
+
+            tasks.withType<Test> {
+                useJUnitPlatform()
             }
         } else {
             apply<KotestMultiplatformCompilerGradlePlugin>()

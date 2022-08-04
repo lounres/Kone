@@ -5,7 +5,8 @@ if (contextReceiversSupportCrunch) {
         sourceSets {
             main {
                 dependencies {
-                    api(projects.koneCore)
+                    implementation(projects.koneCore)
+                    api(projects.koneAlgebraic)
                 }
             }
         }
@@ -16,7 +17,8 @@ if (contextReceiversSupportCrunch) {
         sourceSets {
             val commonMain by getting {
                 dependencies {
-                    api(projects.koneCore)
+                    implementation(projects.koneCore)
+                    api(projects.koneAlgebraic)
                 }
             }
             val commonTest by getting {

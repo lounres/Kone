@@ -225,7 +225,7 @@ internal fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Long
 context(Ring<C>)
 internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: UInt): C =
     when {
-        exponent == 0u -> zero
+        exponent == 0u -> one
         exponent == 1u -> arg
         exponent and 1u == 0u -> exponentiateBySquaring(arg * arg, exponent shr 1)
         exponent and 1u == 1u -> multiplyExponentiatedBySquaring(arg, arg * arg, exponent shr 1)
@@ -268,7 +268,7 @@ internal tailrec fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, expone
 context(Ring<C>)
 internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: ULong): C =
     when {
-        exponent == 0uL -> zero
+        exponent == 0uL -> one
         exponent == 1uL -> arg
         exponent and 1uL == 0uL -> exponentiateBySquaring(arg * arg, exponent shr 1)
         exponent and 1uL == 1uL -> multiplyExponentiatedBySquaring(arg, arg * arg, exponent shr 1)
