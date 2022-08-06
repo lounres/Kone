@@ -14,6 +14,7 @@ if (contextReceiversSupportCrunch) {
             test {
                 dependencies {
                     implementation(projects.koneNumberTheory)
+                    implementation(projects.testUtil)
                 }
             }
         }
@@ -33,6 +34,7 @@ if (contextReceiversSupportCrunch) {
             val commonTest by getting {
                 dependencies {
                     implementation(projects.koneNumberTheory)
+                    implementation(projects.testUtil)
                 }
             }
         }

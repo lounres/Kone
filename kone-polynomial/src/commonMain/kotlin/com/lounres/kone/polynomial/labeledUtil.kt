@@ -9,11 +9,11 @@ import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
 import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.mapUtils.mergeBy
 import com.lounres.kone.mapUtils.putOrChange
 import com.lounres.kone.mapUtils.withPutOrChanged
 import space.kscience.kmath.expressions.Symbol
-import space.kscience.kmath.misc.UnstableKMathAPI
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmName
@@ -106,7 +106,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Sy
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -132,7 +132,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -163,7 +163,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     algebra: A,
     variablesAndOrders: Map<Symbol, UInt>,
@@ -203,7 +203,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -222,7 +222,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -246,7 +246,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     algebra: A,
     variablesAndOrders: Map<Symbol, UInt>,

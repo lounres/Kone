@@ -5,13 +5,15 @@ if (contextReceiversSupportCrunch) {
         sourceSets {
             main {
                 dependencies {
-                    implementation(projects.koneCore)
-                    api(projects.koneAlgebraic)
+                    implementation(libs.kotest.framework.engine)
+                    implementation(libs.kotest.framework.datatest)
+                    implementation(libs.kotest.assertions.core)
+                    implementation(libs.kotest.property)
                 }
             }
             test {
                 dependencies {
-                    implementation(projects.testUtil)
+
                 }
             }
         }
@@ -22,13 +24,15 @@ if (contextReceiversSupportCrunch) {
         sourceSets {
             val commonMain by getting {
                 dependencies {
-                    implementation(projects.koneCore)
-                    api(projects.koneAlgebraic)
+                    implementation(libs.kotest.framework.engine)
+                    implementation(libs.kotest.framework.datatest)
+                    implementation(libs.kotest.assertions.core)
+                    implementation(libs.kotest.property)
                 }
             }
             val commonTest by getting {
                 dependencies {
-                    implementation(projects.testUtil)
+
                 }
             }
         }

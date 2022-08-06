@@ -32,7 +32,7 @@ allprojects {
 //        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    if (name != "docs") {
+    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
         apply<DokkaPlugin>()
         dependencies {
             dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${properties["dokkaVersion"]}")
@@ -110,7 +110,7 @@ fun KotlinProjectExtension.configureBase() {
 }
 
 subprojects {
-    if (name.startsWith("kone-", ignoreCase = true)) {
+    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("testUtil")) {
         if (contextReceiversSupportCrunch) {
             apply(plugin = "org.jetbrains.kotlin.jvm")
             configure<KotlinJvmProjectExtension> {

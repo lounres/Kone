@@ -5,13 +5,13 @@
 
 package com.lounres.kone.polynomial
 
-import space.kscience.kmath.expressions.Symbol
 import com.lounres.kone.algebraic.Rational
+import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.polynomial.testUtils.assertEquals
 import com.lounres.kone.polynomial.testUtils.iota
 import com.lounres.kone.polynomial.testUtils.x
 import com.lounres.kone.polynomial.testUtils.y
-import space.kscience.kmath.misc.UnstableKMathAPI
+import space.kscience.kmath.expressions.Symbol
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -5402,7 +5402,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_derivativeWithRespectTo_variable() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -5761,7 +5761,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthDerivativeWithRespectTo_variable_order() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -6132,7 +6132,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthDerivativeWithRespectTo_variablesAndOrders() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -6689,7 +6689,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_antiderivativeWithRespectTo_variable() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -7105,7 +7105,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variable_order() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -7555,7 +7555,7 @@ class LabeledPolynomialUtilTest {
         )
     }
     @Test
-    @OptIn(UnstableKMathAPI::class)
+    @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variablesAndOrders() {
         assertEquals(
             LabeledPolynomialAsIs(
