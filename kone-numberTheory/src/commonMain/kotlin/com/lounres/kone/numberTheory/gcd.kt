@@ -29,8 +29,11 @@ public tailrec fun gcd(a: Int, b: Int): Int = if (a == 0) abs(b) else gcd(b % a,
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-public fun gcd(vararg values: Int): Int = with(values) { if (isEmpty()) 0 else reduce(::gcd) }
-public fun gcd(values: Iterable<Int>): Int = values.reduceOrNull(::gcd) ?: 0
+public fun gcd(vararg values: Int): Int = with(values) { abs(if (isEmpty()) 0 else reduce(::gcd)) }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: Iterable<Int>): Int = abs(values.reduceOrNull(::gcd) ?: 0)
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
@@ -75,8 +78,11 @@ public tailrec fun gcd(a: Long, b: Long): Long = if (a == 0L) abs(b) else gcd(b 
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-public fun gcd(vararg values: Long): Long = with(values) { if (isEmpty()) 0 else reduce(::gcd) }
-public fun gcd(values: Iterable<Long>): Long = values.reduceOrNull(::gcd) ?: 0
+public fun gcd(vararg values: Long): Long = with(values) { abs(if (isEmpty()) 0 else reduce(::gcd)) }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: Iterable<Long>): Long = abs(values.reduceOrNull(::gcd) ?: 0)
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and

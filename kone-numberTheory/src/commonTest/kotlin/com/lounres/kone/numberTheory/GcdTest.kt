@@ -5,13 +5,13 @@
 
 package com.lounres.kone.numberTheory
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.WithDataTestName
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 
-// TODO: Тесты для других gcd
 class GcdTest: FreeSpec({
     data class GcdTestData<C>(
         val first: C,
@@ -38,18 +38,99 @@ class GcdTest: FreeSpec({
         )
     }
 
+    data class MultipleGcdTestData<C>(
+        val entries: List<C>,
+        val gcd: C
+    ) : WithDataTestName {
+        override fun dataTestName(): String = entries.let { if (it.isEmpty()) "<empty>" else it.joinToString() }
+    }
+
+    val multipleTestData = listOf(
+        MultipleGcdTestData(
+            listOf(),
+            0
+        ),
+        MultipleGcdTestData(
+            listOf(0),
+            0
+        ),
+        MultipleGcdTestData(
+            listOf(1),
+            1
+        ),
+        MultipleGcdTestData(
+            listOf(2),
+            2
+        ),
+        MultipleGcdTestData(
+            listOf(3),
+            3
+        ),
+        MultipleGcdTestData(
+            listOf(4),
+            4
+        ),
+        MultipleGcdTestData(
+            listOf(2, 4),
+            2
+        ),
+        MultipleGcdTestData(
+            listOf(2, 3),
+            1
+        ),
+        MultipleGcdTestData(
+            listOf(5, 7, 9),
+            1
+        ),
+        MultipleGcdTestData(
+            listOf(2, 4, 6),
+            2
+        ),
+        MultipleGcdTestData(
+            listOf(6, 10, 15),
+            1
+        ),
+    ).flatMap {
+        sequence {
+            val entries = it.entries
+            val size = entries.size
+            val state = MutableList(size) { false }
+            while(true) {
+                yield(
+                    MultipleGcdTestData(
+                        List(size) { index -> entries[index].let { if (state[index]) -it else it } },
+                        it.gcd
+                    )
+                )
+                val indexChange = state.indices.indexOfFirst { !state[it] && entries[it] != 0 }
+                if (indexChange == -1) break
+                state[indexChange] = true
+                for (index in 0 until indexChange) state[index] = false
+            }
+        }
+    }
+
     "Int" - {
-        "test GCD" - {
+        "GCD" - {
             withData(testData) {
                 gcd(it.first, it.second) shouldBe it.gcd
             }
         }
-        "test Bezout coefficients with GCD" - {
+        "multiple GCD" - {
+            withData(multipleTestData) {
+                assertSoftly {
+                    gcd(it.entries) shouldBe it.gcd
+                    gcd(*it.entries.toIntArray()) shouldBe it.gcd
+                }
+            }
+        }
+        "Bezout coefficients with GCD" - {
             withData(testData) {
                 bezoutIdentityWithGCD(it.first, it.second) shouldBe it.bezoutCoefficientsWithGCD
             }
         }
     }
+
     "Long" - {
         val testData = testData.map {
             GcdTestData(
@@ -60,12 +141,26 @@ class GcdTest: FreeSpec({
                 it.secondCoef.toLong(),
             )
         }
-        "test GCD" - {
+        val multipleTestData = multipleTestData.map {
+            MultipleGcdTestData(
+                it.entries.map { it.toLong() },
+                it.gcd.toLong()
+            )
+        }
+        "GCD" - {
             withData(testData) {
                 gcd(it.first, it.second) shouldBe it.gcd
             }
         }
-        "test Bezout coefficients with GCD" - {
+        "multiple GCD" - {
+            withData(multipleTestData) {
+                assertSoftly {
+                    gcd(it.entries) shouldBe it.gcd
+                    gcd(*it.entries.toLongArray()) shouldBe it.gcd
+                }
+            }
+        }
+        "Bezout coefficients with GCD" - {
             withData(testData) {
                 bezoutIdentityWithGCD(it.first, it.second) shouldBe it.bezoutCoefficientsWithGCD
             }
