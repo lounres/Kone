@@ -8,2547 +8,1340 @@
 package com.lounres.kone.polynomial
 
 import space.kscience.kmath.expressions.Symbol
+import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Rational
-import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
-import com.lounres.kone.polynomial.testUtils.not
-import com.lounres.kone.polynomial.testUtils.iota
-import com.lounres.kone.polynomial.testUtils.o
-import com.lounres.kone.polynomial.testUtils.s
-import com.lounres.kone.polynomial.testUtils.t
-import com.lounres.kone.polynomial.testUtils.x
-import com.lounres.kone.polynomial.testUtils.y
-import com.lounres.kone.polynomial.testUtils.z
+import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.polynomial.testUtils.*
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.scopes.ContainerScope
+import io.kotest.datatest.withData
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlin.test.*
 
-
 // TODO: Тесты на конвертацию.
-class LabeledPolynomialTest {
-    @Test
-    fun test_Variable_Int_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x + 5,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x + 0,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Int_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x - 5,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x - 0,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Int_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(5),
-                ),
-                x * 5,
-                "test 1"
-            )
-            assertSame(
-                zero,
-                x * 0,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Variable_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                5 + x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                0 + x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Variable_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(-1),
-                ),
-                5 - x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(-1),
-                ),
-                0 - x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Variable_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(5),
-                ),
-                5 * x,
-                "test 1"
-            )
-            assertSame(
-                zero,
-                0 * x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Int_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + -3,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + -3,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + -3,
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ) + -3,
-                "test 4"
-            )
-            val polynomial_5 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(-22, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_5,
-                polynomial_5 + 0,
-                "test 5"
-            )
-            val polynomial_6 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(0, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_6,
-                polynomial_6 + 0,
-                "test 6"
-            )
-            val polynomial_7 = LabeledPolynomial(
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_7,
-                polynomial_7 + 0,
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Int_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - 3,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - 3,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - 3,
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ) - 3,
-                "test 4"
-            )
-            val polynomial_5 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(-22, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_5,
-                polynomial_5 - 0,
-                "test 5"
-            )
-            val polynomial_6 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(0, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_6,
-                polynomial_6 - 0,
-                "test 6"
-            )
-            val polynomial_7 = LabeledPolynomial(
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_7,
-                polynomial_7 - 0,
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Int_times() {
-        IntBoxModuloRing(35).labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !34,
-                    mapOf(x to 3u) to !2,
-                    mapOf(x to 0u, y to 1u) to !1,
-                    mapOf(x to 1u) to !20,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !2,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ) * 27,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !7,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !49,
-                    mapOf(x to 1u) to !21,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !14,
-                ) * 15,
-                "test 2"
-            )
-            val polynomial = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to !22,
-                mapOf(x to 3u) to !26,
-                mapOf(x to 0u, y to 1u) to !13,
-                mapOf(x to 1u) to !15,
-                mapOf(x to 0u, y to 0u, z to 2u) to !26,
-            )
-            assertSame(
-                zero,
-                polynomial * 0,
-                "test 3"
-            )
-            assertSame(
-                polynomial,
-                polynomial * 1,
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Polynomial_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                -3 + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                -3 + LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                -3 + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                -3 + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                "test 4"
-            )
-            val polynomial_5 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(-22, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_5,
-                0 + polynomial_5,
-                "test 5"
-            )
-            val polynomial_6 = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to Rational(0, 9),
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_6,
-                0 + polynomial_6,
-                "test 6"
-            )
-            val polynomial_7 = LabeledPolynomial(
-                mapOf(x to 3u) to Rational(-8, 9),
-                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-            )
-            assertSame(
-                polynomial_7,
-                0 + polynomial_7,
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Polynomial_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(22, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                3 - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(3, 1),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                3 - LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                3 - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                3 - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                "test 4"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(22, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                0 - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 5"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                0 - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 6"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                0 - LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Int_Polynomial_times() {
-        IntBoxModuloRing(35).labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !34,
-                    mapOf(x to 3u) to !2,
-                    mapOf(x to 0u, y to 1u) to !1,
-                    mapOf(x to 1u) to !20,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !2,
-                ),
-                27 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                15 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !7,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !49,
-                    mapOf(x to 1u) to !21,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !14,
-                ),
-                "test 2"
-            )
-            val polynomial = LabeledPolynomial(
-                mapOf<Symbol, UInt>() to !22,
-                mapOf(x to 3u) to !26,
-                mapOf(x to 0u, y to 1u) to !13,
-                mapOf(x to 1u) to !15,
-                mapOf(x to 0u, y to 0u, z to 2u) to !26,
-            )
-            assertSame(
-                zero,
-                0 * polynomial,
-                "test 3"
-            )
-            assertSame(
-                polynomial,
-                1 * polynomial,
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Constant_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x + Rational(5),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x + Rational(0),
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Constant_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x - Rational(5),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                x - Rational(0),
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Constant_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(5),
-                ),
-                x * Rational(5),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(0),
-                ),
-                x * Rational(0),
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Variable_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                Rational(5) + x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                Rational(0) + x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Variable_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(5),
-                    mapOf(x to 1u) to Rational(-1),
-                ),
-                Rational(5) - x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(-1),
-                ),
-                Rational(0) - x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Variable_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(5),
-                ),
-                Rational(5) * x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(0),
-                ),
-                Rational(0) * x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Constant_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(-3),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(-3),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(-3),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ) + Rational(-3),
-                "test 4"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(0),
-                "test 5"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(0),
-                "test 6"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) + Rational(0),
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Constant_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(3),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(3),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(3),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ) - Rational(3),
-                "test 4"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(0),
-                "test 5"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(0),
-                "test 6"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ) - Rational(0),
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Constant_times() {
-        IntBoxModuloRing(35).labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !34,
-                    mapOf(x to 3u) to !2,
-                    mapOf(x to 0u, y to 1u) to !1,
-                    mapOf(x to 1u) to !20,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !2,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ) * !27,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !7,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !49,
-                    mapOf(x to 1u) to !21,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !14,
-                ) * !15,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ) * !0,
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ) * !1,
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Polynomial_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(-3) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-3, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(-3) + LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(-3) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                Rational(-3) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                "test 4"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(0) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 5"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(0) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 6"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                Rational(0) + LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Polynomial_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(22, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(3) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(5, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(3, 1),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(3) - LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 1),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(3) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                Rational(3) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(27, 9),
-                    mapOf(x to 3u) to Rational(0),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                ),
-                "test 4"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(22, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(0) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-22, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 5"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(0) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0, 9),
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 6"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 3u) to Rational(8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(8, 7),
-                ),
-                Rational(0) - LabeledPolynomial(
-                    mapOf(x to 3u) to Rational(-8, 9),
-                    mapOf(x to 0u, y to 4u) to Rational(-8, 7),
-                ),
-                "test 7"
-            )
-        }
-    }
-    @Test
-    fun test_Constant_Polynomial_times() {
-        IntBoxModuloRing(35).labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !34,
-                    mapOf(x to 3u) to !2,
-                    mapOf(x to 0u, y to 1u) to !1,
-                    mapOf(x to 1u) to !20,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !2,
-                ),
-                !27 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                !15 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !7,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !49,
-                    mapOf(x to 1u) to !21,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !14,
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !0,
-                    mapOf(x to 3u) to !0,
-                    mapOf(x to 0u, y to 1u) to !0,
-                    mapOf(x to 1u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                ),
-                !0 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                !1 * LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to !22,
-                    mapOf(x to 3u) to !26,
-                    mapOf(x to 0u, y to 1u) to !13,
-                    mapOf(x to 1u) to !15,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !26,
-                ),
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_unaryPlus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                ),
-                +x
-            )
-        }
-    }
-    @Test
-    fun test_Variable_unaryMinus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(-1),
-                ),
-                -x
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Variable_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                    mapOf(y to 1u) to Rational(1),
-                ),
-                x + y,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(2),
-                ),
-                x + x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Variable_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(1),
-                    mapOf(y to 1u) to Rational(-1),
-                ),
-                x - y,
-                "test 1"
-            )
-            assertSame(
-                zero,
-                x - x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Variable_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u, y to 1u) to Rational(1),
-                ),
-                x * y,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 2u) to Rational(1),
-                ),
-                x * x,
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Polynomial_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(7, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                x + LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(6, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                y + LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                    mapOf(iota to 1u) to Rational(1),
-                ),
-                iota + LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Polynomial_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(16, 4),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-3, 8),
-                    mapOf(y to 1u) to Rational(1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(-6, 5),
-                    mapOf(y to 2u) to Rational(13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(-13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(-11, 8),
-                ),
-                x - LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(16, 4),
-                    mapOf(x to 1u) to Rational(-4, 3),
-                    mapOf(x to 2u) to Rational(-3, 8),
-                    mapOf(y to 1u) to Rational(8, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(-6, 5),
-                    mapOf(y to 2u) to Rational(13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(-13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(-11, 8),
-                ),
-                y - LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(16, 4),
-                    mapOf(x to 1u) to Rational(-4, 3),
-                    mapOf(x to 2u) to Rational(-3, 8),
-                    mapOf(y to 1u) to Rational(1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(-6, 5),
-                    mapOf(y to 2u) to Rational(13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(-13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(-11, 8),
-                    mapOf(iota to 1u) to Rational(1),
-                ),
-                iota - LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Variable_Polynomial_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(-16, 4),
-                    mapOf(x to 2u) to Rational(4, 3),
-                    mapOf(x to 3u) to Rational(3, 8),
-                    mapOf(x to 1u, y to 1u) to Rational(-1, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 3u, y to 1u) to Rational(6, 5),
-                    mapOf(x to 1u, y to 2u) to Rational(-13, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 3u, y to 2u) to Rational(11, 8),
-                ),
-                x * LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(y to 1u) to Rational(-16, 4),
-                    mapOf(x to 1u, y to 1u) to Rational(4, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(3, 8),
-                    mapOf(y to 2u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(6, 5),
-                    mapOf(y to 3u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 3u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 3u) to Rational(11, 8),
-                ),
-                y * LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(iota to 1u) to Rational(-16, 4),
-                    mapOf(x to 1u, iota to 1u) to Rational(4, 3),
-                    mapOf(x to 2u, iota to 1u) to Rational(3, 8),
-                    mapOf(y to 1u, iota to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u, iota to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u, iota to 1u) to Rational(6, 5),
-                    mapOf(y to 2u, iota to 1u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u, iota to 1u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u, iota to 1u) to Rational(11, 8),
-                ),
-                iota * LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Variable_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(7, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) + x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(6, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) + y,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                    mapOf(iota to 1u) to Rational(1),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) + iota,
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Variable_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(1, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) - x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-8, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) - y,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                    mapOf(iota to 1u) to Rational(-1),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) - iota,
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Variable_times() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(x to 1u) to Rational(-16, 4),
-                    mapOf(x to 2u) to Rational(4, 3),
-                    mapOf(x to 3u) to Rational(3, 8),
-                    mapOf(x to 1u, y to 1u) to Rational(-1, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 3u, y to 1u) to Rational(6, 5),
-                    mapOf(x to 1u, y to 2u) to Rational(-13, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 3u, y to 2u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) * x,
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(y to 1u) to Rational(-16, 4),
-                    mapOf(x to 1u, y to 1u) to Rational(4, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(3, 8),
-                    mapOf(y to 2u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(6, 5),
-                    mapOf(y to 3u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 3u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 3u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) * y,
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomialAsIs(
-                    mapOf(iota to 1u) to Rational(-16, 4),
-                    mapOf(x to 1u, iota to 1u) to Rational(4, 3),
-                    mapOf(x to 2u, iota to 1u) to Rational(3, 8),
-                    mapOf(y to 1u, iota to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u, iota to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u, iota to 1u) to Rational(6, 5),
-                    mapOf(y to 2u, iota to 1u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u, iota to 1u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u, iota to 1u) to Rational(11, 8),
-                ),
-                LabeledPolynomialAsIs(
-                    mapOf<Symbol, UInt>() to Rational(-16, 4),
-                    mapOf(x to 1u) to Rational(4, 3),
-                    mapOf(x to 2u) to Rational(3, 8),
-                    mapOf(y to 1u) to Rational(-1, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-15, 3),
-                    mapOf(x to 2u, y to 1u) to Rational(6, 5),
-                    mapOf(y to 2u) to Rational(-13, 3),
-                    mapOf(x to 1u, y to 2u) to Rational(13, 4),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 8),
-                ) * iota,
-                "test 3"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_unaryMinus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf(x to 5u) to Rational(-5, 9),
-                    mapOf<Symbol, UInt>() to Rational(8, 9),
-                    mapOf(iota to 13u) to Rational(8, 7),
-                ),
-                -LabeledPolynomial(
-                    mapOf(x to 5u) to Rational(5, 9),
-                    mapOf<Symbol, UInt>() to Rational(-8, 9),
-                    mapOf(iota to 13u) to Rational(-8, 7),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf(x to 5u) to Rational(-5, 9),
-                    mapOf<Symbol, UInt>() to Rational(8, 9),
-                    mapOf(iota to 13u) to Rational(8, 7),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                    mapOf(x to 5u) to Rational(0),
-                ),
-                -LabeledPolynomial(
-                    mapOf(x to 5u) to Rational(5, 9),
-                    mapOf<Symbol, UInt>() to Rational(-8, 9),
-                    mapOf(iota to 13u) to Rational(-8, 7),
-                    mapOf(x to 0u, y to 4u) to Rational(0),
-                    mapOf(x to 5u) to Rational(0),
-                ),
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Polynomial_plus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(146, 63),
-                    mapOf(x to 1u, y to 1u) to Rational(-3, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(61, 15),
-                    mapOf(x to 0u, y to 2u) to Rational(157, 63),
-                    mapOf(x to 1u, y to 2u) to Rational(-55, 21),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 24),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(-20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(7, 9),
-                    mapOf(x to 1u, y to 2u) to Rational(5, 7),
-                    mapOf(x to 2u, y to 2u) to Rational(-2, 3),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(157, 63),
-                    mapOf(x to 1u, y to 2u) to Rational(-55, 21),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 24),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(-20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(7, 9),
-                    mapOf(x to 1u, y to 2u) to Rational(5, 7),
-                    mapOf(x to 2u, y to 2u) to Rational(-2, 3),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(-20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(0),
-                    mapOf(x to 1u, y to 2u) to Rational(0),
-                    mapOf(x to 2u, y to 2u) to Rational(0),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(0),
-                    mapOf(x to 2u) to Rational(0),
-                    mapOf(x to 0u, y to 1u) to Rational(0),
-                    mapOf(x to 1u, y to 1u) to Rational(0),
-                    mapOf(x to 2u, y to 1u) to Rational(0),
-                    mapOf(x to 0u, y to 2u) to Rational(0),
-                    mapOf(x to 1u, y to 2u) to Rational(0),
-                    mapOf(x to 2u, y to 2u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) + LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-6, 4),
-                    mapOf(x to 1u) to Rational(2, 6),
-                    mapOf(x to 2u) to Rational(-10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(-17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(-12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(-12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(-9, 8),
-                ),
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Polynomial_minus() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(146, 63),
-                    mapOf(x to 1u, y to 1u) to Rational(-3, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(61, 15),
-                    mapOf(x to 0u, y to 2u) to Rational(157, 63),
-                    mapOf(x to 1u, y to 2u) to Rational(-55, 21),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 24),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(-2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(-10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(-7, 9),
-                    mapOf(x to 1u, y to 2u) to Rational(-5, 7),
-                    mapOf(x to 2u, y to 2u) to Rational(2, 3),
-                ),
-                "test 1"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(157, 63),
-                    mapOf(x to 1u, y to 2u) to Rational(-55, 21),
-                    mapOf(x to 2u, y to 2u) to Rational(11, 24),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(-2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(-10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(-7, 9),
-                    mapOf(x to 1u, y to 2u) to Rational(-5, 7),
-                    mapOf(x to 2u, y to 2u) to Rational(2, 3),
-                ),
-                "test 2"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(-17, 2),
-                    mapOf(x to 1u) to Rational(-1, 3),
-                    mapOf(x to 2u) to Rational(-25, 21),
-                    mapOf(x to 0u, y to 1u) to Rational(-1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(20, 2),
-                    mapOf(x to 1u) to Rational(0, 9),
-                    mapOf(x to 2u) to Rational(20, 7),
-                    mapOf(x to 0u, y to 1u) to Rational(1, 9),
-                    mapOf(x to 1u, y to 1u) to Rational(-2, 5),
-                    mapOf(x to 2u, y to 1u) to Rational(-10, 6),
-                    mapOf(x to 0u, y to 2u) to Rational(0),
-                    mapOf(x to 1u, y to 2u) to Rational(0),
-                    mapOf(x to 2u, y to 2u) to Rational(0),
-                ),
-                "test 3"
-            )
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(0),
-                    mapOf(x to 1u) to Rational(0),
-                    mapOf(x to 2u) to Rational(0),
-                    mapOf(x to 0u, y to 1u) to Rational(0),
-                    mapOf(x to 1u, y to 1u) to Rational(0),
-                    mapOf(x to 2u, y to 1u) to Rational(0),
-                    mapOf(x to 0u, y to 2u) to Rational(0),
-                    mapOf(x to 1u, y to 2u) to Rational(0),
-                    mapOf(x to 2u, y to 2u) to Rational(0),
-                ),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ) - LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to Rational(6, 4),
-                    mapOf(x to 1u) to Rational(-2, 6),
-                    mapOf(x to 2u) to Rational(10, 6),
-                    mapOf(x to 0u, y to 1u) to Rational(17, 7),
-                    mapOf(x to 1u, y to 1u) to Rational(-7, 7),
-                    mapOf(x to 2u, y to 1u) to Rational(12, 5),
-                    mapOf(x to 0u, y to 2u) to Rational(12, 7),
-                    mapOf(x to 1u, y to 2u) to Rational(-10, 3),
-                    mapOf(x to 2u, y to 2u) to Rational(9, 8),
-                ),
-                "test 4"
-            )
-        }
-    }
-    @Test
-    fun test_Polynomial_Polynomial_times() {
-        IntBoxModuloRing(35).labeledPolynomialSpace {
-            // (p + q + r) * (p^2 + q^2 + r^2 - pq - pr - qr) = p^3 + q^3 + r^3 - 3pqr
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf(x to 3u) to !1,
-                    mapOf(x to 0u, y to 3u) to !1,
-                    mapOf(x to 0u, y to 0u, z to 3u) to !1,
-                    mapOf(x to 1u, y to 2u) to !0,
-                    mapOf(x to 0u, y to 1u, z to 2u) to !0,
-                    mapOf(x to 2u, y to 0u, z to 1u) to !0,
-                    mapOf(x to 1u, y to 0u, z to 2u) to !0,
-                    mapOf(x to 2u, y to 1u) to !0,
-                    mapOf(x to 0u, y to 2u, z to 1u) to !0,
-                    mapOf(x to 1u, y to 1u, z to 1u) to !-3,
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 1u) to !1,
-                    mapOf(x to 0u, y to 1u) to !1,
-                    mapOf(x to 0u, y to 0u, z to 1u) to !1,
-                ) * LabeledPolynomial(
-                    mapOf(x to 2u) to !1,
-                    mapOf(x to 0u, y to 2u) to !1,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !1,
-                    mapOf(x to 1u, y to 1u) to !-1,
-                    mapOf(x to 0u, y to 1u, z to 1u) to !-1,
-                    mapOf(x to 1u, y to 0u, z to 1u) to !-1,
-                ),
-                "test 1"
-            )
-            // Spoiler: 5 * 7 = 0
-            assertEquals(
-                LabeledPolynomial(
-                    mapOf(x to 2u) to !0,
-                    mapOf(x to 0u, y to 2u) to !0,
-                    mapOf(x to 0u, y to 0u, z to 2u) to !0,
-                    mapOf(x to 1u, y to 1u) to !0,
-                    mapOf(x to 0u, y to 1u, z to 1u) to !0,
-                    mapOf(x to 1u, y to 0u, z to 1u) to !0,
-                ),
-                LabeledPolynomial(
-                    mapOf(x to 1u) to !5,
-                    mapOf(x to 0u, y to 1u) to !-25,
-                    mapOf(x to 0u, y to 0u, z to 1u) to !10,
-                ) * LabeledPolynomial(
-                    mapOf(x to 1u) to !21,
-                    mapOf(x to 0u, y to 1u) to !14,
-                    mapOf(x to 0u, y to 0u, z to 1u) to !-7,
-                ),
-                "test 2"
-            )
-        }
-    }
-    @Test
-    fun test_degree() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                -1,
-                LabeledPolynomial().degree,
-                "test 1"
-            )
-            assertEquals(
-                0,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o
-                ).degree,
-                "test 2"
-            )
-            assertEquals(
-                6,
-                LabeledPolynomial(
-                    mapOf(x to 1u, y to 2u, z to 3u) to o
-                ).degree,
-                "test 3"
-            )
-            assertEquals(
-                4,
-                LabeledPolynomial(
-                    mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-                ).degree,
-                "test 4"
-            )
-            assertEquals(
-                3,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                ).degree,
-                "test 5"
-            )
-            assertEquals(
-                4,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                ).degree,
-                "test 6"
-            )
-        }
-    }
-    @Test
-    fun test_degrees() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                mapOf(),
-                LabeledPolynomial().degrees,
-                "test 1"
-            )
-            assertEquals(
-                mapOf(),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o
-                ).degrees,
-                "test 2"
-            )
-            assertEquals(
-                mapOf(x to 1u, y to 2u, z to 3u),
-                LabeledPolynomial(
-                    mapOf(x to 1u, y to 2u, z to 3u) to o
-                ).degrees,
-                "test 3"
-            )
-            assertEquals(
-                mapOf(y to 1u, z to 2u, t to 1u),
-                LabeledPolynomial(
-                    mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-                ).degrees,
-                "test 4"
-            )
-            assertEquals(
-                mapOf(x to 2u, y to 1u, z to 1u),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                ).degrees,
-                "test 5"
-            )
-            assertEquals(
-                mapOf(x to 2u, y to 2u, z to 2u, t to 4u),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 1u, y to 2u) to o,
-                    mapOf(x to 0u, y to 1u, z to 2u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                ).degrees,
-                "test 6"
-            )
-        }
-    }
-    @Test
-    fun test_degreeBy() {
-        Rational.field.labeledPolynomialSpace {
-            fun LabeledPolynomial<Rational>.collectDegrees(variables: Set<Symbol> = this.variables + iota): Map<Symbol, UInt> = variables.associateWith { degreeBy(it) }
-            assertEquals(
-                mapOf(iota to 0u),
-                LabeledPolynomial().collectDegrees(),
-                "test 1"
-            )
-            assertEquals(
-                mapOf(iota to 0u),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o
-                ).collectDegrees(),
-                "test 2"
-            )
-            assertEquals(
-                mapOf(x to 1u, y to 2u, z to 3u, iota to 0u),
-                LabeledPolynomial(
-                    mapOf(x to 1u, y to 2u, z to 3u) to o
-                ).collectDegrees(),
-                "test 3"
-            )
-            assertEquals(
-                mapOf(y to 1u, z to 2u, t to 1u, iota to 0u),
-                LabeledPolynomial(
-                    mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-                ).collectDegrees(),
-                "test 4"
-            )
-            assertEquals(
-                mapOf(x to 2u, y to 1u, z to 1u, iota to 0u),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                ).collectDegrees(),
-                "test 5"
-            )
-            assertEquals(
-                mapOf(x to 2u, y to 2u, z to 2u, t to 4u, iota to 0u),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 1u, y to 2u) to o,
-                    mapOf(x to 0u, y to 1u, z to 2u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                ).collectDegrees(),
-                "test 6"
-            )
-        }
-    }
-    @Test
-    fun test_degreeBy_Collection() {
-        Rational.field.labeledPolynomialSpace {
-            fun LabeledPolynomial<Rational>.checkDegreeBy(message: String? = null) {
-                val variables = variables.toList() + iota
-                val variablesCollectionSequence: Sequence<List<Symbol>> = sequence {
-                    val appearances = MutableList(variables.size) { 0 }
-                    while (true) {
-                        yield(
-                            buildList {
-                                for ((variableIndex, count) in appearances.withIndex()) repeat(count) { add(variables[variableIndex]) }
-                            }
+// TODO: Проверить, везде ли AsIs использован по месту.
+
+class LabeledPolynomialTest : FreeSpec() {
+
+    val rationalPolynomialSpace = Rational.field.labeledPolynomialSpace
+    val intModuloPolynomialSpace = IntBoxModuloRing(35).labeledPolynomialSpace
+
+    init {
+        rationalPolynomialSpace {
+            "Variable and Int" - {
+                "plus" - {
+                    "test 1" {
+                        x + 5 shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
                         )
-                        val indexChange = appearances.indexOfFirst { it < 4 }
-                        if (indexChange == -1) break
-                        appearances[indexChange] += 1
-                        for (index in 0 until indexChange) appearances[index] = 0
+                    }
+                    "test 2" {
+                        x + 0 shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
                     }
                 }
-                for (variablesCollection in variablesCollectionSequence) {
-                    val expected = coefficients.keys.maxOfOrNull { degs -> degs.filterKeys { it in variablesCollection }.values.sum() } ?: 0u
-                    val actual = degreeBy(variablesCollection)
-                    if (actual != expected)
-                        fail("${message ?: ""} Incorrect answer for variable collection $variablesCollection: expected $expected, actual $actual")
+                "minus" - {
+                    "test 1" {
+                        x - 5 shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(-5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        x - 0 shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        x * 5 shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        x * 0 shouldBeSameInstanceAs zero
+                    }
                 }
             }
-            LabeledPolynomial().checkDegreeBy("test 1")
-            LabeledPolynomial(
-                mapOf<Symbol, UInt>() to o
-            ).checkDegreeBy("test 2")
-            LabeledPolynomial(
-                mapOf(x to 1u, y to 2u, z to 3u) to o
-            ).checkDegreeBy("test 3")
-            LabeledPolynomial(
-                mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-            ).checkDegreeBy("test 4")
-            LabeledPolynomial(
+            "Variable and Long" - {
+                "plus" - {
+                    "test 1" {
+                        x + 5L shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        x + 0L shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "minus" - {
+                    "test 1" {
+                        x - 5L shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(-5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        x - 0L shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        x * 5L shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        x * 0L shouldBeSameInstanceAs zero
+                    }
+                }
+            }
+            "Int and Variable" - {
+                "plus" - {
+                    "test 1" {
+                        5 + x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        0 + x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "minus" - {
+                    "test 1" {
+                        5 - x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                    "test 2" {
+                        0 - x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        5 * x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        0 * x shouldBeSameInstanceAs zero
+                    }
+                }
+            }
+            "Long and Variable" - {
+                "plus" - {
+                    "test 1" {
+                        5L + x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        0L + x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "minus" - {
+                    "test 1" {
+                        5L - x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                    "test 2" {
+                        0L - x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        5L * x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        0L * x shouldBeSameInstanceAs zero
+                    }
+                }
+            }
+        }
+    }
+    
+    sealed interface PolynomialIntTestData<C> {
+        val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>
+        val argumentInt: Int
+        val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>
+        operator fun component1() = argumentPolynomialCoefficients
+        operator fun component2() = argumentInt
+        operator fun component3() = nonOptimizedResultPolynomialCoefficients
+        data class EqualityTestData<C>(
+            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val argumentInt: Int,
+            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            val resultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        ): PolynomialIntTestData<C>
+        data class SameTestData<C>(
+            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val argumentInt: Int,
+            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            val resultPolynomial: LabeledPolynomial<C>,
+        ): PolynomialIntTestData<C>
+        data class NoChangeTestData<C>(
+            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val argumentInt: Int,
+            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        ): PolynomialIntTestData<C>
+    }
+    fun <C> PolynomialIntTestData(
+        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentInt: Int,
+        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        resultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+    ): PolynomialIntTestData<C> = PolynomialIntTestData.EqualityTestData(
+        argumentPolynomialCoefficients,
+        argumentInt,
+        nonOptimizedResultPolynomialCoefficients,
+        resultPolynomialCoefficients,
+    )
+    fun <C> PolynomialIntTestData(
+        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentInt: Int,
+        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        resultPolynomial: LabeledPolynomial<C>,
+    ): PolynomialIntTestData<C> = PolynomialIntTestData.SameTestData(
+        argumentPolynomialCoefficients,
+        argumentInt,
+        nonOptimizedResultPolynomialCoefficients,
+        resultPolynomial,
+    )
+    fun <C> PolynomialIntTestData(
+        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentInt: Int,
+        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+    ): PolynomialIntTestData<C> = PolynomialIntTestData.NoChangeTestData(
+        argumentPolynomialCoefficients,
+        argumentInt,
+        nonOptimizedResultPolynomialCoefficients,
+    )
+
+    @JvmName("produceTestsInt")
+    suspend fun <C, A: Ring<C>> ContainerScope.produceIntTests(
+        testDataList: List<PolynomialIntTestData<C>>,
+        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
+        operationToTest: LabeledPolynomialSpace<C, *>.(pol: LabeledPolynomial<C>, arg: Int) -> LabeledPolynomial<C>
+    ) {
+        withData(
+            nameIndFn = { index, _ -> "test ${index + 1}" },
+            testDataList
+        ) { data ->
+            if (polynomialArgumentCoefficientsTransform === null) {
+                when (data) {
+                    is PolynomialIntTestData.EqualityTestData -> {
+                        val (coefs, arg, _, expected) = data
+                        polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs), arg) } shouldBe LabeledPolynomialAsIs(expected)
+                    }
+                    is PolynomialIntTestData.NoChangeTestData -> {
+                        val (coefs, arg, _) = data
+                        LabeledPolynomialAsIs(coefs).let { polynomialSpace { operationToTest(it, arg) } shouldBeSameInstanceAs it }
+                    }
+                    is PolynomialIntTestData.SameTestData -> {
+                        val (coefs, arg, _, expected) = data
+                        polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs), arg) } shouldBeSameInstanceAs expected
+                    }
+                }
+            } else {
+                fun Map<Map<Symbol, UInt>, C>.update() = mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }
+                when (data) {
+                    is PolynomialIntTestData.EqualityTestData -> {
+                        val (coefs, arg, _, expected) = data
+                        polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe LabeledPolynomialAsIs(expected)
+                    }
+                    is PolynomialIntTestData.NoChangeTestData -> {
+                        val (coefs, arg, _) = data
+                        polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe LabeledPolynomialAsIs(coefs)
+                    }
+                    is PolynomialIntTestData.SameTestData -> {
+                        val (coefs, arg, _, expected) = data
+                        polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe expected
+                    }
+                }
+            }
+        }
+    }
+
+    val plusPolynomialIntTestData = listOf(
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(5, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            -3,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-22, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-22, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            -3,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-3, 1),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-3, 1),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(27, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            -3,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0, 1),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0, 1),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(27, 9),
+                mapOf(x to 3u) to Rational(0),
+                mapOf(x to 0u, y to 4u) to Rational(0),
+            ),
+            -3,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0),
+                mapOf(x to 3u) to Rational(0),
+                mapOf(x to 0u, y to 4u) to Rational(0),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0),
+                mapOf(x to 3u) to Rational(0),
+                mapOf(x to 0u, y to 4u) to Rational(0),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-22, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            0,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-22, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            0,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0, 9),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+            0,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0),
+                mapOf(x to 3u) to Rational(-8, 9),
+                mapOf(x to 0u, y to 4u) to Rational(-8, 7),
+            ),
+        ),
+    )
+
+    val timesPolynomialIntTestData = listOf(
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to 22,
+                mapOf(x to 3u) to 26,
+                mapOf(x to 0u, y to 1u) to 13,
+                mapOf(x to 1u) to 15,
+                mapOf(x to 0u, y to 0u, z to 2u) to 26,
+            ).mapValues { IntBox(it.value) },
+            27,
+            mapOf(
+                mapOf<Symbol, UInt>() to 34,
+                mapOf(x to 3u) to 2,
+                mapOf(x to 0u, y to 1u) to 1,
+                mapOf(x to 1u) to 20,
+                mapOf(x to 0u, y to 0u, z to 2u) to 2,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf<Symbol, UInt>() to 34,
+                mapOf(x to 3u) to 2,
+                mapOf(x to 0u, y to 1u) to 1,
+                mapOf(x to 1u) to 20,
+                mapOf(x to 0u, y to 0u, z to 2u) to 2,
+            ).mapValues { IntBox(it.value) },
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to 7,
+                mapOf(x to 3u) to 0,
+                mapOf(x to 0u, y to 1u) to 49,
+                mapOf(x to 1u) to 21,
+                mapOf(x to 0u, y to 0u, z to 2u) to 14,
+            ).mapValues { IntBox(it.value) },
+            15,
+            mapOf(
+                mapOf<Symbol, UInt>() to 0,
+                mapOf(x to 3u) to 0,
+                mapOf(x to 0u, y to 1u) to 0,
+                mapOf(x to 1u) to 0,
+                mapOf(x to 0u, y to 0u, z to 2u) to 0,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf<Symbol, UInt>() to 0,
+                mapOf(x to 3u) to 0,
+                mapOf(x to 0u, y to 1u) to 0,
+                mapOf(x to 1u) to 0,
+                mapOf(x to 0u, y to 0u, z to 2u) to 0,
+            ).mapValues { IntBox(it.value) },
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to 22,
+                mapOf(x to 3u) to 26,
+                mapOf(x to 0u, y to 1u) to 13,
+                mapOf(x to 1u) to 15,
+                mapOf(x to 0u, y to 0u, z to 2u) to 26,
+            ).mapValues { IntBox(it.value) },
+            0,
+            mapOf(
+                mapOf<Symbol, UInt>() to 0,
+                mapOf(x to 3u) to 0,
+                mapOf(x to 0u, y to 1u) to 0,
+                mapOf(x to 1u) to 0,
+                mapOf(x to 0u, y to 0u, z to 2u) to 0,
+            ).mapValues { IntBox(it.value) },
+            intModuloPolynomialSpace.zero
+        ),
+        PolynomialIntTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to 22,
+                mapOf(x to 3u) to 26,
+                mapOf(x to 0u, y to 1u) to 13,
+                mapOf(x to 1u) to 15,
+                mapOf(x to 0u, y to 0u, z to 2u) to 26,
+            ).mapValues { IntBox(it.value) },
+            1,
+            mapOf(
+                mapOf<Symbol, UInt>() to 22,
+                mapOf(x to 3u) to 26,
+                mapOf(x to 0u, y to 1u) to 13,
+                mapOf(x to 1u) to 15,
+                mapOf(x to 0u, y to 0u, z to 2u) to 26,
+            ).mapValues { IntBox(it.value) },
+        ),
+    )
+
+    init {
+        "Polynomial and Int" - {
+            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * arg } }
+        }
+        "Polynomial and Long" - {
+            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
+            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
+        }
+        "Int and Polynomial" - {
+            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg * pol } }
+        }
+        "Long and Polynomial" - {
+            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
+            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
+        }
+
+        rationalPolynomialSpace {
+            "Variable and Constant" - {
+                "plus" - {
+                    "test 1" {
+                        x + Rational(5) shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        x + Rational(0) shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(0),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "minus" - {
+                    "test 1" {
+                        x - Rational(5) shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(-5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        x - Rational(0) shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(0),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        x * Rational(5) shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        x * Rational(0) shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(0),
+                        )
+                    }
+                }
+            }
+            "Constant and Variable" - {
+                "plus" - {
+                    "test 1" {
+                        Rational(5) + x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                    "test 2" {
+                        Rational(0) + x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(0),
+                            mapOf(x to 1u) to Rational(1),
+                        )
+                    }
+                }
+                "minus" - {
+                    "test 1" {
+                        Rational(5) - x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(5),
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                    "test 2" {
+                        Rational(0) - x shouldBe LabeledPolynomialAsIs(
+                            mapOf<Symbol, UInt>() to Rational(0),
+                            mapOf(x to 1u) to Rational(-1),
+                        )
+                    }
+                }
+                "times" - {
+                    "test 1" {
+                        Rational(5) * x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(5),
+                        )
+                    }
+                    "test 2" {
+                        Rational(0) * x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(0),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    suspend inline fun <C, A: Ring<C>> ContainerScope.produceConstantTests(
+        testDataList: List<PolynomialIntTestData<C>>,
+        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
+        crossinline operationToTest: LabeledPolynomialSpace<C, A>.(pol: LabeledPolynomial<C>, arg: C) -> LabeledPolynomial<C>
+    ) {
+        withData(
+            nameIndFn = { index, _ -> "test ${index + 1}" },
+            testDataList
+        ) { (coefs, arg, resultCoefs) ->
+            polynomialSpace {
+                operationToTest(
+                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }),
+                    polynomialSpace.ring.valueOf(arg)
+                )
+            } shouldBe LabeledPolynomialAsIs(resultCoefs)
+        }
+    }
+
+    init {
+        "Polynomial and Constant" - {
+            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceConstantTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * (arg) } }
+        }
+        "Constant and Polynomial" - {
+            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceConstantTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg * pol } }
+        }
+
+        "Variable \"ring\"" - {
+            rationalPolynomialSpace {
+                "unaryPlus" {
+                    +x shouldBe LabeledPolynomialAsIs(
+                        mapOf(x to 1u) to Rational(1)
+                    )
+                }
+                "unaryMinus" {
+                    -x shouldBe LabeledPolynomialAsIs(
+                        mapOf(x to 1u) to Rational(-1)
+                    )
+                }
+                "plus" - {
+                    "different variables" {
+                        x + y shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                            mapOf(y to 1u) to Rational(1),
+                        )
+                    }
+                    "same variable" {
+                        x + x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(2),
+                        )
+                    }
+                }
+                "minus" - {
+                    "different variables" {
+                        x - y shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u) to Rational(1),
+                            mapOf(y to 1u) to Rational(-1),
+                        )
+                    }
+                    "same variable" {
+                        x - x shouldBeSameInstanceAs zero
+                    }
+                }
+                "times" - {
+                    "different variables" {
+                        x * y shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 1u, y to 1u) to Rational(1),
+                        )
+                    }
+                    "same variable" {
+                        x * x shouldBe LabeledPolynomialAsIs(
+                            mapOf(x to 2u) to Rational(1),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    data class PolynomialVariableTestData<C>(
+        val argCoefficients: Map<Map<Symbol, UInt>, C>,
+        val argVariable: Symbol,
+        val resultCoefficients: Map<Map<Symbol, UInt>, C>,
+    )
+
+    suspend inline fun <C, A: Ring<C>> ContainerScope.produceVariableTests(
+        testDataList: List<PolynomialVariableTestData<C>>,
+        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
+        crossinline polynomialResultCoefficientsTransform: A.(C) -> C = { it },
+        crossinline operationToTest: LabeledPolynomialSpace<C, A>.(pol: LabeledPolynomial<C>, arg: Symbol) -> LabeledPolynomial<C>
+    ) {
+        withData(
+            nameIndFn = { index, _ -> "test ${index + 1}" },
+            testDataList
+        ) { (coefs, arg, resultCoefs) ->
+            polynomialSpace {
+                operationToTest(
+                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }),
+                    arg
+                )
+            } shouldBe LabeledPolynomialAsIs(resultCoefs.mapValues { polynomialSpace.ring.polynomialResultCoefficientsTransform(it.value) })
+        }
+    }
+
+    val plusPolynomialVariableTestData = listOf(
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            x,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(7, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            )
+        ),
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            y,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(6, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            )
+        ),
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            iota,
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+                mapOf(iota to 1u) to Rational(1),
+            )
+        ),
+    )
+
+    val timesPolynomialVariableTestData = listOf(
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            x,
+            mapOf(
+                mapOf(x to 1u) to Rational(-16, 4),
+                mapOf(x to 2u) to Rational(4, 3),
+                mapOf(x to 3u) to Rational(3, 8),
+                mapOf(x to 1u, y to 1u) to Rational(-1, 7),
+                mapOf(x to 2u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 3u, y to 1u) to Rational(6, 5),
+                mapOf(x to 1u, y to 2u) to Rational(-13, 3),
+                mapOf(x to 2u, y to 2u) to Rational(13, 4),
+                mapOf(x to 3u, y to 2u) to Rational(11, 8),
+            )
+        ),
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            y,
+            mapOf(
+                mapOf(y to 1u) to Rational(-16, 4),
+                mapOf(x to 1u, y to 1u) to Rational(4, 3),
+                mapOf(x to 2u, y to 1u) to Rational(3, 8),
+                mapOf(y to 2u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 2u) to Rational(6, 5),
+                mapOf(y to 3u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 3u) to Rational(13, 4),
+                mapOf(x to 2u, y to 3u) to Rational(11, 8),
+            )
+        ),
+        PolynomialVariableTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-16, 4),
+                mapOf(x to 1u) to Rational(4, 3),
+                mapOf(x to 2u) to Rational(3, 8),
+                mapOf(y to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u) to Rational(6, 5),
+                mapOf(y to 2u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u) to Rational(11, 8),
+            ),
+            iota,
+            mapOf(
+                mapOf(iota to 1u) to Rational(-16, 4),
+                mapOf(x to 1u, iota to 1u) to Rational(4, 3),
+                mapOf(x to 2u, iota to 1u) to Rational(3, 8),
+                mapOf(y to 1u, iota to 1u) to Rational(-1, 7),
+                mapOf(x to 1u, y to 1u, iota to 1u) to Rational(-15, 3),
+                mapOf(x to 2u, y to 1u, iota to 1u) to Rational(6, 5),
+                mapOf(y to 2u, iota to 1u) to Rational(-13, 3),
+                mapOf(x to 1u, y to 2u, iota to 1u) to Rational(13, 4),
+                mapOf(x to 2u, y to 2u, iota to 1u) to Rational(11, 8),
+            )
+        ),
+    )
+
+    init {
+        "Polynomial and Variable" - {
+            "plus" - {
+                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> pol + arg }
+            }
+            "minus" - {
+                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace, { -it }, { -it }) { pol, arg -> pol - arg }
+            }
+            "times" - {
+                produceVariableTests(timesPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> pol * arg }
+            }
+        }
+        "Variable and Polynomial" - {
+            "plus" - {
+                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> arg + pol }
+            }
+            "minus" - {
+                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol }
+            }
+            "times" - {
+                produceVariableTests(timesPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> arg * pol }
+            }
+        }
+    }
+
+
+    data class PolynomialPolynomialTestData<C>(
+        val firstArgumentCoefficients: Map<Map<Symbol, UInt>, C>,
+        val secondArgumentCoefficients: Map<Map<Symbol, UInt>, C>,
+        val resultCoefficients: Map<Map<Symbol, UInt>, C>,
+    )
+
+    val plusPolynomialPolynomialTestData = listOf(
+        PolynomialPolynomialTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(6, 4),
+                mapOf(x to 1u) to Rational(-2, 6),
+                mapOf(x to 2u) to Rational(10, 6),
+                mapOf(x to 0u, y to 1u) to Rational(17, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-7, 7),
+                mapOf(x to 2u, y to 1u) to Rational(12, 5),
+                mapOf(x to 0u, y to 2u) to Rational(12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(9, 8),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-20, 2),
+                mapOf(x to 1u) to Rational(0, 9),
+                mapOf(x to 2u) to Rational(-20, 7),
+                mapOf(x to 0u, y to 1u) to Rational(-1, 9),
+                mapOf(x to 1u, y to 1u) to Rational(2, 5),
+                mapOf(x to 2u, y to 1u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(7, 9),
+                mapOf(x to 1u, y to 2u) to Rational(5, 7),
+                mapOf(x to 2u, y to 2u) to Rational(-2, 3),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-17, 2),
+                mapOf(x to 1u) to Rational(-1, 3),
+                mapOf(x to 2u) to Rational(-25, 21),
+                mapOf(x to 0u, y to 1u) to Rational(146, 63),
+                mapOf(x to 1u, y to 1u) to Rational(-3, 5),
+                mapOf(x to 2u, y to 1u) to Rational(61, 15),
+                mapOf(x to 0u, y to 2u) to Rational(157, 63),
+                mapOf(x to 1u, y to 2u) to Rational(-55, 21),
+                mapOf(x to 2u, y to 2u) to Rational(11, 24),
+            ),
+        ),
+        PolynomialPolynomialTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(6, 4),
+                mapOf(x to 1u) to Rational(-2, 6),
+                mapOf(x to 2u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(9, 8),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-20, 2),
+                mapOf(x to 1u) to Rational(0, 9),
+                mapOf(x to 2u) to Rational(-20, 7),
+                mapOf(x to 0u, y to 1u) to Rational(-1, 9),
+                mapOf(x to 1u, y to 1u) to Rational(2, 5),
+                mapOf(x to 2u, y to 1u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(7, 9),
+                mapOf(x to 1u, y to 2u) to Rational(5, 7),
+                mapOf(x to 2u, y to 2u) to Rational(-2, 3),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-17, 2),
+                mapOf(x to 1u) to Rational(-1, 3),
+                mapOf(x to 2u) to Rational(-25, 21),
+                mapOf(x to 0u, y to 1u) to Rational(-1, 9),
+                mapOf(x to 1u, y to 1u) to Rational(2, 5),
+                mapOf(x to 2u, y to 1u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(157, 63),
+                mapOf(x to 1u, y to 2u) to Rational(-55, 21),
+                mapOf(x to 2u, y to 2u) to Rational(11, 24),
+            ),
+        ),
+        PolynomialPolynomialTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(6, 4),
+                mapOf(x to 1u) to Rational(-2, 6),
+                mapOf(x to 2u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(9, 8),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-20, 2),
+                mapOf(x to 1u) to Rational(0, 9),
+                mapOf(x to 2u) to Rational(-20, 7),
+                mapOf(x to 0u, y to 1u) to Rational(-1, 9),
+                mapOf(x to 1u, y to 1u) to Rational(2, 5),
+                mapOf(x to 2u, y to 1u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(0),
+                mapOf(x to 1u, y to 2u) to Rational(0),
+                mapOf(x to 2u, y to 2u) to Rational(0),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-17, 2),
+                mapOf(x to 1u) to Rational(-1, 3),
+                mapOf(x to 2u) to Rational(-25, 21),
+                mapOf(x to 0u, y to 1u) to Rational(-1, 9),
+                mapOf(x to 1u, y to 1u) to Rational(2, 5),
+                mapOf(x to 2u, y to 1u) to Rational(10, 6),
+                mapOf(x to 0u, y to 2u) to Rational(12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(9, 8),
+            ),
+        ),
+        PolynomialPolynomialTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(6, 4),
+                mapOf(x to 1u) to Rational(-2, 6),
+                mapOf(x to 2u) to Rational(10, 6),
+                mapOf(x to 0u, y to 1u) to Rational(17, 7),
+                mapOf(x to 1u, y to 1u) to Rational(-7, 7),
+                mapOf(x to 2u, y to 1u) to Rational(12, 5),
+                mapOf(x to 0u, y to 2u) to Rational(12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(-10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(9, 8),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(-6, 4),
+                mapOf(x to 1u) to Rational(2, 6),
+                mapOf(x to 2u) to Rational(-10, 6),
+                mapOf(x to 0u, y to 1u) to Rational(-17, 7),
+                mapOf(x to 1u, y to 1u) to Rational(7, 7),
+                mapOf(x to 2u, y to 1u) to Rational(-12, 5),
+                mapOf(x to 0u, y to 2u) to Rational(-12, 7),
+                mapOf(x to 1u, y to 2u) to Rational(10, 3),
+                mapOf(x to 2u, y to 2u) to Rational(-9, 8),
+            ),
+            mapOf(
+                mapOf<Symbol, UInt>() to Rational(0),
+                mapOf(x to 1u) to Rational(0),
+                mapOf(x to 2u) to Rational(0),
+                mapOf(x to 0u, y to 1u) to Rational(0),
+                mapOf(x to 1u, y to 1u) to Rational(0),
+                mapOf(x to 2u, y to 1u) to Rational(0),
+                mapOf(x to 0u, y to 2u) to Rational(0),
+                mapOf(x to 1u, y to 2u) to Rational(0),
+                mapOf(x to 2u, y to 2u) to Rational(0),
+            ),
+        ),
+    )
+
+    val timesPolynomialPolynomialTestData = listOf(
+        PolynomialPolynomialTestData( // (p + q + r) * (p^2 + q^2 + r^2 - pq - pr - qr) = p^3 + q^3 + r^3 - 3pqr
+            mapOf(
+                mapOf(x to 1u) to 1,
+                mapOf(x to 0u, y to 1u) to 1,
+                mapOf(x to 0u, y to 0u, z to 1u) to 1,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf(x to 2u) to 1,
+                mapOf(x to 0u, y to 2u) to 1,
+                mapOf(x to 0u, y to 0u, z to 2u) to 1,
+                mapOf(x to 1u, y to 1u) to -1,
+                mapOf(x to 0u, y to 1u, z to 1u) to -1,
+                mapOf(x to 1u, y to 0u, z to 1u) to -1,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf(x to 3u) to 1,
+                mapOf(x to 0u, y to 3u) to 1,
+                mapOf(x to 0u, y to 0u, z to 3u) to 1,
+                mapOf(x to 1u, y to 2u) to 0,
+                mapOf(x to 0u, y to 1u, z to 2u) to 0,
+                mapOf(x to 2u, y to 0u, z to 1u) to 0,
+                mapOf(x to 1u, y to 0u, z to 2u) to 0,
+                mapOf(x to 2u, y to 1u) to 0,
+                mapOf(x to 0u, y to 2u, z to 1u) to 0,
+                mapOf(x to 1u, y to 1u, z to 1u) to -3,
+            ).mapValues { IntBox(it.value) },
+        ),
+        PolynomialPolynomialTestData( // Spoiler: 5 * 7 = 0
+            mapOf(
+                mapOf(x to 1u) to 5,
+                mapOf(x to 0u, y to 1u) to -25,
+                mapOf(x to 0u, y to 0u, z to 1u) to 10,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf(x to 1u) to 21,
+                mapOf(x to 0u, y to 1u) to 14,
+                mapOf(x to 0u, y to 0u, z to 1u) to -7,
+            ).mapValues { IntBox(it.value) },
+            mapOf(
+                mapOf(x to 2u) to 0,
+                mapOf(x to 0u, y to 2u) to 0,
+                mapOf(x to 0u, y to 0u, z to 2u) to 0,
+                mapOf(x to 1u, y to 1u) to 0,
+                mapOf(x to 0u, y to 1u, z to 1u) to 0,
+                mapOf(x to 1u, y to 0u, z to 1u) to 0,
+            ).mapValues { IntBox(it.value) },
+        ),
+    )
+
+    init {
+        "Polynomial ring" - {
+            "unaryMinus" - {
+                rationalPolynomialSpace {
+                    "test 1" - {
+                        -LabeledPolynomialAsIs(
+                            mapOf(x to 5u) to Rational(5, 9),
+                            mapOf<Symbol, UInt>() to Rational(-8, 9),
+                            mapOf(iota to 13u) to Rational(-8, 7),
+                        ) shouldBe
+                                LabeledPolynomialAsIs(
+                                    mapOf(x to 5u) to Rational(-5, 9),
+                                    mapOf<Symbol, UInt>() to Rational(8, 9),
+                                    mapOf(iota to 13u) to Rational(8, 7),
+                                )
+                    }
+                    "test 2" - {
+                        -LabeledPolynomialAsIs(
+                            mapOf(x to 5u) to Rational(5, 9),
+                            mapOf<Symbol, UInt>() to Rational(-8, 9),
+                            mapOf(iota to 13u) to Rational(-8, 7),
+                            mapOf(x to 0u, y to 4u) to Rational(0),
+                            mapOf(x to 5u) to Rational(0),
+                        ) shouldBe
+                                LabeledPolynomialAsIs(
+                                    mapOf(x to 5u) to Rational(-5, 9),
+                                    mapOf<Symbol, UInt>() to Rational(8, 9),
+                                    mapOf(iota to 13u) to Rational(8, 7),
+                                    mapOf(x to 0u, y to 4u) to Rational(0),
+                                    mapOf(x to 5u) to Rational(0),
+                                )
+                    }
+                }
+            }
+            "plus" - {
+                withData(
+                    nameIndFn = { index, _ -> "test ${index + 1}" },
+                    plusPolynomialPolynomialTestData
+                ) { (first, second, result) ->
+                    rationalPolynomialSpace { LabeledPolynomialAsIs(first) + LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
+                }
+            }
+            "minus" - {
+                withData(
+                    nameIndFn = { index, _ -> "test ${index + 1}" },
+                    plusPolynomialPolynomialTestData
+                ) { (first, second, result) ->
+                    rationalPolynomialSpace { LabeledPolynomialAsIs(first) - LabeledPolynomialAsIs(second.mapValues { ring { -it.value } }) } shouldBe LabeledPolynomialAsIs(result)
+                }
+            }
+            "times" - {
+                withData(
+                    nameIndFn = { index, _ -> "test ${index + 1}" },
+                    timesPolynomialPolynomialTestData
+                ) { (first, second, result) ->
+                    intModuloPolynomialSpace { LabeledPolynomialAsIs(first) * LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
+                }
+            }
+        }
+    }
+
+    data class PolynomialPropertiesTestData<C>(
+        val argumentsCoefficients: Map<Map<Symbol, UInt>, C>,
+        val degree: Int,
+        val degrees: Map<Symbol, UInt>,
+    )
+
+    val polynomialPropertiesTestData = listOf(
+        PolynomialPropertiesTestData(
+            mapOf(),
+            -1,
+            mapOf(),
+        ),
+        PolynomialPropertiesTestData(
+            mapOf(
                 mapOf<Symbol, UInt>() to o,
-                mapOf(x to 0u, y to 1u) to o,
-                mapOf(x to 2u, y to 0u, z to 1u) to o,
-            ).checkDegreeBy("test 5")
-            LabeledPolynomial(
+            ),
+            0,
+            mapOf(),
+        ),
+        PolynomialPropertiesTestData(
+            mapOf(
+                mapOf(x to 1u, y to 2u, z to 3u) to o,
+            ),
+            6,
+            mapOf(x to 1u, y to 2u, z to 3u),
+        ),
+        PolynomialPropertiesTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to o,
+                mapOf(y to 1u) to o,
+                mapOf(x to 2u, z to 1u) to o,
+            ),
+            3,
+            mapOf(x to 2u, y to 1u, z to 1u),
+        ),
+        PolynomialPropertiesTestData(
+            mapOf(
                 mapOf<Symbol, UInt>() to o,
                 mapOf(x to 1u, y to 2u) to o,
                 mapOf(x to 0u, y to 1u, z to 2u) to o,
                 mapOf(x to 2u, y to 0u, z to 1u) to o,
                 mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-            ).checkDegreeBy("test 6")
+            ),
+            4,
+            mapOf(x to 2u, y to 2u, z to 2u, t to 4u),
+        ),
+    )
+
+    init {
+        rationalPolynomialSpace {
+            "Polynomial properties" - {
+                "degree" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).degree shouldBe it.degree
+                    }
+                }
+                "degrees" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).degrees shouldBe it.degrees
+                    }
+                }
+                "degreeBy Variable" - {
+                    fun LabeledPolynomial<Rational>.collectDegrees(
+                        variables: Set<Symbol> = this.variables + iota
+                    ): Map<Symbol, UInt> = variables.associateWith { degreeBy(it) }
+
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).collectDegrees() shouldBe (it.degrees + (iota to 0u))
+                    }
+                }
+                "degreeBy Collection" - {
+                    fun LabeledPolynomial<Rational>.checkDegreeBy() {
+                        val variables = variables.toList() + iota
+                        val variablesCollectionSequence: Sequence<List<Symbol>> = sequence {
+                            val appearances = MutableList(variables.size) { 0 }
+                            while (true) {
+                                yield(
+                                    buildList {
+                                        for ((variableIndex, count) in appearances.withIndex()) repeat(count) { add(variables[variableIndex]) }
+                                    }
+                                )
+                                val indexChange = appearances.indexOfFirst { it < 4 }
+                                if (indexChange == -1) break
+                                appearances[indexChange] += 1
+                                for (index in 0 until indexChange) appearances[index] = 0
+                            }
+                        }
+                        for (variablesCollection in variablesCollectionSequence) {
+                            val expected = coefficients.keys.maxOfOrNull { degs -> degs.filterKeys { it in variablesCollection }.values.sum() } ?: 0u
+                            val actual = degreeBy(variablesCollection)
+                            if (actual != expected)
+                                error("Incorrect answer for variable collection $variablesCollection: expected $expected, actual $actual")
+                        }
+                    }
+
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).checkDegreeBy()
+                    }
+                }
+                "variables" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).variables shouldBe it.degrees.keys
+                    }
+                }
+                "countOfVariables" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        LabeledPolynomialAsIs(it.argumentsCoefficients).countOfVariables shouldBe it.degrees.size
+                    }
+                }
+            }
         }
     }
-    @Test
-    fun test_variables() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                setOf(),
-                LabeledPolynomial().variables,
-                "test 1"
-            )
-            assertEquals(
-                setOf(),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o
-                ).variables,
-                "test 2"
-            )
-            assertEquals(
-                setOf(x, y, z),
-                LabeledPolynomial(
-                    mapOf(x to 1u, y to 2u, z to 3u) to o
-                ).variables,
-                "test 3"
-            )
-            assertEquals(
-                setOf(y, z, t),
-                LabeledPolynomial(
-                    mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-                ).variables,
-                "test 4"
-            )
-            assertEquals(
-                setOf(x, y, z),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                ).variables,
-                "test 5"
-            )
-            assertEquals(
-                setOf(x, y, z, t),
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 1u, y to 2u) to o,
-                    mapOf(x to 0u, y to 1u, z to 2u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                ).variables,
-                "test 6"
-            )
-        }
-    }
-    @Test
-    fun test_countOfVariables() {
-        Rational.field.labeledPolynomialSpace {
-            assertEquals(
-                0,
-                LabeledPolynomial().countOfVariables,
-                "test 1"
-            )
-            assertEquals(
-                0,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o
-                ).countOfVariables,
-                "test 2"
-            )
-            assertEquals(
-                3,
-                LabeledPolynomial(
-                    mapOf(x to 1u, y to 2u, z to 3u) to o
-                ).countOfVariables,
-                "test 3"
-            )
-            assertEquals(
-                3,
-                LabeledPolynomial(
-                    mapOf(x to 0u, y to 1u, z to 2u, t to 1u, s to 0u) to o
-                ).countOfVariables,
-                "test 4"
-            )
-            assertEquals(
-                3,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 0u, y to 1u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                ).countOfVariables,
-                "test 5"
-            )
-            assertEquals(
-                4,
-                LabeledPolynomial(
-                    mapOf<Symbol, UInt>() to o,
-                    mapOf(x to 1u, y to 2u) to o,
-                    mapOf(x to 0u, y to 1u, z to 2u) to o,
-                    mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                ).countOfVariables,
-                "test 6"
-            )
-        }
-    }
-    @Test
-    fun test_RF_countOfVariables() {
+
+    data class RFPropertiesTestData<C>(
+        val argumentNumeratorCoefficients: Map<Map<Symbol, UInt>, C>,
+        val argumentDenominatorCoefficients: Map<Map<Symbol, UInt>, C>? = null,
+        val countOfVariables: Int
+    )
+
+    val rfPropertiesTestData = listOf(
+        RFPropertiesTestData(
+            mapOf(),
+            countOfVariables = 0
+        ),
+        RFPropertiesTestData(
+            mapOf(),
+            mapOf(),
+            countOfVariables = 0
+        ),
+        RFPropertiesTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to o,
+            ),
+            countOfVariables = 0
+        ),
+        RFPropertiesTestData(
+            mapOf(
+                mapOf(y to 1u, t to 1u) to o,
+            ),
+            mapOf(
+                mapOf(z to 2u) to o
+            ),
+            countOfVariables = 3
+        ),
+        RFPropertiesTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to o,
+                mapOf(y to 1u) to o,
+                mapOf(x to 2u, z to 1u) to o,
+            ),
+            countOfVariables = 3
+        ),
+        RFPropertiesTestData(
+            mapOf(
+                mapOf<Symbol, UInt>() to o,
+                mapOf(x to 1u, y to 2u) to o,
+                mapOf(x to 2u, z to 1u) to o,
+            ),
+            mapOf(
+                mapOf(y to 1u, z to 2u) to o,
+                mapOf(t to 4u) to o,
+            ),
+            countOfVariables = 4
+        ),
+    )
+
+    init {
         Rational.field.labeledRationalFunctionSpace {
-            assertEquals(
-                0,
-                LabeledRationalFunction(
-                    LabeledPolynomial()
-                ).countOfVariables,
-                "test 1"
-            )
-            assertEquals(
-                0,
-                LabeledRationalFunction(
-                    LabeledPolynomial(),
-                    LabeledPolynomial()
-                ).countOfVariables,
-                "test 2"
-            )
-            assertEquals(
-                0,
-                LabeledRationalFunction(
-                    LabeledPolynomial(
-                        mapOf<Symbol, UInt>() to o
-                    )
-                ).countOfVariables,
-                "test 3"
-            )
-            assertEquals(
-                3,
-                LabeledRationalFunction(
-                    LabeledPolynomial(
-                        mapOf(x to 1u, y to 2u, z to 3u) to o
-                    )
-                ).countOfVariables,
-                "test 4"
-            )
-            assertEquals(
-                3,
-                LabeledRationalFunction(
-                    LabeledPolynomial(
-                        mapOf(x to 0u, y to 1u, z to 0u, t to 1u) to o
-                    ),
-                    LabeledPolynomial(
-                        mapOf(x to 0u, y to 0u, z to 2u) to o
-                    )
-                ).countOfVariables,
-                "test 5"
-            )
-            assertEquals(
-                3,
-                LabeledRationalFunction(
-                    LabeledPolynomial(
-                        mapOf<Symbol, UInt>() to o,
-                        mapOf(x to 0u, y to 1u) to o,
-                        mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    )
-                ).countOfVariables,
-                "test 6"
-            )
-            assertEquals(
-                4,
-                LabeledRationalFunction(
-                    LabeledPolynomial(
-                        mapOf<Symbol, UInt>() to o,
-                        mapOf(x to 1u, y to 2u) to o,
-                        mapOf(x to 2u, y to 0u, z to 1u) to o,
-                    ), LabeledPolynomial(
-                        mapOf(x to 0u, y to 1u, z to 2u) to o,
-                        mapOf(x to 0u, y to 0u, z to 0u, t to 4u) to o,
-                    )
-                ).countOfVariables,
-                "test 7"
-            )
+            "Rational Functional properties" - {
+                "countOfVariables" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}"},
+                        rfPropertiesTestData
+                    ) {
+                        val rationalFunction =
+                            if (it.argumentDenominatorCoefficients === null)
+                                LabeledRationalFunction(it.argumentNumeratorCoefficients)
+                            else
+                                LabeledRationalFunction(it.argumentNumeratorCoefficients, it.argumentDenominatorCoefficients)
+                        rationalFunction.countOfVariables shouldBe it.countOfVariables
+                    }
+                }
+            }
         }
     }
 }

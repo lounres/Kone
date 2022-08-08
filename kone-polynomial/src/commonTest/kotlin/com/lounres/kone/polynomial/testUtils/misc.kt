@@ -10,7 +10,7 @@ import space.kscience.kmath.expressions.Symbol
 import space.kscience.kmath.expressions.symbol
 
 
-val o: Rational = Rational(0)
+val o: Rational = Rational(22, 7)
 
 val x: Symbol by symbol
 val y: Symbol by symbol
