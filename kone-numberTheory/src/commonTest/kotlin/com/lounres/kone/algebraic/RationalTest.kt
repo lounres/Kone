@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldBe
 
 
 class RationalTest: FreeSpec() {
-    sealed interface TestData {
+    sealed interface ConstructorTestData {
         val numerator: Long
         val denominator: Long
         data class Results(
@@ -20,45 +20,51 @@ class RationalTest: FreeSpec() {
             override val denominator: Long,
             val resultNumerator: Long,
             val resultDenominator: Long,
-        ): TestData
+        ): ConstructorTestData
         data class Throws(
             override val numerator: Long,
             override val denominator: Long,
-        ): TestData
+        ): ConstructorTestData
     }
+
+    val constructorTestData = listOf(
+        ConstructorTestData.Results(27, 5, 27, 5),
+        ConstructorTestData.Results(27, 9, 3, 1),
+        ConstructorTestData.Throws(27, 0)
+    ).flatMap {
+        when(it) {
+            is ConstructorTestData.Results -> listOf(
+                it,
+                ConstructorTestData.Results(-it.numerator, it.denominator, -it.resultNumerator, it.resultDenominator),
+                ConstructorTestData.Results(it.numerator, -it.denominator, -it.resultNumerator, it.resultDenominator),
+                ConstructorTestData.Results(-it.numerator, -it.denominator, it.resultNumerator, it.resultDenominator),
+            )
+            is ConstructorTestData.Throws -> listOf(it)
+        }
+    }
+
     init {
-        val testData = listOf(
-            TestData.Results(27, 5, 27, 5),
-            TestData.Results(27, 9, 3, 1),
-            TestData.Results(-27, 5, -27, 5),
-            TestData.Results(-27, 9, -3, 1),
-            TestData.Results(27, -5, -27, 5),
-            TestData.Results(27, -9, -3, 1),
-            TestData.Results(-27, -5, 27, 5),
-            TestData.Results(-27, -9, 3, 1),
-            TestData.Throws(27, 0)
-        )
-        "test checking constructor" - {
+        "checking constructor" - {
             withData(
                 nameIndFn = { index, it -> "test # ${index + 1}: numerator ${it.numerator}, denomiantor ${it.denominator}" },
-                testData
+                constructorTestData
             ) {
                 when(it) {
-                    is TestData.Results ->
+                    is ConstructorTestData.Results ->
                         with(Rational(it.numerator, it.denominator)) {
                             numerator shouldBe it.resultNumerator
                             denominator shouldBe it.resultDenominator
                         }
-                    is TestData.Throws ->
+                    is ConstructorTestData.Throws ->
                         shouldThrowWithMessage<ArithmeticException>("/ by zero") {
                             Rational(it.numerator, it.denominator)
                         }
                 }
             }
         }
-        "test non-checking constructor" - {
+        "non-checking constructor" - {
             withData(
-                testData
+                constructorTestData
             ) {
                 with(Rational(it.numerator, it.denominator, toCheckInput = false)) {
                     numerator shouldBe it.numerator

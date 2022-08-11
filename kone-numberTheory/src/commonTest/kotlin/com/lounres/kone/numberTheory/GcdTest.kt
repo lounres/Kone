@@ -102,8 +102,7 @@ class GcdTest: FreeSpec({
                         it.gcd
                     )
                 )
-                val indexChange = state.indices.indexOfFirst { !state[it] && entries[it] != 0 }
-                if (indexChange == -1) break
+                val indexChange = state.indices.find { !state[it] && entries[it] != 0 } ?: break
                 state[indexChange] = true
                 for (index in 0 until indexChange) state[index] = false
             }
@@ -131,6 +130,7 @@ class GcdTest: FreeSpec({
         }
     }
 
+    @Suppress("NAME_SHADOWING")
     "Long" - {
         val testData = testData.map {
             GcdTestData(

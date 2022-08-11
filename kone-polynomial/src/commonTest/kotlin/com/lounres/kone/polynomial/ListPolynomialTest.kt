@@ -7,16 +7,17 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.polynomial.testUtils.*
+import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.polynomial.testUtils.IntBox
+import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
+import com.lounres.kone.polynomial.testUtils.o
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.test.*
 
 
 class ListPolynomialTest: FreeSpec() {
@@ -356,6 +357,49 @@ class ListPolynomialTest: FreeSpec() {
                     timesPolynomialPolynomialTestData
                 ) { (first, second, result) ->
                     intModuloPolynomialSpace { ListPolynomial(first) * ListPolynomial(second) } shouldBe ListPolynomial(result)
+                }
+            }
+        }
+    }
+
+    data class PolynomialPropertiesTestData<C>(
+        val argumentsCoefficients: List<C>,
+        val degree: Int,
+    )
+
+    val polynomialPropertiesTestData = listOf(
+        PolynomialPropertiesTestData(
+            listOf(),
+            -1
+        ),
+        PolynomialPropertiesTestData(
+            listOf(o),
+            0
+        ),
+        PolynomialPropertiesTestData(
+            listOf(o, o),
+            1
+        ),
+        PolynomialPropertiesTestData(
+            listOf(o, o, o),
+            2
+        ),
+        PolynomialPropertiesTestData(
+            listOf(o, o, o, o),
+            3
+        ),
+    )
+
+    init {
+        rationalPolynomialSpace {
+            "Polynomial Properties" - {
+                "degree" - {
+                    withData(
+                        nameIndFn = { index, _ -> "test ${index + 1}" },
+                        polynomialPropertiesTestData
+                    ) {
+                        ListPolynomial(it.argumentsCoefficients).degree shouldBe it.degree
+                    }
                 }
             }
         }
