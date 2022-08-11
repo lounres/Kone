@@ -43,7 +43,7 @@ allprojects {
     }
 
     group = "com.lounres.kone"
-    version = "0.1.0"
+    version = "0.1.0-pre-1"
 }
 
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
@@ -160,6 +160,22 @@ subprojects {
                         dependencies {
                             implementation(kotlin("test"))
                         }
+                    }
+                }
+            }
+        }
+    }
+    if (name.startsWith("kone-", ignoreCase = true)) {
+        val projectName = name
+
+        apply<MavenPublishPlugin>()
+
+        if (contextReceiversSupportCrunch) {
+            configure<PublishingExtension> {
+                publications {
+                    create<MavenPublication>("Jvm") {
+                        artifactId = "$projectName-jvm"
+                        from(components["kotlin"])
                     }
                 }
             }
