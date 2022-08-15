@@ -3,11 +3,8 @@
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinWithJavaTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
@@ -39,6 +36,17 @@ allprojects {
         }
         tasks.withType<DokkaTask> {
             // TODO
+        }
+
+        afterEvaluate {
+            task<Jar>("dokkaJar") {
+                group = JavaBasePlugin.DOCUMENTATION_GROUP
+                description = "Assembles Kotlin docs with Dokka"
+                archiveClassifier.set("javadoc")
+                val dokkaHtmlPartial by tasks.getting // FIXME: Не понятно почему, но dokkaHtml ничего не генерит
+                dependsOn(dokkaHtmlPartial)
+                from(dokkaHtmlPartial)
+            }
         }
     }
 
@@ -132,6 +140,10 @@ subprojects {
                 }
             }
 
+            configure<JavaPluginExtension> {
+                withSourcesJar()
+            }
+
             tasks.withType<Test> {
                 useJUnitPlatform()
             }
@@ -165,18 +177,25 @@ subprojects {
             }
         }
     }
-    if (name.startsWith("kone-", ignoreCase = true)) {
-        val projectName = name
-
+    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
         apply<MavenPublishPlugin>()
 
-        if (contextReceiversSupportCrunch) {
-            configure<PublishingExtension> {
-                publications {
-                    create<MavenPublication>("Jvm") {
-                        artifactId = "$projectName-jvm"
-                        from(components["kotlin"])
+        afterEvaluate {
+            if (name.startsWith("kone-", ignoreCase = true))
+                if (contextReceiversSupportCrunch) {
+                    configure<PublishingExtension> {
+                        publications {
+                            create<MavenPublication>("jvm") {
+                                artifactId = "${project.name}-jvm"
+                                from(components["java"])
+                            }
+                        }
                     }
+                }
+
+            configure<PublishingExtension> {
+                publications.withType<MavenPublication> {
+                    artifact(tasks.named<Jar>("dokkaJar"))
                 }
             }
         }
