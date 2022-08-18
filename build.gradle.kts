@@ -34,18 +34,18 @@ allprojects {
         dependencies {
             dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${rootProject.libs.versions.dokka.get()}")
         }
-        tasks.withType<DokkaTask> {
-            // TODO
-        }
 
         afterEvaluate {
+            tasks.withType<DokkaTask> {
+                // TODO
+            }
             task<Jar>("dokkaJar") {
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
                 description = "Assembles Kotlin docs with Dokka"
                 archiveClassifier.set("javadoc")
-                val dokkaHtmlPartial by tasks.getting // FIXME: Не понятно почему, но dokkaHtml ничего не генерит
-                dependsOn(dokkaHtmlPartial)
-                from(dokkaHtmlPartial)
+                val dokkaHtml by tasks.getting
+                dependsOn(dokkaHtml)
+                from(dokkaHtml)
             }
         }
     }
