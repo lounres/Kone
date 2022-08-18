@@ -32,7 +32,7 @@ allprojects {
     if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
         apply<DokkaPlugin>()
         dependencies {
-            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${properties["dokkaVersion"]}")
+            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${rootProject.libs.versions.dokka.get()}")
         }
         tasks.withType<DokkaTask> {
             // TODO
