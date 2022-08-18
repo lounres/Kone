@@ -5,6 +5,7 @@
 
 package io.kotest.datatest
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
@@ -30,6 +31,7 @@ public suspend fun <T> ContainerScope.withData(
  *
  * The test name will be generated from the stable properties of the elements. See [Identifiers].
  */
+@OptIn(ExperimentalKotest::class)
 public suspend fun <T> ContainerScope.withData(
     nameIndFn: (Int, T) -> String,
     ts: Iterable<T>,

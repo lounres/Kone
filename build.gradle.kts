@@ -100,6 +100,7 @@ fun KotlinProjectExtension.configureBase() {
                 languageSettings {
                     progressiveMode = true
                     optIn("kotlin.contracts.ExperimentalContracts")
+                    enableLanguageFeature("RangeUntilOperator")
                 }
             }
         }
