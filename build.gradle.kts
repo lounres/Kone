@@ -2,9 +2,12 @@
 
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import java.net.URL
+import java.time.Year
+import org.jetbrains.dokka.base.DokkaBase
+import org.jetbrains.dokka.base.DokkaBaseConfiguration
+import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
+import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
@@ -12,6 +15,11 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinWithJavaTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
+buildscript {
+    dependencies {
+        classpath(libs.dokka.base)
+    }
+}
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -36,30 +44,7 @@ allprojects {
         dependencies {
             dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${rootProject.libs.versions.dokka.get()}")
         }
-
         afterEvaluate {
-            tasks.withType<DokkaTaskPartial> {
-                dokkaSourceSets.all {
-                    val kotlinSrcDirPath = "src/$name/kotlin"
-                    val kotlinSrcDir = file(kotlinSrcDirPath)
-
-                    if (kotlinSrcDir.exists()) sourceLink {
-                        localDirectory.set(kotlinSrcDir)
-                        remoteUrl.set(URL("https://github.com/mipt-npm/kmath/tree/master/${project.name}/$kotlinSrcDirPath"))
-                        remoteLineSuffix.set("#L")
-                    }
-
-                    externalDocumentationLink("https://sciprogcentre.github.io/kmath/")
-
-                    reportUndocumented.set(true)
-                    // includes.from(TODO...)
-                    // samples.from(TODO...)
-                    jdkVersion.set(11)
-                }
-            }
-            tasks.withType<DokkaTask> {
-                // TODO
-            }
             task<Jar>("dokkaJar") {
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
                 description = "Assembles Kotlin docs with Dokka"
@@ -67,6 +52,33 @@ allprojects {
                 val dokkaHtml by tasks.getting
                 dependsOn(dokkaHtml)
                 from(dokkaHtml)
+            }
+        }
+    }
+
+    afterEvaluate {
+        tasks.withType<AbstractDokkaLeafTask> {
+            dokkaSourceSets.all {
+                val kotlinSrcDirPath = "src/$name/kotlin"
+                val kotlinSrcDir = file(kotlinSrcDirPath)
+
+                if (kotlinSrcDir.exists()) sourceLink {
+                    localDirectory.set(kotlinSrcDir)
+                    remoteUrl.set(URL("https://github.com/mipt-npm/kmath/tree/master/${project.name}/$kotlinSrcDirPath"))
+                    remoteLineSuffix.set("#L")
+                }
+
+                externalDocumentationLink("https://sciprogcentre.github.io/kmath/")
+
+                reportUndocumented.set(true)
+                // includes.from(TODO...)
+                // samples.from(TODO...)
+                jdkVersion.set(11)
+            }
+        }
+        tasks.withType<AbstractDokkaTask> {
+            pluginConfiguration<DokkaBase, DokkaBaseConfiguration>{
+                footerMessage = "© ${Year.now().value} Copyright Gleb Minaev <br> All rights reserved. Licensed under the Apache License, Version 2.0"
             }
         }
     }
