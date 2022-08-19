@@ -1,8 +1,10 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
+import java.net.URL
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
@@ -36,6 +38,25 @@ allprojects {
         }
 
         afterEvaluate {
+            tasks.withType<DokkaTaskPartial> {
+                dokkaSourceSets.all {
+                    val kotlinSrcDirPath = "src/$name/kotlin"
+                    val kotlinSrcDir = file(kotlinSrcDirPath)
+
+                    if (kotlinSrcDir.exists()) sourceLink {
+                        localDirectory.set(kotlinSrcDir)
+                        remoteUrl.set(URL("https://github.com/mipt-npm/kmath/tree/master/${project.name}/$kotlinSrcDirPath"))
+                        remoteLineSuffix.set("#L")
+                    }
+
+                    externalDocumentationLink("https://sciprogcentre.github.io/kmath/")
+
+                    reportUndocumented.set(true)
+                    // includes.from(TODO...)
+                    // samples.from(TODO...)
+                    jdkVersion.set(11)
+                }
+            }
             tasks.withType<DokkaTask> {
                 // TODO
             }
