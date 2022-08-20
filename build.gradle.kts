@@ -2,12 +2,13 @@
 
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import java.net.URL
-import java.time.Year
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.dokka.versioning.VersioningConfiguration
+import org.jetbrains.dokka.versioning.VersioningPlugin
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin
@@ -18,6 +19,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 buildscript {
     dependencies {
         classpath(libs.dokka.base)
+        classpath(libs.dokka.versioning)
     }
 }
 
@@ -42,7 +44,10 @@ allprojects {
     if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
         apply<DokkaPlugin>()
         dependencies {
-            dokkaPlugin("org.jetbrains.dokka:mathjax-plugin:${rootProject.libs.versions.dokka.get()}")
+            with(rootProject.libs.dokka) {
+                dokkaPlugin(mathjax)
+                dokkaPlugin(versioning)
+            }
         }
         afterEvaluate {
             task<Jar>("dokkaJar") {
@@ -64,7 +69,7 @@ allprojects {
 
                 if (kotlinSrcDir.exists()) sourceLink {
                     localDirectory.set(kotlinSrcDir)
-                    remoteUrl.set(URL("https://github.com/mipt-npm/kmath/tree/master/${project.name}/$kotlinSrcDirPath"))
+                    remoteUrl.set(URL("https://github.com/lounres/Kone/tree/master/${project.name}/$kotlinSrcDirPath"))
                     remoteLineSuffix.set("#L")
                 }
 
@@ -78,7 +83,16 @@ allprojects {
         }
         tasks.withType<AbstractDokkaTask> {
             pluginConfiguration<DokkaBase, DokkaBaseConfiguration>{
-                footerMessage = "© ${Year.now().value} Copyright Gleb Minaev <br> All rights reserved. Licensed under the Apache License, Version 2.0"
+                // TODO
+                templatesDir = rootDir.resolve("docs/dokka/templates")
+//                customStyleSheets = rootDir.resolve("docs/dokka/styles").listFiles()?.toList() ?: emptyList()
+                customAssets = rootDir.resolve("docs/dokka/images").listFiles()?.toList() ?: emptyList()
+            }
+            pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
+                version = project.version as String
+                /* TODO: Versioned docs
+                olderVersionsDir = ...
+                */
             }
         }
     }
@@ -86,6 +100,10 @@ allprojects {
     group = "com.lounres.kone"
     version = "0.1.0-pre-1"
 }
+
+//tasks.dokkaHtmlMultimodule {
+//    inputs.dir(rootDir.resolve("docs/dokka"))
+//}
 
 val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
 val onlyJvmTarget: Boolean = (properties["onlyJvmTarget"] as String).toBoolean()

@@ -39,6 +39,8 @@ kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref 
 
 # Dokka
 dokka-base = { module = "org.jetbrains.dokka:dokka-base", version.ref = "dokka" }
+dokka-mathjax = { module = "org.jetbrains.dokka:mathjax-plugin", version.ref = "dokka" }
+dokka-versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 
 # KMath
 kmath-core = { module = "space.kscience:kmath-core", version.ref = "kmath" }
