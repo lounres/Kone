@@ -268,7 +268,7 @@ public fun <K, V, D: MutableMap<K, V>> Map<K, V>.copyTo(destination: D): D {
  * @receiver map to be copied.
  * @param destination map to receive copies.
  * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V: W, W, D: MutableMap<K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
@@ -285,7 +285,7 @@ public inline fun <K, V: W, W, D: MutableMap<K, W>> Map<out K, V>.copyToBy(desti
  * @receiver map to be copied.
  * @param destination map to receive copies.
  * @param resolve lambda function that resolves overriding. It takes current value corresponding to some key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V: W, W, D: MutableMap<K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (currentValue: W, newValue: V) -> W): D =
@@ -295,7 +295,7 @@ public inline fun <K, V: W, W, D: MutableMap<K, W>> Map<out K, V>.copyToBy(desti
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map overriding present ones if needed. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyTo(destination)
+ * this.mapValues(transform).copyTo(destination)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -315,7 +315,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map overriding present ones if needed. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyTo(destination)
+ * this.mapValues(transform).copyTo(destination)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -331,7 +331,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyToBy(destination, resolve)
+ * this.mapValues(transform).copyToBy(destination, resolve)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -339,7 +339,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
  * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
  * the same as initial entry.
  * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
@@ -354,7 +354,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyToBy(destination, resolve)
+ * this.mapValues(transform).copyToBy(destination, resolve)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -362,7 +362,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
  * the same as initial entry.
  * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (key: K, value: V) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D =
@@ -372,7 +372,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyToBy(destination, resolve)
+ * this.mapValues(transform).copyToBy(destination, resolve)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -380,7 +380,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
  * the same as initial entry.
  * @param resolve lambda function that resolves overriding. It takes current value corresponding to some key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (currentValue: W, newValue: V) -> W): D =
@@ -390,7 +390,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
  * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
  * ```kotlin
- * this.mapValues(transform).com.lounres.kone.mapUtils.copyToBy(destination, resolve)
+ * this.mapValues(transform).copyToBy(destination, resolve)
  * ```
  *
  * @receiver map to be transformed and copied.
@@ -398,7 +398,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
  * the same as initial entry.
  * @param resolve lambda function that resolves overriding. It takes current value corresponding to some key, and
- * a new one and returns value to com.lounres.kone.mapUtils.associate to the key.
+ * a new one and returns value to associate to the key.
  * @return the [destination].
  */
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (key: K, value: V) -> W, resolve: (currentValue: W, newValue: V) -> W): D =
@@ -412,9 +412,9 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * in the [destination] if needed. For every key appearing in both maps corresponding value from the second map is
  * chosen.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param destination the map where result of the com.lounres.kone.mapUtils.merge is put.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @param destination the map where result of the merge is put.
  * @return the destination.
  */
 public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: Map<out K, V>, destination: D): D {
@@ -435,10 +435,10 @@ public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: 
  * in the [destination] if needed. For every key appearing in both maps corresponding value is a result of the [resolve]
  * lambda calculated on the key and its corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts.
- * @param destination the map where result of the com.lounres.kone.mapUtils.merge is put.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @param resolve lambda function that resolves merge conflicts.
+ * @param destination the map where result of the merge is put.
  * @return the destination.
  */
 public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<out K, V1>, map2: Map<out K, V2>, destination: D, resolve: (key: K, value1: V1, value2: V2) -> W): D {
@@ -463,10 +463,10 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
  * in the [destination] if needed. For every key appearing in both maps corresponding value is a result of the [resolve]
  * lambda calculated on the key's corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts.
- * @param destination the map where result of the com.lounres.kone.mapUtils.merge is put.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @param resolve lambda function that resolves merge conflicts.
+ * @param destination the map where result of the merge is put.
  * @return the destination.
  */
 public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<K, V1>, map2: Map<K, V2>, destination: D, resolve: (value1: V1, value2: V2) -> W): D =
@@ -478,9 +478,9 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
  * Precisely, corresponding keys and values of the received maps are put into a new empty map which is returned after
  * afterwards. For every key appearing in both maps corresponding value from the second map is chosen.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @return the result of the com.lounres.kone.mapUtils.merge.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @return the result of the merge.
  */
 public fun <K, V1: W, V2: W, W> merge(map1: Map<K, V1>, map2: Map<K, V2>): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
@@ -494,10 +494,10 @@ public fun <K, V1: W, V2: W, W> merge(map1: Map<K, V1>, map2: Map<K, V2>): Map<K
  * afterwards. For every key appearing in both maps corresponding value is a result of the [resolve] lambda calculated
  * on the key and its corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts.
- * @return the result of the com.lounres.kone.mapUtils.merge.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @param resolve lambda function that resolves merge conflicts.
+ * @return the result of the merge.
  */
 public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2>, resolve: (key: K, value1: V1, value2: V2) -> W): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
@@ -511,10 +511,10 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2
  * afterwards. For every key appearing in both maps corresponding value is a result of the [resolve] lambda calculated
  * on the key's corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param map2 the second (more prioritised) map to com.lounres.kone.mapUtils.merge.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts.
- * @return the result of the com.lounres.kone.mapUtils.merge.
+ * @param map1 the first (less prioritised) map to merge.
+ * @param map2 the second (more prioritised) map to merge.
+ * @param resolve lambda function that resolves merge conflicts.
+ * @return the result of the merge.
  */
 public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2>, resolve: (value1: V1, value2: V2) -> W): Map<K, W> =
     mergeBy(map1, map2) { _, value1, value2 -> resolve(value1, value2) }
@@ -527,7 +527,7 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2
  *
  * @param destination the destination of the generated key-value pairs.
  * @param transform function which transforms each element to key-value.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the [destination].
  */
@@ -549,7 +549,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destin
  * @param destination the destination of the generated key-value pairs.
  * @param keySelector lambda functions that generates keys for the key-value pairs.
  * @param valueTransform lambda functions that generates value for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the [destination].
  */
@@ -571,7 +571,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(dest
  *
  * @param destination the destination of the generated key-value pairs.
  * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the [destination].
  */
@@ -591,7 +591,7 @@ public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destina
  * from the pair.
  *
  * @param transform function which transforms each element to key-value pair.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the result map.
  */
@@ -608,7 +608,7 @@ public inline fun <T, K, V> Iterable<T>.associate(transform: (T) -> Pair<K, V>, 
  *
  * @param keySelector lambda functions that generates keys for the key-value pairs.
  * @param valueTransform lambda functions that generates value for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the result map.
  */
@@ -624,7 +624,7 @@ public inline fun <T, K, V> Iterable<T>.associateBy(keySelector: (T) -> K, value
  * value from the pair.
  *
  * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the result map.
  */
@@ -640,7 +640,7 @@ public inline fun <T, K> Iterable<T>.associateBy(keySelector: (T) -> K, resolve:
  *
  * @param destination the destination of the generated key-value pairs.
  * @param transform function which transforms each key-value pair to new value.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the [destination].
  */
@@ -656,7 +656,7 @@ public inline fun <K, V, W, D : MutableMap<K, W>> Map<out K, V>.mapValuesTo(dest
  *
  * @param destination the destination of the generated key-value pairs.
  * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the [destination].
  */
@@ -670,7 +670,7 @@ public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destin
  * All pairs are added and resolved in order of iteration.
  *
  * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
+ * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the result map.
  */
