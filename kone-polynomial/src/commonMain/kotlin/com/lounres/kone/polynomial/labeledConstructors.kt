@@ -97,7 +97,7 @@ public class DSL1LabeledPolynomialTermSignatureBuilder {
 
     public infix fun Symbol.inPowerOf(deg: UInt) {
         if (deg == 0u) return
-        signature.putOrChange(this, deg) { it -> it + deg }
+        signature.putOrChange(this, deg) { _, it, _ -> it + deg }
     }
     public inline infix fun Symbol.pow(deg: UInt): Unit = this inPowerOf deg
     public inline infix fun Symbol.`in`(deg: UInt): Unit = this inPowerOf deg
@@ -116,7 +116,7 @@ public class DSL1LabeledPolynomialBuilder<C>(
     internal fun build(): LabeledPolynomial<C> = LabeledPolynomial<C>(coefficients)
 
     public infix fun C.with(signature: Map<Symbol, UInt>) {
-        coefficients.putOrChange(signature, this@with, add)
+        coefficients.putOrChange(signature, this@with) { _, c1, c2 -> add(c1, c2) }
     }
     public inline infix fun C.with(noinline block: DSL1LabeledPolynomialTermSignatureBuilder.() -> Unit): Unit = this.invoke(block)
     public inline operator fun C.invoke(block: DSL1LabeledPolynomialTermSignatureBuilder.() -> Unit): Unit =
@@ -298,7 +298,7 @@ public class DSL2LabeledPolynomialBuilder<C>(
 
     public operator fun Symbol.times(other: Term): Term =
         Term(
-            other.signature.withPutOrChanged(this, 1u) { it -> it + 1u },
+            other.signature.withPutOrChanged(this, 1u) { _, it, _ -> it + 1u },
             other.coefficient
         )
 
@@ -334,7 +334,7 @@ public class DSL2LabeledPolynomialBuilder<C>(
 
     public operator fun Term.times(other: Symbol): Term =
         Term(
-            signature.withPutOrChanged(other, 1u) { it -> it + 1u },
+            signature.withPutOrChanged(other, 1u) { _, it, _ -> it + 1u },
             coefficient
         )
 

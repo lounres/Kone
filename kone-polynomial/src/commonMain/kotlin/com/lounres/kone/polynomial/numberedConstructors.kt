@@ -106,7 +106,7 @@ public class DSL1NumberedPolynomialBuilder<C>(
     internal fun build(): NumberedPolynomial<C> = NumberedPolynomial<C>(coefficients)
 
     public infix fun C.with(signature: List<UInt>) {
-        coefficients.putOrChange(signature, this@with, add)
+        coefficients.putOrChange(signature, this@with) { _, c1, c2 -> add(c1, c2) }
     }
     public inline infix fun C.with(noinline block: DSL1NumberedPolynomialTermSignatureBuilder.() -> Unit): Unit = this.invoke(block)
     public inline operator fun C.invoke(block: DSL1NumberedPolynomialTermSignatureBuilder.() -> Unit): Unit =

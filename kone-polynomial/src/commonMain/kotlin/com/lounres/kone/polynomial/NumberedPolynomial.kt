@@ -47,12 +47,12 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override operator fun NumberedPolynomial<C>.plus(other: Int): NumberedPolynomial<C> =
         if (other == 0) this
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), other.constantValue) { it -> it + other }
+            coefficients.withPutOrChanged(emptyList(), other.constantValue) { _, it, _ -> it + other }
         )
     public override operator fun NumberedPolynomial<C>.minus(other: Int): NumberedPolynomial<C> =
         if (other == 0) this
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), (-other).constantValue) { it -> it - other }
+            coefficients.withPutOrChanged(emptyList(), (-other).constantValue) { _, it, _ -> it - other }
         )
     public override operator fun NumberedPolynomial<C>.times(other: Int): NumberedPolynomial<C> =
         when (other) {
@@ -66,12 +66,12 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override operator fun NumberedPolynomial<C>.plus(other: Long): NumberedPolynomial<C> =
         if (other == 0L) this
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), other.constantValue) { it -> it + other }
+            coefficients.withPutOrChanged(emptyList(), other.constantValue) { _, it, _ -> it + other }
         )
     public override operator fun NumberedPolynomial<C>.minus(other: Long): NumberedPolynomial<C> =
         if (other == 0L) this
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), (-other).constantValue) { it -> it - other }
+            coefficients.withPutOrChanged(emptyList(), (-other).constantValue) { _, it, _ -> it - other }
         )
     public override operator fun NumberedPolynomial<C>.times(other: Long): NumberedPolynomial<C> =
         when (other) {
@@ -85,7 +85,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override operator fun Int.plus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         if (this == 0) other
         else NumberedPolynomialAsIs(
-            other.coefficients.withPutOrChanged(emptyList(), this@plus.constantValue) { it -> this@plus + it }
+            other.coefficients.withPutOrChanged(emptyList(), this@plus.constantValue) { _, it, _ -> this@plus + it }
         )
     public override operator fun Int.minus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         when {
@@ -93,7 +93,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this.value
             else -> NumberedPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { it -> this@minus - it })
+                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { _, it -> this@minus - it })
                     other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
@@ -110,7 +110,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override operator fun Long.plus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         if (this == 0L) other
         else NumberedPolynomialAsIs(
-            other.coefficients.withPutOrChanged(emptyList(), this@plus.constantValue) { it -> this@plus + it }
+            other.coefficients.withPutOrChanged(emptyList(), this@plus.constantValue) { _, it, _ -> this@plus + it }
         )
     public override operator fun Long.minus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         when {
@@ -118,7 +118,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this.value
             else -> NumberedPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { it -> this@minus - it })
+                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { _, it ->    this@minus - it })
                     other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
@@ -135,12 +135,12 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     override operator fun NumberedPolynomial<C>.plus(other: C): NumberedPolynomial<C> =
         if (coefficients.isEmpty()) other.value
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), other) { it -> it + other }
+            coefficients.withPutOrChanged(emptyList(), other) { _, it, _ -> it + other }
         )
     override operator fun NumberedPolynomial<C>.minus(other: C): NumberedPolynomial<C> =
         if (coefficients.isEmpty()) other.value
         else NumberedPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyList(), -other) { it -> it - other }
+            coefficients.withPutOrChanged(emptyList(), -other) { _, it, _ -> it - other }
         )
     override operator fun NumberedPolynomial<C>.times(other: C): NumberedPolynomial<C> =
         NumberedPolynomialAsIs(
@@ -150,7 +150,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     override operator fun C.plus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         if (other.coefficients.isEmpty()) this@plus.value
         else NumberedPolynomialAsIs(
-            other.coefficients.withPutOrChanged(emptyList(), this@plus) { it -> this@plus + it }
+            other.coefficients.withPutOrChanged(emptyList(), this@plus) { _, it, _ -> this@plus + it }
         )
     override operator fun C.minus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         if (other.coefficients.isEmpty()) this@minus.value
@@ -188,7 +188,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
                         (0..max(degs1.lastIndex, degs2.lastIndex))
                             .map { degs1.getOrElse(it) { 0U } + degs2.getOrElse(it) { 0U } }
                     val c = c1 * c2
-                    putOrChange(degs, c) { it -> it + c }
+                    putOrChange(degs, c) { _, it, _ -> it + c }
                 }
             }
         ) // TODO: To optimize boxing
