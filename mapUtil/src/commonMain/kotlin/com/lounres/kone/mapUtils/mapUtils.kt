@@ -351,60 +351,6 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
 }
 
 /**
- * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
- * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
- * ```kotlin
- * this.mapValues(transform).copyToBy(destination, resolve)
- * ```
- *
- * @receiver map to be transformed and copied.
- * @param destination map to receive copies.
- * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
- * the same as initial entry.
- * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to associate to the key.
- * @return the [destination].
- */
-public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (key: K, value: V) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D =
-    copyMapToBy(destination, { (key, value) -> transform(key, value) }, resolve)
-
-/**
- * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
- * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
- * ```kotlin
- * this.mapValues(transform).copyToBy(destination, resolve)
- * ```
- *
- * @receiver map to be transformed and copied.
- * @param destination map to receive copies.
- * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
- * the same as initial entry.
- * @param resolve lambda function that resolves overriding. It takes current value corresponding to some key, and
- * a new one and returns value to associate to the key.
- * @return the [destination].
- */
-public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (currentValue: W, newValue: V) -> W): D =
-    copyMapToBy(destination, transform, { _, currentValue, newValue -> resolve(currentValue, newValue) })
-
-/**
- * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
- * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
- * ```kotlin
- * this.mapValues(transform).copyToBy(destination, resolve)
- * ```
- *
- * @receiver map to be transformed and copied.
- * @param destination map to receive copies.
- * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
- * the same as initial entry.
- * @param resolve lambda function that resolves overriding. It takes current value corresponding to some key, and
- * a new one and returns value to associate to the key.
- * @return the [destination].
- */
-public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (key: K, value: V) -> W, resolve: (currentValue: W, newValue: V) -> W): D =
-    copyMapToBy(destination, { (key, value) -> transform(key, value) }, { _, currentValue, newValue -> resolve(currentValue, newValue) })
-
-/**
  * Merges [the first map][map1] and [the second map][map2] prioritising the second one, puts result to the [destination]
  * and returns the [destination].
  *

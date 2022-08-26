@@ -195,8 +195,8 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), constantValue)
-                    other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, newC -> currentC - newC })
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -223,8 +223,8 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), constantValue)
-                    other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, newC -> currentC - newC })
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -292,7 +292,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         else LabeledPolynomialAsIs(
             buildMap(other.coefficients.size + 1) {
                 put(emptyMap(), this@minus)
-                other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, newC -> currentC - newC })
+                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     override operator fun C.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
@@ -340,7 +340,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         else LabeledPolynomialAsIs(
             buildMap(other.coefficients.size + 1) {
                 put(mapOf(this@minus to 1U), constantOne)
-                other.coefficients.copyMapToBy(this, { _, c -> -c }) { currentC, newC -> currentC - newC }
+                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     public override operator fun Symbol.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
@@ -377,7 +377,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         LabeledPolynomialAsIs(
             buildMap(coefficients.size + other.coefficients.size) {
                 coefficients.copyTo(this)
-                other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, newC -> currentC - newC })
+                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     override operator fun LabeledPolynomial<C>.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =

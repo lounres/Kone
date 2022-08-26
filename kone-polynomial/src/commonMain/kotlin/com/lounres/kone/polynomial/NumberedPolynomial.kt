@@ -93,8 +93,8 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this.value
             else -> NumberedPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), { this@minus.constantValue }, { it -> this@minus - it}))
-                    other.coefficients.copyMapToBy(this, { _, c -> -c }) { currentC, _ -> currentC }
+                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -118,8 +118,8 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this.value
             else -> NumberedPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), { this@minus.constantValue }, { it -> this@minus - it}))
-                    other.coefficients.copyMapToBy(this, { _, c -> -c }) { currentC, _ -> currentC }
+                    put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus.constantValue) { it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -156,8 +156,8 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
         if (other.coefficients.isEmpty()) this@minus.value
         else NumberedPolynomialAsIs(
             buildMap(other.coefficients.size) {
-                put(emptyList(), other.coefficients.computeOnOrElse(emptyList(), this@minus) { it -> this@minus - it })
-                other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, _ -> currentC })
+                put(emptyList(), this@minus)
+                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     override operator fun C.times(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
@@ -177,7 +177,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
         NumberedPolynomialAsIs(
             buildMap(coefficients.size + other.coefficients.size) {
                 coefficients.copyTo(this)
-                other.coefficients.copyMapToBy(this, { _, c -> -c }, { currentC, newC -> currentC - newC })
+                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     override operator fun NumberedPolynomial<C>.times(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
