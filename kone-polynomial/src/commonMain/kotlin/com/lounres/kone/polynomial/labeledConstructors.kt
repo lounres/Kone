@@ -362,7 +362,7 @@ public class DSL2LabeledPolynomialBuilder<C>(
 
     public operator fun Term.times(other: Term): Term =
         Term(
-            mergeBy(signature, other.signature) { deg1, deg2 -> deg1 + deg2 },
+            mergeBy(signature, other.signature) { _, deg1, deg2 -> deg1 + deg2 },
             ring { coefficient * other.coefficient }
         )
 }

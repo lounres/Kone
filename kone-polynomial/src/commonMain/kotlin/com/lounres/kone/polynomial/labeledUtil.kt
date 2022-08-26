@@ -257,7 +257,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = mergeBy(degs, filteredVariablesAndOrders) { deg, order -> deg + order }
+                    val newDegs = mergeBy(degs, filteredVariablesAndOrders) { _, deg, order -> deg + order }
                     put(
                         newDegs,
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->

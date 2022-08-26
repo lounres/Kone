@@ -371,7 +371,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         )
     override operator fun LabeledPolynomial<C>.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
-            mergeBy(coefficients, other.coefficients) { c1, c2 -> c1 + c2 }
+            mergeBy(coefficients, other.coefficients) { _, c1, c2 -> c1 + c2 }
         )
     override operator fun LabeledPolynomial<C>.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
@@ -384,7 +384,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         LabeledPolynomialAsIs(
             buildMap(coefficients.size * other.coefficients.size) {
                 for ((degs1, c1) in coefficients) for ((degs2, c2) in other.coefficients) {
-                    val degs = mergeBy(degs1, degs2) { deg1, deg2 -> deg1 + deg2 }
+                    val degs = mergeBy(degs1, degs2) { _, deg1, deg2 -> deg1 + deg2 }
                     val c = c1 * c2
                     this.putOrChange(degs, c) { it -> it + c }
                 }

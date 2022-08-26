@@ -171,7 +171,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
         )
     override operator fun NumberedPolynomial<C>.plus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         NumberedPolynomialAsIs(
-            mergeBy(coefficients, other.coefficients) { c1, c2 -> c1 + c2 }
+            mergeBy(coefficients, other.coefficients) { _, c1, c2 -> c1 + c2 }
         )
     override operator fun NumberedPolynomial<C>.minus(other: NumberedPolynomial<C>): NumberedPolynomial<C> =
         NumberedPolynomialAsIs(

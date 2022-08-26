@@ -456,23 +456,6 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
 }
 
 /**
- * Merges [the first map][map1] and [the second map][map2] resolving conflicts with [resolve] lambda, puts result to the
- * [destination] and returns the [destination].
- *
- * Precisely, corresponding keys and values of the received maps are put into the destination overriding existing values
- * in the [destination] if needed. For every key appearing in both maps corresponding value is a result of the [resolve]
- * lambda calculated on the key's corresponding values from the merged maps.
- *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
- * @param resolve lambda function that resolves merge conflicts.
- * @param destination the map where result of the merge is put.
- * @return the destination.
- */
-public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<K, V1>, map2: Map<K, V2>, destination: D, resolve: (value1: V1, value2: V2) -> W): D =
-    mergeToBy(map1, map2, destination) { _, value1, value2 -> resolve(value1, value2) }
-
-/**
  * Merges [the first map][map1] and [the second map][map2] prioritising the second one.
  *
  * Precisely, corresponding keys and values of the received maps are put into a new empty map which is returned after
@@ -503,21 +486,6 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
     return mergeToBy(map1, map2, result, resolve)
 }
-
-/**
- * Merges [the first map][map1] and [the second map][map2] resolving conflicts with [resolve] lambda.
- *
- * Precisely, corresponding keys and values of the received maps are put into a new empty map which is returned after
- * afterwards. For every key appearing in both maps corresponding value is a result of the [resolve] lambda calculated
- * on the key's corresponding values from the merged maps.
- *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
- * @param resolve lambda function that resolves merge conflicts.
- * @return the result of the merge.
- */
-public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2>, resolve: (value1: V1, value2: V2) -> W): Map<K, W> =
-    mergeBy(map1, map2) { _, value1, value2 -> resolve(value1, value2) }
 
 /**
  * Populates the [destination] map with key-value pairs provided by [transform] function applied to each element of the
