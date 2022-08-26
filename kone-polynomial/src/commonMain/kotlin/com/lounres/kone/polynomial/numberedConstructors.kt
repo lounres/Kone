@@ -41,12 +41,12 @@ public fun <C> NumberedPolynomial(coefs: Map<List<UInt>, C>, add: (C, C) -> C) :
 
 public fun <C> NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        pairs.associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 public fun <C> NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available

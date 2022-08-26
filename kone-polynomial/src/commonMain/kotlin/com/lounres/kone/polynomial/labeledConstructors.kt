@@ -41,12 +41,12 @@ public fun <C> LabeledPolynomial(coefs: Map<Map<Symbol, UInt>, C>, add: (C, C) -
 
 public fun <C> LabeledPolynomial(pairs: Collection<Pair<Map<Symbol, UInt>, C>>, add: (C, C) -> C) : LabeledPolynomial<C> =
     LabeledPolynomialAsIs(
-        pairs.associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 public fun <C> LabeledPolynomial(vararg pairs: Pair<Map<Symbol, UInt>, C>, add: (C, C) -> C) : LabeledPolynomial<C> =
     LabeledPolynomialAsIs(
-        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available
