@@ -36,17 +36,17 @@ public inline fun <C> NumberedPolynomialWithoutCheck(vararg pairs: Pair<List<UIn
 
 public fun <C> NumberedPolynomial(coefs: Map<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        coefs.mapKeys({ key, _ -> key.cleanUp() }, add)
+        coefs.mapKeys({ (key, _) -> key.cleanUp() }, { _, c1, c2 -> add(c1, c2) })
     )
 
 public fun <C> NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        pairs.associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 public fun <C> NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, add)
+        pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available
@@ -106,7 +106,7 @@ public class DSL1NumberedPolynomialBuilder<C>(
     internal fun build(): NumberedPolynomial<C> = NumberedPolynomial<C>(coefficients)
 
     public infix fun C.with(signature: List<UInt>) {
-        coefficients.putOrChange(signature, this@with, add)
+        coefficients.putOrChange(signature, this@with) { _, c1, c2 -> add(c1, c2) }
     }
     public inline infix fun C.with(noinline block: DSL1NumberedPolynomialTermSignatureBuilder.() -> Unit): Unit = this.invoke(block)
     public inline operator fun C.invoke(block: DSL1NumberedPolynomialTermSignatureBuilder.() -> Unit): Unit =
