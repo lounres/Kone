@@ -36,7 +36,7 @@ public inline fun <C> LabeledPolynomialWithoutCheck(vararg pairs: Pair<Map<Symbo
 
 public fun <C> LabeledPolynomial(coefs: Map<Map<Symbol, UInt>, C>, add: (C, C) -> C) : LabeledPolynomial<C> =
     LabeledPolynomialAsIs(
-        coefs.mapKeys({ key, _ -> key.cleanUp() }, add)
+        coefs.mapKeys({ (key, _) -> key.cleanUp() }, { _, c1, c2 -> add(c1, c2) })
     )
 
 public fun <C> LabeledPolynomial(pairs: Collection<Pair<Map<Symbol, UInt>, C>>, add: (C, C) -> C) : LabeledPolynomial<C> =

@@ -806,52 +806,6 @@ public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destin
     entries.associateByTo(destination, transform, { it.value }, resolve)
 
 /**
- * Populates the given [destination] map with entries having the keys obtained by applying the [transform] function to
- * each entry in this map and the values of this map, resolving conflicts with [resolve] function and returns the
- * [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
- */
-public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destination: D, transform: (key: K, value: V) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): D =
-    entries.associateByTo(destination, { (key, value) -> transform(key, value) }, { it.value }, resolve)
-
-/**
- * Populates the given [destination] map with entries having the keys obtained by applying the [transform] function to
- * each entry in this map and the values of this map, resolving conflicts with [resolve] function and returns the
- * [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which current and new values corresponding to some key.
- * @return the [destination].
- */
-public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destination: D, transform: (Map.Entry<K, V>) -> L, resolve: (currentValue: V, newValue: V) -> V): D =
-    entries.associateByTo(destination, transform, { it.value }, resolve)
-
-/**
- * Populates the given [destination] map with entries having the keys obtained by applying the [transform] function to
- * each entry in this map and the values of this map, resolving conflicts with [resolve] function and returns the
- * [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which current and new values corresponding to some key.
- * @return the [destination].
- */
-public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destination: D, transform: (key: K, value: V) -> L, resolve: (currentValue: V, newValue: V) -> V): D =
-    entries.associateByTo(destination, { (key, value) -> transform(key, value) }, { it.value }, resolve)
-
-/**
  * Returns a new map with entries having the keys obtained by applying the [transform] function to each entry in this
  * map and the values of this map and resolving conflicts with [resolve] function.
  *
@@ -863,44 +817,4 @@ public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destin
  * @return the result map.
  */
 public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (Map.Entry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): Map<L, V> =
-    mapKeysTo(LinkedHashMap(size), transform, resolve)
-
-/**
- * Returns a new map with entries having the keys obtained by applying the [transform] function to each entry in this
- * map and the values of this map and resolving conflicts with [resolve] function.
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the result map.
- */
-public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (key: K, value: V) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): Map<L, V> =
-    mapKeysTo(LinkedHashMap(size), transform, resolve)
-
-/**
- * Returns a new map with entries having the keys obtained by applying the [transform] function to each entry in this
- * map and the values of this map and resolving conflicts with [resolve] function.
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which current and new values corresponding to some key.
- * @return the result map.
- */
-public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (Map.Entry<K, V>) -> L, resolve: (currentValue: V, newValue: V) -> V): Map<L, V> =
-    mapKeysTo(LinkedHashMap(size), transform, resolve)
-
-/**
- * Returns a new map with entries having the keys obtained by applying the [transform] function to each entry in this
- * map and the values of this map and resolving conflicts with [resolve] function.
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which current and new values corresponding to some key.
- * @return the result map.
- */
-public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (key: K, value: V) -> L, resolve: (currentValue: V, newValue: V) -> V): Map<L, V> =
     mapKeysTo(LinkedHashMap(size), transform, resolve)

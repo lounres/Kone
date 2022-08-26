@@ -36,7 +36,7 @@ public inline fun <C> NumberedPolynomialWithoutCheck(vararg pairs: Pair<List<UIn
 
 public fun <C> NumberedPolynomial(coefs: Map<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
-        coefs.mapKeys({ key, _ -> key.cleanUp() }, add)
+        coefs.mapKeys({ (key, _) -> key.cleanUp() }, { _, c1, c2 -> add(c1, c2) })
     )
 
 public fun <C> NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>, add: (C, C) -> C) : NumberedPolynomial<C> =
