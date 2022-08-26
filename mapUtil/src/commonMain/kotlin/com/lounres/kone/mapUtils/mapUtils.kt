@@ -584,54 +584,6 @@ public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destina
 }
 
 /**
- * Populates the [destination] map with key-value pairs provided by [transform] function applied to each element of the
- * given collection resolving conflicts with [resolve] function and returns the [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each element to key-value pair.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
- */
-public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (currentValue: V, newValue: V) -> V): D =
-    associateTo(destination, transform) { _, currentValue, newValue -> resolve(currentValue, newValue) }
-
-/**
- * Populates the [destination] map with key-value pairs, where key is provided by [keySelector] function and value is
- * provided by [valueTransform] applied to each element of the given collection, resolving conflicts with [resolve]
- * function and returns the [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param valueTransform lambda functions that generates value for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
- */
-public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, valueTransform: (T) -> V, resolve: (currentValue: V, newValue: V) -> V): D =
-    associateByTo(destination, keySelector, valueTransform) { _, currentValue, newValue -> resolve(currentValue, newValue) }
-
-/**
- * Populates the [destination] map with key-value pairs, where key is provided by [keySelector] function applied to each
- * element of the given collection and value is the element itself, resolving conflicts with [resolve] function and
- * returns the [destination].
- *
- * All pairs are added and resolved in order of iteration.
- *
- * @param destination the destination of the generated key-value pairs.
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param resolve lambda function that resolves com.lounres.kone.mapUtils.merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
- */
-public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, resolve: (currentValue: T, newValue: T) -> T): D =
-    associateByTo(destination, keySelector) { _, currentValue, newValue -> resolve(currentValue, newValue) }
-
-/**
  * Returns a map containing key-value pairs provided by [transform] function applied to elements of the given collection.
  *
  * All pairs are added in order of iteration. If some key is already added to the map, adding new key-value pair with the
