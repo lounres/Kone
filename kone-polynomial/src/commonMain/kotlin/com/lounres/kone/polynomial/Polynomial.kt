@@ -206,17 +206,17 @@ public interface PolynomialSpaceOverRing<C, P: Polynomial<C>, out A: Ring<C>> : 
 
     // region Constants equality
     @JvmName("equalsToConstantConstant")
-    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@equalsTo equalsTo other }
+    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@C equalsTo other }
     @JvmName("eqConstantConstant")
-    public override infix fun C.eq(other: C): Boolean = with(ring) { this@eq eq other }
+    public override infix fun C.eq(other: C): Boolean = with(ring) { this@C eq other }
     @JvmName("isZeroConstant")
-    public override fun C.isZero(): Boolean = with(ring) { this@isZero.isZero() }
+    public override fun C.isZero(): Boolean = with(ring) { this@C.isZero() }
     @JvmName("isOneConstant")
-    public override fun C.isOne(): Boolean = with(ring) { this@isOne.isOne() }
+    public override fun C.isOne(): Boolean = with(ring) { this@C.isOne() }
     @JvmName("isNotZeroConstant")
-    public override fun C.isNotZero(): Boolean = with(ring) { this@isNotZero.isNotZero() }
+    public override fun C.isNotZero(): Boolean = with(ring) { this@C.isNotZero() }
     @JvmName("isNotOneConstant")
-    public override fun C.isNotOne(): Boolean = with(ring) { this@isNotOne.isNotOne() }
+    public override fun C.isNotOne(): Boolean = with(ring) { this@C.isNotOne() }
     // endregion
 
     // region Integer-to-Constant conversion
@@ -276,9 +276,9 @@ public interface PolynomialSpaceOverRing<C, P: Polynomial<C>, out A: Ring<C>> : 
     @JvmName("powerConstant")
     public override fun power(base: C, exponent: ULong): C = with(ring) { power(base, exponent) }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@pow pow exponent }
+    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@C pow exponent }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@pow pow exponent }
+    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@C pow exponent }
     // endregion
 }
 

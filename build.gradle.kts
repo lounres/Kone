@@ -46,9 +46,11 @@ allprojects {
         }
     }
 
-    group = "com.lounres.kone"
+    group = "com.lounres.kone.experimental.context-receivers"
     version = "0.1.0-pre-1"
 }
+
+val onlyJvmTarget: Boolean = (properties["onlyJvmTarget"] as String).toBoolean()
 
 subprojects {
     if (name.startsWith("kone-", ignoreCase = true) || name in listOf("testUtil")) {
@@ -60,6 +62,9 @@ subprojects {
             jvm {
                 compilations.all {
                     kotlinOptions {
+//                        freeCompilerArgs += listOf(
+//                            "-X",
+//                        )
                         jvmTarget = properties["jvmTarget"] as String
                     }
                 }
@@ -68,14 +73,16 @@ subprojects {
                 }
             }
 
-            js(IR) {
-                browser()
-                nodejs()
-            }
+            if (!onlyJvmTarget) {
+                js(IR) {
+                    browser()
+                    nodejs()
+                }
 
-            linuxX64()
-            mingwX64()
-            macosX64()
+                linuxX64()
+                mingwX64()
+                macosX64()
+            }
 
             @Suppress("UNUSED_VARIABLE")
             sourceSets {
@@ -83,6 +90,10 @@ subprojects {
                     languageSettings {
                         progressiveMode = true
                         optIn("kotlin.contracts.ExperimentalContracts")
+                        enableLanguageFeature("ContextReceivers")
+                    }
+                    dependencies {
+                        compileOnly(kotlin("stdlib:${rootProject.libs.versions.kotlin.get()}"))
                     }
                     if (name.endsWith("test", ignoreCase = true)) {
                         dependencies {
