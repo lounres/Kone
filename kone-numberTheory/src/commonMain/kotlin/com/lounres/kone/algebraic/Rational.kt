@@ -8,11 +8,14 @@
 package com.lounres.kone.algebraic
 
 import com.lounres.kone.numberTheory.gcd
+import kotlin.jvm.JvmField
 
 
 @Suppress("NAME_SHADOWING")
 public class Rational {
+    @JvmField
     public val numerator: Long
+    @JvmField
     public val denominator: Long
 
     internal constructor(numerator: Long, denominator: Long, toCheckInput: Boolean = true) {
@@ -29,12 +32,22 @@ public class Rational {
         }
     }
 
-    public constructor(numerator: Int, denominator: Int) : this(numerator.toLong(), denominator.toLong(), true)
-    public constructor(numerator: Int, denominator: Long) : this(numerator.toLong(), denominator, true)
-    public constructor(numerator: Long, denominator: Int) : this(numerator, denominator.toLong(), true)
-    public constructor(numerator: Long, denominator: Long) : this(numerator, denominator, true)
-    public constructor(numerator: Int) : this(numerator.toLong(), 1L, false)
-    public constructor(numerator: Long) : this(numerator, 1L, false)
+    public constructor(numerator: Long, denominator: Long) {
+        if (denominator == 0L) throw ArithmeticException("/ by zero")
+
+        val greatestCommonDivider = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
+
+        this.numerator = numerator / greatestCommonDivider
+        this.denominator = denominator / greatestCommonDivider
+    }
+    public constructor(numerator: Long, denominator: Int) : this(numerator, denominator.toLong())
+    public constructor(numerator: Int, denominator: Long) : this(numerator.toLong(), denominator)
+    public constructor(numerator: Int, denominator: Int) : this(numerator.toLong(), denominator.toLong())
+    public constructor(numerator: Long) {
+        this.numerator = numerator
+        this.denominator = 1L
+    }
+    public constructor(numerator: Int) : this(numerator.toLong())
 
     override fun equals(other: Any?): Boolean =
         if (other is Rational) numerator == other.numerator && denominator == other.denominator
@@ -43,12 +56,16 @@ public class Rational {
     override fun hashCode(): Int = 31 * numerator.hashCode() + denominator.hashCode()
 
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
+
+    public companion object {
+        public val field: RationalField = RationalField
+    }
 }
 
 public object RationalField : Field<Rational> {
     // region Constants
-    public override val zero: Rational = Rational(0L, 1L, false)
-    public override val one: Rational = Rational(1L, 1L, false)
+    public override val zero: Rational = Rational(0L)
+    public override val one: Rational = Rational(1L)
     // endregion
 
     // region Equality
@@ -58,8 +75,8 @@ public object RationalField : Field<Rational> {
     // endregion
 
     // region Integers conversion
-    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong(), 1L, false)
-    public override fun valueOf(arg: Long): Rational = Rational(arg, 1L, false)
+    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
+    public override fun valueOf(arg: Long): Rational = Rational(arg)
     // endregion
     
     // region Rational-Int operations

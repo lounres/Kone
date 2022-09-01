@@ -7,6 +7,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
@@ -31,16 +32,22 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, R: RationalFunction<
 
     // region Equality
     @JvmName("equalsToConstantConstant")
+    @JsName("equalsToConstantConstant")
     public infix fun C.equalsTo(other: C): Boolean = this == other
     @JvmName("eqConstantConstant")
+    @JsName("eqConstantConstant")
     public infix fun C.eq(other: C): Boolean = this equalsTo other
     @JvmName("isZeroConstant")
+    @JsName("isZeroConstant")
     public fun C.isZero(): Boolean = this equalsTo constantZero
     @JvmName("isOneConstant")
+    @JsName("isOneConstant")
     public fun C.isOne(): Boolean = this equalsTo constantOne
     @JvmName("isNotZeroConstant")
+    @JsName("isNotZeroConstant")
     public fun C.isNotZero(): Boolean = !isZero()
     @JvmName("isNotOneConstant")
+    @JsName("isNotOneConstant")
     public fun C.isNotOne(): Boolean = !isOne()
     // endregion
 
@@ -93,31 +100,43 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, R: RationalFunction<
     public val P.value: R get() = valueOf(this)
 
     @JvmName("plusConstantInt")
+    @JsName("plusConstantInt")
     public operator fun C.plus(other: Int): C
     @JvmName("minusConstantInt")
+    @JsName("minusConstantInt")
     public operator fun C.minus(other: Int): C
     @JvmName("timesConstantInt")
+    @JsName("timesConstantInt")
     public operator fun C.times(other: Int): C
 
     @JvmName("plusConstantLong")
+    @JsName("plusConstantLong")
     public operator fun C.plus(other: Long): C
     @JvmName("minusConstantLong")
+    @JsName("minusConstantLong")
     public operator fun C.minus(other: Long): C
     @JvmName("timesConstantLong")
+    @JsName("timesConstantLong")
     public operator fun C.times(other: Long): C
 
     @JvmName("plusIntConstant")
+    @JsName("plusIntConstant")
     public operator fun Int.plus(other: C): C
     @JvmName("minusIntConstant")
+    @JsName("minusIntConstant")
     public operator fun Int.minus(other: C): C
     @JvmName("timesIntConstant")
+    @JsName("timesIntConstant")
     public operator fun Int.times(other: C): C
 
     @JvmName("plusLongConstant")
+    @JsName("plusLongConstant")
     public operator fun Long.plus(other: C): C
     @JvmName("minusLongConstant")
+    @JsName("minusLongConstant")
     public operator fun Long.minus(other: C): C
     @JvmName("timesLongConstant")
+    @JsName("timesLongConstant")
     public operator fun Long.times(other: C): C
 
     @JvmName("plusPolynomialInt")
@@ -169,22 +188,31 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, R: RationalFunction<
     public operator fun Long.div(other: R): R
 
     @JvmName("unaryPlusConstant")
+    @JsName("unaryPlusConstant")
     public operator fun C.unaryPlus(): C = this
     @JvmName("unaryMinusConstant")
+    @JsName("unaryMinusConstant")
     public operator fun C.unaryMinus(): C
     @JvmName("plusConstantConstant")
+    @JsName("plusConstantConstant")
     public operator fun C.plus(other: C): C
     @JvmName("minusConstantConstant")
+    @JsName("minusConstantConstant")
     public operator fun C.minus(other: C): C
     @JvmName("timesConstantConstant")
+    @JsName("timesConstantConstant")
     public operator fun C.times(other: C): C
     @JvmName("powerConstant")
+    @JsName("powerConstantUInt")
     public fun power(base: C, exponent: UInt): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
     @JvmName("powerConstant")
+    @JsName("powerConstantULong")
     public fun power(base: C, exponent: ULong): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
     @JvmName("powConstant")
+    @JsName("powConstantUInt")
     public infix fun C.pow(exponent: UInt): C = power(this, exponent)
     @JvmName("powConstant")
+    @JsName("powConstantULong")
     public infix fun C.pow(exponent: ULong): C = power(this, exponent)
 
     @JvmName("plusConstantPolynomial")
@@ -290,17 +318,17 @@ public interface RationalFunctionSpaceOverRing<
 
     // region Equality
     @JvmName("equalsToConstantConstant")
-    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@C equalsTo other }
+    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@equalsTo equalsTo other }
     @JvmName("eqConstantConstant")
-    public override infix fun C.eq(other: C): Boolean = with(ring) { this@C eq other }
+    public override infix fun C.eq(other: C): Boolean = with(ring) { this@eq eq other }
     @JvmName("isZeroConstant")
-    public override fun C.isZero(): Boolean = with(ring) { this@C.isZero() }
+    public override fun C.isZero(): Boolean = with(ring) { this@isZero.isZero() }
     @JvmName("isOneConstant")
-    public override fun C.isOne(): Boolean = with(ring) { this@C.isOne() }
+    public override fun C.isOne(): Boolean = with(ring) { this@isOne.isOne() }
     @JvmName("isNotZeroConstant")
-    public override fun C.isNotZero(): Boolean = with(ring) { this@C.isNotZero() }
+    public override fun C.isNotZero(): Boolean = with(ring) { this@isNotZero.isNotZero() }
     @JvmName("isNotOneConstant")
-    public override fun C.isNotOne(): Boolean = with(ring) { this@C.isNotOne() }
+    public override fun C.isNotOne(): Boolean = with(ring) { this@isNotOne.isNotOne() }
     // endregion
 
     public override fun constantValueOf(value: Int): C = with(ring) { valueOf(value) }
@@ -351,9 +379,9 @@ public interface RationalFunctionSpaceOverRing<
     @JvmName("powerConstant")
     public override fun power(base: C, exponent: ULong): C = with(ring) { power(base, exponent) }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@C pow exponent }
+    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@pow pow exponent }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@C pow exponent }
+    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@pow pow exponent }
 }
 
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
@@ -374,32 +402,32 @@ public interface RationalFunctionSpaceOverPolynomialSpace<
 
     // region Equality
     @JvmName("equalsToConstantConstant")
-    public override infix fun C.equalsTo(other: C): Boolean = with(polynomialRing) { this@C equalsTo other }
+    public override infix fun C.equalsTo(other: C): Boolean = with(polynomialRing) { this@equalsTo equalsTo other }
     @JvmName("eqConstantConstant")
-    public override infix fun C.eq(other: C): Boolean = with(polynomialRing) { this@C eq other }
+    public override infix fun C.eq(other: C): Boolean = with(polynomialRing) { this@eq eq other }
     @JvmName("isZeroConstant")
-    public override fun C.isZero(): Boolean = with(polynomialRing) { this@C.isZero() }
+    public override fun C.isZero(): Boolean = with(polynomialRing) { this@isZero.isZero() }
     @JvmName("isOneConstant")
-    public override fun C.isOne(): Boolean = with(polynomialRing) { this@C.isOne() }
+    public override fun C.isOne(): Boolean = with(polynomialRing) { this@isOne.isOne() }
     @JvmName("isNotZeroConstant")
-    public override fun C.isNotZero(): Boolean = with(polynomialRing) { this@C.isNotZero() }
+    public override fun C.isNotZero(): Boolean = with(polynomialRing) { this@isNotZero.isNotZero() }
     @JvmName("isNotOneConstant")
-    public override fun C.isNotOne(): Boolean = with(polynomialRing) { this@C.isNotOne() }
+    public override fun C.isNotOne(): Boolean = with(polynomialRing) { this@isNotOne.isNotOne() }
     // endregion
 
     // region Equality
     @JvmName("equalsToPolynomialPolynomial")
-    public override infix fun P.equalsTo(other: P): Boolean = with(polynomialRing) { this@P equalsTo other }
+    public override infix fun P.equalsTo(other: P): Boolean = with(polynomialRing) { this@equalsTo equalsTo other }
     @JvmName("eqPolynomialPolynomial")
-    public override infix fun P.eq(other: P): Boolean = with(polynomialRing) { this@P eq other }
+    public override infix fun P.eq(other: P): Boolean = with(polynomialRing) { this@eq eq other }
     @JvmName("isZeroPolynomial")
-    public override fun P.isZero(): Boolean = with(polynomialRing) { this@P.isZero() }
+    public override fun P.isZero(): Boolean = with(polynomialRing) { this@isZero.isZero() }
     @JvmName("isOnePolynomial")
-    public override fun P.isOne(): Boolean = with(polynomialRing) { this@P.isOne() }
+    public override fun P.isOne(): Boolean = with(polynomialRing) { this@isOne.isOne() }
     @JvmName("isNotZeroPolynomial")
-    public override fun P.isNotZero(): Boolean = with(polynomialRing) { this@P.isNotZero() }
+    public override fun P.isNotZero(): Boolean = with(polynomialRing) { this@isNotZero.isNotZero() }
     @JvmName("isNotOnePolynomial")
-    public override fun P.isNotOne(): Boolean = with(polynomialRing) { this@P.isNotOne() }
+    public override fun P.isNotOne(): Boolean = with(polynomialRing) { this@isNotOne.isNotOne() }
     // endregion
 
     public override fun constantValueOf(value: Int): C = with(polynomialRing) { constantValueOf(value) }
@@ -413,117 +441,117 @@ public interface RationalFunctionSpaceOverPolynomialSpace<
     public override val Long.polynomialValue: P get() = with(polynomialRing) { this@polynomialValue.value }
 
     public override fun polynomialValueOf(value: C): P = with(polynomialRing) { valueOf(value) }
-    public override val C.polynomialValue: P get() = with(polynomialRing) { this@C.value }
+    public override val C.polynomialValue: P get() = with(polynomialRing) { this@polynomialValue.value }
 
     @JvmName("plusConstantInt")
-    public override operator fun C.plus(other: Int): C = with(polynomialRing) { this@C + other }
+    public override operator fun C.plus(other: Int): C = with(polynomialRing) { this@plus + other }
     @JvmName("minusConstantInt")
-    public override operator fun C.minus(other: Int): C = with(polynomialRing) { this@C - other }
+    public override operator fun C.minus(other: Int): C = with(polynomialRing) { this@minus - other }
     @JvmName("timesConstantInt")
-    public override operator fun C.times(other: Int): C = with(polynomialRing) { this@C * other }
+    public override operator fun C.times(other: Int): C = with(polynomialRing) { this@times * other }
 
     @JvmName("plusConstantLong")
-    public override operator fun C.plus(other: Long): C = with(polynomialRing) { this@C + other }
+    public override operator fun C.plus(other: Long): C = with(polynomialRing) { this@plus + other }
     @JvmName("minusConstantLong")
-    public override operator fun C.minus(other: Long): C = with(polynomialRing) { this@C - other }
+    public override operator fun C.minus(other: Long): C = with(polynomialRing) { this@minus - other }
     @JvmName("timesConstantLong")
-    public override operator fun C.times(other: Long): C = with(polynomialRing) { this@C * other }
+    public override operator fun C.times(other: Long): C = with(polynomialRing) { this@times * other }
 
     @JvmName("plusIntConstant")
-    public override operator fun Int.plus(other: C): C = with(polynomialRing) { this@Int + other }
+    public override operator fun Int.plus(other: C): C = with(polynomialRing) { this@plus + other }
     @JvmName("minusIntConstant")
-    public override operator fun Int.minus(other: C): C = with(polynomialRing) { this@Int - other }
+    public override operator fun Int.minus(other: C): C = with(polynomialRing) { this@minus - other }
     @JvmName("timesIntConstant")
-    public override operator fun Int.times(other: C): C = with(polynomialRing) { this@Int * other }
+    public override operator fun Int.times(other: C): C = with(polynomialRing) { this@times * other }
 
     @JvmName("plusLongConstant")
-    public override operator fun Long.plus(other: C): C = with(polynomialRing) { this@Long + other }
+    public override operator fun Long.plus(other: C): C = with(polynomialRing) { this@plus + other }
     @JvmName("minusLongConstant")
-    public override operator fun Long.minus(other: C): C = with(polynomialRing) { this@Long - other }
+    public override operator fun Long.minus(other: C): C = with(polynomialRing) { this@minus - other }
     @JvmName("timesLongConstant")
-    public override operator fun Long.times(other: C): C = with(polynomialRing) { this@Long * other }
+    public override operator fun Long.times(other: C): C = with(polynomialRing) { this@times * other }
 
     @JvmName("plusPolynomialInt")
-    public override operator fun P.plus(other: Int): P = with(polynomialRing) { this@P + other }
+    public override operator fun P.plus(other: Int): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusPolynomialInt")
-    public override operator fun P.minus(other: Int): P = with(polynomialRing) { this@P - other }
+    public override operator fun P.minus(other: Int): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesPolynomialInt")
-    public override operator fun P.times(other: Int): P = with(polynomialRing) { this@P * other }
+    public override operator fun P.times(other: Int): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusPolynomialInt")
-    public override operator fun P.plus(other: Long): P = with(polynomialRing) { this@P + other }
+    public override operator fun P.plus(other: Long): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusPolynomialInt")
-    public override operator fun P.minus(other: Long): P = with(polynomialRing) { this@P - other }
+    public override operator fun P.minus(other: Long): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesPolynomialInt")
-    public override operator fun P.times(other: Long): P = with(polynomialRing) { this@P * other }
+    public override operator fun P.times(other: Long): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusIntPolynomial")
-    public override operator fun Int.plus(other: P): P = with(polynomialRing) { this@Int + other }
+    public override operator fun Int.plus(other: P): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusIntPolynomial")
-    public override operator fun Int.minus(other: P): P = with(polynomialRing) { this@Int - other }
+    public override operator fun Int.minus(other: P): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesIntPolynomial")
-    public override operator fun Int.times(other: P): P = with(polynomialRing) { this@Int * other }
+    public override operator fun Int.times(other: P): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusLongPolynomial")
-    public override operator fun Long.plus(other: P): P = with(polynomialRing) { this@Long + other }
+    public override operator fun Long.plus(other: P): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusLongPolynomial")
-    public override operator fun Long.minus(other: P): P = with(polynomialRing) { this@Long - other }
+    public override operator fun Long.minus(other: P): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesLongPolynomial")
-    public override operator fun Long.times(other: P): P = with(polynomialRing) { this@Long * other }
+    public override operator fun Long.times(other: P): P = with(polynomialRing) { this@times * other }
 
     @JvmName("unaryPlusConstant")
-    public override operator fun C.unaryPlus(): C = with(polynomialRing) { +this@C }
+    public override operator fun C.unaryPlus(): C = with(polynomialRing) { +this@unaryPlus }
     @JvmName("unaryMinusConstant")
-    public override operator fun C.unaryMinus(): C = with(polynomialRing) { -this@C }
+    public override operator fun C.unaryMinus(): C = with(polynomialRing) { -this@unaryMinus }
     @JvmName("plusConstantConstant")
-    public override operator fun C.plus(other: C): C = with(polynomialRing) { this@C + other }
+    public override operator fun C.plus(other: C): C = with(polynomialRing) { this@plus + other }
     @JvmName("minusConstantConstant")
-    public override operator fun C.minus(other: C): C = with(polynomialRing) { this@C - other }
+    public override operator fun C.minus(other: C): C = with(polynomialRing) { this@minus - other }
     @JvmName("timesConstantConstant")
-    public override operator fun C.times(other: C): C = with(polynomialRing) { this@C * other }
+    public override operator fun C.times(other: C): C = with(polynomialRing) { this@times * other }
     @JvmName("powerConstant")
     public override fun power(base: C, exponent: UInt): C = with(polynomialRing) { power(base, exponent) }
     @JvmName("powerConstant")
     public override fun power(base: C, exponent: ULong): C = with(polynomialRing) { power(base, exponent) }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: UInt): C = with(polynomialRing) { this@C pow exponent }
+    public override infix fun C.pow(exponent: UInt): C = with(polynomialRing) { this@pow pow exponent }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: ULong): C = with(polynomialRing) { this@C pow exponent }
+    public override infix fun C.pow(exponent: ULong): C = with(polynomialRing) { this@pow pow exponent }
 
     @JvmName("plusConstantPolynomial")
-    public override operator fun C.plus(other: P): P = with(polynomialRing) { this@C + other }
+    public override operator fun C.plus(other: P): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusConstantPolynomial")
-    public override operator fun C.minus(other: P): P = with(polynomialRing) { this@C - other }
+    public override operator fun C.minus(other: P): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesConstantPolynomial")
-    public override operator fun C.times(other: P): P = with(polynomialRing) { this@C * other }
+    public override operator fun C.times(other: P): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusPolynomialConstant")
-    public override operator fun P.plus(other: C): P = with(polynomialRing) { this@P + other }
+    public override operator fun P.plus(other: C): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusPolynomialConstant")
-    public override operator fun P.minus(other: C): P = with(polynomialRing) { this@P - other }
+    public override operator fun P.minus(other: C): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesPolynomialConstant")
-    public override operator fun P.times(other: C): P = with(polynomialRing) { this@P * other }
+    public override operator fun P.times(other: C): P = with(polynomialRing) { this@times * other }
 
     @JvmName("unaryPlusPolynomial")
-    public override operator fun P.unaryPlus(): P = with(polynomialRing) { +this@P }
+    public override operator fun P.unaryPlus(): P = with(polynomialRing) { +this@unaryPlus }
     @JvmName("unaryMinusPolynomial")
-    public override operator fun P.unaryMinus(): P = with(polynomialRing) { -this@P }
+    public override operator fun P.unaryMinus(): P = with(polynomialRing) { -this@unaryMinus }
     @JvmName("plusPolynomialPolynomial")
-    public override operator fun P.plus(other: P): P = with(polynomialRing) { this@P + other }
+    public override operator fun P.plus(other: P): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusPolynomialPolynomial")
-    public override operator fun P.minus(other: P): P = with(polynomialRing) { this@P - other }
+    public override operator fun P.minus(other: P): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesPolynomialPolynomial")
-    public override operator fun P.times(other: P): P = with(polynomialRing) { this@P * other }
+    public override operator fun P.times(other: P): P = with(polynomialRing) { this@times * other }
     @JvmName("powerPolynomial")
     public override fun power(base: P, exponent: UInt): P = with(polynomialRing) { power(base, exponent) }
     @JvmName("powerPolynomial")
     public override fun power(base: P, exponent: ULong): P = with(polynomialRing) { power(base, exponent) }
     @JvmName("powPolynomial")
-    public override infix fun P.pow(exponent: UInt): P = with(polynomialRing) { this@P pow exponent }
+    public override infix fun P.pow(exponent: UInt): P = with(polynomialRing) { this@pow pow exponent }
     @JvmName("powPolynomial")
-    public override infix fun P.pow(exponent: ULong): P = with(polynomialRing) { this@P pow exponent }
+    public override infix fun P.pow(exponent: ULong): P = with(polynomialRing) { this@pow pow exponent }
 
-    public override val P.degree: Int get() = with(polynomialRing) { this@P.degree }
+    public override val P.degree: Int get() = with(polynomialRing) { this@degree.degree }
 }
 
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
@@ -891,71 +919,71 @@ public interface MultivariateRationalFunctionSpaceOverMultivariatePolynomialSpac
     public override val V.polynomialValue: P get() = with(polynomialRing) { this@polynomialValue.value }
     
     @JvmName("plusVariableInt")
-    public override operator fun V.plus(other: Int): P = with(polynomialRing) { this@V + other }
+    public override operator fun V.plus(other: Int): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusVariableInt")
-    public override operator fun V.minus(other: Int): P = with(polynomialRing) { this@V - other }
+    public override operator fun V.minus(other: Int): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesVariableInt")
-    public override operator fun V.times(other: Int): P = with(polynomialRing) { this@V * other }
+    public override operator fun V.times(other: Int): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusVariableLong")
-    public override operator fun V.plus(other: Long): P = with(polynomialRing) { this@V + other }
+    public override operator fun V.plus(other: Long): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusVariableLong")
-    public override operator fun V.minus(other: Long): P = with(polynomialRing) { this@V - other }
+    public override operator fun V.minus(other: Long): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesVariableLong")
-    public override operator fun V.times(other: Long): P = with(polynomialRing) { this@V * other }
+    public override operator fun V.times(other: Long): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusIntVariable")
-    public override operator fun Int.plus(other: V): P = with(polynomialRing) { this@Int + other }
+    public override operator fun Int.plus(other: V): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusIntVariable")
-    public override operator fun Int.minus(other: V): P = with(polynomialRing) { this@Int - other }
+    public override operator fun Int.minus(other: V): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesIntVariable")
-    public override operator fun Int.times(other: V): P = with(polynomialRing) { this@Int * other }
+    public override operator fun Int.times(other: V): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusLongVariable")
-    public override operator fun Long.plus(other: V): P = with(polynomialRing) { this@Long + other }
+    public override operator fun Long.plus(other: V): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusLongVariable")
-    public override operator fun Long.minus(other: V): P = with(polynomialRing) { this@Long - other }
+    public override operator fun Long.minus(other: V): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesLongVariable")
-    public override operator fun Long.times(other: V): P = with(polynomialRing) { this@Long * other }
+    public override operator fun Long.times(other: V): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusVariableConstant")
-    public override operator fun V.plus(other: C): P = with(polynomialRing) { this@V + other }
+    public override operator fun V.plus(other: C): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusVariableConstant")
-    public override operator fun V.minus(other: C): P = with(polynomialRing) { this@V - other }
+    public override operator fun V.minus(other: C): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesVariableConstant")
-    public override operator fun V.times(other: C): P = with(polynomialRing) { this@V * other }
+    public override operator fun V.times(other: C): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusConstantVariable")
-    public override operator fun C.plus(other: V): P = with(polynomialRing) { this@C + other }
+    public override operator fun C.plus(other: V): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusConstantVariable")
-    public override operator fun C.minus(other: V): P = with(polynomialRing) { this@C - other }
+    public override operator fun C.minus(other: V): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesConstantVariable")
-    public override operator fun C.times(other: V): P = with(polynomialRing) { this@C * other }
+    public override operator fun C.times(other: V): P = with(polynomialRing) { this@times * other }
 
     @JvmName("unaryPlusVariable")
-    public override operator fun V.unaryPlus(): P = with(polynomialRing) { +this@V }
+    public override operator fun V.unaryPlus(): P = with(polynomialRing) { +this@unaryPlus }
     @JvmName("unaryMinusVariable")
-    public override operator fun V.unaryMinus(): P = with(polynomialRing) { -this@V }
+    public override operator fun V.unaryMinus(): P = with(polynomialRing) { -this@unaryMinus }
     @JvmName("plusVariableVariable")
-    public override operator fun V.plus(other: V): P = with(polynomialRing) { this@V + other }
+    public override operator fun V.plus(other: V): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusVariableVariable")
-    public override operator fun V.minus(other: V): P = with(polynomialRing) { this@V - other }
+    public override operator fun V.minus(other: V): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesVariableVariable")
-    public override operator fun V.times(other: V): P = with(polynomialRing) { this@V * other }
+    public override operator fun V.times(other: V): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusVariablePolynomial")
-    public override operator fun V.plus(other: P): P = with(polynomialRing) { this@V + other }
+    public override operator fun V.plus(other: P): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusVariablePolynomial")
-    public override operator fun V.minus(other: P): P = with(polynomialRing) { this@V - other }
+    public override operator fun V.minus(other: P): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesVariablePolynomial")
-    public override operator fun V.times(other: P): P = with(polynomialRing) { this@V * other }
+    public override operator fun V.times(other: P): P = with(polynomialRing) { this@times * other }
 
     @JvmName("plusPolynomialVariable")
-    public override operator fun P.plus(other: V): P = with(polynomialRing) { this@P + other }
+    public override operator fun P.plus(other: V): P = with(polynomialRing) { this@plus + other }
     @JvmName("minusPolynomialVariable")
-    public override operator fun P.minus(other: V): P = with(polynomialRing) { this@P - other }
+    public override operator fun P.minus(other: V): P = with(polynomialRing) { this@minus - other }
     @JvmName("timesPolynomialVariable")
-    public override operator fun P.times(other: V): P = with(polynomialRing) { this@P * other }
+    public override operator fun P.times(other: V): P = with(polynomialRing) { this@times * other }
 
     public override val P.degrees: Map<V, UInt> get() = with(polynomialRing) { degrees }
     public override fun P.degreeBy(variable: V): UInt = with(polynomialRing) { degreeBy(variable) }

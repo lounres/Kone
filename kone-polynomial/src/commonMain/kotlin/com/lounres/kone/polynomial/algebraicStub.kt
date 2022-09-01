@@ -18,8 +18,7 @@ import com.lounres.kone.algebraic.*
  * @return product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal fun <C> multiplyByDoubling(arg: C, multiplier: Int): C =
+internal fun <C> Ring<C>.multiplyByDoubling(arg: C, multiplier: Int): C =
     if (multiplier >= 0) multiplyByDoubling(arg, multiplier.toUInt())
     else multiplyByDoubling(-arg, (-multiplier).toUInt())
 
@@ -33,8 +32,7 @@ internal fun <C> multiplyByDoubling(arg: C, multiplier: Int): C =
  * @return sum of the augend [base] and product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: Int): C =
+internal fun <C> Ring<C>.addMultipliedByDoubling(base: C, arg: C, multiplier: Int): C =
     if (multiplier >= 0) addMultipliedByDoubling(base, arg, multiplier.toUInt())
     else addMultipliedByDoubling(base, -arg, (-multiplier).toUInt())
 
@@ -47,8 +45,7 @@ internal fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: Int): C =
  * @return product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal fun <C> multiplyByDoubling(arg: C, multiplier: Long): C =
+internal fun <C> Ring<C>.multiplyByDoubling(arg: C, multiplier: Long): C =
     if (multiplier >= 0L) multiplyByDoubling(arg, multiplier.toUInt())
     else multiplyByDoubling(-arg, (-multiplier).toUInt())
 
@@ -62,8 +59,7 @@ internal fun <C> multiplyByDoubling(arg: C, multiplier: Long): C =
  * @return sum of the augend [base] and product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: Long): C =
+internal fun <C> Ring<C>.addMultipliedByDoubling(base: C, arg: C, multiplier: Long): C =
     if (multiplier >= 0L) addMultipliedByDoubling(base, arg, multiplier.toUInt())
     else addMultipliedByDoubling(base, -arg, (-multiplier).toUInt())
 
@@ -78,8 +74,7 @@ internal fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: Long): C =
  * @return product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> multiplyByDoubling(arg: C, multiplier: UInt): C =
+internal tailrec fun <C> Ring<C>.multiplyByDoubling(arg: C, multiplier: UInt): C =
     when {
         multiplier == 0u -> zero
         multiplier == 1u -> arg
@@ -100,8 +95,7 @@ internal tailrec fun <C> multiplyByDoubling(arg: C, multiplier: UInt): C =
  * @return sum of the augend [base] and product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: UInt): C =
+internal tailrec fun <C> Ring<C>.addMultipliedByDoubling(base: C, arg: C, multiplier: UInt): C =
     when {
         multiplier == 0u -> base
         multiplier == 1u -> base + arg
@@ -121,8 +115,7 @@ internal tailrec fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: UI
  * @return product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> multiplyByDoubling(arg: C, multiplier: ULong): C =
+internal tailrec fun <C> Ring<C>.multiplyByDoubling(arg: C, multiplier: ULong): C =
     when {
         multiplier == 0uL -> zero
         multiplier == 1uL -> arg
@@ -143,8 +136,7 @@ internal tailrec fun <C> multiplyByDoubling(arg: C, multiplier: ULong): C =
  * @return sum of the augend [base] and product of the multiplicand [arg] and the multiplier [multiplier].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: ULong): C =
+internal tailrec fun <C> Ring<C>.addMultipliedByDoubling(base: C, arg: C, multiplier: ULong): C =
     when {
         multiplier == 0uL -> base
         multiplier == 1uL -> base + arg
@@ -162,8 +154,7 @@ internal tailrec fun <C> addMultipliedByDoubling(base: C, arg: C, multiplier: UL
  * @return [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Field<C>)
-internal fun <C> exponentiateBySquaring(arg: C, exponent: Int): C =
+internal fun <C> Field<C>.exponentiateBySquaring(arg: C, exponent: Int): C =
     if (exponent >= 0) exponentiateBySquaring(arg, exponent.toUInt())
     else exponentiateBySquaring(one / arg, (-exponent).toUInt())
 
@@ -177,8 +168,7 @@ internal fun <C> exponentiateBySquaring(arg: C, exponent: Int): C =
  * @return product of [base] and [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Field<C>)
-internal fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Int): C =
+internal fun <C> Field<C>.multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Int): C =
     if (exponent >= 0) multiplyExponentiatedBySquaring(base, arg, exponent.toUInt())
     else multiplyExponentiatedBySquaring(base, one / arg, (-exponent).toUInt())
 
@@ -191,8 +181,7 @@ internal fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Int)
  * @return [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Field<C>)
-internal fun <C> exponentiateBySquaring(arg: C, exponent: Long): C =
+internal fun <C> Field<C>.exponentiateBySquaring(arg: C, exponent: Long): C =
     if (exponent >= 0L) exponentiateBySquaring(arg, exponent.toUInt())
     else exponentiateBySquaring(one / arg, (-exponent).toUInt())
 
@@ -206,8 +195,7 @@ internal fun <C> exponentiateBySquaring(arg: C, exponent: Long): C =
  * @return product of [base] and [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Field<C>)
-internal fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Long): C =
+internal fun <C> Field<C>.multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Long): C =
     if (exponent >= 0L) multiplyExponentiatedBySquaring(base, arg, exponent.toUInt())
     else multiplyExponentiatedBySquaring(base, one / arg, (-exponent).toUInt())
 
@@ -222,10 +210,9 @@ internal fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: Long
  * @return [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: UInt): C =
+internal tailrec fun <C> Ring<C>.exponentiateBySquaring(arg: C, exponent: UInt): C =
     when {
-        exponent == 0u -> zero
+        exponent == 0u -> one
         exponent == 1u -> arg
         exponent and 1u == 0u -> exponentiateBySquaring(arg * arg, exponent shr 1)
         exponent and 1u == 1u -> multiplyExponentiatedBySquaring(arg, arg * arg, exponent shr 1)
@@ -244,8 +231,7 @@ internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: UInt): C =
  * @return product of [base] and [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: UInt): C =
+internal tailrec fun <C> Ring<C>.multiplyExponentiatedBySquaring(base: C, arg: C, exponent: UInt): C =
     when {
         exponent == 0u -> base
         exponent == 1u -> base * arg
@@ -265,10 +251,9 @@ internal tailrec fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, expone
  * @return [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: ULong): C =
+internal tailrec fun <C> Ring<C>.exponentiateBySquaring(arg: C, exponent: ULong): C =
     when {
-        exponent == 0uL -> zero
+        exponent == 0uL -> one
         exponent == 1uL -> arg
         exponent and 1uL == 0uL -> exponentiateBySquaring(arg * arg, exponent shr 1)
         exponent and 1uL == 1uL -> multiplyExponentiatedBySquaring(arg, arg * arg, exponent shr 1)
@@ -287,8 +272,7 @@ internal tailrec fun <C> exponentiateBySquaring(arg: C, exponent: ULong): C =
  * @return product of [base] and [arg] raised to the power [exponent].
  * @author Gleb Minaev
  */
-context(Ring<C>)
-internal tailrec fun <C> multiplyExponentiatedBySquaring(base: C, arg: C, exponent: ULong): C =
+internal tailrec fun <C> Ring<C>.multiplyExponentiatedBySquaring(base: C, arg: C, exponent: ULong): C =
     when {
         exponent == 0uL -> base
         exponent == 1uL -> base * arg

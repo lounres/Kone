@@ -8,6 +8,7 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.util.rightAddMultipliedByDoubling
 import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
@@ -27,16 +28,22 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
 
     // region Equality
     @JvmName("equalsToConstantConstant")
+    @JsName("equalsToConstantConstant")
     public infix fun C.equalsTo(other: C): Boolean = this == other
     @JvmName("eqConstantConstant")
+    @JsName("eqConstantConstant")
     public infix fun C.eq(other: C): Boolean = this equalsTo other
     @JvmName("isZeroConstant")
+    @JsName("isZeroConstant")
     public fun C.isZero(): Boolean = this equalsTo constantZero
     @JvmName("isOneConstant")
+    @JsName("isOneConstant")
     public fun C.isOne(): Boolean = this equalsTo constantOne
     @JvmName("isNotZeroConstant")
+    @JsName("isNotZeroConstant")
     public fun C.isNotZero(): Boolean = !isZero()
     @JvmName("isNotOneConstant")
+    @JsName("isNotOneConstant")
     public fun C.isNotOne(): Boolean = !isOne()
 
     public override infix fun P.equalsTo(other: P): Boolean = this == other
@@ -70,37 +77,49 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
 
     // region Constant-Int operations
     @JvmName("plusConstantInt")
+    @JsName("plusConstantInt")
     public operator fun C.plus(other: Int): C
     @JvmName("minusConstantInt")
+    @JsName("minusConstantInt")
     public operator fun C.minus(other: Int): C
     @JvmName("timesConstantInt")
+    @JsName("timesConstantInt")
     public operator fun C.times(other: Int): C
     // endregion
 
     // region Constant-Long operations
     @JvmName("plusConstantLong")
+    @JsName("plusConstantLong")
     public operator fun C.plus(other: Long): C
     @JvmName("minusConstantLong")
+    @JsName("minusConstantLong")
     public operator fun C.minus(other: Long): C
     @JvmName("timesConstantLong")
+    @JsName("timesConstantLong")
     public operator fun C.times(other: Long): C
     // endregion
 
     // region Int-Constant operations
     @JvmName("plusIntConstant")
+    @JsName("plusIntConstant")
     public operator fun Int.plus(other: C): C
     @JvmName("minusIntConstant")
+    @JsName("minusIntConstant")
     public operator fun Int.minus(other: C): C
     @JvmName("timesIntConstant")
+    @JsName("timesIntConstant")
     public operator fun Int.times(other: C): C
     // endregion
 
     // region Long-Constant operations
     @JvmName("plusLongConstant")
+    @JsName("plusLongConstant")
     public operator fun Long.plus(other: C): C
     @JvmName("minusLongConstant")
+    @JsName("minusLongConstant")
     public operator fun Long.minus(other: C): C
     @JvmName("timesLongConstant")
+    @JsName("timesLongConstant")
     public operator fun Long.times(other: C): C
     // endregion
 
@@ -130,22 +149,31 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
 
     // region Constant-Constant operations
     @JvmName("unaryPlusConstant")
+    @JsName("unaryPlusConstant")
     public operator fun C.unaryPlus(): C = this
     @JvmName("unaryMinusConstant")
+    @JsName("unaryMinusConstant")
     public operator fun C.unaryMinus(): C
     @JvmName("plusConstantConstant")
+    @JsName("plusConstantConstant")
     public operator fun C.plus(other: C): C
     @JvmName("minusConstantConstant")
+    @JsName("minusConstantConstant")
     public operator fun C.minus(other: C): C
     @JvmName("timesConstantConstant")
+    @JsName("timesConstantConstant")
     public operator fun C.times(other: C): C
     @JvmName("powerConstant")
+    @JsName("powerConstantUInt")
     public fun power(base: C, exponent: UInt): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
     @JvmName("powerConstant")
+    @JsName("powerConstantULong")
     public fun power(base: C, exponent: ULong): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
     @JvmName("powConstant")
+    @JsName("powConstantUInt")
     public infix fun C.pow(exponent: UInt): C = power(this, exponent)
     @JvmName("powConstant")
+    @JsName("powConstantULong")
     public infix fun C.pow(exponent: ULong): C = power(this, exponent)
     // endregion
 
@@ -178,17 +206,17 @@ public interface PolynomialSpaceOverRing<C, P: Polynomial<C>, out A: Ring<C>> : 
 
     // region Constants equality
     @JvmName("equalsToConstantConstant")
-    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@C equalsTo other }
+    public override infix fun C.equalsTo(other: C): Boolean = with(ring) { this@equalsTo equalsTo other }
     @JvmName("eqConstantConstant")
-    public override infix fun C.eq(other: C): Boolean = with(ring) { this@C eq other }
+    public override infix fun C.eq(other: C): Boolean = with(ring) { this@eq eq other }
     @JvmName("isZeroConstant")
-    public override fun C.isZero(): Boolean = with(ring) { this@C.isZero() }
+    public override fun C.isZero(): Boolean = with(ring) { this@isZero.isZero() }
     @JvmName("isOneConstant")
-    public override fun C.isOne(): Boolean = with(ring) { this@C.isOne() }
+    public override fun C.isOne(): Boolean = with(ring) { this@isOne.isOne() }
     @JvmName("isNotZeroConstant")
-    public override fun C.isNotZero(): Boolean = with(ring) { this@C.isNotZero() }
+    public override fun C.isNotZero(): Boolean = with(ring) { this@isNotZero.isNotZero() }
     @JvmName("isNotOneConstant")
-    public override fun C.isNotOne(): Boolean = with(ring) { this@C.isNotOne() }
+    public override fun C.isNotOne(): Boolean = with(ring) { this@isNotOne.isNotOne() }
     // endregion
 
     // region Integer-to-Constant conversion
@@ -248,9 +276,9 @@ public interface PolynomialSpaceOverRing<C, P: Polynomial<C>, out A: Ring<C>> : 
     @JvmName("powerConstant")
     public override fun power(base: C, exponent: ULong): C = with(ring) { power(base, exponent) }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@C pow exponent }
+    public override infix fun C.pow(exponent: UInt): C = with(ring) { this@pow pow exponent }
     @JvmName("powConstant")
-    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@C pow exponent }
+    public override infix fun C.pow(exponent: ULong): C = with(ring) { this@pow pow exponent }
     // endregion
 }
 

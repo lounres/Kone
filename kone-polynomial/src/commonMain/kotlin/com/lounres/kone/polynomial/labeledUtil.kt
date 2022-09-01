@@ -9,11 +9,11 @@ import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
 import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.mapUtils.mergeBy
 import com.lounres.kone.mapUtils.putOrChange
 import com.lounres.kone.mapUtils.withPutOrChanged
 import space.kscience.kmath.expressions.Symbol
-import space.kscience.kmath.misc.UnstableKMathAPI
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmName
@@ -44,7 +44,7 @@ public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): Labe
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
-                putOrChange(newDegs, newC) { left, right -> left + right }
+                putOrChange(newDegs, newC) { _, left, right -> left + right }
             }
         }
     )
@@ -60,7 +60,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
-                putOrChange(newDegs, newC) { left, right -> left + right }
+                putOrChange(newDegs, newC) { _, left, right -> left + right }
             }
         }
     )
@@ -106,7 +106,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Sy
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -132,7 +132,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -163,7 +163,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     algebra: A,
     variablesAndOrders: Map<Symbol, UInt>,
@@ -203,7 +203,7 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -212,7 +212,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = degs.withPutOrChanged(variable, 1u) { it -> it + 1u }
+                    val newDegs = degs.withPutOrChanged(variable, 1u) { _, it, _ -> it + 1u }
                     put(
                         newDegs,
                         c / multiplyByDoubling(one, newDegs[variable]!!)
@@ -222,7 +222,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     algebra: A,
     variable: Symbol,
@@ -233,7 +233,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = degs.withPutOrChanged(variable, order) { it -> it + order }
+                    val newDegs = degs.withPutOrChanged(variable, order) { _, it, _ -> it + order }
                     put(
                         newDegs,
                         newDegs[variable]!!.let { deg ->
@@ -246,7 +246,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
     )
 }
 
-@UnstableKMathAPI
+@ExperimentalKoneAPI
 public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     algebra: A,
     variablesAndOrders: Map<Symbol, UInt>,
@@ -257,7 +257,7 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = mergeBy(degs, filteredVariablesAndOrders) { deg, order -> deg + order }
+                    val newDegs = mergeBy(degs, filteredVariablesAndOrders) { _, deg, order -> deg + order }
                     put(
                         newDegs,
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->

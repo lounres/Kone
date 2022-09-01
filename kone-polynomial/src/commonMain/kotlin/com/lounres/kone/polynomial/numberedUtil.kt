@@ -14,6 +14,7 @@ import com.lounres.kone.mapUtils.putOrChange
 import space.kscience.kmath.structures.Buffer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
 import kotlin.math.max
 import kotlin.math.min
 
@@ -43,7 +44,7 @@ public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): Number
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * substitution.pow(deg.toInt())
                 }
-                putOrChange(newDegs, newC) { it -> it + newC }
+                putOrChange(newDegs, newC) { _, it, _ -> it + newC }
             }
         }
     )
@@ -58,7 +59,7 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
-                putOrChange(newDegs, newC) { it -> it + newC }
+                putOrChange(newDegs, newC) { _, it, _ -> it + newC }
             }
         }
     )
@@ -119,7 +120,7 @@ public fun NumberedPolynomial<Double>.substitute(args: Buffer<Double>): Numbered
                     val deg = degs[variable]
                     if (deg == 0u) product else product * args[variable].pow(deg.toInt())
                 }
-                putOrChange(newDegs, newC) { it -> it + newC }
+                putOrChange(newDegs, newC) { _, it, _ -> it + newC }
             }
         }
     )
@@ -140,7 +141,7 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Buffer<C>):
                     val deg = degs[variable]
                     if (deg == 0u) product else product * power(args[variable], deg)
                 }
-                putOrChange(newDegs, newC) { it -> it + newC }
+                putOrChange(newDegs, newC) { _, it, _ -> it + newC }
             }
         }
     )

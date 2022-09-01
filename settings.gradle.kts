@@ -15,4 +15,5 @@ include(rootDir.listFiles { file -> file.isDirectory && file.name.startsWith("ko
 include(
     "docs",
     "mapUtil",
+    "testUtil"
 )
