@@ -6,6 +6,7 @@
 package com.lounres.kone.polynomial.testUtils
 
 import com.lounres.kone.algebraic.Field
+import kotlin.jvm.JvmInline
 
 
 @JvmInline

@@ -14,6 +14,7 @@ import com.lounres.kone.mapUtils.putOrChange
 import space.kscience.kmath.structures.Buffer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
 import kotlin.math.max
 import kotlin.math.min
 

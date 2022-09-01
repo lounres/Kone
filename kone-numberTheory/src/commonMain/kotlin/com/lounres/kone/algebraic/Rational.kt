@@ -8,6 +8,7 @@
 package com.lounres.kone.algebraic
 
 import com.lounres.kone.numberTheory.gcd
+import kotlin.jvm.JvmField
 
 
 @Suppress("NAME_SHADOWING")
