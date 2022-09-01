@@ -8,6 +8,7 @@
 package com.lounres.kone.polynomial.testUtils
 
 import com.lounres.kone.algebraic.Ring
+import kotlin.jvm.JvmInline
 
 
 @JvmInline

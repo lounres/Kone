@@ -15,7 +15,4 @@ fun ListPolynomialSpace<IntBox, IntBoxModuloRing>.ListPolynomial(vararg coefs: I
 fun IntBoxModuloRing.ListPolynomial(vararg coefs: Int): ListPolynomial<IntBox> =
     ListPolynomial(coefs.map { IntBox(it) })
 
-context(IntBoxModuloRing)
-operator fun Int.not() = IntBox(this)
-context(PolynomialSpaceOverRing<*, *, IntBoxModuloRing>)
 operator fun Int.not() = IntBox(this)
