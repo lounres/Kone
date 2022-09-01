@@ -46,7 +46,7 @@ allprojects {
         }
     }
 
-    group = "com.lounres.kone"
+    group = "com.lounres.kone.experimental.1-7-20-Beta"
     version = "0.1.0-pre-1"
 }
 
