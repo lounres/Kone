@@ -4,15 +4,17 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const url = 'https://lounres.github.io'
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Kone',
   tagline: 'Making pure math computations available',
-  url: 'https://lounres.github.io',
-  baseUrl: '/',
+  url: url,
+  baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logos/kone-logo-original-orange.svg',
+  favicon: 'img/logos/kone-logo-original-themed.svg',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -24,7 +26,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'ru'],
+    locales: ['en', /*'ru'*/],
     localeConfigs: {
       en: {
         label: 'English',
@@ -32,14 +34,14 @@ const config = {
         htmlLang: 'en-GB',
         calendar: 'gregory',
         path: 'en',
-      },
+      },/*
       ru: {
         label: 'Русский',
         direction: 'ltr',
         htmlLang: 'ru',
         calendar: 'gregory',
         path: 'ru',
-      },
+      }, */
     },
   },
 
@@ -95,8 +97,13 @@ const config = {
           {
             type: 'doc',
             docId: 'intro',
-            position: 'left',
             label: 'Tutorial',
+            position: 'left',
+          },
+          {
+            position: 'left',
+            label: 'API',
+            href: `${url}/api`
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {

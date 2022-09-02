@@ -6,6 +6,11 @@
 }
 
 .featureSvg {
-  height: 200px;
+  margin-bottom: 20px;
+  height: 100px;
   width: 200px;
+}
+
+.featuresHeader {
+  text-align: center;
 }
