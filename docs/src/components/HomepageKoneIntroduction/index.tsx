@@ -1,13 +1,14 @@
 import styles from "@site/src/components/HomepageKoneIntroduction/styles.module.css";
 import React from "react";
 import clsx from "clsx";
+import Link from "@docusaurus/Link";
 
 
 export default function HomepageKoneIntroduction(): JSX.Element {
     return (
         <section className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
-                <h1 className="hero__title">Kone is <a className={styles.link} href={'https://kotlinlang.org/docs/multiplatform.html'}>Kotlin Multiplatform</a> library for pure math computations</h1>
+                <h1 className="hero__title">Kone is <Link href='https://kotlinlang.org/docs/multiplatform.html' className={styles.link}>Kotlin Multiplatform</Link> library for pure math computations</h1>
                 <div className={'row'}>
                     <div className={'col col--4 col--offset-1'}>
                         <h2 className={'hero__subtitle'}>

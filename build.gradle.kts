@@ -58,9 +58,24 @@ subprojects {
             explicitApi = Warning
 
             jvm {
-                compilations.all {
-                    kotlinOptions {
-                        jvmTarget = properties["jvmTarget"] as String
+                compilations {
+                    val main by getting
+                    if (project.name.startsWith("kone-", ignoreCase = true)) {
+                        val example by creating {
+                            defaultSourceSet {
+                                dependsOn(main.defaultSourceSet)
+                            }
+
+                            task<JavaExec>("runJvmExample") {
+                                classpath = output.classesDirs + compileDependencyFiles
+                                mainClass.set("com.lounres.kone.examples.${project.name.replace('-', '_')}.MainKt")
+                            }
+                        }
+                    }
+                    all {
+                        kotlinOptions {
+                            jvmTarget = properties["jvmTarget"] as String
+                        }
                     }
                 }
                 testRuns["test"].executionTask {

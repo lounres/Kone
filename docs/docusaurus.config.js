@@ -3,15 +3,15 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-
-const url = 'https://lounres.github.io'
+const math = require('remark-math');
+const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Kone',
   tagline: 'Making pure math computations available',
-  url: url,
-  baseUrl: '/docs/',
+  url: 'https://lounres.github.io',
+  baseUrl: '/Kone/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/logos/kone-logo-original-themed.svg',
@@ -26,7 +26,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', /*'ru'*/],
+    locales: ['en', 'ru'],
     localeConfigs: {
       en: {
         label: 'English',
@@ -34,14 +34,14 @@ const config = {
         htmlLang: 'en-GB',
         calendar: 'gregory',
         path: 'en',
-      },/*
+      },
       ru: {
         label: 'Русский',
         direction: 'ltr',
         htmlLang: 'ru',
         calendar: 'gregory',
         path: 'ru',
-      }, */
+      },
     },
   },
 
@@ -53,24 +53,29 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          path: "docs",
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links. // TODO
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/lounres/Kone/tree/master/docs/',
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links. // TODO
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
+  ],
+
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity: 'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
+    },
   ],
 
   themeConfig:
@@ -97,20 +102,35 @@ const config = {
           {
             type: 'doc',
             docId: 'intro',
-            label: 'Tutorial',
+            label: 'Docs',
             position: 'left',
           },
           {
-            position: 'left',
+            href: `https://lounres.github.io/Kone/api`,
             label: 'API',
-            href: `${url}/api`
+            position: 'left',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          // { // TODO
+          //   to: '/tutorials',
+          //   label: 'Tutorials',
+          //   position: 'left'
+          // },
           {
-            type: 'docsVersionDropdown',
-            position: 'right',
+            to: '/blog',
+            label: 'Blog',
+            position: 'left'
           },
           {
+            href: 'https://lounres.github.io/math-kotlin-experiments',
+            label: 'Math Kotlin Experiments',
+            position: 'left'
+          },
+          // Right Side
+          // { // TODO
+          //   type: 'docsVersionDropdown',
+          //   position: 'right',
+          // },
+          { // TODO
             type: 'localeDropdown',
             position: 'right',
           },
@@ -119,15 +139,6 @@ const config = {
             position: 'right',
             className: 'header-github-link',
             'aria-label': 'GitHub repository',
-          },
-          // {
-          //   href: 'https://github.com/lounres/Kone',
-          //   label: 'GitHub',
-          //   position: 'right',
-          // },
-          {
-            type: 'search',
-            position: 'right',
           },
         ],
         hideOnScroll: true,
@@ -179,6 +190,7 @@ const config = {
       },
       prism: {
         defaultLanguage: 'kotlin',
+        additionalLanguages: ['kotlin', 'groovy', 'markup'],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },

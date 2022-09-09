@@ -11,5 +11,10 @@ kotlin {
 
             }
         }
+        val jvmExample by getting {
+            dependencies {
+                implementation(projects.koneNumberTheory)
+            }
+        }
     }
 }
