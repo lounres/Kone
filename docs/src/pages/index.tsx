@@ -5,6 +5,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageKoneIntroduction from '@site/src/components/HomepageKoneIntroduction';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import Translate, {translate} from '@docusaurus/Translate';
 
 import styles from './index.module.css';
 
@@ -15,7 +16,11 @@ function HomepageHeader() {
             <div className="container">
                 <img
                     src='img/logos/kone-logo-full-colored.svg'
-                    alt='Kone logo'
+                    alt={translate({
+                        message: "Kone logo",
+                        id: "homepage.logo.alt",
+                        description: "Big Kone logo alternative text"
+                    })}
                     className={clsx(styles.logoBannerBig)}
                 />
                 <img
@@ -23,8 +28,13 @@ function HomepageHeader() {
                     alt='Kone logo'
                     className={clsx(styles.logoBannerSmall)}
                 />
-                <h1 className="hero__title">{siteConfig.title}</h1>
-                <p className="hero__subtitle">{siteConfig.tagline}</p>
+                <h1 className="hero__title">Kone</h1>
+                <p className="hero__subtitle">
+                    <Translate
+                        id="meta.tagline"
+                        description="The Kone's tagline"
+                    >Making pure math computations available</Translate>
+                </p>
                 {/*<div className={styles.buttons}>
                     <Link
                         className="button button--secondary button--lg"
@@ -41,8 +51,16 @@ export default function Home(): JSX.Element {
     const {siteConfig} = useDocusaurusContext();
     return (
         <Layout
-            title={`Home`}
-            description="Kone is Kotlin Multiplatform library for pure math computations">
+            title={translate({
+                message: "Home",
+                id: "homepage.meta.title",
+                description: "Title of the homepage"
+            })}
+            description={translate({
+                message: "Kone is Kotlin Multiplatform library for pure math computations",
+                id: "homepage.meta.description",
+                description: "Title of the homepage"
+            })}>
             <HomepageHeader />
             <main>
                 <HomepageKoneIntroduction />

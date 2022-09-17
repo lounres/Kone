@@ -1,7 +1,6 @@
 ---
 sidebar_position: 2
 ---
-
 import DependenciesTabs from '@site/src/components/DependenciesTabs';
 
 # Kone: Algebraic
@@ -20,7 +19,7 @@ Do you remember what is [*ring in algebra*](https://en.wikipedia.org/wiki/Ring_(
 3. unary operation $-$ on $R$ that we call "additive inversion" or "getting opposite element", and
 4. constants $0$ and $1$ from $R$ that we call "additive identity" and "multiplicative identity" respectively or "zero" and "unit" respectively
 
-that satisfy some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
+that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
 
 <!-- TODO: hyperlink to API -->
 So in Kone any ring is implemented as an object that holds all the operation of the ring, so it can be used as an algebraic context. For example, there `kone-numberTheory` provides class of Rational numbers and field context for them:
@@ -63,14 +62,16 @@ public object RationalField : Field<Rational> /* Field is an extension interface
     // Also some operations comes from Ring/Field interface as derived from the operations above
 }
 ```
-So you can use the context like
+
+## Examples
+Here is an example of standard way to use context of rational numbers:
 <!-- TODO: examples for signed integer power -->
 ```kotlin showLineNumbers
 import com.lounres.kone.algebraic.*
 import com.lounres.kone.numberTheory.*
 
 // highlight-start
-Rational.field /* It's a another reference to RationalField */ {
+Rational.field /* It's another reference to RationalField */ {
     val a = Rational(1, 2)
     val b = Rational(1, 3)
 
@@ -99,7 +100,7 @@ Rational.field /* It's a another reference to RationalField */ {
 //  >>> Int
 
     // Context equality checkers does not support default Kotlin `equals` operator.
-    // Instead there are `equalsTo`, `notEqualsTo`, `eq`, `neq` infix operations.
+    // Instead, there are `equalsTo`, `notEqualsTo`, `eq`, `neq` infix operations.
     println(a equalsTo b)
 //  >>> false
     println(a * 2 eq b * 3)
@@ -114,15 +115,21 @@ Rational.field /* It's a another reference to RationalField */ {
 
 // highlight-start
 // Contexts can also be used to return result of computation inside them
-fun bernoulliNumber(n: UInt): Rational = Rational.field {
-    val n = n.toInt()
-    val bernoulliNumbers = Array<Rational?>(n+1) { null }
+fun bernoulliNumber(n: Int): Rational = Rational.field {
+    // Initialise a list for storing the recursively computed Bernoulli numbers
+    val bernoulliNumbers = Array<Rational?>(n + 1) { null }
     bernoulliNumbers[0] = one
-    for (i in 1 .. n) bernoulliNumbers[i] =
-        (1 .. i)
-            .map { k -> binomial(i+1, k+1) * bernoulliNumbers[i-k]!! }
-            .reduce { acc, r -> acc + r } / -(i+1)
+
+    // Compute the numbers with recurrent formula
+    for (i in 1..n) bernoulliNumbers[i] =
+        (1..i)
+            .map { k -> binomial(i + 1, k + 1) * bernoulliNumbers[i - k]!! }
+            .reduce { acc, r -> acc + r } / -(i + 1)
+
+    // Return result
     bernoulliNumbers[n]!!
 }
+println(bernoulliNumber(14))
+// >>> 7/6
 // highlight-end
 ```

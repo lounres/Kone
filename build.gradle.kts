@@ -67,6 +67,7 @@ subprojects {
                             }
 
                             task<JavaExec>("runJvmExample") {
+                                group = "example"
                                 classpath = output.classesDirs + compileDependencyFiles
                                 mainClass.set("com.lounres.kone.examples.${project.name.replace('-', '_')}.MainKt")
                             }
