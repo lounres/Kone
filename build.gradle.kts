@@ -1,11 +1,9 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
-import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
-import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -52,8 +50,8 @@ allprojects {
 
 subprojects {
     if (name.startsWith("kone-", ignoreCase = true) || name in listOf("testUtil")) {
-        apply<KotlinMultiplatformPluginWrapper>()
-        apply<KotestMultiplatformCompilerGradlePlugin>()
+        apply(plugin = rootProject.libs.plugins.kotlin.multiplatform.get().pluginId)
+        apply(plugin = rootProject.libs.plugins.kotest.multiplatform.get().pluginId)
         configure<KotlinMultiplatformExtension> {
             explicitApi = Warning
 
@@ -63,8 +61,10 @@ subprojects {
                         jvmTarget = properties["jvmTarget"] as String
                     }
                 }
-                testRuns["test"].executionTask {
-                    useJUnitPlatform()
+                testRuns.all {
+                    executionTask {
+                        useJUnitPlatform()
+                    }
                 }
             }
 
@@ -74,7 +74,7 @@ subprojects {
             }
 
             linuxX64()
-            mingwX64()
+//            mingwX64()
             macosX64()
 
             @Suppress("UNUSED_VARIABLE")

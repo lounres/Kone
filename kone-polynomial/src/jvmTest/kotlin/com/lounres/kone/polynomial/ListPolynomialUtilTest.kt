@@ -10,12 +10,13 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.annotations.UnstableKoneAPI
 import com.lounres.kone.polynomial.testUtils.assertFailsWithTypeAndMessage
+import io.kotest.core.spec.style.AnnotationSpec
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class ListPolynomialUtilTest {
+class ListPolynomialUtilTest : AnnotationSpec() {
     @Test
     fun test_Polynomial_substitute_Double() {
         assertEquals(
