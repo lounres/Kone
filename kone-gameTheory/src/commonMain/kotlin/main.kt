@@ -11,9 +11,13 @@ import java.io.File
 import java.io.RandomAccessFile
 import java.lang.Integer.min
 import java.lang.NullPointerException
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 import kotlin.streams.toList
+import kotlin.system.exitProcess
 import kotlin.system.measureNanoTime
 
 
@@ -186,79 +190,79 @@ fun computePowersProds7() = runBlocking(Dispatchers.Default) {
     jobs.last().last()!!.join()
 }
 
-val limit8 = 64
-val powers8 = List(limit8) { 1uL shl it }
-val cache8 = Array(limit8) { Array<ULong?>(limit8) { null } }
-val cacheFileName8 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod8-table-size-$limit8-at-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}"
-val cacheFile8 = RandomAccessFile(File(cacheFileName8), "rw").apply {
-    repeat(limit8 * limit8) { writeLong(0) }
-}
-data class Query8(val i: Int, val j: Int, val value: Long)
-val cacheFileWriteQueries8 = Channel<Query8>(Channel.UNLIMITED)
-fun prod8(left: ULong, right: ULong): ULong {
-    val leftBits = BitSet.valueOf(longArrayOf(left.toLong())).stream().toList()
-    val rightBIts = BitSet.valueOf(longArrayOf(right.toLong())).stream().toList()
-    var result = 0uL
-    for (i in leftBits) for (j in rightBIts) result = result xor cache8[i][j]!!
-    return result
-}
-@OptIn(ExperimentalStdlibApi::class)
-fun computePowersProds8() = runBlocking(Dispatchers.Default) {
-    launch {
-        while (true) {
-            val (i, j, value) = cacheFileWriteQueries8.receive()
-            cacheFile8.apply {
-                seek((i + j * limit8) * 8L)
-                writeLong(value)
-            }
-        }
-    }
-    val jobs = Array(limit8) { Array<Job?>(limit8) { null } }
-    for (i in 0 ..< limit8) {
-        val left = powers8[i]
-        for (j in i ..< limit8) {
-            val right = powers8[j]
-            jobs[i][j] = launch {
-                buildList(2) {
-                    if (i > 0) add(jobs[i-1][j]!!)
-                    try { if (j > i) add(jobs[i][j - 1]!!) }
-                    catch (e: NullPointerException) {
-                        println("$i, $j")
-                        throw e
-                    }
-                }.joinAll()
-                var currentValue = 0uL
-                val impossibleValues = PriorityQueue<ULong>()
-                for (left2 in 0uL ..< left) for (right2 in 0uL ..< right) {
-                    val value = prod8(left2, right2) xor prod8(left, right2) xor prod8(left2, right)
-                    when {
-                        value == currentValue -> {
-                            currentValue++
-                            while (currentValue == impossibleValues.peek()) {
-                                impossibleValues.poll()
-                                currentValue++
-                            }
-                        }
-
-                        value > currentValue -> impossibleValues.add(value)
-                    }
-                }
-                cache8[i][j] = currentValue
-                cache8[j][i] = currentValue
-                cacheFileWriteQueries8.send(Query8(i, j, currentValue.toLong()))
-                cacheFileWriteQueries8.send(Query8(j, i, currentValue.toLong()))
-            }
-        }
-    }
-    jobs.last().last()!!.join()
-}
+//val limit8 = 64
+//val powers8 = List(limit8) { 1uL shl it }
+//val cache8 = Array(limit8) { Array<ULong?>(limit8) { null } }
+//val cacheFileName8 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod8-table-size-$limit8-at-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}"
+//val cacheFile8 = RandomAccessFile(File(cacheFileName8), "rw").apply {
+//    repeat(limit8 * limit8) { writeLong(0) }
+//}
+//data class Query8(val i: Int, val j: Int, val value: Long)
+//val cacheFileWriteQueries8 = Channel<Query8>(Channel.UNLIMITED)
+//fun prod8(left: ULong, right: ULong): ULong {
+//    val leftBits = BitSet.valueOf(longArrayOf(left.toLong())).stream().toList()
+//    val rightBIts = BitSet.valueOf(longArrayOf(right.toLong())).stream().toList()
+//    var result = 0uL
+//    for (i in leftBits) for (j in rightBIts) result = result xor cache8[i][j]!!
+//    return result
+//}
+//@OptIn(ExperimentalStdlibApi::class)
+//fun computePowersProds8() = runBlocking(Dispatchers.Default) {
+//    launch {
+//        while (true) {
+//            val (i, j, value) = cacheFileWriteQueries8.receive()
+//            cacheFile8.apply {
+//                seek((i + j * limit8) * 8L)
+//                writeLong(value)
+//            }
+//        }
+//    }
+//    val jobs = Array(limit8) { Array<Job?>(limit8) { null } }
+//    for (i in 0 ..< limit8) {
+//        val left = powers8[i]
+//        for (j in i ..< limit8) {
+//            val right = powers8[j]
+//            jobs[i][j] = launch {
+//                buildList(2) {
+//                    if (i > 0) add(jobs[i-1][j]!!)
+//                    try { if (j > i) add(jobs[i][j - 1]!!) }
+//                    catch (e: NullPointerException) {
+//                        println("$i, $j")
+//                        throw e
+//                    }
+//                }.joinAll()
+//                var currentValue = 0uL
+//                val impossibleValues = PriorityQueue<ULong>()
+//                for (left2 in 0uL ..< left) for (right2 in 0uL ..< right) {
+//                    val value = prod8(left2, right2) xor prod8(left, right2) xor prod8(left2, right)
+//                    when {
+//                        value == currentValue -> {
+//                            currentValue++
+//                            while (currentValue == impossibleValues.peek()) {
+//                                impossibleValues.poll()
+//                                currentValue++
+//                            }
+//                        }
+//
+//                        value > currentValue -> impossibleValues.add(value)
+//                    }
+//                }
+//                cache8[i][j] = currentValue
+//                cache8[j][i] = currentValue
+//                cacheFileWriteQueries8.send(Query8(i, j, currentValue.toLong()))
+//                cacheFileWriteQueries8.send(Query8(j, i, currentValue.toLong()))
+//            }
+//        }
+//    }
+//    jobs.last().last()!!.join()
+//}
 
 val limit9 = 64
 val powers9 = List(limit9) { 1uL shl it }
-val oldCacheFileName9 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod8-table-size-64-at-13-59-05"
+val oldCacheFileName9 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod9-table-size-64-at-18-48-37"
 val oldCacheFile = RandomAccessFile(File(oldCacheFileName9), "rw")
 val cache9 = Array(limit9) { Array(limit9) { oldCacheFile.readLong().toULong().let { if (it == 0uL) null else it } } }
-val cacheFileName9 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod9-table-size-$limit9-at-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}"
+val cacheFileName9 = "C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod9-table-size-$limit9-at-${LocalDate.now()}-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}"
 val cacheFile9 = RandomAccessFile(File(cacheFileName9), "rw").apply {
     for (line in cache9) for (value in line) writeLong((value ?: 0u).toLong())
 }
@@ -272,7 +276,7 @@ fun prod9(left: ULong, right: ULong): ULong {
     return result
 }
 @OptIn(ExperimentalStdlibApi::class)
-fun computePowersProds9() = runBlocking(Dispatchers.Default) {
+suspend fun CoroutineScope.computePowersProds9() {
     launch {
         while (true) {
             val (i, j, value) = cacheFileWriteQueries9.receive()
@@ -323,13 +327,25 @@ fun computePowersProds9() = runBlocking(Dispatchers.Default) {
     jobs.last().last()!!.join()
 }
 
-@OptIn(ExperimentalStdlibApi::class)
-fun main() {
-    val time = measureNanoTime {
-        computePowersProds8()
-    }
-    File("C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod9-uptime-size-$limit9-at-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}")
-        .bufferedWriter().use {
-            it.write(time.toString())
+fun main() = runBlocking(Dispatchers.Default) {
+    val startInstant = Instant.now()
+    try {
+        launch {
+            while (true) {
+                val input = readLine()
+                when {
+                    input == null -> error("Strange output.")
+                    input.startsWith("stop") -> error("Stop signal received.")
+                }
+            }
         }
+        computePowersProds9()
+    }
+    finally {
+        File("C:\\Programming\\Kone\\kone-gameTheory\\src\\commonMain\\resources\\prod9-uptime-size-$limit9-at-${LocalDate.now()}-${LocalTime.now().toString().substringBefore(".").replace(":", "-")}")
+            .bufferedWriter().use {
+                it.write(Duration.between(startInstant, Instant.now()).toString())
+            }
+        exitProcess(57)
+    }
 }
