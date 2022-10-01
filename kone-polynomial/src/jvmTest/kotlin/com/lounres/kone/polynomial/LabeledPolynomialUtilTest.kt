@@ -11,12 +11,13 @@ import com.lounres.kone.polynomial.testUtils.assertEquals
 import com.lounres.kone.polynomial.testUtils.iota
 import com.lounres.kone.polynomial.testUtils.x
 import com.lounres.kone.polynomial.testUtils.y
-import space.kscience.kmath.expressions.Symbol
+import io.kotest.core.spec.style.AnnotationSpec
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import space.kscience.kmath.expressions.Symbol
 
-class LabeledPolynomialUtilTest {
+class LabeledPolynomialUtilTest : AnnotationSpec() {
     @Test
     fun test_Polynomial_substitute_Double() {
         assertEquals(

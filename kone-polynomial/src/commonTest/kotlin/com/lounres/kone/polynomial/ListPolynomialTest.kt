@@ -18,6 +18,7 @@ import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import kotlin.jvm.JvmName
 
 
 class ListPolynomialTest: FreeSpec() {

@@ -1,41 +1,18 @@
-val contextReceiversSupportCrunch: Boolean = (properties["contextReceiversSupportCrunch"] as String).toBoolean()
-
-if (contextReceiversSupportCrunch) {
-    kotlin {
-        sourceSets {
-            main {
-                dependencies {
-                    api(projects.koneCore)
-                    api(projects.koneAlgebraic)
-                    implementation(projects.mapUtil)
-                    implementation(libs.kmath.core)
-                }
-            }
-            test {
-                dependencies {
-                    implementation(projects.koneNumberTheory)
-                    implementation(projects.testUtil)
-                }
+kotlin {
+    @Suppress("UNUSED_VARIABLE")
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(projects.koneCore)
+                api(projects.koneAlgebraic)
+                implementation(projects.mapUtil)
+                implementation(libs.kmath.core)
             }
         }
-    }
-} else {
-    kotlin {
-        @Suppress("UNUSED_VARIABLE")
-        sourceSets {
-            val commonMain by getting {
-                dependencies {
-                    implementation(projects.koneCore)
-                    api(projects.koneAlgebraic)
-                    implementation(projects.mapUtil)
-                    implementation(libs.kmath.core)
-                }
-            }
-            val commonTest by getting {
-                dependencies {
-                    implementation(projects.koneNumberTheory)
-                    implementation(projects.testUtil)
-                }
+        val commonTest by getting {
+            dependencies {
+                implementation(projects.koneNumberTheory)
+                implementation(projects.testUtil)
             }
         }
     }
