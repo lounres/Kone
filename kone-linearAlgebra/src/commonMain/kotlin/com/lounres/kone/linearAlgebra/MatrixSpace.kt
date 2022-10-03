@@ -307,4 +307,10 @@ public class MatrixSpace<C, out A: Ring<C>>(
             ).let { if (columnIndex % 2 == rowIndex % 2) it else -it }
         }
     }
+
+    public val SquareMatrix<C>.isSymmetric: Boolean get() = ring {
+        val matrix = this@isSymmetric
+        for (i in rowIndices) for (j in 0 until i) if (matrix[i, j] neq matrix[j, i]) return false
+        return true
+    }
 }

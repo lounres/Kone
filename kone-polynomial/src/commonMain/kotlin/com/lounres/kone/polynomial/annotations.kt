@@ -7,9 +7,10 @@ package com.lounres.kone.polynomial
 
 
 /**
- * Marks declarations that give access to internal entities of polynomials delicate structure. Thus, it allows to
- * optimize performance a bit by skipping standard steps, but such skips may cause critical errors if something is
- * implemented badly. Make sure you fully read and understand documentation and don't break internal contracts.
+ * Marks declarations that give access to internal entities of polynomials delicate structure.
+ * Thus, it allows optimizing performance a bit by skipping standard steps, but such skips may cause critical errors if
+ * something is implemented badly.
+ * Make sure you fully read and understand documentation and don't break internal contracts.
  */
 @RequiresOptIn(
     message = "This declaration gives access to delicate internal structure of polynomials. " +
