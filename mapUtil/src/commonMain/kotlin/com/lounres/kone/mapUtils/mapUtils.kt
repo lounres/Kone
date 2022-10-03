@@ -135,7 +135,7 @@ public inline fun <K, V> Map<in K, V>.withAppliedToKey(key: K, transform: (curre
  * current value as a parameter.
  * @return the copy of [the map][this].
  */
-public inline fun <K, V> Map<K, V>.withPutOrChanged(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): Map<K, V> {
+public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): Map<K, V> {
     contract {
         callsInPlace(valueOnPut, AT_MOST_ONCE)
         callsInPlace(transformOnChange, AT_MOST_ONCE)
@@ -156,7 +156,7 @@ public inline fun <K, V> Map<K, V>.withPutOrChanged(key: K, valueOnPut: () -> V,
  * the [key], current value, and new value as parameters.
  * @return the copy of [the map][this].
  */
-public inline fun <K, V> Map<K, V>.withPutOrChanged(key: K, valueOnPut: V, transformOnChange: (key: K, currentValue: V, newValue: V) -> V): Map<K, V> {
+public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: V, transformOnChange: (key: K, currentValue: V, newValue: V) -> V): Map<K, V> {
     contract {
         callsInPlace(transformOnChange, AT_MOST_ONCE)
     }
@@ -170,7 +170,7 @@ public inline fun <K, V> Map<K, V>.withPutOrChanged(key: K, valueOnPut: V, trans
  * @param destination map to receive copies.
  * @return the [destination].
  */
-public fun <K, V, D: MutableMap<K, V>> Map<K, V>.copyTo(destination: D): D {
+public fun <K, V, D: MutableMap<K, V>> Map<out K, V>.copyTo(destination: D): D {
     for ((key, value) in this) {
         destination[key] = value
     }
@@ -298,7 +298,7 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
  * @param map2 the second (more prioritised) map to merge.
  * @return the result of the merge.
  */
-public fun <K, V1: W, V2: W, W> merge(map1: Map<K, V1>, map2: Map<K, V2>): Map<K, W> {
+public fun <K, V1: W, V2: W, W> merge(map1: Map<out K, V1>, map2: Map<out K, V2>): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
     return mergeTo(map1, map2, result)
 }
@@ -315,7 +315,7 @@ public fun <K, V1: W, V2: W, W> merge(map1: Map<K, V1>, map2: Map<K, V2>): Map<K
  * @param resolve lambda function that resolves merge conflicts.
  * @return the result of the merge.
  */
-public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<K, V1>, map2: Map<K, V2>, resolve: (key: K, value1: V1, value2: V2) -> W): Map<K, W> {
+public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<out K, V2>, resolve: (key: K, value1: V1, value2: V2) -> W): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
     return mergeToBy(map1, map2, result, resolve)
 }
