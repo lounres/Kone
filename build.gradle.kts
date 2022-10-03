@@ -45,7 +45,7 @@ allprojects {
     }
 
     group = "com.lounres.kone"
-    version = "0.1.0-pre-1"
+    version = "0.0.0-dev-1"
 }
 
 subprojects {

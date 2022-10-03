@@ -5,8 +5,8 @@ kotlin {
             dependencies {
                 implementation(projects.koneCore)
                 api(projects.koneAlgebraic)
+                api(libs.kmath.core)
                 implementation(projects.mapUtil)
-                implementation(libs.kmath.core)
             }
         }
         val commonTest by getting {
