@@ -12,12 +12,13 @@ import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.polynomial.testUtils.assertFailsWithTypeAndMessage
 import com.lounres.kone.polynomial.testUtils.bufferOf
 import com.lounres.kone.polynomial.testUtils.assertEquals
+import io.kotest.core.spec.style.AnnotationSpec
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class NumberedPolynomialUtilTest {
+class NumberedPolynomialUtilTest : AnnotationSpec() {
     @Test
     fun test_Polynomial_substitute_Double_Map() {
         assertEquals(

@@ -30,13 +30,10 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     override val one: NumberedPolynomial<C> by lazy { NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to constantOne)) }
 
     public override infix fun NumberedPolynomial<C>.equalsTo(other: NumberedPolynomial<C>): Boolean {
-        for ((key, value) in this.coefficients) {
-            if (key !in other.coefficients && value.isNotZero()) return false
-            if (!(other.coefficients.getValue(key) equalsTo value)) return false
-        }
-        for ((key, value) in other.coefficients) {
-            if (key !in other.coefficients && value.isNotZero()) return false
-        }
+        for ((key, value) in this.coefficients)
+            if (other.coefficients.computeOnOrElse(key, { value.isNotZero() }) { it -> value neq it }) return false
+        for ((key, value) in other.coefficients)
+            if (this.coefficients.computeOnOrElse(key, { value.isNotZero() }) { _ -> false }) return false
         return true
     }
     public override fun NumberedPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }

@@ -18,7 +18,9 @@ public interface Ring<V>: AlgebraicContext {
 
     // region Equality
     public infix fun V.equalsTo(other: V): Boolean = this == other
+    public infix fun V.notEqualsTo(other: V): Boolean = !(this equalsTo other)
     public infix fun V.eq(other: V): Boolean = this equalsTo other
+    public infix fun V.neq(other: V): Boolean = !(this equalsTo other)
     public fun V.isZero(): Boolean = this equalsTo zero
     public fun V.isOne(): Boolean = this equalsTo one
     public fun V.isNotZero(): Boolean = !isZero()

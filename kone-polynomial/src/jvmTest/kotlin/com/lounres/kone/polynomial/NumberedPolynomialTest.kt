@@ -11,6 +11,7 @@ import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
 import com.lounres.kone.polynomial.testUtils.not
 import com.lounres.kone.polynomial.testUtils.o
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.FreeSpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +27,7 @@ class NumberedPolynomialTest2 : FreeSpec() {
 
 }
 
-class NumberedPolynomialTest {
+class NumberedPolynomialTest : AnnotationSpec() {
     @Test
     fun test_Polynomial_Int_plus() {
         Rational.field.numberedPolynomialSpace {
