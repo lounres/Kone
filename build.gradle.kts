@@ -44,7 +44,7 @@ allprojects {
         }
     }
 
-    group = "com.lounres.kone"
+    group = "com.lounres.kone.experimental.1-7-20-Beta"
     version = "0.0.0-dev-1"
 }
 
@@ -74,7 +74,7 @@ subprojects {
             }
 
             linuxX64()
-//            mingwX64()
+            mingwX64()
             macosX64()
 
             @Suppress("UNUSED_VARIABLE")

@@ -625,7 +625,7 @@ class LabeledPolynomialTest : FreeSpec() {
             "times" - { produceConstantTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
 
-        "Variable \"ring\"" - {
+        "Variable ring" - {
             rationalPolynomialSpace {
                 "unaryPlus" {
                     +x shouldBe LabeledPolynomialAsIs(
