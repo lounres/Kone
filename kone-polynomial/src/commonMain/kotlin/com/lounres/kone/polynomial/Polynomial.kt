@@ -30,9 +30,15 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     @JvmName("equalsToConstantConstant")
     @JsName("equalsToConstantConstant")
     public infix fun C.equalsTo(other: C): Boolean = this == other
+    @JvmName("notEqualsToConstantConstant")
+    @JsName("notEqualsToConstantConstant")
+    public infix fun C.notEqualsTo(other: C): Boolean = !(this equalsTo other)
     @JvmName("eqConstantConstant")
     @JsName("eqConstantConstant")
     public infix fun C.eq(other: C): Boolean = this equalsTo other
+    @JvmName("neqConstantConstant")
+    @JsName("neqConstantConstant")
+    public infix fun C.neq(other: C): Boolean = !(this equalsTo other)
     @JvmName("isZeroConstant")
     @JsName("isZeroConstant")
     public fun C.isZero(): Boolean = this equalsTo constantZero
@@ -47,7 +53,9 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     public fun C.isNotOne(): Boolean = !isOne()
 
     public override infix fun P.equalsTo(other: P): Boolean = this == other
+    public override infix fun P.notEqualsTo(other: P): Boolean = !(this equalsTo other)
     public override infix fun P.eq(other: P): Boolean = this equalsTo other
+    public override infix fun P.neq(other: P): Boolean = !(this equalsTo other)
     public override fun P.isZero(): Boolean = this equalsTo zero
     public override fun P.isOne(): Boolean = this equalsTo one
     public override fun P.isNotZero(): Boolean = !isZero()
