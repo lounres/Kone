@@ -6,6 +6,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -13,23 +14,65 @@ plugins {
     with(libs.plugins) {
         alias(kotlin.multiplatform) apply false
         alias(kotest.multiplatform) apply false
-        alias(kover)
         alias(dokka)
     }
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://repo.kotlin.link")
+//        maven("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+
+    version = "0.0.0-dev-1"
+}
+
+val jvmTargetApi = properties["jvmTarget"] as String
+
+fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
+fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
+
 featuresManagement {
     features {
-        on("kotlin") {
+        on("kotlin jvm") {
+            apply<KotlinPluginWrapper>()
+            configure<KotlinJvmProjectExtension> {
+                target.compilations.all {
+                    kotlinOptions {
+                        jvmTarget = jvmTargetApi
+                    }
+                    compileKotlinTask.apply {
+                        kotlinOptions {
+                            jvmTarget = jvmTargetApi
+                        }
+                    }
+                }
+
+                @Suppress("UNUSED_VARIABLE")
+                sourceSets {
+                    val test by getting {
+                        dependencies {
+                            implementation(kotlin("test"))
+                        }
+                    }
+                }
+            }
+        }
+        on("kotlin multiplatform") {
             apply<KotlinMultiplatformPluginWrapper>()
-            apply<KotestMultiplatformCompilerGradlePlugin>()
             configure<KotlinMultiplatformExtension> {
-                explicitApi = Warning
+//                explicitApi = Warning
 
                 jvm {
                     compilations.all {
                         kotlinOptions {
-                            jvmTarget = properties["jvmTarget"] as String
+                            jvmTarget = jvmTargetApi
+                        }
+                        compileKotlinTask.apply {
+                            kotlinOptions {
+                                jvmTarget = jvmTargetApi
+                            }
                         }
                     }
                     testRuns.all {
@@ -50,137 +93,111 @@ featuresManagement {
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
+                    val commonTest by getting {
+                        dependencies {
+                            implementation(kotlin("test"))
+                        }
+                    }
+                }
+            }
+        }
+        on("kotlin common settings") {
+            configure<KotlinProjectExtension> {
+                explicitApi = Warning
+
+                sourceSets {
                     all {
                         languageSettings {
                             progressiveMode = true
                             optIn("kotlin.contracts.ExperimentalContracts")
                         }
-                        if (name.endsWith("test", ignoreCase = true)) {
+                    }
+                }
+            }
+            pluginManager.withPlugin("org.gradle.java") {
+                configure<JavaPluginExtension> {
+                    targetCompatibility = JavaVersion.toVersion(jvmTargetApi)
+                }
+                tasks.withType<Test> {
+                    useJUnitPlatform()
+                }
+            }
+        }
+        on("kotest") {
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        val test by getting {
                             dependencies {
                                 with(rootProject.libs.kotest) {
                                     implementation(framework.engine)
                                     implementation(framework.datatest)
                                     implementation(assertions.core)
                                     implementation(property)
+                                    implementation(runner.junit5)
                                 }
                             }
                         }
                     }
-                    val commonTest by getting {
-                        dependencies {
-                            implementation(kotlin("test"))
+                }
+            }
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                apply<KotestMultiplatformCompilerGradlePlugin>()
+                configure<KotlinMultiplatformExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        all {
+                            if (name.endsWith("test", ignoreCase = true)) {
+                                dependencies {
+                                    with(rootProject.libs.kotest) {
+                                        implementation(framework.engine)
+                                        implementation(framework.datatest)
+                                        implementation(assertions.core)
+                                        implementation(property)
+                                    }
+                                }
+                            }
                         }
-                    }
-                    val jvmTest by getting {
-                        dependencies {
-                            implementation(rootProject.libs.kotest.runner.junit5)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-        maven("https://repo.kotlin.link")
-//        maven("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-
-    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
-        apply<DokkaPlugin>()
-        dependencies {
-            dokkaPlugin(rootProject.libs.dokka.mathjax)
-        }
-
-        afterEvaluate {
-            tasks.withType<DokkaTask> {
-                // TODO
-            }
-            task<Jar>("dokkaJar") {
-                group = JavaBasePlugin.DOCUMENTATION_GROUP
-                description = "Assembles Kotlin docs with Dokka"
-                archiveClassifier.set("javadoc")
-                val dokkaHtml by tasks.getting
-                dependsOn(dokkaHtml)
-                from(dokkaHtml)
-            }
-        }
-    }
-
-    group = "com.lounres.kone"
-    version = "0.0.0-dev-1"
-}
-
-subprojects {
-    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("testUtil")) {
-        apply<KotlinMultiplatformPluginWrapper>()
-        apply<KotestMultiplatformCompilerGradlePlugin>()
-        configure<KotlinMultiplatformExtension> {
-            explicitApi = Warning
-
-            jvm {
-                compilations.all {
-                    kotlinOptions {
-                        jvmTarget = properties["jvmTarget"] as String
-                    }
-                }
-                testRuns.all {
-                    executionTask {
-                        useJUnitPlatform()
-                    }
-                }
-            }
-
-            js(IR) {
-                browser()
-                nodejs()
-            }
-
-            linuxX64()
-            mingwX64()
-            macosX64()
-
-            @Suppress("UNUSED_VARIABLE")
-            sourceSets {
-                all {
-                    languageSettings {
-                        progressiveMode = true
-                        optIn("kotlin.contracts.ExperimentalContracts")
-                    }
-                    if (name.endsWith("test", ignoreCase = true)) {
-                        dependencies {
-                            with(rootProject.libs.kotest) {
-                                implementation(framework.engine)
-                                implementation(framework.datatest)
-                                implementation(assertions.core)
-                                implementation(property)
+                        val jvmTest by getting {
+                            dependencies {
+                                implementation(rootProject.libs.kotest.runner.junit5)
                             }
                         }
                     }
                 }
-                val commonTest by getting {
-                    dependencies {
-                        implementation(kotlin("test"))
-                    }
+            }
+        }
+        on("dokka") {
+            apply<DokkaPlugin>()
+            dependencies {
+                dokkaPlugin(rootProject.libs.dokka.mathjax)
+            }
+
+            task<Jar>("dokkaJar") {
+                group = JavaBasePlugin.DOCUMENTATION_GROUP
+                description = "Assembles Kotlin docs with Dokka"
+                archiveClassifier.set("javadoc")
+                afterEvaluate {
+                    val dokkaHtml by tasks.getting
+                    dependsOn(dokkaHtml)
+                    from(dokkaHtml)
                 }
-                val jvmTest by getting {
-                    dependencies {
-                        implementation(rootProject.libs.kotest.runner.junit5)
-                    }
+            }
+
+            afterEvaluate {
+                tasks.withType<DokkaTask> {
+                    // TODO
                 }
             }
         }
-    }
-    if (name.startsWith("kone-", ignoreCase = true) || name in listOf("mapUtil")) {
-        apply<MavenPublishPlugin>()
-
-        afterEvaluate {
-            configure<PublishingExtension> {
-                publications.withType<MavenPublication> {
-                    artifact(tasks.named<Jar>("dokkaJar"))
+        on("publishing") {
+            apply<MavenPublishPlugin>()
+            afterEvaluate {
+                configure<PublishingExtension> {
+                    publications.withType<MavenPublication> {
+                        artifact(tasks.named<Jar>("dokkaJar"))
+                    }
                 }
             }
         }

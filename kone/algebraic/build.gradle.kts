@@ -3,7 +3,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.kone.algebraic)
+                implementation(projects.kone.core)
             }
         }
         val commonTest by getting {

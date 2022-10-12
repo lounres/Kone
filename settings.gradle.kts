@@ -27,19 +27,32 @@ structuring {
     "kone" {
         subdirs("kotlin")
         "misc" {
-            subdirs("kotlin")
+            subdirs("kotlin misc")
         }
     }
     "utils" {
-        "collections"()
-        "kotest"("kotlin")
-        "mapOperations"()
+        subdirs("kotlin utility")
     }
 }
 
 featuresManagement {
     tagRules {
-        "kotlin multiplatform" since { hasTags("kotlin") }
-        "kotlin common settings" since { hasTags("kotlin jvm", "kotlin multiplatform") }
+        "kotlin kone" since { hasAnyOfTags("kotlin", "kotlin misc") }
+        "kotlin multiplatform" since { hasAnyOfTags("kotlin kone", "kotlin utility") }
+        "kotlin common settings" since { hasAnyOfTags("kotlin jvm", "kotlin multiplatform") }
+        "kotest" since { hasTag("kotlin common settings") }
+        "publishing" since { hasAnyOfTags("kotlin kone", "kotlin utility") }
+        "dokka" since { hasTag("publishing") }
+    }
+    features {
+        on("kotlin") {
+            group = "com.lounres.kone"
+        }
+        on("kotlin misc") {
+            group = "com.lounres.kone.misc"
+        }
+        on("kotlin utility") {
+            group = "com.lounres.kone.utils"
+        }
     }
 }
