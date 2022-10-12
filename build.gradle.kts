@@ -18,6 +18,70 @@ plugins {
     }
 }
 
+featuresManagement {
+    features {
+        on("kotlin") {
+            apply<KotlinMultiplatformPluginWrapper>()
+            apply<KotestMultiplatformCompilerGradlePlugin>()
+            configure<KotlinMultiplatformExtension> {
+                explicitApi = Warning
+
+                jvm {
+                    compilations.all {
+                        kotlinOptions {
+                            jvmTarget = properties["jvmTarget"] as String
+                        }
+                    }
+                    testRuns.all {
+                        executionTask {
+                            useJUnitPlatform()
+                        }
+                    }
+                }
+
+                js(IR) {
+                    browser()
+                    nodejs()
+                }
+
+                linuxX64()
+                mingwX64()
+                macosX64()
+
+                @Suppress("UNUSED_VARIABLE")
+                sourceSets {
+                    all {
+                        languageSettings {
+                            progressiveMode = true
+                            optIn("kotlin.contracts.ExperimentalContracts")
+                        }
+                        if (name.endsWith("test", ignoreCase = true)) {
+                            dependencies {
+                                with(rootProject.libs.kotest) {
+                                    implementation(framework.engine)
+                                    implementation(framework.datatest)
+                                    implementation(assertions.core)
+                                    implementation(property)
+                                }
+                            }
+                        }
+                    }
+                    val commonTest by getting {
+                        dependencies {
+                            implementation(kotlin("test"))
+                        }
+                    }
+                    val jvmTest by getting {
+                        dependencies {
+                            implementation(rootProject.libs.kotest.runner.junit5)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
