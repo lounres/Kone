@@ -10,9 +10,9 @@ import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
 import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.mapUtils.mergeBy
-import com.lounres.kone.mapUtils.putOrChange
-import com.lounres.kone.mapUtils.withPutOrChanged
+import com.lounres.kone.utils.mapOperations.mergeBy
+import com.lounres.kone.utils.mapOperations.putOrChange
+import com.lounres.kone.utils.mapOperations.withPutOrChanged
 import space.kscience.kmath.expressions.Symbol
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

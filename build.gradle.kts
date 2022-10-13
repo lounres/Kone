@@ -16,7 +16,11 @@ plugins {
         alias(kotest.multiplatform) apply false
         alias(dokka)
     }
+    `version-catalog`
+    `maven-publish`
 }
+
+val projectVersion = "0.0.0-dev-1"
 
 allprojects {
     repositories {
@@ -25,13 +29,35 @@ allprojects {
 //        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
-    version = "0.0.0-dev-1"
+    version = projectVersion
 }
 
 val jvmTargetApi = properties["jvmTarget"] as String
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
+
+catalog {
+    versionCatalog {
+        val koneLibraries = project(":kone").subprojects - project(":kone:misc")
+        val miscLibraries = project(":kone:misc").subprojects
+        val utilsLibraries = project(":utils").subprojects
+
+        koneLibraries.forEach { library(it.name, "com.lounres.kone:${it.name}:$projectVersion") }
+        miscLibraries.forEach { library("misc-${it.name}", "com.lounres.kone.misc:${it.name}:$projectVersion") }
+        utilsLibraries.forEach { library("utils-${it.name}", "com.lounres.kone.utils:${it.name}:$projectVersion") }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("versionCatalog") {
+            groupId = "com.lounres.kone"
+            artifactId = "versionCatalog"
+            from(components["versionCatalog"])
+        }
+    }
+}
 
 featuresManagement {
     features {

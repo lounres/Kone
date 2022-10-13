@@ -7,11 +7,11 @@
 
 package com.lounres.kone.polynomial
 
-import space.kscience.kmath.expressions.Symbol
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.mapUtils.*
+import com.lounres.kone.utils.mapOperations.*
+import space.kscience.kmath.expressions.Symbol
 
 
 internal fun Map<Symbol, UInt>.cleanUp() = filterValues { it > 0U }

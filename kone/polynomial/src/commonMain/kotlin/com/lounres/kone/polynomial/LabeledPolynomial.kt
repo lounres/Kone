@@ -7,9 +7,9 @@
 
 package com.lounres.kone.polynomial
 
-import space.kscience.kmath.expressions.Symbol
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.mapUtils.*
+import com.lounres.kone.utils.mapOperations.*
+import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
 import kotlin.math.max
 
