@@ -18,12 +18,16 @@ public interface Ring<V>: AlgebraicContext {
 
     // region Equality
     public infix fun V.equalsTo(other: V): Boolean = this == other
+    // FIXME: KT-5351
     public infix fun V.notEqualsTo(other: V): Boolean = !(this equalsTo other)
     public infix fun V.eq(other: V): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public infix fun V.neq(other: V): Boolean = !(this equalsTo other)
     public fun V.isZero(): Boolean = this equalsTo zero
     public fun V.isOne(): Boolean = this equalsTo one
+    // FIXME: KT-5351
     public fun V.isNotZero(): Boolean = !isZero()
+    // FIXME: KT-5351
     public fun V.isNotOne(): Boolean = !isOne()
     // endregion
 

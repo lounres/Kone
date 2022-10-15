@@ -27,8 +27,10 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public infix fun Point<C>.equalsTo(other: Point<C>): Boolean = this === other || polynomialSpace {
         x * other.y eq y * other.x && y * other.z eq z * other.y && z * other.x eq x * other.z
     }
+    // FIXME: KT-5351
     public inline infix fun Point<C>.notEqualsTo(other: Point<C>): Boolean = !(this equalsTo other)
     public inline infix fun Point<C>.eq(other: Point<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public inline infix fun Point<C>.neq(other: Point<C>): Boolean = !(this equalsTo other)
 
     public infix fun Line<C>.equalsTo(other: Line<C>): Boolean = this === other || polynomialSpace {
@@ -36,8 +38,10 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
                 y * other.z eq z * other.y &&
                 z * other.x eq x * other.z
     }
+    // FIXME: KT-5351
     public inline infix fun Line<C>.notEqualsTo(other: Line<C>): Boolean = !(this equalsTo other)
     public inline infix fun Line<C>.eq(other: Line<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public inline infix fun Line<C>.neq(other: Line<C>): Boolean = !(this equalsTo other)
 
     public infix fun Quadric<C>.equalsTo(other: Quadric<C>): Boolean = this === other || polynomialSpace {
@@ -57,8 +61,10 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
                 xy * other.yz eq yz * other.xy &&
                 xz * other.yz eq yz * other.xz
     }
+    // FIXME: KT-5351
     public inline infix fun Quadric<C>.notEqualsTo(other: Quadric<C>): Boolean = !(this equalsTo other)
     public inline infix fun Quadric<C>.eq(other: Quadric<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public inline infix fun Quadric<C>.neq(other: Quadric<C>): Boolean = !(this equalsTo other)
 
     public val Quadric<C>.matrix: SquareMatrix<LabeledPolynomial<C>>
@@ -80,8 +86,10 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
         }
         true
     }
+    // FIXME: KT-5351
     public inline infix fun Transformation<C>.notEqualsTo(other: Transformation<C>): Boolean = !(this equalsTo other)
     public inline infix fun Transformation<C>.eq(other: Transformation<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public inline infix fun Transformation<C>.neq(other: Transformation<C>): Boolean = !(this equalsTo other)
 
     public operator fun Transformation<C>.invoke(P: Point<C>): Point<C> = matrixSpace { Point(matrix * P.columnVector) }
@@ -106,7 +114,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l The considered line.
      * @return Boolean value of the statement.
      */
-    public fun Point<C>.isNotLyingOn(l: Line<C>): Boolean = polynomialSpace { lyingCondition(this@isNotLyingOn, l).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Point<C>.isNotLyingOn(l: Line<C>): Boolean = polynomialSpace { lyingCondition(this@isNotLyingOn, l).isNotZero() }
 
     /**
      * Checks if [this] point is lying on the quadric [q].
@@ -115,7 +124,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param q The considered quadric.
      * @return Boolean value of the statement.
      */
-    public fun Point<C>.isLyingOn(q: Quadric<C>): Boolean = polynomialSpace { lyingCondition(this@isLyingOn, q).isZero() }
+    public infix fun Point<C>.isLyingOn(q: Quadric<C>): Boolean = polynomialSpace { lyingCondition(this@isLyingOn, q).isZero() }
 
     /**
      * Checks if [this] point is not lying on the quadric [q].
@@ -124,7 +133,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param q The considered quadric.
      * @return Boolean value of the statement.
      */
-    public fun Point<C>.isNotLyingOn(q: Quadric<C>): Boolean = polynomialSpace { lyingCondition(this@isNotLyingOn, q).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Point<C>.isNotLyingOn(q: Quadric<C>): Boolean = polynomialSpace { lyingCondition(this@isNotLyingOn, q).isNotZero() }
 
     /**
      * Checks if [this] line is lying through the point [P].
@@ -133,7 +143,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param P The considered point.
      * @return Boolean value of the statement.
      */
-    public fun Line<C>.isLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isLyingThrough).isZero() }
+    public infix fun Line<C>.isLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isLyingThrough).isZero() }
 
     /**
      * Checks if [this] line is not lying through the point [P].
@@ -142,7 +152,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param P The considered point.
      * @return Boolean value of the statement.
      */
-    public fun Line<C>.isNotLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isNotLyingThrough).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Line<C>.isNotLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isNotLyingThrough).isNotZero() }
 
     /**
      * Checks if [this] line is tangent to the quadric [q].
@@ -151,7 +162,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param q The considered quadric.
      * @return Boolean value of the statement.
      */
-    public fun Line<C>.isTangentTo(q: Quadric<C>): Boolean = polynomialSpace { tangencyCondition(this@isTangentTo, q).isZero() }
+    public infix fun Line<C>.isTangentTo(q: Quadric<C>): Boolean = polynomialSpace { tangencyCondition(this@isTangentTo, q).isZero() }
 
     /**
      * Checks if [this] line is not tangent to the quadric [q].
@@ -160,7 +171,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param q The considered quadric.
      * @return Boolean value of the statement.
      */
-    public fun Line<C>.isNotTangentTo(q: Quadric<C>): Boolean = polynomialSpace { tangencyCondition(this@isNotTangentTo, q).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Line<C>.isNotTangentTo(q: Quadric<C>): Boolean = polynomialSpace { tangencyCondition(this@isNotTangentTo, q).isNotZero() }
 
     /**
      * Checks if [this] quadric is lying through the point [P].
@@ -169,7 +181,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param P The considered point.
      * @return Boolean value of the statement.
      */
-    public fun Quadric<C>.isLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isLyingThrough).isZero() }
+    public infix fun Quadric<C>.isLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isLyingThrough).isZero() }
 
     /**
      * Checks if [this] quadric is not lying through the point [P].
@@ -178,7 +190,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param P The considered point.
      * @return Boolean value of the statement.
      */
-    public fun Quadric<C>.isNotLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isNotLyingThrough).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Quadric<C>.isNotLyingThrough(P: Point<C>): Boolean = polynomialSpace { lyingCondition(P, this@isNotLyingThrough).isNotZero() }
 
     /**
      * Checks if [this] quadric is tangent to the line [l].
@@ -187,7 +200,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l The considered line.
      * @return Boolean value of the statement.
      */
-    public fun Quadric<C>.isTangentTo(l: Line<C>): Boolean = polynomialSpace { tangencyCondition(l, this@isTangentTo).isZero() }
+    public infix fun Quadric<C>.isTangentTo(l: Line<C>): Boolean = polynomialSpace { tangencyCondition(l, this@isTangentTo).isZero() }
 
     /**
      * Checks if [this] quadric is not tangent to the line [l].
@@ -196,7 +209,8 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l The considered line.
      * @return Boolean value of the statement.
      */
-    public fun Quadric<C>.isNotTangentTo(l: Line<C>): Boolean = polynomialSpace { tangencyCondition(l, this@isNotTangentTo).isNotZero() }
+    // FIXME: KT-5351
+    public infix fun Quadric<C>.isNotTangentTo(l: Line<C>): Boolean = polynomialSpace { tangencyCondition(l, this@isNotTangentTo).isNotZero() }
 
     /**
      * Construct a normal projection in terms of affine map that is considered generated by [Point<C>.x] and [Point<C>.y]

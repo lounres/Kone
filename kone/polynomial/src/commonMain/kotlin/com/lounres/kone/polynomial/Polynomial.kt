@@ -30,12 +30,14 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     @JvmName("equalsToConstantConstant")
     @JsName("equalsToConstantConstant")
     public infix fun C.equalsTo(other: C): Boolean = this == other
+    // FIXME: KT-5351
     @JvmName("notEqualsToConstantConstant")
     @JsName("notEqualsToConstantConstant")
     public infix fun C.notEqualsTo(other: C): Boolean = !(this equalsTo other)
     @JvmName("eqConstantConstant")
     @JsName("eqConstantConstant")
     public infix fun C.eq(other: C): Boolean = this equalsTo other
+    // FIXME: KT-5351
     @JvmName("neqConstantConstant")
     @JsName("neqConstantConstant")
     public infix fun C.neq(other: C): Boolean = !(this equalsTo other)
@@ -45,20 +47,26 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     @JvmName("isOneConstant")
     @JsName("isOneConstant")
     public fun C.isOne(): Boolean = this equalsTo constantOne
+    // FIXME: KT-5351
     @JvmName("isNotZeroConstant")
     @JsName("isNotZeroConstant")
     public fun C.isNotZero(): Boolean = !isZero()
+    // FIXME: KT-5351
     @JvmName("isNotOneConstant")
     @JsName("isNotOneConstant")
     public fun C.isNotOne(): Boolean = !isOne()
 
     public override infix fun P.equalsTo(other: P): Boolean = this == other
+    // FIXME: KT-5351
     public override infix fun P.notEqualsTo(other: P): Boolean = !(this equalsTo other)
     public override infix fun P.eq(other: P): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public override infix fun P.neq(other: P): Boolean = !(this equalsTo other)
     public override fun P.isZero(): Boolean = this equalsTo zero
     public override fun P.isOne(): Boolean = this equalsTo one
+    // FIXME: KT-5351
     public override fun P.isNotZero(): Boolean = !isZero()
+    // FIXME: KT-5351
     public override fun P.isNotOne(): Boolean = !isOne()
     // endregion
 

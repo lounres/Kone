@@ -34,9 +34,17 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, R: RationalFunction<
     @JvmName("equalsToConstantConstant")
     @JsName("equalsToConstantConstant")
     public infix fun C.equalsTo(other: C): Boolean = this == other
+    // FIXME: KT-5351
+    @JvmName("notEqualsToConstantConstant")
+    @JsName("notEqualsToConstantConstant")
+    public infix fun C.notEqualsTo(other: C): Boolean = !(this equalsTo other)
     @JvmName("eqConstantConstant")
     @JsName("eqConstantConstant")
     public infix fun C.eq(other: C): Boolean = this equalsTo other
+    // FIXME: KT-5351
+    @JvmName("neqConstantConstant")
+    @JsName("neqConstantConstant")
+    public infix fun C.neq(other: C): Boolean = !(this equalsTo other)
     @JvmName("isZeroConstant")
     @JsName("isZeroConstant")
     public fun C.isZero(): Boolean = this equalsTo constantZero

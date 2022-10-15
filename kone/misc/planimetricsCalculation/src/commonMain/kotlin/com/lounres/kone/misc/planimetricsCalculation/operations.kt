@@ -72,6 +72,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param l The considered line.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Point<C>.isNotLyingOn(l: Line<C>) = lyingCondition(this, l).isNotZero()
 //
 ///**
@@ -90,6 +91,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param q The considered quadric.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Point<C>.isNotLyingOn(q: Quadric<C>) = lyingCondition(this, q).isNotZero()
 //
 ///**
@@ -108,6 +110,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param P The considered point.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Line<C>.isNotLyingThrough(P: Point<C>) = lyingCondition(P, this).isNotZero()
 //
 ///**
@@ -126,6 +129,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param q The considered quadric.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Line<C>.isNotTangentTo(q: Quadric<C>): Boolean = tangencyCondition(this, q).isNotZero()
 //
 ///**
@@ -144,6 +148,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param P The considered point.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Quadric<C>.isNotLyingThrough(P: Point<C>) = lyingCondition(P, this).isNotZero()
 //
 ///**
@@ -162,6 +167,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
 // * @param l The considered line.
 // * @return Boolean value of the statement.
 // */
+//// FIXME: KT-5351
 //public infix fun <C> Quadric<C>.isNotTangentTo(l: Line<C>): Boolean = tangencyCondition(l, this).isNotZero()
 // endregion
 

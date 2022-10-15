@@ -15,8 +15,10 @@ public class MatrixSpace<C, out A: Ring<C>>(
         countOfRows == other.countOfRows && countOfColumns == other.countOfColumns && indices.all { (rowIndex, columnIndex) ->
             ring { coefficients[rowIndex][columnIndex] equalsTo other.coefficients[rowIndex][columnIndex] }
         }
+    // FIXME: KT-5351
     public infix fun Matrix<C>.notEqualsTo(other: Matrix<C>): Boolean = !(this equalsTo other)
     public infix fun Matrix<C>.eq(other: Matrix<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
     public infix fun Matrix<C>.neq(other: Matrix<C>): Boolean = !(this equalsTo other)
 
     public val Matrix<C>.rank: Int get() = ring {
