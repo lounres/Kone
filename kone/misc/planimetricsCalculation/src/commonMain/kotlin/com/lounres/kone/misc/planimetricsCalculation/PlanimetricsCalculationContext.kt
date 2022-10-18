@@ -16,6 +16,7 @@ import com.lounres.kone.polynomial.LabeledPolynomial
 import com.lounres.kone.polynomial.LabeledPolynomialSpace
 import kotlin.contracts.InvocationKind.*
 import kotlin.contracts.contract
+import kotlin.reflect.KProperty
 
 
 public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
@@ -23,6 +24,10 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
 ) : AlgebraicContext {
     public val polynomialSpace: LabeledPolynomialSpace<C, A> by lazy { LabeledPolynomialSpace(ring) }
     public val matrixSpace: MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>> by lazy { MatrixSpace(polynomialSpace) }
+
+    public operator fun Point.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
+    public operator fun Line.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
+    public operator fun Quadric.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
 
     public infix fun Point<C>.equalsTo(other: Point<C>): Boolean = this === other || polynomialSpace {
         x * other.y eq y * other.x && y * other.z eq z * other.y && z * other.x eq x * other.z

@@ -21,7 +21,9 @@ public data class Line<C>(
     public val columnVector: ColumnVector<LabeledPolynomial<C>> get() = ColumnVector(x, y, z)
 
     public companion object {
-        public operator fun <C, A: Ring<C>> A.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
-        public operator fun <C> PlanimetricsCalculationContext<C, *>.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
+//        context(A)
+//        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
+//        context(PlanimetricsCalculationContext<C, *>)
+//        public operator fun <C> getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
     }
 }

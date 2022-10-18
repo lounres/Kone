@@ -19,7 +19,9 @@ public data class Quadric<C>(
     val yz: LabeledPolynomial<C>
 ) {
     public companion object {
-        public operator fun <C, A: Ring<C>> A.getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
-        public operator fun <C> PlanimetricsCalculationContext<C, *>.getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
+//        context(A)
+//        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
+//        context(PlanimetricsCalculationContext<C, *>)
+//        public operator fun <C> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
     }
 }
