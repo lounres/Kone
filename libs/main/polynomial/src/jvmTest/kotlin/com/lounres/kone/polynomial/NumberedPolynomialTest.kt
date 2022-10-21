@@ -1403,7 +1403,7 @@ class NumberedPolynomialTest : AnnotationSpec() {
                 3,
                 NumberedPolynomial(
                     listOf(0u, 1u, 2u, 1u, 0u) to o
-                ).also { println(it) }.lastVariable,
+                ).lastVariable,
                 "test 4"
             )
             assertEquals(

@@ -2,7 +2,7 @@
 
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
@@ -30,6 +30,14 @@ allprojects {
     }
 
     version = projectVersion
+    group = "com.lounres"
+
+    val defaultProperties = mapOf(
+        "artifactPrefix" to "",
+        "aliasPrefix" to "",
+    )
+    for ((prop, value) in defaultProperties)
+        if (!extra.has(prop)) extra[prop] = value
 }
 
 val jvmTargetApi = properties["jvmTarget"] as String
@@ -37,23 +45,11 @@ val jvmTargetApi = properties["jvmTarget"] as String
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 
-catalog {
-    versionCatalog {
-        val koneLibraries = project(":kone").subprojects - project(":kone:misc")
-        val miscLibraries = project(":kone:misc").subprojects
-        val utilsLibraries = project(":utils").subprojects
-
-        koneLibraries.forEach { library(it.name, "com.lounres.kone:${it.name}:$projectVersion") }
-        miscLibraries.forEach { library("misc-${it.name}", "com.lounres.kone.misc:${it.name}:$projectVersion") }
-        utilsLibraries.forEach { library("utils-${it.name}", "com.lounres.kone.utils:${it.name}:$projectVersion") }
-    }
-}
 
 publishing {
     publications {
         create<MavenPublication>("versionCatalog") {
-            groupId = "com.lounres.kone"
-            artifactId = "versionCatalog"
+            artifactId = "kone.versionCatalog"
             from(components["versionCatalog"])
         }
     }
@@ -212,7 +208,8 @@ featuresManagement {
             }
 
             afterEvaluate {
-                tasks.withType<DokkaTask> {
+                tasks.withType<AbstractDokkaLeafTask> {
+                    moduleName.set("${project.extra["artifactPrefix"]}${project.name}")
                     // TODO
                 }
             }
@@ -222,7 +219,13 @@ featuresManagement {
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
+                        artifactId = "${extra["artifactPrefix"]}$artifactId"
                         artifact(tasks.named<Jar>("dokkaJar"))
+                    }
+                }
+                rootProject.catalog {
+                    versionCatalog {
+                        library("${extra["aliasPrefix"]}${project.name}", "$group:${extra["artifactPrefix"]}${project.name}:$version")
                     }
                 }
             }

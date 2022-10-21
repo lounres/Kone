@@ -1,4 +1,4 @@
-rootProject.name = "Kone-project"
+rootProject.name = "Kone"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -19,40 +19,46 @@ pluginManagement {
 }
 
 plugins {
-    id("com.lounres.gradle.feature") version "1.0.0"
+    id("com.lounres.gradle.feature") version "1.1.0"
 }
 
 structuring {
     "docs"()
-    "kone" {
-        subdirs("kotlin")
-        "misc" {
-            subdirs("kotlin misc")
+    "libs" {
+        "main" {
+            subdirs("libs main")
         }
-    }
-    "utils" {
-        subdirs("kotlin utility")
+        "misc" {
+            subdirs("libs misc")
+        }
+        "util" {
+            subdirs("libs util")
+        }
     }
 }
 
 featuresManagement {
-    tagRules {
-        "kotlin kone" since { hasAnyOfTags("kotlin", "kotlin misc") }
-        "kotlin multiplatform" since { hasAnyOfTags("kotlin kone", "kotlin utility") }
+    tagsAssignment {
+        "libs public" since { hasAnyOfTags("libs main", "libs misc") }
+        "libs" since { hasAnyOfTags("libs main", "libs misc", "libs util") }
+        "kotlin multiplatform" since { hasAnyOfTags("libs") }
         "kotlin common settings" since { hasAnyOfTags("kotlin jvm", "kotlin multiplatform") }
-        "kotest" since { hasTag("kotlin common settings") }
-        "publishing" since { hasAnyOfTags("kotlin kone", "kotlin utility") }
+        "kotest" since { hasTag("libs") }
+        "publishing" since { hasAnyOfTags("libs") }
         "dokka" since { hasTag("publishing") }
     }
     features {
-        on("kotlin") {
-            group = "com.lounres.kone"
+        on("libs main") {
+            extra["artifactPrefix"] = "kone."
+            extra["aliasPrefix"] = ""
         }
-        on("kotlin misc") {
-            group = "com.lounres.kone.misc"
+        on("libs misc") {
+            extra["artifactPrefix"] = "kone.misc."
+            extra["aliasPrefix"] = "misc-"
         }
-        on("kotlin utility") {
-            group = "com.lounres.kone.utils"
+        on("libs util") {
+            extra["artifactPrefix"] = "kone.util."
+            extra["aliasPrefix"] = "util-"
         }
     }
 }

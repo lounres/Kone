@@ -3,13 +3,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(projects.kone.core)
-                api(projects.kone.algebraic)
+                implementation(projects.libs.main.core)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(projects.utils.kotest)
+
             }
         }
     }
