@@ -17,3 +17,8 @@ kotlin {
         }
     }
 }
+
+// TODO: Uncomment to let jvmTest run and get errors
+//val mingwX64Test: Task by tasks.getting {
+//    enabled = false
+//}

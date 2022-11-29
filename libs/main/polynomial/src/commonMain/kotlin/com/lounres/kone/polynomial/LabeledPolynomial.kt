@@ -25,6 +25,21 @@ internal constructor(
 public class LabeledPolynomialSpace<C, out A : Ring<C>>(
     public override val ring: A,
 ) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceOverRing<C, LabeledPolynomial<C>, A> {
+    // FIXME: Hotfix. Improve solution.
+    internal fun MutableMap<Map<Symbol, UInt>, C>.cleanUp() {
+        for ((key, value) in this) if (value.isZero()) remove(key)
+    }
+    internal fun buildCoefs(block: MutableMap<Map<Symbol, UInt>, C>.() -> Unit) : Map<Map<Symbol, UInt>, C> =
+        buildMap() {
+            block()
+            cleanUp()
+        }.toMap()
+    internal fun buildCoefs(capacity: Int, block: MutableMap<Map<Symbol, UInt>, C>.() -> Unit) : Map<Map<Symbol, UInt>, C> =
+        buildMap(capacity) {
+            block()
+            cleanUp()
+        }.toMap()
+
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
     override val one: LabeledPolynomial<C> = constantOne.asLabeledPolynomial()
 
@@ -368,18 +383,20 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
         )
     override operator fun LabeledPolynomial<C>.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
-            mergeBy(coefficients, other.coefficients) { _, c1, c2 -> c1 + c2 }
+            buildCoefs(coefficients.size + other.coefficients.size) {
+                mergeToBy(coefficients, other.coefficients, this) { _, c1, c2 -> c1 + c2 }
+            }
         )
     override operator fun LabeledPolynomial<C>.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
-            buildMap(coefficients.size + other.coefficients.size) {
+            buildCoefs(coefficients.size + other.coefficients.size) {
                 coefficients.copyTo(this)
                 other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
             }
         )
     override operator fun LabeledPolynomial<C>.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
-            buildMap(coefficients.size * other.coefficients.size) {
+            buildCoefs(coefficients.size * other.coefficients.size) {
                 for ((degs1, c1) in coefficients) for ((degs2, c2) in other.coefficients) {
                     val degs = mergeBy(degs1, degs2) { _, deg1, deg2 -> deg1 + deg2 }
                     val c = c1 * c2
