@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Kone sources" pattern="src:*.kone..*||test:*.kone..*||file:assets//*" />
+</component>
