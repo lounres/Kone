@@ -231,7 +231,7 @@ featuresManagement {
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
-                logger.error("kotlinx.benchmark plugging in and setting is not yet implemented for Kotlin/JVM platform")
+                logger.error("kotlinx.benchmark plugging in and setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
@@ -249,7 +249,6 @@ featuresManagement {
                         it.compilations {
                             val main by getting
                             val benchmarks by creating {
-                                associateWith(main)
                                 defaultSourceSet {
                                     dependsOn(main.defaultSourceSet)
                                     dependsOn(commonBenchmarks)
