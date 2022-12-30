@@ -17,10 +17,13 @@ import kotlin.math.max
 public data class LabeledPolynomial<C>
 @PublishedApi
 internal constructor(
-    public val coefficients: Map<Map<Symbol, UInt>, C>
+    public val coefficients: LabeledPolynomialCoefficients<C>
 ) : Polynomial<C> {
     override fun toString(): String = "LabeledPolynomial$coefficients"
 }
+
+public typealias LabeledMonomialSignature = Map<Symbol, UInt>
+public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
 public class LabeledPolynomialSpace<C, out A : Ring<C>>(
     public override val ring: A,
@@ -28,13 +31,8 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
     override val one: LabeledPolynomial<C> = constantOne.asLabeledPolynomial()
 
-    public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean {
-        for ((key, value) in this.coefficients)
-            if (other.coefficients.computeOnOrElse(key, { value.isNotZero() }) { it -> value neq it }) return false
-        for ((key, value) in other.coefficients)
-            if (this.coefficients.computeOnOrElse(key, { value.isNotZero() }) { _ -> false }) return false
-        return true
-    }
+    public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean =
+        mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 }
     public override fun LabeledPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
     public override fun LabeledPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
 
@@ -390,7 +388,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
 
     override val LabeledPolynomial<C>.degree: Int
         get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum().toInt() } ?: -1
-    public override val LabeledPolynomial<C>.degrees: Map<Symbol, UInt>
+    public override val LabeledPolynomial<C>.degrees: LabeledMonomialSignature
         get() =
             buildMap {
                 coefficients.keys.forEach { degs ->

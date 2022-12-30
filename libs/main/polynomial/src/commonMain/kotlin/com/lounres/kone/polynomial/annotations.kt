@@ -12,6 +12,19 @@ package com.lounres.kone.polynomial
  * something is implemented badly.
  * Make sure you fully read and understand documentation and don't break internal contracts.
  */
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.LOCAL_VARIABLE,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.TYPEALIAS
+)
 @RequiresOptIn(
     message = "This declaration gives access to delicate internal structure of polynomials. " +
             "It allows to optimize performance by skipping unnecessary arguments check. " +

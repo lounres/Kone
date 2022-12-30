@@ -129,7 +129,7 @@ public fun NumberedPolynomial<Double>.substitute(args: Buffer<Double>): Numbered
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Buffer<C>): NumberedPolynomial<C> = ring {
     val lastSubstitutionVariable = args.size - 1
     NumberedPolynomial<C>(
-        buildMap<List<UInt>, C>(coefficients.size) {
+        buildMap(coefficients.size) {
             for ((degs, c) in coefficients) {
                 val lastDegsIndex = degs.lastIndex
                 val newDegs =
