@@ -44,7 +44,7 @@ public class NumberedRationalFunctionSpace<C, A: Ring<C>> (
         NumberedRationalFunction(numerator, denominator)
 
     public val NumberedPolynomial<C>.lastVariable: Int get() = polynomialRing { lastVariable }
-    public val NumberedPolynomial<C>.degrees: List<UInt> get() = polynomialRing { degrees }
+    public val NumberedPolynomial<C>.degrees: NumberedMonomialSignature get() = polynomialRing { degrees }
     public fun NumberedPolynomial<C>.degreeBy(variable: Int): UInt = polynomialRing { degreeBy(variable) }
     public fun NumberedPolynomial<C>.degreeBy(variables: Collection<Int>): UInt = polynomialRing { degreeBy(variables) }
     public val NumberedPolynomial<C>.countOfVariables: Int get() = polynomialRing { countOfVariables }

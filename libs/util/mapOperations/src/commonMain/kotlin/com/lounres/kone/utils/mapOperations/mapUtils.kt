@@ -268,10 +268,10 @@ public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: 
  * in the [destination] if needed. For every key appearing in both maps corresponding value is a result of the [resolve]
  * lambda calculated on the key and its corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
+ * @param map1 the first map to merge.
+ * @param map2 the second map to merge.
  * @param resolve lambda function that resolves merge conflicts.
- * @param destination the map where result of the merge is put.
+ * @param destination the map where the result of the merge is put.
  * @return the destination.
  */
 public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<out K, V1>, map2: Map<out K, V2>, destination: D, resolve: (key: K, value1: V1, value2: V2) -> W): D {
@@ -310,8 +310,8 @@ public fun <K, V1: W, V2: W, W> merge(map1: Map<out K, V1>, map2: Map<out K, V2>
  * afterwards. For every key appearing in both maps corresponding value is a result of the [resolve] lambda calculated
  * on the key and its corresponding values from the merged maps.
  *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
+ * @param map1 the first map to merge.
+ * @param map2 the second map to merge.
  * @param resolve lambda function that resolves merge conflicts.
  * @return the result of the merge.
  */
@@ -470,10 +470,183 @@ public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destin
  *
  * All pairs are added and resolved in order of iteration.
  *
- * @param transform function which transforms each key-value pair to new key.
+ * @param transform function which transforms each key-value pair to a new key.
  * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
  * corresponding values.
  * @return the result map.
  */
 public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (Map.Entry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): Map<L, V> =
     mapKeysTo(LinkedHashMap(size), transform, resolve)
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation]
+ * to current accumulator value and each entry of the map.
+ *
+ * Returns the specified [initial] value if the map is empty.
+ *
+ * @param initial initial value of the accumulation.
+ * @param operation function that takes current accumulator value and an entry of the map and calculates the next accumulator value.
+ */
+public inline fun <K, V, R> Map<out K, V>.fold(initial: R, operation: (acc: R, Map.Entry<K, V>) -> R): R {
+    var accumulator = initial
+    for (element in this) accumulator = operation(accumulator, element)
+    return accumulator
+}
+
+/**
+ * Lazily applies the given [transform] function to each entry of the map getting a new element
+ * and accumulates value starting with the first element and applying [operation] one-by-one
+ * to current accumulator value and each element.
+ *
+ * Iterator of the map's entries is obtained with `entries.iterator()` method.
+ * Thus, iteration order is specified by the map's `entries` set `iterator` implementation.
+ *
+ * Throws an exception if this map is empty. If the map can be empty in an expected way,
+ * please use [mapReduceOrNull] instead. It returns `null` when its receiver is empty.
+ *
+ * @param transform function which transforms each key-value pair to a new element which will be processed with given [operation].
+ * @param operation function that takes current accumulator value and transformed into a new element entry of the map and calculates the next accumulator value.
+ */
+@Suppress("UNREACHABLE_CODE")
+public inline fun <K, V, T: R, R> Map<out K, V>.mapReduce(transform: (Map.Entry<K, V>) -> T, operation: (acc: R, T) -> R): R {
+    val iterator = this.iterator()
+    if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
+    var accumulator: R = transform(iterator.next())
+    while (iterator.hasNext()) {
+        accumulator = operation(accumulator, transform(iterator.next()))
+    }
+    return accumulator
+}
+
+/**
+ * Lazily applies the given [transform] function to each entry of the map getting a new element
+ * and accumulates value starting with the first element and applying [operation] one-by-one
+ * to current accumulator value and each element.
+ *
+ * Iterator of the map's entries is obtained with `entries.iterator()` method.
+ * Thus, iteration order is specified by the map's `entries` set `iterator` implementation.
+ *
+ * Returns null if this map is empty.
+ *
+ * @param transform function which transforms each key-value pair to a new element which will be processed with given [operation].
+ * @param operation function that takes current accumulator value and transformed into a new element entry of the map and calculates the next accumulator value.
+ */
+public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.Entry<K, V>) -> T, operation: (acc: R, T) -> R): R? {
+    val iterator = this.iterator()
+    if (!iterator.hasNext()) return null
+    var accumulator: R = transform(iterator.next())
+    while (iterator.hasNext()) {
+        accumulator = operation(accumulator, transform(iterator.next()))
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying
+ * [operation1] to current accumulator value and each entry of [map1] which key does not appear in [map2],
+ * [operation2] to current accumulator value and each entry of [map2] which key does not appear in [map2],
+ * and [operationMerge] to current accumulator value and triple of a common key of the maps and both its corresponding values in [map1] and [map2].
+ *
+ * @param map1 the first map to fold with another.
+ * @param map2 the second map to fold with another.
+ * @param initial initial value of the accumulation.
+ * @param operation1 function that takes current accumulator value and an entry of the [map1] which key does not appear in [map2] and calculates the next accumulator value.
+ * @param operation2 function that takes current accumulator value and an entry of the [map2] which key does not appear in [map1] and calculates the next accumulator value.
+ * @param operationMerge function that takes current accumulator value and triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2] and calculates the next accumulator value.
+ */
+public inline fun <K, V1, V2, R> mergingFold(
+    map1: Map<out K, V1>,
+    map2: Map<out K, V2>,
+    initial: R,
+    operation1: (acc: R, Map.Entry<K, V1>) -> R,
+    operation2: (acc: R, Map.Entry<K, V2>) -> R,
+    operationMerge: (acc: R, key: K, value1: V1, value2: V2) -> R
+): R {
+    var accumulator = initial
+    for (element in map2) if (element.key !in map1) accumulator = operation2(accumulator, element)
+    for (element in map1) accumulator =
+        if (element.key !in map2) operation1(accumulator, element)
+        else operationMerge(accumulator, element.key, element.value, map2[element.key]!!)
+    return accumulator
+}
+
+/**
+ * Returns `false` if:
+ * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `false`,
+ * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `false`,
+ * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `false`.
+ * Returns `true` otherwise.
+ *
+ * @param map1 the first map to test with another.
+ * @param map2 the second map to test with another.
+ * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
+ * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
+ * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ */
+public inline fun <K, V1, V2> mergingAny(
+    map1: Map<out K, V1>,
+    map2: Map<out K, V2>,
+    operation1: (Map.Entry<K, V1>) -> Boolean,
+    operation2: (Map.Entry<K, V2>) -> Boolean,
+    operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
+): Boolean {
+    for (element in map2) if (element.key !in map1 && operation2(element)) return true
+    for (element in map1)
+        if (element.key !in map2) if(operation1(element)) return true
+        else if(operationMerge(element.key, element.value, map2[element.key]!!)) return true
+    return false
+}
+
+/**
+ * Returns `true` if:
+ * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `true`,
+ * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `true`,
+ * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `true`.
+ * Returns `false` otherwise.
+ *
+ * @param map1 the first map to test with another.
+ * @param map2 the second map to test with another.
+ * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
+ * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
+ * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ */
+public inline fun <K, V1, V2> mergingAll(
+    map1: Map<out K, V1>,
+    map2: Map<out K, V2>,
+    operation1: (Map.Entry<K, V1>) -> Boolean,
+    operation2: (Map.Entry<K, V2>) -> Boolean,
+    operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
+): Boolean {
+    for (element in map2) if (element.key !in map1 && !operation2(element)) return false
+    for (element in map1)
+        if (element.key !in map2) if(!operation1(element)) return false
+        else if(!operationMerge(element.key, element.value, map2[element.key]!!)) return false
+    return true
+}
+
+/**
+ * Returns `true` if:
+ * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `false`,
+ * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `false`,
+ * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `false`.
+ * Returns `false` otherwise.
+ *
+ * @param map1 the first map to test with another.
+ * @param map2 the second map to test with another.
+ * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
+ * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
+ * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ */
+public inline fun <K, V1, V2> mergingNone(
+    map1: Map<out K, V1>,
+    map2: Map<out K, V2>,
+    operation1: (Map.Entry<K, V1>) -> Boolean,
+    operation2: (Map.Entry<K, V2>) -> Boolean,
+    operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
+): Boolean {
+    for (element in map2) if (element.key !in map1 && operation2(element)) return false
+    for (element in map1)
+        if (element.key !in map2) if(operation1(element)) return false
+        else if(operationMerge(element.key, element.value, map2[element.key]!!)) return false
+    return true
+}

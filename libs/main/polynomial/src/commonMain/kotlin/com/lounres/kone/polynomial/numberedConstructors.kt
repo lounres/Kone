@@ -14,56 +14,56 @@ import com.lounres.kone.utils.mapOperations.mapKeys
 import com.lounres.kone.utils.mapOperations.putOrChange
 
 
-internal fun List<UInt>.cleanUp() = subList(0, indexOfLast { it != 0U } + 1)
+internal fun NumberedMonomialSignature.cleanUp() = subList(0, indexOfLast { it != 0U } + 1)
 
 @PublishedApi
-internal inline fun <C> NumberedPolynomialAsIs(coefs: Map<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(coefs)
+internal inline fun <C> NumberedPolynomialAsIs(coefs: NumberedPolynomialCoefficients<C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(coefs)
 
 @PublishedApi
-internal inline fun <C> NumberedPolynomialAsIs(pairs: Collection<Pair<List<UInt>, C>>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
+internal inline fun <C> NumberedPolynomialAsIs(pairs: Collection<Pair<NumberedMonomialSignature, C>>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
 
 @PublishedApi
-internal inline fun <C> NumberedPolynomialAsIs(vararg pairs: Pair<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
+internal inline fun <C> NumberedPolynomialAsIs(vararg pairs: Pair<NumberedMonomialSignature, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
 
 @DelicatePolynomialAPI
-public inline fun <C> NumberedPolynomialWithoutCheck(coefs: Map<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(coefs)
+public inline fun <C> NumberedPolynomialWithoutCheck(coefs: NumberedPolynomialCoefficients<C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(coefs)
 
 @DelicatePolynomialAPI
-public inline fun <C> NumberedPolynomialWithoutCheck(pairs: Collection<Pair<List<UInt>, C>>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
+public inline fun <C> NumberedPolynomialWithoutCheck(pairs: Collection<Pair<NumberedMonomialSignature, C>>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
 
 @DelicatePolynomialAPI
-public inline fun <C> NumberedPolynomialWithoutCheck(vararg pairs: Pair<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
+public inline fun <C> NumberedPolynomialWithoutCheck(vararg pairs: Pair<NumberedMonomialSignature, C>) : NumberedPolynomial<C> = NumberedPolynomial<C>(pairs.toMap())
 
-public fun <C> NumberedPolynomial(coefs: Map<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
+public fun <C> NumberedPolynomial(coefs: NumberedPolynomialCoefficients<C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
         coefs.mapKeys({ (key, _) -> key.cleanUp() }, { _, c1, c2 -> add(c1, c2) })
     )
 
-public fun <C> NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>, add: (C, C) -> C) : NumberedPolynomial<C> =
+public fun <C> NumberedPolynomial(pairs: Collection<Pair<NumberedMonomialSignature, C>>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
         pairs.associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
-public fun <C> NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
+public fun <C> NumberedPolynomial(vararg pairs: Pair<NumberedMonomialSignature, C>, add: (C, C) -> C) : NumberedPolynomial<C> =
     NumberedPolynomialAsIs(
         pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available
 
-public inline fun <C, A: Ring<C>> A.NumberedPolynomial(coefs: Map<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left, right -> left + right }
-public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(coefs: Map<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> A.NumberedPolynomial(coefs: NumberedPolynomialCoefficients<C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left, right -> left + right }
+public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(coefs: NumberedPolynomialCoefficients<C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left: C, right: C -> left + right }
 
-public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(coefs: Map<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(coefs: NumberedPolynomialCoefficients<C>) : NumberedPolynomial<C> = NumberedPolynomial(coefs) { left: C, right: C -> left + right }
 
-public inline fun <C, A: Ring<C>> A.NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left, right -> left + right }
+public inline fun <C, A: Ring<C>> A.NumberedPolynomial(pairs: Collection<Pair<NumberedMonomialSignature, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left, right -> left + right }
 
-public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left: C, right: C -> left + right }
-public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(pairs: Collection<Pair<List<UInt>, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(pairs: Collection<Pair<NumberedMonomialSignature, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(pairs: Collection<Pair<NumberedMonomialSignature, C>>) : NumberedPolynomial<C> = NumberedPolynomial(pairs) { left: C, right: C -> left + right }
 
-public inline fun <C, A: Ring<C>> A.NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
-public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
-public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(vararg pairs: Pair<List<UInt>, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> A.NumberedPolynomial(vararg pairs: Pair<NumberedMonomialSignature, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> NumberedPolynomialSpace<C, A>.NumberedPolynomial(vararg pairs: Pair<NumberedMonomialSignature, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
+public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPolynomial(vararg pairs: Pair<NumberedMonomialSignature, C>) : NumberedPolynomial<C> = NumberedPolynomial(*pairs) { left: C, right: C -> left + right }
 
 public inline fun <C> C.asNumberedPolynomial() : NumberedPolynomial<C> = NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to this))
 
@@ -77,7 +77,7 @@ public class DSL1NumberedPolynomialTermSignatureBuilder {
     private val signature: MutableList<UInt> = ArrayList()
 
     @PublishedApi
-    internal fun build(): List<UInt> = signature
+    internal fun build(): NumberedMonomialSignature = signature
 
     public infix fun Int.inPowerOf(deg: UInt) {
         if (deg == 0u) return
@@ -100,12 +100,12 @@ public class DSL1NumberedPolynomialBuilder<C>(
     private val add: (C, C) -> C,
     initialCapacity: Int? = null
 ) {
-    private val coefficients: MutableMap<List<UInt>, C> = if (initialCapacity != null) LinkedHashMap(initialCapacity) else LinkedHashMap()
+    private val coefficients: MutableMap<NumberedMonomialSignature, C> = if (initialCapacity != null) LinkedHashMap(initialCapacity) else LinkedHashMap()
 
     @PublishedApi
     internal fun build(): NumberedPolynomial<C> = NumberedPolynomial<C>(coefficients)
 
-    public infix fun C.with(signature: List<UInt>) {
+    public infix fun C.with(signature: NumberedMonomialSignature) {
         coefficients.putOrChange(signature, this@with) { _, c1, c2 -> add(c1, c2) }
     }
     public inline infix fun C.with(noinline block: DSL1NumberedPolynomialTermSignatureBuilder.() -> Unit): Unit = this.invoke(block)
@@ -142,12 +142,12 @@ public inline fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedPo
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available
 
-public fun <C, A: Ring<C>> A.NumberedRationalFunction(numeratorCoefficients: Map<List<UInt>, C>, denominatorCoefficients: Map<List<UInt>, C>): NumberedRationalFunction<C> =
+public fun <C, A: Ring<C>> A.NumberedRationalFunction(numeratorCoefficients: NumberedPolynomialCoefficients<C>, denominatorCoefficients: NumberedPolynomialCoefficients<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(
         NumberedPolynomial(numeratorCoefficients),
         NumberedPolynomial(denominatorCoefficients)
     )
-public fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedRationalFunction(numeratorCoefficients: Map<List<UInt>, C>, denominatorCoefficients: Map<List<UInt>, C>): NumberedRationalFunction<C> =
+public fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedRationalFunction(numeratorCoefficients: NumberedPolynomialCoefficients<C>, denominatorCoefficients: NumberedPolynomialCoefficients<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(
         NumberedPolynomial(numeratorCoefficients),
         NumberedPolynomial(denominatorCoefficients)
@@ -158,12 +158,12 @@ public fun <C, A: Ring<C>> A.NumberedRationalFunction(numerator: NumberedPolynom
 public fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedRationalFunction(numerator: NumberedPolynomial<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(numerator, polynomialOne)
 
-public fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedRationalFunction(numeratorCoefficients: Map<List<UInt>, C>): NumberedRationalFunction<C> =
+public fun <C, A: Ring<C>> NumberedRationalFunctionSpace<C, A>.NumberedRationalFunction(numeratorCoefficients: NumberedPolynomialCoefficients<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(
         NumberedPolynomial(numeratorCoefficients),
         polynomialOne
     )
-public fun <C, A: Ring<C>> A.NumberedRationalFunction(numeratorCoefficients: Map<List<UInt>, C>): NumberedRationalFunction<C> =
+public fun <C, A: Ring<C>> A.NumberedRationalFunction(numeratorCoefficients: NumberedPolynomialCoefficients<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(
         NumberedPolynomial(numeratorCoefficients),
         NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to one))
