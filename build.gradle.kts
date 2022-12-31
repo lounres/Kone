@@ -270,11 +270,11 @@ featuresManagement {
             }
 
             // Fix kotlinx-benchmarks bug
-            afterEvaluate {
-                tasks.getByName<org.gradle.jvm.tasks.Jar>("jvmBenchmarksBenchmarkJar") {
-                    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                }
-            }
+//            afterEvaluate {
+//                tasks.findByName("jvmBenchmarksBenchmarkJar").let { if (it is org.gradle.jvm.tasks.Jar) it else null }?.apply {
+//                    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//                }
+//            }
 
             @Suppress("UNUSED_VARIABLE")
             configure<BenchmarksExtension> {
