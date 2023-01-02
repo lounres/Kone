@@ -42,7 +42,9 @@ featuresManagement {
         "libs public" since { hasAnyOfTags("libs main", "libs misc") }
         "libs" since { hasAnyOfTags("libs main", "libs misc", "libs util") }
         "kotlin multiplatform" since { hasAnyOfTags("libs") }
-        "kotlin common settings" since { hasAnyOfTags("kotlin jvm", "kotlin multiplatform") }
+        "kotlin common settings" since { hasTag("libs") }
+        "examples" since { hasTag("libs") }
+        "benchmark" since { hasTag("libs") }
         "kotest" since { hasTag("libs") }
         "publishing" since { hasAnyOfTags("libs") }
         "dokka" since { hasTag("publishing") }
