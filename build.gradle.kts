@@ -53,6 +53,7 @@ val jvmTargetApi = properties["jvmTarget"] as String
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
+inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
 
 publishing {
@@ -73,7 +74,7 @@ featuresManagement {
                     kotlinOptions {
                         jvmTarget = jvmTargetApi
                     }
-                    compileKotlinTask.apply {
+                    compileTaskProvider.apply {
                         // TODO: Check if really is necessary
                         kotlinOptions {
                             jvmTarget = jvmTargetApi
@@ -237,6 +238,7 @@ featuresManagement {
 //                }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                val kotlinxBenchmarkDebug = (property("kotlinx.benchmark.debug") as String?).toBoolean()
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
@@ -245,8 +247,8 @@ featuresManagement {
                             implementation(rootProject.libs.kotlinx.benchmark.runtime)
                         }
                     }
-                    targets.filter { it.platformType != KotlinPlatformType.common }.forEach {
-                        it.compilations {
+                    targets.filter { it.platformType != KotlinPlatformType.common }.withEach {
+                        compilations {
                             val main by getting
                             val benchmarks by creating {
                                 defaultSourceSet {
@@ -254,27 +256,31 @@ featuresManagement {
                                     dependsOn(commonBenchmarks)
                                 }
                             }
+
+                            val benchmarksSourceSetName = benchmarks.defaultSourceSet.name
+
                             // TODO: For now js target causes problems with tasks initialisation
                             //  Looks similar to
                             //  1. https://github.com/Kotlin/kotlinx-benchmark/issues/101
                             //  2. https://github.com/Kotlin/kotlinx-benchmark/issues/93
                             // TODO: For now native targets work unstable
                             //  May be similar to https://github.com/Kotlin/kotlinx-benchmark/issues/94
-                            // Because of all the issues only JVM targets are registered for now
-                            if (it.platformType == KotlinPlatformType.jvm) {
-                                benchmarksExtension.targets.register(benchmarks.defaultSourceSetName)
+                            // Because of all the issues, only JVM targets are registered for now
+                            if (platformType == KotlinPlatformType.jvm) {
+                                benchmarksExtension.targets.register(benchmarksSourceSetName)
+                                // Fix kotlinx-benchmarks bug
+                                if (platformType == KotlinPlatformType.jvm) afterEvaluate {
+                                    val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
+                                    tasks.findByName(jarTaskName).let { if (it is org.gradle.jvm.tasks.Jar) it else null }?.apply {
+                                        if (kotlinxBenchmarkDebug) logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
+                                        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-
-            // Fix kotlinx-benchmarks bug
-//            afterEvaluate {
-//                tasks.findByName("jvmBenchmarksBenchmarkJar").let { if (it is org.gradle.jvm.tasks.Jar) it else null }?.apply {
-//                    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//                }
-//            }
 
             @Suppress("UNUSED_VARIABLE")
             configure<BenchmarksExtension> {
