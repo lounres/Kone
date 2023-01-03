@@ -22,12 +22,10 @@ public inline val <C, A : Ring<C>> A.listPolynomialSpace: ListPolynomialSpace<C,
     get() = ListPolynomialSpace(this)
 
 /**
- * Creates a [ListPolynomialSpace]'s scope over a received ring.
- */ // TODO: When context will be ready move [ListPolynomialSpace] and add [A] to context receivers of [block]
-public inline fun <C, A : Ring<C>, R> A.listPolynomialSpace(block: ListPolynomialSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return ListPolynomialSpace(this).block()
-}
+ * Creates a [ListPolynomialSpaceOverField] over a received field.
+ */
+public inline val <C, A : Field<C>> A.listPolynomialSpace: ListPolynomialSpaceOverField<C, A>
+    get() = ListPolynomialSpaceOverField(this)
 
 /**
  * Creates a [ListRationalFunctionSpace] over a received ring.

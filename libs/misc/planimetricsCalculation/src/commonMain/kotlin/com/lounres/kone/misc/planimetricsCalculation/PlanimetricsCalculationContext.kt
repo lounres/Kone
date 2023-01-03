@@ -15,7 +15,6 @@ import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
 import com.lounres.kone.polynomial.LabeledPolynomialSpace
 import kotlin.contracts.InvocationKind.*
-import kotlin.contracts.contract
 import kotlin.reflect.KProperty
 
 
@@ -101,7 +100,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public operator fun Transformation<C>.invoke(l: Line<C>): Line<C> = matrixSpace { Line(l.rowVector * matrix.adjugate()) }
     public operator fun Transformation<C>.invoke(q: Quadric<C>): Quadric<C> = matrixSpace { (matrix.adjugate()).let { Quadric(it.transposed() * q.matrix * it) } }
 
-    // FIXME: Make the functions extensions
+    // FIXME: Make the following functions extensions when context receivers will be available
 
     /**
      * Checks if [this] point is lying on the line [l].
@@ -294,10 +293,14 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public fun involutionBy(l: Line<C>, q: Quadric<C>): Transformation<C> = involutionBy(l.poleBy(q), l)
 }
 
-public val <C, A: Ring<C>> A.planimetricsCalculationContext: PlanimetricsCalculationContext<C, A> get() = PlanimetricsCalculationContext(this)
-public fun <C, A: Ring<C>, R> A.planimetricsCalculationContext(block: /*context(A, LabeledPolynomialSpace<C, A>, MatrixSpace<LabeledPolynomial<C>, A>)*/ PlanimetricsCalculationContext<C, A>.() -> R): R {
-    contract {
-        callsInPlace(block, EXACTLY_ONCE)
-    }
-    return block(PlanimetricsCalculationContext(this))
-}
+public inline val <C, A: Ring<C>> A.planimetricsCalculationContext: PlanimetricsCalculationContext<C, A> get() = PlanimetricsCalculationContext(this)
+
+// Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
+
+//public inline operator fun <C, A: Ring<C>, PC: PlanimetricsCalculationContext<C, A>, R> PC.invoke(block: context(A, LabeledPolynomialSpace<C, A>, MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>>, PC) () -> R): R {
+////    FIXME: KT-32313
+////    contract {
+////        callsInPlace(block, EXACTLY_ONCE)
+////    }
+//    return block(ring, polynomialSpace, matrixSpace, this)
+//}

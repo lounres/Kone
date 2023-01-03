@@ -5,8 +5,9 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.algebraic.util.rightAddMultipliedByDoubling
 import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
@@ -179,16 +180,16 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     @JvmName("timesConstantConstant")
     @JsName("timesConstantConstant")
     public operator fun C.times(other: C): C
-    @JvmName("powerConstant")
+    @JvmName("powerConstantUInt")
     @JsName("powerConstantUInt")
     public fun power(base: C, exponent: UInt): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
-    @JvmName("powerConstant")
+    @JvmName("powerConstantULong")
     @JsName("powerConstantULong")
     public fun power(base: C, exponent: ULong): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
-    @JvmName("powConstant")
+    @JvmName("powConstantUInt")
     @JsName("powConstantUInt")
     public infix fun C.pow(exponent: UInt): C = power(this, exponent)
-    @JvmName("powConstant")
+    @JvmName("powConstantULong")
     @JsName("powConstantULong")
     public infix fun C.pow(exponent: ULong): C = power(this, exponent)
     // endregion
@@ -211,7 +212,7 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
 }
 
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface PolynomialSpaceOverRing<C, P: Polynomial<C>, out A: Ring<C>> : PolynomialSpace<C, P> {
+public interface PolynomialSpaceWithRing<C, P: Polynomial<C>, out A: Ring<C>> : PolynomialSpace<C, P> {
 
     public val ring: A
 
@@ -398,5 +399,128 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>>: Polynomial
     public fun P.degreeBy(variables: Collection<V>): UInt
     public val P.variables: Set<V> get() = degrees.keys
     public val P.countOfVariables: Int get() = variables.size
+    // endregion
+}
+
+@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
+public interface PolynomialSpaceOverField<C, P: Polynomial<C>> : PolynomialSpace<C, P> {
+    // region Constant-Int operations
+    @JvmName("divConstantInt")
+    @JsName("divConstantInt")
+    public operator fun C.div(other: Int): C = this / other.constantValue
+    // endregion
+
+    // region Constant-Long operations
+    @JvmName("divConstantLong")
+    @JsName("divConstantLong")
+    public operator fun C.div(other: Long): C = this / other.constantValue
+    // endregion
+
+    // region Int-Constant operations
+    @JvmName("divIntConstant")
+    @JsName("divIntConstant")
+    public operator fun Int.div(other: C): C = this.constantValue / other
+    // endregion
+
+    // region Long-Constant operations
+    @JvmName("divLongConstant")
+    @JsName("divLongConstant")
+    public operator fun Long.div(other: C): C = this.constantValue / other
+    // endregion
+
+    // region Constant-Int operations
+    @JvmName("divPolynomialInt")
+    @JsName("divPolynomialInt")
+    public operator fun P.div(other: Int): P = this / other.constantValue
+    // endregion
+
+    // region Constant-Long operations
+    @JvmName("divPolynomialLong")
+    @JsName("divPolynomialLong")
+    public operator fun P.div(other: Long): P = this / other.constantValue
+    // endregion
+
+    // region Constant-Constant operations
+    @JvmName("divConstantConstant")
+    @JsName("divConstantConstant")
+    public operator fun C.div(other: C): C
+    public val C.reciprocal: C get() = constantOne / this
+    @JvmName("powerConstantInt")
+    @JsName("powerConstantInt")
+    public fun power(base: C, exponent: Int): C =
+        if (exponent >= 0) power(base, exponent.toUInt())
+        else constantOne / power(base, (-exponent).toUInt())
+    @JvmName("powerConstantLong")
+    @JsName("powerConstantLong")
+    public fun power(base: C, exponent: Long): C =
+        if (exponent >= 0) power(base, exponent.toULong())
+        else constantOne / power(base, (-exponent).toULong())
+    @JvmName("powConstantInt")
+    @JsName("powConstantInt")
+    public infix fun C.pow(exponent: Int): C = power(this, exponent)
+    @JvmName("powConstantLong")
+    @JsName("powConstantLong")
+    public infix fun C.pow(exponent: Long): C = power(this, exponent)
+    // endregion
+
+    // region Polynomial-Constant operations
+    @JvmName("divPolynomialConstant")
+    @JsName("divPolynomialConstant")
+    public operator fun P.div(other: C): P
+    // endregion
+}
+
+@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
+public interface PolynomialSpaceWithField<C, P: Polynomial<C>, out A: Field<C>> : PolynomialSpaceOverField<C, P>, PolynomialSpaceWithRing<C, P, A> {
+    // region Constant-Int operations
+    @JvmName("divConstantInt")
+    public override operator fun C.div(other: Int): C = ring { this@div / other }
+    // endregion
+
+    // region Constant-Long operations
+    @JvmName("divConstantLong")
+    public override operator fun C.div(other: Long): C = ring { this@div / other }
+    // endregion
+
+    // region Int-Constant operations
+    @JvmName("divIntConstant")
+    public override operator fun Int.div(other: C): C = ring { this@div / other }
+    // endregion
+
+    // region Long-Constant operations
+    @JvmName("divLongConstant")
+    public override operator fun Long.div(other: C): C = ring { this@div / other }
+    // endregion
+
+    // region Constant-Constant operations
+    @JvmName("divConstantConstant")
+    public override operator fun C.div(other: C): C = ring { this@div / other }
+    public override val C.reciprocal: C get() = ring { this@reciprocal.reciprocal }
+    @JvmName("powerConstantInt")
+    public override fun power(base: C, exponent: Int): C = ring { power(base, exponent) }
+    @JvmName("powerConstantLong")
+    public override fun power(base: C, exponent: Long): C = ring { power(base, exponent) }
+    @JvmName("powConstantInt")
+    public override infix fun C.pow(exponent: Int): C = ring { this@pow pow exponent }
+    @JvmName("powConstantLong")
+    public override infix fun C.pow(exponent: Long): C = ring { this@pow pow exponent }
+    // endregion
+}
+
+@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
+public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>>: PolynomialSpaceOverField<C, P>, MultivariatePolynomialSpace<C, V, P> {
+    // region Variable-Int operations
+    @JvmName("divVariableInt")
+    public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
+    // endregion
+
+    // region Variable-Long operations
+    @JvmName("divVariableLong")
+    public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    // endregion
+
+    // region Variable-Constant operations
+    @JvmName("divVariableConstant")
+    public operator fun V.div(other: C): P = this * other.reciprocal
     // endregion
 }

@@ -19,6 +19,7 @@ public data class Quadric<C>(
     val yz: LabeledPolynomial<C>
 ) {
     public companion object {
+        // Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
 //        context(A)
 //        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
 //        context(PlanimetricsCalculationContext<C, *>)

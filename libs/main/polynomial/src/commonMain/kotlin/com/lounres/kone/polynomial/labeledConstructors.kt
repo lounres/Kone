@@ -65,6 +65,8 @@ public inline fun <C, A: Ring<C>> LabeledRationalFunctionSpace<C, A>.LabeledPoly
 
 public inline fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomialAsIs(mapOf(emptyMap<Symbol, UInt>() to this))
 
+// Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
+
 ///**
 //// * Converts [this] variable to [LabeledPolynomial].
 //// */
@@ -403,6 +405,8 @@ public fun <C, A: Ring<C>> A.LabeledRationalFunction(numeratorCoefficients: Labe
         LabeledPolynomial(numeratorCoefficients),
         LabeledPolynomialAsIs(mapOf(emptyMap<Symbol, UInt>() to one))
     )
+
+// Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
 
 ///**
 // * Converts [this] constant to [LabeledRationalFunction].

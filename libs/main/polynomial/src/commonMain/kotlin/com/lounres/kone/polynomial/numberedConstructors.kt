@@ -169,6 +169,8 @@ public fun <C, A: Ring<C>> A.NumberedRationalFunction(numeratorCoefficients: Num
         NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to one))
     )
 
+// Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
+
 ///**
 // * Converts [this] constant to [NumberedRationalFunction].
 // */

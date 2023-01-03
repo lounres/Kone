@@ -12,8 +12,6 @@ import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.utils.mapOperations.putOrChange
 import space.kscience.kmath.structures.Buffer
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 import kotlin.math.max
 import kotlin.math.min
@@ -22,18 +20,11 @@ import kotlin.math.min
 public inline val <C, A : Ring<C>> A.numberedPolynomialSpace: NumberedPolynomialSpace<C, A>
     get() = NumberedPolynomialSpace(this)
 
-public inline fun <C, A : Ring<C>, R> A.numberedPolynomialSpace(block: NumberedPolynomialSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return NumberedPolynomialSpace(this).block()
-}
+public inline val <C, A : Field<C>> A.numberedPolynomialSpace: NumberedPolynomialSpaceOverField<C, A>
+    get() = NumberedPolynomialSpaceOverField(this)
 
 public inline val <C, A : Ring<C>> A.numberedRationalFunctionSpace: NumberedRationalFunctionSpace<C, A>
     get() = NumberedRationalFunctionSpace(this)
-
-public inline fun <C, A : Ring<C>, R> A.numberedRationalFunctionSpace(block: NumberedRationalFunctionSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return NumberedRationalFunctionSpace(this).block()
-}
 
 public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): NumberedPolynomial<Double> = Double.field {
     NumberedPolynomial<Double>(
@@ -50,6 +41,9 @@ public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): Number
     )
 }
 
+public inline fun NumberedPolynomial<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedPolynomial<Double> =
+    this.substitute(mapOf(*inputs))
+
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
         buildMap(coefficients.size) {
@@ -64,6 +58,10 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>
         }
     )
 }
+
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedPolynomial<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize boxing
 @JvmName("substitutePolynomial")
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
@@ -76,6 +74,11 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
             }
         }
     }
+
+@JvmName("substitutePolynomial")
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedPolynomial<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize boxing
 @JvmName("substituteRationalFunction")
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedRationalFunction<C>>) : NumberedRationalFunction<C> =
@@ -89,21 +92,41 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
         }
     }
 
+@JvmName("substituteRationalFunction")
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
 public fun NumberedRationalFunction<Double>.substitute(args: Map<Int, Double>): NumberedRationalFunction<Double> =
     NumberedRationalFunction(numerator.substitute(args), denominator.substitute(args))
 
+public inline fun NumberedRationalFunction<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedRationalFunction<Double> =
+    this.substitute(mapOf(*inputs))
+
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, C>): NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
+
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize calculation
 @JvmName("substitutePolynomial")
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedPolynomial<C>>) : NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
+
+@JvmName("substitutePolynomial")
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize calculation
 @JvmName("substituteRationalFunction")
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedRationalFunction<C>>) : NumberedRationalFunction<C> =
     ring.numberedRationalFunctionSpace {
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
+
+@JvmName("substituteRationalFunction")
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
 
 public fun NumberedPolynomial<Double>.substitute(args: Buffer<Double>): NumberedPolynomial<Double> = Double.field {
     val lastSubstitutionVariable = args.size - 1

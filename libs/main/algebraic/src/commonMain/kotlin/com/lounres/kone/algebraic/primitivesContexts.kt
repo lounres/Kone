@@ -5,6 +5,8 @@
 
 package com.lounres.kone.algebraic
 
+import kotlin.math.pow as kpow
+
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
 public object ByteField: Ring<Byte> {
@@ -212,6 +214,12 @@ public object DoubleField: Field<Double> {
     override inline operator fun Double.minus(other: Double): Double = this - other
     override inline operator fun Double.times(other: Double): Double = this * other
     override inline operator fun Double.div(other: Double): Double = this / other
+    override fun power(base: Double, exponent: UInt): Double = base.kpow(exponent.toDouble())
+    override fun power(base: Double, exponent: ULong): Double = base.kpow(exponent.toDouble())
+    override fun power(base: Double, exponent: Int): Double = base.kpow(exponent)
+    override fun power(base: Double, exponent: Long): Double =
+        if (exponent >= 0) base.kpow(exponent.toDouble())
+        else 1/base.kpow(-exponent.toDouble())
     // endregion
 }
 
@@ -263,6 +271,12 @@ public object FloatField: Field<Float> {
     override inline operator fun Float.minus(other: Float): Float = this - other
     override inline operator fun Float.times(other: Float): Float = this * other
     override inline operator fun Float.div(other: Float): Float = this / other
+    override fun power(base: Float, exponent: UInt): Float = base.kpow(exponent.toFloat())
+    override fun power(base: Float, exponent: ULong): Float = base.kpow(exponent.toFloat())
+    override fun power(base: Float, exponent: Int): Float = base.kpow(exponent)
+    override fun power(base: Float, exponent: Long): Float =
+        if (exponent >= 0) base.kpow(exponent.toFloat())
+        else 1/base.kpow(-exponent.toFloat())
     // endregion
 }
 
