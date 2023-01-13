@@ -8,7 +8,7 @@ kotlinx-atomicfu = "0.18.5"
 kotlinx-serialization = "1.4.1"
 kotlinx-datetime = "0.4.0"
 kotlinx-kover = "0.6.0"
-kotlinx-benchmark = "0.4.6"
+kotlinx-benchmark = "0.4.7"
 kotlinx-binary-compatibility-validator = "0.12.0"
 kotlinx-knit = "0.4.0"
 

@@ -10,7 +10,7 @@ import kotlinx.benchmark.*
 import java.util.concurrent.TimeUnit
 
 @State(Scope.Benchmark)
-class ListPolynomialBenchmark {
+class ListPolynomialBenchmarkJvm {
     val listPolynomialContext = Double.field.listPolynomialSpace
 
     val polynomial = ListPolynomial(1.1, 1.1)
