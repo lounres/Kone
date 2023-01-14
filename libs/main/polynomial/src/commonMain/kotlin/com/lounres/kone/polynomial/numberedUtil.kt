@@ -41,6 +41,7 @@ public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): Number
     )
 }
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun NumberedPolynomial<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedPolynomial<Double> =
     this.substitute(mapOf(*inputs))
 
@@ -59,6 +60,7 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>
     )
 }
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
 
@@ -75,6 +77,7 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
         }
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
 public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -92,6 +95,7 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
         }
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
 public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -99,12 +103,14 @@ public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inp
 public fun NumberedRationalFunction<Double>.substitute(args: Map<Int, Double>): NumberedRationalFunction<Double> =
     NumberedRationalFunction(numerator.substitute(args), denominator.substitute(args))
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun NumberedRationalFunction<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedRationalFunction<Double> =
     this.substitute(mapOf(*inputs))
 
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, C>): NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
@@ -113,6 +119,7 @@ public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vara
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedPolynomial<C>>) : NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
 public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -124,6 +131,7 @@ public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<I
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
 public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))

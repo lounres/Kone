@@ -39,6 +39,7 @@ public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): Labe
     )
 }
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun LabeledPolynomial<Double>.substitute(vararg inputs: Pair<Symbol, Double>): LabeledPolynomial<Double> =
     this.substitute(mapOf(*inputs))
 
@@ -58,6 +59,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
     )
 }
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, C>): LabeledPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
 
@@ -74,6 +76,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
         }
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
 public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -91,6 +94,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
         }
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
 public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -98,12 +102,14 @@ public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inpu
 public fun LabeledRationalFunction<Double>.substitute(args: Map<Symbol, Double>): LabeledRationalFunction<Double> =
     LabeledRationalFunction(numerator.substitute(args), denominator.substitute(args))
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun LabeledRationalFunction<Double>.substitute(vararg inputs: Pair<Symbol, Double>): LabeledRationalFunction<Double> =
     this.substitute(mapOf(*inputs))
 
 public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Symbol, C>): LabeledRationalFunction<C> =
     LabeledRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, C>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
@@ -112,6 +118,7 @@ public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, varar
 public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Symbol, LabeledPolynomial<C>>) : LabeledRationalFunction<C> =
     LabeledRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
 public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
@@ -123,6 +130,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Sy
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
 
+@Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
 public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
