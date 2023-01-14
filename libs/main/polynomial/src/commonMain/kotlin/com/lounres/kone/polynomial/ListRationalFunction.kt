@@ -30,7 +30,7 @@ public data class ListRationalFunction<C>(
 public class ListRationalFunctionSpace<C, A : Ring<C>> (
     public val ring: A,
 ) :
-    RationalFunctionSpaceOverPolynomialSpace<
+    RationalFunctionSpaceWithPolynomialSpace<
             C,
             ListPolynomial<C>,
             ListRationalFunction<C>,

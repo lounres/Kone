@@ -9,6 +9,7 @@ import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
+import com.lounres.kone.algebraic.util.squaringPower
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -65,10 +66,6 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     public override infix fun P.neq(other: P): Boolean = !(this equalsTo other)
     public override fun P.isZero(): Boolean = this equalsTo zero
     public override fun P.isOne(): Boolean = this equalsTo one
-    // FIXME: KT-5351
-    public override fun P.isNotZero(): Boolean = !isZero()
-    // FIXME: KT-5351
-    public override fun P.isNotOne(): Boolean = !isOne()
     // endregion
 
     // region Integer-to-Constant conversion
@@ -182,10 +179,10 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     public operator fun C.times(other: C): C
     @JvmName("powerConstantUInt")
     @JsName("powerConstantUInt")
-    public fun power(base: C, exponent: UInt): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
+    public fun power(base: C, exponent: UInt): C = rightMultiplyByDoubling(base, exponent, ::constantOne) { left, right -> left * right }
     @JvmName("powerConstantULong")
     @JsName("powerConstantULong")
-    public fun power(base: C, exponent: ULong): C = rightMultiplyByDoubling(base, exponent, { constantOne }, { left, right -> left * right })
+    public fun power(base: C, exponent: ULong): C = rightMultiplyByDoubling(base, exponent, ::constantOne) { left, right -> left * right }
     @JvmName("powConstantUInt")
     @JsName("powConstantUInt")
     public infix fun C.pow(exponent: UInt): C = power(this, exponent)
@@ -204,6 +201,18 @@ public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
     public operator fun P.plus(other: C): P
     public operator fun P.minus(other: C): P
     public operator fun P.times(other: C): P
+    // endregion
+
+    // region Polynomial-Polynomial operations
+    public override operator fun P.unaryPlus(): P = this
+    public override operator fun P.unaryMinus(): P
+    public override operator fun P.plus(other: P): P
+    public override operator fun P.minus(other: P): P
+    public override operator fun P.times(other: P): P
+    public override fun power(base: P, exponent: UInt): P = squaringPower(base, exponent)
+    public override fun power(base: P, exponent: ULong): P = squaringPower(base, exponent)
+    public override infix fun P.pow(exponent: UInt): P = power(this, exponent)
+    public override infix fun P.pow(exponent: ULong): P = power(this, exponent)
     // endregion
 
     // region Polynomial properties

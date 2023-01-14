@@ -5,8 +5,7 @@
 
 package com.lounres.kone.algebraic
 
-import com.lounres.kone.algebraic.util.rightAddMultipliedByDoubling
-import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
+import com.lounres.kone.algebraic.util.*
 
 
 public interface Ring<V>: AlgebraicContext {
@@ -39,27 +38,27 @@ public interface Ring<V>: AlgebraicContext {
     // endregion
 
     // region Value-Int operations
-    public operator fun V.plus(other: Int): V = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun V.minus(other: Int): V = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun V.times(other: Int): V = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
+    public operator fun V.plus(other: Int): V = doublingPlus(this, other)
+    public operator fun V.minus(other: Int): V = doublingMinus(this, other)
+    public operator fun V.times(other: Int): V = doublingTimes(this, other)
     // endregion
 
     // region Value-Long operations
-    public operator fun V.plus(other: Long): V = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun V.minus(other: Long): V = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun V.times(other: Long): V = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
+    public operator fun V.plus(other: Long): V = doublingPlus(this, other)
+    public operator fun V.minus(other: Long): V = doublingMinus(this, other)
+    public operator fun V.times(other: Long): V = doublingTimes(this, other)
     // endregion
 
     // region Int-Value operations
-    public operator fun Int.plus(other: V): V = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun Int.minus(other: V): V = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun Int.times(other: V): V = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
+    public operator fun Int.plus(other: V): V = doublingPlus(this, other)
+    public operator fun Int.minus(other: V): V = doublingMinus(this, other)
+    public operator fun Int.times(other: V): V = doublingTimes(this, other)
     // endregion
 
     // region Long-Value operations
-    public operator fun Long.plus(other: V): V = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun Long.minus(other: V): V = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
-    public operator fun Long.times(other: V): V = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
+    public operator fun Long.plus(other: V): V = doublingPlus(this, other)
+    public operator fun Long.minus(other: V): V = doublingMinus(this, other)
+    public operator fun Long.times(other: V): V = doublingTimes(this, other)
     // endregion
 
     // region Value-Value operations
@@ -68,8 +67,8 @@ public interface Ring<V>: AlgebraicContext {
     public operator fun V.plus(other: V): V
     public operator fun V.minus(other: V): V
     public operator fun V.times(other: V): V
-    public fun power(base: V, exponent: UInt): V = rightMultiplyByDoubling(base, exponent, { one }, { left, right -> left * right })
-    public fun power(base: V, exponent: ULong): V = rightMultiplyByDoubling(base, exponent, { one }, { left, right -> left * right })
+    public fun power(base: V, exponent: UInt): V = squaringPower(base, exponent)
+    public fun power(base: V, exponent: ULong): V = squaringPower(base, exponent)
     public infix fun V.pow(exponent: UInt): V = power(this, exponent)
     public infix fun V.pow(exponent: ULong): V = power(this, exponent)
     // endregion

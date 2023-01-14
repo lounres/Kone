@@ -56,11 +56,11 @@ allprojects {
 }
 
 val jvmTargetApi = properties["jvmTarget"] as String
+val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
-inline fun <reified T> Any?.takeIfType(): T? = if (this is T) this else null
 
 
 publishing {
@@ -290,8 +290,8 @@ featuresManagement {
                                     // Fix kotlinx-benchmarks bug
                                     afterEvaluate {
                                         val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
-                                        tasks.findByName(jarTaskName).takeIfType<org.gradle.jvm.tasks.Jar>()?.run {
-                                            project.logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
+                                        tasks.findByName(jarTaskName).let { it as? org.gradle.jvm.tasks.Jar }?.run {
+                                            if (!ignoreManualBugFixes) project.logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
                                             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                                         }
                                     }

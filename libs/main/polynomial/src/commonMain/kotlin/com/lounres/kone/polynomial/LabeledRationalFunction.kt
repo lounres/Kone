@@ -22,7 +22,7 @@ public data class LabeledRationalFunction<C>(
 public class LabeledRationalFunctionSpace<C, A: Ring<C>>(
     public val ring: A,
 ) :
-    MultivariateRationalFunctionSpaceOverMultivariatePolynomialSpace<
+    MultivariateRationalFunctionSpaceWithMultivariatePolynomialSpace<
             C,
             Symbol,
             LabeledPolynomial<C>,

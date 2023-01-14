@@ -223,9 +223,14 @@ public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
     //  [ListPolynomialSpace] as a context receiver
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, C>): NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     @JvmName("substitutePolynomial")
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
         substitute(ring, arguments)
+    @JvmName("substitutePolynomial")
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     public inline fun NumberedPolynomial<C>.substitute(arguments: Buffer<C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
     @JvmName("substitutePolynomial")

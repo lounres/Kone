@@ -24,7 +24,7 @@ public data class NumberedRationalFunction<C>(
 public class NumberedRationalFunctionSpace<C, A: Ring<C>> (
     public val ring: A,
 ) :
-    RationalFunctionSpaceOverPolynomialSpace<
+    RationalFunctionSpaceWithPolynomialSpace<
             C,
             NumberedPolynomial<C>,
             NumberedRationalFunction<C>,
