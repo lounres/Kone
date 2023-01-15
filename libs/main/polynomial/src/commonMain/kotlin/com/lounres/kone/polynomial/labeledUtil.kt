@@ -21,10 +21,10 @@ public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialS
     get() = LabeledPolynomialSpaceOverField(this)
 
 public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
-    get() = LabeledRationalFunctionSpace(LabeledPolynomialSpace(this))
+    get() = LabeledRationalFunctionSpace(this.labeledPolynomialSpace)
 
 public inline val <C, A : Field<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
-    get() = LabeledRationalFunctionSpaceOverField(LabeledPolynomialSpaceOverField(this))
+    get() = LabeledRationalFunctionSpaceOverField(this.labeledPolynomialSpace)
 
 public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.field {
     if (coefficients.isEmpty()) return this@substitute

@@ -23,8 +23,11 @@ public inline val <C, A : Ring<C>> A.numberedPolynomialSpace: NumberedPolynomial
 public inline val <C, A : Field<C>> A.numberedPolynomialSpace: NumberedPolynomialSpaceOverField<C, A>
     get() = NumberedPolynomialSpaceOverField(this)
 
-public inline val <C, A : Ring<C>> A.numberedRationalFunctionSpace: NumberedRationalFunctionSpace<C, A>
-    get() = NumberedRationalFunctionSpace(this)
+public inline val <C, A : Ring<C>> A.numberedRationalFunctionSpace: DefaultNumberedRationalFunctionSpace<C, A>
+    get() = NumberedRationalFunctionSpace(this.numberedPolynomialSpace)
+
+public inline val <C, A : Field<C>> A.numberedRationalFunctionSpace: DefaultNumberedRationalFunctionSpaceOverField<C, A>
+    get() = NumberedRationalFunctionSpaceOverField(this.numberedPolynomialSpace)
 
 public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): NumberedPolynomial<Double> = Double.field {
     NumberedPolynomial<Double>(
@@ -261,25 +264,25 @@ public fun <C> NumberedRationalFunction<C>.substituteFully(ring: Field<C>, args:
     numerator.substituteFully(ring, args) / denominator.substituteFully(ring, args)
 }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOver(ring: Ring<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfConstantOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfConstantOver(ring: Ring<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfPolynomialOver(ring: A): (Buffer<NumberedPolynomial<C>>) -> NumberedPolynomial<C> = { substitute(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (Buffer<NumberedPolynomial<C>>) -> NumberedPolynomial<C> = { substitute(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfRationalFunctionOver(ring: A): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
-public fun <C, A : Field<C>> NumberedRationalFunction<C>.asFunctionOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOver(ring: Field<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Field<C>> NumberedRationalFunction<C>.asFunctionOfConstantOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfConstantOver(ring: Field<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedRationalFunction<C>.asFunctionOfPolynomialOver(ring: A): (Buffer<NumberedPolynomial<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (Buffer<NumberedPolynomial<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: A): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.derivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.derivativeWithRespectTo(
+    ring: Ring<C>,
     variable: Int,
 ): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
@@ -303,8 +306,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.derivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
+    ring: Ring<C>,
     variable: Int,
     order: UInt
 ): NumberedPolynomial<C> = ring {
@@ -333,8 +336,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
+    ring: Ring<C>,
     variablesAndOrders: Map<Int, UInt>,
 ): NumberedPolynomial<C> = ring {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
@@ -364,8 +367,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.antiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.antiderivativeWithRespectTo(
+    ring: Field<C>,
     variable: Int,
 ): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
@@ -382,8 +385,8 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.antiderivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
+    ring: Field<C>,
     variable: Int,
     order: UInt
 ): NumberedPolynomial<C> = ring {
@@ -405,8 +408,8 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectT
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
+    ring: Field<C>,
     variablesAndOrders: Map<Int, UInt>,
 ): NumberedPolynomial<C> = ring {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
