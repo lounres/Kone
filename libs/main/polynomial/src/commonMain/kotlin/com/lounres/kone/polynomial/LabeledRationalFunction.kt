@@ -7,6 +7,7 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.Field
 import space.kscience.kmath.expressions.Symbol
 import com.lounres.kone.algebraic.Ring
 import kotlin.jvm.JvmName
@@ -19,24 +20,22 @@ public data class LabeledRationalFunction<C>(
     override fun toString(): String = "LabeledRationalFunction${numerator.coefficients}/${denominator.coefficients}"
 }
 
-public class LabeledRationalFunctionSpace<C, A: Ring<C>>(
-    public val ring: A,
-) :
-    MultivariateRationalFunctionSpaceWithMultivariatePolynomialSpace<
+public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: LabeledPolynomialSpace<C, A>>(
+    override val polynomialRing : PS
+) : MultivariateRationalFunctionSpaceWithMultivariatePolynomialSpace<
             C,
             Symbol,
             LabeledPolynomial<C>,
             LabeledRationalFunction<C>,
-            LabeledPolynomialSpace<C, A>,
+            PS,
             >,
     MultivariatePolynomialSpaceOfFractions<
             C,
             Symbol,
             LabeledPolynomial<C>,
             LabeledRationalFunction<C>,
-            >() {
+            > () {
 
-    override val polynomialRing : LabeledPolynomialSpace<C, A> = LabeledPolynomialSpace(ring)
     override fun constructRationalFunction(
         numerator: LabeledPolynomial<C>,
         denominator: LabeledPolynomial<C>
@@ -45,14 +44,29 @@ public class LabeledRationalFunctionSpace<C, A: Ring<C>>(
 
     // TODO: When context receivers will be ready move all of this substitutions and invocations to utilities with
     //  [ListPolynomialSpace] as a context receiver
-    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, C>): LabeledPolynomial<C> = substitute(ring, argument)
+    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, C>): LabeledPolynomial<C> = substitute(polynomialRing.ring, argument)
     @JvmName("substitutePolynomial")
-    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(ring, argument)
+    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(polynomialRing.ring, argument)
     @JvmName("substituteRationalFunction")
-    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> = substitute(ring, argument)
-    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, C>): LabeledRationalFunction<C> = substitute(ring, argument)
+    public inline fun LabeledPolynomial<C>.substitute(argument: Map<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> = substitute(polynomialRing.ring, argument)
+    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, C>): LabeledRationalFunction<C> = substitute(polynomialRing.ring, argument)
     @JvmName("substitutePolynomial")
-    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, LabeledPolynomial<C>>): LabeledRationalFunction<C> = substitute(ring, argument)
+    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, LabeledPolynomial<C>>): LabeledRationalFunction<C> = substitute(polynomialRing.ring, argument)
     @JvmName("substituteRationalFunction")
-    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> = substitute(ring, argument)
+    public inline fun LabeledRationalFunction<C>.substitute(argument: Map<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> = substitute(polynomialRing.ring, argument)
 }
+
+public typealias DefaultLabeledRationalFunctionSpace<C, A> = LabeledRationalFunctionSpace<C, A, LabeledPolynomialSpace<C, A>>
+
+public class LabeledRationalFunctionSpaceOverField<C, out A: Field<C>, out PS: LabeledPolynomialSpaceOverField<C, A>>(
+    polynomialRing : PS
+) : LabeledRationalFunctionSpace<C, A, PS>(polynomialRing),
+    MultivariateRationalFunctionSpaceWithMultivariatePolynomialSpaceOverField<
+            C,
+            Symbol,
+            LabeledPolynomial<C>,
+            LabeledRationalFunction<C>,
+            PS
+            >
+
+public typealias DefaultLabeledRationalFunctionSpaceOverField<C, A> = LabeledRationalFunctionSpaceOverField<C, A, LabeledPolynomialSpaceOverField<C, A>>

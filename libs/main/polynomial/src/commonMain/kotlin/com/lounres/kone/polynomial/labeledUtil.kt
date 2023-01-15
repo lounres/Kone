@@ -20,8 +20,11 @@ public inline val <C, A : Ring<C>> A.labeledPolynomialSpace: LabeledPolynomialSp
 public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C, A>
     get() = LabeledPolynomialSpaceOverField(this)
 
-public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: LabeledRationalFunctionSpace<C, A>
-    get() = LabeledRationalFunctionSpace(this)
+public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
+    get() = LabeledRationalFunctionSpace(LabeledPolynomialSpace(this))
+
+public inline val <C, A : Field<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
+    get() = LabeledRationalFunctionSpaceOverField(LabeledPolynomialSpaceOverField(this))
 
 public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.field {
     if (coefficients.isEmpty()) return this@substitute
@@ -136,8 +139,8 @@ public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, varar
     this.substitute(ring, mapOf(*inputs))
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(
+    algebra: Ring<C>,
     variable: Symbol,
 ): LabeledPolynomial<C> = algebra {
     LabeledPolynomial<C>(
@@ -162,8 +165,8 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.derivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
+    algebra: Ring<C>,
     variable: Symbol,
     order: UInt
 ): LabeledPolynomial<C> = algebra {
@@ -193,8 +196,8 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
+    algebra: Ring<C>,
     variablesAndOrders: Map<Symbol, UInt>,
 ): LabeledPolynomial<C> = algebra {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
@@ -233,8 +236,8 @@ public fun <C, A : Ring<C>> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
+    algebra: Field<C>,
     variable: Symbol,
 ): LabeledPolynomial<C> = algebra {
     LabeledPolynomial<C>(
@@ -252,8 +255,8 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.antiderivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
+    algebra: Field<C>,
     variable: Symbol,
     order: UInt
 ): LabeledPolynomial<C> = algebra {
@@ -276,8 +279,8 @@ public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
-    algebra: A,
+public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
+    algebra: Field<C>,
     variablesAndOrders: Map<Symbol, UInt>,
 ): LabeledPolynomial<C> = algebra {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
