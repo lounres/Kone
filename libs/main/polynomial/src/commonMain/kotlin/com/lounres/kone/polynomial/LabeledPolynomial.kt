@@ -7,6 +7,7 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.utils.mapOperations.*
 import space.kscience.kmath.expressions.Symbol
@@ -25,11 +26,11 @@ internal constructor(
 public typealias LabeledMonomialSignature = Map<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
-public class LabeledPolynomialSpace<C, out A : Ring<C>>(
+public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
     public override val ring: A,
-) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceOverRing<C, LabeledPolynomial<C>, A> {
+) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithRing<C, LabeledPolynomial<C>, A> {
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
-    override val one: LabeledPolynomial<C> = constantOne.asLabeledPolynomial()
+    override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
 
     public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean =
         mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 }
@@ -406,9 +407,21 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             }
     public override val LabeledPolynomial<C>.countOfVariables: Int get() = variables.size
 
-    // TODO: When context receivers will be ready move all of this substitutions and invocations to utilities with
+    // FIXME: When context receivers will be ready move all of these substitutions and invocations to utilities with
     //  [ListPolynomialSpace] as a context receiver
     public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, C>): LabeledPolynomial<C> = substitute(ring, arguments)
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, C>): LabeledPolynomial<C> = substitute(ring, *arguments)
     @JvmName("substitutePolynomial")
     public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> = substitute(ring, arguments)
+    @JvmName("substitutePolynomial")
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(ring, *arguments)
+}
+
+public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(
+    ring: A,
+) : LabeledPolynomialSpace<C, A>(ring), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithField<C, LabeledPolynomial<C>, A> {
+    public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
+        LabeledPolynomialAsIs(
+            coefficients.mapValues { it.value / other }
+        )
 }

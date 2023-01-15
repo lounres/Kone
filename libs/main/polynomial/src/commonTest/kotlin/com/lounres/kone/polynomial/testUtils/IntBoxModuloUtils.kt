@@ -7,7 +7,6 @@ package com.lounres.kone.polynomial.testUtils
 
 import com.lounres.kone.polynomial.ListPolynomial
 import com.lounres.kone.polynomial.ListPolynomialSpace
-import com.lounres.kone.polynomial.PolynomialSpaceOverRing
 
 
 fun ListPolynomialSpace<IntBox, IntBoxModuloRing>.ListPolynomial(vararg coefs: Int): ListPolynomial<IntBox> =

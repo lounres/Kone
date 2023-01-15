@@ -7,6 +7,7 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.utils.mapOperations.*
 import space.kscience.kmath.structures.Buffer
@@ -25,9 +26,9 @@ internal constructor(
 public typealias NumberedMonomialSignature = List<UInt>
 public typealias NumberedPolynomialCoefficients<C> = Map<NumberedMonomialSignature, C>
 
-public class NumberedPolynomialSpace<C, out A : Ring<C>>(
+public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override val ring: A,
-) : PolynomialSpaceOverRing<C, NumberedPolynomial<C>, A> {
+) : PolynomialSpaceWithRing<C, NumberedPolynomial<C>, A> {
 
     override val zero: NumberedPolynomial<C> = NumberedPolynomialAsIs(emptyMap())
     override val one: NumberedPolynomial<C> by lazy { NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to constantOne)) }
@@ -222,9 +223,14 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     //  [ListPolynomialSpace] as a context receiver
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, C>): NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     @JvmName("substitutePolynomial")
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
         substitute(ring, arguments)
+    @JvmName("substitutePolynomial")
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     public inline fun NumberedPolynomial<C>.substitute(arguments: Buffer<C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
     @JvmName("substitutePolynomial")
@@ -240,4 +246,13 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     @JvmName("invokePolynomial")
     public inline operator fun NumberedPolynomial<C>.invoke(arguments: Buffer<NumberedPolynomial<C>>): NumberedPolynomial<C> =
         substitute(ring, arguments)
+}
+
+public class NumberedPolynomialSpaceOverField<C, out A : Field<C>>(
+    ring: A,
+) : NumberedPolynomialSpace<C, A>(ring), PolynomialSpaceWithField<C, NumberedPolynomial<C>, A> {
+    public override fun NumberedPolynomial<C>.div(other: C): NumberedPolynomial<C> =
+        NumberedPolynomialAsIs(
+            coefficients.mapValues { it.value / other }
+        )
 }

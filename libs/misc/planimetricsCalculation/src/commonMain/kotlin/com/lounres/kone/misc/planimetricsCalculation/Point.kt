@@ -21,6 +21,7 @@ public data class Point<C>(
     public val columnVector: ColumnVector<LabeledPolynomial<C>> get() = ColumnVector(x, y, z)
 
     public companion object {
+        // Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
 //        context(A)
 //        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
 //        context(PlanimetricsCalculationContext<C, *>)

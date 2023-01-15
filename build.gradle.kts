@@ -3,6 +3,9 @@
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.BenchmarksPlugin
+import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
+import kotlinx.benchmark.gradle.JsBenchmarkTarget
+import kotlinx.benchmark.gradle.NativeBenchmarkTarget
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
@@ -13,6 +16,10 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinCompilationToRunnableFiles
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
@@ -49,7 +56,13 @@ allprojects {
         if (!extra.has(prop)) extra[prop] = value
 }
 
+afterEvaluate {
+    yarn.lockFileDirectory = rootDir.resolve("gradle")
+}
+
+
 val jvmTargetApi = properties["jvmTarget"] as String
+val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
@@ -204,6 +217,9 @@ featuresManagement {
                         dependsOn(main.defaultSourceSet)
                         kotlin.setSrcDirs(listOf("src/examples/kotlin"))
                         resources.setSrcDirs(listOf("src/examples/resources"))
+                        dependencies {
+                            implementation(rootProject.projects.libs.util.examples)
+                        }
                     }
 
                     task<JavaExec>("runJvmExample") {
@@ -238,11 +254,12 @@ featuresManagement {
 //                }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                val kotlinxBenchmarkDebug = (property("kotlinx.benchmark.debug") as String?).toBoolean()
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
+                    val commonMain by sourceSets.getting
                     val commonBenchmarks by sourceSets.creating {
+                        dependsOn(commonMain)
                         dependencies {
                             implementation(rootProject.libs.kotlinx.benchmark.runtime)
                         }
@@ -266,15 +283,48 @@ featuresManagement {
                             // TODO: For now native targets work unstable
                             //  May be similar to https://github.com/Kotlin/kotlinx-benchmark/issues/94
                             // Because of all the issues, only JVM targets are registered for now
-                            if (platformType == KotlinPlatformType.jvm) {
-                                benchmarksExtension.targets.register(benchmarksSourceSetName)
-                                // Fix kotlinx-benchmarks bug
-                                if (platformType == KotlinPlatformType.jvm) afterEvaluate {
-                                    val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
-                                    tasks.findByName(jarTaskName).let { if (it is org.gradle.jvm.tasks.Jar) it else null }?.apply {
-                                        if (kotlinxBenchmarkDebug) logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
-                                        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                            when (platformType) {
+                                KotlinPlatformType.common, KotlinPlatformType.androidJvm -> {}
+                                KotlinPlatformType.jvm -> {
+                                    val benchmarkTarget = KotlinJvmBenchmarkTarget(
+                                        extension = benchmarksExtension,
+                                        name = benchmarksSourceSetName,
+                                        compilation = benchmarks as KotlinJvmCompilation
+                                    )
+                                    benchmarksExtension.targets.add(benchmarkTarget)
+
+                                    // Fix kotlinx-benchmarks bug
+                                    afterEvaluate {
+                                        val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
+                                        tasks.findByName(jarTaskName).let { it as? org.gradle.jvm.tasks.Jar }?.run {
+                                            if (!ignoreManualBugFixes) project.logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
+                                            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                                        }
                                     }
+                                }
+                                KotlinPlatformType.js -> {
+                                    val benchmarkTarget = JsBenchmarkTarget(
+                                        extension = benchmarksExtension,
+                                        name = benchmarksSourceSetName,
+                                        compilation = benchmarks as KotlinJsCompilation
+                                    )
+//                                    benchmarksExtension.targets.add(benchmarkTarget)
+                                }
+                                KotlinPlatformType.wasm -> {
+//                                    val benchmarkTarget = JsBenchmarkTarget(
+//                                        extension = benchmarksExtension,
+//                                        name = benchmarksSourceSetName,
+//                                        compilation = benchmarks as KotlinJsCompilation
+//                                    )
+//                                    benchmarksExtension.targets.add(benchmarkTarget)
+                                }
+                                KotlinPlatformType.native -> {
+                                    val benchmarkTarget = NativeBenchmarkTarget(
+                                        extension = benchmarksExtension,
+                                        name = benchmarksSourceSetName,
+                                        compilation = benchmarks as KotlinNativeCompilation
+                                    )
+//                                    benchmarksExtension.targets.add(benchmarkTarget)
                                 }
                             }
                         }
