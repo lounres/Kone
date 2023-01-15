@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinCompilationToRunnabl
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
@@ -54,6 +55,11 @@ allprojects {
     for ((prop, value) in defaultProperties)
         if (!extra.has(prop)) extra[prop] = value
 }
+
+afterEvaluate {
+    yarn.lockFileDirectory = rootDir.resolve("gradle")
+}
+
 
 val jvmTargetApi = properties["jvmTarget"] as String
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
