@@ -14,7 +14,7 @@ import com.lounres.kone.algebraic.Ring
 //public inline operator fun <
 //        C,
 //        P: Polynomial<C>,
-//        A: Field<C>,
+//        A: Ring<C>,
 //        PS: PolynomialSpaceWithRing<C, P, A>,
 //        R
 //        > PS.invoke(block: context(A, PS) () -> R): R {
