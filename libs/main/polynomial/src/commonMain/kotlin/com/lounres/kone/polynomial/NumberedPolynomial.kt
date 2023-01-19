@@ -15,7 +15,7 @@ import kotlin.jvm.JvmName
 import kotlin.math.max
 
 
-public data class NumberedPolynomial<C>
+public data class NumberedPolynomial<out C>
 @PublishedApi
 internal constructor(
     public val coefficients: NumberedPolynomialCoefficients<C>
@@ -191,9 +191,9 @@ public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
     override fun power(base: NumberedPolynomial<C>, exponent: UInt): NumberedPolynomial<C> = super.power(base, exponent)
 
     public val NumberedPolynomial<C>.lastVariable: Int
-        get() = coefficients.keys.maxOfOrNull { degs -> degs.lastIndex } ?: -1
+        get() = coefficients.keys.fold(-1) { max, degs -> max(max, degs.lastIndex) }
     override val NumberedPolynomial<C>.degree: Int
-        get() = coefficients.keys.maxOfOrNull { degs -> degs.sum().toInt() } ?: -1
+        get() = coefficients.keys.fold(-1) { max, degs -> max(max, degs.sum().toInt()) }
     public val NumberedPolynomial<C>.degrees: NumberedMonomialSignature
         get() =
             MutableList(lastVariable + 1) { 0u }.apply {
@@ -204,11 +204,12 @@ public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
                 }
             }
     public fun NumberedPolynomial<C>.degreeBy(variable: Int): UInt =
-        coefficients.keys.maxOfOrNull { degs -> degs.getOrElse(variable) { 0u } } ?: 0u
+        coefficients.keys.fold(0u) { max, degs -> max(max, degs.getOrElse(variable) { 0u }) }
     public fun NumberedPolynomial<C>.degreeBy(variables: Collection<Int>): UInt =
-        coefficients.keys.maxOfOrNull { degs ->
-            degs.withIndex().fold(0u) { acc, (index, value) -> if (index in variables) acc + value else acc }
-        } ?: 0u
+        coefficients.keys.fold(0u) { max, degs ->
+            val deg = degs.foldIndexed(0u) { index, acc, value -> if (index in variables) acc + value else acc }
+            max(max, deg)
+        }
     public val NumberedPolynomial<C>.countOfVariables: Int
         get() =
             MutableList(lastVariable + 1) { false }.apply {
@@ -251,8 +252,35 @@ public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
 public class NumberedPolynomialSpaceOverField<C, out A : Field<C>>(
     ring: A,
 ) : NumberedPolynomialSpace<C, A>(ring), PolynomialSpaceWithField<C, NumberedPolynomial<C>, A> {
-    public override fun NumberedPolynomial<C>.div(other: C): NumberedPolynomial<C> =
-        NumberedPolynomialAsIs(
-            coefficients.mapValues { it.value / other }
-        )
+
+    // region Polynomial-Int operations
+    public override operator fun NumberedPolynomial<C>.div(other: Int): NumberedPolynomial<C> =
+        when(other) {
+            0 -> throw IllegalArgumentException("/ by zero")
+            1 -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                NumberedPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+            }
+        }
+    // endregion
+
+    // region Polynomial-Long operations
+    public override operator fun NumberedPolynomial<C>.div(other: Long): NumberedPolynomial<C> =
+        when(other) {
+            0L -> throw IllegalArgumentException("/ by zero")
+            1L -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                NumberedPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+            }
+        }
+    // endregion
+
+    // region Polynomial-Constant operations
+    public override fun NumberedPolynomial<C>.div(other: C): NumberedPolynomial<C> {
+        val rec = other.reciprocal
+        return NumberedPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+    }
+    // endregion
 }

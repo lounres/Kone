@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,24 +7,22 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.invoke
-import com.lounres.kone.algebraic.Rational
-import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.algebraic.*
 import com.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.jvm.JvmName
 import space.kscience.kmath.expressions.Symbol
 
 // TODO: Тесты на конвертацию.
 
-class LabeledPolynomialTest : FreeSpec() {
+class LabeledPolynomialSpaceTest : FreeSpec() {
 
     val rationalPolynomialSpace = Rational.field.labeledPolynomialSpace
-    val intModuloPolynomialSpace = IntBoxModuloRing(35).labeledPolynomialSpace
+    val timesIntModuloPolynomialSpace = IntModuloRing(35).labeledPolynomialSpace
+    val divIntModuloPolynomialSpace = IntModuloField(23).labeledPolynomialSpace
 
     init {
         rationalPolynomialSpace {
@@ -183,36 +181,36 @@ class LabeledPolynomialTest : FreeSpec() {
         }
     }
     
-    sealed interface PolynomialIntTestData<C> {
-        val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>
+    sealed interface PolynomialIntTestData<out C> {
+        val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>
         val argumentInt: Int
-        val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>
+        val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>
         operator fun component1() = argumentPolynomialCoefficients
         operator fun component2() = argumentInt
         operator fun component3() = nonOptimizedResultPolynomialCoefficients
-        data class EqualityTestData<C>(
-            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        data class EqualityTestData<out C>(
+            override val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             override val argumentInt: Int,
-            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
-            val resultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
+            val resultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         ): PolynomialIntTestData<C>
-        data class SameTestData<C>(
-            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        data class SameTestData<out C>(
+            override val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             override val argumentInt: Int,
-            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             val resultPolynomial: LabeledPolynomial<C>,
         ): PolynomialIntTestData<C>
-        data class NoChangeTestData<C>(
-            override val argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        data class NoChangeTestData<out C>(
+            override val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             override val argumentInt: Int,
-            override val nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+            override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         ): PolynomialIntTestData<C>
     }
     fun <C> PolynomialIntTestData(
-        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
-        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
-        resultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
+        resultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
     ): PolynomialIntTestData<C> = PolynomialIntTestData.EqualityTestData(
         argumentPolynomialCoefficients,
         argumentInt,
@@ -220,9 +218,9 @@ class LabeledPolynomialTest : FreeSpec() {
         resultPolynomialCoefficients,
     )
     fun <C> PolynomialIntTestData(
-        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
-        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         resultPolynomial: LabeledPolynomial<C>,
     ): PolynomialIntTestData<C> = PolynomialIntTestData.SameTestData(
         argumentPolynomialCoefficients,
@@ -231,21 +229,20 @@ class LabeledPolynomialTest : FreeSpec() {
         resultPolynomial,
     )
     fun <C> PolynomialIntTestData(
-        argumentPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
-        nonOptimizedResultPolynomialCoefficients: Map<Map<Symbol, UInt>, C>,
+        nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
     ): PolynomialIntTestData<C> = PolynomialIntTestData.NoChangeTestData(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
     )
 
-    @JvmName("produceTestsInt")
-    suspend fun <C, A: Ring<C>> ContainerScope.produceIntTests(
+    suspend fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceIntTests(
         testDataList: List<PolynomialIntTestData<C>>,
-        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        polynomialSpace: PS,
         polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
-        operationToTest: LabeledPolynomialSpace<C, *>.(pol: LabeledPolynomial<C>, arg: Int) -> LabeledPolynomial<C>
+        operationToTest: PS.(pol: LabeledPolynomial<C>, arg: Int) -> LabeledPolynomial<C>
     ) {
         withData(
             nameIndFn = { index, _ -> "test ${index + 1}" },
@@ -267,7 +264,7 @@ class LabeledPolynomialTest : FreeSpec() {
                     }
                 }
             } else {
-                fun Map<Map<Symbol, UInt>, C>.update() = mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }
+                fun LabeledPolynomialCoefficients<C>.update() = mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }
                 when (data) {
                     is PolynomialIntTestData.EqualityTestData -> {
                         val (coefs, arg, _, expected) = data
@@ -400,110 +397,126 @@ class LabeledPolynomialTest : FreeSpec() {
 
     val timesPolynomialIntTestData = listOf(
         PolynomialIntTestData(
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
                 mapOf(y to 1u) to 13,
                 mapOf(x to 1u) to 15,
                 mapOf(z to 2u) to 26,
-            ).mapValues { IntBox(it.value) },
+            ),
             27,
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 34,
                 mapOf(x to 3u) to 2,
                 mapOf(y to 1u) to 1,
                 mapOf(x to 1u) to 20,
                 mapOf(z to 2u) to 2,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf<Symbol, UInt>() to 34,
                 mapOf(x to 3u) to 2,
                 mapOf(y to 1u) to 1,
                 mapOf(x to 1u) to 20,
                 mapOf(z to 2u) to 2,
-            ).mapValues { IntBox(it.value) },
+            ),
         ),
         PolynomialIntTestData(
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 7,
                 mapOf(x to 3u) to 0,
                 mapOf(y to 1u) to 49,
                 mapOf(x to 1u) to 21,
                 mapOf(z to 2u) to 14,
-            ).mapValues { IntBox(it.value) },
+            ),
             15,
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 0,
                 mapOf(x to 3u) to 0,
                 mapOf(y to 1u) to 0,
                 mapOf(x to 1u) to 0,
                 mapOf(z to 2u) to 0,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf<Symbol, UInt>() to 0,
                 mapOf(x to 3u) to 0,
                 mapOf(y to 1u) to 0,
                 mapOf(x to 1u) to 0,
                 mapOf(z to 2u) to 0,
-            ).mapValues { IntBox(it.value) },
+            ),
         ),
         PolynomialIntTestData(
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
                 mapOf(y to 1u) to 13,
                 mapOf(x to 1u) to 15,
                 mapOf(z to 2u) to 26,
-            ).mapValues { IntBox(it.value) },
+            ),
             0,
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 0,
                 mapOf(x to 3u) to 0,
                 mapOf(y to 1u) to 0,
                 mapOf(x to 1u) to 0,
                 mapOf(z to 2u) to 0,
-            ).mapValues { IntBox(it.value) },
-            intModuloPolynomialSpace.zero
+            ),
+            timesIntModuloPolynomialSpace.zero
         ),
         PolynomialIntTestData(
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
                 mapOf(y to 1u) to 13,
                 mapOf(x to 1u) to 15,
                 mapOf(z to 2u) to 26,
-            ).mapValues { IntBox(it.value) },
+            ),
             1,
-            mapOf(
+            !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
                 mapOf(y to 1u) to 13,
                 mapOf(x to 1u) to 15,
                 mapOf(z to 2u) to 26,
-            ).mapValues { IntBox(it.value) },
+            ),
         ),
+    )
+
+    val divPolynomialIntTestData : List<PolynomialIntTestData<BInt>> = listOf( // TODO: Add test data for division tests
+//        PolynomialIntTestData(
+//            !listOf(-9, -12, 9, 12, -18, -4, 7, -16, -5, -19),
+//            20,
+//            !listOf(3, 4, 20, 19, 6, 9, 13, 13, 17, 14),
+//            !listOf(3, 4, 20, 19, 6, 9, 13, 13, 17, 14),
+//        ),
+//        PolynomialIntTestData(
+//            !listOf(-12, 10, -16, -17, -11, -17, 8, -11, -15, 8),
+//            1,
+//            !listOf(11, 10, 7, 6, 12, 6, 8, 12, 8, 8),
+//        ),
     )
 
     init {
         "Polynomial and Int" - {
             "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
             "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * arg } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
+            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Polynomial and Long" - {
             "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
             "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
+            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg.toLong() } }
         }
         "Int and Polynomial" - {
             "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
             "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
         "Long and Polynomial" - {
             "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
             "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
+            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
         }
 
         rationalPolynomialSpace {
@@ -594,11 +607,11 @@ class LabeledPolynomialTest : FreeSpec() {
         }
     }
 
-    suspend inline fun <C, A: Ring<C>> ContainerScope.produceConstantTests(
+    suspend inline fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceConstantTests(
         testDataList: List<PolynomialIntTestData<C>>,
-        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        polynomialSpace: PS,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
-        crossinline operationToTest: LabeledPolynomialSpace<C, A>.(pol: LabeledPolynomial<C>, arg: C) -> LabeledPolynomial<C>
+        crossinline operationToTest: PS.(pol: LabeledPolynomial<C>, arg: C) -> LabeledPolynomial<C>
     ) {
         withData(
             nameIndFn = { index, _ -> "test ${index + 1}" },
@@ -617,12 +630,13 @@ class LabeledPolynomialTest : FreeSpec() {
         "Polynomial and Constant" - {
             "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
             "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> pol * (arg) } }
+            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * (arg) } }
+            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Constant and Polynomial" - {
             "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
             "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, intModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
 
         "Variable ring" - {
@@ -678,17 +692,17 @@ class LabeledPolynomialTest : FreeSpec() {
     }
 
     data class PolynomialVariableTestData<C>(
-        val argCoefficients: Map<Map<Symbol, UInt>, C>,
+        val argCoefficients: LabeledPolynomialCoefficients<C>,
         val argVariable: Symbol,
-        val resultCoefficients: Map<Map<Symbol, UInt>, C>,
+        val resultCoefficients: LabeledPolynomialCoefficients<C>,
     )
 
-    suspend inline fun <C, A: Ring<C>> ContainerScope.produceVariableTests(
+    suspend inline fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceVariableTests(
         testDataList: List<PolynomialVariableTestData<C>>,
-        polynomialSpace: LabeledPolynomialSpace<C, A>,
+        polynomialSpace: PS,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
         crossinline polynomialResultCoefficientsTransform: A.(C) -> C = { it },
-        crossinline operationToTest: LabeledPolynomialSpace<C, A>.(pol: LabeledPolynomial<C>, arg: Symbol) -> LabeledPolynomial<C>
+        crossinline operationToTest: PS.(pol: LabeledPolynomial<C>, arg: Symbol) -> LabeledPolynomial<C>
     ) {
         withData(
             nameIndFn = { index, _ -> "test ${index + 1}" },
@@ -887,9 +901,9 @@ class LabeledPolynomialTest : FreeSpec() {
 
 
     data class PolynomialPolynomialTestData<C>(
-        val firstArgumentCoefficients: Map<Map<Symbol, UInt>, C>,
-        val secondArgumentCoefficients: Map<Map<Symbol, UInt>, C>,
-        val resultCoefficients: Map<Map<Symbol, UInt>, C>,
+        val firstArgumentCoefficients: LabeledPolynomialCoefficients<C>,
+        val secondArgumentCoefficients: LabeledPolynomialCoefficients<C>,
+        val resultCoefficients: LabeledPolynomialCoefficients<C>,
     )
 
     val plusPolynomialPolynomialTestData = listOf(
@@ -1031,20 +1045,20 @@ class LabeledPolynomialTest : FreeSpec() {
 
     val timesPolynomialPolynomialTestData = listOf(
         PolynomialPolynomialTestData( // (p + q + r) * (p^2 + q^2 + r^2 - pq - pr - qr) = p^3 + q^3 + r^3 - 3pqr
-            mapOf(
+            !mapOf(
                 mapOf(x to 1u) to 1,
                 mapOf(y to 1u) to 1,
                 mapOf(z to 1u) to 1,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf(x to 2u) to 1,
                 mapOf(y to 2u) to 1,
                 mapOf(z to 2u) to 1,
                 mapOf(x to 1u, y to 1u) to -1,
                 mapOf(y to 1u, z to 1u) to -1,
                 mapOf(x to 1u, z to 1u) to -1,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf(x to 3u) to 1,
                 mapOf(y to 3u) to 1,
                 mapOf(z to 3u) to 1,
@@ -1054,28 +1068,28 @@ class LabeledPolynomialTest : FreeSpec() {
                 mapOf(x to 1u, z to 2u) to 0,
                 mapOf(x to 2u, y to 1u) to 0,
                 mapOf(y to 2u, z to 1u) to 0,
-                mapOf(x to 1u, y to 1u, z to 1u) to -3,
-            ).mapValues { IntBox(it.value) },
+                mapOf(x to 1u, y to 1u, z to 1u) to 32,
+            ),
         ),
         PolynomialPolynomialTestData( // Spoiler: 5 * 7 = 0
-            mapOf(
+            !mapOf(
                 mapOf(x to 1u) to 5,
                 mapOf(y to 1u) to -25,
                 mapOf(z to 1u) to 10,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf(x to 1u) to 21,
                 mapOf(y to 1u) to 14,
                 mapOf(z to 1u) to -7,
-            ).mapValues { IntBox(it.value) },
-            mapOf(
+            ),
+            !mapOf(
                 mapOf(x to 2u) to 0,
                 mapOf(y to 2u) to 0,
                 mapOf(z to 2u) to 0,
                 mapOf(x to 1u, y to 1u) to 0,
                 mapOf(y to 1u, z to 1u) to 0,
                 mapOf(x to 1u, z to 1u) to 0,
-            ).mapValues { IntBox(it.value) },
+            ),
         ),
     )
 
@@ -1134,14 +1148,14 @@ class LabeledPolynomialTest : FreeSpec() {
                     nameIndFn = { index, _ -> "test ${index + 1}" },
                     timesPolynomialPolynomialTestData
                 ) { (first, second, result) ->
-                    intModuloPolynomialSpace { LabeledPolynomialAsIs(first) * LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
+                    timesIntModuloPolynomialSpace { LabeledPolynomialAsIs(first) * LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
                 }
             }
         }
     }
 
     data class PolynomialPropertiesTestData<C>(
-        val argumentsCoefficients: Map<Map<Symbol, UInt>, C>,
+        val argumentCoefficients: LabeledPolynomialCoefficients<C>,
         val degree: Int,
         val degrees: Map<Symbol, UInt>,
     )
@@ -1196,7 +1210,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).degree shouldBe it.degree
+                        LabeledPolynomialAsIs(it.argumentCoefficients).degree shouldBe it.degree
                     }
                 }
                 "degrees" - {
@@ -1204,7 +1218,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).degrees shouldBe it.degrees
+                        LabeledPolynomialAsIs(it.argumentCoefficients).degrees shouldBe it.degrees
                     }
                 }
                 "degreeBy Variable" - {
@@ -1216,7 +1230,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).collectDegrees() shouldBe (it.degrees + (iota to 0u))
+                        LabeledPolynomialAsIs(it.argumentCoefficients).collectDegrees() shouldBe (it.degrees + (iota to 0u))
                     }
                 }
                 "degreeBy Collection" - {
@@ -1248,7 +1262,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).checkDegreeBy()
+                        LabeledPolynomialAsIs(it.argumentCoefficients).checkDegreeBy()
                     }
                 }
                 "variables" - {
@@ -1256,7 +1270,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).variables shouldBe it.degrees.keys
+                        LabeledPolynomialAsIs(it.argumentCoefficients).variables shouldBe it.degrees.keys
                     }
                 }
                 "countOfVariables" - {
@@ -1264,7 +1278,7 @@ class LabeledPolynomialTest : FreeSpec() {
                         nameIndFn = { index, _ -> "test ${index + 1}" },
                         polynomialPropertiesTestData
                     ) {
-                        LabeledPolynomialAsIs(it.argumentsCoefficients).countOfVariables shouldBe it.degrees.size
+                        LabeledPolynomialAsIs(it.argumentCoefficients).countOfVariables shouldBe it.degrees.size
                     }
                 }
             }
@@ -1272,8 +1286,8 @@ class LabeledPolynomialTest : FreeSpec() {
     }
 
     data class RFPropertiesTestData<C>(
-        val argumentNumeratorCoefficients: Map<Map<Symbol, UInt>, C>,
-        val argumentDenominatorCoefficients: Map<Map<Symbol, UInt>, C>? = null,
+        val argumentNumeratorCoefficients: LabeledPolynomialCoefficients<C>,
+        val argumentDenominatorCoefficients: LabeledPolynomialCoefficients<C>? = null,
         val countOfVariables: Int
     )
 

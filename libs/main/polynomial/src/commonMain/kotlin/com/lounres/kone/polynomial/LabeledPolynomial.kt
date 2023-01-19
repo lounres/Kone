@@ -15,7 +15,7 @@ import kotlin.jvm.JvmName
 import kotlin.math.max
 
 
-public data class LabeledPolynomial<C>
+public data class LabeledPolynomial<out C>
 @PublishedApi
 internal constructor(
     public val coefficients: LabeledPolynomialCoefficients<C>
@@ -388,7 +388,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
         )
 
     override val LabeledPolynomial<C>.degree: Int
-        get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum().toInt() } ?: -1
+        get() = coefficients.entries.fold(-1) { max, (degs, _) -> max(max, degs.values.sum().toInt()) }
     public override val LabeledPolynomial<C>.degrees: LabeledMonomialSignature
         get() =
             buildMap {
@@ -397,9 +397,9 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
                 }
             }
     public override fun LabeledPolynomial<C>.degreeBy(variable: Symbol): UInt =
-        coefficients.entries.maxOfOrNull { (degs, _) -> degs.getOrElse(variable) { 0u } } ?: 0u
+        coefficients.entries.fold(0u) { max, (degs, _) -> max(max, degs.getOrElse(variable) { 0u }) }
     public override fun LabeledPolynomial<C>.degreeBy(variables: Collection<Symbol>): UInt =
-        coefficients.entries.maxOfOrNull { (degs, _) -> degs.filterKeys { it in variables }.values.sum() } ?: 0u
+        coefficients.entries.fold(0u) { max, (degs, _) -> max(max, degs.run { var sum = 0u; for ((v, deg) in this) if (v in variables) sum += deg; sum }) } // TODO: Replace `run` with specified extension
     public override val LabeledPolynomial<C>.variables: Set<Symbol>
         get() =
             buildSet {
@@ -420,8 +420,35 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
 public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(
     ring: A,
 ) : LabeledPolynomialSpace<C, A>(ring), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithField<C, LabeledPolynomial<C>, A> {
-    public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            coefficients.mapValues { it.value / other }
-        )
+
+    // region Polynomial-Int operations
+    public override operator fun LabeledPolynomial<C>.div(other: Int): LabeledPolynomial<C> =
+        when(other) {
+            0 -> throw IllegalArgumentException("/ by zero")
+            1 -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                LabeledPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+            }
+        }
+    // endregion
+
+    // region Polynomial-Long operations
+    public override operator fun LabeledPolynomial<C>.div(other: Long): LabeledPolynomial<C> =
+        when(other) {
+            0L -> throw IllegalArgumentException("/ by zero")
+            1L -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                LabeledPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+            }
+        }
+    // endregion
+
+    // region Polynomial-Constant operations
+    public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> {
+        val rec = other.reciprocal
+        return LabeledPolynomialAsIs(coefficients.mapValues { it.value * rec } )
+    }
+    // endregion
 }

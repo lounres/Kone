@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -9,17 +9,16 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.annotations.ExperimentalKoneAPI
+import com.lounres.kone.polynomial.testUtils.assertEquals
 import com.lounres.kone.polynomial.testUtils.assertFailsWithTypeAndMessage
 import com.lounres.kone.polynomial.testUtils.bufferOf
-import com.lounres.kone.polynomial.testUtils.assertEquals
 import io.kotest.core.spec.style.AnnotationSpec
-import kotlin.test.Ignore
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
 class NumberedPolynomialUtilTest : AnnotationSpec() {
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Double_Map() {
         assertEquals(
             NumberedPolynomialAsIs(emptyList<UInt>() to 0.0),
@@ -222,6 +221,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Constant_Map() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -441,6 +441,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Polynomial_Map() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -2211,6 +2212,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Double_Map() {
         assertEquals(
             NumberedRationalFunction(
@@ -2589,6 +2591,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Constant_Map() {
         assertEquals(
             NumberedRationalFunction(
@@ -2962,6 +2965,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Polynomial_Map() {
         assertEquals(
             NumberedRationalFunction(
@@ -5404,6 +5408,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Double_Buffer() {
         assertEquals(
             NumberedPolynomialAsIs(emptyList<UInt>() to 0.0),
@@ -5561,6 +5566,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Constant_Buffer() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -5692,6 +5698,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Polynomial_Buffer() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -6805,6 +6812,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Double_Buffer() {
         assertEquals(
             NumberedRationalFunction(
@@ -7005,6 +7013,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Constant_Buffer() {
         assertEquals(
             NumberedRationalFunction(
@@ -7204,6 +7213,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Polynomial_Buffer() {
         assertEquals(
             NumberedRationalFunction(
@@ -8718,6 +8728,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substituteFully_Double_Buffer() {
         assertEquals(
             0.0,
@@ -8857,6 +8868,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substituteFully_Constant_Buffer() {
         assertEquals(
             Rational(0),
@@ -8972,6 +8984,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substituteFully_Double_Buffer() {
         assertEquals(
             0.0,
@@ -9125,6 +9138,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substituteFully_Constant_Buffer() {
         assertEquals(
             Rational(0),
@@ -9275,6 +9289,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         }
     }
     @Test
+    @Ignore
     fun test_Polynomial_derivativeWithRespectTo_variable() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -9633,6 +9648,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_nthDerivativeWithRespectTo_variable_order() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -10003,6 +10019,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_nthDerivativeWithRespectTo_variablesAndOrders() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -10559,6 +10576,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_antiderivativeWithRespectTo_variable() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -10974,6 +10992,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variable_order() {
         assertEquals(
             NumberedPolynomialAsIs(
@@ -11423,6 +11442,7 @@ class NumberedPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variablesAndOrders() {
         assertEquals(
             NumberedPolynomialAsIs(

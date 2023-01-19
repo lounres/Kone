@@ -15,10 +15,10 @@ public interface Field<V>: Ring<V> {
     public operator fun Long.div(other: V): V = this.value / other
     public fun power(base: V, exponent: Int): V =
         if (exponent >= 0) power(base, exponent.toUInt())
-        else one / power(base, (-exponent).toUInt())
+        else power(base, (-exponent).toUInt()).reciprocal
     public fun power(base: V, exponent: Long): V =
         if (exponent >= 0) power(base, exponent.toULong())
-        else one / power(base, (-exponent).toULong())
+        else power(base, (-exponent).toULong()).reciprocal
     public infix fun V.pow(exponent: Int): V = power(this, exponent)
     public infix fun V.pow(exponent: Long): V = power(this, exponent)
 }

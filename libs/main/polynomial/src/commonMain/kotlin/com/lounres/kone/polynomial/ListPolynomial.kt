@@ -13,7 +13,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-public data class ListPolynomial<C>(
+public data class ListPolynomial<out C>(
     public val coefficients: List<C>
 ) : Polynomial<C> {
     override fun toString(): String = "ListPolynomial$coefficients"
@@ -311,8 +311,35 @@ public open class ListPolynomialSpace<C, out A : Ring<C>>(
 public class ListPolynomialSpaceOverField<C, out A : Field<C>>(
     ring: A,
 ) : ListPolynomialSpace<C, A>(ring), PolynomialSpaceWithField<C, ListPolynomial<C>, A> {
-    public override fun ListPolynomial<C>.div(other: C): ListPolynomial<C> =
-        ListPolynomial(
-            coefficients.map { it / other }
-        )
+
+    // region Polynomial-Int operations
+    public override operator fun ListPolynomial<C>.div(other: Int): ListPolynomial<C> =
+        when(other) {
+            0 -> throw IllegalArgumentException("/ by zero")
+            1 -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                ListPolynomial(coefficients.map { it * rec })
+            }
+        }
+    // endregion
+
+    // region Polynomial-Long operations
+    public override operator fun ListPolynomial<C>.div(other: Long): ListPolynomial<C> =
+        when(other) {
+            0L -> throw IllegalArgumentException("/ by zero")
+            1L -> this
+            else -> {
+                val rec = other.constantValue.reciprocal
+                ListPolynomial(coefficients.map { it * rec })
+            }
+        }
+    // endregion
+
+    // region Polynomial-Constant operations
+    public override fun ListPolynomial<C>.div(other: C): ListPolynomial<C> {
+        val rec = other.reciprocal
+        return ListPolynomial(coefficients.map { it * rec } )
+    }
+    // endregion
 }

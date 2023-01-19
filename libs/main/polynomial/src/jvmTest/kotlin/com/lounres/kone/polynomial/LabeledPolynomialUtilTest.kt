@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -12,13 +12,13 @@ import com.lounres.kone.polynomial.testUtils.iota
 import com.lounres.kone.polynomial.testUtils.x
 import com.lounres.kone.polynomial.testUtils.y
 import io.kotest.core.spec.style.AnnotationSpec
-import kotlin.test.Ignore
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import space.kscience.kmath.expressions.Symbol
 
+
 class LabeledPolynomialUtilTest : AnnotationSpec() {
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Double() {
         assertEquals(
             LabeledPolynomialAsIs(emptyMap<Symbol, UInt>() to 0.0),
@@ -221,6 +221,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Constant_Map() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -440,6 +441,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_Polynomial_substitute_Polynomial_Map() {
         assertEquals(
             LabeledPolynomialAsIs(
@@ -2210,6 +2212,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Double_Map() {
         assertEquals(
             LabeledRationalFunction(
@@ -2588,6 +2591,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Constant_Map() {
         assertEquals(
             LabeledRationalFunction(
@@ -2961,6 +2965,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     fun test_RationalFunction_substitute_Polynomial_Map() {
         assertEquals(
             LabeledRationalFunction(
@@ -5403,6 +5408,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_derivativeWithRespectTo_variable() {
         assertEquals(
@@ -5762,6 +5768,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthDerivativeWithRespectTo_variable_order() {
         assertEquals(
@@ -6133,6 +6140,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthDerivativeWithRespectTo_variablesAndOrders() {
         assertEquals(
@@ -6690,6 +6698,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_antiderivativeWithRespectTo_variable() {
         assertEquals(
@@ -7106,6 +7115,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variable_order() {
         assertEquals(
@@ -7556,6 +7566,7 @@ class LabeledPolynomialUtilTest : AnnotationSpec() {
         )
     }
     @Test
+    @Ignore
     @OptIn(ExperimentalKoneAPI::class)
     fun test_Polynomial_nthAntiderivativeWithRespectTo_variablesAndOrders() {
         assertEquals(

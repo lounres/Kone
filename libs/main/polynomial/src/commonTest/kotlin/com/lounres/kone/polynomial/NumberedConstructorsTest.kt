@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -63,8 +63,8 @@ class NumberedConstructorsTest: FreeSpec({
                     listOf(0u, 0u) to -5,
                 )
             ),
-        ) { (expectedArgs, actualArgs) ->
-            Int.ring { NumberedPolynomial(actualArgs) } shouldBe NumberedPolynomialAsIs(expectedArgs)
+        ) { (expectedArgs, inputArgs) ->
+            Int.ring { NumberedPolynomial(inputArgs) } shouldBe NumberedPolynomialAsIs(expectedArgs)
         }
     }
 

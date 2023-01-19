@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -11,8 +11,6 @@ import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.annotations.UnstableKoneAPI
 import com.lounres.kone.polynomial.testUtils.assertFailsWithTypeAndMessage
 import io.kotest.core.spec.style.AnnotationSpec
-import kotlin.test.Ignore
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 

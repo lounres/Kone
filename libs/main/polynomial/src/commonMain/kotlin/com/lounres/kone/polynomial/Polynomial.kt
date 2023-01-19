@@ -14,7 +14,7 @@ import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-public interface Polynomial<C>
+public interface Polynomial<out C>
 
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
 public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
@@ -402,7 +402,7 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>>: Polynomial
     public operator fun P.times(other: V): P
     // endregion
 
-    // Polynomial properties
+    // region Polynomial properties
     public val P.degrees: Map<V, UInt>
     public fun P.degreeBy(variable: V): UInt = degrees.getOrElse(variable) { 0u }
     public fun P.degreeBy(variables: Collection<V>): UInt
@@ -437,13 +437,13 @@ public interface PolynomialSpaceOverField<C, P: Polynomial<C>> : PolynomialSpace
     public operator fun Long.div(other: C): C = this.constantValue / other
     // endregion
 
-    // region Constant-Int operations
+    // region Polynomial-Int operations
     @JvmName("divPolynomialInt")
     @JsName("divPolynomialInt")
     public operator fun P.div(other: Int): P = this / other.constantValue
     // endregion
 
-    // region Constant-Long operations
+    // region Polynomial-Long operations
     @JvmName("divPolynomialLong")
     @JsName("divPolynomialLong")
     public operator fun P.div(other: Long): P = this / other.constantValue
@@ -475,7 +475,7 @@ public interface PolynomialSpaceOverField<C, P: Polynomial<C>> : PolynomialSpace
     // region Polynomial-Constant operations
     @JvmName("divPolynomialConstant")
     @JsName("divPolynomialConstant")
-    public operator fun P.div(other: C): P
+    public operator fun P.div(other: C): P = this * other.reciprocal
     // endregion
 }
 
@@ -520,12 +520,12 @@ public interface PolynomialSpaceWithField<C, P: Polynomial<C>, out A: Field<C>> 
 public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>>: PolynomialSpaceOverField<C, P>, MultivariatePolynomialSpace<C, V, P> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
-    public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Int): P = this / other.constantValue
     // endregion
 
     // region Variable-Long operations
     @JvmName("divVariableLong")
-    public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Long): P = this / other.constantValue
     // endregion
 
     // region Variable-Constant operations
