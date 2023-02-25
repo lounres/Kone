@@ -542,6 +542,26 @@ public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.
 }
 
 /**
+ * Performs [operation1] on each `key`-`value` pair from `map1` which `key` does not appear in `map2`, performs [operation2]
+ * on each `key`-`value` pair from `map2` which `key` does not appear in `map1`, and [operationMerge] on each
+ * `key`-`value1`-`value2` triple where `key`-`value1` is an entry of `map1` and `key`-`value2` is an entry of `map2`.
+ *
+ * There is no guaranty of order in which the elements will be processed.
+ */
+public inline fun <K, V1, V2> mergingForEach(
+    map1: Map<out K, V1>,
+    map2: Map<out K, V2>,
+    operation1: (Map.Entry<K, V1>) -> Unit,
+    operation2: (Map.Entry<K, V2>) -> Unit,
+    operationMerge: (key: K, value1: V1, value2: V2) -> Unit
+) {
+    for (element in map1) if (element.key !in map2) operation1(element)
+    for (element in map2)
+        if (element.key !in map1) operation2(element)
+        else operationMerge(element.key, map1[element.key]!!, element.value)
+}
+
+/**
  * Accumulates value starting with [initial] value and applying
  * [operation1] to current accumulator value and each entry of [map1] which key does not appear in [map2],
  * [operation2] to current accumulator value and each entry of [map2] which key does not appear in [map2],
@@ -563,10 +583,10 @@ public inline fun <K, V1, V2, R> mergingFold(
     operationMerge: (acc: R, key: K, value1: V1, value2: V2) -> R
 ): R {
     var accumulator = initial
-    for (element in map2) if (element.key !in map1) accumulator = operation2(accumulator, element)
-    for (element in map1) accumulator =
-        if (element.key !in map2) operation1(accumulator, element)
-        else operationMerge(accumulator, element.key, element.value, map2[element.key]!!)
+    for (element in map1) if (element.key !in map1) accumulator = operation1(accumulator, element)
+    for (element in map2) accumulator =
+        if (element.key !in map1) operation2(accumulator, element)
+        else operationMerge(accumulator, element.key, map1[element.key]!!, element.value)
     return accumulator
 }
 
@@ -590,10 +610,10 @@ public inline fun <K, V1, V2> mergingAny(
     operation2: (Map.Entry<K, V2>) -> Boolean,
     operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
 ): Boolean {
-    for (element in map2) if (element.key !in map1 && operation2(element)) return true
-    for (element in map1)
-        if (element.key !in map2) if(operation1(element)) return true
-        else if(operationMerge(element.key, element.value, map2[element.key]!!)) return true
+    for (element in map1) if (element.key !in map2 && operation1(element)) return true
+    for (element in map2)
+        if (element.key !in map1) { if (operation2(element)) return true }
+        else { if (operationMerge(element.key, map1[element.key]!!, element.value)) return true }
     return false
 }
 
@@ -617,10 +637,10 @@ public inline fun <K, V1, V2> mergingAll(
     operation2: (Map.Entry<K, V2>) -> Boolean,
     operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
 ): Boolean {
-    for (element in map2) if (element.key !in map1 && !operation2(element)) return false
-    for (element in map1)
-        if (element.key !in map2) if(!operation1(element)) return false
-        else if(!operationMerge(element.key, element.value, map2[element.key]!!)) return false
+    for (element in map1) if (element.key !in map2 && !operation1(element)) return false
+    for (element in map2)
+        if (element.key !in map1) { if (!operation2(element)) return false }
+        else { if (!operationMerge(element.key, map1[element.key]!!, element.value)) return false }
     return true
 }
 
@@ -644,9 +664,9 @@ public inline fun <K, V1, V2> mergingNone(
     operation2: (Map.Entry<K, V2>) -> Boolean,
     operationMerge: (key: K, value1: V1, value2: V2) -> Boolean
 ): Boolean {
-    for (element in map2) if (element.key !in map1 && operation2(element)) return false
-    for (element in map1)
-        if (element.key !in map2) if(operation1(element)) return false
-        else if(operationMerge(element.key, element.value, map2[element.key]!!)) return false
+    for (element in map1) if (element.key !in map2 && operation1(element)) return false
+    for (element in map2)
+        if (element.key !in map1) { if (operation2(element)) return false }
+        else { if (operationMerge(element.key, map1[element.key]!!, element.value)) return false }
     return true
 }
