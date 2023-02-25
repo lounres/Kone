@@ -23,7 +23,7 @@ class ListPolynomialSpaceTest: FreeSpec() {
     val timesIntModuloPolynomialSpace = IntModuloRing(35).listPolynomialSpace
     val divIntModuloPolynomialSpace = IntModuloField(23).listPolynomialSpace
 
-    sealed interface PolynomialIntTestData<out C> {
+    sealed interface PITestData<out C> {
         val argumentPolynomialCoefficients: List<C>
         val argumentInt: Int
         val nonOptimizedResultPolynomialCoefficients: List<C>
@@ -31,58 +31,58 @@ class ListPolynomialSpaceTest: FreeSpec() {
         operator fun component2() = argumentInt
         operator fun component3() = nonOptimizedResultPolynomialCoefficients
 
-        data class EqualityTestData<out C>(
+        data class Equality<out C>(
             override val argumentPolynomialCoefficients: List<C>,
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: List<C>,
             val resultPolynomialCoefficients: List<C>,
-        ): PolynomialIntTestData<C>
-        data class SameTestData<out C>(
+        ): PITestData<C>
+        data class Similarity<out C>(
             override val argumentPolynomialCoefficients: List<C>,
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: List<C>,
             val resultPolynomial: ListPolynomial<C>,
-        ): PolynomialIntTestData<C>
-        data class NoChangeTestData<out C>(
+        ): PITestData<C>
+        data class NoChange<out C>(
             override val argumentPolynomialCoefficients: List<C>,
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: List<C>,
-        ): PolynomialIntTestData<C>
+        ): PITestData<C>
     }
-    fun <C> PolynomialIntTestData(
+    fun <C> PITestData(
         argumentPolynomialCoefficients: List<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: List<C>,
         resultPolynomialCoefficients: List<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.EqualityTestData(
+    ): PITestData<C> = PITestData.Equality(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
         resultPolynomialCoefficients,
     )
-    fun <C> PolynomialIntTestData(
+    fun <C> PITestData(
         argumentPolynomialCoefficients: List<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: List<C>,
         resultPolynomial: ListPolynomial<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.SameTestData(
+    ): PITestData<C> = PITestData.Similarity(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
         resultPolynomial,
     )
-    fun <C> PolynomialIntTestData(
+    fun <C> PITestData(
         argumentPolynomialCoefficients: List<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: List<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.NoChangeTestData(
+    ): PITestData<C> = PITestData.NoChange(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
     )
 
     suspend fun <C, A: Ring<C>, PS: ListPolynomialSpace<C, A>> ContainerScope.produceIntTests(
-        testDataList: List<PolynomialIntTestData<C>>,
+        testDataList: List<PITestData<C>>,
         polynomialSpace: PS,
         polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
         operationToTest: PS.(pol: ListPolynomial<C>, arg: Int) -> ListPolynomial<C>
@@ -93,15 +93,15 @@ class ListPolynomialSpaceTest: FreeSpec() {
         ) { data ->
             if (polynomialArgumentCoefficientsTransform === null) {
                 when (data) {
-                    is PolynomialIntTestData.EqualityTestData -> {
+                    is PITestData.Equality -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(ListPolynomial(coefs), arg) } shouldBe ListPolynomial(expected)
                     }
-                    is PolynomialIntTestData.NoChangeTestData -> {
+                    is PITestData.NoChange -> {
                         val (coefs, arg, _) = data
                         ListPolynomial(coefs).let { polynomialSpace { operationToTest(it, arg) } shouldBeSameInstanceAs it }
                     }
-                    is PolynomialIntTestData.SameTestData -> {
+                    is PITestData.Similarity -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(ListPolynomial(coefs), arg) } shouldBeSameInstanceAs expected
                     }
@@ -109,15 +109,15 @@ class ListPolynomialSpaceTest: FreeSpec() {
             } else {
                 fun List<C>.update() = map { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it) }
                 when (data) {
-                    is PolynomialIntTestData.EqualityTestData -> {
+                    is PITestData.Equality -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(ListPolynomial(coefs.update()), arg) } shouldBe ListPolynomial(expected)
                     }
-                    is PolynomialIntTestData.NoChangeTestData -> {
+                    is PITestData.NoChange -> {
                         val (coefs, arg, _) = data
                         polynomialSpace { operationToTest(ListPolynomial(coefs.update()), arg) } shouldBe ListPolynomial(coefs)
                     }
-                    is PolynomialIntTestData.SameTestData -> {
+                    is PITestData.Similarity -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(ListPolynomial(coefs.update()), arg) } shouldBe expected
                     }
@@ -126,48 +126,48 @@ class ListPolynomialSpaceTest: FreeSpec() {
         }
     }
 
-    val plusPolynomialIntTestData = listOf(
-        PolynomialIntTestData(
+    val plusPITestData = listOf(
+        PITestData(
             listOf(Rational(5, 9), Rational(-8, 9), Rational(-8, 7)),
             -3,
             listOf(Rational(-22, 9), Rational(-8, 9), Rational(-8, 7)),
             listOf(Rational(-22, 9), Rational(-8, 9), Rational(-8, 7)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(Rational(-2), Rational(0), Rational(0), Rational(0)),
             2,
             listOf(Rational(0), Rational(0), Rational(0), Rational(0)),
             listOf(Rational(0), Rational(0), Rational(0), Rational(0)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(Rational(-2)),
             2,
             listOf(Rational(0)),
             listOf(Rational(0)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(),
             0,
             listOf(Rational(0)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(Rational(-22, 9), Rational(-8, 9), Rational(-8, 7)),
             0,
             listOf(Rational(-22, 9), Rational(-8, 9), Rational(-8, 7)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(Rational(-2), Rational(0), Rational(0), Rational(0)),
             1,
             listOf(Rational(-1), Rational(0), Rational(0), Rational(0)),
             listOf(Rational(-1), Rational(0), Rational(0), Rational(0)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(Rational(-2)),
             1,
             listOf(Rational(-1)),
             listOf(Rational(-1)),
         ),
-        PolynomialIntTestData(
+        PITestData(
             listOf(),
             2,
             listOf(Rational(2)),
@@ -175,40 +175,40 @@ class ListPolynomialSpaceTest: FreeSpec() {
         ),
     )
 
-    val timesPolynomialIntTestData = listOf(
-        PolynomialIntTestData(
+    val timesPITestData = listOf(
+        PITestData(
             !listOf(22, 26, 13, 15, 26),
             27,
             !listOf(34, 2, 1, 20, 2),
             !listOf(34, 2, 1, 20, 2),
         ),
-        PolynomialIntTestData(
+        PITestData(
             !listOf(7, 0, 49, 21, 14),
             35,
             !listOf(0, 0, 0, 0, 0),
             !listOf(0, 0, 0, 0, 0),
         ),
-        PolynomialIntTestData(
+        PITestData(
             !listOf(22, 26, 13, 15, 26),
             0,
             !listOf(0, 0, 0, 0, 0),
             timesIntModuloPolynomialSpace.zero,
         ),
-        PolynomialIntTestData(
+        PITestData(
             !listOf(22, 26, 13, 15, 26),
             1,
             !listOf(22, 26, 13, 15, 26),
         ),
     )
 
-    val divPolynomialIntTestData = listOf(
-        PolynomialIntTestData(
+    val divPITestData = listOf(
+        PITestData(
             !listOf(-9, -12, 9, 12, -18, -4, 7, -16, -5, -19),
             20,
             !listOf(3, 4, 20, 19, 6, 9, 13, 13, 17, 14),
             !listOf(3, 4, 20, 19, 6, 9, 13, 13, 17, 14),
         ),
-        PolynomialIntTestData(
+        PITestData(
             !listOf(-12, 10, -16, -17, -11, -17, 8, -11, -15, 8),
             1,
             !listOf(11, 10, 7, 6, 12, 6, 8, 12, 8, 8),
@@ -217,31 +217,31 @@ class ListPolynomialSpaceTest: FreeSpec() {
 
     init {
         "Polynomial and Int" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Polynomial and Long" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg.toLong() } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg.toLong() } }
         }
         "Int and Polynomial" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
         "Long and Polynomial" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
         }
     }
 
     suspend inline fun <C, A: Ring<C>, PS: ListPolynomialSpace<C, A>> ContainerScope.produceConstantTests(
-        testDataList: List<PolynomialIntTestData<C>>,
+        testDataList: List<PITestData<C>>,
         polynomialSpace: PS,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
         crossinline operationToTest: PS.(pol: ListPolynomial<C>, arg: C) -> ListPolynomial<C>
@@ -261,55 +261,55 @@ class ListPolynomialSpaceTest: FreeSpec() {
 
     init {
         "Polynomial and Constant" - {
-            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
-            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
+            "plus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceConstantTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Constant and Polynomial" - {
-            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
-            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "plus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceConstantTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
     }
 
 
-    data class PolynomialPolynomialTestData<C>(
+    data class PPTestData<C>(
         val firstArgumentCoefficients: List<C>,
         val secondArgumentCoefficients: List<C>,
         val resultCoefficients: List<C>,
     )
 
-    val plusPolynomialPolynomialTestData = listOf(
-        PolynomialPolynomialTestData( // (5/9 - 8/9 x - 8/7 x^2) + (-5/7 + 5/1 x + 5/8 x^2) ?= -10/63 + 37/9 x - 29/56 x^2
+    val plusPPTestData = listOf(
+        PPTestData( // (5/9 - 8/9 x - 8/7 x^2) + (-5/7 + 5/1 x + 5/8 x^2) ?= -10/63 + 37/9 x - 29/56 x^2
             listOf(Rational(5, 9), Rational(-8, 9), Rational(-8, 7)),
             listOf(Rational(-5, 7), Rational(5, 1), Rational(5, 8)),
             listOf(Rational(-10, 63), Rational(37, 9), Rational(-29, 56)),
         ),
-        PolynomialPolynomialTestData( // (-2/9 - 8/3 x) + (0 + 9/4 x + 2/4 x^2) ?= -2/9 - 5/12 x + 2/4 x^2
+        PPTestData( // (-2/9 - 8/3 x) + (0 + 9/4 x + 2/4 x^2) ?= -2/9 - 5/12 x + 2/4 x^2
             listOf(Rational(-2, 9), Rational(-8, 3)),
             listOf(Rational(0), Rational(9, 4), Rational(2, 4)),
             listOf(Rational(-2, 9), Rational(-5, 12), Rational(2, 4)),
         ),
-        PolynomialPolynomialTestData( // (-4/7 - 2/6 x + 0 x^2 + 0 x^3) + (-6/3 - 7/2 x + 2/3 x^2) ?= -18/7 - 23/6 x + 2/3 x^2
+        PPTestData( // (-4/7 - 2/6 x + 0 x^2 + 0 x^3) + (-6/3 - 7/2 x + 2/3 x^2) ?= -18/7 - 23/6 x + 2/3 x^2
             listOf(Rational(-4, 7), Rational(-2, 6), Rational(0), Rational(0)),
             listOf(Rational(-6, 3), Rational(-7, 2), Rational(2, 3)),
             listOf(Rational(-18, 7), Rational(-23, 6), Rational(2, 3), Rational(0)),
         ),
-        PolynomialPolynomialTestData( // (-2/4 - 6/9 x - 4/9 x^2) + (2/4 + 6/9 x + 4/9 x^2) ?= 0
+        PPTestData( // (-2/4 - 6/9 x - 4/9 x^2) + (2/4 + 6/9 x + 4/9 x^2) ?= 0
             listOf(Rational(-2, 4), Rational(-6, 9), Rational(-4, 9)),
             listOf(Rational(2, 4), Rational(6, 9), Rational(4, 9)),
             listOf(Rational(0), Rational(0), Rational(0)),
         ),
     )
 
-    val timesPolynomialPolynomialTestData = listOf(
-        PolynomialPolynomialTestData( // (1 + x + x^2) * (1 - x + x^2) ?= 1 + x^2 + x^4
+    val timesPPTestData = listOf(
+        PPTestData( // (1 + x + x^2) * (1 - x + x^2) ?= 1 + x^2 + x^4
             !listOf(1, 1, 1),
             !listOf(1, -1, 1),
             !listOf(1, 0, 1, 0, 1),
         ),
-        PolynomialPolynomialTestData( // Spoiler: 5 * 7 = 0
+        PPTestData( // Spoiler: 5 * 7 = 0
             !listOf(5, -25, 10),
             !listOf(21, 14, -7),
             !listOf(0, 0, 0, 0, 0),
@@ -353,7 +353,7 @@ class ListPolynomialSpaceTest: FreeSpec() {
             "plus" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    plusPolynomialPolynomialTestData
+                    plusPPTestData
                 ) { (first, second, result) ->
                     rationalPolynomialSpace { ListPolynomial(first) + ListPolynomial(second) } shouldBe ListPolynomial(result)
                 }
@@ -361,7 +361,7 @@ class ListPolynomialSpaceTest: FreeSpec() {
             "minus" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    plusPolynomialPolynomialTestData
+                    plusPPTestData
                 ) { (first, second, result) ->
                     rationalPolynomialSpace { ListPolynomial(first) - ListPolynomial(second.map { ring { -it } }) } shouldBe ListPolynomial(result)
                 }
@@ -369,7 +369,7 @@ class ListPolynomialSpaceTest: FreeSpec() {
             "times" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    timesPolynomialPolynomialTestData
+                    timesPPTestData
                 ) { (first, second, result) ->
                     timesIntModuloPolynomialSpace { ListPolynomial(first) * ListPolynomial(second) } shouldBe ListPolynomial(result)
                 }
@@ -377,29 +377,29 @@ class ListPolynomialSpaceTest: FreeSpec() {
         }
     }
 
-    data class PolynomialPropertiesTestData<C>(
+    data class PPropertiesTestData<C>(
         val argumentsCoefficients: List<C>,
         val degree: Int,
     )
 
-    val polynomialPropertiesTestData = listOf(
-        PolynomialPropertiesTestData(
+    val pPropertiesTestData = listOf(
+        PPropertiesTestData(
             listOf(),
             -1
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             listOf(o),
             0
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             listOf(o, o),
             1
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             listOf(o, o, o),
             2
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             listOf(o, o, o, o),
             3
         ),
@@ -411,7 +411,7 @@ class ListPolynomialSpaceTest: FreeSpec() {
                 "degree" - {
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         ListPolynomial(it.argumentsCoefficients).degree shouldBe it.degree
                     }

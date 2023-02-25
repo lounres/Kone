@@ -31,7 +31,7 @@ sealed interface TreeExpr {
     data class Sum(val left: TreeExpr, val right: TreeExpr): TreeExpr
     data class Difference(val left: TreeExpr, val right: TreeExpr): TreeExpr
     data class Product(val left: TreeExpr, val right: TreeExpr): TreeExpr
-    data class Quoitient(val left: TreeExpr, val right: TreeExpr): TreeExpr
+    data class Quotient(val left: TreeExpr, val right: TreeExpr): TreeExpr
 }
 
 object TreeExprRing : Field<TreeExpr> {
@@ -42,7 +42,7 @@ object TreeExprRing : Field<TreeExpr> {
     override fun TreeExpr.plus(other: TreeExpr): TreeExpr = TreeExpr.Sum(this, other)
     override fun TreeExpr.minus(other: TreeExpr): TreeExpr = TreeExpr.Difference(this, other)
     override fun TreeExpr.times(other: TreeExpr): TreeExpr = TreeExpr.Product(this, other)
-    override fun TreeExpr.div(other: TreeExpr): TreeExpr = TreeExpr.Quoitient(this, other)
+    override fun TreeExpr.div(other: TreeExpr): TreeExpr = TreeExpr.Quotient(this, other)
     operator fun String.not() = TreeExpr.Constant(this)
     operator fun Int.not() = TreeExpr.Constant(toString())
 }

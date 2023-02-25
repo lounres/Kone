@@ -181,7 +181,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         }
     }
     
-    sealed interface PolynomialIntTestData<out C> {
+    sealed interface PITestData<out C> {
         val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>
         val argumentInt: Int
         val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>
@@ -193,53 +193,54 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             val resultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
-        ): PolynomialIntTestData<C>
+        ): PITestData<C>
         data class SameTestData<out C>(
             override val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             val resultPolynomial: LabeledPolynomial<C>,
-        ): PolynomialIntTestData<C>
+        ): PITestData<C>
         data class NoChangeTestData<out C>(
             override val argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
             override val argumentInt: Int,
             override val nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
-        ): PolynomialIntTestData<C>
+        ): PITestData<C>
     }
-    fun <C> PolynomialIntTestData(
+
+    fun <C> PITestData(
         argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         resultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.EqualityTestData(
+    ): PITestData<C> = PITestData.EqualityTestData(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
         resultPolynomialCoefficients,
     )
-    fun <C> PolynomialIntTestData(
+    fun <C> PITestData(
         argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         resultPolynomial: LabeledPolynomial<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.SameTestData(
+    ): PITestData<C> = PITestData.SameTestData(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
         resultPolynomial,
     )
-    fun <C> PolynomialIntTestData(
+    fun <C> PITestData(
         argumentPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
         argumentInt: Int,
         nonOptimizedResultPolynomialCoefficients: LabeledPolynomialCoefficients<C>,
-    ): PolynomialIntTestData<C> = PolynomialIntTestData.NoChangeTestData(
+    ): PITestData<C> = PITestData.NoChangeTestData(
         argumentPolynomialCoefficients,
         argumentInt,
         nonOptimizedResultPolynomialCoefficients,
     )
 
     suspend fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceIntTests(
-        testDataList: List<PolynomialIntTestData<C>>,
+        testDataList: List<PITestData<C>>,
         polynomialSpace: PS,
         polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
         operationToTest: PS.(pol: LabeledPolynomial<C>, arg: Int) -> LabeledPolynomial<C>
@@ -250,15 +251,15 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         ) { data ->
             if (polynomialArgumentCoefficientsTransform === null) {
                 when (data) {
-                    is PolynomialIntTestData.EqualityTestData -> {
+                    is PITestData.EqualityTestData -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs), arg) } shouldBe LabeledPolynomialAsIs(expected)
                     }
-                    is PolynomialIntTestData.NoChangeTestData -> {
+                    is PITestData.NoChangeTestData -> {
                         val (coefs, arg, _) = data
                         LabeledPolynomialAsIs(coefs).let { polynomialSpace { operationToTest(it, arg) } shouldBeSameInstanceAs it }
                     }
-                    is PolynomialIntTestData.SameTestData -> {
+                    is PITestData.SameTestData -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs), arg) } shouldBeSameInstanceAs expected
                     }
@@ -266,15 +267,15 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             } else {
                 fun LabeledPolynomialCoefficients<C>.update() = mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }
                 when (data) {
-                    is PolynomialIntTestData.EqualityTestData -> {
+                    is PITestData.EqualityTestData -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe LabeledPolynomialAsIs(expected)
                     }
-                    is PolynomialIntTestData.NoChangeTestData -> {
+                    is PITestData.NoChangeTestData -> {
                         val (coefs, arg, _) = data
                         polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe LabeledPolynomialAsIs(coefs)
                     }
-                    is PolynomialIntTestData.SameTestData -> {
+                    is PITestData.SameTestData -> {
                         val (coefs, arg, _, expected) = data
                         polynomialSpace { operationToTest(LabeledPolynomialAsIs(coefs.update()), arg) } shouldBe expected
                     }
@@ -283,8 +284,8 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         }
     }
 
-    val plusPolynomialIntTestData = listOf(
-        PolynomialIntTestData(
+    val plusPITestData = listOf(
+        PITestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(5, 9),
                 mapOf(x to 3u) to Rational(-8, 9),
@@ -302,7 +303,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(-8, 7),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf(x to 3u) to Rational(-8, 9),
                 mapOf(y to 4u) to Rational(-8, 7),
@@ -319,7 +320,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(-8, 7),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(27, 9),
                 mapOf(x to 3u) to Rational(-8, 9),
@@ -337,7 +338,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(-8, 7),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(27, 9),
                 mapOf(x to 3u) to Rational(0),
@@ -355,7 +356,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(0),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-22, 9),
                 mapOf(x to 3u) to Rational(-8, 9),
@@ -368,7 +369,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(-8, 7),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(0, 9),
                 mapOf(x to 3u) to Rational(-8, 9),
@@ -381,7 +382,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(y to 4u) to Rational(-8, 7),
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             mapOf(
                 mapOf(x to 3u) to Rational(-8, 9),
                 mapOf(y to 4u) to Rational(-8, 7),
@@ -395,8 +396,8 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         ),
     )
 
-    val timesPolynomialIntTestData = listOf(
-        PolynomialIntTestData(
+    val timesPITestData = listOf(
+        PITestData(
             !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
@@ -420,7 +421,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(z to 2u) to 2,
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             !mapOf(
                 mapOf<Symbol, UInt>() to 7,
                 mapOf(x to 3u) to 0,
@@ -444,7 +445,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(z to 2u) to 0,
             ),
         ),
-        PolynomialIntTestData(
+        PITestData(
             !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
@@ -462,7 +463,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             ),
             timesIntModuloPolynomialSpace.zero
         ),
-        PolynomialIntTestData(
+        PITestData(
             !mapOf(
                 mapOf<Symbol, UInt>() to 22,
                 mapOf(x to 3u) to 26,
@@ -481,7 +482,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         ),
     )
 
-    val divPolynomialIntTestData : List<PolynomialIntTestData<BInt>> = listOf( // TODO: Add test data for division tests
+    val divPITestData : List<PITestData<BInt>> = listOf( // TODO: Add test data for division tests
 //        PolynomialIntTestData(
 //            !listOf(-9, -12, 9, 12, -18, -4, 7, -16, -5, -19),
 //            20,
@@ -497,26 +498,26 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
 
     init {
         "Polynomial and Int" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Polynomial and Long" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg.toLong() } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg.toLong() } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg).toLong() } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * arg.toLong() } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg.toLong() } }
         }
         "Int and Polynomial" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
         "Long and Polynomial" - {
-            "plus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
-            "minus" - { produceIntTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
-            "times" - { produceIntTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
+            "plus" - { produceIntTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg.toLong() + pol } }
+            "minus" - { produceIntTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg.toLong() - pol } }
+            "times" - { produceIntTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg.toLong() * pol } }
         }
 
         rationalPolynomialSpace {
@@ -608,7 +609,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
     }
 
     suspend inline fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceConstantTests(
-        testDataList: List<PolynomialIntTestData<C>>,
+        testDataList: List<PITestData<C>>,
         polynomialSpace: PS,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
         crossinline operationToTest: PS.(pol: LabeledPolynomial<C>, arg: C) -> LabeledPolynomial<C>
@@ -628,15 +629,15 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
 
     init {
         "Polynomial and Constant" - {
-            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
-            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * (arg) } }
-            "div" - { produceIntTests(divPolynomialIntTestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
+            "plus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol + arg } }
+            "minus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> pol - (-arg) } }
+            "times" - { produceConstantTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> pol * (arg) } }
+            "div" - { produceIntTests(divPITestData, divIntModuloPolynomialSpace) { pol, arg -> pol / arg } }
         }
         "Constant and Polynomial" - {
-            "plus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
-            "minus" - { produceConstantTests(plusPolynomialIntTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
-            "times" - { produceConstantTests(timesPolynomialIntTestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
+            "plus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace) { pol, arg -> arg + pol } }
+            "minus" - { produceConstantTests(plusPITestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol } }
+            "times" - { produceConstantTests(timesPITestData, timesIntModuloPolynomialSpace) { pol, arg -> arg * pol } }
         }
 
         "Variable ring" - {
@@ -691,14 +692,14 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         }
     }
 
-    data class PolynomialVariableTestData<C>(
+    data class PVTestData<C>(
         val argCoefficients: LabeledPolynomialCoefficients<C>,
         val argVariable: Symbol,
         val resultCoefficients: LabeledPolynomialCoefficients<C>,
     )
 
     suspend inline fun <C, A: Ring<C>, PS: LabeledPolynomialSpace<C, A>> ContainerScope.produceVariableTests(
-        testDataList: List<PolynomialVariableTestData<C>>,
+        testDataList: List<PVTestData<C>>,
         polynomialSpace: PS,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
         crossinline polynomialResultCoefficientsTransform: A.(C) -> C = { it },
@@ -717,8 +718,8 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         }
     }
 
-    val plusPolynomialVariableTestData = listOf(
-        PolynomialVariableTestData(
+    val plusPVTestData = listOf(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -743,7 +744,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 2u) to Rational(11, 8),
             )
         ),
-        PolynomialVariableTestData(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -768,7 +769,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 2u) to Rational(11, 8),
             )
         ),
-        PolynomialVariableTestData(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -796,8 +797,8 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         ),
     )
 
-    val timesPolynomialVariableTestData = listOf(
-        PolynomialVariableTestData(
+    val timesPVTestData = listOf(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -822,7 +823,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 3u, y to 2u) to Rational(11, 8),
             )
         ),
-        PolynomialVariableTestData(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -847,7 +848,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 3u) to Rational(11, 8),
             )
         ),
-        PolynomialVariableTestData(
+        PVTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(-16, 4),
                 mapOf(x to 1u) to Rational(4, 3),
@@ -877,37 +878,37 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
     init {
         "Polynomial and Variable" - {
             "plus" - {
-                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> pol + arg }
+                produceVariableTests(plusPVTestData, rationalPolynomialSpace) { pol, arg -> pol + arg }
             }
             "minus" - {
-                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace, { -it }, { -it }) { pol, arg -> pol - arg }
+                produceVariableTests(plusPVTestData, rationalPolynomialSpace, { -it }, { -it }) { pol, arg -> pol - arg }
             }
             "times" - {
-                produceVariableTests(timesPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> pol * arg }
+                produceVariableTests(timesPVTestData, rationalPolynomialSpace) { pol, arg -> pol * arg }
             }
         }
         "Variable and Polynomial" - {
             "plus" - {
-                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> arg + pol }
+                produceVariableTests(plusPVTestData, rationalPolynomialSpace) { pol, arg -> arg + pol }
             }
             "minus" - {
-                produceVariableTests(plusPolynomialVariableTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol }
+                produceVariableTests(plusPVTestData, rationalPolynomialSpace, { -it }) { pol, arg -> arg - pol }
             }
             "times" - {
-                produceVariableTests(timesPolynomialVariableTestData, rationalPolynomialSpace) { pol, arg -> arg * pol }
+                produceVariableTests(timesPVTestData, rationalPolynomialSpace) { pol, arg -> arg * pol }
             }
         }
     }
 
 
-    data class PolynomialPolynomialTestData<C>(
+    data class PPTestData<C>(
         val firstArgumentCoefficients: LabeledPolynomialCoefficients<C>,
         val secondArgumentCoefficients: LabeledPolynomialCoefficients<C>,
         val resultCoefficients: LabeledPolynomialCoefficients<C>,
     )
 
-    val plusPolynomialPolynomialTestData = listOf(
-        PolynomialPolynomialTestData(
+    val plusPPTestData = listOf(
+        PPTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(6, 4),
                 mapOf(x to 1u) to Rational(-2, 6),
@@ -942,7 +943,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 2u) to Rational(11, 24),
             ),
         ),
-        PolynomialPolynomialTestData(
+        PPTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(6, 4),
                 mapOf(x to 1u) to Rational(-2, 6),
@@ -974,7 +975,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 2u) to Rational(11, 24),
             ),
         ),
-        PolynomialPolynomialTestData(
+        PPTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(6, 4),
                 mapOf(x to 1u) to Rational(-2, 6),
@@ -1006,7 +1007,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 2u, y to 2u) to Rational(9, 8),
             ),
         ),
-        PolynomialPolynomialTestData(
+        PPTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to Rational(6, 4),
                 mapOf(x to 1u) to Rational(-2, 6),
@@ -1043,8 +1044,8 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         ),
     )
 
-    val timesPolynomialPolynomialTestData = listOf(
-        PolynomialPolynomialTestData( // (p + q + r) * (p^2 + q^2 + r^2 - pq - pr - qr) = p^3 + q^3 + r^3 - 3pqr
+    val timesPPTestData = listOf(
+        PPTestData( // (p + q + r) * (p^2 + q^2 + r^2 - pq - pr - qr) = p^3 + q^3 + r^3 - 3pqr
             !mapOf(
                 mapOf(x to 1u) to 1,
                 mapOf(y to 1u) to 1,
@@ -1071,7 +1072,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 mapOf(x to 1u, y to 1u, z to 1u) to 32,
             ),
         ),
-        PolynomialPolynomialTestData( // Spoiler: 5 * 7 = 0
+        PPTestData( // Spoiler: 5 * 7 = 0
             !mapOf(
                 mapOf(x to 1u) to 5,
                 mapOf(y to 1u) to -25,
@@ -1130,7 +1131,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             "plus" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    plusPolynomialPolynomialTestData
+                    plusPPTestData
                 ) { (first, second, result) ->
                     rationalPolynomialSpace { LabeledPolynomialAsIs(first) + LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
                 }
@@ -1138,7 +1139,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             "minus" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    plusPolynomialPolynomialTestData
+                    plusPPTestData
                 ) { (first, second, result) ->
                     rationalPolynomialSpace { LabeledPolynomialAsIs(first) - LabeledPolynomialAsIs(second.mapValues { ring { -it.value } }) } shouldBe LabeledPolynomialAsIs(result)
                 }
@@ -1146,7 +1147,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             "times" - {
                 withData(
                     nameIndFn = { index, _ -> "test ${index + 1}" },
-                    timesPolynomialPolynomialTestData
+                    timesPPTestData
                 ) { (first, second, result) ->
                     timesIntModuloPolynomialSpace { LabeledPolynomialAsIs(first) * LabeledPolynomialAsIs(second) } shouldBe LabeledPolynomialAsIs(result)
                 }
@@ -1154,33 +1155,33 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
         }
     }
 
-    data class PolynomialPropertiesTestData<C>(
+    data class PPropertiesTestData<C>(
         val argumentCoefficients: LabeledPolynomialCoefficients<C>,
         val degree: Int,
         val degrees: Map<Symbol, UInt>,
     )
 
-    val polynomialPropertiesTestData = listOf(
-        PolynomialPropertiesTestData(
+    val pPropertiesTestData = listOf(
+        PPropertiesTestData(
             mapOf(),
             -1,
             mapOf(),
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to o,
             ),
             0,
             mapOf(),
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             mapOf(
                 mapOf(x to 1u, y to 2u, z to 3u) to o,
             ),
             6,
             mapOf(x to 1u, y to 2u, z to 3u),
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to o,
                 mapOf(y to 1u) to o,
@@ -1189,7 +1190,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
             3,
             mapOf(x to 2u, y to 1u, z to 1u),
         ),
-        PolynomialPropertiesTestData(
+        PPropertiesTestData(
             mapOf(
                 mapOf<Symbol, UInt>() to o,
                 mapOf(x to 1u, y to 2u) to o,
@@ -1208,7 +1209,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 "degree" - {
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).degree shouldBe it.degree
                     }
@@ -1216,7 +1217,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 "degrees" - {
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).degrees shouldBe it.degrees
                     }
@@ -1228,7 +1229,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
 
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).collectDegrees() shouldBe (it.degrees + (iota to 0u))
                     }
@@ -1260,7 +1261,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
 
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).checkDegreeBy()
                     }
@@ -1268,7 +1269,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 "variables" - {
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).variables shouldBe it.degrees.keys
                     }
@@ -1276,7 +1277,7 @@ class LabeledPolynomialSpaceTest : FreeSpec() {
                 "countOfVariables" - {
                     withData(
                         nameIndFn = { index, _ -> "test ${index + 1}" },
-                        polynomialPropertiesTestData
+                        pPropertiesTestData
                     ) {
                         LabeledPolynomialAsIs(it.argumentCoefficients).countOfVariables shouldBe it.degrees.size
                     }
