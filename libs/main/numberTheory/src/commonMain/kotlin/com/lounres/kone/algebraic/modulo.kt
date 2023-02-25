@@ -14,7 +14,6 @@ import com.lounres.kone.numberTheory.isPrime
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
 public open class IntModuloRing(modulus: Int) : Ring<IntBox> {
-    public constructor(modulus: IntBox): this(modulus.value)
 
     public val modulus: Int
 
@@ -75,9 +74,9 @@ public open class IntModuloRing(modulus: Int) : Ring<IntBox> {
     public override fun power(base: IntBox, exponent: ULong): IntBox = rightMultiplyByDoubling(base.rem, exponent, { 1 }, { left, right -> (left * right).rem }).box
     // endregion
 }
+public fun IntModuloRing(modulo: IntBox): IntModuloRing = IntModuloRing(modulo.value)
 
 public open class IntModuloField(modulus: Int) : Field<IntBox>, IntModuloRing(modulus) {
-    public constructor(modulus: IntBox): this(modulus.value)
 
     init {
         require(this.modulus.isPrime()) { "integers over non-prime modulo (${this.modulus}) are not a field" }
@@ -114,10 +113,10 @@ public open class IntModuloField(modulus: Int) : Field<IntBox>, IntModuloRing(mo
         return (this.rem * bezoutIdentity.first).rem.box
     }
 }
+public fun IntModuloField(modulo: IntBox): IntModuloField = IntModuloField(modulo.value)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
 public open class LongModuloRing(modulus: Long) : Ring<LongBox> {
-    public constructor(modulus: LongBox): this(modulus.value)
 
     public val modulus: Long
 
@@ -178,9 +177,9 @@ public open class LongModuloRing(modulus: Long) : Ring<LongBox> {
     public override fun power(base: LongBox, exponent: ULong): LongBox = rightMultiplyByDoubling(base.rem, exponent, { 1L }, { left, right -> (left * right).rem }).box
     // endregion
 }
+public fun LongModuloRing(modulo: LongBox): LongModuloRing = LongModuloRing(modulo.value)
 
 public open class LongModuloField(modulus: Long) : Field<LongBox>, LongModuloRing(modulus) {
-    public constructor(modulus: LongBox): this(modulus.value)
 
     init {
         require(this.modulus.isPrime()) { "integers over non-prime modulo (${this.modulus}) are not a field" }
@@ -217,3 +216,4 @@ public open class LongModuloField(modulus: Long) : Field<LongBox>, LongModuloRin
         return (this.rem * bezoutIdentity.first).rem.box
     }
 }
+public fun LongModuloField(modulo: LongBox): LongModuloField = LongModuloField(modulo.value)

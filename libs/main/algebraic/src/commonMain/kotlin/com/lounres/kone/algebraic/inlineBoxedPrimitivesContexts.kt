@@ -66,7 +66,7 @@ public object BIntRing: Ring<IntBox> {
     // endregion
 }
 
-public val Int.Companion.boxRing: BIntRing get() = BIntRing
+public inline val Int.Companion.boxRing: BIntRing get() = BIntRing
 
 @JvmInline
 public value class LongBox(public val value: Long) {
@@ -122,4 +122,4 @@ public object BLongRing: Ring<LongBox> {
     // endregion
 }
 
-public val Long.Companion.boxRing: BLongRing get() = BLongRing
+public inline val Long.Companion.boxRing: BLongRing get() = BLongRing

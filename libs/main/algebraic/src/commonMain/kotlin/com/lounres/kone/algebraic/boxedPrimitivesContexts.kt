@@ -52,7 +52,7 @@ public object ByteField: Ring<Byte> {
     // endregion
 }
 
-public val Byte.Companion.field: ByteField get() = ByteField
+public inline val Byte.Companion.field: ByteField get() = ByteField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
 public object ShortField: Ring<Short> {
@@ -98,7 +98,7 @@ public object ShortField: Ring<Short> {
     // endregion
 }
 
-public val Short.Companion.field: ShortField get() = ShortField
+public inline val Short.Companion.field: ShortField get() = ShortField
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 public object IntRing: Ring<Int> {
@@ -132,7 +132,7 @@ public object IntRing: Ring<Int> {
     // endregion
 }
 
-public val Int.Companion.ring: IntRing get() = IntRing
+public inline val Int.Companion.ring: IntRing get() = IntRing
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 public object LongRing: Ring<Long> {
@@ -166,7 +166,7 @@ public object LongRing: Ring<Long> {
     // endregion
 }
 
-public val Long.Companion.ring: LongRing get() = LongRing
+public inline val Long.Companion.ring: LongRing get() = LongRing
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
 public object DoubleField: Field<Double> {
@@ -223,7 +223,7 @@ public object DoubleField: Field<Double> {
     // endregion
 }
 
-public val Double.Companion.field: DoubleField get() = DoubleField
+public inline val Double.Companion.field: DoubleField get() = DoubleField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
 public object FloatField: Field<Float> {
@@ -280,4 +280,4 @@ public object FloatField: Field<Float> {
     // endregion
 }
 
-public val Float.Companion.field: FloatField get() = FloatField
+public inline val Float.Companion.field: FloatField get() = FloatField

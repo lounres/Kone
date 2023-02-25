@@ -58,7 +58,7 @@ public class Rational {
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
 
     public companion object {
-        public val field: RationalField = RationalField
+        public inline val field: RationalField get() = RationalField
     }
 }
 
