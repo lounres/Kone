@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinCompilationToRunnableFiles
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -54,10 +54,6 @@ allprojects {
     )
     for ((prop, value) in defaultProperties)
         if (!extra.has(prop)) extra[prop] = value
-}
-
-afterEvaluate {
-    yarn.lockFileDirectory = rootDir.resolve("gradle")
 }
 
 
@@ -156,6 +152,9 @@ featuresManagement {
                     }
                 }
             }
+            afterEvaluate {
+                yarn.lockFileDirectory = rootDir.resolve("gradle")
+            }
             pluginManager.withPlugin("org.gradle.java") {
                 configure<JavaPluginExtension> {
                     targetCompatibility = JavaVersion.toVersion(jvmTargetApi)
@@ -210,7 +209,7 @@ featuresManagement {
         }
         on("examples") {
             @Suppress("UNUSED_VARIABLE")
-            fun NamedDomainObjectContainer<out AbstractKotlinCompilationToRunnableFiles<*>>.configureExamples() {
+            fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
                 val examples by creating {
                     defaultSourceSet {
@@ -224,7 +223,7 @@ featuresManagement {
 
                     task<JavaExec>("runJvmExample") {
                         group = "examples"
-                        classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles
+                        classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
                         mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
                     }
                 }
