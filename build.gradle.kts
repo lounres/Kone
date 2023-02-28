@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinCompilationToRunnableFiles
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -56,10 +56,6 @@ allprojects {
         if (!extra.has(prop)) extra[prop] = value
 }
 
-afterEvaluate {
-    yarn.lockFileDirectory = rootDir.resolve("gradle")
-}
-
 
 val jvmTargetApi = properties["jvmTarget"] as String
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
@@ -68,6 +64,23 @@ fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.(
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
+extra["bundle main aliases"] = mutableListOf<String>()
+extra["bundle misc aliases"] = mutableListOf<String>()
+extra["bundle util aliases"] = mutableListOf<String>()
+
+// TODO: Rewrite properly
+gradle.projectsEvaluated {
+    val bundleMainAliases = rootProject.extra["bundle main aliases"] as List<String>
+    val bundleMiscAliases = rootProject.extra["bundle misc aliases"] as List<String>
+    val bundleUtilAliases = rootProject.extra["bundle util aliases"] as List<String>
+    catalog.versionCatalog {
+        bundle("main", bundleMainAliases)
+        bundle("misc", bundleMiscAliases)
+        bundle("util", bundleUtilAliases)
+        bundle("public", bundleMainAliases + bundleMiscAliases)
+        bundle("all", bundleMainAliases + bundleMiscAliases + bundleUtilAliases)
+    }
+}
 
 publishing {
     publications {
@@ -156,6 +169,9 @@ featuresManagement {
                     }
                 }
             }
+            afterEvaluate {
+                yarn.lockFileDirectory = rootDir.resolve("gradle")
+            }
             pluginManager.withPlugin("org.gradle.java") {
                 configure<JavaPluginExtension> {
                     targetCompatibility = JavaVersion.toVersion(jvmTargetApi)
@@ -210,7 +226,7 @@ featuresManagement {
         }
         on("examples") {
             @Suppress("UNUSED_VARIABLE")
-            fun NamedDomainObjectContainer<out AbstractKotlinCompilationToRunnableFiles<*>>.configureExamples() {
+            fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
                 val examples by creating {
                     defaultSourceSet {
@@ -224,7 +240,7 @@ featuresManagement {
 
                     task<JavaExec>("runJvmExample") {
                         group = "examples"
-                        classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles
+                        classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
                         mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
                     }
                 }

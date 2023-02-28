@@ -48,6 +48,9 @@ featuresManagement {
         "kotest" since { hasTag("libs") }
         "publishing" since { hasAnyOfTags("libs") }
         "dokka" since { hasTag("publishing") }
+        "versionCatalog bundle main" since  { hasAllOfTags("publishing", "libs main") }
+        "versionCatalog bundle misc" since  { hasAllOfTags("publishing", "libs misc") }
+        "versionCatalog bundle util" since  { hasAllOfTags("publishing", "libs util") }
     }
     features {
         on("libs main") {
@@ -62,5 +65,13 @@ featuresManagement {
             extra["artifactPrefix"] = "kone.util."
             extra["aliasPrefix"] = "util-"
         }
+        fun addBundleCollectingAction(tag: String) {
+            on("versionCatalog bundle $tag") {
+                (rootProject.extra["bundle $tag aliases"] as MutableList<String>).add("${extra["aliasPrefix"]}${project.name}")
+            }
+        }
+        addBundleCollectingAction("main")
+        addBundleCollectingAction("misc")
+        addBundleCollectingAction("util")
     }
 }
