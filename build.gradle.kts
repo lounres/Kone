@@ -64,6 +64,23 @@ fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.(
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
+extra["bundle main aliases"] = mutableListOf<String>()
+extra["bundle misc aliases"] = mutableListOf<String>()
+extra["bundle util aliases"] = mutableListOf<String>()
+
+// TODO: Rewrite properly
+gradle.projectsEvaluated {
+    val bundleMainAliases = rootProject.extra["bundle main aliases"] as List<String>
+    val bundleMiscAliases = rootProject.extra["bundle misc aliases"] as List<String>
+    val bundleUtilAliases = rootProject.extra["bundle util aliases"] as List<String>
+    catalog.versionCatalog {
+        bundle("main", bundleMainAliases)
+        bundle("misc", bundleMiscAliases)
+        bundle("util", bundleUtilAliases)
+        bundle("public", bundleMainAliases + bundleMiscAliases)
+        bundle("all", bundleMainAliases + bundleMiscAliases + bundleUtilAliases)
+    }
+}
 
 publishing {
     publications {
