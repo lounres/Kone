@@ -165,6 +165,8 @@ featuresManagement {
                         languageSettings {
                             progressiveMode = true
                             optIn("kotlin.contracts.ExperimentalContracts")
+                            optIn("kotlin.ExperimentalStdlibApi")
+                            enableLanguageFeature("RangeUntilOperator")
                         }
                     }
                 }
