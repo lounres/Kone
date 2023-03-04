@@ -23,6 +23,10 @@
           <option name="issueRegexp" value="MKE-(\d+)" />
           <option name="linkRegexp" value="https://github.com/lounres/math-kotlin-experiments/issues/$1" />
         </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/lounres/Kone/issues/$1" />
+        </IssueNavigationLink>
       </list>
     </option>
   </component>

@@ -158,8 +158,6 @@ featuresManagement {
         }
         on("kotlin common settings") {
             configure<KotlinProjectExtension> {
-                explicitApi = Warning
-
                 sourceSets {
                     all {
                         languageSettings {
@@ -181,6 +179,11 @@ featuresManagement {
                 tasks.withType<Test> {
                     useJUnitPlatform()
                 }
+            }
+        }
+        on("kotlin library settings") {
+            configure<KotlinProjectExtension> {
+                explicitApi = Warning
             }
         }
         on("kotest") {

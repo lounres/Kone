@@ -39,13 +39,17 @@ structuring {
 
 featuresManagement {
     tagsAssignment {
+        // Grouping tags
         "libs public" since { hasAnyOfTags("libs main", "libs misc") }
         "libs" since { hasAnyOfTags("libs main", "libs misc", "libs util") }
+        // Kotlin set up
         "kotlin multiplatform" since { hasAnyOfTags("libs") }
-        "kotlin common settings" since { hasTag("libs") }
-        "examples" since { hasTag("libs") }
-        "benchmark" since { hasTag("libs") }
-        "kotest" since { hasTag("libs") }
+        "kotlin common settings" since { hasAnyOfTags("kotlin multiplatform", "kotlin jvm") }
+        "kotlin library settings" since { hasTag("libs") }
+        // Extra
+        "examples" since { hasTag("libs public") }
+        "benchmark" since { hasTag("libs public") }
+        "kotest" since { hasTag("libs public") }
         "publishing" since { hasAnyOfTags("libs") }
         "dokka" since { hasTag("publishing") }
         "versionCatalog bundle main" since  { hasAllOfTags("publishing", "libs main") }
