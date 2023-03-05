@@ -57,7 +57,7 @@ allprojects {
 }
 
 
-val jvmTargetApi = properties["jvmTarget"] as String
+val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
@@ -98,12 +98,12 @@ featuresManagement {
             configure<KotlinJvmProjectExtension> {
                 target.compilations.all {
                     kotlinOptions {
-                        jvmTarget = jvmTargetApi
+                        jvmTarget = jvmTargetVersion
                     }
                     compileTaskProvider.apply {
                         // TODO: Check if really is necessary
                         kotlinOptions {
-                            jvmTarget = jvmTargetApi
+                            jvmTarget = jvmTargetVersion
                         }
                     }
                 }
@@ -124,7 +124,7 @@ featuresManagement {
                 jvm {
                     compilations.all {
                         kotlinOptions {
-                            jvmTarget = jvmTargetApi
+                            jvmTarget = jvmTargetVersion
                             freeCompilerArgs += listOf(
 //                                "-Xlambdas=indy"
                             )
@@ -155,30 +155,34 @@ featuresManagement {
                     }
                 }
             }
+            afterEvaluate {
+                yarn.lockFileDirectory = rootDir.resolve("gradle")
+            }
         }
         on("kotlin common settings") {
             configure<KotlinProjectExtension> {
-                explicitApi = Warning
-
                 sourceSets {
                     all {
                         languageSettings {
                             progressiveMode = true
                             optIn("kotlin.contracts.ExperimentalContracts")
+                            optIn("kotlin.ExperimentalStdlibApi")
                         }
                     }
                 }
             }
-            afterEvaluate {
-                yarn.lockFileDirectory = rootDir.resolve("gradle")
-            }
             pluginManager.withPlugin("org.gradle.java") {
                 configure<JavaPluginExtension> {
-                    targetCompatibility = JavaVersion.toVersion(jvmTargetApi)
+                    targetCompatibility = JavaVersion.toVersion(jvmTargetVersion)
                 }
                 tasks.withType<Test> {
                     useJUnitPlatform()
                 }
+            }
+        }
+        on("kotlin library settings") {
+            configure<KotlinProjectExtension> {
+                explicitApi = Warning
             }
         }
         on("kotest") {
