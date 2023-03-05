@@ -81,3 +81,32 @@ public inline fun <T> List<T>.lastIndexThat(predicate: (index: Int, T) -> Boolea
             return iterator.nextIndex()
     return -1
 }
+
+public inline fun <T> Iterable<T>.count(from: Int = 0, to: Int = -1, predicate: (T) -> Boolean): Int {
+    require(to >= -1) { /* TODO */ }
+    if (from > to) return 0
+
+    var count = 0
+    forEachIndexed { index, t ->
+        when {
+            index < from -> return@forEachIndexed
+            to == -1 || index == to -> return count
+            predicate(t) -> count++
+        }
+    }
+    return count
+}
+
+public inline fun <T> List<T>.count(from: Int = 0, to: Int = size, predicate: (T) -> Boolean): Int =
+    subList(from, to).count(predicate)
+
+public operator fun <T> List<T>.component6(): T = get(5)
+public operator fun <T> List<T>.component7(): T = get(6)
+public operator fun <T> List<T>.component8(): T = get(7)
+public operator fun <T> List<T>.component9(): T = get(8)
+public operator fun <T> List<T>.component10(): T = get(9)
+public operator fun <T> List<T>.component11(): T = get(10)
+public operator fun <T> List<T>.component12(): T = get(11)
+public operator fun <T> List<T>.component13(): T = get(12)
+public operator fun <T> List<T>.component14(): T = get(13)
+public operator fun <T> List<T>.component15(): T = get(14)
