@@ -78,6 +78,7 @@ fabric.properties
 !.idea/scopes
 !.idea/copyright
 !.idea/vcs.xml
+!.idea/runConfigurations
 *.iml
 out
 gen
