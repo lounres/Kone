@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.8.20-Beta"
+kotlin = "1.8.20-RC"
 
 kmath = "0.3.0"
 
@@ -13,7 +13,7 @@ kotlinx-binary-compatibility-validator = "0.13.0"
 kotlinx-knit = "0.4.0"
 
 kotest = "5.5.5"
-dokka = "1.7.20"
+dokka = "1.8.10"
 mkdocs-gradle-plugin = "2.4.0"
 
 [plugins]

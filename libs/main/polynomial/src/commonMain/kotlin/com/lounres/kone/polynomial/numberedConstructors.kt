@@ -9,9 +9,9 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.utils.mapOperations.associateBy
-import com.lounres.kone.utils.mapOperations.mapKeys
-import com.lounres.kone.utils.mapOperations.putOrChange
+import com.lounres.kone.util.mapOperations.associateBy
+import com.lounres.kone.util.mapOperations.mapKeys
+import com.lounres.kone.util.mapOperations.putOrChange
 
 
 @PublishedApi

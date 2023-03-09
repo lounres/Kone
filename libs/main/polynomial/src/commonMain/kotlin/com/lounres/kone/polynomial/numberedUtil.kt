@@ -10,7 +10,7 @@ import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
 import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.utils.mapOperations.putOrChange
+import com.lounres.kone.util.mapOperations.putOrChange
 import space.kscience.kmath.structures.Buffer
 import kotlin.jvm.JvmName
 import kotlin.math.max

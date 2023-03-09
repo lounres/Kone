@@ -47,32 +47,23 @@ allprojects {
 
     version = projectVersion
     group = "com.lounres"
-
-    val defaultProperties = mapOf(
-        "artifactPrefix" to "",
-        "aliasPrefix" to "",
-    )
-    for ((prop, value) in defaultProperties)
-        if (!extra.has(prop)) extra[prop] = value
 }
 
 
-val jvmTargetApi = properties["jvmTarget"] as String
+val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
-extra["bundle main aliases"] = mutableListOf<String>()
-extra["bundle misc aliases"] = mutableListOf<String>()
-extra["bundle util aliases"] = mutableListOf<String>()
+val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
+val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
-// TODO: Rewrite properly
 gradle.projectsEvaluated {
-    val bundleMainAliases = rootProject.extra["bundle main aliases"] as List<String>
-    val bundleMiscAliases = rootProject.extra["bundle misc aliases"] as List<String>
-    val bundleUtilAliases = rootProject.extra["bundle util aliases"] as List<String>
+    val bundleMainAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs main") }.map { it.alias }
+    val bundleMiscAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs misc") }.map { it.alias }
+    val bundleUtilAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs util") }.map { it.alias }
     catalog.versionCatalog {
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -91,19 +82,19 @@ publishing {
     }
 }
 
-featuresManagement {
-    features {
+stal {
+    action {
         on("kotlin jvm") {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
                 target.compilations.all {
                     kotlinOptions {
-                        jvmTarget = jvmTargetApi
+                        jvmTarget = jvmTargetVersion
                     }
                     compileTaskProvider.apply {
                         // TODO: Check if really is necessary
                         kotlinOptions {
-                            jvmTarget = jvmTargetApi
+                            jvmTarget = jvmTargetVersion
                         }
                     }
                 }
@@ -124,7 +115,7 @@ featuresManagement {
                 jvm {
                     compilations.all {
                         kotlinOptions {
-                            jvmTarget = jvmTargetApi
+                            jvmTarget = jvmTargetVersion
                             freeCompilerArgs += listOf(
 //                                "-Xlambdas=indy"
                             )
@@ -155,30 +146,34 @@ featuresManagement {
                     }
                 }
             }
+            afterEvaluate {
+                yarn.lockFileDirectory = rootDir.resolve("gradle")
+            }
         }
         on("kotlin common settings") {
             configure<KotlinProjectExtension> {
-                explicitApi = Warning
-
                 sourceSets {
                     all {
                         languageSettings {
                             progressiveMode = true
                             optIn("kotlin.contracts.ExperimentalContracts")
+                            optIn("kotlin.ExperimentalStdlibApi")
                         }
                     }
                 }
             }
-            afterEvaluate {
-                yarn.lockFileDirectory = rootDir.resolve("gradle")
-            }
             pluginManager.withPlugin("org.gradle.java") {
                 configure<JavaPluginExtension> {
-                    targetCompatibility = JavaVersion.toVersion(jvmTargetApi)
+                    targetCompatibility = JavaVersion.toVersion(jvmTargetVersion)
                 }
                 tasks.withType<Test> {
                     useJUnitPlatform()
                 }
+            }
+        }
+        on("kotlin library settings") {
+            configure<KotlinProjectExtension> {
+                explicitApi = Warning
             }
         }
         on("kotest") {

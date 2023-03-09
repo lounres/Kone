@@ -10,7 +10,7 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.utils.mapOperations.*
+import com.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.expressions.Symbol
 
 
