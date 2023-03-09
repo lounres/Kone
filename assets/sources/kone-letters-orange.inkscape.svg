@@ -3,6 +3,7 @@
   - Copyright © 2023 Gleb Minaev
   - All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
   -->
+
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
@@ -23,7 +24,7 @@
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="true"
@@ -51,19 +52,19 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 99.99999,100 H 0 V 0 H 99.99999 L 49.99998,50 Z"
        id="path865" />
     <path
-       style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 0,250 V 150 L 99.99999,250 V 150 H 49.99998 v 100 z"
        id="path867" />
     <path
-       style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 149.99999,150 H 250 l -25,25 25,25 -25,25 25,25 H 149.99999 Z"
        id="path869" />
     <circle
-       style="fill:#fec260;fill-opacity:1;stroke:none;stroke-width:3"
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:3"
        id="path893"
        cx="200"
        cy="50"
