@@ -19,44 +19,49 @@ pluginManagement {
 }
 
 plugins {
-    id("com.lounres.gradle.feature") version "1.1.0"
+    id("com.lounres.gradle.stal") version "1.0.0"
 }
 
-structuring {
-    "docs"()
-    "libs" {
-        "main" {
-            subdirs("libs main")
-        }
-        "misc" {
-            subdirs("libs misc")
-        }
-        "util" {
-            subdirs("libs util")
+stal {
+    structure {
+        "docs"()
+        "libs" {
+            "main" {
+                subdirs("libs main")
+            }
+            "misc" {
+                subdirs("libs misc")
+            }
+            "util" {
+                subdirs("libs util")
+            }
         }
     }
-}
 
-featuresManagement {
-    tagsAssignment {
+    tag {
         // Grouping tags
-        "libs public" since { hasAnyOfTags("libs main", "libs misc") }
-        "libs" since { hasAnyOfTags("libs main", "libs misc", "libs util") }
+        "libs public" since { hasAnyOf("libs main", "libs misc") }
+        "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
         // Kotlin set up
-        "kotlin multiplatform" since { hasAnyOfTags("libs") }
-        "kotlin common settings" since { hasAnyOfTags("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { hasTag("libs") }
+        "kotlin multiplatform" since { hasAnyOf("libs") }
+        "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
+        "kotlin library settings" since { has("libs") }
         // Extra
-        "examples" since { hasTag("libs public") }
-        "benchmark" since { hasTag("libs public") }
-        "kotest" since { hasTag("libs public") }
-        "publishing" since { hasAnyOfTags("libs") }
-        "dokka" since { hasTag("publishing") }
-        "versionCatalog bundle main" since  { hasAllOfTags("publishing", "libs main") }
-        "versionCatalog bundle misc" since  { hasAllOfTags("publishing", "libs misc") }
-        "versionCatalog bundle util" since  { hasAllOfTags("publishing", "libs util") }
+        "examples" since { has("libs public") }
+        "benchmark" since { has("libs public") }
+        "kotest" since { has("libs public") }
+        "publishing" since { hasAnyOf("libs") }
+        "dokka" since { has("publishing") }
+        "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
+        "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
+        "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }
     }
-    features {
+
+    action {
+        gradle.allprojects {
+            extra["artifactPrefix"] = ""
+            extra["aliasPrefix"] = ""
+        }
         on("libs main") {
             extra["artifactPrefix"] = "kone."
             extra["aliasPrefix"] = ""
@@ -69,13 +74,5 @@ featuresManagement {
             extra["artifactPrefix"] = "kone.util."
             extra["aliasPrefix"] = "util-"
         }
-        fun addBundleCollectingAction(tag: String) {
-            on("versionCatalog bundle $tag") {
-                (rootProject.extra["bundle $tag aliases"] as MutableList<String>).add("${extra["aliasPrefix"]}${project.name}")
-            }
-        }
-        addBundleCollectingAction("main")
-        addBundleCollectingAction("misc")
-        addBundleCollectingAction("util")
     }
 }

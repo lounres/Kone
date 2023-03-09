@@ -47,13 +47,6 @@ allprojects {
 
     version = projectVersion
     group = "com.lounres"
-
-    val defaultProperties = mapOf(
-        "artifactPrefix" to "",
-        "aliasPrefix" to "",
-    )
-    for ((prop, value) in defaultProperties)
-        if (!extra.has(prop)) extra[prop] = value
 }
 
 
@@ -64,15 +57,13 @@ fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.(
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
-extra["bundle main aliases"] = mutableListOf<String>()
-extra["bundle misc aliases"] = mutableListOf<String>()
-extra["bundle util aliases"] = mutableListOf<String>()
+val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
+val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
-// TODO: Rewrite properly
 gradle.projectsEvaluated {
-    val bundleMainAliases = rootProject.extra["bundle main aliases"] as List<String>
-    val bundleMiscAliases = rootProject.extra["bundle misc aliases"] as List<String>
-    val bundleUtilAliases = rootProject.extra["bundle util aliases"] as List<String>
+    val bundleMainAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs main") }.map { it.alias }
+    val bundleMiscAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs misc") }.map { it.alias }
+    val bundleUtilAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs util") }.map { it.alias }
     catalog.versionCatalog {
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -91,8 +82,8 @@ publishing {
     }
 }
 
-featuresManagement {
-    features {
+stal {
+    action {
         on("kotlin jvm") {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
