@@ -53,9 +53,7 @@ class NumberedUtilTest: FreeSpec({
                         listOf(1u, 2u) to -0.06962351375204712,
                         listOf(2u, 2u) to -0.015206988092131501,
                     ),
-                    mapOf(
-
-                    ),
+                    mapOf(),
                     mapOf(
                         listOf<UInt>() to 0.8597048543814783,
                         listOf(1u) to 0.22997637465889875,
@@ -81,8 +79,15 @@ class NumberedUtilTest: FreeSpec({
                         listOf(2u, 2u) to -0.015206988092131501,
                     ),
                     mapOf(
-
+                        0 to 0.0,
                     ),
+                    mapOf(
+                        listOf<UInt>() to 0.8597048543814783,
+                        listOf(0u, 1u) to 0.4561746111587508,
+                        listOf(0u, 2u) to 0.2700930201481795,
+                    )
+                ),
+                PSubstituteDTestData(
                     mapOf(
                         listOf<UInt>() to 0.8597048543814783,
                         listOf(1u) to 0.22997637465889875,
@@ -93,94 +98,219 @@ class NumberedUtilTest: FreeSpec({
                         listOf(0u, 2u) to 0.2700930201481795,
                         listOf(1u, 2u) to -0.06962351375204712,
                         listOf(2u, 2u) to -0.015206988092131501,
+                    ),
+                    mapOf(
+                        1 to 0.8400458576651112,
+                    ),
+                    mapOf(
+                        listOf<UInt>() to 1.433510890645169,
+                        listOf(1u) to 0.6264844682514724,
+                        listOf(2u) to 0.8405727903771333,
+                    )
+                ),
+                PSubstituteDTestData(
+                    mapOf(
+                        listOf<UInt>() to 0.8597048543814783,
+                        listOf(1u) to 0.22997637465889875,
+                        listOf(2u) to 0.32675302591924016,
+                        listOf(0u, 1u) to 0.4561746111587508,
+                        listOf(1u, 1u) to 0.5304946210170756,
+                        listOf(2u, 1u) to 0.6244313712888998,
+                        listOf(0u, 2u) to 0.2700930201481795,
+                        listOf(1u, 2u) to -0.06962351375204712,
+                        listOf(2u, 2u) to -0.015206988092131501,
+                    ),
+                    mapOf(
+                        0 to 0.4846192734143442,
+                        1 to 0.8400458576651112,
+                    ),
+                    mapOf(
+                        listOf<UInt>() to 1.934530767358133,
                     )
                 ),
             ) { (coefs, args, resultCoefs) ->
                 Double.field { NumberedPolynomial(coefs).substitute(args) shouldBe (NumberedPolynomial(resultCoefs) plusOrMinus 0.000001) }
+                Double.field { NumberedPolynomial(coefs).substitute(args + (5 to 0.9211194782050933)) shouldBe (NumberedPolynomial(resultCoefs) plusOrMinus 0.000001) }
             }
         }
         "polynomial <- constant" - {
             data class PSubstituteCTestData(
-                val receiverCoefs: List<Rational>,
-                val arg: Rational,
-                val result: Rational
+                val receiverCoefs: NumberedPolynomialCoefficients<Rational>,
+                val arg: Map<Int, Rational>,
+                val result: NumberedPolynomialCoefficients<Rational>
             )
 
             withData(
                 nameIndFn = { index, _ -> "test ${index + 1}" },
                 PSubstituteCTestData(
-                    listOf(Rational(1), Rational(-2), Rational(1)),
-                    Rational(1),
-                    Rational(0)
+                    mapOf(
+                        listOf<UInt>() to Rational(1),
+                        listOf(1u) to Rational(-2),
+                        listOf(2u) to Rational(1)
+                    ),
+                    mapOf(
+                        0 to Rational(1)
+                    ),
+                    mapOf(
+                        listOf<UInt>() to Rational(0)
+                    ),
                 ),
+//                PSubstituteCTestData(
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-3, 2),
+//                        listOf(1u) to Rational(8, 6),
+//                        listOf(2u) to Rational(14, 6),
+//                        listOf(0u, 1u) to Rational(-3, 1),
+//                        listOf(1u, 1u) to Rational(-19, 2),
+//                        listOf(2u, 1u) to Rational(9, 4),
+//                        listOf(0u, 2u) to Rational(5, 5),
+//                        listOf(1u, 2u) to Rational(18, 9),
+//                        listOf(2u, 2u) to Rational(5, 2),
+//                    ),
+//                    mapOf(),
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-3, 2),
+//                        listOf(1u) to Rational(8, 6),
+//                        listOf(2u) to Rational(14, 6),
+//                        listOf(0u, 1u) to Rational(-3, 1),
+//                        listOf(1u, 1u) to Rational(-19, 2),
+//                        listOf(2u, 1u) to Rational(9, 4),
+//                        listOf(0u, 2u) to Rational(5, 5),
+//                        listOf(1u, 2u) to Rational(18, 9),
+//                        listOf(2u, 2u) to Rational(5, 2),
+//                    ),
+//                ),
+//                PSubstituteCTestData(
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-3, 2),
+//                        listOf(1u) to Rational(8, 6),
+//                        listOf(2u) to Rational(14, 6),
+//                        listOf(0u, 1u) to Rational(-3, 1),
+//                        listOf(1u, 1u) to Rational(-19, 2),
+//                        listOf(2u, 1u) to Rational(9, 4),
+//                        listOf(0u, 2u) to Rational(5, 5),
+//                        listOf(1u, 2u) to Rational(18, 9),
+//                        listOf(2u, 2u) to Rational(5, 2),
+//                    ),
+//                    mapOf(
+//                        0 to Rational(-2, 5),
+//                    ),
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-83, 50),
+//                        listOf(0u, 1u) to Rational(29, 25),
+//                        listOf(0u, 2u) to Rational(3, 5),
+//                    ),
+//                ),
+//                PSubstituteCTestData(
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-3, 2),
+//                        listOf(1u) to Rational(8, 6),
+//                        listOf(2u) to Rational(14, 6),
+//                        listOf(0u, 1u) to Rational(-3, 1),
+//                        listOf(1u, 1u) to Rational(-19, 2),
+//                        listOf(2u, 1u) to Rational(9, 4),
+//                        listOf(0u, 2u) to Rational(5, 5),
+//                        listOf(1u, 2u) to Rational(18, 9),
+//                        listOf(2u, 2u) to Rational(5, 2),
+//                    ),
+//                    mapOf(
+//                        1 to Rational(12, 9),
+//                    ),
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-67, 18),
+//                        listOf(1u) to Rational(-70, 9),
+//                        listOf(2u) to Rational(88, 9),
+//                    ),
+//                ),
+//                PSubstituteCTestData(
+//                    mapOf(
+//                        listOf<UInt>() to Rational(-3, 2),
+//                        listOf(1u) to Rational(8, 6),
+//                        listOf(2u) to Rational(14, 6),
+//                        listOf(0u, 1u) to Rational(-3, 1),
+//                        listOf(1u, 1u) to Rational(-19, 2),
+//                        listOf(2u, 1u) to Rational(9, 4),
+//                        listOf(0u, 2u) to Rational(5, 5),
+//                        listOf(1u, 2u) to Rational(18, 9),
+//                        listOf(2u, 2u) to Rational(5, 2),
+//                    ),
+//                    mapOf(
+//                        0 to Rational(-2, 5),
+//                        1 to Rational(12, 9),
+//                    ),
+//                    mapOf(
+//                        listOf<UInt>() to Rational(143, 150)
+//                    ),
+//                ),
                 PSubstituteCTestData(
-                    listOf(Rational(5, 8), Rational(8, 3), Rational(4, 7), Rational(3, 2)),
-                    Rational(1, 5),
-                    Rational(25057, 21000)
-                ),
-                PSubstituteCTestData(
-                    listOf(Rational(0), Rational(8, 3), Rational(4, 7), Rational(3, 2)),
-                    Rational(1, 5),
-                    Rational(2983, 5250)
-                ),
-                PSubstituteCTestData(
-                    listOf(Rational(5, 8), Rational(8, 3), Rational(4, 7), Rational(0)),
-                    Rational(1, 5),
-                    Rational(4961, 4200)
-                ),
-                PSubstituteCTestData(
-                    listOf(Rational(5, 8), Rational(8, 3), Rational(0), Rational(3, 2)),
-                    Rational(1, 5),
-                    Rational(3511, 3000)
+                    mapOf(
+                        listOf(8u) to Rational(-3, 2),
+                        listOf(7u, 1u) to Rational(8, 6),
+                        listOf(6u, 2u) to Rational(14, 6),
+                        listOf(5u, 3u) to Rational(-3, 1),
+                        listOf(4u, 4u) to Rational(-19, 2),
+                        listOf(3u, 5u) to Rational(9, 4),
+                        listOf(2u, 6u) to Rational(5, 5),
+                        listOf(1u, 7u) to Rational(18, 9),
+                        listOf(0u, 8u) to Rational(5, 2),
+                    ),
+                    mapOf(
+                        0 to Rational(-2, 5),
+                        1 to Rational(12, 9),
+                    ),
+                    mapOf(
+                        listOf<UInt>() to Rational(47639065216, 2562890625)
+                    ),
                 ),
             ) { (coefs, arg, result) ->
-                ListPolynomial(coefs).substitute(Rational.field, arg) shouldBe result
+                NumberedPolynomial(coefs).substitute(Rational.field, arg) shouldBe NumberedPolynomial(result)
+                NumberedPolynomial(coefs).substitute(Rational.field, arg + (5 to Rational(57, 179))) shouldBe NumberedPolynomial(result)
             }
         }
         "polynomial <- polynomial" - {
             data class PSubstitutePTestData(
-                val receiverCoefs: List<Rational>,
-                val argCoefs: List<Rational>,
-                val resultCoefs: List<Rational>
+                val receiverCoefs: NumberedPolynomialCoefficients<Rational>,
+                val argCoefs: Map<Int, NumberedPolynomialCoefficients<Rational>>,
+                val resultCoefs: NumberedPolynomialCoefficients<Rational>
             )
 
-            withData(
-                nameIndFn = { index, _ -> "test ${index + 1}" },
-                PSubstitutePTestData(
-                    listOf(Rational(1), Rational(-2), Rational(1)),
-                    listOf(Rational(1)),
-                    listOf(Rational(0)),
-                ),
-                PSubstitutePTestData(
-                    listOf(Rational(1, 7), Rational(9, 4), Rational(1, 3), Rational(2, 7)),
-                    listOf(Rational(6, 9), Rational(1, 5)),
-                    listOf(Rational(709, 378), Rational(155, 252), Rational(19, 525), Rational(2, 875)),
-                ),
-                PSubstitutePTestData(
-                    listOf(Rational(0), Rational(9, 4), Rational(1, 3), Rational(2, 7)),
-                    listOf(Rational(6, 9), Rational(1, 5)),
-                    listOf(Rational(655, 378), Rational(155, 252), Rational(19, 525), Rational(2, 875)),
-                ),
-                PSubstitutePTestData(
-                    listOf(Rational(1, 7), Rational(9, 4), Rational(1, 3), Rational(0)),
-                    listOf(Rational(6, 9), Rational(1, 5)),
-                    listOf(Rational(677, 378), Rational(97, 180), Rational(1, 75), Rational(0)),
-                ),
-                PSubstitutePTestData(
-                    listOf(Rational(1, 7), Rational(9, 4), Rational(0), Rational(2, 7)),
-                    listOf(Rational(6, 9), Rational(1, 5)),
-                    listOf(Rational(653, 378), Rational(221, 420), Rational(4, 175), Rational(2, 875)),
-                ),
-                PSubstitutePTestData(
-                    listOf(Rational(0), Rational(9, 4), Rational(1, 3), Rational(0)),
-                    listOf(Rational(6, 9), Rational(0)),
-                    listOf(Rational(89, 54), Rational(0), Rational(0), Rational(0)),
-                ),
-            ) { (receiver, arg, result) ->
-                ListPolynomial(receiver).substitute(Rational.field, ListPolynomial(arg)) shouldBe ListPolynomial(
-                    result
-                )
-            }
+//            withData(
+//                nameIndFn = { index, _ -> "test ${index + 1}" },
+//                PSubstitutePTestData(
+//                    listOf(Rational(1), Rational(-2), Rational(1)),
+//                    listOf(Rational(1)),
+//                    listOf(Rational(0)),
+//                ),
+//                PSubstitutePTestData(
+//                    listOf(Rational(1, 7), Rational(9, 4), Rational(1, 3), Rational(2, 7)),
+//                    listOf(Rational(6, 9), Rational(1, 5)),
+//                    listOf(Rational(709, 378), Rational(155, 252), Rational(19, 525), Rational(2, 875)),
+//                ),
+//                PSubstitutePTestData(
+//                    listOf(Rational(0), Rational(9, 4), Rational(1, 3), Rational(2, 7)),
+//                    listOf(Rational(6, 9), Rational(1, 5)),
+//                    listOf(Rational(655, 378), Rational(155, 252), Rational(19, 525), Rational(2, 875)),
+//                ),
+//                PSubstitutePTestData(
+//                    listOf(Rational(1, 7), Rational(9, 4), Rational(1, 3), Rational(0)),
+//                    listOf(Rational(6, 9), Rational(1, 5)),
+//                    listOf(Rational(677, 378), Rational(97, 180), Rational(1, 75), Rational(0)),
+//                ),
+//                PSubstitutePTestData(
+//                    listOf(Rational(1, 7), Rational(9, 4), Rational(0), Rational(2, 7)),
+//                    listOf(Rational(6, 9), Rational(1, 5)),
+//                    listOf(Rational(653, 378), Rational(221, 420), Rational(4, 175), Rational(2, 875)),
+//                ),
+//                PSubstitutePTestData(
+//                    listOf(Rational(0), Rational(9, 4), Rational(1, 3), Rational(0)),
+//                    listOf(Rational(6, 9), Rational(0)),
+//                    listOf(Rational(89, 54), Rational(0), Rational(0), Rational(0)),
+//                ),
+//            ) { (receiver, arg, result) ->
+//                NumberedPolynomial(receiver).substitute(Rational.field, arg) shouldBe ListPolynomial(
+//                    result
+//                )
+//            }
         }
         // FIXME: This tests work only for sane realisations of the substitutions. Currently, it is not.
         //  Sane algorithm for substitution p(q/r) (p, q, and r are polynomials) should return denominator r^deg(p),
