@@ -7,6 +7,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.annotations.UnstableKoneAPI
+import com.lounres.kone.kotest.datatest.withData
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec

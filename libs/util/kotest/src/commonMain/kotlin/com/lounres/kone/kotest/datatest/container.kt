@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package io.kotest.datatest
+package com.lounres.kone.kotest.datatest
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName

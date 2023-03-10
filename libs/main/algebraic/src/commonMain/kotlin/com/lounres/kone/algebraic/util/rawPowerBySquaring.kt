@@ -77,7 +77,7 @@ internal inline fun <C> rightAddMultipliedByDoublingInternalLogic(base: C, arg: 
     var arg = arg
     var multiplier = multiplier
     while (true) {
-        if (multiplier == 1u) additionToBaseOp(base, arg)
+        if (multiplier == 1u) /*return*/ additionToBaseOp(base, arg)
         else {
             base = if (multiplier and 1u == 0u) base else additionToBaseOp(base, arg)
             arg = additionOp(arg, arg)
@@ -155,7 +155,7 @@ internal inline fun <C> rightAddMultipliedByDoublingInternalLogic(base: C, arg: 
     var arg = arg
     var multiplier = multiplier
     while (true) {
-        if (multiplier == 1uL) additionToBaseOp(base, arg)
+        if (multiplier == 1uL) return additionToBaseOp(base, arg)
         else {
             base = if (multiplier and 1uL == 0uL) base else additionToBaseOp(base, arg)
             arg = additionOp(arg, arg)

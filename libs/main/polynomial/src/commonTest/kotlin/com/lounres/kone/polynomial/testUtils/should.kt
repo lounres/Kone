@@ -6,7 +6,7 @@
 package com.lounres.kone.polynomial.testUtils
 
 import com.lounres.kone.polynomial.*
-import com.lounres.kone.utils.mapOperations.mergingAll
+import com.lounres.kone.util.mapOperations.mergingAll
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.doubles.plusOrMinus

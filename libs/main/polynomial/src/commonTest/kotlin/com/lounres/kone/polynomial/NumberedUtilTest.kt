@@ -9,9 +9,9 @@ import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.algebraic.field
 import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.annotations.UnstableKoneAPI
+import com.lounres.kone.kotest.datatest.withData
 import com.lounres.kone.polynomial.testUtils.plusOrMinus
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.datatest.withData
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 

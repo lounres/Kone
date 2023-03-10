@@ -12,7 +12,7 @@ import com.lounres.kone.polynomial.testUtils.not
 import com.lounres.kone.polynomial.testUtils.o
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.scopes.ContainerScope
-import io.kotest.datatest.withData
+import com.lounres.kone.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 

@@ -12,7 +12,7 @@ import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.datatest.withData
+import com.lounres.kone.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 

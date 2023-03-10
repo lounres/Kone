@@ -14,7 +14,7 @@ import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.datatest.withData
+import com.lounres.kone.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 
 

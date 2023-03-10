@@ -5,6 +5,7 @@
 
 package com.lounres.kone.algebraic
 
+import com.lounres.kone.kotest.datatest.withData
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData
