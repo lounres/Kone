@@ -146,9 +146,6 @@ stal {
                     }
                 }
             }
-            afterEvaluate {
-                yarn.lockFileDirectory = rootDir.resolve("gradle")
-            }
         }
         on("kotlin common settings") {
             configure<KotlinProjectExtension> {
@@ -169,6 +166,11 @@ stal {
                 tasks.withType<Test> {
                     useJUnitPlatform()
                 }
+            }
+        }
+        on("kotlin js settings") {
+            afterEvaluate {
+                yarn.lockFileDirectory = rootDir.resolve("gradle")
             }
         }
         on("kotlin library settings") {

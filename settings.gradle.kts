@@ -42,9 +42,10 @@ stal {
         // Grouping tags
         "libs public" since { hasAnyOf("libs main", "libs misc") }
         "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
-        // Kotlin set up
+        // Kotlin setup
         "kotlin multiplatform" since { hasAnyOf("libs") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
+        "kotlin js settings" since { has("kotlin multiplatform") }
         "kotlin library settings" since { has("libs") }
         // Extra
         "examples" since { has("libs public") }
@@ -52,9 +53,6 @@ stal {
         "kotest" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
         "dokka" since { has("publishing") }
-        "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
-        "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
-        "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }
     }
 
     action {
