@@ -34,7 +34,7 @@ public fun <C> C.asListPolynomial() : ListPolynomial<C> = ListPolynomial(listOf(
 
 /**
  * Constructs [ListRationalFunction] instance with numerator and denominator constructed with provided
- * [numeratorCoefficients] and [denominatorCoefficients]. The both collections of coefficients will be reversed if
+ * [numeratorCoefficients] and [denominatorCoefficients]. Both collections of coefficients will be reversed if
  * [reverse] parameter is true.
  */
 @Suppress("FunctionName")
@@ -42,6 +42,17 @@ public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, denominatorC
     ListRationalFunction<C>(
         ListPolynomial( numeratorCoefficients.run { if (reverse) reversed() else this } ),
         ListPolynomial( denominatorCoefficients.run { if (reverse) reversed() else this } )
+    )
+/**
+ * Constructs [ListRationalFunction] instance with numerator and denominator constructed with the first and second
+ * elements of provided [numeratorAndDenominatorCoefficients] pair. Both collections of coefficients will be reversed if
+ * [reverse] parameter is true.
+ */
+@Suppress("FunctionName")
+public fun <C> ListRationalFunction(numeratorAndDenominatorCoefficients: Pair<List<C>, List<C>>, reverse: Boolean = false): ListRationalFunction<C> =
+    ListRationalFunction<C>(
+        ListPolynomial( numeratorAndDenominatorCoefficients.first.run { if (reverse) reversed() else this } ),
+        ListPolynomial( numeratorAndDenominatorCoefficients.second.run { if (reverse) reversed() else this } )
     )
 /**
  * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.

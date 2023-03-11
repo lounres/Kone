@@ -152,6 +152,17 @@ public fun <C> NumberedRationalFunctionSpace<C, *, *>.NumberedRationalFunction(n
         NumberedPolynomial(denominatorCoefficients)
     )
 
+public fun <C> Ring<C>.NumberedRationalFunction(numeratorAndDenominatorCoefficients: Pair<NumberedPolynomialCoefficients<C>, NumberedPolynomialCoefficients<C>>): NumberedRationalFunction<C> =
+    NumberedRationalFunction<C>(
+        NumberedPolynomial(numeratorAndDenominatorCoefficients.first),
+        NumberedPolynomial(numeratorAndDenominatorCoefficients.second)
+    )
+public fun <C> NumberedRationalFunctionSpace<C, *, *>.NumberedRationalFunction(numeratorAndDenominatorCoefficients: Pair<NumberedPolynomialCoefficients<C>, NumberedPolynomialCoefficients<C>>): NumberedRationalFunction<C> =
+    NumberedRationalFunction<C>(
+        NumberedPolynomial(numeratorAndDenominatorCoefficients.first),
+        NumberedPolynomial(numeratorAndDenominatorCoefficients.second)
+    )
+
 public fun <C> Ring<C>.NumberedRationalFunction(numerator: NumberedPolynomial<C>): NumberedRationalFunction<C> =
     NumberedRationalFunction<C>(numerator, NumberedPolynomial(mapOf(emptyList<UInt>() to one)))
 public fun <C> NumberedRationalFunctionSpace<C, *, *>.NumberedRationalFunction(numerator: NumberedPolynomial<C>): NumberedRationalFunction<C> =

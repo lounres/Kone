@@ -391,6 +391,17 @@ public fun <C> LabeledRationalFunctionSpace<C, *, *>.LabeledRationalFunction(num
         LabeledPolynomial(denominatorCoefficients)
     )
 
+public fun <C> Ring<C>.LabeledRationalFunction(numeratorAndDenominatorCoefficients: Pair<LabeledPolynomialCoefficients<C>, LabeledPolynomialCoefficients<C>>): LabeledRationalFunction<C> =
+    LabeledRationalFunction<C>(
+        LabeledPolynomial(numeratorAndDenominatorCoefficients.first),
+        LabeledPolynomial(numeratorAndDenominatorCoefficients.second)
+    )
+public fun <C> LabeledRationalFunctionSpace<C, *, *>.LabeledRationalFunction(numeratorAndDenominatorCoefficients: Pair<LabeledPolynomialCoefficients<C>, LabeledPolynomialCoefficients<C>>): LabeledRationalFunction<C> =
+    LabeledRationalFunction<C>(
+        LabeledPolynomial(numeratorAndDenominatorCoefficients.first),
+        LabeledPolynomial(numeratorAndDenominatorCoefficients.second)
+    )
+
 public fun <C> Ring<C>.LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
     LabeledRationalFunction<C>(numerator, LabeledPolynomial(mapOf(emptyMap<Symbol, UInt>() to one)))
 public fun <C> LabeledRationalFunctionSpace<C, *, *>.LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
