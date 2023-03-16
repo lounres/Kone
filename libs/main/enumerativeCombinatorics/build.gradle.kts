@@ -1,12 +1,11 @@
 kotlin {
-    @Suppress("UNUSED_VARIABLE")
     sourceSets {
         all {
             languageSettings {
                 enableLanguageFeature("RangeUntilOperator")
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(projects.libs.util.collectionOperations)
             }
