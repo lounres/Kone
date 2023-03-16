@@ -1,6 +1,7 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
 import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
+import java.time.Duration
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.BenchmarksPlugin
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -196,6 +197,9 @@ stal {
                         }
                     }
                 }
+                tasks.named("test") {
+                    timeout.set(Duration.ofMinutes(1))
+                }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
                 apply<KotestMultiplatformCompilerGradlePlugin>()
@@ -218,6 +222,9 @@ stal {
                             }
                         }
                     }
+                }
+                tasks.named("allTests") {
+                    timeout.set(Duration.ofMinutes(1))
                 }
             }
         }
