@@ -427,7 +427,7 @@ stal {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
-                        artifact(tasks.named<Jar>("dokkaJar"))
+//                        artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }
             }
