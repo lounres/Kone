@@ -7,7 +7,7 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.polynomial.testUtils.*

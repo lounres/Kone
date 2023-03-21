@@ -6,9 +6,10 @@
 package com.lounres.kone.algebraic
 
 import com.lounres.kone.algebraic.util.*
+import com.lounres.kone.computationalContext.ComputationalContext
 
 
-public interface Ring<V>: AlgebraicContext {
+public interface Ring<V>: ComputationalContext {
 
     // region Constants
     public val zero: V

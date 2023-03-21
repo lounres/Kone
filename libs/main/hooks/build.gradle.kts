@@ -2,12 +2,12 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
-                languageVersion = "2.0"
+                languageVersion = "1.9"
             }
         }
         commonMain {
             dependencies {
-                implementation(projects.libs.main.collections)
+                api(projects.libs.main.collections)
             }
         }
     }

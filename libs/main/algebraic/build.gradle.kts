@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.core)
+                api(projects.libs.main.computationalContext)
             }
         }
         commonTest {

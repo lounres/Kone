@@ -3,25 +3,23 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.algebraic
+package com.lounres.kone.computationalContext
 
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.*
 import kotlin.contracts.contract
 
 
-public interface AlgebraicContext
-
+public interface ComputationalContext
 
 @OptIn(ExperimentalContracts::class)
-public inline operator fun <A: AlgebraicContext, R> A.invoke(block: A.() -> R): R {
+public inline operator fun <A: ComputationalContext, R> A.invoke(block: A.() -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
     return run(block)
 }
-
 
 // FIXME: KT-51243
 //@OptIn(ExperimentalContracts::class)

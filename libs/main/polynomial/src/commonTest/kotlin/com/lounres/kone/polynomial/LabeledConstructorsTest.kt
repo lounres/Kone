@@ -10,7 +10,7 @@ import com.lounres.kone.polynomial.testUtils.t
 import com.lounres.kone.polynomial.testUtils.x
 import com.lounres.kone.polynomial.testUtils.y
 import com.lounres.kone.polynomial.testUtils.z
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import io.kotest.core.spec.style.FreeSpec

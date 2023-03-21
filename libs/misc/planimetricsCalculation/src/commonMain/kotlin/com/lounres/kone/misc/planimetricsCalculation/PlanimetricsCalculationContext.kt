@@ -7,8 +7,8 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.algebraic.AlgebraicContext
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.ComputationalContext
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.linearAlgebra.MatrixSpace
 import com.lounres.kone.linearAlgebra.SquareMatrix
@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
 
 public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public val ring: A,
-) : AlgebraicContext {
+) : ComputationalContext {
     public val polynomialSpace: LabeledPolynomialSpace<C, A> by lazy { LabeledPolynomialSpace(ring) }
     public val matrixSpace: MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>> by lazy { MatrixSpace(polynomialSpace) }
 

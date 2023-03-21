@@ -8,7 +8,7 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.util.mapOperations.putOrChange
 import space.kscience.kmath.structures.Buffer

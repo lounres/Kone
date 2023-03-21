@@ -27,7 +27,9 @@ stal {
         "docs"()
         "libs" {
             "main" {
-                subdirs("libs main")
+                "core"("libs main")
+                subdirs("libs main", "uses libs main core")
+                "geometry"(/*"kotlin multiplatform"*/)
             }
             "misc" {
                 subdirs("libs misc")

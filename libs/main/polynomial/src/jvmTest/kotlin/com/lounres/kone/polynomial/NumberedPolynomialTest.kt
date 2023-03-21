@@ -8,7 +8,7 @@
 package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Rational
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
 import com.lounres.kone.polynomial.testUtils.not
 import com.lounres.kone.polynomial.testUtils.o

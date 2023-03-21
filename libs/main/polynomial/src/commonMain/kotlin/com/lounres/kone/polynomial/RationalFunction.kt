@@ -6,7 +6,7 @@
 package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
 import com.lounres.kone.algebraic.util.squaringPower
 import kotlin.js.JsName

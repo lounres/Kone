@@ -6,13 +6,16 @@
 package com.lounres.kone.hooks
 
 
+public interface Hookable<out O, out A> {
+    public fun hookUp(response: Response<O, A>)
+}
+
 /**
  * @param A type of the possible actions.
  * @param I type of the [input] entity that is mutated by the actions.
  */
-public interface Hooker<out I, out O, out A> {
+public interface Hooker<out I, out O, out A>: Hookable<O, A> {
     public val input: I
-    public fun hookUp(response: Response<O, A>)
 }
 
 public interface Response<in O, in A> {
