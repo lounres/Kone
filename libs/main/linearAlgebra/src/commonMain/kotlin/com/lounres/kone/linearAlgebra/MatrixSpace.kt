@@ -5,8 +5,9 @@
 
 package com.lounres.kone.linearAlgebra
 
-import com.lounres.kone.algebraic.*
+import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.computationalContext.ComputationalContext
+import com.lounres.kone.computationalContext.invoke
 
 
 public class MatrixSpace<C, out A: Ring<C>>(
