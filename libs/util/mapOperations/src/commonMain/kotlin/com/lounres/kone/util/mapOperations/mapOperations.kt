@@ -592,7 +592,7 @@ public inline fun <K, V1, V2> mergingAny(
 ): Boolean {
     for (element in map2) if (element.key !in map1 && operation2(element)) return true
     for (element in map1)
-        if (element.key !in map2) if(operation1(element)) return true
+        if (element.key !in map2) { if(operation1(element)) return true }
         else if(operationMerge(element.key, element.value, map2[element.key]!!)) return true
     return false
 }
@@ -619,7 +619,7 @@ public inline fun <K, V1, V2> mergingAll(
 ): Boolean {
     for (element in map2) if (element.key !in map1 && !operation2(element)) return false
     for (element in map1)
-        if (element.key !in map2) if(!operation1(element)) return false
+        if (element.key !in map2) { if (!operation1(element)) return false }
         else if(!operationMerge(element.key, element.value, map2[element.key]!!)) return false
     return true
 }
@@ -646,7 +646,7 @@ public inline fun <K, V1, V2> mergingNone(
 ): Boolean {
     for (element in map2) if (element.key !in map1 && operation2(element)) return false
     for (element in map1)
-        if (element.key !in map2) if(operation1(element)) return false
+        if (element.key !in map2) { if(operation1(element)) return false }
         else if(operationMerge(element.key, element.value, map2[element.key]!!)) return false
     return true
 }

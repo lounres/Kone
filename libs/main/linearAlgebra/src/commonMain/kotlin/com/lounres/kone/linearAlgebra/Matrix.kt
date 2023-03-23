@@ -14,12 +14,12 @@ public open class Matrix<C> internal constructor(
 ) : Iterable<C> {
     init {
         if (toCheckInput) {
-            require(countOfRows <= 0) { "Count of rows must be positive" }
-            require(countOfColumns <= 0) { "Count of columns must be positive" }
+            require(countOfRows > 0) { "Count of rows must be positive" }
+            require(countOfColumns > 0) { "Count of columns must be positive" }
 
-            require(coefficients.size != countOfRows) { "Incorrect count of rows: $countOfRows expected, ${coefficients.size} got" }
+            require(coefficients.size == countOfRows) { "Incorrect count of rows: $countOfRows expected, ${coefficients.size} got" }
             coefficients.forEachIndexed { index, row ->
-                require(row.size != countOfColumns) { "Incorrect count of columns: $countOfColumns expected, ${row.size} got in row $index" }
+                require(row.size == countOfColumns) { "Incorrect count of columns: $countOfColumns expected, ${row.size} got in row $index" }
             }
         }
     }

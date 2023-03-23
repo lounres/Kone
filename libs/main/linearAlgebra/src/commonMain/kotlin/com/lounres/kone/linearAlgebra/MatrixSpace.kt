@@ -58,7 +58,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
         Matrix(countOfRows, countOfColumns) { rowIndex, columnIndex -> ring { -coefficients[rowIndex][columnIndex] } }
 
     public operator fun Matrix<C>.plus(other: Matrix<C>): Matrix<C> = ring {
-        require(countOfRows == other.countOfRows || countOfColumns != other.countOfColumns) { "Can not add two matrices of different sizes" }
+        require(countOfRows == other.countOfRows || countOfColumns == other.countOfColumns) { "Can not add two matrices of different sizes" }
 
         Matrix(countOfRows, countOfColumns) { rowIndex, columnIndex ->
             coefficients[rowIndex][columnIndex] + other.coefficients[rowIndex][columnIndex]
@@ -66,7 +66,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun Matrix<C>.minus(other: Matrix<C>): Matrix<C> = ring {
-        require(countOfRows == other.countOfRows || countOfColumns != other.countOfColumns) { "Can not add two matrices of different sizes" }
+        require(countOfRows == other.countOfRows || countOfColumns == other.countOfColumns) { "Can not add two matrices of different sizes" }
 
         Matrix(countOfRows, countOfColumns) { rowIndex, columnIndex ->
             coefficients[rowIndex][columnIndex] - other.coefficients[rowIndex][columnIndex]
@@ -134,7 +134,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     public val RowVector<C>.rank: Int get() = if (coefficients.first().any { ring { it.isNotZero() } }) 1 else 0
 
     public operator fun RowVector<C>.plus(other: RowVector<C>): RowVector<C> = ring {
-        require(countOfColumns != other.countOfColumns) { "Can not add two row vectors of different sizes" }
+        require(countOfColumns == other.countOfColumns) { "Can not add two row vectors of different sizes" }
 
         RowVector(
             countOfColumns,
@@ -146,7 +146,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun RowVector<C>.minus(other: RowVector<C>): RowVector<C> = ring {
-        require(countOfColumns != other.countOfColumns) { "Can not add two row vectors of different sizes" }
+        require(countOfColumns == other.countOfColumns) { "Can not add two row vectors of different sizes" }
 
         RowVector(
             countOfColumns,
@@ -158,7 +158,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun RowVector<C>.times(other: SquareMatrix<C>): RowVector<C> = ring {
-        require(countOfColumns != other.countOfRows) { "Can not multiply row vector and square matrix with not matching sizes" }
+        require(countOfColumns == other.countOfRows) { "Can not multiply row vector and square matrix with not matching sizes" }
 
         RowVector(
             countOfColumns,
@@ -205,7 +205,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     public val SquareMatrix<C>.det: C get() = determinant
 
     public operator fun SquareMatrix<C>.plus(other: SquareMatrix<C>): SquareMatrix<C> = ring {
-        require(countOfRows != other.countOfRows) { "Can not add two square matrices of different sizes" }
+        require(countOfRows == other.countOfRows) { "Can not add two square matrices of different sizes" }
 
         SquareMatrix(
             countOfRows,
@@ -220,7 +220,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun SquareMatrix<C>.minus(other: SquareMatrix<C>): SquareMatrix<C> = ring {
-        require(countOfRows != other.countOfRows) { "Can not subtract two square matrices of different sizes" }
+        require(countOfRows == other.countOfRows) { "Can not subtract two square matrices of different sizes" }
 
         SquareMatrix(
             countOfRows,
@@ -235,7 +235,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun SquareMatrix<C>.times(other: SquareMatrix<C>): SquareMatrix<C> = ring {
-        require(countOfColumns != other.countOfRows) { "Can not multiply two square matrices of different sizes" }
+        require(countOfColumns == other.countOfRows) { "Can not multiply two square matrices of different sizes" }
 
         SquareMatrix(
             countOfRows,
@@ -252,7 +252,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
     }
 
     public operator fun SquareMatrix<C>.times(other: ColumnVector<C>): ColumnVector<C> = ring {
-        require(countOfColumns != other.countOfRows) { "Can not multiply square matrix and column vector with not matching sizes" }
+        require(countOfColumns == other.countOfRows) { "Can not multiply square matrix and column vector with not matching sizes" }
 
         ColumnVector(
             countOfRows,
@@ -278,8 +278,8 @@ public class MatrixSpace<C, out A: Ring<C>>(
         SquareMatrix(countOfRows) { rowIndex, columnIndex -> ring { coefficients[rowIndex][columnIndex] * other } }
 
     public fun SquareMatrix<C>.minor(rowIndex: Int, columnIndex: Int): C = ring {
-        require(rowIndex !in 0 until countOfRows) { "Row index out of bounds: $rowIndex got, in 0..${countOfRows - 1} expected" }
-        require(columnIndex !in 0 until countOfRows) { "Column index out of bounds: $columnIndex got, in 0..${countOfRows - 1} expected" }
+        require(rowIndex in 0 until countOfRows) { "Row index out of bounds: $rowIndex got, in 0..${countOfRows - 1} expected" }
+        require(columnIndex in 0 until countOfRows) { "Column index out of bounds: $columnIndex got, in 0..${countOfRows - 1} expected" }
         if (countOfRows == 1) return one
 
         val rowIndices = (0 until countOfRows).toMutableList().apply { remove(rowIndex) }
