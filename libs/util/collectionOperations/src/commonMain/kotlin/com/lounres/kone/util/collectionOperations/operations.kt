@@ -84,7 +84,7 @@ public inline fun <T> List<T>.lastIndexThat(predicate: (index: Int, T) -> Boolea
 
 public inline fun <T> Iterable<T>.count(from: Int = 0, to: Int = -1, predicate: (T) -> Boolean): Int {
     require(to >= -1) { /* TODO */ }
-    if (from > to) return 0
+    if (from >= to) return 0
 
     var count = 0
     forEachIndexed { index, t ->

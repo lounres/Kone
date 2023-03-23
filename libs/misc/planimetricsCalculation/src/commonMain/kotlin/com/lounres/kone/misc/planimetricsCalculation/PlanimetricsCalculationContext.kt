@@ -24,6 +24,12 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public val polynomialSpace: LabeledPolynomialSpace<C, A> by lazy { LabeledPolynomialSpace(ring) }
     public val matrixSpace: MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>> by lazy { MatrixSpace(polynomialSpace) }
 
+    public val origin: Point<C> = Point(polynomialSpace.zero, polynomialSpace.zero, polynomialSpace.one)
+    public val xBasis: Point<C> = Point(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.one)
+    public val yBasis: Point<C> = Point(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.one)
+    public val xAxis: Line<C> = Line(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.zero)
+    public val yAxis: Line<C> = Line(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.zero)
+
     public operator fun Point.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
     public operator fun Line.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
     public operator fun Quadric.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Quadric<C> = Quadric(property.name)
