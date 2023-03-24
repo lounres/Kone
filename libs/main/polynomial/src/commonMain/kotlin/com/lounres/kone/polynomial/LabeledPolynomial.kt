@@ -21,6 +21,25 @@ internal constructor(
     public val coefficients: LabeledPolynomialCoefficients<C>
 ) : Polynomial<C> {
     override fun toString(): String = "LabeledPolynomial$coefficients"
+
+    public companion object {
+        public val monomialComparator: Comparator<LabeledMonomialSignature> = Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> ->
+            if (o1 === o2) return@Comparator 0
+
+            val commonVariables = (o1.keys union o2.keys).sortedBy { it.identity }
+
+            for (variable in commonVariables) {
+                val deg1 = o1.getOrElse(variable) { 0u }
+                val deg2 = o2.getOrElse(variable) { 0u }
+                when {
+                    deg1 > deg2 -> return@Comparator -1
+                    deg1 < deg2 -> return@Comparator 1
+                }
+            }
+
+            return@Comparator 0
+        }
+    }
 }
 
 public typealias LabeledMonomialSignature = Map<Symbol, UInt>
