@@ -7,17 +7,17 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.jvm.JvmName
 import space.kscience.kmath.expressions.Symbol
+import kotlin.jvm.JvmName
 
 // TODO: Тесты на конвертацию.
 

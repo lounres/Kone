@@ -8,13 +8,12 @@
 package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Rational
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
 import com.lounres.kone.polynomial.testUtils.not
 import com.lounres.kone.polynomial.testUtils.o
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.FreeSpec
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.fail

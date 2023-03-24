@@ -5,12 +5,14 @@
 
 package com.lounres.kone.linearAlgebra
 
-import com.lounres.kone.algebraic.*
+import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.KoneContext
+import com.lounres.kone.context.invoke
 
 
 public class MatrixSpace<C, out A: Ring<C>>(
     public val ring: A
-): AlgebraicContext {
+): KoneContext {
     public infix fun Matrix<C>.equalsTo(other: Matrix<C>): Boolean =
         countOfRows == other.countOfRows && countOfColumns == other.countOfColumns && indices.all { (rowIndex, columnIndex) ->
             ring { coefficients[rowIndex][columnIndex] equalsTo other.coefficients[rowIndex][columnIndex] }

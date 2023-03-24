@@ -9,7 +9,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Rational
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.IntBox
 import com.lounres.kone.polynomial.testUtils.IntBoxModuloRing
 import com.lounres.kone.polynomial.testUtils.o

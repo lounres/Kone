@@ -7,8 +7,8 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.ColumnVector
 import com.lounres.kone.linearAlgebra.RowVector
 import com.lounres.kone.polynomial.LabeledPolynomial
