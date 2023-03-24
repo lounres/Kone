@@ -230,7 +230,21 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l Line projected on.
      * @return The projection.
      */
-    public fun Point<C>.projectTo(l: Line<C>): Point<C> = intersectionOf(l, perpendicular(l, this))
+    public fun Point<C>.projectTo(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            l.y * l.y * x - l.x * l.y * y - l.z * l.x * z,
+            l.x * l.x * y - l.x * l.y * x - l.z * l.y * z,
+            (l.x * l.x + l.y * l.y) * z
+        )
+    }
+
+    public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
+            y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
+            -(l.x * l.x + l.y * l.y) * z
+        )
+    }
 
     /**
      * Checks if the given quadric is circle.
