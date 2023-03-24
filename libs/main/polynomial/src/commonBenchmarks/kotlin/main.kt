@@ -8,7 +8,7 @@
 package com.lounres.kone.polynomial.benchmarks
 
 //import com.lounres.kone.algebraic.field
-//import com.lounres.kone.computationalContext.invoke
+//import com.lounres.kone.context.invoke
 //import com.lounres.kone.polynomial.ListPolynomial
 //import com.lounres.kone.polynomial.listPolynomialSpace
 //import kotlinx.benchmark.*

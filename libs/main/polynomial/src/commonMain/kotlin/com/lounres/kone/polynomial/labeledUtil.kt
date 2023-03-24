@@ -7,7 +7,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.*
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.computationalContext.invoke
+import com.lounres.kone.context.invoke
 import com.lounres.kone.util.mapOperations.mergeBy
 import com.lounres.kone.util.mapOperations.putOrChange
 import com.lounres.kone.util.mapOperations.withPutOrChanged

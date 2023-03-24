@@ -5,17 +5,17 @@
 
 package com.lounres.kone.polynomial
 
-import space.kscience.kmath.expressions.Symbol
+import com.lounres.kone.algebraic.ring
+import com.lounres.kone.annotations.ExperimentalKoneAPI
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.t
 import com.lounres.kone.polynomial.testUtils.x
 import com.lounres.kone.polynomial.testUtils.y
 import com.lounres.kone.polynomial.testUtils.z
-import com.lounres.kone.computationalContext.invoke
-import com.lounres.kone.algebraic.ring
-import com.lounres.kone.annotations.ExperimentalKoneAPI
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
+import space.kscience.kmath.expressions.Symbol
 
 
 class LabeledConstructorsTest: FreeSpec({

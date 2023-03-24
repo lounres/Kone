@@ -21,6 +21,23 @@ internal constructor(
     public val coefficients: NumberedPolynomialCoefficients<C>
 ) : Polynomial<C> {
     override fun toString(): String = "NumberedPolynomial$coefficients"
+
+    public companion object {
+        public val monomialComparator: Comparator<NumberedMonomialSignature> = Comparator { o1: List<UInt>, o2: List<UInt> ->
+            if (o1 === o2) return@Comparator 0
+
+            for (variable in 0 until max(o1.size, o2.size)) {
+                val deg1 = o1.getOrElse(variable) { 0u }
+                val deg2 = o2.getOrElse(variable) { 0u }
+                when {
+                    deg1 > deg2 -> return@Comparator -1
+                    deg1 < deg2 -> return@Comparator 1
+                }
+            }
+
+            return@Comparator 0
+        }
+    }
 }
 
 public typealias NumberedMonomialSignature = List<UInt>

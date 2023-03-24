@@ -9,7 +9,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.computationalContext.invoke
+import com.lounres.kone.context.invoke
 import space.kscience.kmath.structures.Buffer
 import kotlin.jvm.JvmName
 import kotlin.math.max

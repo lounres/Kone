@@ -7,9 +7,9 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData

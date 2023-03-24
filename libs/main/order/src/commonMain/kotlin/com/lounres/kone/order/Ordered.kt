@@ -5,13 +5,13 @@
 
 package com.lounres.kone.order
 
-import com.lounres.kone.computationalContext.ComputationalContext
+import com.lounres.kone.context.KoneContext
 
 
 /**
  * Context of [linear (total) order](https://en.wikipedia.org/wiki/Total_order).
  */
-public interface Ordered<in E>: ComputationalContext{
+public interface Ordered<in E> : KoneContext {
     public infix operator fun E.compareTo(other: E): Int
 }
 

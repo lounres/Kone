@@ -7,9 +7,9 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.computationalContext.ComputationalContext
-import com.lounres.kone.computationalContext.invoke
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.KoneContext
+import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.MatrixSpace
 import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
@@ -20,9 +20,15 @@ import kotlin.reflect.KProperty
 
 public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public val ring: A,
-) : ComputationalContext {
+) : KoneContext {
     public val polynomialSpace: LabeledPolynomialSpace<C, A> by lazy { LabeledPolynomialSpace(ring) }
     public val matrixSpace: MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>> by lazy { MatrixSpace(polynomialSpace) }
+
+    public val origin: Point<C> = Point(polynomialSpace.zero, polynomialSpace.zero, polynomialSpace.one)
+    public val xBasis: Point<C> = Point(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.one)
+    public val yBasis: Point<C> = Point(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.one)
+    public val xAxis: Line<C> = Line(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.zero)
+    public val yAxis: Line<C> = Line(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.zero)
 
     public operator fun Point.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
     public operator fun Line.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
@@ -224,7 +230,21 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l Line projected on.
      * @return The projection.
      */
-    public fun Point<C>.projectTo(l: Line<C>): Point<C> = intersectionOf(l, perpendicular(l, this))
+    public fun Point<C>.projectTo(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            l.y * l.y * x - l.x * l.y * y - l.z * l.x * z,
+            l.x * l.x * y - l.x * l.y * x - l.z * l.y * z,
+            (l.x * l.x + l.y * l.y) * z
+        )
+    }
+
+    public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
+            y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
+            -(l.x * l.x + l.y * l.y) * z
+        )
+    }
 
     /**
      * Checks if the given quadric is circle.

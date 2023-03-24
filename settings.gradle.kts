@@ -23,19 +23,20 @@ plugins {
 }
 
 stal {
+    fun File.testSubdir(): Boolean = listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false
     structure {
         "docs"()
         "libs" {
             "main" {
                 "core"("libs main")
-                subdirs("libs main", "uses libs main core")
+                subdirs("libs main", "uses libs main core", includeIf = File::testSubdir)
                 "geometry"(/*"kotlin multiplatform"*/)
             }
             "misc" {
-                subdirs("libs misc")
+                subdirs("libs misc", "uses libs main core", includeIf = File::testSubdir)
             }
             "util" {
-                subdirs("libs util")
+                subdirs("libs util", includeIf = File::testSubdir)
             }
         }
     }
