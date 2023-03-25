@@ -9,6 +9,7 @@ import com.lounres.kone.algebraic.util.*
 import com.lounres.kone.context.KoneContext
 
 
+// TODO: KONE-42
 public interface Ring<V>: KoneContext {
 
     // region Constants
@@ -32,10 +33,14 @@ public interface Ring<V>: KoneContext {
     // endregion
 
     // region Integers conversion
-    public fun valueOf(arg: Int): V = rightMultiplyByDoubling(one, arg, { zero }, { left, right -> left + right }, { c -> -c })
-    public fun valueOf(arg: Long): V = rightMultiplyByDoubling(one, arg, { zero }, { left, right -> left + right }, { c -> -c })
+    public fun valueOf(arg: Int): V = doublingTimes(one, arg)
+//    public fun valueOf(arg: UInt): V = doublingTimes(one, arg)
+    public fun valueOf(arg: Long): V = doublingTimes(one, arg)
+//    public fun valueOf(arg: ULong): V = doublingTimes(one, arg)
     public val Int.value: V get() = valueOf(this)
+//    public val UInt.value: V get() = valueOf(this)
     public val Long.value: V get() = valueOf(this)
+//    public val ULong.value: V get() = valueOf(this)
     // endregion
 
     // region Value-Int operations
@@ -44,11 +49,23 @@ public interface Ring<V>: KoneContext {
     public operator fun V.times(other: Int): V = doublingTimes(this, other)
     // endregion
 
+//    // region Value-UInt operations
+//    public operator fun V.plus(other: UInt): V = doublingPlus(this, other)
+//    public operator fun V.minus(other: UInt): V = doublingMinus(this, other)
+//    public operator fun V.times(other: UInt): V = doublingTimes(this, other)
+//    // endregion
+
     // region Value-Long operations
     public operator fun V.plus(other: Long): V = doublingPlus(this, other)
     public operator fun V.minus(other: Long): V = doublingMinus(this, other)
     public operator fun V.times(other: Long): V = doublingTimes(this, other)
     // endregion
+
+//    // region Value-ULong operations
+//    public operator fun V.plus(other: ULong): V = doublingPlus(this, other)
+//    public operator fun V.minus(other: ULong): V = doublingMinus(this, other)
+//    public operator fun V.times(other: ULong): V = doublingTimes(this, other)
+//    // endregion
 
     // region Int-Value operations
     public operator fun Int.plus(other: V): V = doublingPlus(this, other)
@@ -56,11 +73,23 @@ public interface Ring<V>: KoneContext {
     public operator fun Int.times(other: V): V = doublingTimes(this, other)
     // endregion
 
+//    // region UInt-Value operations
+//    public operator fun UInt.plus(other: V): V = doublingPlus(this, other)
+//    public operator fun UInt.minus(other: V): V = doublingMinus(this, other)
+//    public operator fun UInt.times(other: V): V = doublingTimes(this, other)
+//    // endregion
+
     // region Long-Value operations
     public operator fun Long.plus(other: V): V = doublingPlus(this, other)
     public operator fun Long.minus(other: V): V = doublingMinus(this, other)
     public operator fun Long.times(other: V): V = doublingTimes(this, other)
     // endregion
+
+//    // region ULong-Value operations
+//    public operator fun ULong.plus(other: V): V = doublingPlus(this, other)
+//    public operator fun ULong.minus(other: V): V = doublingMinus(this, other)
+//    public operator fun ULong.times(other: V): V = doublingTimes(this, other)
+//    // endregion
 
     // region Value-Value operations
     public operator fun V.unaryPlus(): V = this
