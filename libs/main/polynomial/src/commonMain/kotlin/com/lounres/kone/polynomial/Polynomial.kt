@@ -7,8 +7,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.algebraic.util.rightMultiplyByDoubling
-import com.lounres.kone.algebraic.util.squaringPower
+import com.lounres.kone.algebraic.util.*
 import com.lounres.kone.context.invoke
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
@@ -254,38 +253,38 @@ public interface PolynomialSpaceWithRing<C, P: Polynomial<C>, out A: Ring<C>> : 
 
     // region Constant-Int operations
     @JvmName("plusConstantInt")
-    public override operator fun C.plus(other: Int): C = with(ring) { addMultipliedByDoubling(this@plus, one, other) }
+    public override operator fun C.plus(other: Int): C = with(ring) { this@plus + other }
     @JvmName("minusConstantInt")
-    public override operator fun C.minus(other: Int): C = with(ring) { addMultipliedByDoubling(this@minus, one, -other) }
+    public override operator fun C.minus(other: Int): C = with(ring) { this@minus - other }
     @JvmName("timesConstantInt")
-    public override operator fun C.times(other: Int): C = with(ring) { multiplyByDoubling(this@times, other) }
+    public override operator fun C.times(other: Int): C = with(ring) { this@times * other }
     // endregion
 
     // region Constant-Long operations
     @JvmName("plusConstantInt")
-    public override operator fun C.plus(other: Long): C = with(ring) { addMultipliedByDoubling(this@plus, one, other) }
+    public override operator fun C.plus(other: Long): C = with(ring) { this@plus + other }
     @JvmName("minusConstantInt")
-    public override operator fun C.minus(other: Long): C = with(ring) { addMultipliedByDoubling(this@minus, one, -other) }
+    public override operator fun C.minus(other: Long): C = with(ring) { this@minus - other }
     @JvmName("timesConstantInt")
-    public override operator fun C.times(other: Long): C = with(ring) { multiplyByDoubling(this@times, other) }
+    public override operator fun C.times(other: Long): C = with(ring) { this@times * other }
     // endregion
 
     // region Int-Constant operations
     @JvmName("plusIntConstant")
-    public override operator fun Int.plus(other: C): C = with(ring) { addMultipliedByDoubling(other, one, this@plus) }
+    public override operator fun Int.plus(other: C): C = with(ring) { this@plus + other }
     @JvmName("minusIntConstant")
-    public override operator fun Int.minus(other: C): C = with(ring) { addMultipliedByDoubling(-other, one, this@minus) }
+    public override operator fun Int.minus(other: C): C = with(ring) { this@minus - other }
     @JvmName("timesIntConstant")
-    public override operator fun Int.times(other: C): C = with(ring) { multiplyByDoubling(other, this@times) }
+    public override operator fun Int.times(other: C): C = with(ring) { this@times * other }
     // endregion
 
     // region Long-Constant operations
     @JvmName("plusIntConstant")
-    public override operator fun Long.plus(other: C): C = with(ring) { addMultipliedByDoubling(other, one, this@plus) }
+    public override operator fun Long.plus(other: C): C = with(ring) { this@plus + other }
     @JvmName("minusIntConstant")
-    public override operator fun Long.minus(other: C): C = with(ring) { addMultipliedByDoubling(-other, one, this@minus) }
+    public override operator fun Long.minus(other: C): C = with(ring) { this@minus - other }
     @JvmName("timesIntConstant")
-    public override operator fun Long.times(other: C): C = with(ring) { multiplyByDoubling(other, this@times) }
+    public override operator fun Long.times(other: C): C = with(ring) { this@times * other }
     // endregion
 
     // region Constant-Constant operations
