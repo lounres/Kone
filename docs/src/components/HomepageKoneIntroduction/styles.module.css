@@ -11,11 +11,11 @@
 }
 
 :root {
-    --hero-a-color: #fec260;
+    --hero-a-color: #ffea00;
 }
 
 [data-theme='dark'] {
-    --hero-a-color: #5f2798;
+    --hero-a-color: #7f52ff;
 }
 
 .link, .link:hover {

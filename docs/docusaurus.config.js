@@ -14,7 +14,7 @@ const config = {
   baseUrl: '/Kone/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logos/kone-logo-original-themed.svg',
+  favicon: 'img/logos/kone-logo-empty-themed.svg',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -95,8 +95,8 @@ const config = {
         title: 'Kone',
         logo: {
           alt: 'Kone',
-          src: 'img/logos/kone-logo-original-violet.svg',
-          srcDark: 'img/logos/kone-logo-original-orange.svg',
+          src: 'img/logos/kone-logo-empty-violet.svg',
+          srcDark: 'img/logos/kone-logo-empty-orange.svg',
         },
         items: [
           {

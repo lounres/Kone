@@ -24,7 +24,7 @@ function HomepageHeader() {
                     className={clsx(styles.logoBannerBig)}
                 />
                 <img
-                    src='img/logos/kone-logo-original-colored-vov.svg'
+                    src='img/logos/kone-logo-empty-colored-vov.svg'
                     alt='Kone logo'
                     className={clsx(styles.logoBannerSmall)}
                 />
