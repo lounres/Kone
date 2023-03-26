@@ -1,6 +1,7 @@
 package com.lounres.kone.examples.kone_algebraic
 
-import com.lounres.kone.algebraic.*
+import com.lounres.kone.algebraic.Rational
+import com.lounres.kone.context.invoke
 
 
 fun binomial(n: Int, k: Int): Int {
@@ -39,7 +40,7 @@ fun main() {
         println((5 * 7)::class.simpleName)
 //      >>> Int
 
-        // Context equality checkers does not support default Kotlin `equals` operator.
+        // Context equality checkers do not support default Kotlin `equals` operator.
         // Instead, there are `equalsTo`, `notEqualsTo`, `eq`, `neq` infix operations.
         println(a equalsTo b)
 //      >>> false
@@ -52,7 +53,7 @@ fun main() {
         // See API reference for the details.
     }
 
-    // Contexts can also be used to return result of computation inside them
+    // Contexts can also be used to return a result of computation inside them
     fun bernoulliNumber(n: Int): Rational = Rational.field {
         // Initialise a list for storing the recursively computed Bernoulli numbers
         val bernoulliNumbers = Array<Rational?>(n + 1) { null }
