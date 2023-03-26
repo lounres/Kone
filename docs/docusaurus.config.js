@@ -61,6 +61,8 @@ const config = {
         },
         blog: {
           showReadingTime: true,
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

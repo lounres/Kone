@@ -1,21 +1,51 @@
 ---
+title: Introduction
 sidebar_position: 1
 ---
 
-import DependenciesTabs from '@site/src/components/DependenciesTabs';
+import DependencyTabs from '@site/src/components/DependencyTabs';
 
-# Intro
+[//]: # (:::info Getting started)
+[//]: # (If you want to skip thorough introduction and get started right now see ["Getting started"]&#40;#&#41;)
+[//]: # (:::)
 
-Kone is divided to modules by purpose. There is no module you need by default. Each module describes its tools and concepts to solve some atomic problem. So you can plug in necessary modules one by one to collect your one puzzle.
+# How is Kone organised?
+Kone is made to simplify your mathematical experimentation experience.
+So it is divided to small modules each of which meets some purpose.
+There is no module you need by default.
+Each module describes its tools and concepts to solve some atomic problem.
+So you can plug in necessary modules one by one to collect your one puzzle.
+
+There are 3 types of Kone modules.
+
+### Main modules
+Part "Main" consists of modules that meet some common purpose.
+Like linear algebra, number Theory, polynomials, and so on.
+They are main modules that you would usually use to compute something.
+
+### Misc modules
+Part "Misc" consists of modules that solve highly specialised problems.
+Like olympiad geometry problems solving and so on.
+They are the modules that you would use for their specific problems.
+
+### Util modules
+Part "Util" consists of private modules that are used as utilities for main and misc modules.
+Usually they are short, and you won't be interested in using them.
+But some of them are large and may have some functionality that would interest you.
 
 ## Dependencies
+All the modules are available on Maven Central.
+You can see their full artifact paths on corresponding docs pages.
 
-All the modules are available on Maven Central as artifact of the same name as the project in group `com.lounres.kone`. For example, you can add `kone-algebraic` module to your `kotlin` dependencies like
+But main rule is that their group is `com.lounres.kone` and their artifact is their own names prefixed with some prefix.
+Main modules' prefix is `kone.`, whereas misc and util modules' prefixes are `kone.misc.` and `kone.util.` respectively.
 
-<DependenciesTabs artifact="kone-algebraic"/>
+For example, here is the full artifact paths of the main module `algebraic`, the misc module `planimetricsCalculations.
 
-Further, you will find description of each module.
+<DependencyTabs artifact="kone-algebraic"/>
 
-## Examples
+## Benchmarks and Examples
 
-There are examples in most of the modules in section Examples.
+Each module has specified source sets for benchmarks (one source set per target including meta target) and
+for examples (`jvmExamples` source set in `src/examples/kotlin`).
+

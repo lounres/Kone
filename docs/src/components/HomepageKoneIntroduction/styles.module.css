@@ -11,11 +11,11 @@
 }
 
 :root {
-    --hero-a-color: #ffea00;
+    --hero-a-color: var(--ifm-color-lightTheme);
 }
 
 [data-theme='dark'] {
-    --hero-a-color: #7f52ff;
+    --hero-a-color: var(--ifm-color-darkTheme);
 }
 
 .link, .link:hover {

@@ -4,15 +4,33 @@
  * work well for content-centric websites.
  */
 
+:root {
+  --ifm-color-lightTheme-lightest: #ffea00;
+  --ifm-color-lightTheme-lighter: #ffed26;
+  --ifm-color-lightTheme-light: #ffec1a;
+  --ifm-color-lightTheme: #ffea00;
+  --ifm-color-lightTheme-dark: #e6d300;
+  --ifm-color-lightTheme-darker: #d9c700;
+  --ifm-color-lightTheme-darkest: #b3a400;
+  
+  --ifm-color-darkTheme-lightest: #cab7ff;
+  --ifm-color-darkTheme-lighter: #a485ff;
+  --ifm-color-darkTheme-light: #9874ff;
+  --ifm-color-darkTheme: #7f52ff;
+  --ifm-color-darkTheme-dark: #6630ff;
+  --ifm-color-darkTheme-darker: #5a1fff;
+  --ifm-color-darkTheme-darkest: #3d00ec;
+}
+
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #7f52ff;
-  --ifm-color-primary-dark: #6630ff;
-  --ifm-color-primary-darker: #5a1fff;
-  --ifm-color-primary-darkest: #3d00ec;
-  --ifm-color-primary-light: #9874ff;
-  --ifm-color-primary-lighter: #a485ff;
-  --ifm-color-primary-lightest: #cab7ff;
+  --ifm-color-primary-lightest: var(--ifm-color-darkTheme-lightest);
+  --ifm-color-primary-lighter: var(--ifm-color-darkTheme-lighter);
+  --ifm-color-primary-light: var(--ifm-color-darkTheme-light);
+  --ifm-color-primary: var(--ifm-color-darkTheme);
+  --ifm-color-primary-dark: var(--ifm-color-darkTheme-dark);
+  --ifm-color-primary-darker: var(--ifm-color-darkTheme-darker);
+  --ifm-color-primary-darkest: var(--ifm-color-darkTheme-darkest);
   --ifm-background-color: #ffffff;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
@@ -20,13 +38,13 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #ffea00;
-  --ifm-color-primary-dark: #e6d300;
-  --ifm-color-primary-darker: #d9c700;
-  --ifm-color-primary-darkest: #b3a400;
-  --ifm-color-primary-light: #ffec1a;
-  --ifm-color-primary-lighter: #ffed26;
-  --ifm-color-primary-lightest: #ffea00;
+  --ifm-color-primary-lightest: var(--ifm-color-lightTheme-lightest);
+  --ifm-color-primary-lighter: var(--ifm-color-lightTheme-lighter);
+  --ifm-color-primary-light: var(--ifm-color-lightTheme-light);
+  --ifm-color-primary: var(--ifm-color-lightTheme);
+  --ifm-color-primary-dark: var(--ifm-color-lightTheme-dark);
+  --ifm-color-primary-darker: var(--ifm-color-lightTheme-darker);
+  --ifm-color-primary-darkest: var(--ifm-color-lightTheme-darkest);
   --ifm-background-color: #000000;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
