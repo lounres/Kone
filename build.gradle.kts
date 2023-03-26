@@ -224,8 +224,8 @@ stal {
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
                 val examples by creating {
+                    associateWith(main)
                     defaultSourceSet {
-                        dependsOn(main.defaultSourceSet)
                         kotlin.setSrcDirs(listOf("src/examples/kotlin"))
                         resources.setSrcDirs(listOf("src/examples/resources"))
                         dependencies {
@@ -235,6 +235,7 @@ stal {
 
                     task<JavaExec>("runJvmExample") {
                         group = "examples"
+                        description = "Runs the module's examples"
                         classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
                         mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
                     }
@@ -279,8 +280,8 @@ stal {
                         compilations {
                             val main by getting
                             val benchmarks by creating {
+                                associateWith(main)
                                 defaultSourceSet {
-                                    dependsOn(main.defaultSourceSet)
                                     dependsOn(commonBenchmarks)
                                 }
                             }
