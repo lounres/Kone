@@ -39,6 +39,21 @@ plugins {
 val projectVersion = "0.0.0-dev-1"
 val projectGroup = "com.lounres"
 
+tasks.register("docusaurusInputDataUpdate") {
+    group = "documentation"
+    description = "Updates `inputData.ts` file for Docusaurus"
+    doFirst {
+        rootDir.resolve("docs/src/inputData.ts").writer().use {
+            it.write(
+                """
+                    export const koneGroup = "$projectGroup"
+                    export const koneVersion = "$projectVersion"
+                """.trimIndent()
+            )
+        }
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
