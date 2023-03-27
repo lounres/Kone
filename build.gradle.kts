@@ -37,6 +37,7 @@ plugins {
 }
 
 val projectVersion = "0.0.0-dev-1"
+val projectGroup = "com.lounres"
 
 allprojects {
     repositories {
@@ -46,7 +47,7 @@ allprojects {
     }
 
     version = projectVersion
-    group = "com.lounres"
+    group = projectGroup
 }
 
 
