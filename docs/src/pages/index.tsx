@@ -1,51 +1,14 @@
 import React from 'react';
 import clsx from 'clsx';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageKoneIntroduction from '@site/src/components/HomepageKoneIntroduction';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Translate, {translate} from '@docusaurus/Translate';
 
-import styles from './index.module.css';
+import KoneIntro from '@site/src/pages/indexComponents/koneIntro';
+import Features from '@site/src/pages/indexComponents/features';
+import Header from "@site/src/pages/indexComponents/header";
 
-function HomepageHeader() {
-    const {siteConfig} = useDocusaurusContext();
-    return (
-        <header className={styles.heroBanner}>
-            <div className="container">
-                <img
-                    src='img/logos/kone-logo-full-colored.svg'
-                    alt={translate({
-                        message: "Kone logo",
-                        id: "homepage.logo.alt",
-                        description: "Big Kone logo alternative text"
-                    })}
-                    className={clsx(styles.logoBannerBig)}
-                />
-                <img
-                    src='img/logos/kone-logo-empty-colored-vov.svg'
-                    alt='Kone logo'
-                    className={clsx(styles.logoBannerSmall)}
-                />
-                <h1 className="hero__title">Kone</h1>
-                <p className="hero__subtitle">
-                    <Translate
-                        id="meta.tagline"
-                        description="The Kone's tagline"
-                    >Making pure math computations available</Translate>
-                </p>
-                {/*<div className={styles.buttons}>
-                    <Link
-                        className="button button--secondary button--lg"
-                        to="/docs/intro">
-                        Docusaurus Tutorial - 5min ⏱️
-                    </Link>
-                </div>*/}
-            </div>
-        </header>
-    );
-}
+import styles from './index.module.css';
 
 export default function Home(): JSX.Element {
     const {siteConfig} = useDocusaurusContext();
@@ -61,10 +24,10 @@ export default function Home(): JSX.Element {
                 id: "homepage.meta.description",
                 description: "Title of the homepage"
             })}>
-            <HomepageHeader />
+            <Header/>
             <main>
-                <HomepageKoneIntroduction />
-                <HomepageFeatures />
+                <KoneIntro/>
+                <Features/>
             </main>
         </Layout>
     );

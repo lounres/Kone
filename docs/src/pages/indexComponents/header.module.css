@@ -10,18 +10,6 @@
     overflow: hidden;
 }
 
-:root {
-    --hero-a-color: var(--ifm-color-lightTheme);
-}
-
-[data-theme='dark'] {
-    --hero-a-color: var(--ifm-color-darkTheme);
-}
-
-.link, .link:hover {
-    color: var(--hero-a-color);
-}
-
 @media screen and (max-width: 996px) {
     .heroBanner {
         padding: 2rem;

@@ -1,11 +1,11 @@
-import styles from "@site/src/components/HomepageKoneIntroduction/styles.module.css";
+import styles from "@site/src/pages/indexComponents/koneIntro.module.css";
 import React from "react";
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
 import Translate, {translate} from '@docusaurus/Translate';
 
 
-export default function HomepageKoneIntroduction(): JSX.Element {
+export default function KoneIntro(): JSX.Element {
     return (
         <section className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
