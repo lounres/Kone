@@ -10,5 +10,10 @@ kotlin {
 
             }
         }
+        jvmExamples {
+            dependencies {
+                implementation(projects.libs.main.numberTheory)
+            }
+        }
     }
 }
