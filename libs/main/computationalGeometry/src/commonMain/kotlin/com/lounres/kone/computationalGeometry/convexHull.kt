@@ -101,6 +101,31 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
     return result
 }
 
+//context(R)
+//public fun <C, R> Collection<Point<C>>.convexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+//    when (size) {
+//        0 -> return emptyList()
+//        1, 2 -> return this.toList()
+//    }
+//
+//    val points = this.sortedWith(lexicographicComparator)
+//    val upperHull = points.upperConvexHullByDivideAndConquer()
+//    val lowerHull = points.asReversed().upperConvexHullByDivideAndConquer()
+//    return upperHull + lowerHull
+//}
+//
+//context(R)
+//internal fun <C, R> List<Point<C>>.upperConvexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+//    when (size) {
+//        0 -> return emptyList()
+//        1, 2 -> return this
+//    }
+//
+//    val leftUpperHull: List<Point<C>> = this.subList(0, size / 2).upperConvexHullByDivideAndConquer()
+//    val rightUpperHull: List<Point<C>> = this.subList(size / 2, size).upperConvexHullByDivideAndConquer()
+//    var
+//}
+
 /**
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
