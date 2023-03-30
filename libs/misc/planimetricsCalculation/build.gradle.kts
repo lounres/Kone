@@ -2,7 +2,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.core)
                 api(projects.libs.main.algebraic)
                 api(projects.libs.main.numberTheory)
                 api(projects.libs.main.polynomial)

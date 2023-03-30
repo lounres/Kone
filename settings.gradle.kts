@@ -27,10 +27,11 @@ stal {
     structure {
         "libs" {
             "main" {
-                subdirs("libs main", includeIf = File::testSubdir)
+                "core"("libs main")
+                subdirs("libs main", "uses libs main core", includeIf = File::testSubdir)
             }
             "misc" {
-                subdirs("libs misc", includeIf = File::testSubdir)
+                subdirs("libs misc", "uses libs main core", includeIf = File::testSubdir)
             }
             "util" {
                 subdirs("libs util", includeIf = File::testSubdir)

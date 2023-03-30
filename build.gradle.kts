@@ -12,10 +12,7 @@ import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenGradleSubplugin
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
-import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -76,11 +73,22 @@ inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action(
 val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
 val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
+catalog.versionCatalog {
+    version("kone", projectVersion)
+}
+
 gradle.projectsEvaluated {
-    val bundleMainAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs main") }.map { it.alias }
-    val bundleMiscAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs misc") }.map { it.alias }
-    val bundleUtilAliases = stal.lookUp.projectsThat { hasAllOf("publishing", "libs util") }.map { it.alias }
+    val bundleMainProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs main") }
+    val bundleMiscProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs misc") }
+    val bundleUtilProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs util") }
+    val bundleProjects = bundleMainProjects + bundleMiscProjects + bundleUtilProjects
+    val bundleMainAliases = bundleMainProjects.map { it.alias }
+    val bundleMiscAliases = bundleMiscProjects.map { it.alias }
+    val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
+        for (p in bundleProjects)
+            library(p.alias, projectGroup, p.artifact).versionRef("kone")
+
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
         bundle("util", bundleUtilAliases)
@@ -100,6 +108,33 @@ publishing {
 
 stal {
     action {
+        on("uses libs main core") {
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        val main by getting {
+                            dependencies {
+                                api(projects.libs.main.core)
+                            }
+                        }
+                    }
+                }
+            }
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                apply<KotestMultiplatformCompilerGradlePlugin>()
+                configure<KotlinMultiplatformExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                api(projects.libs.main.core)
+                            }
+                        }
+                    }
+                }
+            }
+        }
         on("kotlin jvm") {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
@@ -259,20 +294,18 @@ stal {
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
                     target.compilations.configureExamples()
                 }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
                     targets.getByName<KotlinJvmTarget>("jvm").compilations.configureExamples()
                 }
             }
         }
         on("benchmark") {
-            apply<AllOpenGradleSubplugin>()
             apply<BenchmarksPlugin>()
+            apply<AllOpenGradleSubplugin>()
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
@@ -409,11 +442,6 @@ stal {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
                         artifact(tasks.named<Jar>("dokkaJar"))
-                    }
-                }
-                rootProject.catalog {
-                    versionCatalog {
-                        library("${extra["aliasPrefix"]}${project.name}", "$group:${extra["artifactPrefix"]}${project.name}:$version")
                     }
                 }
             }
