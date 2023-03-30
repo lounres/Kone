@@ -115,7 +115,7 @@ stal {
                     sourceSets {
                         val main by getting {
                             dependencies {
-                                implementation(projects.libs.main.core)
+                                api(projects.libs.main.core)
                             }
                         }
                     }
@@ -128,7 +128,7 @@ stal {
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                implementation(projects.libs.main.core)
+                                api(projects.libs.main.core)
                             }
                         }
                     }
@@ -295,13 +295,11 @@ stal {
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
                     target.compilations.configureExamples()
                 }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
                     targets.getByName<KotlinJvmTarget>("jvm").compilations.configureExamples()
                 }
             }
