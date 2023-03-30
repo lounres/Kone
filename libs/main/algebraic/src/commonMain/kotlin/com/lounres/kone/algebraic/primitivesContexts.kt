@@ -5,11 +5,16 @@
 
 package com.lounres.kone.algebraic
 
+import com.lounres.kone.order.Order
 import kotlin.math.pow as kpow
 
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object ByteField: Ring<Byte> {
+public object ByteField: Ring<Byte>, Order<Byte> {
+    // region Order
+    override fun Byte.compareTo(other: Byte): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Byte get() = 0
     override inline val one: Byte get() = 1
@@ -55,7 +60,11 @@ public object ByteField: Ring<Byte> {
 public val Byte.Companion.field: ByteField get() = ByteField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object ShortField: Ring<Short> {
+public object ShortField: Ring<Short>, Order<Short> {
+    // region Order
+    override fun Short.compareTo(other: Short): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Short get() = 0
     override inline val one: Short get() = 1
@@ -101,7 +110,11 @@ public object ShortField: Ring<Short> {
 public val Short.Companion.field: ShortField get() = ShortField
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
-public object IntRing: Ring<Int> {
+public object IntRing: Ring<Int>, Order<Int> {
+    // region Order
+    override fun Int.compareTo(other: Int): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Int get() = 0
     override inline val one: Int get() = 1
@@ -135,7 +148,11 @@ public object IntRing: Ring<Int> {
 public val Int.Companion.ring: IntRing get() = IntRing
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
-public object LongRing: Ring<Long> {
+public object LongRing: Ring<Long>, Order<Long> {
+    // region Order
+    override fun Long.compareTo(other: Long): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Long get() = 0L
     override inline val one: Long get() = 1L
@@ -169,7 +186,11 @@ public object LongRing: Ring<Long> {
 public val Long.Companion.ring: LongRing get() = LongRing
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object DoubleField: Field<Double> {
+public object DoubleField: Field<Double>, Order<Double> {
+    // region Order
+    override fun Double.compareTo(other: Double): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Double get() = 0.0
     override inline val one: Double get() = 1.0
@@ -226,7 +247,11 @@ public object DoubleField: Field<Double> {
 public val Double.Companion.field: DoubleField get() = DoubleField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object FloatField: Field<Float> {
+public object FloatField: Field<Float>, Order<Float> {
+    // region Order
+    override fun Float.compareTo(other: Float): Int = this.compareTo(other)
+    // endregion
+
     // region Constants
     override inline val zero: Float get() = 0f
     override inline val one: Float get() = 1f
