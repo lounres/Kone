@@ -17,6 +17,6 @@
   },
   "item.label.Math Kotlin Experiments": {
     "message": "Math Kotlin Experiments",
-    "description": "Navbar item with label Math Kotlin Experiments"
+    "description": "Navbar item with link to Math Kotlin Experiments repo"
   }
 }

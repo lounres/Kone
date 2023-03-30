@@ -254,16 +254,17 @@
     "message": "Теги",
     "description": "The title of the tag list page"
   },
+
   "homepage.meta.title": {
     "message": "Дом",
     "description": "Title of the homepage"
   },
   "homepage.meta.description": {
-    "message": "Kone – библиотека на Kotlin Multiplatform для математических компьютерных вычислений",
+    "message": "Kone – библиотека на Kotlin Multiplatform для математических компьютерных экспериментов",
     "description": "Title of the homepage"
   },
   "homepage.logo.alt": {
-    "message": "Лого Kone",
+    "message": "Логотип Kone",
     "description": "Big Kone logo alternative text"
   },
   "homepage.features.kotlin.title": {

@@ -7,8 +7,7 @@ import Translate, {translate} from '@docusaurus/Translate';
 import styles from './header.module.css';
 
 
-export default function Header() {
-    const {siteConfig} = useDocusaurusContext();
+export default function Intro() {
     return (
         <header className={styles.heroBanner}>
             <div className="container">
@@ -23,7 +22,11 @@ export default function Header() {
                 />
                 <img
                     src='img/logos/kone-logo-empty-colored-vov.svg'
-                    alt='Kone logo'
+                    alt={translate({
+                        message: "Kone logo",
+                        id: "homepage.logo.alt",
+                        description: "Big Kone logo alternative text"
+                    })}
                     className={clsx(styles.logoBannerSmall)}
                 />
                 <h1 className="hero__title">Kone</h1>

@@ -6,7 +6,7 @@ import Translate, {translate} from '@docusaurus/Translate';
 
 import KoneIntro from '@site/src/pages/indexComponents/koneIntro';
 import Features from '@site/src/pages/indexComponents/features';
-import Header from "@site/src/pages/indexComponents/header";
+import Intro from "@site/src/pages/indexComponents/intro";
 
 import styles from './index.module.css';
 
@@ -20,11 +20,11 @@ export default function Home(): JSX.Element {
                 description: "Title of the homepage"
             })}
             description={translate({
-                message: "Kone is Kotlin Multiplatform library for pure math computations",
+                message: "Kone is Kotlin Multiplatform library for math computer experiments",
                 id: "homepage.meta.description",
                 description: "Title of the homepage"
             })}>
-            <Header/>
+            <Intro/>
             <main>
                 <KoneIntro/>
                 <Features/>

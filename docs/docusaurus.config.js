@@ -7,7 +7,7 @@ const math = require('remark-math');
 const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
-const config = {
+module.exports = {
   title: 'Kone',
   tagline: 'Making pure math computations available',
   url: 'https://lounres.github.io',
@@ -198,5 +198,3 @@ const config = {
       },
     }),
 };
-
-module.exports = config;
