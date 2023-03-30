@@ -39,6 +39,21 @@ plugins {
 val projectVersion = "0.0.0-dev-1"
 val projectGroup = "com.lounres"
 
+tasks.register("docusaurusInputDataUpdate") {
+    group = "documentation"
+    description = "Updates `inputData.ts` file for Docusaurus"
+    doFirst {
+        rootDir.resolve("docs/src/inputData.ts").writer().use {
+            it.write(
+                """
+                    export const koneGroup = "$projectGroup"
+                    export const koneVersion = "$projectVersion"
+                """.trimIndent()
+            )
+        }
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -225,8 +240,8 @@ stal {
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
                 val examples by creating {
+                    associateWith(main)
                     defaultSourceSet {
-                        dependsOn(main.defaultSourceSet)
                         kotlin.setSrcDirs(listOf("src/examples/kotlin"))
                         resources.setSrcDirs(listOf("src/examples/resources"))
                         dependencies {
@@ -236,6 +251,7 @@ stal {
 
                     task<JavaExec>("runJvmExample") {
                         group = "examples"
+                        description = "Runs the module's examples"
                         classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
                         mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
                     }
@@ -280,8 +296,8 @@ stal {
                         compilations {
                             val main by getting
                             val benchmarks by creating {
+                                associateWith(main)
                                 defaultSourceSet {
-                                    dependsOn(main.defaultSourceSet)
                                     dependsOn(commonBenchmarks)
                                 }
                             }
