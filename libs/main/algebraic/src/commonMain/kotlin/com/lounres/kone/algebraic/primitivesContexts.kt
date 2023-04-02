@@ -5,12 +5,12 @@
 
 package com.lounres.kone.algebraic
 
-import com.lounres.kone.order.Ordered
+import com.lounres.kone.order.Order
 import kotlin.math.pow as kpow
 
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object ByteField: Ring<Byte>, Ordered<Byte> {
+public object ByteField: Ring<Byte>, Order<Byte> {
     // region Order
     override fun Byte.compareTo(other: Byte): Int = this.compareTo(other)
     // endregion
@@ -60,7 +60,7 @@ public object ByteField: Ring<Byte>, Ordered<Byte> {
 public val Byte.Companion.field: ByteField get() = ByteField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object ShortField: Ring<Short>, Ordered<Short> {
+public object ShortField: Ring<Short>, Order<Short> {
     // region Order
     override fun Short.compareTo(other: Short): Int = this.compareTo(other)
     // endregion
@@ -110,7 +110,7 @@ public object ShortField: Ring<Short>, Ordered<Short> {
 public val Short.Companion.field: ShortField get() = ShortField
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
-public object IntRing: Ring<Int>, Ordered<Int> {
+public object IntRing: Ring<Int>, Order<Int> {
     // region Order
     override fun Int.compareTo(other: Int): Int = this.compareTo(other)
     // endregion
@@ -148,7 +148,7 @@ public object IntRing: Ring<Int>, Ordered<Int> {
 public val Int.Companion.ring: IntRing get() = IntRing
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
-public object LongRing: Ring<Long>, Ordered<Long> {
+public object LongRing: Ring<Long>, Order<Long> {
     // region Order
     override fun Long.compareTo(other: Long): Int = this.compareTo(other)
     // endregion
@@ -186,7 +186,7 @@ public object LongRing: Ring<Long>, Ordered<Long> {
 public val Long.Companion.ring: LongRing get() = LongRing
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object DoubleField: Field<Double>, Ordered<Double> {
+public object DoubleField: Field<Double>, Order<Double> {
     // region Order
     override fun Double.compareTo(other: Double): Int = this.compareTo(other)
     // endregion
@@ -247,7 +247,7 @@ public object DoubleField: Field<Double>, Ordered<Double> {
 public val Double.Companion.field: DoubleField get() = DoubleField
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public object FloatField: Field<Float>, Ordered<Float> {
+public object FloatField: Field<Float>, Order<Float> {
     // region Order
     override fun Float.compareTo(other: Float): Int = this.compareTo(other)
     // endregion
