@@ -8,16 +8,16 @@ package com.lounres.kone.collections
 
 public interface KoneIterableCollection<out E> : KoneCollection<E>, KoneIterable<E>
 
-public interface KoneIterableExtendableCollection<E> : KoneIterableCollection<E>, KoneExtendableIterable<E>
+public interface KoneExtendableIterableCollection<E> : KoneIterableCollection<E>, KoneExtendableIterable<E>, KoneExtendableCollection<E>
 
-public interface KoneIterableRemovableCollection<out E> : KoneIterableCollection<E>, KoneRemovableCollection<E>
+public interface KoneRemovableIterableCollection<out E> : KoneIterableCollection<E>, KoneRemovableIterable<E>, KoneRemovableCollection<E>
 
-public interface KoneIterableMutableCollection<E> : KoneIterableExtendableCollection<E>, KoneIterableRemovableCollection<E>, KoneMutableIterable<E>
+public interface KoneMutableIterableCollection<E> : KoneExtendableIterableCollection<E>, KoneRemovableIterableCollection<E>, KoneMutableIterable<E>
 
-public interface KoneIterableList<out E> : KoneIterableCollection<E>, KoneLinearIterable<E>
+public interface KoneIterableList<out E> : KoneList<E>, KoneIterableCollection<E>, KoneLinearIterable<E>
 
-public interface KoneIterableMutableList<E> : KoneIterableList<E>, KoneIterableMutableCollection<E>, KoneMutableLinearIterable<E>
+public interface KoneMutableIterableList<E> : KoneMutableList<E>, KoneIterableList<E>, KoneMutableIterableCollection<E>, KoneMutableLinearIterable<E>
 
 public interface KoneIterableSet<out E> : KoneSet<E>, KoneIterableCollection<E>
 
-public interface KoneIterableMutableSet<E> : KoneMutableSet<E>, KoneIterableSet<E>, KoneIterableRemovableCollection<E>
+public interface KoneMutableIterableSet<E> : KoneMutableSet<E>, KoneIterableSet<E>, KoneRemovableIterableCollection<E>

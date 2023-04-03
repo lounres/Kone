@@ -7,6 +7,7 @@ package com.lounres.kone.hooks
 
 
 public interface Hookable<out O, out A> {
+    public val output: O
     public fun hookUp(response: Response<O, A>)
 }
 

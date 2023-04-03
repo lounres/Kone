@@ -3,12 +3,12 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.collections.actions
+package com.lounres.kone.collections.delegates
 
 import com.lounres.kone.collections.KoneIterableCollection
 import com.lounres.kone.collections.KoneList
 import com.lounres.kone.collections.KoneMutableList
-import com.lounres.kone.collections.actions.ListAction.*
+import com.lounres.kone.collections.delegates.ListAction.*
 
 
 public sealed interface ListAction<out E> {

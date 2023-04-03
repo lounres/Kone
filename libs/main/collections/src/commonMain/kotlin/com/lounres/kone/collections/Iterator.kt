@@ -16,7 +16,7 @@ public interface KoneExtendableIterator<E> : KoneIterator<E> {
 }
 
 public interface KoneRemovableIterator<out E> : KoneIterator<E> {
-    public fun remove(element: @UnsafeVariance E)
+    public fun remove()
 }
 
 public interface KoneMutableIterator<E>: KoneRemovableIterator<E>, KoneExtendableIterator<E> {
