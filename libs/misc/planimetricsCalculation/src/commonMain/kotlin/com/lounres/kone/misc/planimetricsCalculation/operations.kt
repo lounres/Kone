@@ -353,7 +353,8 @@ public fun <E> Point<E>.projectTo(l: Line<E>): Point<E> = calculate {
  * @param l Line reflected by.
  * @return The reflection.
  */
-public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.reflectBy(l: Line<E>): Point<E> = calculate {
     Point(
         x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
         y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,

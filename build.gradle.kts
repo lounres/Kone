@@ -33,8 +33,8 @@ plugins {
     `maven-publish`
 }
 
-val projectVersion = "0.0.0-dev-1"
-val projectGroup = "com.lounres"
+val version: String by project
+val group: String by project
 
 tasks.register("docusaurusInputDataUpdate") {
     group = "documentation"
@@ -43,8 +43,8 @@ tasks.register("docusaurusInputDataUpdate") {
         rootDir.resolve("docs/src/inputData.ts").writer().use {
             it.write(
                 """
-                    export const koneGroup = "$projectGroup"
-                    export const koneVersion = "$projectVersion"
+                    export const koneGroup = "${rootProject.group}"
+                    export const koneVersion = "${rootProject.version}"
                 """.trimIndent()
             )
         }
@@ -57,9 +57,6 @@ allprojects {
         maven("https://repo.kotlin.link")
 //        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
-
-    version = projectVersion
-    group = projectGroup
 }
 
 
@@ -74,7 +71,7 @@ val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
 val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
 catalog.versionCatalog {
-    version("kone", projectVersion)
+    version("kone", version)
 }
 
 gradle.projectsEvaluated {
@@ -87,7 +84,7 @@ gradle.projectsEvaluated {
     val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
         for (p in bundleProjects)
-            library(p.alias, projectGroup, p.artifact).versionRef("kone")
+            library(p.alias, group, p.artifact).versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
