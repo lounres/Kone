@@ -45,9 +45,8 @@ internal constructor(
 public typealias LabeledMonomialSignature = Map<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
-public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
-    public override val ring: A,
-) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithRing<C, LabeledPolynomial<C>, A> {
+context(A)
+public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, A> {
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
     override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
 
@@ -436,9 +435,8 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
     public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(ring, *arguments)
 }
 
-public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(
-    ring: A,
-) : LabeledPolynomialSpace<C, A>(ring), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithField<C, LabeledPolynomial<C>, A> {
+context(A)
+public class LabeledPolynomialSpaceOverField<C, out A : Field<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
     public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             coefficients.mapValues { it.value / other }

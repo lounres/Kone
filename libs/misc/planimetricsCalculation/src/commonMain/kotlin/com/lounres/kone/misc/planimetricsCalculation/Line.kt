@@ -12,19 +12,31 @@ import com.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.reflect.KProperty
 
 
-public data class Line<C>(
-    val x: LabeledPolynomial<C>,
-    val y: LabeledPolynomial<C>,
-    val z: LabeledPolynomial<C>
+public data class Line<E>(
+    val x: LabeledPolynomial<E>,
+    val y: LabeledPolynomial<E>,
+    val z: LabeledPolynomial<E>
 ) {
-    public val rowVector: RowVector<LabeledPolynomial<C>> get() = RowVector(x, y, z)
-    public val columnVector: ColumnVector<LabeledPolynomial<C>> get() = ColumnVector(x, y, z)
+    public val rowVector: RowVector<LabeledPolynomial<E>> get() = RowVector(x, y, z)
+    public val columnVector: ColumnVector<LabeledPolynomial<E>> get() = ColumnVector(x, y, z)
 
     public companion object {
-        // Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
-//        context(A)
-//        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
-//        context(PlanimetricsCalculationContext<C, *>)
-//        public operator fun <C> getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
+        context(A)
+        public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Line<E> = Line(property.name)
+        context(PlanimetricsCalculationContext<E, *>)
+        public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Line<E> = Line(property.name)
     }
 }
+
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Line<E>.equalsTo(other: Line<E>): Boolean = calculate {
+    this === other || (x * other.y eq y * other.x && y * other.z eq z * other.y && z * other.x eq x * other.z)
+}
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.notEqualsTo(other: Line<E>): Boolean = !(this equalsTo other)
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.eq(other: Line<E>): Boolean = this equalsTo other
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.neq(other: Line<E>): Boolean = !(this equalsTo other)

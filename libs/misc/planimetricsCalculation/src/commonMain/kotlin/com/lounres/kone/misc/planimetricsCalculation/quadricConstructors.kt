@@ -15,12 +15,12 @@ import space.kscience.kmath.expressions.Symbol
 
 
 public fun <C, A: Ring<C>> A.Quadric(name: String): Quadric<C> = Quadric<C>(
-    convert(name + "_xx"),
-    convert(name + "_yy"),
-    convert(name + "_zz"),
-    convert(name + "_xy"),
-    convert(name + "_xz"),
-    convert(name + "_yz")
+    (name + "_xx").convert(),
+    (name + "_yy").convert(),
+    (name + "_zz").convert(),
+    (name + "_xy").convert(),
+    (name + "_xz").convert(),
+    (name + "_yz").convert()
 )
 public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(name: String): Quadric<C> = polynomialSpace {
     Quadric<C>(

@@ -17,7 +17,7 @@ import space.kscience.kmath.expressions.Symbol
 
 
 public fun <C> Line(x: C, y: C, z: C): Line<C> = Line(x.asLabeledPolynomial(), y.asLabeledPolynomial(), z.asLabeledPolynomial())
-public fun <C, A: Ring<C>> A.Line(name: String): Line<C> = Line<C>(convert(name + "_x"), convert(name + "_y"), convert(name + "_z"))
+public fun <C, A: Ring<C>> A.Line(name: String): Line<C> = Line<C>((name + "_x").convert(), (name + "_y").convert(), (name + "_z").convert())
 public fun <C> PlanimetricsCalculationContext<C, *>.Line(name: String): Line<C> = polynomialSpace {
     Line<C>(
         Symbol(name + "_x").value,

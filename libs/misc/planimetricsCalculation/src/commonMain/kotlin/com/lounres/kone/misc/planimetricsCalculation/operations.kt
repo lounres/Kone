@@ -22,7 +22,8 @@ import com.lounres.kone.polynomial.LabeledPolynomial
  * @param l The considered line.
  * @return The expression.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.lyingCondition(P: Point<C>, l: Line<C>): LabeledPolynomial<C> = polynomialSpace { P.x * l.x + P.y * l.y + P.z * l.z }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> lyingCondition(P: Point<E>, l: Line<E>): LabeledPolynomial<E> = calculate { P.x * l.x + P.y * l.y + P.z * l.z }
 
 /**
  * Returns an expression which equality to zero is equivalent to condition of [P] lying on [q].
@@ -33,7 +34,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.lyingCondition(P: Point<C>, 
  * @param q The considered quadric.
  * @return The expression.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.lyingCondition(P: Point<C>, q: Quadric<C>): LabeledPolynomial<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> lyingCondition(P: Point<E>, q: Quadric<E>): LabeledPolynomial<E> = calculate {
     P.x * P.x * q.xx +
             P.y * P.y * q.yy +
             P.z * P.z * q.zz +
@@ -49,7 +51,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.lyingCondition(P: Point<C>, 
  * @param q The considered quadric.
  * @return The expression.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>, q: Quadric<C>): LabeledPolynomial<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> tangencyCondition(l: Line<E>, q: Quadric<E>): LabeledPolynomial<E> = calculate {
     l.x * l.x * (q.yz * q.yz - q.yy * q.zz * 4) +
             l.y * l.y * (q.xz * q.xz - q.xx * q.zz * 4) +
             l.z * l.z * (q.xy * q.xy - q.xx * q.yy * 4) +
@@ -58,119 +61,131 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
             l.y * l.z * (q.xx * q.yz * 2 - q.xy * q.xz) * 2
 }
 
-///**
-// * Checks if [this] point is lying on the line [l].
-// *
-// * @receiver The considered point.
-// * @param l The considered line.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Point<C>.isLyingOn(l: Line<C>) = lyingCondition(this, l).isZero()
-//
-///**
-// * Checks if [this] point is not lying on the line [l].
-// *
-// * @receiver The considered point.
-// * @param l The considered line.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Point<C>.isNotLyingOn(l: Line<C>) = lyingCondition(this, l).isNotZero()
-//
-///**
-// * Checks if [this] point is lying on the quadric [q].
-// *
-// * @receiver The considered point.
-// * @param q The considered quadric.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Point<C>.isLyingOn(q: Quadric<C>) = lyingCondition(this, q).isZero()
-//
-///**
-// * Checks if [this] point is not lying on the quadric [q].
-// *
-// * @receiver The considered point.
-// * @param q The considered quadric.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Point<C>.isNotLyingOn(q: Quadric<C>) = lyingCondition(this, q).isNotZero()
-//
-///**
-// * Checks if [this] line is lying through the point [P].
-// *
-// * @receiver The considered line.
-// * @param P The considered point.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Line<C>.isLyingThrough(P: Point<C>) = lyingCondition(P, this).isZero()
-//
-///**
-// * Checks if [this] line is not lying through the point [P].
-// *
-// * @receiver The considered line.
-// * @param P The considered point.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Line<C>.isNotLyingThrough(P: Point<C>) = lyingCondition(P, this).isNotZero()
-//
-///**
-// * Checks if [this] line is tangent to the quadric [q].
-// *
-// * @receiver The considered line.
-// * @param q The considered quadric.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Line<C>.isTangentTo(q: Quadric<C>): Boolean = tangencyCondition(this, q).isZero()
-//
-///**
-// * Checks if [this] line is not tangent to the quadric [q].
-// *
-// * @receiver The considered line.
-// * @param q The considered quadric.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Line<C>.isNotTangentTo(q: Quadric<C>): Boolean = tangencyCondition(this, q).isNotZero()
-//
-///**
-// * Checks if [this] quadric is lying through the point [P].
-// *
-// * @receiver The considered quadric.
-// * @param P The considered point.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Quadric<C>.isLyingThrough(P: Point<C>) = lyingCondition(P, this).isZero()
-//
-///**
-// * Checks if [this] quadric is not lying through the point [P].
-// *
-// * @receiver The considered quadric.
-// * @param P The considered point.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Quadric<C>.isNotLyingThrough(P: Point<C>) = lyingCondition(P, this).isNotZero()
-//
-///**
-// * Checks if [this] quadric is tangent to the line [l].
-// *
-// * @receiver The considered quadric.
-// * @param l The considered line.
-// * @return Boolean value of the statement.
-// */
-//public infix fun <C> Quadric<C>.isTangentTo(l: Line<C>): Boolean = tangencyCondition(l, this).isZero()
-//
-///**
-// * Checks if [this] quadric is not tangent to the line [l].
-// *
-// * @receiver The considered quadric.
-// * @param l The considered line.
-// * @return Boolean value of the statement.
-// */
-//// FIXME: KT-5351
-//public infix fun <C> Quadric<C>.isNotTangentTo(l: Line<C>): Boolean = tangencyCondition(l, this).isNotZero()
+/**
+ * Checks if [this] point is lying on the line [l].
+ *
+ * @receiver The considered point.
+ * @param l The considered line.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Point<E>.isLyingOn(l: Line<E>): Boolean = calculate { lyingCondition(this, l).isZero() }
+
+/**
+ * Checks if [this] point is not lying on the line [l].
+ *
+ * @receiver The considered point.
+ * @param l The considered line.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Point<E>.isNotLyingOn(l: Line<E>): Boolean = calculate { lyingCondition(this, l).isNotZero() }
+
+/**
+ * Checks if [this] point is lying on the quadric [q].
+ *
+ * @receiver The considered point.
+ * @param q The considered quadric.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Point<E>.isLyingOn(q: Quadric<E>): Boolean = calculate { lyingCondition(this, q).isZero() }
+
+/**
+ * Checks if [this] point is not lying on the quadric [q].
+ *
+ * @receiver The considered point.
+ * @param q The considered quadric.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Point<E>.isNotLyingOn(q: Quadric<E>): Boolean = calculate { lyingCondition(this, q).isNotZero() }
+
+/**
+ * Checks if [this] line is lying through the point [P].
+ *
+ * @receiver The considered line.
+ * @param P The considered point.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Line<E>.isLyingThrough(P: Point<E>): Boolean = calculate { lyingCondition(P, this).isZero() }
+
+/**
+ * Checks if [this] line is not lying through the point [P].
+ *
+ * @receiver The considered line.
+ * @param P The considered point.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Line<E>.isNotLyingThrough(P: Point<E>): Boolean = calculate { lyingCondition(P, this).isNotZero() }
+
+/**
+ * Checks if [this] line is tangent to the quadric [q].
+ *
+ * @receiver The considered line.
+ * @param q The considered quadric.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Line<E>.isTangentTo(q: Quadric<E>): Boolean = calculate { tangencyCondition(this, q).isZero() }
+
+/**
+ * Checks if [this] line is not tangent to the quadric [q].
+ *
+ * @receiver The considered line.
+ * @param q The considered quadric.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Line<E>.isNotTangentTo(q: Quadric<E>): Boolean = calculate { tangencyCondition(this, q).isNotZero() }
+
+/**
+ * Checks if [this] quadric is lying through the point [P].
+ *
+ * @receiver The considered quadric.
+ * @param P The considered point.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Quadric<E>.isLyingThrough(P: Point<E>): Boolean = calculate { lyingCondition(P, this).isZero() }
+
+/**
+ * Checks if [this] quadric is not lying through the point [P].
+ *
+ * @receiver The considered quadric.
+ * @param P The considered point.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Quadric<E>.isNotLyingThrough(P: Point<E>): Boolean = calculate { lyingCondition(P, this).isNotZero() }
+
+/**
+ * Checks if [this] quadric is tangent to the line [l].
+ *
+ * @receiver The considered quadric.
+ * @param l The considered line.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Quadric<E>.isTangentTo(l: Line<E>): Boolean = calculate { tangencyCondition(l, this).isZero() }
+
+/**
+ * Checks if [this] quadric is not tangent to the line [l].
+ *
+ * @receiver The considered quadric.
+ * @param l The considered line.
+ * @return Boolean value of the statement.
+ */
+// FIXME: KT-5351
+context(PlanimetricsCalculationContext<E, *>)
+public infix fun <E> Quadric<E>.isNotTangentTo(l: Line<E>): Boolean = calculate { tangencyCondition(l, this).isNotZero() }
 // endregion
 
 
@@ -184,7 +199,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.tangencyCondition(l: Line<C>
  * @param B The second point.
  * @return Line going through the points.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.lineThrough(A: Point<C>, B: Point<C>): Line<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> lineThrough(A: Point<E>, B: Point<E>): Line<E> = calculate {
     Line(
         A.y * B.z - A.z * B.y,
         A.z * B.x - A.x * B.z,
@@ -201,7 +217,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.lineThrough(A: Point<C>, B: 
  * @param m The second line.
  * @return Intersection of the lines.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.intersectionOf(l: Line<C>, m: Line<C>): Point<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> intersectionOf(l: Line<E>, m: Line<E>): Point<E> = calculate {
     Point(
         l.y * m.z - l.z * m.y,
         l.z * m.x - l.x * m.z,
@@ -219,7 +236,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.intersectionOf(l: Line<C>, m
  * @param C The third point.
  * @return The expression.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.collinearityCondition(A: Point<CT>, B: Point<CT>, C: Point<CT>): LabeledPolynomial<CT> = polynomialSpace { A.x * (B.y * C.z - B.z * C.y) + B.x * (C.y * A.z - C.z * A.y) + C.x * (A.y * B.z - A.z * B.y) }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> collinearityCondition(A: Point<E>, B: Point<E>, C: Point<E>): LabeledPolynomial<E> = calculate { A.x * (B.y * C.z - B.z * C.y) + B.x * (C.y * A.z - C.z * A.y) + C.x * (A.y * B.z - A.z * B.y) }
 
 /**
  * Tests if the points are collinear.
@@ -229,7 +247,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.collinearityCondition(A: P
  * @param C The third point.
  * @return The test result.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.collinearityTest(A: Point<CT>, B: Point<CT>, C: Point<CT>): Boolean = polynomialSpace { collinearityCondition(A, B, C) eq zero }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> collinearityTest(A: Point<E>, B: Point<E>, C: Point<E>): Boolean = calculate { collinearityCondition(A, B, C) eq zero }
 
 /**
  * Returns an expression which equality to zero is equivalent to concurrency of the lines.
@@ -241,7 +260,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.collinearityTest(A: Point<
  * @param n The third line.
  * @return The expression.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.concurrencyCondition(l: Line<C>, m: Line<C>, n: Line<C>): LabeledPolynomial<C> = polynomialSpace { l.x * (m.y * n.z - m.z * n.y) + m.x * (n.y * l.z - n.z * l.y) + n.x * (l.y * m.z - l.z * m.y) }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> concurrencyCondition(l: Line<E>, m: Line<E>, n: Line<E>): LabeledPolynomial<E> = calculate { l.x * (m.y * n.z - m.z * n.y) + m.x * (n.y * l.z - n.z * l.y) + n.x * (l.y * m.z - l.z * m.y) }
 
 /**
  * Tests if the lines are
@@ -251,17 +271,19 @@ public fun <C> PlanimetricsCalculationContext<C, *>.concurrencyCondition(l: Line
  * @param n The third line.
  * @return The test result.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.concurrencyTest(l: Line<C>, m: Line<C>, n: Line<C>): Boolean = polynomialSpace { concurrencyCondition(l, m, n) eq zero }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> concurrencyTest(l: Line<E>, m: Line<E>, n: Line<E>): Boolean = calculate { concurrencyCondition(l, m, n) eq zero }
 
 /**
- * Constructs a midpoint between [A] and [B]. The affine map is considered generated by [Point<C>.x] and [Point<C>.y]
+ * Constructs a midpoint between [A] and [B]. The affine map is considered generated by [Point<E>.x] and [Point<E>.y]
  * coordinates.
  *
  * @param A The first point.
  * @param B The second point.
  * @return The midpoint.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.midpoint(A: Point<C>, B: Point<C>): Point<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> midpoint(A: Point<E>, B: Point<E>): Point<E> = calculate {
     Point(
         A.x * B.z + B.x * A.z,
         A.y * B.z + B.y * A.z,
@@ -271,7 +293,7 @@ public fun <C> PlanimetricsCalculationContext<C, *>.midpoint(A: Point<C>, B: Poi
 
 /**
  * Constructs a point P on the line through [A] and [B] that divides segment \([ AB ]\) in ratio lambda. It means that on
- * the affine map that is considered generated by [Point<C>.x] and [Point<C>.y] coordinates a point P such that
+ * the affine map that is considered generated by [Point<E>.x] and [Point<E>.y] coordinates a point P such that
  * \(\overrightarrow{AP}/\overrightarrow{PB} = \lambda\), so P is returned.
  *
  * @param A The first point.
@@ -280,7 +302,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.midpoint(A: Point<C>, B: Poi
  * @return The constructed point P.
  * @usesMathJax
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.divideSegmentInRatio(A: Point<C>, B: Point<C>, lambda: C): Point<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> divideSegmentInRatio(A: Point<E>, B: Point<E>, lambda: E): Point<E> = calculate {
     Point(
         A.x * B.z + lambda * B.x * A.z,
         A.y * B.z + lambda * B.y * A.z,
@@ -289,14 +312,15 @@ public fun <C> PlanimetricsCalculationContext<C, *>.divideSegmentInRatio(A: Poin
 }
 
 /**
- * Constructs perpendicular in terms of affine map that is considered generated by [Point<C>.x] and [Point<C>.y] coordinates
+ * Constructs perpendicular in terms of affine map that is considered generated by [Point<E>.x] and [Point<E>.y] coordinates
  * line to the given line [l] through the given point [A].
  *
  * @param l The line to which the perpendicular is being constructed.
  * @param A The point through which the perpendicular is being constructed.
  * @return The constructed perpendicular.
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.perpendicular(l: Line<C>, A: Point<C>): Line<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> perpendicular(l: Line<E>, A: Point<E>): Line<E> = calculate {
     Line(
         -l.y * A.z,
         l.x * A.z,
@@ -304,26 +328,50 @@ public fun <C> PlanimetricsCalculationContext<C, *>.perpendicular(l: Line<C>, A:
     )
 }
 
-///**
-// * Construct a normal projection in terms of affine map that is considered generated by [Point<C>.x] and [Point<C>.y]
-// * coordinates of [this] point to the given line [l].
-// *
-// * @receiver Projected point.
-// * @param l Line projected on.
-// * @return The projection.
-// */
-//public fun <C> Point<C>.projectTo(l: Line<C>) = intersectionOf(l, perpendicular(l, this))
+/**
+ * Construct a normal projection in terms of affine map that is considered generated by [Point.x] and [Point.y]
+ * coordinates of [this] point to the given line [l].
+ *
+ * @receiver Projected point.
+ * @param l Line projected on.
+ * @return The projection.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.projectTo(l: Line<E>): Point<E> = calculate {
+    Point(
+        l.y * l.y * x - l.x * l.y * y - l.z * l.x * z,
+        l.x * l.x * y - l.x * l.y * x - l.z * l.y * z,
+        (l.x * l.x + l.y * l.y) * z
+    )
+}
+
+/**
+ * Reflects [this] point by the provided line [l] in terms of affine map
+ * that is considered generated by [Point.x] and [Point.y] coordinates.
+ *
+ * @receiver Reflected point.
+ * @param l Line reflected by.
+ * @return The reflection.
+ */
+public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+    Point(
+        x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
+        y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
+        -(l.x * l.x + l.y * l.y) * z
+    )
+}
 // endregion
 
 
 // region Circles
-///**
-// * Checks if the given quadric is circle.
-// *
-// * @receiver The checked quadric.
-// * @return Boolean value of the statement.
-// */
-//public fun <C> Quadric<C>.isCircle() = xy.isZero() && xx == yy
+/**
+ * Checks if the given quadric is circle.
+ *
+ * @receiver The checked quadric.
+ * @return Boolean value of the statement.
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Quadric<E>.isCircle(): Boolean = calculate { xy.isZero() && xx == yy }
 
 /**
  * Constructs circle (as [Quadric]) by its center and point on it.
@@ -332,7 +380,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.perpendicular(l: Line<C>, A:
  * @param A The given point on the constructed circle.
  * @return The constructed circle as [Quadric].
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.circleByCenterAndPoint(O: Point<C>, A: Point<C>): Quadric<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> circleByCenterAndPoint(O: Point<E>, A: Point<E>): Quadric<E> = calculate {
     Quadric(
         xx = O.z * O.z * A.z * A.z,
         yy = O.z * O.z * A.z * A.z,
@@ -350,7 +399,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.circleByCenterAndPoint(O: Po
  * @param B The second of the opposite points.
  * @return The constructed circle as [Quadric].
  */
-public fun <C> PlanimetricsCalculationContext<C, *>.circleByDiameter(A: Point<C>, B: Point<C>): Quadric<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> circleByDiameter(A: Point<E>, B: Point<E>): Quadric<E> = calculate {
     Quadric(
         A.z * B.z,
         A.z * B.z,
@@ -372,7 +422,8 @@ public fun <C> PlanimetricsCalculationContext<C, *>.circleByDiameter(A: Point<C>
  * @param C The third vertex of the triangle.
  * @return The centroid.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.centroid(A: Point<CT>, B: Point<CT>, C: Point<CT>): Point<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> centroid(A: Point<E>, B: Point<E>, C: Point<E>): Point<E> = calculate {
     Point(
         A.x * B.z * C.z + B.x * C.z * A.z + C.x * A.z * B.z,
         A.y * B.z * C.z + B.y * C.z * A.z + C.y * A.z * B.z,
@@ -388,7 +439,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.centroid(A: Point<CT>, B: 
  * @param C The third vertex of the triangle.
  * @return The orthocenter.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.orthocenter(A: Point<CT>, B: Point<CT>, C: Point<CT>): Point<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> orthocenter(A: Point<E>, B: Point<E>, C: Point<E>): Point<E> = calculate {
     Point(
         A.y * B.z * C.z * (A.x * (C.x * B.z - B.x * C.z) + A.y * (C.y * B.z - B.y * C.z)) + B.y * C.z * A.z * (B.x * (A.x * C.z - C.x * A.z) + B.y * (A.y * C.z - C.y * A.z)) + C.y * A.z * B.z * (C.x * (B.x * A.z - A.x * B.z) + C.y * (B.y * A.z - A.y * B.z)),
         A.x * B.z * C.z * (A.y * (B.y * C.z - C.y * B.z) + A.x * (B.x * C.z - C.x * B.z)) + B.x * C.z * A.z * (B.y * (C.y * A.z - A.y * C.z) + B.x * (C.x * A.z - A.x * C.z)) + C.x * A.z * B.z * (C.y * (A.y * B.z - B.y * A.z) + C.x * (A.x * B.z - B.x * A.z)),
@@ -404,7 +456,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.orthocenter(A: Point<CT>, 
  * @param C The third vertex of the triangle.
  * @return The circumcenter.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.circumcenter(A: Point<CT>, B: Point<CT>, C: Point<CT>): Point<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> circumcenter(A: Point<E>, B: Point<E>, C: Point<E>): Point<E> = calculate {
     Point(
         (A.x * A.x + A.y * A.y) * (B.y * C.z - C.y * B.z) * B.z * C.z
                 + (B.x * B.x + B.y * B.y) * (C.y * A.z - A.y * C.z) * C.z * A.z
@@ -424,7 +477,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.circumcenter(A: Point<CT>,
  * @param C The third vertex of the triangle.
  * @return The circumcircle as [Quadric].
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.circumcircle(A: Point<CT>, B: Point<CT>, C: Point<CT>): Quadric<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> circumcircle(A: Point<E>, B: Point<E>, C: Point<E>): Quadric<E> = calculate {
     Quadric(
         (A.x * B.y * C.z - A.x * B.z * C.y - A.y * B.x * C.z + A.y * B.z * C.x + A.z * B.x * C.y - A.z * B.y * C.x) * A.z * B.z * C.z,
         (A.x * B.y * C.z - A.x * B.z * C.y - A.y * B.x * C.z + A.y * B.z * C.x + A.z * B.x * C.y - A.z * B.y * C.x) * A.z * B.z * C.z,
@@ -443,7 +497,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.circumcircle(A: Point<CT>,
  * @param C The third vertex of the triangle.
  * @return The Euler line.
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.eulerLine(A: Point<CT>, B: Point<CT>, C: Point<CT>): Line<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> eulerLine(A: Point<E>, B: Point<E>, C: Point<E>): Line<E> = calculate {
     Line(
         ((A.y * (A.x * (B.y * C.z - C.y * B.z) - A.y * (B.x * C.z - C.x * B.z)) - 3 * A.x * (A.x * (B.x * C.z - C.x * B.z) + A.y * (B.y * C.z - C.y * B.z))) * B.z * C.z +
                 (B.y * (B.x * (C.y * A.z - A.y * C.z) - B.y * (C.x * A.z - A.x * C.z)) - 3 * B.x * (B.x * (C.x * A.z - A.x * C.z) + B.y * (C.y * A.z - A.y * C.z))) * C.z * A.z +
@@ -465,7 +520,8 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.eulerLine(A: Point<CT>, B:
  * @param C The third vertex of the triangle.
  * @return The Euler's circle as [Quadric].
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.eulerCircle(A: Point<CT>, B: Point<CT>, C: Point<CT>): Quadric<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> eulerCircle(A: Point<E>, B: Point<E>, C: Point<E>): Quadric<E> = calculate {
     Quadric(
         A.z * B.z * C.z * (A.x * (B.y * C.z - B.z * C.y)
                 + A.y * (B.z * C.x - B.x * C.z)
@@ -489,89 +545,98 @@ public fun <CT> PlanimetricsCalculationContext<CT, *>.eulerCircle(A: Point<CT>, 
 
 
 // region Pole and polar
-//public fun <C> Point<C>.polarBy(q: Quadric<C>) = Line(rowVector * q.matrix)
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.polarBy(q: Quadric<E>): Line<E> = calculate { Line(rowVector * q.matrix) }
 
-//public fun <C> Line<C>.poleBy(q: Quadric<C>) = Point(rowVector * q.matrix.adjugate())
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Line<E>.poleBy(q: Quadric<E>): Point<E> = calculate { Point(rowVector * q.matrix.adjugate()) }
 
-//public fun <C> Quadric<C>.dualBy(q: Quadric<C>) = with(q.matrix.adjugate()) { Quadric(this * matrix * this) }
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Quadric<E>.dualBy(q: Quadric<E>): Quadric<E> = calculate { with(q.matrix.adjugate()) { Quadric(this * matrix * this) } }
 
-//public fun <C> Quadric<C>.center() =
-//    Point(
-//        2 * xz * yy - xy * yz,
-//        2 * xx * yz - xy * xz,
-//        xy * xy - 4 * xx * yy
-//    )
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Quadric<E>.center(): Point<E> = calculate {
+    Point(
+        2 * xz * yy - xy * yz,
+        2 * xx * yz - xy * xz,
+        xy * xy - 4 * xx * yy
+    )
+}
 // endregion
 
 // region Quadrics
 /**
  * See also: [wiki](https://en.wikipedia.org/wiki/Five_points_determine_a_conic#Construction)
  */
-public fun <CT> PlanimetricsCalculationContext<CT, *>.quadricByPoints(A: Point<CT>, B: Point<CT>, C: Point<CT>, D: Point<CT>, E: Point<CT>): Quadric<CT> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E>, T: Point<E>): Quadric<E> = calculate {
     with(
         SquareMatrix(
             List(6) { zero },
-            listOf(A.x * A.x, A.x * A.y, A.x * A.z, A.y * A.y, A.y * A.z, A.z * A.z),
-            listOf(B.x * B.x, B.x * B.y, B.x * B.z, B.y * B.y, B.y * B.z, B.z * B.z),
-            listOf(C.x * C.x, C.x * C.y, C.x * C.z, C.y * C.y, C.y * C.z, C.z * C.z),
-            listOf(D.x * D.x, D.x * D.y, D.x * D.z, D.y * D.y, D.y * D.z, D.z * D.z),
-            listOf(E.x * E.x, E.x * E.y, E.x * E.z, E.y * E.y, E.y * E.z, E.z * E.z)
+            listOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
+            listOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
+            listOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
+            listOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
+            listOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z)
         )
     ) {
-        matrixSpace {
-            Quadric(
-                xx = minor(0, 0),
-                xy = -minor(0, 1),
-                xz = minor(0, 2),
-                yy = -minor(0, 3),
-                yz = minor(0, 4),
-                zz = -minor(0, 5),
-            )
-        }
+        Quadric(
+            xx = minor(0, 0),
+            xy = -minor(0, 1),
+            xz = minor(0, 2),
+            yy = -minor(0, 3),
+            yz = minor(0, 4),
+            zz = -minor(0, 5),
+        )
     }
 }
 
-//public fun <C> Line<C>.projectToQuadricBy(q: Quadric<C>, P: Point<C>): Point<C> =
-//    if (P.isNotLyingOn(this) || P.isNotLyingOn(q)) throw IllegalArgumentException("The point must lye on the line and the quadric.")
-//    else TODO("Not yet implemented")
-////        Point(
-////            q.xx * y * z * P.x + q.xy * y * z * P.y + q.xz * y * z * P.z - q.zz * x * y * P.z - q.yy * x * z * P.x,
-////            (q.zz * x * x + q.xx * z * z - q.xz * x * z) * P.z,
-////            (q.yy * x * x + q.xx * y * y - q.xy * x * y) * P.y
-////        )
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Line<E>.projectToQuadricBy(q: Quadric<E>, P: Point<E>): Point<E> =
+    if (P.isNotLyingOn(this) || P.isNotLyingOn(q)) throw IllegalArgumentException("The point must lye on the line and the quadric.")
+    else TODO("Not yet implemented")
+//        Point(
+//            q.xx * y * z * P.x + q.xy * y * z * P.y + q.xz * y * z * P.z - q.zz * x * y * P.z - q.yy * x * z * P.x,
+//            (q.zz * x * x + q.xx * z * z - q.xz * x * z) * P.z,
+//            (q.yy * x * x + q.xx * y * y - q.xy * x * y) * P.y
+//        )
 
-//public fun <C> Point<C>.projectToQuadricBy(q: Quadric<C>, P: Point<C>): Point<C> =
-//    if (P.isNotLyingOn(q)) throw IllegalArgumentException("The point must lye on the quadric.")
-//    else TODO("Not yet implemented")
-////        Point(
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial()
-////        )
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.projectToQuadricBy(q: Quadric<E>, P: Point<E>): Point<E> =
+    if (P.isNotLyingOn(q)) throw IllegalArgumentException("The point must lye on the quadric.")
+    else TODO("Not yet implemented")
+//        Point(
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial()
+//        )
 
-//public fun <C> Point<C>.projectToQuadricBy(q: Quadric<C>, l: Line<C>): Line<C> =
-//    if (l.isNotTangentTo(q) || l.isNotLyingThrough(this)) throw IllegalArgumentException("The line must lye through the point and touch the quadric.")
-//    else TODO("Not yet implemented")
-////        Point(
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial()
-////        )
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.projectToQuadricBy(q: Quadric<E>, l: Line<E>): Line<E> =
+    if (l.isNotTangentTo(q) || l.isNotLyingThrough(this)) throw IllegalArgumentException("The line must lye through the point and touch the quadric.")
+    else TODO("Not yet implemented")
+//        Point(
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial()
+//        )
 
-//public fun <C> Line<C>.projectToQuadricBy(q: Quadric<C>, l: Line<C>): Line<C> =
-//    if (l.isNotTangentTo(q)) throw IllegalArgumentException("The line must touch the quadric.")
-//    else TODO("Not yet implemented")
-////        Point(
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial(),
-////            0.toRational().toLabeledPolynomial()
-////        )
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Line<E>.projectToQuadricBy(q: Quadric<E>, l: Line<E>): Line<E> =
+    if (l.isNotTangentTo(q)) throw IllegalArgumentException("The line must touch the quadric.")
+    else TODO("Not yet implemented")
+//        Point(
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial(),
+//            0.toRational().toLabeledPolynomial()
+//        )
 
 // endregion
 
 // region Transformations
 
-public fun <C> PlanimetricsCalculationContext<C, *>.involutionBy(A: Point<C>, l: Line<C>): Transformation<C> = polynomialSpace {
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> involutionBy(A: Point<E>, l: Line<E>): Transformation<E> = calculate {
     Transformation(
         ((matrixSpace { l.rowVector * A.columnVector })[0, 0]).let {
             SquareMatrix(3) { rowIndex, columnIndex ->
@@ -583,8 +648,10 @@ public fun <C> PlanimetricsCalculationContext<C, *>.involutionBy(A: Point<C>, l:
     )
 }
 
-//public fun <C> PlanimetricsCalculationContext<C, *>.involutionBy(A: Point<C>, q: Quadric<C>): Transformation<C> = involutionBy(A, A.polarBy(q))
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> involutionBy(A: Point<E>, q: Quadric<E>): Transformation<E> = involutionBy(A, A.polarBy(q))
 
-//public fun <C> PlanimetricsCalculationContext<C, *>.involutionBy(l: Line<C>, q: Quadric<C>): Transformation<C> = involutionBy(l.poleBy(q), l)
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> involutionBy(l: Line<E>, q: Quadric<E>): Transformation<E> = involutionBy(l.poleBy(q), l)
 
 // endregion

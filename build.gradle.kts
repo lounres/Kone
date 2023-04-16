@@ -179,14 +179,14 @@ stal {
                     }
                 }
 
-                js(IR) {
-                    browser()
-                    nodejs()
-                }
+//                js(IR) {
+//                    browser()
+//                    nodejs()
+//                }
 
-                linuxX64()
-                mingwX64()
-                macosX64()
+//                linuxX64()
+//                mingwX64()
+//                macosX64()
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
@@ -207,6 +207,8 @@ stal {
                     all {
                         languageSettings {
                             progressiveMode = true
+                            languageVersion = "1.9"
+                            enableLanguageFeature("ContextReceivers")
                             optIn("kotlin.contracts.ExperimentalContracts")
                             optIn("kotlin.ExperimentalStdlibApi")
                         }
@@ -441,6 +443,14 @@ stal {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
+                    }
+                }
+            }
+        }
+        whenever { hasAllOf("dokka", "publishing") } imply {
+            afterEvaluate {
+                configure<PublishingExtension> {
+                    publications.withType<MavenPublication> {
                         artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }

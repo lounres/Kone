@@ -17,8 +17,10 @@ import space.kscience.kmath.expressions.Symbol
 
 
 public fun <C> Point(x: C, y: C, z: C): Point<C> = Point(x.asLabeledPolynomial(), y.asLabeledPolynomial(), z.asLabeledPolynomial())
-public fun <C, A: Ring<C>> A.Point(name: String): Point<C> = Point<C>(convert(name + "_x"), convert(name + "_y"), convert(name + "_z"))
-public fun <C> PlanimetricsCalculationContext<C, *>.Point(name: String): Point<C> = polynomialSpace {
+context(A)
+public fun <C, A: Ring<C>> Point(name: String): Point<C> = Point<C>((name + "_x").convert(), (name + "_y").convert(), (name + "_z").convert())
+context(PlanimetricsCalculationContext<C, *>)
+public fun <C> Point(name: String): Point<C> = polynomialSpace {
     Point<C>(
         Symbol(name + "_x").value,
         Symbol(name + "_y").value,
