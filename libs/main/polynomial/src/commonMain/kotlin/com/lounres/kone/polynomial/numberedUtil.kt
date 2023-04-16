@@ -8,6 +8,7 @@
 //import com.lounres.kone.algebraic.Field
 //import com.lounres.kone.algebraic.Ring
 //import com.lounres.kone.algebraic.field
+//import com.lounres.kone.algebraic.util.doublingTimes
 //import com.lounres.kone.annotations.ExperimentalKoneAPI
 //import com.lounres.kone.context.invoke
 //import com.lounres.kone.util.mapOperations.putOrChange
@@ -298,7 +299,7 @@
 //                                else -> return@forEach
 //                            }
 //                        }.cleanUp(),
-//                        multiplyByDoubling(c, degs[variable])
+//                        doublingTimes(c, degs[variable])
 //                    )
 //                }
 //        }
@@ -327,7 +328,7 @@
 //                        }.cleanUp(),
 //                        degs[variable].let { deg ->
 //                            (deg downTo deg - order + 1u)
-//                                .fold(c) { acc, ord -> multiplyByDoubling(acc, ord) }
+//                                .fold(c) { acc, ord -> doublingTimes(acc, ord) }
 //                        }
 //                    )
 //                }
@@ -357,7 +358,7 @@
 //                        filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->
 //                            degs[index].let { deg ->
 //                                (deg downTo deg - order + 1u)
-//                                    .fold(acc1) { acc2, ord -> multiplyByDoubling(acc2, ord) }
+//                                    .fold(acc1) { acc2, ord -> doublingTimes(acc2, ord) }
 //                            }
 //                        }
 //                    )
@@ -377,7 +378,7 @@
 //                .forEach { (degs, c) ->
 //                    put(
 //                        List(max(variable + 1, degs.size)) { degs.getOrElse(it) { 0u } + if (it != variable) 0u else 1u },
-//                        c / multiplyByDoubling(one, degs.getOrElse(variable) { 0u } + 1u)
+//                        c / doublingTimes(one, degs.getOrElse(variable) { 0u } + 1u)
 //                    )
 //                }
 //        }
@@ -399,7 +400,7 @@
 //                        List(max(variable + 1, degs.size)) { degs.getOrElse(it) { 0u } + if (it != variable) 0u else order },
 //                        degs.getOrElse(variable) { 0u }.let { deg ->
 //                            (deg + 1u .. deg + order)
-//                                .fold(c) { acc, ord -> acc / multiplyByDoubling(one, ord) }
+//                                .fold(c) { acc, ord -> acc / doublingTimes(one, ord) }
 //                        }
 //                    )
 //                }
@@ -424,7 +425,7 @@
 //                        filteredVariablesAndOrders.entries.fold(c) { acc1, (variable, order) ->
 //                            degs.getOrElse(variable) { 0u }.let { deg ->
 //                                (deg + 1u .. deg + order)
-//                                    .fold(acc1) { acc, ord -> acc / multiplyByDoubling(one, ord) }
+//                                    .fold(acc1) { acc, ord -> acc / doublingTimes(one, ord) }
 //                            }
 //                        }
 //                    )
