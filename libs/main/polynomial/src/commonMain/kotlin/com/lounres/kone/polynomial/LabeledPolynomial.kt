@@ -15,7 +15,7 @@ import kotlin.jvm.JvmName
 import kotlin.math.max
 
 
-public data class LabeledPolynomial<C>
+public data class LabeledPolynomial<out C>
 @PublishedApi
 internal constructor(
     public val coefficients: LabeledPolynomialCoefficients<C>

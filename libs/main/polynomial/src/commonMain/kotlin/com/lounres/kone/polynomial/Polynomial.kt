@@ -8,12 +8,31 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.util.*
+import com.lounres.kone.annotations.ExperimentalKoneAPI
 import com.lounres.kone.context.invoke
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-public interface Polynomial<C>
+public interface Polynomial<out C>
+
+@ExperimentalKoneAPI
+public data class VariablePower<out V>(val variable: V, val exponent: UInt)
+
+@ExperimentalKoneAPI
+public interface MonomialSignature<V>: Iterable<VariablePower<V>> {
+    public operator fun get(monomialDescriptor: V): UInt
+    public override operator fun iterator(): Iterator<VariablePower<V>>
+}
+
+@ExperimentalKoneAPI
+public data class Monomial<out C, out MS>(val monomialSignature: MS, val coefficient: C)
+
+@ExperimentalKoneAPI
+public interface MultivariatePolynomial<out C, MS>: Iterable<Monomial<C, MS>>, Polynomial<C> {
+    public operator fun get(monomialDescriptor: MS): C
+    public override operator fun iterator(): Iterator<Monomial<C, MS>>
+}
 
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
 public interface PolynomialSpace<C, P: Polynomial<C>> : Ring<P> {
