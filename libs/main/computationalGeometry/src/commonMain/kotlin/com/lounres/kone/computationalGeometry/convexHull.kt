@@ -9,29 +9,38 @@ import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.order.Order
 import com.lounres.kone.order.compareByOrder
 
+context(Ring<E>, Order<E>)
+public val <E> E.sign: Int get() {
+    val compareResult = this.compareTo(zero)
+    return when {
+        compareResult > 0 -> 1
+        compareResult < 0 -> -1
+        else -> 0
+    }
+}
+public data class Vector<out E>(val x: E, val y: E)
+public data class Point<out E>(val x: E, val y: E)
+context(Ring<E>)
+public operator fun <E> Point<E>.minus(other: Point<E>): Vector<E> = Vector(this.x - other.x, this.y - other.y)
+context(Ring<E>)
+public infix fun <E> Vector<E>.cross(other: Vector<E>): E = (this.x * other.y - this.y * other.x)
+context(Ring<E>, Order<E>)
+public fun <E> Point<E>.inTriangle(A: Point<E>, B: Point<E>, C: Point<E>): Boolean {
+    val a = ((this - A) cross (B - A)).sign
+    val b = ((this - B) cross (C - B)).sign
+    val c = ((this - C) cross (A - C)).sign
+    return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)
+}
 
-public data class Vector<out C>(val x: C, val y: C)
-public data class Point<out C>(val x: C, val y: C)
-context(Ring<C>)
-public operator fun <C> Point<C>.minus(other: Point<C>): Vector<C> = Vector(this.x - other.x, this.y - other.y)
-context(Ring<C>)
-public infix fun <C> Vector<C>.cross(other: Vector<C>): C = (this.x * other.y - this.y * other.x)
-//public fun Point.inTriangle(A: Point, B: Point, C: Point): Boolean {
-//    val a = ((this - A) cross (B - A)).sign
-//    val b = ((this - B) cross (C - B)).sign
-//    val c = ((this - C) cross (A - C)).sign
-//    return a == b && b == c
-//}
-
-context(Order<C>)
-private val <C> lexicographicComparator: Comparator<Point<C>>
+context(Order<E>)
+private val <E> lexicographicComparator: Comparator<Point<E>>
     get() = compareByOrder({ it.x }, { it.y })
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>> where R : Ring<C>, R: Order<C> {
+public fun <E, R> Collection<Point<E>>.convexHullByGiftWrapping(): List<Point<E>> where R : Ring<E>, R: Order<E> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -39,7 +48,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>
 
     val startPoint = this.minWith(lexicographicComparator)
     var currentPoint = startPoint
-    val result = mutableListOf<Point<C>>()
+    val result = mutableListOf<Point<E>>()
     do {
         val iterator = this.iterator()
         var nextPoint = iterator.next()
@@ -71,7 +80,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>
  * See [here](https://en.wikipedia.org/wiki/Graham_scan) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> where R : Ring<C>, R: Order<C> {
+public fun <E, R> Collection<Point<E>>.convexHullByGrahamScan(): List<Point<E>> where R : Ring<E>, R: Order<E> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -82,7 +91,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
     val points = this.toMutableList()
     points -= centralPoint
     points.sortWith(
-        Comparator<Point<C>> { p1, p2 -> (p1 - centralPoint) cross (p2 - centralPoint) compareTo zero }
+        Comparator<Point<E>> { p1, p2 -> (p1 - centralPoint) cross (p2 - centralPoint) compareTo zero }
             .then(lexicographicComparator)
     )
 
@@ -130,7 +139,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByQuickhull(): List<Point<C>> where R : Ring<C>, R: Order<C> {
+public fun <E, R> Collection<Point<E>>.convexHullByQuickhull(): List<Point<E>> where R : Ring<E>, R: Order<E> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -156,7 +165,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByQuickhull(): List<Point<C>> w
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
 context(R)
-internal fun <C, R> convexHullByQuickhullInternalLogic(leftPoint: Point<C>, rightPoint: Point<C>, points: Collection<Point<C>>): List<Point<C>> where R : Ring<C>, R: Order<C> {
+internal fun <E, R> convexHullByQuickhullInternalLogic(leftPoint: Point<E>, rightPoint: Point<E>, points: Collection<Point<E>>): List<Point<E>> where R : Ring<E>, R: Order<E> {
     val v = rightPoint - leftPoint
     if (points.none { v cross (it - rightPoint) > zero }) return points.toList()
     val nextPoint = points.maxWith(compareByOrder({ v cross (it - rightPoint) }))
@@ -175,7 +184,7 @@ internal fun <C, R> convexHullByQuickhullInternalLogic(leftPoint: Point<C>, righ
  * See [here](https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByMonotoneChain(): List<Point<C>> where R : Ring<C>, R: Order<C> {
+public fun <E, R> Collection<Point<E>>.convexHullByMonotoneChain(): List<Point<E>> where R : Ring<E>, R: Order<E> {
     when (size) {
         0 -> return emptyList()
         1, 2 -> return toList()
@@ -183,7 +192,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByMonotoneChain(): List<Point<C
 
     val points = this.sortedWith(lexicographicComparator)
 
-    fun Iterator<Point<C>>.generateHalfHull(): List<Point<C>> {
+    fun Iterator<Point<E>>.generateHalfHull(): List<Point<E>> {
         val halfHull = mutableListOf(next(), next())
         for (p in this) {
             while (halfHull.size >= 2) {
