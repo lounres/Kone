@@ -35,7 +35,7 @@ public inline infix fun <E> E.leq(other: E): Boolean = this <= other
 context(Order<E>)
 public val <E> comparator: Comparator<E> get() = Comparator { a, b -> a.compareTo(b) }
 context(Order<E>)
-public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> {
+public fun <T, E> compareByOrder(vararg selectors: (T) -> E): Comparator<T> {
     require(selectors.isNotEmpty())
     return Comparator { a, b ->
         for (s in selectors) {

@@ -6,8 +6,8 @@
 package com.lounres.kone.computationalGeometry
 
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.order.Ordered
-import com.lounres.kone.order.compareByOrdered
+import com.lounres.kone.order.Order
+import com.lounres.kone.order.compareByOrder
 
 
 public data class Vector<out C>(val x: C, val y: C)
@@ -23,15 +23,15 @@ public infix fun <C> Vector<C>.cross(other: Vector<C>): C = (this.x * other.y - 
 //    return a == b && b == c
 //}
 
-context(Ordered<C>)
+context(Order<C>)
 private val <C> lexicographicComparator: Comparator<Point<C>>
-    get() = compareByOrdered({ it.x }, { it.y })
+    get() = compareByOrder({ it.x }, { it.y })
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>> where R : Ring<C>, R: Order<C> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -71,7 +71,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGiftWrapping(): List<Point<C>
  * See [here](https://en.wikipedia.org/wiki/Graham_scan) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> where R : Ring<C>, R: Order<C> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -102,7 +102,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
 }
 
 //context(R)
-//public fun <C, R> Collection<Point<C>>.convexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+//public fun <C, R> Collection<Point<C>>.convexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Order<C> {
 //    when (size) {
 //        0 -> return emptyList()
 //        1, 2 -> return this.toList()
@@ -115,7 +115,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
 //}
 //
 //context(R)
-//internal fun <C, R> List<Point<C>>.upperConvexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+//internal fun <C, R> List<Point<C>>.upperConvexHullByDivideAndConquer(): List<Point<C>> where R : Ring<C>, R: Order<C> {
 //    when (size) {
 //        0 -> return emptyList()
 //        1, 2 -> return this
@@ -130,7 +130,7 @@ public fun <C, R> Collection<Point<C>>.convexHullByGrahamScan(): List<Point<C>> 
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByQuickhull(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+public fun <C, R> Collection<Point<C>>.convexHullByQuickhull(): List<Point<C>> where R : Ring<C>, R: Order<C> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -156,10 +156,10 @@ public fun <C, R> Collection<Point<C>>.convexHullByQuickhull(): List<Point<C>> w
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
 context(R)
-internal fun <C, R> convexHullByQuickhullInternalLogic(leftPoint: Point<C>, rightPoint: Point<C>, points: Collection<Point<C>>): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+internal fun <C, R> convexHullByQuickhullInternalLogic(leftPoint: Point<C>, rightPoint: Point<C>, points: Collection<Point<C>>): List<Point<C>> where R : Ring<C>, R: Order<C> {
     val v = rightPoint - leftPoint
     if (points.none { v cross (it - rightPoint) > zero }) return points.toList()
-    val nextPoint = points.maxWith(compareByOrdered({ v cross (it - rightPoint) }))
+    val nextPoint = points.maxWith(compareByOrder({ v cross (it - rightPoint) }))
     val newPoints = points - nextPoint
 
     val leftV = nextPoint - leftPoint
@@ -175,7 +175,7 @@ internal fun <C, R> convexHullByQuickhullInternalLogic(leftPoint: Point<C>, righ
  * See [here](https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain) for more.
  */
 context(R)
-public fun <C, R> Collection<Point<C>>.convexHullByMonotoneChain(): List<Point<C>> where R : Ring<C>, R: Ordered<C> {
+public fun <C, R> Collection<Point<C>>.convexHullByMonotoneChain(): List<Point<C>> where R : Ring<C>, R: Order<C> {
     when (size) {
         0 -> return emptyList()
         1, 2 -> return toList()
