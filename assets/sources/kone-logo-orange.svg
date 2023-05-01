@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - Copyright © 2023 Gleb Minaev
+  - All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="550mm"
+   height="250mm"
+   viewBox="0 0 550 250"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <g
+     id="layer1">
+    <path
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 400.00001,100 H 300.00002 V 0 h 99.99999 L 350,50 Z"
+       id="path865" />
+    <path
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 300.00002,250 V 150 l 99.99999,100 V 150 H 350 v 100 z"
+       id="path867" />
+    <path
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 450.00001,150 h 100.00001 l -25,25 25,25 -25,25 25,25 H 450.00001 Z"
+       id="path869" />
+    <circle
+       style="fill:#ffea00;fill-opacity:1;stroke:none;stroke-width:3"
+       id="path893"
+       cx="500.00003"
+       cy="50"
+       r="50" />
+    <g
+       id="g2441"
+       transform="matrix(0.05643341,0,0,0.04453153,112.64109,-14.962594)"
+       style="fill:#ffea00;fill-opacity:1">
+      <path
+         style="fill:#ffea00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.99999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         d="M -8e-6,350 -800,5949.9999 l 1450,-1050 z"
+         id="path1600" />
+      <path
+         style="fill:#ffea00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.99999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         d="M 98.000008,336 2434,5487.9999 l -1686.00003,-602 z"
+         id="path1994" />
+      <path
+         style="fill:#ffea00;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.99999;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         d="M -97.999992,336 -897.99997,5935.9999 -1996,4521.9999 Z"
+         id="path2238" />
+    </g>
+  </g>
+</svg>
