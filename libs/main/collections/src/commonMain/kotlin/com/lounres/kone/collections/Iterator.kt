@@ -11,6 +11,10 @@ public interface KoneIterator<out E> {
     public operator fun hasNext(): Boolean
 }
 
+public interface KoneSettableIterator<E> : KoneIterator<E> {
+    public fun set(element: E)
+}
+
 public interface KoneExtendableIterator<E> : KoneIterator<E> {
     public fun add(element: E)
 }
@@ -19,9 +23,7 @@ public interface KoneRemovableIterator<out E> : KoneIterator<E> {
     public fun remove()
 }
 
-public interface KoneMutableIterator<E>: KoneRemovableIterator<E>, KoneExtendableIterator<E> {
-    public fun set(element: E)
-}
+public interface KoneMutableIterator<E>: KoneSettableIterator<E>, KoneExtendableIterator<E>, KoneRemovableIterator<E>
 
 public interface KoneLinearIterator<out E> : KoneIterator<E> {
     public override operator fun hasNext(): Boolean
@@ -33,8 +35,10 @@ public interface KoneLinearIterator<out E> : KoneIterator<E> {
     public fun previousIndex(): UInt
 }
 
+public interface KoneSettableLinearIterator<E>: KoneLinearIterator<E>, KoneSettableIterator<E>
+
 public interface KoneExtendableLinearIterator<E>: KoneLinearIterator<E>, KoneExtendableIterator<E>
 
 public interface KoneRemovableLinearIterator<out E>: KoneLinearIterator<E>, KoneRemovableIterator<E>
 
-public interface KoneMutableLinearIterator<E>: KoneRemovableLinearIterator<E>, KoneExtendableLinearIterator<E>, KoneMutableIterator<E>
+public interface KoneMutableLinearIterator<E>: KoneMutableIterator<E>, KoneSettableLinearIterator<E>, KoneExtendableLinearIterator<E>, KoneRemovableLinearIterator<E>

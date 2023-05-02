@@ -38,8 +38,11 @@ public interface KoneList<out E> : KoneCollection<E> {
     public fun lastIndexOf(element: @UnsafeVariance E): UInt
 }
 
-public interface KoneMutableList<E> : KoneList<E>, KoneMutableCollection<E> {
+public interface KoneSettableList<E> : KoneList<E> {
     public operator fun set(index: UInt, element: E)
+}
+
+public interface KoneMutableList<E> : KoneSettableList<E>, KoneMutableCollection<E> {
     public fun add(index: UInt, element: E)
     public fun addAll(index: UInt, elements: KoneIterableCollection<E>)
     public fun removeAt(index: UInt)

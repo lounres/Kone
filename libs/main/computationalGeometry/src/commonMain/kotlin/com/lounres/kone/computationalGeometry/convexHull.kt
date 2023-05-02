@@ -25,6 +25,7 @@ public operator fun <E> Point<E>.minus(other: Point<E>): Vector<E> = Vector(this
 context(Ring<E>)
 public infix fun <E> Vector<E>.cross(other: Vector<E>): E = (this.x * other.y - this.y * other.x)
 context(Ring<E>, Order<E>)
+@Suppress("LocalVariableName")
 public fun <E> Point<E>.inTriangle(A: Point<E>, B: Point<E>, C: Point<E>): Boolean {
     val a = ((this - A) cross (B - A)).sign
     val b = ((this - B) cross (C - B)).sign
