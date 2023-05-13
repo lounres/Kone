@@ -183,7 +183,7 @@ stal {
 
                 linuxX64()
                 mingwX64()
-                macosX64()
+//                macosX64()
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
