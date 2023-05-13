@@ -19,7 +19,7 @@ public data class LabeledPolynomial<C>
 @PublishedApi
 internal constructor(
     public val coefficients: LabeledPolynomialCoefficients<C>
-) : Polynomial<C> {
+) {
     override fun toString(): String = "LabeledPolynomial$coefficients"
 
     public companion object {
@@ -46,7 +46,7 @@ public typealias LabeledMonomialSignature = Map<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
 context(A)
-public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, A> {
+public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledMonomialSignature, LabeledPolynomial<C>, A> {
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
     override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
 
@@ -405,8 +405,8 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             }
         )
 
-    override val LabeledPolynomial<C>.degree: Int
-        get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum().toInt() } ?: -1
+    override val LabeledPolynomial<C>.degree: UInt
+        get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum()} ?: 0u
     public override val LabeledPolynomial<C>.degrees: LabeledMonomialSignature
         get() =
             buildMap {
@@ -436,7 +436,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
 }
 
 context(A)
-public class LabeledPolynomialSpaceOverField<C, out A : Field<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
+public class LabeledPolynomialSpaceOverField<C, out A : Field<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledMonomialSignature, LabeledPolynomial<C>, A> {
     public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             coefficients.mapValues { it.value / other }

@@ -7,8 +7,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.context.invoke
-import kotlin.js.JsName
+import fix.kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
