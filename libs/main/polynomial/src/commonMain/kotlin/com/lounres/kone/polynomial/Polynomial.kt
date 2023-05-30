@@ -7,13 +7,12 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.order.Order
 import fix.kotlin.js.JsName
 //import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-public data class VariableDegree<V>(val variable: V, val degree: UInt)
+public data class VariablePower<V>(val variable: V, val degree: UInt)
 public data class Monomial<MS, C>(val signature: MS, val coefficient: C)
 
 context(A)
@@ -73,15 +72,8 @@ public interface PolynomialSpace<C, P, out A: Ring<C>> : Ring<P> {
 }
 
 context(A)
-public interface UnivariatePolynomialSpace<C, P, out A: Ring<C>>: PolynomialSpace<C, P, A> {
-    // Polynomial properties
-    public operator fun P.get(degree: UInt): C
-    public val P.coefficients: List<C> // TODO: Стоит заменить на UInt-ориентированный лист/массив
-    // endregion
-}
-
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpace<C, V, MS, P, out A: Ring<C>>: PolynomialSpace<C, P, A> {
+public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: PolynomialSpace<C, P, A> {
     // region Variable-to-Polynomial conversion
     @JvmName("valueOfVariable")
     public fun valueOf(variable: V): P = +variable
@@ -173,34 +165,33 @@ public interface MultivariatePolynomialSpace<C, V, MS, P, out A: Ring<C>>: Polyn
     @JvmName("timesPolynomialVariable")
     public operator fun P.times(other: V): P
     // endregion
-
-    // Polynomial properties
-    public fun monomialSignature(vararg variableDegrees: VariableDegree<V>): MS
-    public operator fun MS.get(signature: V): UInt
-    public val MS.degrees: Map<V, UInt>
-    public operator fun MS.iterator(): Iterator<VariableDegree<V>>
-    // TODO: Move extensions and implement with MS creation API
-    public operator fun MS.times(other: P): P
-    public operator fun MS.div(other: MS): MS
-    public fun gcd(signature1: MS, signature2: MS): MS
-    public fun lcm(signature1: MS, signature2: MS): MS
-
-    public operator fun P.get(signature: MS): C
-    public val P.coefficients: Map<MS, C>
-    public operator fun P.iterator(): Iterator<Monomial<MS, C>>
-
-    public override val P.degree: UInt
-    public val P.degrees: Map<V, UInt>
-    public fun P.degreeBy(variable: V): UInt = coefficients.entries.maxOfOrNull { (degs, _) -> degs[variable] } ?: 0u
-    public fun P.degreeBy(variables: Collection<V>): UInt = coefficients.entries.maxOfOrNull { (degs, _) -> variables.sumOf { degs[it] } } ?: 0u
-    public val P.variables: Set<V> get() = buildSet { coefficients.keys.forEach { addAll(it.degrees.keys) } }
-    public val P.countOfVariables: Int get() = variables.size
-    // endregion
 }
 
-context(MultivariatePolynomialSpace<C, *, MS, P, *>, Order<MS>)
-public val <C, MS, P> P.leadingTerm: Monomial<MS, C>
-    get() = coefficients.entries.maxWithOrNull { e1, e2 -> e1.key.compareTo(e2.key) }.let { if (it != null) Monomial(it.key, it.value) else Monomial() }
+context(A)
+@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
+public interface MultivariatePolynomialManipulation<C, V, MS, P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
+    // Polynomial properties
+    public val P.coefficients: Map<MS, C>
+    public val P.monomialCount: UInt
+    public val P.signatures: Set<MS>
+    public fun P.asIterable(): Iterable<Monomial<MS, C>>
+    public operator fun P.iterator(): Iterator<Monomial<MS, C>>
+    public operator fun P.get(signature: MS): C
+    public fun polynomialOf(coefficients: Map<MS, C>): P
+    public fun polynomialOf(coefficients: Collection<Monomial<MS, C>>): P
+    public fun polynomialOf(vararg coefficients: Monomial<MS, C>): P
+
+    public val MS.powers: Map<V, UInt>
+    public val MS.powersCount: UInt
+    public val MS.variables: Set<V>
+    public fun MS.asIterable(): Iterable<VariablePower<V>>
+    public operator fun MS.iterator(): Iterator<VariablePower<V>>
+    public operator fun MS.get(signature: V): UInt
+    public fun signatureOf(coefficients: Map<V, UInt>): MS
+    public fun signatureOf(coefficients: Collection<VariablePower<V>>): MS
+    public fun signatureOf(vararg coefficients: VariablePower<V>): MS
+    // endregion
+}
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
@@ -249,7 +240,7 @@ public interface PolynomialSpaceOverField<C, P, out A: Field<C>> : PolynomialSpa
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpaceOverField<C, V, MS, P, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, MS, P, A> {
+public interface MultivariatePolynomialSpaceOverField<C, V, MS, P, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
     public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
