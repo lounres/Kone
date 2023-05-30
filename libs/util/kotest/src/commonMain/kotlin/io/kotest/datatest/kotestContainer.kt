@@ -9,7 +9,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.ContainerScope
-import io.kotest.core.test.Identifiers
 import io.kotest.core.test.TestType
 
 

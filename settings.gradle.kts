@@ -19,7 +19,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.lounres.gradle.stal") version "1.0.0"
+    id("com.lounres.gradle.stal") version "0.1.0"
 }
 
 stal {
