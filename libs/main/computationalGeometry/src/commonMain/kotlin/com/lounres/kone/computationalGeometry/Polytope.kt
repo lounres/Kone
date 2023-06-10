@@ -12,9 +12,11 @@ package com.lounres.kone.computationalGeometry
 public interface Polytope {
     public val rank: UInt
     public val faces: List<Set<Polytope>>
-    public val vertices: List<Vertex>
+    public val vertices: Set<Vertex>
 }
 
-public interface Vertex {
-
+public abstract class Vertex: Polytope {
+    public final override val rank: UInt = 0u
+    public final override val faces: List<Set<Polytope>> by lazy { listOf(vertices) }
+    public final override val vertices: Set<Vertex> by lazy { setOf(this) }
 }
