@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="Kone sources" pattern="file:kotlin//*||file:java//*||file:resources//*||file[Kone]:assets//*" />
-</component>

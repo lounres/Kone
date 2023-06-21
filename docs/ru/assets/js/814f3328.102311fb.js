@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksite=self.webpackChunksite||[]).push([[535],{5641:e=>{e.exports=JSON.parse('{"title":"\u041d\u0435\u0434\u0430\u0432\u043d\u0438\u0435 \u043f\u043e\u0441\u0442\u044b","items":[{"title":"Introducing Kone","permalink":"/Kone/docs/ru/blog/debut-post"}]}')}}]);
