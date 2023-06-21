@@ -14,7 +14,7 @@ module.exports = {
   baseUrl: '/Kone/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logos/kone-logo-empty-themed.svg',
+  favicon: '/img/logos/kone-mark-themed.svg',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -97,8 +97,8 @@ module.exports = {
         title: 'Kone',
         logo: {
           alt: 'Kone',
-          src: 'img/logos/kone-logo-empty-violet.svg',
-          srcDark: 'img/logos/kone-logo-empty-orange.svg',
+          src: 'img/logos/kone-mark-violet.svg',
+          srcDark: 'img/logos/kone-mark-orange.svg',
         },
         items: [
           {

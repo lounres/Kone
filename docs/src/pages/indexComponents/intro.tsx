@@ -12,7 +12,7 @@ export default function Intro() {
         <header className={styles.heroBanner}>
             <div className="container">
                 <img
-                    src='img/logos/kone-logo-full-colored.svg'
+                    src='img/logos/kone-logo-colored.svg'
                     alt={translate({
                         message: "Kone logo",
                         id: "homepage.logo.alt",
@@ -21,7 +21,7 @@ export default function Intro() {
                     className={clsx(styles.logoBannerBig)}
                 />
                 <img
-                    src='img/logos/kone-logo-empty-colored-vov.svg'
+                    src='img/logos/kone-mark-colored-vov.svg'
                     alt={translate({
                         message: "Kone logo",
                         id: "homepage.logo.alt",

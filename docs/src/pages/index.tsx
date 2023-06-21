@@ -26,8 +26,8 @@ export default function Home(): JSX.Element {
             })}>
             <Intro/>
             <main>
-                <KoneIntro/>
-                <Features/>
+                {/*<KoneIntro/>*/}
+                {/*<Features/>*/}
             </main>
         </Layout>
     );
