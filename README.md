@@ -16,3 +16,13 @@ Kone (pronounced the same way as "cone") is a library that implements common alg
 In the project, there is priority of tasks:
 1. Any algorithm should not be optimised before it is finally implemented.
 2. JVM platform is prioritised much higher than other platforms.
+
+<!--
+## Getting Started
+
+TODO
+-->
+
+## Documentation
+
+Visit Kone's [docs](https://lounres.github.io/Kone/docs/) and [API reference](https://lounres.github.io/Kone/api/) sites.
