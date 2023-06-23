@@ -6,12 +6,11 @@ import Translate, {translate} from '@docusaurus/Translate';
 
 import KoneIntro from '@site/src/pages/indexComponents/koneIntro';
 import Features from '@site/src/pages/indexComponents/features';
-import Intro from "@site/src/pages/indexComponents/intro";
+import Banner from "@site/src/pages/indexComponents/banner";
 
 import styles from './index.module.css';
 
 export default function Home(): JSX.Element {
-    const {siteConfig} = useDocusaurusContext();
     return (
         <Layout
             title={translate({
@@ -20,14 +19,14 @@ export default function Home(): JSX.Element {
                 description: "Title of the homepage"
             })}
             description={translate({
-                message: "Kone is Kotlin Multiplatform library for math computer experiments",
+                message: "Kone is a set of Kotlin Multiplatform libraries that are made to simplify your experience of mathematical computer experiments",
                 id: "homepage.meta.description",
                 description: "Title of the homepage"
             })}>
-            <Intro/>
+            <Banner/>
             <main>
-                {/*<KoneIntro/>*/}
-                {/*<Features/>*/}
+                <KoneIntro/>
+                <Features/>
             </main>
         </Layout>
     );

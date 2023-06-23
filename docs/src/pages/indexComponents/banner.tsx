@@ -7,7 +7,7 @@ import Translate, {translate} from '@docusaurus/Translate';
 import styles from './header.module.css';
 
 
-export default function Intro() {
+export default function Banner() {
     return (
         <header className={styles.heroBanner}>
             <div className="container">
@@ -30,12 +30,6 @@ export default function Intro() {
                     className={clsx(styles.logoBannerSmall)}
                 />
                 <h1 className="hero__title">Kone</h1>
-                <p className="hero__subtitle">
-                    <Translate
-                        id="meta.tagline"
-                        description="The Kone's tagline"
-                    >Making pure math computations available</Translate>
-                </p>
                 {/*<div className={styles.buttons}>
                     <Link
                         className="button button--secondary button--lg"

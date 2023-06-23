@@ -5,26 +5,12 @@
 
 .heroBanner {
     padding: 4rem 0;
-    text-align: center;
     position: relative;
     overflow: hidden;
-    color: black;
-}
-
-[data-theme='dark'] .heroBanner {
-    color: white;
-}
-
-:root {
-    --hero-a-color: var(--ifm-color-darkTheme);
-}
-
-[data-theme='dark'] {
-    --hero-a-color: var(--ifm-color-lightTheme);
 }
 
 .link, .link:hover {
-    color: var(--hero-a-color);
+    color: var(--ifm-color-oposite);
 }
 
 @media screen and (max-width: 996px) {

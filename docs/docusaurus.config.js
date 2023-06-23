@@ -123,7 +123,7 @@ module.exports = {
             position: 'left'
           },
           {
-            href: 'https://lounres.github.io/math-kotlin-experiments',
+            href: 'https://github.com/lounres/math-kotlin-experiments', // Replace with 'https://lounres.github.io/math-kotlin-experiments',
             label: 'Math Kotlin Experiments',
             position: 'left'
           },
@@ -132,10 +132,10 @@ module.exports = {
           //   type: 'docsVersionDropdown',
           //   position: 'right',
           // },
-          { // TODO
-            type: 'localeDropdown',
-            position: 'right',
-          },
+          // { // TODO
+          //   type: 'localeDropdown',
+          //   position: 'right',
+          // },
           {
             href: 'https://github.com/lounres/Kone',
             position: 'right',
