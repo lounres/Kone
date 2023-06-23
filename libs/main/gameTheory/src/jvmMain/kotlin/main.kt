@@ -1,9 +1,9 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
+
+@file:OptIn(ExperimentalStdlibApi::class)
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +18,6 @@ import java.time.LocalTime
 import java.util.*
 import kotlin.streams.toList
 import kotlin.system.exitProcess
-import kotlin.system.measureNanoTime
 
 
 fun mex(values: Iterable<UInt>) : UInt {
@@ -42,7 +41,12 @@ fun prod1(left: UInt, right: UInt): UInt = mex(buildList {
         add(prod1(left2, right) xor prod1(left2, right2) xor prod1(left, right2))
 })
 
-fun prod2(left: UInt, right: UInt): UInt = mex((0u until left * right).map { prod2(it % left, it / left) xor prod2(left, it / left) xor prod2(it % left, right) })
+fun prod2(left: UInt, right: UInt): UInt = mex((0u until left * right).map {
+    prod2(it % left, it / left) xor prod2(left, it / left) xor prod2(
+        it % left,
+        right
+    )
+})
 
 
 val limit3 = 16
@@ -72,9 +76,9 @@ fun prod5(left: ULong, right: ULong): ULong {
     return result
 }
 fun computePowersProds5() {
-    for (i in 0 ..< limit5) {
+    for (i in 0 ..<limit5) {
         val left = powers5[i]
-        for (j in i ..< limit5) {
+        for (j in i ..<limit5) {
             val right = powers5[j]
             var currentValue = 0uL
             val impossibleValues = TreeSet<ULong>() // TODO: Replace with heap (because only insertion, getting min and removing min are needed)
@@ -152,9 +156,9 @@ fun prod7(left: ULong, right: ULong): ULong {
 @OptIn(ExperimentalStdlibApi::class)
 fun computePowersProds7() = runBlocking(Dispatchers.Default) {
     val jobs = Array(limit7) { Array<Job?>(limit7) { null } }
-    for (i in 0 ..< limit7) {
+    for (i in 0 ..<limit7) {
         val left = powers7[i]
-        for (j in i ..< limit7) {
+        for (j in i ..<limit7) {
             val right = powers7[j]
             jobs[i][j] = launch {
                 buildList(2) {

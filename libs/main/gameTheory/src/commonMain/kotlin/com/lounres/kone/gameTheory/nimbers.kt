@@ -5,7 +5,8 @@
 
 package com.lounres.kone.gameTheory
 
-import java.util.*
+import kotlin.jvm.JvmInline
+import kotlin.jvm.JvmName
 
 
 // https://en.wikipedia.org/wiki/Nimber
@@ -48,7 +49,7 @@ public class NimberRange(
 @JvmName("mexUInt")
 public fun mex(values: Iterable<UInt>) : UInt {
     var currentValue = 0u
-    val impossibleValues = TreeSet<UInt>()
+    val impossibleValues = mutableSetOf<UInt>()
     for (value in values) when {
         value == currentValue -> {
             currentValue++
@@ -65,7 +66,7 @@ public fun mex(values: Iterable<UInt>) : UInt {
 @JvmName("mexNimber")
 public fun mex(nimbers: Iterable<Nimber>) : Nimber {
     var currentNimber = 0u
-    val impossibleNimbers = TreeSet<UInt>()
+    val impossibleNimbers = mutableSetOf<UInt>()
     for (nimber in nimbers) when {
         nimber.value == currentNimber -> {
             currentNimber++
