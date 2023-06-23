@@ -1,0 +1,77 @@
+---
+title: Introduction
+sidebar_position: 1
+---
+
+import DependencyTabs from '@site/src/components/DependencyTabs';
+
+[//]: # (:::info Getting started)
+[//]: # (If you want to skip thorough introduction and get started right now see ["Getting started"]&#40;#&#41;)
+[//]: # (:::)
+
+# What is a mathematical experiment?
+
+It's great if you can deduct what lemmas you should prove to form solution of some problem.
+But quite often it is very difficult to come up with which lemmas you need to prove.
+For example, it is not that obvious that $1^2 + \dots + n^2 = \frac{n(n+1)(2n+1)}{6}$.
+But the moment you guessed the formula you can easily prove it via induction.
+
+And how can you come up with formula for the expression?
+You can try interpolating the polynomial by first three terms.
+There is straightforward formula for the interpolation, but it's error-prone if you try to calculate it manually.
+And here computer enters the chat.
+You can write program that interpolates it for you.
+That's how you start conducting mathematical experiments.
+
+Thus, mathematical experiment is an experiment where you try computing or iterating something
+to come up with a hypothesis and prove it later.
+And it is obviously nice if you can make computer do the hard computations for you.
+
+## Then what's the problem with computer mathematical experiments?
+
+The problem is very simple.
+There is no already written algorithms for very basic manipulations.
+So you have to write your own implementations of polynomials or of cartesian product of collections.
+
+This library tries to fill the gap.
+
+# How is Kone organised?
+Kone is made to simplify your mathematical experimentation experience.
+So it is divided to small modules each of which meets some purpose.
+There is no module you need by default.
+Each module describes its tools and concepts to solve some atomic problem.
+So you can plug in necessary modules one by one to collect your one puzzle.
+
+There are 3 types of Kone modules.
+
+### Main modules
+Part "Main" consists of modules that meet some common purpose.
+Like linear algebra, number Theory, polynomials, and so on.
+They are main modules that you would usually use to compute something.
+
+### Misc modules
+Part "Misc" consists of modules that solve highly specialised problems.
+Like olympiad geometry problems solving and so on.
+They are the modules that you would use for their specific problems.
+
+### Util modules
+Part "Util" consists of private modules that are used as utilities for main and misc modules.
+Usually they are short, and you won't be interested in using them.
+But some of them are large and may have some functionality that would interest you.
+
+## Dependencies
+All the modules are available on Maven Central.
+You can see their full artifact paths on corresponding docs pages.
+
+But main rule is that their group is `com.lounres.kone` and their artifact is their own names prefixed with some prefix.
+Main modules' prefix is `kone.`, whereas misc and util modules' prefixes are `kone.misc.` and `kone.util.` respectively.
+
+For example, here is the full artifact paths of the main module `algebraic`, the misc module `planimetricsCalculations.
+
+<DependencyTabs artifact="kone-algebraic"/>
+
+## Benchmarks and Examples
+
+Each module has specified source sets for benchmarks (one source set per target including meta target) and
+for examples (`jvmExamples` source set in `src/examples/kotlin`).
+
