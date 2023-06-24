@@ -12,8 +12,8 @@ import fix.kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-public data class VariablePower<V>(val variable: V, val degree: UInt)
-public data class Monomial<MS, C>(val signature: MS, val coefficient: C)
+//public data class VariablePower<V>(val variable: V, val degree: UInt)
+//public data class Monomial<MS, C>(val signature: MS, val coefficient: C)
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
@@ -246,6 +246,42 @@ public interface MultivariatePolynomialSpace<C, V, VP, MS, M, P, out A: Ring<C>>
     public operator fun Long.times(other: M): M = this.constantValue * other
     // endregion
 
+    // region Polynomial-Int operations
+    @JvmName("plusPolynomialInt")
+    public override operator fun P.plus(other: Int): P = this + other.constantValue
+    @JvmName("minusPolynomialInt")
+    public override operator fun P.minus(other: Int): P = this - other.constantValue
+    @JvmName("timesPolynomialInt")
+    public override operator fun P.times(other: Int): P = this * other.constantValue
+    // endregion
+
+    // region Polynomial-Long operations
+    @JvmName("plusPolynomialLong")
+    public override operator fun P.plus(other: Long): P = this + other.constantValue
+    @JvmName("minusPolynomialLong")
+    public override operator fun P.minus(other: Long): P = this - other.constantValue
+    @JvmName("timesPolynomialLong")
+    public override operator fun P.times(other: Long): P = this * other.constantValue
+    // endregion
+
+    // region Int-Polynomial operations
+    @JvmName("plusIntPolynomial")
+    public override operator fun Int.plus(other: P): P = this.constantValue + other
+    @JvmName("minusIntPolynomial")
+    public override operator fun Int.minus(other: P): P = this.constantValue - other
+    @JvmName("timesIntPolynomial")
+    public override operator fun Int.times(other: P): P = this.constantValue * other
+    // endregion
+
+    // region Long-Polynomial operations
+    @JvmName("plusLongPolynomial")
+    public override operator fun Long.plus(other: P): P = this.constantValue + other
+    @JvmName("minusLongPolynomial")
+    public override operator fun Long.minus(other: P): P = this.constantValue - other
+    @JvmName("timesLongPolynomial")
+    public override operator fun Long.times(other: P): P = this.constantValue * other
+    // endregion
+
     // region Variable-Constant operations
     @JvmName("plusVariableConstant")
     public operator fun V.plus(other: C): P
@@ -329,6 +365,14 @@ public interface MultivariatePolynomialSpace<C, V, VP, MS, M, P, out A: Ring<C>>
     public operator fun V.minus(other: V): P
     @JvmName("timesVariableVariable")
     public operator fun V.times(other: V): MS
+    @JvmName("powerVariableUInt")
+    public fun power(base: V, exponent: UInt): VP
+    @JvmName("powerVariableULong")
+    public fun power(base: V, exponent: ULong): VP
+    @JvmName("powVariableUInt")
+    public infix fun V.pow(exponent: UInt): VP = power(this, exponent)
+    @JvmName("powVariableULong")
+    public infix fun V.pow(exponent: ULong): VP = power(this, exponent)
     // endregion
 
     // region Variable-Signature operations
@@ -358,13 +402,31 @@ public interface MultivariatePolynomialSpace<C, V, VP, MS, M, P, out A: Ring<C>>
     public operator fun V.times(other: MS): MS
     // endregion
 
-    // region Constant-Variable operations
+    // region Signature-Variable operations
     @JvmName("plusSignatureVariable")
     public operator fun MS.plus(other: V): P
     @JvmName("minusSignatureVariable")
     public operator fun MS.minus(other: V): P
     @JvmName("timesSignatureVariable")
     public operator fun MS.times(other: V): MS
+    // endregion
+
+    // region Variable-Monomial operations
+    @JvmName("plusVariableSignature")
+    public operator fun V.plus(other: M): P
+    @JvmName("minusVariableSignature")
+    public operator fun V.minus(other: M): P
+    @JvmName("timesVariableSignature")
+    public operator fun V.times(other: M): M
+    // endregion
+
+    // region Monomial-Variable operations
+    @JvmName("plusSignatureVariable")
+    public operator fun M.plus(other: V): P
+    @JvmName("minusSignatureVariable")
+    public operator fun M.minus(other: V): P
+    @JvmName("timesSignatureVariable")
+    public operator fun M.times(other: V): M
     // endregion
 
     // region Variable-Polynomial operations
@@ -385,30 +447,205 @@ public interface MultivariatePolynomialSpace<C, V, VP, MS, M, P, out A: Ring<C>>
     public operator fun P.times(other: V): P
     // endregion
 
+    // region VariablePower-VariablePower operations
+    @JvmName("unaryPlusVariablePower")
+    public operator fun VP.unaryPlus(): M
+    @JvmName("unaryMinusVariablePower")
+    public operator fun VP.unaryMinus(): M
+    @JvmName("plusVariablePowerVariablePower")
+    public operator fun VP.plus(other: VP): P
+    @JvmName("minusVariablePowerVariablePower")
+    public operator fun VP.minus(other: VP): P
+    @JvmName("timesVariablePowerVariablePower")
+    public operator fun VP.times(other: VP): MS
+    @JvmName("powerVariablePowerUInt")
+    public fun power(base: VP, exponent: UInt): VP
+    @JvmName("powerVariablePowerULong")
+    public fun power(base: VP, exponent: ULong): VP
+    @JvmName("powVariablePowerUInt")
+    public infix fun VP.pow(exponent: UInt): VP = power(this, exponent)
+    @JvmName("powVariablePowerULong")
+    public infix fun VP.pow(exponent: ULong): VP = power(this, exponent)
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun VP.plus(other: MS): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun VP.minus(other: MS): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun VP.times(other: MS): MS
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun MS.plus(other: VP): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun MS.minus(other: VP): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun MS.times(other: VP): MS
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun VP.plus(other: M): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun VP.minus(other: M): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun VP.times(other: M): M
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun M.plus(other: VP): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun M.minus(other: VP): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun M.times(other: VP): M
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun VP.plus(other: P): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun VP.minus(other: P): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun VP.times(other: P): P
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun P.plus(other: VP): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun P.minus(other: VP): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun P.times(other: VP): P
+    // endregion
+
+    // region VariablePower-VariablePower operations
+    @JvmName("unaryPlusVariablePower")
+    public operator fun MS.unaryPlus(): M
+    @JvmName("unaryMinusVariablePower")
+    public operator fun MS.unaryMinus(): M
+    @JvmName("plusVariablePowerVariablePower")
+    public operator fun MS.plus(other: MS): P
+    @JvmName("minusVariablePowerVariablePower")
+    public operator fun MS.minus(other: MS): P
+    @JvmName("timesVariablePowerVariablePower")
+    public operator fun MS.times(other: MS): MS
+    @JvmName("powerVariablePowerUInt")
+    public fun power(base: MS, exponent: UInt): MS
+    @JvmName("powerVariablePowerULong")
+    public fun power(base: MS, exponent: ULong): MS
+    @JvmName("powVariablePowerUInt")
+    public infix fun MS.pow(exponent: UInt): MS = power(this, exponent)
+    @JvmName("powVariablePowerULong")
+    public infix fun MS.pow(exponent: ULong): MS = power(this, exponent)
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun MS.plus(other: M): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun MS.minus(other: M): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun MS.times(other: M): M
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun M.plus(other: MS): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun M.minus(other: MS): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun M.times(other: MS): M
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun MS.plus(other: P): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun MS.minus(other: P): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun MS.times(other: P): P
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun P.plus(other: MS): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun P.minus(other: MS): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun P.times(other: MS): P
+    // endregion
+
+    // region VariablePower-VariablePower operations
+    @JvmName("unaryPlusVariablePower")
+    public operator fun M.unaryPlus(): M
+    @JvmName("unaryMinusVariablePower")
+    public operator fun M.unaryMinus(): M
+    @JvmName("plusVariablePowerVariablePower")
+    public operator fun M.plus(other: M): P
+    @JvmName("minusVariablePowerVariablePower")
+    public operator fun M.minus(other: M): P
+    @JvmName("timesVariablePowerVariablePower")
+    public operator fun M.times(other: M): M
+    @JvmName("powerVariablePowerUInt")
+    public fun power(base: M, exponent: UInt): M
+    @JvmName("powerVariablePowerULong")
+    public fun power(base: M, exponent: ULong): M
+    @JvmName("powVariablePowerUInt")
+    public infix fun M.pow(exponent: UInt): M = power(this, exponent)
+    @JvmName("powVariablePowerULong")
+    public infix fun M.pow(exponent: ULong): M = power(this, exponent)
+    // endregion
+
+    // region VariablePower-Polynomial operations
+    @JvmName("plusVariablePowerPolynomial")
+    public operator fun M.plus(other: P): P
+    @JvmName("minusVariablePowerPolynomial")
+    public operator fun M.minus(other: P): P
+    @JvmName("timesVariablePowerPolynomial")
+    public operator fun M.times(other: P): P
+    // endregion
+
+    // region Polynomial-VariablePower operations
+    @JvmName("plusPolynomialVariablePower")
+    public operator fun P.plus(other: M): P
+    @JvmName("minusPolynomialVariablePower")
+    public operator fun P.minus(other: M): P
+    @JvmName("timesPolynomialVariablePower")
+    public operator fun P.times(other: M): P
+    // endregion
+
     // Polynomial properties
     public val VP.variable: V
-    public val VP.power: UInt
+    public val VP.power: UInt // TODO: Подумоть, в чём будет степень
     public fun variablePower(variable: V, power: UInt): VP
 
-    public val MS.powers: Map<V, UInt>
-    public val MS.powersCount: UInt
+    public val MS.powers: Collection<VP>
+    public val MS.powersMap: Map<V, UInt> // TODO: Подумоть, в чём будет степень
+    public val MS.powersCount: UInt // TODO: Подумоть, в чём будет степень
     public val MS.variables: Set<V>
     public fun MS.asIterable(): Iterable<VP>
     public operator fun MS.iterator(): Iterator<VP>
     public operator fun MS.get(signature: V): UInt
-    public fun signatureOf(coefficients: Map<V, UInt>): MS
-    public fun signatureOf(coefficients: Collection<VP>): MS
-    public fun signatureOf(vararg coefficients: VP): MS
+    public fun signature(coefficients: Map<V, UInt>): MS // TODO: Подумоть, в чём будет степень
+    public fun signature(coefficients: Collection<VP>): MS
+    public fun signature(vararg coefficients: VP): MS
 
-    public val P.coefficients: Map<MS, C>
-    public val P.monomialCount: UInt
+    public val M.signature: MS
+    public val M.coefficient: C
+    public fun monomial(signature: MS, coefficient: C): M
+
+    public val P.coefficients: Collection<M>
+    public val P.monomialCount: UInt // TODO: Подумоть, в чём будет степень
     public val P.signatures: Set<MS>
     public fun P.asIterable(): Iterable<M>
     public operator fun P.iterator(): Iterator<M>
     public operator fun P.get(signature: MS): C
-    public fun polynomialOf(coefficients: Map<MS, C>): P
-    public fun polynomialOf(coefficients: Collection<M>): P
-    public fun polynomialOf(vararg coefficients: M): P
+    public fun polynomial(coefficients: Collection<M>): P
+    public fun polynomial(vararg coefficients: M): P
     // endregion
 }
 
@@ -459,19 +696,19 @@ public interface PolynomialSpaceOverField<C, P, out A: Field<C>> : PolynomialSpa
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpaceOverField<C, V, MS, P, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
+public interface MultivariatePolynomialSpaceOverField<C, V, VP, MS, M, P, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, VP, MS, M, P, A> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
-    public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Int): M = this * other.constantValue.reciprocal
     // endregion
 
     // region Variable-Long operations
     @JvmName("divVariableLong")
-    public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Long): M = this * other.constantValue.reciprocal
     // endregion
 
     // region Variable-Constant operations
     @JvmName("divVariableConstant")
-    public operator fun V.div(other: C): P = this * other.reciprocal
+    public operator fun V.div(other: C): M = this * other.reciprocal
     // endregion
 }

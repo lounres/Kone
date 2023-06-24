@@ -42,30 +42,34 @@ public inline operator fun <
     return block(ring, polynomialSpace, this)
 }
 
+// TODO: Перенести в контекст
+context(MultivariatePolynomialSpace<C, *, *, MS, M, P, *>, Order<MS>)
+public val <C, MS, M, P> zeroMonomial: M
+    get() = monomial(signature(), constantZero)
 
-context(MultivariatePolynomialManipulationContext<C, *, MS, P, *>, Order<MS>)
+context(MultivariatePolynomialSpace<C, *, *, MS, M, P, *>, Order<MS>)
 public val <C, MS, M, P> P.leadingTerm: M
     get() = asIterable().maxWithOrNull { e1, e2 -> e1.signature.compareTo(e2.signature) }
-        .let { if (it != null) monomialOf(it.signature, it.coefficient) else monomialOf(signatureOf(), constantZero) }
+        .let { if (it != null) monomial(it.signature, it.coefficient) else monomial(signature(), constantZero) }
 
-context(MultivariatePolynomialManipulationContext<*, *, MS, M, P, *>, Order<MS>)
+context(MultivariatePolynomialSpace<*, *, *, MS, M, P, *>, Order<MS>)
 public val <MS, M, P> P.leadingSignature: MS
     get() = asIterable().maxWithOrNull { e1, e2 -> e1.signature.compareTo(e2.signature) }
-        .let { if (it != null) it.signature else signatureOf() }
+        .let { if (it != null) it.signature else signature() }
 
-context(MultivariatePolynomialManipulationContext<C, *, MS, M, P, *>, Order<MS>)
+context(MultivariatePolynomialSpace<C, *, *, MS, M, P, *>, Order<MS>)
 public val <C, MS, M, P> P.leadingCoefficient: C
     get() = asIterable().maxWithOrNull { e1, e2 -> e1.signature.compareTo(e2.signature) }
         .let { if (it != null) it.coefficient else constantZero }
 
-context(MultivariatePolynomialManipulationContext<C, V, MS, *, *, *>)
-public fun <C, V, MS> gcd(signature1: MS, signature2: MS): MS =
+context(MultivariatePolynomialSpace<*, *, *, MS, *, *, *>)
+public fun <MS> gcd(signature1: MS, signature2: MS): MS =
     if (signature1.powersCount <= signature2.powersCount) gcdInternalLogic(signature1, signature2)
     else gcdInternalLogic(signature2, signature1)
 
-context(MultivariatePolynomialManipulationContext<C, V, MS, *, *, *>)
-public fun <C, V, MS> gcdInternalLogic(signature1: MS, signature2: MS): MS =
-    signatureOf(signature1.asIterable().map { VariablePower(it.variable, min(it.degree, signature2[it.variable])) })
+context(MultivariatePolynomialSpace<*, V, VP, MS, *, *, *>)
+public fun <V, VP, MS> gcdInternalLogic(signature1: MS, signature2: MS): MS =
+    signature(signature1.asIterable().map { variablePower(it.variable, min(it.power, signature2[it.variable])) })
 
 public data class GcdWithDivisors<MS>(
     val gcd: MS,
@@ -73,21 +77,21 @@ public data class GcdWithDivisors<MS>(
     val divisor2: MS,
 )
 
-context(MultivariatePolynomialManipulationContext<C, V, MS, M, P, *>)
-public fun <C, V, MS, M, P> gcdWithDivisors(signature1: MS, signature2: MS): GcdWithDivisors<MS> {
+context(MultivariatePolynomialSpace<*, V, VP, MS, *, *, *>)
+public fun <VP, V, MS> gcdWithDivisors(signature1: MS, signature2: MS): GcdWithDivisors<MS> {
     val gcd = gcd(signature1, signature2)
 
     return GcdWithDivisors(
         gcd = gcd,
-        divisor1 = signatureOf(signature1.asIterable().map { VariablePower(it.variable, it.degree - gcd[it.variable]) }),
-        divisor2 = signatureOf(signature2.asIterable().map { VariablePower(it.variable, it.degree - gcd[it.variable]) }),
+        divisor1 = signature(signature1.asIterable().map { variablePower(it.variable, it.power - gcd[it.variable]) }),
+        divisor2 = signature(signature2.asIterable().map { variablePower(it.variable, it.power - gcd[it.variable]) }),
     )
 }
 
 
-context(MultivariatePolynomialManipulationContext<C, V, MS, *, *, *>)
-public fun <C, V, MS> lcm(signature1: MS, signature2: MS): MS =
-    signatureOf(mergeBy(signature1.powers, signature2.powers) { _, value1, value2 -> max(value1, value2) })
+context(MultivariatePolynomialSpace<*, V, *, MS, *, *, *>)
+public fun <V, MS> lcm(signature1: MS, signature2: MS): MS =
+    signature(mergeBy(signature1.powersMap, signature2.powersMap) { _, value1, value2 -> max(value1, value2) })
 
 public data class LcmWithMultipliers<MS>(
     val lcm: MS,
@@ -95,13 +99,13 @@ public data class LcmWithMultipliers<MS>(
     val multiplier2: MS,
 )
 
-context(MultivariatePolynomialManipulationContext <C, V, MS, *, *, *>)
-public fun <C, V, MS> lcmWithMultipliers(signature1: MS, signature2: MS): LcmWithMultipliers<MS> {
+context(MultivariatePolynomialSpace<*, V, VP, MS, *, *, *>)
+public fun <VP, V, MS> lcmWithMultipliers(signature1: MS, signature2: MS): LcmWithMultipliers<MS> {
     val lcm = lcm(signature1, signature2)
 
     return LcmWithMultipliers(
         lcm = lcm,
-        multiplier1 = signatureOf(lcm.asIterable().map { VariablePower(it.variable, it.degree - signature1[it.variable]) }),
-        multiplier2 = signatureOf(lcm.asIterable().map { VariablePower(it.variable, it.degree - signature2[it.variable]) }),
+        multiplier1 = signature(lcm.asIterable().map { variablePower(it.variable, it.power - signature1[it.variable]) }),
+        multiplier2 = signature(lcm.asIterable().map { variablePower(it.variable, it.power - signature2[it.variable]) }),
     )
 }
