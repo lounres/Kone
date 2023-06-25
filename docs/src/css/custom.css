@@ -5,21 +5,21 @@
  */
 
 :root {
-  --ifm-color-lightTheme-lightest: #ffea00;
-  --ifm-color-lightTheme-lighter: #ffed26;
-  --ifm-color-lightTheme-light: #ffec1a;
-  --ifm-color-lightTheme: #ffea00;
-  --ifm-color-lightTheme-dark: #e6d300;
-  --ifm-color-lightTheme-darker: #d9c700;
-  --ifm-color-lightTheme-darkest: #b3a400;
+  --ifm-color-darkTheme-lightest: #ffea00;
+  --ifm-color-darkTheme-lighter: #ffed26;
+  --ifm-color-darkTheme-light: #ffec1a;
+  --ifm-color-darkTheme: #ffea00;
+  --ifm-color-darkTheme-dark: #e6d300;
+  --ifm-color-darkTheme-darker: #d9c700;
+  --ifm-color-darkTheme-darkest: #b3a400;
   
-  --ifm-color-darkTheme-lightest: #cab7ff;
-  --ifm-color-darkTheme-lighter: #a485ff;
-  --ifm-color-darkTheme-light: #9874ff;
-  --ifm-color-darkTheme: #7f52ff;
-  --ifm-color-darkTheme-dark: #6630ff;
-  --ifm-color-darkTheme-darker: #5a1fff;
-  --ifm-color-darkTheme-darkest: #3d00ec;
+  --ifm-color-lightTheme-lightest: #cab7ff;
+  --ifm-color-lightTheme-lighter: #a485ff;
+  --ifm-color-lightTheme-light: #9874ff;
+  --ifm-color-lightTheme: #7f52ff;
+  --ifm-color-lightTheme-dark: #6630ff;
+  --ifm-color-lightTheme-darker: #5a1fff;
+  --ifm-color-lightTheme-darkest: #3d00ec;
 }
 
 /* You can override the default Infima variables here. */
@@ -31,6 +31,15 @@
   --ifm-color-primary-dark: var(--ifm-color-lightTheme-dark);
   --ifm-color-primary-darker: var(--ifm-color-lightTheme-darker);
   --ifm-color-primary-darkest: var(--ifm-color-lightTheme-darkest);
+
+  --ifm-color-oposite-lightest: var(--ifm-color-darkTheme-lightest);
+  --ifm-color-oposite-lighter: var(--ifm-color-darkTheme-lighter);
+  --ifm-color-oposite-light: var(--ifm-color-darkTheme-light);
+  --ifm-color-oposite: var(--ifm-color-darkTheme);
+  --ifm-color-oposite-dark: var(--ifm-color-darkTheme-dark);
+  --ifm-color-oposite-darker: var(--ifm-color-darkTheme-darker);
+  --ifm-color-oposite-darkest: var(--ifm-color-darkTheme-darkest);
+  
   --ifm-background-color: #ffffff;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
@@ -45,6 +54,15 @@
   --ifm-color-primary-dark: var(--ifm-color-darkTheme-dark);
   --ifm-color-primary-darker: var(--ifm-color-darkTheme-darker);
   --ifm-color-primary-darkest: var(--ifm-color-darkTheme-darkest);
+
+  --ifm-color-oposite-lightest: var(--ifm-color-lightTheme-lightest);
+  --ifm-color-oposite-lighter: var(--ifm-color-lightTheme-lighter);
+  --ifm-color-oposite-light: var(--ifm-color-lightTheme-light);
+  --ifm-color-oposite: var(--ifm-color-lightTheme);
+  --ifm-color-oposite-dark: var(--ifm-color-lightTheme-dark);
+  --ifm-color-oposite-darker: var(--ifm-color-lightTheme-darker);
+  --ifm-color-oposite-darkest: var(--ifm-color-lightTheme-darkest);
+
   --ifm-background-color: #000000;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
