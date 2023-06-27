@@ -1,0 +1,18 @@
+{
+  "version.label": {
+    "message": "Следующая",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Main modules": {
+    "message": "Основные модули",
+    "description": "The label for category Main modules in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Misc modules": {
+    "message": "Дополнительные модули",
+    "description": "The label for category Misc modules in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Util modules": {
+    "message": "Утилитные модули",
+    "description": "The label for category Util modules in sidebar tutorialSidebar"
+  }
+}

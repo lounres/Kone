@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,14 +7,16 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.ColumnVector
 import com.lounres.kone.linearAlgebra.RowVector
 import com.lounres.kone.polynomial.LabeledPolynomial
+import com.lounres.kone.polynomial.asLabeledPolynomial
 import space.kscience.kmath.expressions.Symbol
 
 
+public fun <C> Line(x: C, y: C, z: C): Line<C> = Line(x.asLabeledPolynomial(), y.asLabeledPolynomial(), z.asLabeledPolynomial())
 public fun <C, A: Ring<C>> A.Line(name: String): Line<C> = Line<C>(convert(name + "_x"), convert(name + "_y"), convert(name + "_z"))
 public fun <C> PlanimetricsCalculationContext<C, *>.Line(name: String): Line<C> = polynomialSpace {
     Line<C>(

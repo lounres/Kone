@@ -7,9 +7,9 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.algebraic.AlgebraicContext
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.KoneContext
+import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.MatrixSpace
 import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
@@ -23,9 +23,15 @@ import kotlin.reflect.KProperty
 
 public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public val ring: A,
-) : AlgebraicContext {
+) : KoneContext {
     public val polynomialSpace: LabeledPolynomialSpace<C, A> by lazy { LabeledPolynomialSpace(ring) }
     public val matrixSpace: MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>> by lazy { MatrixSpace(polynomialSpace) }
+
+    public val origin: Point<C> = Point(polynomialSpace.zero, polynomialSpace.zero, polynomialSpace.one)
+    public val xBasis: Point<C> = Point(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.one)
+    public val yBasis: Point<C> = Point(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.one)
+    public val xAxis: Line<C> = Line(polynomialSpace.zero, polynomialSpace.one, polynomialSpace.zero)
+    public val yAxis: Line<C> = Line(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.zero)
 
     public infix fun Point<C>.equalsTo(other: Point<C>): Boolean = this === other || polynomialSpace {
         x * other.y eq y * other.x && y * other.z eq z * other.y && z * other.x eq x * other.z
@@ -99,7 +105,7 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public operator fun Transformation<C>.invoke(l: Line<C>): Line<C> = matrixSpace { Line(l.rowVector * matrix.adjugate()) }
     public operator fun Transformation<C>.invoke(q: Quadric<C>): Quadric<C> = matrixSpace { (matrix.adjugate()).let { Quadric(it.transposed() * q.matrix * it) } }
 
-    // FIXME: Make the functions extensions
+    // FIXME: Make the following functions extensions when context receivers will be available
 
     public operator fun Point.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
     public operator fun Line.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
@@ -253,7 +259,21 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
      * @param l Line projected on.
      * @return The projection.
      */
-    public fun Point<C>.projectOn(l: Line<C>): Point<C> = intersectionOf(l, perpendicular(l, this))
+    public fun Point<C>.projectOn(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            l.y * l.y * x - l.x * l.y * y - l.z * l.x * z,
+            l.x * l.x * y - l.x * l.y * x - l.z * l.y * z,
+            (l.x * l.x + l.y * l.y) * z
+        )
+    }
+
+    public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+        Point(
+            x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
+            y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
+            -(l.x * l.x + l.y * l.y) * z
+        )
+    }
 
     /**
      * Checks if the given quadric is circle.
@@ -322,10 +342,14 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public fun involutionBy(l: Line<C>, q: Quadric<C>): Transformation<C> = involutionBy(l.poleBy(q), l)
 }
 
-public val <C, A: Ring<C>> A.planimetricsCalculationContext: PlanimetricsCalculationContext<C, A> get() = PlanimetricsCalculationContext(this)
-public fun <C, A: Ring<C>, R> A.planimetricsCalculationContext(block: /*context(A, LabeledPolynomialSpace<C, A>, MatrixSpace<LabeledPolynomial<C>, A>)*/ PlanimetricsCalculationContext<C, A>.() -> R): R {
-    contract {
-        callsInPlace(block, EXACTLY_ONCE)
-    }
-    return block(PlanimetricsCalculationContext(this))
-}
+public inline val <C, A: Ring<C>> A.planimetricsCalculationContext: PlanimetricsCalculationContext<C, A> get() = PlanimetricsCalculationContext(this)
+
+// Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
+
+//public inline operator fun <C, A: Ring<C>, PC: PlanimetricsCalculationContext<C, A>, R> PC.invoke(block: context(A, LabeledPolynomialSpace<C, A>, MatrixSpace<LabeledPolynomial<C>, LabeledPolynomialSpace<C, A>>, PC) () -> R): R {
+////    FIXME: KT-32313
+////    contract {
+////        callsInPlace(block, EXACTLY_ONCE)
+////    }
+//    return block(ring, polynomialSpace, matrixSpace, this)
+//}

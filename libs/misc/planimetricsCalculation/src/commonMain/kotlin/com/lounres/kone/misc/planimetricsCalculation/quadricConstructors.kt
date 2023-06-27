@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,8 +7,8 @@
 
 package com.lounres.kone.misc.planimetricsCalculation
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
 import space.kscience.kmath.expressions.Symbol

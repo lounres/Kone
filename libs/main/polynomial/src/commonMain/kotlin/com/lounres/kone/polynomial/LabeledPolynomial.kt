@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,8 +7,9 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.utils.mapOperations.*
+import com.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
 import kotlin.math.max
@@ -17,24 +18,41 @@ import kotlin.math.max
 public data class LabeledPolynomial<C>
 @PublishedApi
 internal constructor(
-    public val coefficients: Map<Map<Symbol, UInt>, C>
+    public val coefficients: LabeledPolynomialCoefficients<C>
 ) : Polynomial<C> {
     override fun toString(): String = "LabeledPolynomial$coefficients"
+
+    public companion object {
+        public val monomialComparator: Comparator<LabeledMonomialSignature> = Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> ->
+            if (o1 === o2) return@Comparator 0
+
+            val commonVariables = (o1.keys union o2.keys).sortedBy { it.identity }
+
+            for (variable in commonVariables) {
+                val deg1 = o1.getOrElse(variable) { 0u }
+                val deg2 = o2.getOrElse(variable) { 0u }
+                when {
+                    deg1 > deg2 -> return@Comparator -1
+                    deg1 < deg2 -> return@Comparator 1
+                }
+            }
+
+            return@Comparator 0
+        }
+    }
 }
 
-public class LabeledPolynomialSpace<C, out A : Ring<C>>(
-    public override val ring: A,
-) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceOverRing<C, LabeledPolynomial<C>, A> {
-    override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
-    override val one: LabeledPolynomial<C> = constantOne.asLabeledPolynomial()
+public typealias LabeledMonomialSignature = Map<Symbol, UInt>
+public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
-    public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean {
-        for ((key, value) in this.coefficients)
-            if (other.coefficients.computeOnOrElse(key, { value.isNotZero() }) { it -> value neq it }) return false
-        for ((key, value) in other.coefficients)
-            if (this.coefficients.computeOnOrElse(key, { value.isNotZero() }) { _ -> false }) return false
-        return true
-    }
+public open class LabeledPolynomialSpace<C, out A : Ring<C>>(
+    public override val ring: A,
+) : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithRing<C, LabeledPolynomial<C>, A> {
+    override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
+    override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
+
+    public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean =
+        mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 }
     public override fun LabeledPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
     public override fun LabeledPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
 
@@ -133,7 +151,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other == 0 -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), other.constantValue) { _, it, _ -> it + other }
+                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
             )
         }
     public override operator fun LabeledPolynomial<C>.minus(other: Int): LabeledPolynomial<C> =
@@ -141,7 +159,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other == 0 -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), (-other).constantValue) { _, it, _ -> it - other }
+                coefficients.withPutOrChanged(emptyMap(), { (-other).constantValue }) { it -> it - other }
             )
         }
     public override operator fun LabeledPolynomial<C>.times(other: Int): LabeledPolynomial<C> =
@@ -158,7 +176,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other == 0L -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), other.constantValue) { _, it, _ -> it + other }
+                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
             )
         }
     public override operator fun LabeledPolynomial<C>.minus(other: Long): LabeledPolynomial<C> =
@@ -166,7 +184,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other == 0L -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), (-other).constantValue) { _, it, _ -> it - other }
+                coefficients.withPutOrChanged(emptyMap(), { (-other).constantValue }) { it -> it - other }
             )
         }
     public override operator fun LabeledPolynomial<C>.times(other: Long): LabeledPolynomial<C> =
@@ -183,7 +201,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             this == 0 -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withPutOrChanged(emptyMap(), this@plus.constantValue) { _, it, _ -> this@plus + it }
+                other.coefficients.withPutOrChanged(emptyMap(), { this@plus.constantValue }) { it -> this@plus + it }
             )
         }
     public override operator fun Int.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
@@ -192,7 +210,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { _, it -> this@minus - it })
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), { this@minus.constantValue }) { it -> this@minus - it })
                     other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
@@ -390,7 +408,7 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
 
     override val LabeledPolynomial<C>.degree: Int
         get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum().toInt() } ?: -1
-    public override val LabeledPolynomial<C>.degrees: Map<Symbol, UInt>
+    public override val LabeledPolynomial<C>.degrees: LabeledMonomialSignature
         get() =
             buildMap {
                 coefficients.keys.forEach { degs ->
@@ -408,9 +426,21 @@ public class LabeledPolynomialSpace<C, out A : Ring<C>>(
             }
     public override val LabeledPolynomial<C>.countOfVariables: Int get() = variables.size
 
-    // TODO: When context receivers will be ready move all of this substitutions and invocations to utilities with
+    // FIXME: When context receivers will be ready move all of these substitutions and invocations to utilities with
     //  [ListPolynomialSpace] as a context receiver
     public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, C>): LabeledPolynomial<C> = substitute(ring, arguments)
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, C>): LabeledPolynomial<C> = substitute(ring, *arguments)
     @JvmName("substitutePolynomial")
     public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> = substitute(ring, arguments)
+    @JvmName("substitutePolynomial")
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(ring, *arguments)
+}
+
+public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(
+    ring: A,
+) : LabeledPolynomialSpace<C, A>(ring), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>>, PolynomialSpaceWithField<C, LabeledPolynomial<C>, A> {
+    public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
+        LabeledPolynomialAsIs(
+            coefficients.mapValues { it.value / other }
+        )
 }

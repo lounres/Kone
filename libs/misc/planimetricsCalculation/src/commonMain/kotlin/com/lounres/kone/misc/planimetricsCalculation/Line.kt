@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -21,6 +21,7 @@ public data class Line<C>(
     public val columnVector: ColumnVector<LabeledPolynomial<C>> get() = ColumnVector(x, y, z)
 
     public companion object {
+        // Waiting for context receivers :( FIXME: Uncomment when context receivers will be available
 //        context(A)
 //        public operator fun <C, A: Ring<C>> getValue(thisRef: Any?, property: KProperty<*>) : Line<C> = Line(property.name)
 //        context(PlanimetricsCalculationContext<C, *>)

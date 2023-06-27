@@ -1,16 +1,14 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
 package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.annotations.UnstableKoneAPI
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
+import com.lounres.kone.context.invoke
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -22,26 +20,22 @@ public inline val <C, A : Ring<C>> A.listPolynomialSpace: ListPolynomialSpace<C,
     get() = ListPolynomialSpace(this)
 
 /**
- * Creates a [ListPolynomialSpace]'s scope over a received ring.
- */ // TODO: When context will be ready move [ListPolynomialSpace] and add [A] to context receivers of [block]
-public inline fun <C, A : Ring<C>, R> A.listPolynomialSpace(block: ListPolynomialSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return ListPolynomialSpace(this).block()
-}
+ * Creates a [ListPolynomialSpaceOverField] over a received field.
+ */
+public inline val <C, A : Field<C>> A.listPolynomialSpace: ListPolynomialSpaceOverField<C, A>
+    get() = ListPolynomialSpaceOverField(this)
 
 /**
  * Creates a [ListRationalFunctionSpace] over a received ring.
  */
-public inline val <C, A : Ring<C>> A.listRationalFunctionSpace: ListRationalFunctionSpace<C, A>
-    get() = ListRationalFunctionSpace(this)
+public inline val <C, A : Ring<C>> A.listRationalFunctionSpace: DefaultListRationalFunctionSpace<C, A>
+    get() = ListRationalFunctionSpace(this.listPolynomialSpace)
 
 /**
- * Creates a [ListRationalFunctionSpace]'s scope over a received ring.
- */ // TODO: When context will be ready move [ListRationalFunctionSpace] and add [A] to context receivers of [block]
-public inline fun <C, A : Ring<C>, R> A.listRationalFunctionSpace(block: ListRationalFunctionSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return ListRationalFunctionSpace(this).block()
-}
+ * Creates a [ListRationalFunctionSpaceOverField] over a received field.
+ */
+public inline val <C, A : Field<C>> A.listRationalFunctionSpace: DefaultListRationalFunctionSpaceOverField<C, A>
+    get() = ListRationalFunctionSpaceOverField(this.listPolynomialSpace)
 
 
 /**
@@ -130,42 +124,42 @@ public fun <C> ListRationalFunction<C>.substitute(ring: Ring<C>, arg: ListRation
 /**
  * Represent [this] polynomial as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOver(ring: A): (C) -> C = { substitute(ring, it) }
+public fun <C> ListPolynomial<C>.asFunctionOver(ring: Ring<C>): (C) -> C = { substitute(ring, it) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfConstantOver(ring: A): (C) -> C = { substitute(ring, it) }
+public fun <C> ListPolynomial<C>.asFunctionOfConstantOver(ring: Ring<C>): (C) -> C = { substitute(ring, it) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfPolynomialOver(ring: A): (ListPolynomial<C>) -> ListPolynomial<C> = { substitute(ring, it) }
+public fun <C> ListPolynomial<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (ListPolynomial<C>) -> ListPolynomial<C> = { substitute(ring, it) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfRationalFunctionOver(ring: A): (ListRationalFunction<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
+public fun <C> ListPolynomial<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (ListRationalFunction<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
 
 /**
  * Represent [this] rational function as a regular context-less function.
  */
-public fun <C, A : Field<C>> ListRationalFunction<C>.asFunctionOver(ring: A): (C) -> C = { substitute(ring, it) }
+public fun <C> ListRationalFunction<C>.asFunctionOver(ring: Field<C>): (C) -> C = { substitute(ring, it) }
 
 /**
  * Represent [this] rational function as a regular context-less function.
  */
-public fun <C, A : Field<C>> ListRationalFunction<C>.asFunctionOfConstantOver(ring: A): (C) -> C = { substitute(ring, it) }
+public fun <C> ListRationalFunction<C>.asFunctionOfConstantOver(ring: Field<C>): (C) -> C = { substitute(ring, it) }
 
 /**
  * Represent [this] rational function as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListRationalFunction<C>.asFunctionOfPolynomialOver(ring: A): (ListPolynomial<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
+public fun <C> ListRationalFunction<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (ListPolynomial<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
 
 /**
  * Represent [this] rational function as a regular context-less function.
  */
-public fun <C, A : Ring<C>> ListRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: A): (ListRationalFunction<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
+public fun <C> ListRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (ListRationalFunction<C>) -> ListRationalFunction<C> = { substitute(ring, it) }
 
 /**
  * Returns algebraic derivative of received polynomial.

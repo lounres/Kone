@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -8,12 +8,11 @@ package com.lounres.kone.polynomial
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
 import com.lounres.kone.algebraic.field
-import com.lounres.kone.algebraic.invoke
+import com.lounres.kone.algebraic.util.doublingTimes
 import com.lounres.kone.annotations.ExperimentalKoneAPI
-import com.lounres.kone.utils.mapOperations.putOrChange
+import com.lounres.kone.context.invoke
+import com.lounres.kone.util.mapOperations.putOrChange
 import space.kscience.kmath.structures.Buffer
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 import kotlin.math.max
 import kotlin.math.min
@@ -22,18 +21,14 @@ import kotlin.math.min
 public inline val <C, A : Ring<C>> A.numberedPolynomialSpace: NumberedPolynomialSpace<C, A>
     get() = NumberedPolynomialSpace(this)
 
-public inline fun <C, A : Ring<C>, R> A.numberedPolynomialSpace(block: NumberedPolynomialSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return NumberedPolynomialSpace(this).block()
-}
+public inline val <C, A : Field<C>> A.numberedPolynomialSpace: NumberedPolynomialSpaceOverField<C, A>
+    get() = NumberedPolynomialSpaceOverField(this)
 
-public inline val <C, A : Ring<C>> A.numberedRationalFunctionSpace: NumberedRationalFunctionSpace<C, A>
-    get() = NumberedRationalFunctionSpace(this)
+public inline val <C, A : Ring<C>> A.numberedRationalFunctionSpace: DefaultNumberedRationalFunctionSpace<C, A>
+    get() = NumberedRationalFunctionSpace(this.numberedPolynomialSpace)
 
-public inline fun <C, A : Ring<C>, R> A.numberedRationalFunctionSpace(block: NumberedRationalFunctionSpace<C, A>.() -> R): R {
-    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
-    return NumberedRationalFunctionSpace(this).block()
-}
+public inline val <C, A : Field<C>> A.numberedRationalFunctionSpace: DefaultNumberedRationalFunctionSpaceOverField<C, A>
+    get() = NumberedRationalFunctionSpaceOverField(this.numberedPolynomialSpace)
 
 public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): NumberedPolynomial<Double> = Double.field {
     NumberedPolynomial<Double>(
@@ -50,6 +45,10 @@ public fun NumberedPolynomial<Double>.substitute(args: Map<Int, Double>): Number
     )
 }
 
+@Suppress("NOTHING_TO_INLINE")
+public inline fun NumberedPolynomial<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedPolynomial<Double> =
+    this.substitute(mapOf(*inputs))
+
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
         buildMap(coefficients.size) {
@@ -64,6 +63,11 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, C>
         }
     )
 }
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedPolynomial<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize boxing
 @JvmName("substitutePolynomial")
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
@@ -76,6 +80,12 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
             }
         }
     }
+
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("substitutePolynomial")
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedPolynomial<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize boxing
 @JvmName("substituteRationalFunction")
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedRationalFunction<C>>) : NumberedRationalFunction<C> =
@@ -89,21 +99,46 @@ public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Map<Int, Nu
         }
     }
 
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("substituteRationalFunction")
+public inline fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
 public fun NumberedRationalFunction<Double>.substitute(args: Map<Int, Double>): NumberedRationalFunction<Double> =
     NumberedRationalFunction(numerator.substitute(args), denominator.substitute(args))
 
+@Suppress("NOTHING_TO_INLINE")
+public inline fun NumberedRationalFunction<Double>.substitute(vararg inputs: Pair<Int, Double>): NumberedRationalFunction<Double> =
+    this.substitute(mapOf(*inputs))
+
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, C>): NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, C>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize calculation
 @JvmName("substitutePolynomial")
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedPolynomial<C>>) : NumberedRationalFunction<C> =
     NumberedRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
+
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("substitutePolynomial")
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedPolynomial<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
+
  // TODO: To optimize calculation
 @JvmName("substituteRationalFunction")
 public fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Int, NumberedRationalFunction<C>>) : NumberedRationalFunction<C> =
     ring.numberedRationalFunctionSpace {
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
+
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("substituteRationalFunction")
+public inline fun <C> NumberedRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Int, NumberedRationalFunction<C>>): NumberedRationalFunction<C> =
+    this.substitute(ring, mapOf(*inputs))
 
 public fun NumberedPolynomial<Double>.substitute(args: Buffer<Double>): NumberedPolynomial<Double> = Double.field {
     val lastSubstitutionVariable = args.size - 1
@@ -129,7 +164,7 @@ public fun NumberedPolynomial<Double>.substitute(args: Buffer<Double>): Numbered
 public fun <C> NumberedPolynomial<C>.substitute(ring: Ring<C>, args: Buffer<C>): NumberedPolynomial<C> = ring {
     val lastSubstitutionVariable = args.size - 1
     NumberedPolynomial<C>(
-        buildMap<List<UInt>, C>(coefficients.size) {
+        buildMap(coefficients.size) {
             for ((degs, c) in coefficients) {
                 val lastDegsIndex = degs.lastIndex
                 val newDegs =
@@ -230,25 +265,25 @@ public fun <C> NumberedRationalFunction<C>.substituteFully(ring: Field<C>, args:
     numerator.substituteFully(ring, args) / denominator.substituteFully(ring, args)
 }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOver(ring: Ring<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfConstantOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfConstantOver(ring: Ring<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfPolynomialOver(ring: A): (Buffer<NumberedPolynomial<C>>) -> NumberedPolynomial<C> = { substitute(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (Buffer<NumberedPolynomial<C>>) -> NumberedPolynomial<C> = { substitute(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.asFunctionOfRationalFunctionOver(ring: A): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedPolynomial<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
-public fun <C, A : Field<C>> NumberedRationalFunction<C>.asFunctionOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOver(ring: Field<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Field<C>> NumberedRationalFunction<C>.asFunctionOfConstantOver(ring: A): (Buffer<C>) -> C = { substituteFully(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfConstantOver(ring: Field<C>): (Buffer<C>) -> C = { substituteFully(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedRationalFunction<C>.asFunctionOfPolynomialOver(ring: A): (Buffer<NumberedPolynomial<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfPolynomialOver(ring: Ring<C>): (Buffer<NumberedPolynomial<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
-public fun <C, A : Ring<C>> NumberedRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: A): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
+public fun <C> NumberedRationalFunction<C>.asFunctionOfRationalFunctionOver(ring: Ring<C>): (Buffer<NumberedRationalFunction<C>>) -> NumberedRationalFunction<C> = { substitute(ring, it) }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.derivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.derivativeWithRespectTo(
+    ring: Ring<C>,
     variable: Int,
 ): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
@@ -264,7 +299,7 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.derivativeWithRespectTo(
                                 else -> return@forEach
                             }
                         }.cleanUp(),
-                        multiplyByDoubling(c, degs[variable])
+                        doublingTimes(c, degs[variable])
                     )
                 }
         }
@@ -272,8 +307,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.derivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
+    ring: Ring<C>,
     variable: Int,
     order: UInt
 ): NumberedPolynomial<C> = ring {
@@ -293,7 +328,7 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
                         }.cleanUp(),
                         degs[variable].let { deg ->
                             (deg downTo deg - order + 1u)
-                                .fold(c) { acc, ord -> multiplyByDoubling(acc, ord) }
+                                .fold(c) { acc, ord -> doublingTimes(acc, ord) }
                         }
                     )
                 }
@@ -302,8 +337,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
+    ring: Ring<C>,
     variablesAndOrders: Map<Int, UInt>,
 ): NumberedPolynomial<C> = ring {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
@@ -323,7 +358,7 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->
                             degs[index].let { deg ->
                                 (deg downTo deg - order + 1u)
-                                    .fold(acc1) { acc2, ord -> multiplyByDoubling(acc2, ord) }
+                                    .fold(acc1) { acc2, ord -> doublingTimes(acc2, ord) }
                             }
                         }
                     )
@@ -333,8 +368,8 @@ public fun <C, A : Ring<C>> NumberedPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.antiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.antiderivativeWithRespectTo(
+    ring: Field<C>,
     variable: Int,
 ): NumberedPolynomial<C> = ring {
     NumberedPolynomial<C>(
@@ -343,7 +378,7 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.antiderivativeWithRespectTo(
                 .forEach { (degs, c) ->
                     put(
                         List(max(variable + 1, degs.size)) { degs.getOrElse(it) { 0u } + if (it != variable) 0u else 1u },
-                        c / multiplyByDoubling(one, degs.getOrElse(variable) { 0u } + 1u)
+                        c / doublingTimes(one, degs.getOrElse(variable) { 0u } + 1u)
                     )
                 }
         }
@@ -351,8 +386,8 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.antiderivativeWithRespectTo(
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
+    ring: Field<C>,
     variable: Int,
     order: UInt
 ): NumberedPolynomial<C> = ring {
@@ -365,7 +400,7 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectT
                         List(max(variable + 1, degs.size)) { degs.getOrElse(it) { 0u } + if (it != variable) 0u else order },
                         degs.getOrElse(variable) { 0u }.let { deg ->
                             (deg + 1u .. deg + order)
-                                .fold(c) { acc, ord -> acc / multiplyByDoubling(one, ord) }
+                                .fold(c) { acc, ord -> acc / doublingTimes(one, ord) }
                         }
                     )
                 }
@@ -374,8 +409,8 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectT
 }
 
 @ExperimentalKoneAPI
-public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
-    ring: A,
+public fun <C> NumberedPolynomial<C>.nthAntiderivativeWithRespectTo(
+    ring: Field<C>,
     variablesAndOrders: Map<Int, UInt>,
 ): NumberedPolynomial<C> = ring {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
@@ -390,7 +425,7 @@ public fun <C, A : Field<C>> NumberedPolynomial<C>.nthAntiderivativeWithRespectT
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (variable, order) ->
                             degs.getOrElse(variable) { 0u }.let { deg ->
                                 (deg + 1u .. deg + order)
-                                    .fold(acc1) { acc, ord -> acc / multiplyByDoubling(one, ord) }
+                                    .fold(acc1) { acc, ord -> acc / doublingTimes(one, ord) }
                             }
                         }
                     )

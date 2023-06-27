@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -47,20 +47,20 @@ public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, denominatorC
  * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
  */
 @Suppress("FunctionName")
-public fun <C, A: Ring<C>> A.ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
+public fun <C> Ring<C>.ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
     ListRationalFunction<C>(numerator, ListPolynomial(listOf(one)))
 /**
  * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
  */
 @Suppress("FunctionName")
-public fun <C, A: Ring<C>> ListRationalFunctionSpace<C, A>.ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
+public fun <C> ListRationalFunctionSpace<C, *, *>.ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
     ListRationalFunction<C>(numerator, polynomialOne)
 /**
  * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
  * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
  */
 @Suppress("FunctionName")
-public fun <C, A: Ring<C>> A.ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
+public fun <C> Ring<C>.ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
     ListRationalFunction<C>(
         ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
         ListPolynomial(listOf(one))
@@ -70,7 +70,7 @@ public fun <C, A: Ring<C>> A.ListRationalFunction(numeratorCoefficients: List<C>
  * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
  */
 @Suppress("FunctionName")
-public fun <C, A: Ring<C>> ListRationalFunctionSpace<C, A>.ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
+public fun <C> ListRationalFunctionSpace<C, *, *>.ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
     ListRationalFunction<C>(
         ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
         polynomialOne
@@ -79,14 +79,14 @@ public fun <C, A: Ring<C>> ListRationalFunctionSpace<C, A>.ListRationalFunction(
 /**
  * Represents [this] constant as a rational function.
  */ // FIXME: When context receivers will be ready, delete this function and uncomment the following two
-public fun <C, A: Ring<C>> C.asListRationalFunction(ring: A) : ListRationalFunction<C> = ring.ListRationalFunction(asListPolynomial())
+public fun <C> C.asListRationalFunction(ring: Ring<C>) : ListRationalFunction<C> = ring.ListRationalFunction(asListPolynomial())
 ///**
 // * Represents [this] constant as a rational function.
 // */
-//context(A)
-//public fun <C, A: Ring<C>> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())
+//context(Ring<C>)
+//public fun <C> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())
 ///**
 // * Represents [this] constant as a rational function.
 // */
-//context(ListRationalFunctionSpace<C, A>)
-//public fun <C, A: Ring<C>> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())
+//context(ListRationalFunctionSpace<C, *>)
+//public fun <C> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())

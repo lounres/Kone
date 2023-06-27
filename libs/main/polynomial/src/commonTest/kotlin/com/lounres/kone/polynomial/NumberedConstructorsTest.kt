@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,9 +7,9 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.invoke
 import com.lounres.kone.algebraic.ring
 import com.lounres.kone.annotations.ExperimentalKoneAPI
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData

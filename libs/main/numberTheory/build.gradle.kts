@@ -1,13 +1,11 @@
 kotlin {
-    @Suppress("UNUSED_VARIABLE")
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
-                implementation(projects.libs.main.core)
                 api(projects.libs.main.algebraic)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(projects.libs.util.kotest)
             }

@@ -1,25 +1,40 @@
 [versions]
-kotlin = "1.7.20"
-kotlinx-coroutines = "1.6.4"
+kotlin = "1.8.21"
+
+kmath = "0.3.1"
+
+kotlinx-coroutines = "1.7.1"
+kotlinx-atomicfu = "0.20.2"
+kotlinx-serialization = "1.5.1"
 kotlinx-datetime = "0.4.0"
-kotest = "5.5.1"
-dokka = "1.7.20"
+kotlinx-kover = "0.6.0"
+kotlinx-benchmark = "0.4.8"
+kotlinx-binary-compatibility-validator = "0.13.0"
+kotlinx-knit = "0.4.0"
+
+kotest = "5.6.2"
+dokka = "1.8.10"
 mkdocs-gradle-plugin = "2.4.0"
-kover = "0.6.0"
-benchmark = "0.4.4"
-binary-compatibility-validator = "0.12.0"
-kmath = "0.3.0"
 
 [plugins]
+# Kotlin plugins
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+# Kotlin side plugins
+allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+
+# kotlinx plugins
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover" }
+kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark" }
+kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binary-compatibility-validator" }
+kotlinx-knit = { id = "org.jetbrains.kotlinx:kotlinx-knit", version.ref = "kotlinx-knit" }
 
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mkdocs = { id = "ru.vyarus.mkdocs", version.ref = "mkdocs-gradle-plugin" }
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "benchmark" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 
 [libraries]
 # kotlinx.coroutines
@@ -27,8 +42,15 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
+# kotlinx.serialization
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
 # kotlinx.datetime
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+# kotlinx.benchmark
+kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
 
 # Kotest
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }

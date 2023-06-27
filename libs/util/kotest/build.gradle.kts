@@ -1,7 +1,6 @@
 kotlin {
-    @Suppress("UNUSED_VARIABLE")
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.kotest.framework.engine)
                 implementation(libs.kotest.framework.datatest)
@@ -9,7 +8,7 @@ kotlin {
                 implementation(libs.kotest.property)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
 
             }

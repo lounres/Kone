@@ -1,14 +1,18 @@
 kotlin {
-    @Suppress("UNUSED_VARIABLE")
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
-                implementation(projects.libs.main.core)
+                implementation(projects.libs.main.order)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
 
+            }
+        }
+        jvmExamples {
+            dependencies {
+                implementation(projects.libs.main.numberTheory)
             }
         }
     }

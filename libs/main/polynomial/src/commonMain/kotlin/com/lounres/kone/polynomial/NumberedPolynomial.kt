@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -7,8 +7,9 @@
 
 package com.lounres.kone.polynomial
 
+import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.utils.mapOperations.*
+import com.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.structures.Buffer
 import kotlin.jvm.JvmName
 import kotlin.math.max
@@ -17,25 +18,40 @@ import kotlin.math.max
 public data class NumberedPolynomial<C>
 @PublishedApi
 internal constructor(
-    public val coefficients: Map<List<UInt>, C>
+    public val coefficients: NumberedPolynomialCoefficients<C>
 ) : Polynomial<C> {
     override fun toString(): String = "NumberedPolynomial$coefficients"
+
+    public companion object {
+        public val monomialComparator: Comparator<NumberedMonomialSignature> = Comparator { o1: List<UInt>, o2: List<UInt> ->
+            if (o1 === o2) return@Comparator 0
+
+            for (variable in 0 until max(o1.size, o2.size)) {
+                val deg1 = o1.getOrElse(variable) { 0u }
+                val deg2 = o2.getOrElse(variable) { 0u }
+                when {
+                    deg1 > deg2 -> return@Comparator -1
+                    deg1 < deg2 -> return@Comparator 1
+                }
+            }
+
+            return@Comparator 0
+        }
+    }
 }
 
-public class NumberedPolynomialSpace<C, out A : Ring<C>>(
+public typealias NumberedMonomialSignature = List<UInt>
+public typealias NumberedPolynomialCoefficients<C> = Map<NumberedMonomialSignature, C>
+
+public open class NumberedPolynomialSpace<C, out A : Ring<C>>(
     public override val ring: A,
-) : PolynomialSpaceOverRing<C, NumberedPolynomial<C>, A> {
+) : PolynomialSpaceWithRing<C, NumberedPolynomial<C>, A> {
 
     override val zero: NumberedPolynomial<C> = NumberedPolynomialAsIs(emptyMap())
     override val one: NumberedPolynomial<C> by lazy { NumberedPolynomialAsIs(mapOf(emptyList<UInt>() to constantOne)) }
 
-    public override infix fun NumberedPolynomial<C>.equalsTo(other: NumberedPolynomial<C>): Boolean {
-        for ((key, value) in this.coefficients)
-            if (other.coefficients.computeOnOrElse(key, { value.isNotZero() }) { it -> value neq it }) return false
-        for ((key, value) in other.coefficients)
-            if (this.coefficients.computeOnOrElse(key, { value.isNotZero() }) { _ -> false }) return false
-        return true
-    }
+    public override infix fun NumberedPolynomial<C>.equalsTo(other: NumberedPolynomial<C>): Boolean =
+        mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 }
     public override fun NumberedPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
     public override fun NumberedPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
 
@@ -195,7 +211,7 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
         get() = coefficients.keys.maxOfOrNull { degs -> degs.lastIndex } ?: -1
     override val NumberedPolynomial<C>.degree: Int
         get() = coefficients.keys.maxOfOrNull { degs -> degs.sum().toInt() } ?: -1
-    public val NumberedPolynomial<C>.degrees: List<UInt>
+    public val NumberedPolynomial<C>.degrees: NumberedMonomialSignature
         get() =
             MutableList(lastVariable + 1) { 0u }.apply {
                 coefficients.keys.forEach { degs ->
@@ -224,9 +240,14 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     //  [ListPolynomialSpace] as a context receiver
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, C>): NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     @JvmName("substitutePolynomial")
     public inline fun NumberedPolynomial<C>.substitute(arguments: Map<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
         substitute(ring, arguments)
+    @JvmName("substitutePolynomial")
+    public inline fun NumberedPolynomial<C>.substitute(vararg arguments: Pair<Int, NumberedPolynomial<C>>) : NumberedPolynomial<C> =
+        substitute(ring, *arguments)
     public inline fun NumberedPolynomial<C>.substitute(arguments: Buffer<C>): NumberedPolynomial<C> =
         substitute(ring, arguments)
     @JvmName("substitutePolynomial")
@@ -242,4 +263,13 @@ public class NumberedPolynomialSpace<C, out A : Ring<C>>(
     @JvmName("invokePolynomial")
     public inline operator fun NumberedPolynomial<C>.invoke(arguments: Buffer<NumberedPolynomial<C>>): NumberedPolynomial<C> =
         substitute(ring, arguments)
+}
+
+public class NumberedPolynomialSpaceOverField<C, out A : Field<C>>(
+    ring: A,
+) : NumberedPolynomialSpace<C, A>(ring), PolynomialSpaceWithField<C, NumberedPolynomial<C>, A> {
+    public override fun NumberedPolynomial<C>.div(other: C): NumberedPolynomial<C> =
+        NumberedPolynomialAsIs(
+            coefficients.mapValues { it.value / other }
+        )
 }
