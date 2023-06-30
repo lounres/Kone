@@ -271,11 +271,19 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
         )
     }
 
-    public fun Point<C>.reflectBy(l: Line<C>): Point<C> = polynomialSpace {
+    public fun Point<C>.reflectThrough(l: Line<C>): Point<C> = polynomialSpace {
         Point(
             x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
             y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
             -(l.x * l.x + l.y * l.y) * z
+        )
+    }
+
+    public fun Point<C>.reflectThrough(P: Point<C>): Point<C> = polynomialSpace {
+        Point(
+            2 * P.x * z - x * P.z,
+            2 * P.y * z - y * P.z,
+            z * P.z,
         )
     }
 

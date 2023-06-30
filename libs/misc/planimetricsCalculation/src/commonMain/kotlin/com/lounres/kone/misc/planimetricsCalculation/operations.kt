@@ -412,6 +412,39 @@ public fun <V> PlanimetricsCalculationContext<V, *>.perpendicularityTest(l: Line
 //public fun <C> Point<C>.projectOn(l: Line<C>) = intersectionOf(l, perpendicular(l, this))
 
 // TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.reflectionThrough(l: Line<V>): Transformation<V> = polynomialSpace {
+    Transformation(
+        SquareMatrix(
+            listOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
+            listOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
+            listOf(zero, zero, -(l.x * l.x + l.y * l.y))
+        )
+    )
+}
+
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.reflectionThrough(P: Point<V>): Transformation<V> = polynomialSpace {
+    Transformation(
+        SquareMatrix(
+            listOf(-P.z, zero, 2 * P.x),
+            listOf(zero, -P.z, 2 * P.y),
+            listOf(zero, zero, P.z)
+        )
+    )
+}
+
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.homothetyBy(P: Point<V>, k: V): Transformation<V> = polynomialSpace {
+    Transformation(
+        SquareMatrix(
+            listOf(k * P.z, zero, (1 - k) * P.x),
+            listOf(zero, k * P.z, (1 - k) * P.y),
+            listOf(zero, zero, P.z)
+        )
+    )
+}
+
+// TODO: Docs
 public fun <C> PlanimetricsCalculationContext<C, *>.segmentBisector(A: Point<C>, B: Point<C>): Line<C> = polynomialSpace {
     Line(
         -2 * (A.x * B.z - B.x * A.z) * A.z * B.z,
@@ -467,24 +500,23 @@ public fun <C> PlanimetricsCalculationContext<C, *>.circleByDiameter(A: Point<C>
     )
 }
 
-// TODO: There is a problem with the formula. It needs to be checked
-//// TODO: Docs
-//public fun <V> PlanimetricsCalculationContext<V, *>.cocyclicityCondition(A: Point<V>, B: Point<V>, C: Point<V>, D: Point<V>): LabeledPolynomial<V> =
-//    polynomialSpace {
-//        matrixSpace {
-//            SquareMatrix(
-//                listOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
-//                listOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
-//                listOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
-//                listOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
-//            ).det
-//        }
-//    }
-//
-//// TODO: Docs
-//public fun <V> PlanimetricsCalculationContext<V, *>.cocyclicityTest(A: Point<V>, B: Point<V>, C: Point<V>, D: Point<V>): Boolean = polynomialSpace {
-//    cocyclicityCondition(A, B, C, D).isZero()
-//}
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.cocyclicityCondition(A: Point<V>, B: Point<V>, C: Point<V>, D: Point<V>): LabeledPolynomial<V> =
+    polynomialSpace {
+        matrixSpace {
+            SquareMatrix(
+                listOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
+                listOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
+                listOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
+                listOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
+            ).det
+        }
+    }
+
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.cocyclicityTest(A: Point<V>, B: Point<V>, C: Point<V>, D: Point<V>): Boolean = polynomialSpace {
+    cocyclicityCondition(A, B, C, D).isZero()
+}
 // endregion
 
 
