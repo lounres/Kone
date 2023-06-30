@@ -15,8 +15,6 @@ import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
 import com.lounres.kone.polynomial.LabeledPolynomialSpace
 import space.kscience.kmath.expressions.Symbol
-import kotlin.contracts.InvocationKind.*
-import kotlin.contracts.contract
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -104,6 +102,30 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
     public operator fun Transformation<C>.invoke(P: Point<C>): Point<C> = matrixSpace { Point(matrix * P.columnVector) }
     public operator fun Transformation<C>.invoke(l: Line<C>): Line<C> = matrixSpace { Line(l.rowVector * matrix.adjugate()) }
     public operator fun Transformation<C>.invoke(q: Quadric<C>): Quadric<C> = matrixSpace { (matrix.adjugate()).let { Quadric(it.transposed() * q.matrix * it) } }
+
+    public infix fun Angle<C>.equalsTo(other: Angle<C>): Boolean = this === other || polynomialSpace { sin * other.cos eq cos * other.sin }
+    // FIXME: KT-5351
+    public inline infix fun Angle<C>.notEqualsTo(other: Angle<C>): Boolean = !(this equalsTo other)
+    public inline infix fun Angle<C>.eq(other: Angle<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
+    public inline infix fun Angle<C>.neq(other: Angle<C>): Boolean = !(this equalsTo other)
+
+    public operator fun Angle<C>.unaryPlus(): Angle<C> = this
+    public operator fun Angle<C>.unaryMinus(): Angle<C> = polynomialSpace { Angle(-this@unaryMinus.sin, this@unaryMinus.cos) }
+    public operator fun Angle<C>.plus(other: Angle<C>): Angle<C> = polynomialSpace {
+        val that = this@plus
+        Angle(
+            that.sin * other.cos + other.sin * that.cos,
+            that.cos * other.cos - that.sin * other.sin,
+        )
+    }
+    public operator fun Angle<C>.minus(other: Angle<C>): Angle<C> = polynomialSpace {
+        val that = this@minus
+        Angle(
+            that.sin * other.cos - other.sin * that.cos,
+            that.cos * other.cos + that.sin * other.sin,
+        )
+    }
 
     // FIXME: Make the following functions extensions when context receivers will be available
 
@@ -284,6 +306,17 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
             2 * P.x * z - x * P.z,
             2 * P.y * z - y * P.z,
             z * P.z,
+        )
+    }
+
+    // TODO: Docs
+    public fun Line<C>.rotateByThrough(a: Angle<C>, P: Point<C>): Line<C> = polynomialSpace {
+        val ux = x * a.cos - y * a.sin
+        val uy = x * a.sin + y * a.cos
+        Line(
+            ux * P.z,
+            uy * P.z,
+            -(ux * P.x + uy * P.y)
         )
     }
 

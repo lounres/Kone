@@ -455,6 +455,33 @@ public fun <C> PlanimetricsCalculationContext<C, *>.segmentBisector(A: Point<C>,
 // endregion
 
 
+// region Angles
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.angleEqualityCondition(a: Angle<V>, b: Angle<V>): LabeledPolynomial<V> = polynomialSpace {
+    a.sin * b.cos - a.cos * b.sin
+}
+
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.angle(X: Point<V>, O: Point<V>, Y: Point<V>): Angle<V> = polynomialSpace {
+    val vx = X.x * O.z - O.x * X.z
+    val vy = X.y * O.z - O.y * X.z
+    val ux = Y.x * O.z - O.x * Y.z
+    val uy = Y.y * O.z - O.y * Y.z
+    Angle(
+        vx * uy - vy * ux,
+        vx * ux + vy * uy,
+    )
+}
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.angle(m: Line<V>, n: Line<V>): Angle<V> = polynomialSpace {
+    Angle(
+        m.x * n.y - m.y * n.x,
+        m.x * n.x + m.y * n.y,
+    )
+}
+// endregion
+
+
 // region Circles
 ///**
 // * Checks if the given quadric is circle.
