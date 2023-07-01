@@ -285,7 +285,7 @@ stal {
                         group = "examples"
                         description = "Runs the module's examples"
                         classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
-                        mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
+                        mainClass = "com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt"
                     }
                 }
             }
@@ -417,7 +417,7 @@ stal {
             task<Jar>("dokkaJar") {
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
                 description = "Assembles Kotlin docs with Dokka"
-                archiveClassifier.set("javadoc")
+                archiveClassifier = "javadoc"
                 afterEvaluate {
                     val dokkaHtml by tasks.getting
                     dependsOn(dokkaHtml)
@@ -427,7 +427,7 @@ stal {
 
             afterEvaluate {
                 tasks.withType<AbstractDokkaLeafTask> {
-                    moduleName.set("${project.extra["artifactPrefix"]}${project.name}")
+                    moduleName = "${project.extra["artifactPrefix"]}${project.name}"
                     // TODO
                 }
             }
