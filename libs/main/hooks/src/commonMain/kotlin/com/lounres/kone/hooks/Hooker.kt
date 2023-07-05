@@ -24,15 +24,24 @@ public interface Response<in O, in A> {
     public fun respondAfterAction(entity: O, action: A)
 }
 
+public inline fun <O, A> Response(
+    crossinline respondBefore: (entity: O, action: A) -> Unit,
+    crossinline respondAfter: (entity: O, action: A) -> Unit,
+): Response<O, A> =
+    object : Response<O, A> {
+        override fun respondBeforeAction(entity: O, action: A) = respondBefore(entity, action)
+        override fun respondAfterAction(entity: O, action: A) = respondAfter(entity, action)
+    }
+
 @Suppress("FunctionName")
-public fun <O, A> ResponseBeforeAction(respond: (entity: O, action: A) -> Unit ): Response<O, A> =
+public inline fun <O, A> ResponseBeforeAction(crossinline respond: (entity: O, action: A) -> Unit): Response<O, A> =
     object : Response<O, A> {
         override fun respondBeforeAction(entity: O, action: A) = respond(entity, action)
         override fun respondAfterAction(entity: O, action: A) {}
     }
 
 @Suppress("FunctionName")
-public fun <O, A> ResponseAfterAction(respond: (entity: O, action: A) -> Unit ): Response<O, A> =
+public inline fun <O, A> ResponseAfterAction(crossinline respond: (entity: O, action: A) -> Unit): Response<O, A> =
     object : Response<O, A> {
         override fun respondBeforeAction(entity: O, action: A) {}
         override fun respondAfterAction(entity: O, action: A) = respond(entity, action)
