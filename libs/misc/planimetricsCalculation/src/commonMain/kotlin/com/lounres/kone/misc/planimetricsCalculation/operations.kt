@@ -482,6 +482,22 @@ public fun <V> PlanimetricsCalculationContext<V, *>.angle(m: Line<V>, n: Line<V>
 // endregion
 
 
+// region Lengths
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.distanceBetween(A: Point<V>, B: Point<V>): Length<V> = polynomialSpace {
+    Length(
+        (A.x * B.z - B.x * A.z).let { it * it } + (A.y * B.z - B.y * A.z).let { it * it },
+        A.z * A.z * B.z * B.z
+    )
+}
+
+// TODO: Docs
+public fun <V> PlanimetricsCalculationContext<V, *>.lengthsEqualityCondition(a: Length<V>, b: Length<V>): LabeledPolynomial<V> = polynomialSpace {
+    a.measure * b.normalizer - a.normalizer * b.measure
+}
+//endregion
+
+
 // region Circles
 ///**
 // * Checks if the given quadric is circle.

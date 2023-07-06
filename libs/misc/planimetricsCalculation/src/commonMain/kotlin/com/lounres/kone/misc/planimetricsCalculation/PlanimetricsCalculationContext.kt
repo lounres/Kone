@@ -127,6 +127,13 @@ public class PlanimetricsCalculationContext<C, out A : Ring<C>>(
         )
     }
 
+    public infix fun Length<C>.equalsTo(other: Length<C>): Boolean = this === other || polynomialSpace { measure * other.normalizer eq normalizer * other.measure }
+    // FIXME: KT-5351
+    public inline infix fun Length<C>.notEqualsTo(other: Length<C>): Boolean = !(this equalsTo other)
+    public inline infix fun Length<C>.eq(other: Length<C>): Boolean = this equalsTo other
+    // FIXME: KT-5351
+    public inline infix fun Length<C>.neq(other: Length<C>): Boolean = !(this equalsTo other)
+
     // FIXME: Make the following functions extensions when context receivers will be available
 
     public operator fun Point.Companion.getValue(thisRef: Any?, property: KProperty<*>) : Point<C> = Point(property.name)
