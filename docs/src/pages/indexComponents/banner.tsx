@@ -7,12 +7,12 @@ import Translate, {translate} from '@docusaurus/Translate';
 import styles from './header.module.css';
 
 
-export default function Intro() {
+export default function Banner() {
     return (
         <header className={styles.heroBanner}>
             <div className="container">
                 <img
-                    src='img/logos/kone-logo-full-colored.svg'
+                    src='img/logos/kone-logo-colored.svg'
                     alt={translate({
                         message: "Kone logo",
                         id: "homepage.logo.alt",
@@ -21,7 +21,7 @@ export default function Intro() {
                     className={clsx(styles.logoBannerBig)}
                 />
                 <img
-                    src='img/logos/kone-logo-empty-colored-vov.svg'
+                    src='img/logos/kone-mark-colored-vov.svg'
                     alt={translate({
                         message: "Kone logo",
                         id: "homepage.logo.alt",
@@ -30,12 +30,6 @@ export default function Intro() {
                     className={clsx(styles.logoBannerSmall)}
                 />
                 <h1 className="hero__title">Kone</h1>
-                <p className="hero__subtitle">
-                    <Translate
-                        id="meta.tagline"
-                        description="The Kone's tagline"
-                    >Making pure math computations available</Translate>
-                </p>
                 {/*<div className={styles.buttons}>
                     <Link
                         className="button button--secondary button--lg"

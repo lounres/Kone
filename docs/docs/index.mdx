@@ -9,6 +9,32 @@ import DependencyTabs from '@site/src/components/DependencyTabs';
 [//]: # (If you want to skip thorough introduction and get started right now see ["Getting started"]&#40;#&#41;)
 [//]: # (:::)
 
+# What is a mathematical experiment?
+
+It's great if you can deduct what lemmas you should prove to form solution of some problem.
+But quite often it is very difficult to come up with which lemmas you need to prove.
+For example, it is not that obvious that $1^2 + \dots + n^2 = \frac{n(n+1)(2n+1)}{6}$.
+But the moment you guessed the formula you can easily prove it via induction.
+
+And how can you come up with formula for the expression?
+You can try interpolating the polynomial by first three terms.
+There is straightforward formula for the interpolation, but it's error-prone if you try to calculate it manually.
+And here computer enters the chat.
+You can write program that interpolates it for you.
+That's how you start conducting mathematical experiments.
+
+Thus, mathematical experiment is an experiment where you try computing or iterating something
+to come up with a hypothesis and prove it later.
+And it is obviously nice if you can make computer do the hard computations for you.
+
+## Then what's the problem with computer mathematical experiments?
+
+The problem is very simple.
+There is no already written algorithms for very basic manipulations.
+So you have to write your own implementations of polynomials or of cartesian product of collections.
+
+This library tries to fill the gap.
+
 # How is Kone organised?
 Kone is made to simplify your mathematical experimentation experience.
 So it is divided to small modules each of which meets some purpose.

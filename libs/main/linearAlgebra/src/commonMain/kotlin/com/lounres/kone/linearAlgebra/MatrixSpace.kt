@@ -190,7 +190,7 @@ public class MatrixSpace<C, out A: Ring<C>>(
             if (index == countOfRows - 1) return coefficients[index][freeIndices.first()]
             val restIndices = freeIndices.toMutableSet()
             return freeIndices
-                .asSequence()
+                .sorted()
                 .mapIndexed { count, it ->
                     val c = coefficients[index][it]
                     restIndices.remove(it)

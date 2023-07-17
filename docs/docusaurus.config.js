@@ -14,7 +14,7 @@ module.exports = {
   baseUrl: '/Kone/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logos/kone-logo-empty-themed.svg',
+  favicon: '/img/logos/kone-mark-themed.svg',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -97,8 +97,8 @@ module.exports = {
         title: 'Kone',
         logo: {
           alt: 'Kone',
-          src: 'img/logos/kone-logo-empty-violet.svg',
-          srcDark: 'img/logos/kone-logo-empty-orange.svg',
+          src: 'img/logos/kone-mark-violet.svg',
+          srcDark: 'img/logos/kone-mark-orange.svg',
         },
         items: [
           {
@@ -123,7 +123,7 @@ module.exports = {
             position: 'left'
           },
           {
-            href: 'https://lounres.github.io/math-kotlin-experiments',
+            href: 'https://github.com/lounres/math-kotlin-experiments', // Replace with 'https://lounres.github.io/math-kotlin-experiments',
             label: 'Math Kotlin Experiments',
             position: 'left'
           },
@@ -132,10 +132,10 @@ module.exports = {
           //   type: 'docsVersionDropdown',
           //   position: 'right',
           // },
-          { // TODO
-            type: 'localeDropdown',
-            position: 'right',
-          },
+          // { // TODO
+          //   type: 'localeDropdown',
+          //   position: 'right',
+          // },
           {
             href: 'https://github.com/lounres/Kone',
             position: 'right',
