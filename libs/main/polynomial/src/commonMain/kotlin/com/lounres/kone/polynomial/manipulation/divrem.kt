@@ -27,7 +27,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.leadD
     while (remainderLeadingSignature isDivisibleBy divisorLeadingSignature) {
         val quotCoefficient = remainder.getOrZero(remainderLeadingSignature) / divisorLeadingCoefficient
         val quotSignature = remainderLeadingSignature - divisorLeadingSignature
-        remainder.minusAssignProduct(divisor, polynomialOf(Monomial(quotCoefficient, quotSignature)))
+        remainder.minusAssignProduct(divisor, polynomialOf(Monomial(quotSignature, quotCoefficient)))
         remainderLeadingSignature = remainder.leadingSignature
         quotient[quotSignature] = quotCoefficient
     }
@@ -51,7 +51,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.divRe
         if (dividendLeadingSignature isDivisibleBy divisorLeadingSignature) {
             val quotCoefficient = remainder.getOrZero(dividendLeadingSignature) / divisorLeadingCoefficient
             val quotSignature = dividendLeadingSignature - divisorLeadingSignature
-            remainder.minusAssignProduct(divisor, polynomialOf(Monomial(quotCoefficient, quotSignature)))
+            remainder.minusAssignProduct(divisor, polynomialOf(Monomial(quotSignature, quotCoefficient)))
             dividendLeadingSignature = dividend.leadingSignature
             quotient[quotSignature] = quotCoefficient
         } else {
@@ -82,7 +82,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.leadD
 
         val quotCoefficient = remainder.getOrZero(remainderLeadingSignature) / divisorsLeadingCoefficients[divisorIndex]
         val quotSignature = remainderLeadingSignature - divisorsLeadingSignatures[divisorIndex]
-        remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotCoefficient, quotSignature)))
+        remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
         remainderLeadingSignature = remainder.leadingSignature
         quotient[quotSignature] = quotCoefficient
     }
@@ -110,7 +110,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.divRe
         if (divisorIndex != -1) {
             val quotCoefficient = remainder.getOrZero(dividendLeadingSignature) / divisorsLeadingCoefficients[divisorIndex]
             val quotSignature = dividendLeadingSignature - divisorsLeadingSignatures[divisorIndex]
-            remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotCoefficient, quotSignature)))
+            remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
             dividendLeadingSignature = dividend.leadingSignature
             quotient[quotSignature] = quotCoefficient
         } else {

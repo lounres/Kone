@@ -85,7 +85,7 @@ context(MultivariatePolynomialManipulationSpace<*, V, MS, MutMS, *, *, *>)
 public fun <V, MS, MutMS: MS> lcm(signature1: MS, signature2: MS): MS {
     val lcm = mutableSignatureOf()
     for (v in signature1.variables union signature2.variables) {
-        lcm[v] = min(signature1.getOrZero(v), signature2.getOrZero(v))
+        lcm[v] = max(signature1.getOrZero(v), signature2.getOrZero(v))
     }
     return lcm
 }
@@ -123,24 +123,24 @@ context(MultivariatePolynomialManipulationSpace<*, *, MS, *, P, *, *>, Order<MS>
 public val <MS, P: Polynomial<*>> P.leadingSignature: MS get() = signatures.maxWith(comparator)
 
 context(MultivariatePolynomialManipulationSpace<C, V, MS, *, P, *, *>, Order<MS>)
-public val <C, V, MS, P: Polynomial<C>> P.leadingTerm: Monomial<C, MS> get() = leadingSignature.let { Monomial(this.getOrZero(it), it) }
+public val <C, V, MS, P: Polynomial<C>> P.leadingTerm: Monomial<C, MS> get() = leadingSignature.let { Monomial(it, this.getOrZero(it)) }
 
 context(MultivariatePolynomialManipulationSpace<C, *, MS, *, P, *, *>, Order<MS>)
 public val <C, MS, P: Polynomial<C>> P.leadingCoefficient: C get() = leadingSignature.let { this.getOrZero(it) }
 
 context(A, MultivariatePolynomialManipulationSpace<C, *, MS, *, P, MutP, A>)
 public operator fun <C, MS, P: Polynomial<C>, MutP: P, A: Ring<C>> MutP.plusAssign(other: P) {
-    for ((c, ms) in other) this[ms] = this.getOrZero(ms) + c
+    for ((ms, c) in other) this[ms] = this.getOrZero(ms) + c
 }
 
 context(A, MultivariatePolynomialManipulationSpace<C, *, MS, *, P, MutP, A>)
 public operator fun <C, MS, P: Polynomial<C>, MutP: P, A: Ring<C>> MutP.minusAssign(other: P) {
-    for ((c, ms) in other) this[ms] = this.getOrZero(ms) - c
+    for ((ms, c) in other) this[ms] = this.getOrZero(ms) - c
 }
 
 context(A, MultivariatePolynomialManipulationSpace<C, *, MS, *, P, MutP, A>)
 public fun <C, MS, P: Polynomial<C>, MutP: P, A: Ring<C>> MutP.plusAssignProduct(multiplier1: P, multiplier2: P) {
-    for ((c1, ms1) in multiplier1) for ((c2, ms2) in multiplier2) {
+    for ((ms1, c1) in multiplier1) for ((ms2, c2) in multiplier2) {
         val ms = ms1 + ms2
         this[ms] = this.getOrZero(ms) + c1 * c2
     }
@@ -148,7 +148,7 @@ public fun <C, MS, P: Polynomial<C>, MutP: P, A: Ring<C>> MutP.plusAssignProduct
 
 context(A, MultivariatePolynomialManipulationSpace<C, *, MS, *, P, MutP, A>)
 public fun <C, MS, P: Polynomial<C>, MutP: P, A: Ring<C>> MutP.minusAssignProduct(multiplier1: P, multiplier2: P) {
-    for ((c1, ms1) in multiplier1) for ((c2, ms2) in multiplier2) {
+    for ((ms1, c1) in multiplier1) for ((ms2, c2) in multiplier2) {
         val ms = ms1 + ms2
         this[ms] = this.getOrZero(ms) + c1 * c2
     }

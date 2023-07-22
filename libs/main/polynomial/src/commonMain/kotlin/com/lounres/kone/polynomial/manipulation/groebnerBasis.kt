@@ -29,7 +29,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> Ideal<P
 
         val (_, ai, aj) = lcmWithMultipliers(gi.signature, gj.signature)
 
-        var s = fi * polynomialOf(Monomial(gj.coefficient, ai)) - fj * polynomialOf(Monomial(gi.coefficient, aj)) // TODO: Implement multiplication on signatures and replace the expression with them.
+        var s = fi * polynomialOf(Monomial(ai, gj.coefficient)) - fj * polynomialOf(Monomial(aj, gi.coefficient)) // TODO: Implement multiplication on signatures and replace the expression with them.
 
         s = s.divRem(basis).remainder
 
