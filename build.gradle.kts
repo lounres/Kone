@@ -35,20 +35,16 @@ plugins {
 
 val version: String by project
 val group: String by project
+val apiUrl: String by project
 
-tasks.register("docusaurusInputDataUpdate") {
-    group = "documentation"
-    description = "Updates `inputData.ts` file for Docusaurus"
-    doFirst {
-        rootDir.resolve("docs/src/inputData.ts").writer().use {
-            it.write(
-                """
-                    export const koneGroup = "${rootProject.group}"
-                    export const koneVersion = "${rootProject.version}"
-                """.trimIndent()
-            )
-        }
-    }
+rootDir.resolve("docs/src/inputData.ts").writer().use {
+    it.write(
+        """
+            export const koneGroup = "$group"
+            export const koneVersion = "$version"
+            export const koneApiUrl = "$apiUrl"
+        """.trimIndent()
+    )
 }
 
 allprojects {

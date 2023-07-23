@@ -2,11 +2,189 @@
 title: Polynomial
 sidebar_position: 4
 ---
+import DependencyTabs from '@site/src/components/DependencyTabs';
 
 # Kone: Polynomial
 
-:::note
-Sorry, this page is currently under construction.
+This module extends [module "algebraic"](/docs/kone-main/algebraic) and provides the basic concept of working with univariate and multivariate polynomials and rational functions over any specified ring in so-called polynomial and rational functions spaces and their implementations.
 
-![Just funny todo notebook](/img/todo.jpg)
+## Applying the dependencies
+
+<DependencyTabs artifact="kone.polynomial"/>
+
+## Concept
+
+Let us remind common terms and introduce Kone-specific ones:
+- *Free variable* or *indeterminate* is just a formal symbol. Like $x$, $y$, $z$, $n$, $m$, $\alpha$, $\zeta$, etc. In Kone variable can be described as absolutely arbitrary string (because they are represented as KMath's `Symbol` instances).
+- *Monomial* or *term of polynomial* (over a ring $R$) is a formal finite (associative commutative) product of an element of $R$ and free variables. If used variables are $x_1$, $x_2$, ..., $x_n$, then monomial is usually represented as a product $a \; x_1^{d_1} x_2^{d_2} \dots x_n^{d_n}$ for some natural $d_i$. $a$ is called a *coefficient* of the monomial and mapping $\{x_1 \to d_1, \dots, x_n \to d_n\}$ is called *signature* of the monomial.
+- *Polynomial* (over a ring $R$) is a formal finite (associative commutative) sum of monomials.
+- If a polynomial does not involve any variable (it is equal to an element of the ring $R$), it is called *constant*. If it involves a single variable, it is called *univariate*. If it involves several variables, it is called *multivariate*.
+- Polynomials of variables $x_1$, ..., $x_n$ over ring $R$ form a ring that is called *polynomial space* over $R$ and is denoted as $R[x_1, \dots, x_n]$.
+- Given a total order on signatures, term with the greatest signature is called a *leading term* of the polynomial, its coefficient is called a *leading coefficient* of the polynomial, and its signature is called a *leading signature* of the polynomial.
+
+### Polynomial spaces interfaces
+
+In a polynomial space over ring `R` we specify algebraic operations on polynomials, and algebraic operations on polynomials and constants. Basically, the polynomial main interfaces look like this (see API reference for [`PolynomialSpace`](https://lounres.github.io/Kone/api//libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space/index.html) and [`MultivariatePolynomialSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space/index.html)):
+```
+// A bit simplified. See full API in API reference.
+
+context(A)
+public interface PolynomialSpace<C, P, out A: Ring<C>> : Ring<P> {
+    // Constants of the space
+    public val constantZero: C
+    public val constantOne: C
+    public val polynomialZero: C
+    public val polynomialOne: C
+
+    // Equality tests.
+    public override infix fun P.equalsTo(other: P): Boolean = this == other
+
+    // Conversions
+    public fun constantValueOf(value: Int): C
+    public override fun valueOf(value: Int): P
+    public fun valueOf(value: C): P
+
+    // Operations on constants with polynomials
+    public operator fun P.plus(other: Int): P
+    public operator fun P.minus(other: Int): P
+    public operator fun P.times(other: Int): P
+
+    public operator fun P.plus(other: C): P
+    public operator fun P.minus(other: C): P
+    public operator fun P.times(other: C): P
+
+    ...
+
+    // Operations on polynomials
+    public override operator fun P.unaryPlus(): P = this
+    public override operator fun P.unaryMinus(): P
+    public override operator fun P.plus(other: P): P
+    public override operator fun P.minus(other: P): P
+    public override operator fun P.times(other: P): P
+
+    // Polynomial properties
+    public val P.degree: Int
+}
+
+
+context(A)
+public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: PolynomialSpace<C, P, A> {
+    // Convertions on variables
+    public fun valueOf(variable: V): P
+
+    // Algebraic operations involving variable.
+    public operator fun V.plus(other: Int): P
+    public operator fun V.minus(other: Int): P
+    public operator fun V.times(other: Int): P
+
+    public operator fun V.plus(other: C): P
+    public operator fun V.minus(other: C): P
+    public operator fun V.times(other: C): P
+
+    public operator fun V.plus(other: P): P
+    public operator fun V.minus(other: P): P
+    public operator fun V.times(other: P): P
+
+    public operator fun V.unaryPlus(): P
+    public operator fun V.unaryMinus(): P
+    public operator fun V.plus(other: V): P
+    public operator fun V.minus(other: V): P
+    public operator fun V.times(other: V): P
+
+    ...
+
+    // Properties of multivariate polynomials.
+    public val P.degrees: Map<V, UInt>
+    public fun P.degreeBy(variable: V): UInt
+    public fun P.degreeBy(variables: Collection<V>): UInt
+    public val P.variables: Set<V>
+    public val P.countOfVariables: Int
+}
+```
+
+There are also division operations in case of a field `R`. See [`PolynomialSpaceOverField`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space-over-field/index.html) and [`MultivariatePolynomialSpaceOverField`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space-over-field/index.html)
+
+### Implementations of polynomial spaces
+
+In Kone, there are two types of polynomials:
+1. [`ListPolynomial`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial/index.html) that represents a univariate polynomial $a_0 + \dots + a_n x^n$ as a list $[a_0, \dots, a_n]$. Thus, `ListPolynomial<E>` just wraps `List<E>`.
+2. [`LabelledPolynomial`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial/index.html) that represents a multivariate polynomial $\sum_{i=1}^n a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ as a map $\{s_1 \to a_1, \dots, s_n \to a_n\}$ where each $s_i$ is a signature of $a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ and is represented as a map $\{x_1 \to d_{1, i}, \dots, x_k \to d_{k, i}\}$. Thus, `LabelledPolynomial<E>` just wraps `Map<Map<Symbol, UInt>, E>`.
+
+:::caution
+`NumberedPolynomial` implementation is deprecated and is going to be removed soon.
 :::
+
+Both types of polynomials have associated polynomial spaces ([`ListPolynomialSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial-space/index.html) and [`LabelledPolynomial`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial-space/index.html)) that are constructed on provided ring.
+
+### Rational functions spaces interfaces
+
+In a rational functions space over ring `R` we specify algebraic operations on constants, polynomials, (variables,) and rational functions. Basically, the polynomial main interfaces look like this (see API reference for [`RationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space/index.html) and [`RationalFunctionSpaceOverField`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space-over-field/index.html)):
+```
+// A bit simplified. See full API in API reference.
+
+context(PS)
+public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
+    // Constants of the space
+    public val polynomialZero: P get() = polynomialSpace.run { zero }
+    public val polynomialOne: P get() = polynomialSpace.run { one }
+
+    // Equality tests
+    public override infix fun RF.equalsTo(other: RF): Boolean
+
+    // Convertions
+    public fun polynomialValueOf(value: Int): P
+    public override fun valueOf(value: Int): RF
+    public fun polynomialValueOf(value: C): P
+    public fun valueOf(value: C): RF = valueOf(polynomialValueOf(value))
+    public fun valueOf(value: P): RF = one * value
+
+    // Operations on RFs and others
+    public operator fun RF.plus(other: C): RF
+    public operator fun RF.minus(other: C): RF
+    public operator fun RF.times(other: C): RF
+    public operator fun RF.div(other: C): RF
+
+    public operator fun RF.plus(other: P): RF
+    public operator fun RF.minus(other: P): RF
+    public operator fun RF.times(other: P): RF
+    public operator fun RF.div(other: P): RF
+
+    public operator fun P.div(other: P): RF
+
+    public override operator fun RF.unaryPlus(): RF = this
+    public override operator fun RF.unaryMinus(): RF
+    public override operator fun RF.plus(other: RF): RF
+    public override operator fun RF.minus(other: RF): RF
+    public override operator fun RF.times(other: RF): RF
+    public override operator fun RF.div(other: RF): RF
+
+    ...
+
+    // Properties
+    public val RF.numeratorDegree: Int get() = numerator.degree
+    public val RF.denominatorDegree: Int get() = denominator.degree
+}
+
+context(PS)
+public interface MultivariateRationalFunctionSpace<C, V, P, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: MultivariatePolynomialSpace<C, V, P, A>> : RationalFunctionSpace<C, P, RF, A, PS> {
+    // Variable convertions
+    public fun polynomialValueOf(variable: V): P = polynomialSpace.run { valueOf(variable) }
+    public fun valueOf(variable: V): RF = valueOf(polynomialValueOf(variable))
+
+    // Algebraic operations on variables
+    public operator fun RF.plus(other: V): RF
+    public operator fun RF.minus(other: V): RF
+    public operator fun RF.times(other: V): RF
+    public operator fun RF.div(other: V): RF
+
+    ...
+
+    // Other properties.
+    public val RF.variables: Set<V> get() = numerator.variables union denominator.variables
+    public val RF.countOfVariables: Int get() = variables.size
+}
+```
+
+### Implementations of rational functions spaces
+
+In Kone, there are two types of rational functions: [`ListRationalFunction`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function/index.html) and [`LabeledRationalFunction`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function/index.html). They both are just represented as fractions of corresponding polynomial types. Both types of rational functions have associated spaces ([`ListRationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function-space/index.html) and [`LabeledRationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function-space/index.html)) that are constructed on provided ring.

@@ -36,13 +36,13 @@ export default function DependencyTabs ({group=koneGroup, artifact, version=kone
             <TabItem value="maven" label="Maven" default>
                 <CodeBlock language="xml" title="pom.xml" showLineNumbers>
                 {
-                    `<dependencies>
+                    `<dependency>
                     |    <!-- highlight-start -->
                     |    <groupId>${group}</groupId>
                     |    <artifactId>${artifact}</artifactId>
                     |    <version>${version}</version>
                     |    <!-- highlight-end -->
-                    |</dependencies>`.replaceAll(/ *\|/g, "")
+                    |</dependency>`.replaceAll(/ *\|/g, "")
                 }
                 </CodeBlock>
             </TabItem>
