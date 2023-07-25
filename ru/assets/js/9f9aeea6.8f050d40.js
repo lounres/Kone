@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksite=self.webpackChunksite||[]).push([[588],{6615:e=>{e.exports=JSON.parse('[{"label":"KMath","permalink":"/Kone/ru/blog/tags/k-math","count":1}]')}}]);
