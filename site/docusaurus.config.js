@@ -1,6 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const {koneUrl, koneBaseUrl} = require('./inputData')
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const math = require('remark-math');
@@ -10,8 +11,8 @@ const katex = require('rehype-katex');
 module.exports = {
   title: 'Kone',
   tagline: 'Making pure math computations available',
-  url: 'https://lounres.github.io',
-  baseUrl: '/Kone/docs/',
+  url: koneUrl,
+  baseUrl: koneBaseUrl,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: '/img/logos/kone-mark-themed.svg',
@@ -108,7 +109,7 @@ module.exports = {
             position: 'left',
           },
           {
-            href: `https://lounres.github.io/Kone/api`,
+            href: `${koneUrl}${koneBaseUrl}api`,
             label: 'API',
             position: 'left',
           },

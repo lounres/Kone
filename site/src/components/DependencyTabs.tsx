@@ -13,22 +13,22 @@ interface Dependency {
 export default function DependencyTabs ({group=koneGroup, artifact, version=koneVersion}: Dependency): JSX.Element {
     return (
         <Tabs groupId="buildSystem">
-            <TabItem value="gradle-groovy" label="Gradle Groovy DSL">
-                <CodeBlock language="groovy" title="build.gradle" showLineNumbers>
-                    {
-                        `dependencies {
-                        |    // highlight-next-line
-                        |    implementation '${group}:${artifact}:${version}'
-                        |}`.replaceAll(/ *\|/g, "")
-                    }
-                </CodeBlock>
-            </TabItem>
             <TabItem value="gradle-kotlin" label="Gradle Kotlin DSL" default>
                 <CodeBlock language="kotlin" title="build.gradle.kts" showLineNumbers>
                     {
                         `dependencies {
                         |    // highlight-next-line
                         |    implementation("${group}:${artifact}:${version}")
+                        |}`.replaceAll(/ *\|/g, "")
+                    }
+                </CodeBlock>
+            </TabItem>
+            <TabItem value="gradle-groovy" label="Gradle Groovy DSL">
+                <CodeBlock language="groovy" title="build.gradle" showLineNumbers>
+                    {
+                        `dependencies {
+                        |    // highlight-next-line
+                        |    implementation '${group}:${artifact}:${version}'
                         |}`.replaceAll(/ *\|/g, "")
                     }
                 </CodeBlock>

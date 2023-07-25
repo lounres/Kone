@@ -33,18 +33,42 @@ plugins {
     `maven-publish`
 }
 
-val version: String by project
-val group: String by project
-val apiUrl: String by project
+val koneVersion = project.properties["version"] as String
+val koneGroup = project.properties["group"] as String
+val koneUrl: String by project
+val koneBaseUrl: String by project
 
-rootDir.resolve("docs/src/inputData.ts").writer().use {
-    it.write(
-        """
-            export const koneGroup = "$group"
-            export const koneVersion = "$version"
-            export const koneApiUrl = "$apiUrl"
-        """.trimIndent()
-    )
+tasks.register<Copy>("docusaurusProcessResources") {
+    group = "documentation"
+    dependsOn("dokkaHtmlMultiModule")
+    from("build/dokka/htmlMultiModule")
+    into("docs/static/api")
+    outputs.files("docs/src/inputData.ts", "docs/inputData.js")
+    doLast {
+        rootDir.resolve("docs/src/inputData.ts").writer().use {
+            it.write(
+                """
+                    export const koneGroup = "$koneGroup"
+                    export const koneVersion = "$koneVersion"
+                    export const koneUrl = "$koneUrl"
+                    export const koneBaseUrl = "$koneBaseUrl"
+                """.trimIndent()
+            )
+        }
+        rootDir.resolve("docs/inputData.js").writer().use {
+            it.write(
+                """
+                    module.exports = {
+                        koneGroup: "$koneGroup",
+                        koneVersion: "$koneVersion",
+                        koneUrl: "$koneUrl",
+                        koneBaseUrl: "$koneBaseUrl",
+                    }
+                """.trimIndent()
+            )
+        }
+
+    }
 }
 
 allprojects {
@@ -67,7 +91,7 @@ val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
 val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
 catalog.versionCatalog {
-    version("kone", version)
+    version("kone", koneVersion)
 }
 
 gradle.projectsEvaluated {
@@ -80,7 +104,7 @@ gradle.projectsEvaluated {
     val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
         for (p in bundleProjects)
-            library(p.alias, group, p.artifact).versionRef("kone")
+            library(p.alias, koneGroup, p.artifact).versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -97,6 +121,10 @@ publishing {
             from(components["versionCatalog"])
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule {
+
 }
 
 stal {

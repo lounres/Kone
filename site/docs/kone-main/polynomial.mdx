@@ -3,6 +3,7 @@ title: Polynomial
 sidebar_position: 4
 ---
 import DependencyTabs from '@site/src/components/DependencyTabs';
+import ApiLink from '@site/src/components/ApiLink';
 
 # Kone: Polynomial
 
@@ -24,7 +25,7 @@ Let us remind common terms and introduce Kone-specific ones:
 
 ### Polynomial spaces interfaces
 
-In a polynomial space over ring `R` we specify algebraic operations on polynomials, and algebraic operations on polynomials and constants. Basically, the polynomial main interfaces look like this (see API reference for [`PolynomialSpace`](https://lounres.github.io/Kone/api//libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space/index.html) and [`MultivariatePolynomialSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space/index.html)):
+In a polynomial space over ring `R` we specify algebraic operations on polynomials, and algebraic operations on polynomials and constants. Basically, the polynomial main interfaces look like this (see API reference for <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space/index.html'>`PolynomialSpace`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space/index.html'>`MultivariatePolynomialSpace`</ApiLink>):
 ```
 // A bit simplified. See full API in API reference.
 
@@ -102,23 +103,23 @@ public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: Polynomia
 }
 ```
 
-There are also division operations in case of a field `R`. See [`PolynomialSpaceOverField`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space-over-field/index.html) and [`MultivariatePolynomialSpaceOverField`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space-over-field/index.html)
+There are also division operations in case of a field `R`. See <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-polynomial-space-over-field/index.html'>`PolynomialSpaceOverField`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-multivariate-polynomial-space-over-field/index.html'>`MultivariatePolynomialSpaceOverField`</ApiLink>
 
 ### Implementations of polynomial spaces
 
-In Kone, there are two types of polynomials:
-1. [`ListPolynomial`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial/index.html) that represents a univariate polynomial $a_0 + \dots + a_n x^n$ as a list $[a_0, \dots, a_n]$. Thus, `ListPolynomial<E>` just wraps `List<E>`.
-2. [`LabelledPolynomial`](https://lounres.github.io/Kone/api/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial/index.html) that represents a multivariate polynomial $\sum_{i=1}^n a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ as a map $\{s_1 \to a_1, \dots, s_n \to a_n\}$ where each $s_i$ is a signature of $a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ and is represented as a map $\{x_1 \to d_{1, i}, \dots, x_k \to d_{k, i}\}$. Thus, `LabelledPolynomial<E>` just wraps `Map<Map<Symbol, UInt>, E>`.
+In Kone, there are two types of polynomial representation:
+1. One can represent a univariate polynomial $a_0 + \dots + a_n x^n$ as a list $[a_0, \dots, a_n]$. <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial/index.html'>`ListPolynomial`</ApiLink> implements this behaviour.
+2. One can represent a multivariate polynomial $\sum_{i=1}^n a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ as a map $\{s_1 \to a_1, \dots, s_n \to a_n\}$ where each $s_i$ is a signature of $a_i x_1^{d_{1, i}} \dots x_k^{d_{k, i}}$ and is represented as a map $\{x_1 \to d_{1, i}, \dots, x_k \to d_{k, i}\}$. <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial/index.html'>`LabelledPolynomial`</ApiLink> implements this behaviour.
 
 :::caution
 `NumberedPolynomial` implementation is deprecated and is going to be removed soon.
 :::
 
-Both types of polynomials have associated polynomial spaces ([`ListPolynomialSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial-space/index.html) and [`LabelledPolynomial`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial-space/index.html)) that are constructed on provided ring.
+Both types of polynomials have associated polynomial spaces (<ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-list-polynomial-space/index.html'>`ListPolynomialSpace`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-labeled-polynomial-space/index.html'>`LabelledPolynomial`</ApiLink>) that are constructed on provided ring.
 
 ### Rational functions spaces interfaces
 
-In a rational functions space over ring `R` we specify algebraic operations on constants, polynomials, (variables,) and rational functions. Basically, the polynomial main interfaces look like this (see API reference for [`RationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space/index.html) and [`RationalFunctionSpaceOverField`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space-over-field/index.html)):
+In a rational functions space over ring `R` we specify algebraic operations on constants, polynomials, (variables,) and rational functions. Basically, the polynomial main interfaces look like this (see API reference for <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space/index.html'>`RationalFunctionSpace`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-rational-function-space-over-field/index.html'>`RationalFunctionSpaceOverField`</ApiLink>):
 ```
 // A bit simplified. See full API in API reference.
 
@@ -168,8 +169,8 @@ public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: 
 context(PS)
 public interface MultivariateRationalFunctionSpace<C, V, P, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: MultivariatePolynomialSpace<C, V, P, A>> : RationalFunctionSpace<C, P, RF, A, PS> {
     // Variable convertions
-    public fun polynomialValueOf(variable: V): P = polynomialSpace.run { valueOf(variable) }
-    public fun valueOf(variable: V): RF = valueOf(polynomialValueOf(variable))
+    public fun polynomialValueOf(variable: V): P
+    public fun valueOf(variable: V): RF
 
     // Algebraic operations on variables
     public operator fun RF.plus(other: V): RF
@@ -180,11 +181,11 @@ public interface MultivariateRationalFunctionSpace<C, V, P, RF: RationalFunction
     ...
 
     // Other properties.
-    public val RF.variables: Set<V> get() = numerator.variables union denominator.variables
-    public val RF.countOfVariables: Int get() = variables.size
+    public val RF.variables: Set<V>
+    public val RF.countOfVariables: Int
 }
 ```
 
 ### Implementations of rational functions spaces
 
-In Kone, there are two types of rational functions: [`ListRationalFunction`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function/index.html) and [`LabeledRationalFunction`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function/index.html). They both are just represented as fractions of corresponding polynomial types. Both types of rational functions have associated spaces ([`ListRationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function-space/index.html) and [`LabeledRationalFunctionSpace`](https://lounres.github.io/Kone/api/libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function-space/index.html)) that are constructed on provided ring.
+In Kone, there are two types of rational functions: <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function/index.html'>`ListRationalFunction`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function/index.html'>`LabeledRationalFunction`</ApiLink>. They both are just represented as fractions of corresponding polynomial types. Both types of rational functions have associated spaces (<ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-list-rational-function-space/index.html'>`ListRationalFunctionSpace`</ApiLink> and <ApiLink to='libs/main/polynomial/com.lounres.kone.polynomial/-labeled-rational-function-space/index.html'>`LabeledRationalFunctionSpace`</ApiLink>) that are constructed on provided ring.
