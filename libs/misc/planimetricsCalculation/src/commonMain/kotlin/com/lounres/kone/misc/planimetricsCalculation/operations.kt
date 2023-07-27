@@ -3,14 +3,23 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:Suppress("LocalVariableName")
+@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE")
 
 package com.lounres.kone.misc.planimetricsCalculation
 
 import com.lounres.kone.context.invoke
 import com.lounres.kone.linearAlgebra.SquareMatrix
 import com.lounres.kone.polynomial.LabeledPolynomial
+import space.kscience.kmath.expressions.Symbol
+import kotlin.properties.ReadOnlyProperty
 
+
+// region Finiteness
+context(PlanimetricsCalculationContext<E, *>)
+public val <E> Point<E>.isFinite : Boolean get() = calculate { z.isNotZero() }
+//context(PlanimetricsCalculationContext<E, *>)
+//public val <E> Line<E>.isFinite : Boolean get() = TODO("Finiteness test is not yet implemented")
+// endregion
 
 // region Lying and tangency
 /**
@@ -188,6 +197,34 @@ context(PlanimetricsCalculationContext<E, *>)
 public infix fun <E> Quadric<E>.isNotTangentTo(l: Line<E>): Boolean = calculate { tangencyCondition(l, this).isNotZero() }
 // endregion
 
+// region Arbitrary points and lines with initial conditions
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> lineThrough(P: Point<E>) : ReadOnlyProperty<Any?, Line<E>> = ReadOnlyProperty { _, prop ->
+    val xParameter = Symbol("${prop.name}\$param_x")
+    val yParameter = Symbol("${prop.name}\$param_y")
+    val zParameter = Symbol("${prop.name}\$param_z")
+    calculate {
+        Line(
+            P.y * zParameter - P.z * yParameter,
+            P.z * xParameter - P.x * zParameter,
+            P.x * yParameter - P.y * xParameter,
+        )
+    }
+}
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> pointOn(L: Line<E>) : ReadOnlyProperty<Any?, Point<E>> = ReadOnlyProperty { _, prop ->
+    val xParameter = Symbol("${prop.name}\$param_x")
+    val yParameter = Symbol("${prop.name}\$param_y")
+    val zParameter = Symbol("${prop.name}\$param_z")
+    calculate {
+        Point(
+            L.y * zParameter - L.z * yParameter,
+            L.z * xParameter - L.x * zParameter,
+            L.x * yParameter - L.y * xParameter,
+        )
+    }
+}
+// endregion
 
 // region Lines and segments
 /**
@@ -229,7 +266,7 @@ public fun <E> intersectionOf(l: Line<E>, m: Line<E>): Point<E> = calculate {
 /**
  * Returns an expression which equality to zero is equivalent to collinearity of the points.
  *
- * Obviously it's determinant of matrix constructed by row vectors of the points.
+ * Obviously, it's determinant of matrix constructed by row vectors of the points.
  *
  * @param A The first point.
  * @param B The second point.
@@ -237,7 +274,8 @@ public fun <E> intersectionOf(l: Line<E>, m: Line<E>): Point<E> = calculate {
  * @return The expression.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> collinearityCondition(A: Point<E>, B: Point<E>, C: Point<E>): LabeledPolynomial<E> = calculate { A.x * (B.y * C.z - B.z * C.y) + B.x * (C.y * A.z - C.z * A.y) + C.x * (A.y * B.z - A.z * B.y) }
+public fun <E> collinearityCondition(A: Point<E>, B: Point<E>, C: Point<E>): LabeledPolynomial<E> =
+    calculate { A.x * (B.y * C.z - B.z * C.y) + B.x * (C.y * A.z - C.z * A.y) + C.x * (A.y * B.z - A.z * B.y) }
 
 /**
  * Tests if the points are collinear.
@@ -248,12 +286,13 @@ public fun <E> collinearityCondition(A: Point<E>, B: Point<E>, C: Point<E>): Lab
  * @return The test result.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> collinearityTest(A: Point<E>, B: Point<E>, C: Point<E>): Boolean = calculate { collinearityCondition(A, B, C) eq zero }
+public fun <E> collinearityTest(A: Point<E>, B: Point<E>, C: Point<E>): Boolean =
+    calculate { collinearityCondition(A, B, C) eq zero }
 
 /**
  * Returns an expression which equality to zero is equivalent to concurrency of the lines.
  *
- * Obviously it's determinant of matrix constructed by row vectors of the lines.
+ * Obviously, it's determinant of matrix constructed by row vectors of the lines.
  *
  * @param l The first line.
  * @param m The second line.
@@ -261,7 +300,8 @@ public fun <E> collinearityTest(A: Point<E>, B: Point<E>, C: Point<E>): Boolean 
  * @return The expression.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> concurrencyCondition(l: Line<E>, m: Line<E>, n: Line<E>): LabeledPolynomial<E> = calculate { l.x * (m.y * n.z - m.z * n.y) + m.x * (n.y * l.z - n.z * l.y) + n.x * (l.y * m.z - l.z * m.y) }
+public fun <E> concurrencyCondition(l: Line<E>, m: Line<E>, n: Line<E>): LabeledPolynomial<E> =
+    calculate { l.x * (m.y * n.z - m.z * n.y) + m.x * (n.y * l.z - n.z * l.y) + n.x * (l.y * m.z - l.z * m.y) }
 
 /**
  * Tests if the lines are
@@ -272,7 +312,8 @@ public fun <E> concurrencyCondition(l: Line<E>, m: Line<E>, n: Line<E>): Labeled
  * @return The test result.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> concurrencyTest(l: Line<E>, m: Line<E>, n: Line<E>): Boolean = calculate { concurrencyCondition(l, m, n) eq zero }
+public fun <E> concurrencyTest(l: Line<E>, m: Line<E>, n: Line<E>): Boolean =
+    calculate { concurrencyCondition(l, m, n) eq zero }
 
 /**
  * Constructs a midpoint between [A] and [B]. The affine map is considered generated by [Point<E>.x] and [Point<E>.y]
@@ -293,7 +334,7 @@ public fun <E> midpoint(A: Point<E>, B: Point<E>): Point<E> = calculate {
 
 /**
  * Constructs a point P on the line through [A] and [B] that divides segment \([ AB ]\) in ratio lambda. It means that on
- * the affine map that is considered generated by [Point<E>.x] and [Point<E>.y] coordinates a point P such that
+ * the affine map that is considered generated by [Point.x] and [Point.y] coordinates a point P such that
  * \(\overrightarrow{AP}/\overrightarrow{PB} = \lambda\), so P is returned.
  *
  * @param A The first point.
@@ -312,6 +353,61 @@ public fun <E> divideSegmentInRatio(A: Point<E>, B: Point<E>, lambda: E): Point<
 }
 
 /**
+ * Constructs a point P on the line through [A] and [B] that divides segment \([ AB ]\) in ratio \(a/b\).
+ * It means that on the affine map that is considered generated by [Point.x] and [Point.y] coordinates a point P
+ * such that \(\overrightarrow{AP}/\overrightarrow{PB} = a/b\), so P is returned.
+ *
+ * @param A The first point.
+ * @param B The second point.
+ * @param a Component of ratio \(a/b\).
+ * @param b Component of ratio \(a/b\).
+ * @return The constructed point P.
+ * @usesMathJax
+ */
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> divideSegmentInRatio(A: Point<E>, B: Point<E>, a: E, b: E): Point<E> = calculate {
+    Point(
+        A.x * B.z * b + B.x * A.z * a,
+        A.y * B.z * b + B.y * A.z * a,
+        (a + b) * A.z * B.z
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> parallelLine(l: Line<E>, A: Point<E>): Line<E> = calculate {
+    Line(
+        l.x * A.z,
+        l.y * A.z,
+        -(A.x * l.x + A.y * l.y)
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Point<E>.parallelLineTo(l: Line<E>): Line<E> = parallelLine(l, this)
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.parallelLineThrough(A: Point<E>): Line<E> = parallelLine(this, A)
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> parallelismCondition(l: Line<E>, m: Line<E>): LabeledPolynomial<E> = calculate {
+    l.x * m.y - l.y * m.x
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> parallelismTest(l: Line<E>, m: Line<E>): Boolean = calculate {
+    parallelismCondition(l, m).isZero()
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.isParallelTo(other: Line<E>): Boolean = parallelismTest(this, other)
+
+/**
  * Constructs perpendicular in terms of affine map that is considered generated by [Point<E>.x] and [Point<E>.y] coordinates
  * line to the given line [l] through the given point [A].
  *
@@ -328,6 +424,30 @@ public fun <E> perpendicular(l: Line<E>, A: Point<E>): Line<E> = calculate {
     )
 }
 
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Point<E>.perpendicularTo(l: Line<E>): Line<E> = perpendicular(l, this)
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.perpendicularThrough(A: Point<E>): Line<E> = perpendicular(this, A)
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> perpendicularityCondition(l: Line<E>, m: Line<E>): LabeledPolynomial<E> = polynomialSpace {
+    l.x * m.x + l.y * m.y
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> perpendicularityTest(l: Line<E>, m: Line<E>): Boolean = polynomialSpace {
+    perpendicularityCondition(l, m).isZero()
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public inline infix fun <E> Line<E>.isPerpendicularTo(other: Line<E>): Boolean = perpendicularityTest(this, other)
+
 /**
  * Construct a normal projection in terms of affine map that is considered generated by [Point.x] and [Point.y]
  * coordinates of [this] point to the given line [l].
@@ -337,7 +457,7 @@ public fun <E> perpendicular(l: Line<E>, A: Point<E>): Line<E> = calculate {
  * @return The projection.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> Point<E>.projectTo(l: Line<E>): Point<E> = calculate {
+public fun <E> Point<E>.projectOn(l: Line<E>): Point<E> = calculate {
     Point(
         l.y * l.y * x - l.x * l.y * y - l.z * l.x * z,
         l.x * l.x * y - l.x * l.y * x - l.z * l.y * z,
@@ -354,11 +474,67 @@ public fun <E> Point<E>.projectTo(l: Line<E>): Point<E> = calculate {
  * @return The reflection.
  */
 context(PlanimetricsCalculationContext<E, *>)
-public fun <E> Point<E>.reflectBy(l: Line<E>): Point<E> = calculate {
+public fun <E> Point<E>.reflectThrough(l: Line<E>): Point<E> = calculate {
     Point(
         x * l.x * l.x - x * l.y * l.y + 2 * l.x * l.y * y + 2 * l.z * l.x * z,
         y * l.y * l.y - y * l.x * l.x + 2 * l.y * l.x * x + 2 * l.z * l.y * z,
         -(l.x * l.x + l.y * l.y) * z
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> reflectionThrough(l: Line<E>): Transformation<E> = calculate {
+    Transformation(
+        SquareMatrix(
+            listOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
+            listOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
+            listOf(zero, zero, -(l.x * l.x + l.y * l.y))
+        )
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> Point<E>.reflectThrough(P: Point<E>): Point<E> = calculate {
+    Point(
+        2 * P.x * z - x * P.z,
+        2 * P.y * z - y * P.z,
+        z * P.z,
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> reflectionThrough(P: Point<E>): Transformation<E> = calculate {
+    Transformation(
+        SquareMatrix(
+            listOf(-P.z, zero, 2 * P.x),
+            listOf(zero, -P.z, 2 * P.y),
+            listOf(zero, zero, P.z)
+        )
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> homothetyBy(P: Point<E>, k: E): Transformation<E> = calculate {
+    Transformation(
+        SquareMatrix(
+            listOf(k * P.z, zero, (1 - k) * P.x),
+            listOf(zero, k * P.z, (1 - k) * P.y),
+            listOf(zero, zero, P.z)
+        )
+    )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> segmentBisector(A: Point<E>, B: Point<E>): Line<E> = calculate {
+    Line(
+        -2 * (A.x * B.z - B.x * A.z) * A.z * B.z,
+        -2 * (A.y * B.z - B.y * A.z) * A.z * B.z,
+        (A.x * A.x + A.y * A.y) * B.z * B.z - (B.x * B.x + B.y * B.y) * A.z * A.z
     )
 }
 // endregion
@@ -410,6 +586,23 @@ public fun <E> circleByDiameter(A: Point<E>, B: Point<E>): Quadric<E> = calculat
         -(A.z * B.x + A.x * B.z),
         -(A.z * B.y + A.y * B.z)
     )
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
+    SquareMatrix(
+        listOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
+        listOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
+        listOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
+        listOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
+    ).det
+}
+
+// TODO: Docs
+context(PlanimetricsCalculationContext<E, *>)
+public fun <E> cocyclicityTest(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): Boolean = calculate {
+    cocyclicityCondition(A, B, C, D).isZero()
 }
 // endregion
 

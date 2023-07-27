@@ -33,21 +33,41 @@ plugins {
     `maven-publish`
 }
 
-val version: String by project
-val group: String by project
+val koneVersion = project.properties["version"] as String
+val koneGroup = project.properties["group"] as String
+val koneUrl: String by project
+val koneBaseUrl: String by project
 
-tasks.register("docusaurusInputDataUpdate") {
+tasks.register<Copy>("docusaurusProcessResources") {
     group = "documentation"
-    description = "Updates `inputData.ts` file for Docusaurus"
-    doFirst {
+    dependsOn("dokkaHtmlMultiModule")
+    from("build/dokka/htmlMultiModule")
+    into("docs/static/api")
+    outputs.files("docs/src/inputData.ts", "docs/inputData.js")
+    doLast {
         rootDir.resolve("docs/src/inputData.ts").writer().use {
             it.write(
                 """
-                    export const koneGroup = "${rootProject.group}"
-                    export const koneVersion = "${rootProject.version}"
+                    export const koneGroup = "$koneGroup"
+                    export const koneVersion = "$koneVersion"
+                    export const koneUrl = "$koneUrl"
+                    export const koneBaseUrl = "$koneBaseUrl"
                 """.trimIndent()
             )
         }
+        rootDir.resolve("docs/inputData.js").writer().use {
+            it.write(
+                """
+                    module.exports = {
+                        koneGroup: "$koneGroup",
+                        koneVersion: "$koneVersion",
+                        koneUrl: "$koneUrl",
+                        koneBaseUrl: "$koneBaseUrl",
+                    }
+                """.trimIndent()
+            )
+        }
+
     }
 }
 
@@ -71,7 +91,7 @@ val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
 val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
 catalog.versionCatalog {
-    version("kone", version)
+    version("kone", koneVersion)
 }
 
 gradle.projectsEvaluated {
@@ -84,7 +104,7 @@ gradle.projectsEvaluated {
     val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
         for (p in bundleProjects)
-            library(p.alias, group, p.artifact).versionRef("kone")
+            library(p.alias, koneGroup, p.artifact).versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -101,6 +121,10 @@ publishing {
             from(components["versionCatalog"])
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule {
+
 }
 
 stal {
@@ -287,7 +311,7 @@ stal {
                         group = "examples"
                         description = "Runs the module's examples"
                         classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
-                        mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
+                        mainClass = "com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt"
                     }
                 }
             }
@@ -419,7 +443,7 @@ stal {
             task<Jar>("dokkaJar") {
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
                 description = "Assembles Kotlin docs with Dokka"
-                archiveClassifier.set("javadoc")
+                archiveClassifier = "javadoc"
                 afterEvaluate {
                     val dokkaHtml by tasks.getting
                     dependsOn(dokkaHtml)
@@ -429,7 +453,7 @@ stal {
 
             afterEvaluate {
                 tasks.withType<AbstractDokkaLeafTask> {
-                    moduleName.set("${project.extra["artifactPrefix"]}${project.name}")
+                    moduleName = "${project.extra["artifactPrefix"]}${project.name}"
                     // TODO
                 }
             }

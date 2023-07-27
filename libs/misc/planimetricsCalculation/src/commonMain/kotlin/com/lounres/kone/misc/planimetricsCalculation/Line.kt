@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.lounres.kone.misc.planimetricsCalculation
 
 import com.lounres.kone.algebraic.Ring
@@ -25,6 +27,17 @@ public data class Line<E>(
         public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Line<E> = Line(property.name)
         context(PlanimetricsCalculationContext<E, *>)
         public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Line<E> = Line(property.name)
+    }
+
+    @Suppress("ClassName")
+    public object finite {
+//        context(A)
+//        public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Point<E> =
+//            TODO("Declaration of finiteness of line ${property.name} is not yet implemented")
+//        context(PlanimetricsCalculationContext<E, *>)
+//        public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Point<E> = calculate {
+//            TODO("Declaration of finiteness of line ${property.name} is not yet implemented")
+//        }
     }
 }
 

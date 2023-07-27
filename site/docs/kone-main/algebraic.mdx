@@ -6,11 +6,11 @@ import DependencyTabs from '@site/src/components/DependencyTabs';
 
 # Kone: Algebraic
 
-This package describes the basic concept of working with algebraic structures and its implementation.
+This module provides the basic concept of working with algebraic structures and their implementations.
 
 ## Applying the dependencies
 
-<DependencyTabs artifact="kone-algebraic"/>
+<DependencyTabs artifact="kone.algebraic"/>
 
 ## Concept
 
@@ -20,10 +20,10 @@ Do you remember what is [*ring in algebra*](https://en.wikipedia.org/wiki/Ring_(
 3. unary operation $-$ on $R$ that we call "additive inversion" or "getting opposite element", and
 4. constants $0$ and $1$ from $R$ that we call "additive identity" and "multiplicative identity" respectively or "zero" and "unit" respectively
 
-that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
+that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach, then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
 
 <!-- TODO: hyperlink to API -->
-So in Kone any ring is implemented as an object that holds all the operation of the ring, so it can be used as an algebraic context. For example, there `kone-numberTheory` provides class of Rational numbers and field context for them:
+So in Kone any ring is implemented as an object that holds all the operation of the ring, so it can be used as an algebraic context. For example, there `kone.numberTheory` provides class of Rational numbers and field context for them:
 ```
 // Simplified definition. See actual API in API reference
 data class Rational(val numerator: Long, val denumerator: Long)

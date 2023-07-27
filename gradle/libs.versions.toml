@@ -1,19 +1,19 @@
 [versions]
-kotlin = "1.8.21"
+kotlin = "1.9.0"
 
 kmath = "0.3.1"
 
-kotlinx-coroutines = "1.7.1"
-kotlinx-atomicfu = "0.20.2"
+kotlinx-coroutines = "1.7.2"
+kotlinx-atomicfu = "0.21.0"
 kotlinx-serialization = "1.5.1"
 kotlinx-datetime = "0.4.0"
 kotlinx-kover = "0.6.0"
 kotlinx-benchmark = "0.4.8"
-kotlinx-binary-compatibility-validator = "0.13.0"
+kotlinx-binary-compatibility-validator = "0.13.2"
 kotlinx-knit = "0.4.0"
 
 kotest = "5.6.2"
-dokka = "1.8.10"
+dokka = "1.8.20"
 mkdocs-gradle-plugin = "2.4.0"
 
 [plugins]

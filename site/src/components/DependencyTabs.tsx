@@ -13,16 +13,6 @@ interface Dependency {
 export default function DependencyTabs ({group=koneGroup, artifact, version=koneVersion}: Dependency): JSX.Element {
     return (
         <Tabs groupId="buildSystem">
-            <TabItem value="gradle-groovy" label="Gradle Groovy DSL">
-                <CodeBlock language="groovy" title="build.gradle" showLineNumbers>
-                    {
-                        `dependencies {
-                        |    // highlight-next-line
-                        |    implementation '${group}:${artifact}:${version}'
-                        |}`.replaceAll(/ *\|/g, "")
-                    }
-                </CodeBlock>
-            </TabItem>
             <TabItem value="gradle-kotlin" label="Gradle Kotlin DSL" default>
                 <CodeBlock language="kotlin" title="build.gradle.kts" showLineNumbers>
                     {
@@ -33,16 +23,26 @@ export default function DependencyTabs ({group=koneGroup, artifact, version=kone
                     }
                 </CodeBlock>
             </TabItem>
+            <TabItem value="gradle-groovy" label="Gradle Groovy DSL">
+                <CodeBlock language="groovy" title="build.gradle" showLineNumbers>
+                    {
+                        `dependencies {
+                        |    // highlight-next-line
+                        |    implementation '${group}:${artifact}:${version}'
+                        |}`.replaceAll(/ *\|/g, "")
+                    }
+                </CodeBlock>
+            </TabItem>
             <TabItem value="maven" label="Maven" default>
                 <CodeBlock language="xml" title="pom.xml" showLineNumbers>
                 {
-                    `<dependencies>
+                    `<dependency>
                     |    <!-- highlight-start -->
                     |    <groupId>${group}</groupId>
                     |    <artifactId>${artifact}</artifactId>
                     |    <version>${version}</version>
                     |    <!-- highlight-end -->
-                    |</dependencies>`.replaceAll(/ *\|/g, "")
+                    |</dependency>`.replaceAll(/ *\|/g, "")
                 }
                 </CodeBlock>
             </TabItem>
