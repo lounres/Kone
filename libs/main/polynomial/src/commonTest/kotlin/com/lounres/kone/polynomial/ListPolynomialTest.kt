@@ -110,7 +110,7 @@ class ListPolynomialTest: FreeSpec() {
                     }
                 }
             } else {
-                fun List<C>.update() = map { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it) }
+                fun List<C>.update() = map { polynomialSpace.constantRing.polynomialArgumentCoefficientsTransform(it) }
                 when (data) {
                     is PolynomialIntTestData.EqualityTestData -> {
                         val (coefs, arg, _, expected) = data
@@ -239,8 +239,8 @@ class ListPolynomialTest: FreeSpec() {
         ) { (coefs, arg, resultCoefs) ->
             polynomialSpace {
                 operationToTest(
-                    ListPolynomial(coefs.map { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it) }),
-                    polynomialSpace.ring.valueOf(arg)
+                    ListPolynomial(coefs.map { polynomialSpace.constantRing.polynomialArgumentCoefficientsTransform(it) }),
+                    polynomialSpace.constantRing.valueOf(arg)
                 )
             } shouldBe ListPolynomial(resultCoefs)
         }
@@ -349,7 +349,7 @@ class ListPolynomialTest: FreeSpec() {
                     nameIndFn = { index, _ -> "test ${index + 1}" },
                     plusPolynomialPolynomialTestData
                 ) { (first, second, result) ->
-                    rationalPolynomialSpace { ListPolynomial(first) - ListPolynomial(second.map { ring { -it } }) } shouldBe ListPolynomial(result)
+                    rationalPolynomialSpace { ListPolynomial(first) - ListPolynomial(second.map { constantRing { -it } }) } shouldBe ListPolynomial(result)
                 }
             }
             "times" - {

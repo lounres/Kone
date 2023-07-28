@@ -55,7 +55,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
     public override fun LabeledPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
     public override fun LabeledPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
 
-    public override fun valueOf(value: C): LabeledPolynomial<C> = value.asLabeledPolynomial()
+    public override fun polynomialValueOf(value: C): LabeledPolynomial<C> = value.asLabeledPolynomial()
 
     public override operator fun Symbol.plus(other: Int): LabeledPolynomial<C> =
         if (other == 0) LabeledPolynomialAsIs(
@@ -302,7 +302,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             other.coefficients.withPutOrChanged(emptyMap(), this@plus) { _, it, _ -> this@plus + it }
         )
     override operator fun C.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@minus.value
+        if (other.coefficients.isEmpty()) this@minus.polynomialValue
         else LabeledPolynomialAsIs(
             buildMap(other.coefficients.size + 1) {
                 put(emptyMap(), this@minus)
@@ -427,12 +427,12 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
 
     // FIXME: When context receivers will be ready move all of these substitutions and invocations to utilities with
     //  [ListPolynomialSpace] as a context receiver
-    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, C>): LabeledPolynomial<C> = substitute(ring, arguments)
-    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, C>): LabeledPolynomial<C> = substitute(ring, *arguments)
+    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, C>): LabeledPolynomial<C> = substitute(constantRing, arguments)
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, C>): LabeledPolynomial<C> = substitute(constantRing, *arguments)
     @JvmName("substitutePolynomial")
-    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> = substitute(ring, arguments)
+    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> = substitute(constantRing, arguments)
     @JvmName("substitutePolynomial")
-    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(ring, *arguments)
+    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(constantRing, *arguments)
 }
 
 context(A)

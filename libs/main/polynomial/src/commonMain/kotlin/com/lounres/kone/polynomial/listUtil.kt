@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+    @file:Suppress("NOTHING_TO_INLINE")
+
 package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
@@ -29,13 +31,13 @@ public inline val <C, A : Field<C>> A.listPolynomialSpace: ListPolynomialSpaceOv
  * Creates a [ListRationalFunctionSpace] over a received polynomial space.
  */
 public inline val <C, A : Ring<C>, PS: ListPolynomialSpace<C, A>> PS.listRationalFunctionSpace: DefaultListRationalFunctionSpace<C, A>
-    get() = ring { ListRationalFunctionSpace() }
+    get() = constantRing { ListRationalFunctionSpace() }
 
 /**
  * Creates a [ListRationalFunctionSpaceOverField] over a received polynomial space over field.
  */
 public inline val <C, A : Field<C>, PS: ListPolynomialSpaceOverField<C, A>> PS.listRationalFunctionSpace: DefaultListRationalFunctionSpaceOverField<C, A>
-    get() = ring { ListRationalFunctionSpaceOverField() }
+    get() = constantRing { ListRationalFunctionSpaceOverField() }
 
 /**
  * Creates a [ListRationalFunctionSpace] over a received ring.
@@ -73,12 +75,12 @@ public fun <C> ListPolynomial<C>.substitute(arg: C): C {
     return result
 }
 context(ListPolynomialSpace<C, A>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: C): C = ring { substitute<C>(argument) }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: C): C = constantRing { substitute<C>(argument) }
 /**
  * Evaluates value of [this] polynomial on provided argument.
  */
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: C): C = polynomialSpace.ring { substitute<C>(argument) }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: C): C = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Substitutes provided polynomial [arg] into [this] polynomial.
@@ -89,19 +91,19 @@ context(Ring<C>)
 public fun <C> ListPolynomial<C>.substitute(arg: ListPolynomial<C>) : ListPolynomial<C> =
     listPolynomialSpace {
         if (coefficients.isEmpty()) return zero
-        var result: ListPolynomial<C> = coefficients.last().value
+        var result: ListPolynomial<C> = coefficients.last().polynomialValue
         for (j in coefficients.size - 2 downTo 0) {
             result = (arg * result) + coefficients[j]
         }
         return result
     }
 context(ListPolynomialSpace<C, A>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: ListPolynomial<C>): ListPolynomial<C> = ring { substitute<C>(argument) }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: ListPolynomial<C>): ListPolynomial<C> = constantRing { substitute<C>(argument) }
 /**
  * Substitutes provided polynomial [argument] into [this] polynomial.
  */
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: ListPolynomial<C>): ListPolynomial<C> = polynomialSpace.ring { substitute<C>(argument) }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.substitute(argument: ListPolynomial<C>): ListPolynomial<C> = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Substitutes provided rational function [arg] into [this] polynomial.
@@ -112,7 +114,7 @@ context(Ring<C>)
 public fun <C> ListPolynomial<C>.substitute(arg: ListRationalFunction<C>) : ListRationalFunction<C> =
     listRationalFunctionSpace {
         if (coefficients.isEmpty()) return zero
-        var result: ListRationalFunction<C> = coefficients.last().value
+        var result: ListRationalFunction<C> = coefficients.last().rationalFunctionValue
         for (j in coefficients.size - 2 downTo 0) {
             result = (arg * result) + coefficients[j]
         }
@@ -122,7 +124,7 @@ public fun <C> ListPolynomial<C>.substitute(arg: ListRationalFunction<C>) : List
  * Substitutes provided rational function [argument] into [this] polynomial.
  */
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A: Ring<C>> ListPolynomial<C>.substitute(argument: ListRationalFunction<C>): ListRationalFunction<C> = polynomialSpace.ring { substitute<C>(argument) }
+public inline fun <C, A: Ring<C>> ListPolynomial<C>.substitute(argument: ListRationalFunction<C>): ListRationalFunction<C> = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Evaluates value of [this] Double rational function in provided Double argument.
@@ -150,7 +152,7 @@ public fun <C> ListRationalFunction<C>.substitute(arg: ListPolynomial<C>) : List
  * Substitutes provided polynomial [argument] into [this] rational function.
  */
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A: Ring<C>> ListRationalFunction<C>.substitute(argument: ListPolynomial<C>): ListRationalFunction<C> = polynomialSpace.ring { substitute<C>(argument) }
+public inline fun <C, A: Ring<C>> ListRationalFunction<C>.substitute(argument: ListPolynomial<C>): ListRationalFunction<C> = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Substitutes provided rational function [arg] into [this] rational function.
@@ -164,7 +166,7 @@ public fun <C> ListRationalFunction<C>.substitute(arg: ListRationalFunction<C>) 
  * Substitutes provided rational function [argument] into [this] rational function.
  */
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A: Ring<C>> ListRationalFunction<C>.substitute(argument: ListRationalFunction<C>): ListRationalFunction<C> = polynomialSpace.ring { substitute<C>(argument) }
+public inline fun <C, A: Ring<C>> ListRationalFunction<C>.substitute(argument: ListRationalFunction<C>): ListRationalFunction<C> = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
@@ -188,13 +190,13 @@ public inline fun <C, A: Ring<C>> ListPolynomial<C>.asFunction(): (C) -> C = { s
 context(Ring<C>)
 public fun <C> ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = { substitute(it) }
 context(ListPolynomialSpace<C, A>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = ring { asFunctionOfConstant<C>() }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = constantRing { asFunctionOfConstant<C>() }
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = polynomialSpace.ring { asFunctionOfConstant<C>() }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = polynomialSpace.constantRing { asFunctionOfConstant<C>() }
 context(ListPolynomialSpace<C, A>)
-public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: C): C = ring { substitute<C>(argument) }
+public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: C): C = constantRing { substitute<C>(argument) }
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: C): C = polynomialSpace.ring { substitute<C>(argument) }
+public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: C): C = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
@@ -202,13 +204,13 @@ public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: C
 context(Ring<C>)
 public fun <C> ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = { substitute(it) }
 context(ListPolynomialSpace<C, A>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = ring { asFunctionOfPolynomial<C>() }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = constantRing { asFunctionOfPolynomial<C>() }
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = polynomialSpace.ring { asFunctionOfPolynomial<C>() }
+public inline fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = polynomialSpace.constantRing { asFunctionOfPolynomial<C>() }
 context(ListPolynomialSpace<C, A>)
-public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: ListPolynomial<C>): ListPolynomial<C> = ring { substitute<C>(argument) }
+public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: ListPolynomial<C>): ListPolynomial<C> = constantRing { substitute<C>(argument) }
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: ListPolynomial<C>): ListPolynomial<C> = polynomialSpace.ring { substitute<C>(argument) }
+public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: ListPolynomial<C>): ListPolynomial<C> = polynomialSpace.constantRing { substitute<C>(argument) }
 
 /**
  * Represent [this] polynomial as a regular context-less function.
@@ -216,9 +218,9 @@ public inline operator fun <C, A : Ring<C>> ListPolynomial<C>.invoke(argument: L
 context(Ring<C>)
 public fun <C> ListPolynomial<C>.asFunctionOfRationalFunction(): (ListRationalFunction<C>) -> ListRationalFunction<C> = { substitute(it) }
 context(ListPolynomialSpace<C, A>)
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfRationalFunction(): (ListRationalFunction<C>) -> ListRationalFunction<C> = ring { asFunctionOfRationalFunction<C>() }
+public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfRationalFunction(): (ListRationalFunction<C>) -> ListRationalFunction<C> = constantRing { asFunctionOfRationalFunction<C>() }
 context(ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>)
-public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfRationalFunction(): (ListRationalFunction<C>) -> ListRationalFunction<C> = polynomialSpace.ring { asFunctionOfRationalFunction<C>() }
+public fun <C, A : Ring<C>> ListPolynomial<C>.asFunctionOfRationalFunction(): (ListRationalFunction<C>) -> ListRationalFunction<C> = polynomialSpace.constantRing { asFunctionOfRationalFunction<C>() }
 
 /**
  * Represent [this] rational function as a regular context-less function.

@@ -19,7 +19,7 @@ public inline operator fun <
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
-    return block(ring, this)
+    return block(constantRing, this)
 }
 
 public inline operator fun <
@@ -35,5 +35,5 @@ public inline operator fun <
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
-    return block(ring, polynomialSpace, this)
+    return block(polynomialSpace.constantRing, polynomialSpace, this)
 }

@@ -53,10 +53,10 @@ public fun <C> ListRationalFunction(numerator: ListPolynomial<C>): ListRationalF
 /**
  * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
  */
-context(ListRationalFunctionSpace<C, *, *>)
+context(ListRationalFunctionSpace<C, *, ListPolynomialSpace<C, *>>)
 @Suppress("FunctionName")
 public fun <C> ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
-    ListRationalFunction<C>(numerator, polynomialOne)
+    ListRationalFunction<C>(numerator, polynomialSpace.polynomialOne)
 /**
  * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
  * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
@@ -72,12 +72,12 @@ public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boo
  * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
  * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
  */
-context(ListRationalFunctionSpace<C, *, *>)
+context(ListRationalFunctionSpace<C, *, ListPolynomialSpace<C, *>>)
 @Suppress("FunctionName")
 public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
     ListRationalFunction<C>(
         ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
-        polynomialOne
+        polynomialSpace.polynomialOne
     )
 
 /**
