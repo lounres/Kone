@@ -30,11 +30,6 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
     public val polynomialOne: P get() = one
     // endregion
 
-    // region Polynomial constants
-    public val polynomialZero: P get() = zero
-    public val polynomialOne: P get() = one
-    // endregion
-
     // region Integer-to-Constant conversion
     public fun constantValueOf(value: Int): C = constantRing.run { valueOf(value) }
     public fun constantValueOf(value: Long): C = constantRing.run { valueOf(value) }

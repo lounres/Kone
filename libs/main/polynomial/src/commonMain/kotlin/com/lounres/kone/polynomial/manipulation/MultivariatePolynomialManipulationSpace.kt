@@ -59,13 +59,13 @@ public interface MultivariatePolynomialManipulationSpace<C, V, MS, MutMS: MS, P:
     // ===========================================================================================
 
     override val zero: P get() = polynomialOf()
-    override val one: P get() = polynomialOf(Monomial(signatureOf(), ring.one))
+    override val one: P get() = polynomialOf(Monomial(signatureOf(), constantRing.one))
 
     public override infix fun P.equalsTo(other: P): Boolean = TODO("Not yet implemented")
     public override fun P.isZero(): Boolean = monomials.all { it.coefficient.isZero() }
     public override fun P.isOne(): Boolean = monomials.all { it.signature.isEmpty() || it.coefficient.isZero() }
 
-    public override fun valueOf(value: C): P = polynomialOf(Monomial(signatureOf(), value))
+    public override fun polynomialValueOf(value: C): P = polynomialOf(Monomial(signatureOf(), value))
 
     public override fun C.plus(other: P): P = other.toMutable().apply { this[signatureOf()] = this@C + this.getOrZero(signatureOf()) }
     public override fun C.minus(other: P): P = other.toMutable().apply { this[signatureOf()] = this@C - this.getOrZero(signatureOf()) }

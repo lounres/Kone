@@ -68,12 +68,12 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.divRe
 
 context(A, MultivariatePolynomialManipulationSpace<C, V, MS, MutMS, P, MutP, A>, Order<MS>)
 public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.leadDivRem(divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
-    val divisors = divisors.toList()
+    val divisorsList = divisors.toList()
 
     val quotient = mutablePolynomialOf()
     val remainder = mutablePolynomialOf(this.monomials)
-    val divisorsLeadingSignatures = divisors.map { it.leadingSignature }
-    val divisorsLeadingCoefficients = divisors.mapIndexed { i, divisor -> divisor.getOrZero(divisorsLeadingSignatures[i]) }
+    val divisorsLeadingSignatures = divisorsList.map { it.leadingSignature }
+    val divisorsLeadingCoefficients = divisorsList.mapIndexed { i, divisor -> divisor.getOrZero(divisorsLeadingSignatures[i]) }
     var remainderLeadingSignature = remainder.leadingSignature
 
     while (true) {
@@ -82,7 +82,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.leadD
 
         val quotCoefficient = remainder.getOrZero(remainderLeadingSignature) / divisorsLeadingCoefficients[divisorIndex]
         val quotSignature = remainderLeadingSignature - divisorsLeadingSignatures[divisorIndex]
-        remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
+        remainder.minusAssignProduct(divisorsList[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
         remainderLeadingSignature = remainder.leadingSignature
         quotient[quotSignature] = quotCoefficient
     }
@@ -95,13 +95,13 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.leadD
 
 context(A, MultivariatePolynomialManipulationSpace<C, V, MS, MutMS, P, MutP, A>, Order<MS>)
 public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.divRem(divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
-    val divisors = divisors.toList()
+    val divisorsList = divisors.toList()
 
     val quotient = mutablePolynomialOf()
     val dividend = mutablePolynomialOf(this.monomials)
     val remainder = mutablePolynomialOf()
-    val divisorsLeadingSignatures = divisors.map { it.leadingSignature }
-    val divisorsLeadingCoefficients = divisors.mapIndexed { i, divisor -> divisor.getOrZero(divisorsLeadingSignatures[i]) }
+    val divisorsLeadingSignatures = divisorsList.map { it.leadingSignature }
+    val divisorsLeadingCoefficients = divisorsList.mapIndexed { i, divisor -> divisor.getOrZero(divisorsLeadingSignatures[i]) }
     var dividendLeadingSignature = dividend.leadingSignature
 
     while (!dividend.isEmpty()) {
@@ -110,7 +110,7 @@ public fun <C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, A: Field<C>> P.divRe
         if (divisorIndex != -1) {
             val quotCoefficient = remainder.getOrZero(dividendLeadingSignature) / divisorsLeadingCoefficients[divisorIndex]
             val quotSignature = dividendLeadingSignature - divisorsLeadingSignatures[divisorIndex]
-            remainder.minusAssignProduct(divisors[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
+            remainder.minusAssignProduct(divisorsList[divisorIndex], polynomialOf(Monomial(quotSignature, quotCoefficient)))
             dividendLeadingSignature = dividend.leadingSignature
             quotient[quotSignature] = quotCoefficient
         } else {
