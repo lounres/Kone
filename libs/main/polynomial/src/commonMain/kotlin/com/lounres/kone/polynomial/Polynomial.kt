@@ -42,8 +42,8 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
     public override fun valueOf(value: Long): P = polynomialValueOf(constantValueOf(value))
     public fun polynomialValueOf(value: Int): P = valueOf(value)
     public fun polynomialValueOf(value: Long): P = valueOf(value)
-    public val Int.polynomialValue: C get() = constantRing.run { this@polynomialValue.polynomialValue }
-    public val Long.polynomialValue: C get() = constantRing.run { this@polynomialValue.polynomialValue }
+    public val Int.polynomialValue: P get() = polynomialValueOf(this)
+    public val Long.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
     // region Constant-to-Polynomial conversion
