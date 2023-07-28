@@ -22,23 +22,34 @@ internal constructor(
 ) : Polynomial<C> {
     override fun toString(): String = "LabeledPolynomial$coefficients"
 
-    public companion object {
-        public val monomialComparator: Comparator<LabeledMonomialSignature> = Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> ->
-            if (o1 === o2) return@Comparator 0
+    public object signatureComparator {
+        public fun lexBy(variableComparator: Comparator<Symbol>): Comparator<LabeledMonomialSignature> =
+            Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> ->
+                if (o1 === o2) return@Comparator 0
 
-            val commonVariables = (o1.keys union o2.keys).sortedBy { it.identity }
+                val commonVariables = (o1.keys union o2.keys).sortedWith(variableComparator)
 
-            for (variable in commonVariables) {
-                val deg1 = o1.getOrElse(variable) { 0u }
-                val deg2 = o2.getOrElse(variable) { 0u }
-                when {
-                    deg1 > deg2 -> return@Comparator -1
-                    deg1 < deg2 -> return@Comparator 1
+                for (variable in commonVariables) {
+                    val deg1 = o1.getOrElse(variable) { 0u }
+                    val deg2 = o2.getOrElse(variable) { 0u }
+                    when {
+                        deg1 > deg2 -> return@Comparator -1
+                        deg1 < deg2 -> return@Comparator 1
+                    }
                 }
-            }
 
-            return@Comparator 0
-        }
+                return@Comparator 0
+            }
+        public val lex: Comparator<LabeledMonomialSignature> = lexBy { o1: Symbol, o2: Symbol -> o1.identity.compareTo(o2.identity) }
+
+        public fun deglexBy(variableComparator: Comparator<Symbol>): Comparator<LabeledMonomialSignature> =
+            Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> -> o1.values.sum().compareTo(o2.values.sum()) } then lexBy(variableComparator)
+        public val deglex: Comparator<LabeledMonomialSignature> = deglexBy { o1: Symbol, o2: Symbol -> o1.identity.compareTo(o2.identity) }
+
+        public fun degrevlexBy(variableComparator: Comparator<Symbol>): Comparator<LabeledMonomialSignature> =
+            Comparator { o1: Map<Symbol, UInt>, o2: Map<Symbol, UInt> -> o1.values.sum().compareTo(o2.values.sum()) } then lexBy(variableComparator).reversed()
+        public val degrevlex: Comparator<LabeledMonomialSignature> = degrevlexBy { o1: Symbol, o2: Symbol -> o1.identity.compareTo(o2.identity) }
+
     }
 }
 

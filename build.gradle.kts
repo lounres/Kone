@@ -225,6 +225,12 @@ stal {
         on("kotlin common settings") {
             configure<KotlinProjectExtension> {
                 sourceSets {
+                    val commonMain by getting {
+                        dependencies {
+                            // FIXME: For some reason standard library is not imported in IntelliJ IDEA
+                            implementation("org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin}")
+                        }
+                    }
                     all {
                         languageSettings {
                             progressiveMode = true
