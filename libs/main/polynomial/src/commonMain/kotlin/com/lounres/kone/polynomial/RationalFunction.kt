@@ -27,9 +27,9 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
     public val polynomialSpace: PS get() = this@PS
     // endregion
 
-    // region Polynomial constants
-    public val polynomialZero: P get() = polynomialSpace.run { zero }
-    public val polynomialOne: P get() = polynomialSpace.run { one }
+    // region Rational functions  constants
+    public val rationalFunctionZero: RF get() = zero
+    public val rationalFunctionOne: RF get() = one
     // endregion
 
     // region Equality
@@ -47,10 +47,12 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
     // endregion
 
     // region Integer-to-Rational-Function conversion
-    public override fun valueOf(value: Int): RF = valueOf(polynomialValueOf(value))
-    public override fun valueOf(value: Long): RF = valueOf(polynomialValueOf(value))
-    public override val Int.value: RF get() = valueOf(this)
-    public override val Long.value: RF get() = valueOf(this)
+    public override fun valueOf(value: Int): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    public override fun valueOf(value: Long): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    public fun rationalFunctionValueOf(value: Int): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    public fun rationalFunctionValueOf(value: Long): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    public val Int.rationalFunctionValue: RF get() = valueOf(this)
+    public val Long.rationalFunctionValue: RF get() = valueOf(this)
     // endregion
 
     // region Constant-to-Polynomial conversion
@@ -59,13 +61,13 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
     // endregion
 
     // region Constant-to-Rational-Function conversion
-    public fun valueOf(value: C): RF = valueOf(polynomialValueOf(value))
-    public val C.value: RF get() = valueOf(this)
+    public fun rationalFunctionValueOf(value: C): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    public val C.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
-    public fun valueOf(value: P): RF = one * value
-    public val P.value: RF get() = valueOf(this)
+    public fun rationalFunctionValueOf(value: P): RF = one * value
+    public val P.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
     // endregion
 
     // region Constant-Rational-Function operations
@@ -154,11 +156,11 @@ public abstract class PolynomialSpaceOfFractions<
     // endregion
 
     // region Constant-to-Rational-Function conversion
-    public override fun valueOf(value: C): RF = constructRationalFunction(polynomialValueOf(value))
+    public override fun rationalFunctionValueOf(value: C): RF = constructRationalFunction(polynomialValueOf(value))
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
-    public override fun valueOf(value: P): RF = constructRationalFunction(value)
+    public override fun rationalFunctionValueOf(value: P): RF = constructRationalFunction(value)
     // endregion
 
     // region Rational-Function-Int operations
@@ -421,7 +423,7 @@ public interface MultivariateRationalFunctionSpace<
 
     // region Variable-to-Rational-Function conversion
     @JvmName("valueOfVariable")
-    public fun valueOf(variable: V): RF = valueOf(polynomialValueOf(variable))
+    public fun valueOf(variable: V): RF = rationalFunctionValueOf(polynomialValueOf(variable))
     @get:JvmName("valueVariable")
     public val V.value: RF get() = valueOf(this)
     // endregion

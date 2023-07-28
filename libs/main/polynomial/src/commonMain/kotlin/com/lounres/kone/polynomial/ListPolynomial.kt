@@ -37,7 +37,7 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
     public override fun ListPolynomial<C>.isZero(): Boolean = coefficients.all { it.isZero() }
     public override fun ListPolynomial<C>.isOne(): Boolean = coefficients.subList(1, coefficients.size).all { it.isZero() }
 
-    public override fun valueOf(value: C): ListPolynomial<C> = value.asListPolynomial()
+    public override fun polynomialValueOf(value: C): ListPolynomial<C> = value.asListPolynomial()
 
     public override operator fun ListPolynomial<C>.plus(other: Int): ListPolynomial<C> =
         if (other == 0) this

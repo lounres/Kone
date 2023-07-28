@@ -267,7 +267,7 @@ class LabeledPolynomialTest : FreeSpec() {
                     }
                 }
             } else {
-                fun Map<Map<Symbol, UInt>, C>.update() = mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }
+                fun Map<Map<Symbol, UInt>, C>.update() = mapValues { polynomialSpace.constantRing.polynomialArgumentCoefficientsTransform(it.value) }
                 when (data) {
                     is PolynomialIntTestData.EqualityTestData -> {
                         val (coefs, arg, _, expected) = data
@@ -606,8 +606,8 @@ class LabeledPolynomialTest : FreeSpec() {
         ) { (coefs, arg, resultCoefs) ->
             polynomialSpace {
                 operationToTest(
-                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }),
-                    polynomialSpace.ring.valueOf(arg)
+                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.constantRing.polynomialArgumentCoefficientsTransform(it.value) }),
+                    polynomialSpace.constantRing.valueOf(arg)
                 )
             } shouldBe LabeledPolynomialAsIs(resultCoefs)
         }
@@ -696,10 +696,10 @@ class LabeledPolynomialTest : FreeSpec() {
         ) { (coefs, arg, resultCoefs) ->
             polynomialSpace {
                 operationToTest(
-                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.ring.polynomialArgumentCoefficientsTransform(it.value) }),
+                    LabeledPolynomialAsIs(coefs.mapValues { polynomialSpace.constantRing.polynomialArgumentCoefficientsTransform(it.value) }),
                     arg
                 )
-            } shouldBe LabeledPolynomialAsIs(resultCoefs.mapValues { polynomialSpace.ring.polynomialResultCoefficientsTransform(it.value) })
+            } shouldBe LabeledPolynomialAsIs(resultCoefs.mapValues { polynomialSpace.constantRing.polynomialResultCoefficientsTransform(it.value) })
         }
     }
 
@@ -1126,7 +1126,7 @@ class LabeledPolynomialTest : FreeSpec() {
                     nameIndFn = { index, _ -> "test ${index + 1}" },
                     plusPolynomialPolynomialTestData
                 ) { (first, second, result) ->
-                    rationalPolynomialSpace { LabeledPolynomialAsIs(first) - LabeledPolynomialAsIs(second.mapValues { ring { -it.value } }) } shouldBe LabeledPolynomialAsIs(result)
+                    rationalPolynomialSpace { LabeledPolynomialAsIs(first) - LabeledPolynomialAsIs(second.mapValues { constantRing { -it.value } }) } shouldBe LabeledPolynomialAsIs(result)
                 }
             }
             "times" - {

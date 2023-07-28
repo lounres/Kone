@@ -23,10 +23,10 @@ public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialS
     get() = LabeledPolynomialSpaceOverField()
 
 public inline val <C, A : Ring<C>> LabeledPolynomialSpace<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
-    get() = ring { LabeledRationalFunctionSpace() }
+    get() = constantRing { LabeledRationalFunctionSpace() }
 
 public inline val <C, A : Field<C>> LabeledPolynomialSpaceOverField<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
-    get() = ring { LabeledRationalFunctionSpaceOverField() }
+    get() = constantRing { LabeledRationalFunctionSpaceOverField() }
 
 public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
     get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace

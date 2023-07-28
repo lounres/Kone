@@ -17,31 +17,40 @@ context(A)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
 public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> {
     // region Context accessors
-    public val ring: A get() = this@A
+    public val constantRing: A get() = this@A
     // endregion
 
     // region Constant constants
-    public val constantZero: C get() = ring.zero
-    public val constantOne: C get() = ring.one
+    public val constantZero: C get() = constantRing.zero
+    public val constantOne: C get() = constantRing.one
+    // endregion
+
+    // region Polynomial constants
+    public val polynomialZero: P get() = zero
+    public val polynomialOne: P get() = one
     // endregion
 
     // region Integer-to-Constant conversion
-    public fun constantValueOf(value: Int): C = ring.run { valueOf(value) }
-    public fun constantValueOf(value: Long): C = ring.run { valueOf(value) }
-    public val Int.constantValue: C get() = ring.run { this@constantValue.value }
-    public val Long.constantValue: C get() = ring.run { this@constantValue.value }
+    public fun constantValueOf(value: Int): C = constantRing.run { valueOf(value) }
+    public fun constantValueOf(value: Long): C = constantRing.run { valueOf(value) }
+    public val Int.constantValue: C get() = constantRing.run { this@constantValue.value }
+    public val Long.constantValue: C get() = constantRing.run { this@constantValue.value }
     // endregion
 
     // region Integer-to-Polynomial conversion
-    public override fun valueOf(value: Int): P = valueOf(constantValueOf(value))
-    public override fun valueOf(value: Long): P = valueOf(constantValueOf(value))
+    public override fun valueOf(value: Int): P = polynomialValueOf(constantValueOf(value))
+    public override fun valueOf(value: Long): P = polynomialValueOf(constantValueOf(value))
+    public fun polynomialValueOf(value: Int): P = valueOf(value)
+    public fun polynomialValueOf(value: Long): P = valueOf(value)
+    public val Int.polynomialValue: C get() = constantRing.run { this@polynomialValue.polynomialValue }
+    public val Long.polynomialValue: C get() = constantRing.run { this@polynomialValue.polynomialValue }
     // endregion
 
     // region Constant-to-Polynomial conversion
-    @JvmName("valueOfConstant")
-    public fun valueOf(value: C): P = one * value
-    @get:JvmName("valueConstant")
-    public val C.value: P get() = valueOf(this)
+    @JvmName("polynomialValueOfConstant")
+    public fun polynomialValueOf(value: C): P = one * value
+    @get:JvmName("polynomialValueConstant")
+    public val C.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
     // region Constant-Polynomial operations
