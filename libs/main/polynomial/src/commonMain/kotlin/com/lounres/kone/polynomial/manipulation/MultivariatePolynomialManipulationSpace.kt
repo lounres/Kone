@@ -12,7 +12,7 @@ import com.lounres.kone.polynomial.*
 
 
 context(A)
-public interface MultivariatePolynomialManipulationSpace<C, V, MS, MutMS: MS, P/*: Polynomial<C>*/, MutP: P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
+public interface MultivariatePolynomialManipulationSpace<C, V, MS, MutMS: MS, P: Polynomial<C>, MutP: P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
     public data class VariablePower<V>(val variable: V, val power: UInt)
     public data class Monomial<C, MS>(val signature: MS, val coefficient: C)
 
@@ -34,7 +34,7 @@ public interface MultivariatePolynomialManipulationSpace<C, V, MS, MutMS: MS, P/
     public operator fun MutMS.set(variable: V, power: UInt) { getAndSet(variable, power) }
     public fun MutMS.getAndRemove(variable: V): Option<UInt>
     public fun MutMS.remove(variable: V) { getAndRemove(variable) }
-    public fun MS.toMutable(): MS =
+    public fun MS.toMutable(): MutMS =
         mutableSignatureOf().apply { for ((v, power) in this@MS) this[v] = power }
 
     public fun polynomialOf(vararg monomials: Monomial<C, MS>): P = mutablePolynomialOf(*monomials)

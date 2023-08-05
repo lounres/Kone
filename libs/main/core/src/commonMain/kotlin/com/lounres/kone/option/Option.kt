@@ -13,6 +13,8 @@ public sealed interface Option<out T> {
     public data object None: Option<Nothing>
 }
 
+public fun <T> Option(value: T): Some<T> = Some(value = value)
+
 public fun <T> Option<T>.getOrDefault(defaultValue: T): T =
     when(this) {
         is Some -> value

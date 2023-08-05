@@ -9,6 +9,8 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.option.Option
+import com.lounres.kone.option.getOrDefault
 import com.lounres.kone.polynomial.manipulation.MultivariatePolynomialManipulationSpace
 import com.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.expressions.Symbol
@@ -54,11 +56,68 @@ import kotlin.math.max
 //    }
 //}
 
+public interface LabeledPolynomial<C>: Polynomial<C> {
+    public val coefficients: LabeledPolynomialCoefficients<C>
+}
+public interface MutableLabeledPolynomial<C>: LabeledPolynomial<C> {
+    public override val coefficients: MutableMap<LabeledMonomialSignature, C>
+}
+
+@JvmInline
+public value class LabeledPolynomialImpl<C>(
+    public override val coefficients: LabeledPolynomialCoefficients<C>
+): LabeledPolynomial<C>
+
+@JvmInline
+public value class MutableLabeledPolynomialImpl<C>(
+    public override val coefficients: MutableMap<LabeledMonomialSignature, C>
+): MutableLabeledPolynomial<C>
+
 public typealias LabeledMonomialSignature = Map<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
 context(A)
-public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialManipulationSpace<C, Symbol, Map<Symbol, UInt>, MutableMap<Symbol, UInt>, Map<Map<Symbol, UInt>, C>, MutableMap<Map<Symbol, UInt>, C>, A> {
+public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialManipulationSpace<C, Symbol, Map<Symbol, UInt>, MutableMap<Symbol, UInt>, LabeledPolynomial<C>, MutableLabeledPolynomial<C>, A> {
+    // region Manipulation
+    public override fun signatureOf(vararg variablePowers: MultivariatePolynomialManipulationSpace.VariablePower<Symbol>): Map<Symbol, UInt> = mutableSignatureOf(*variablePowers)
+    public override fun signatureOf(variablePowers: Collection<MultivariatePolynomialManipulationSpace.VariablePower<Symbol>>): Map<Symbol, UInt> = mutableSignatureOf(variablePowers)
+    public override val Map<Symbol, UInt>.size: Int get() = this.size
+    public override fun Map<Symbol, UInt>.isEmpty(): Boolean = this.isEmpty()
+    public override infix fun Map<Symbol, UInt>.containsVariable(variable: Symbol): Boolean = variable in this
+    public override operator fun Map<Symbol, UInt>.get(variable: Symbol): Option<UInt> = this.computeOnOrElse(variable, { Option.None }, { it -> Option.Some(it) })
+    public override fun Map<Symbol, UInt>.getOrZero(variable: Symbol): UInt = this.getOrDefault(variable, 0u)
+    public override val Map<Symbol, UInt>.variables: Set<Symbol> get() = this.keys
+    public override val Map<Symbol, UInt>.powers: Set<MultivariatePolynomialManipulationSpace.VariablePower<Symbol>> get() = buildSet { entries.mapTo(this) { MultivariatePolynomialManipulationSpace.VariablePower(variable = it.key, power = it.value) } }
+
+    public override fun mutableSignatureOf(vararg variablePowers: MultivariatePolynomialManipulationSpace.VariablePower<Symbol>): MutableMap<Symbol, UInt> = mutableMapOf<Symbol, UInt>().apply { variablePowers.forEach { this[it.variable] = it.power } }
+    public override fun mutableSignatureOf(variablePowers: Collection<MultivariatePolynomialManipulationSpace.VariablePower<Symbol>>): MutableMap<Symbol, UInt> = mutableMapOf<Symbol, UInt>().apply { variablePowers.forEach { this[it.variable] = it.power } }
+    public override fun MutableMap<Symbol, UInt>.getAndSet(variable: Symbol, power: UInt): Option<UInt> = this.computeOnOrElse(variable, { Option.None }, { it -> Option.Some(it) }).also { this.put(variable, power) }
+    public override operator fun MutableMap<Symbol, UInt>.set(variable: Symbol, power: UInt) { getAndSet(variable, power) }
+    public override fun MutableMap<Symbol, UInt>.getAndRemove(variable: Symbol): Option<UInt> = this.computeOnOrElse(variable, { Option.None }, { it -> Option.Some(it) }).also { this.remove(variable) }
+    public override fun MutableMap<Symbol, UInt>.remove(variable: Symbol) { getAndRemove(variable) }
+    public override fun Map<Symbol, UInt>.toMutable(): MutableMap<Symbol, UInt> = toMutableMap()
+
+    public override fun polynomialOf(vararg monomials: MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>): LabeledPolynomial<C> = mutablePolynomialOf(*monomials)
+    public override fun polynomialOf(monomials: Collection<MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>>): LabeledPolynomial<C> = mutablePolynomialOf(monomials)
+    public override val LabeledPolynomial<C>.size: Int get() = coefficients.size
+    public override fun LabeledPolynomial<C>.isEmpty(): Boolean = coefficients.isEmpty()
+    public override infix fun LabeledPolynomial<C>.containsSignature(signature: Map<Symbol, UInt>): Boolean = signature in coefficients
+    public override fun LabeledPolynomial<C>.get(signature: Map<Symbol, UInt>): Option<C>
+    public override fun LabeledPolynomial<C>.getOrZero(signature: Map<Symbol, UInt>): C = get(signature).getOrDefault(constantZero)
+    public override val LabeledPolynomial<C>.signatures: Set<Map<Symbol, UInt>>
+    public override val LabeledPolynomial<C>.monomials: Set<MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>>
+    public override operator fun LabeledPolynomial<C>.iterator(): Iterator<MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>> = monomials.iterator()
+    public override fun LabeledPolynomial<C>.toMutable(): MutableLabeledPolynomial<C> =
+        mutablePolynomialOf().apply { for((ms, c) in this@P) this[ms] = c }
+
+    public override fun mutablePolynomialOf(vararg monomials: MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>): MutableLabeledPolynomial<C> = mutableMapOf<().apply { monomials.forEach { this[it.signature] = it.coefficient } }
+    public override fun mutablePolynomialOf(monomials: Collection<MultivariatePolynomialManipulationSpace.Monomial<C, Map<Symbol, UInt>>>): MutableLabeledPolynomial<C>
+    public override fun MutableLabeledPolynomial<C>.getAndSet(signature: Map<Symbol, UInt>, coefficient: C): Option<C>
+    public override operator fun MutableLabeledPolynomial<C>.set(signature: Map<Symbol, UInt>, coefficient: C) { getAndSet(signature, coefficient) }
+    public override fun MutableLabeledPolynomial<C>.getAndRemove(signature: Map<Symbol, UInt>): Option<C>
+    public override fun MutableLabeledPolynomial<C>.remove(signature: Map<Symbol, UInt>) { getAndRemove(signature) }
+    // endregion
+
 //    override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
 //    override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
 //
