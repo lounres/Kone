@@ -85,6 +85,8 @@ val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "tr
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
+fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
+fun PluginManager.withPlugins(vararg pluginDeps: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
 val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
@@ -129,14 +131,14 @@ tasks.dokkaHtmlMultiModule {
 
 stal {
     action {
-        on("uses libs main core") {
+        "uses libs main core" {
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val main by getting {
                             dependencies {
-                                api(projects.libs.main.core)
+                                api(rootProject.projects.libs.main.core)
                             }
                         }
                     }
@@ -149,14 +151,14 @@ stal {
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                api(projects.libs.main.core)
+                                api(rootProject.projects.libs.main.core)
                             }
                         }
                     }
                 }
             }
         }
-        on("kotlin jvm") {
+        "kotlin jvm" {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
                 target.compilations.all {
@@ -181,7 +183,7 @@ stal {
                 }
             }
         }
-        on("kotlin multiplatform") {
+        "kotlin multiplatform" {
             apply<KotlinMultiplatformPluginWrapper>()
             configure<KotlinMultiplatformExtension> {
                 jvm {
@@ -222,22 +224,24 @@ stal {
                 yarn.lockFileDirectory = rootDir.resolve("gradle")
             }
         }
-        on("kotlin common settings") {
-            configure<KotlinProjectExtension> {
-                sourceSets {
-                    val commonMain by getting {
-                        dependencies {
-                            // FIXME: For some reason standard library is not imported in IntelliJ IDEA
-                            implementation("org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin}")
+        "kotlin common settings" {
+            pluginManager.withPlugins(rootProject.libs.plugins.kotlin.jvm, rootProject.libs.plugins.kotlin.multiplatform) {
+                configure<KotlinProjectExtension> {
+                    sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                // FIXME: For some reason standard library is not imported in IntelliJ IDEA
+                                implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.libs.versions.kotlin}")
+                            }
                         }
-                    }
-                    all {
-                        languageSettings {
-                            progressiveMode = true
-                            languageVersion = "1.9"
-                            enableLanguageFeature("ContextReceivers")
-                            optIn("kotlin.contracts.ExperimentalContracts")
-                            optIn("kotlin.ExperimentalStdlibApi")
+                        all {
+                            languageSettings {
+                                progressiveMode = true
+                                languageVersion = "1.9"
+                                enableLanguageFeature("ContextReceivers")
+                                optIn("kotlin.contracts.ExperimentalContracts")
+                                optIn("kotlin.ExperimentalStdlibApi")
+                            }
                         }
                     }
                 }
@@ -251,12 +255,12 @@ stal {
                 }
             }
         }
-        on("kotlin library settings") {
+        "kotlin library settings" {
             configure<KotlinProjectExtension> {
                 explicitApi = Warning
             }
         }
-        on("kotest") {
+        "kotest" {
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
@@ -299,7 +303,7 @@ stal {
                 }
             }
         }
-        on("examples") {
+        "examples" {
             @Suppress("UNUSED_VARIABLE")
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
@@ -332,7 +336,7 @@ stal {
                 }
             }
         }
-        on("benchmark") {
+        "benchmark" {
             apply<BenchmarksPlugin>()
             apply<AllOpenGradleSubplugin>()
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
@@ -440,7 +444,7 @@ stal {
                 }
             }
         }
-        on("dokka") {
+        "dokka" {
             apply<DokkaPlugin>()
             dependencies {
                 dokkaPlugin(rootProject.libs.dokka.mathjax)
@@ -464,20 +468,12 @@ stal {
                 }
             }
         }
-        on("publishing") {
+        "publishing" {
             apply<MavenPublishPlugin>()
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
-                    }
-                }
-            }
-        }
-        whenever { hasAllOf("dokka", "publishing") } imply {
-            afterEvaluate {
-                configure<PublishingExtension> {
-                    publications.withType<MavenPublication> {
                         artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }
