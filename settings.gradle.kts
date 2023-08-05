@@ -19,7 +19,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.lounres.gradle.stal") version "0.1.0"
+    id("com.lounres.gradle.stal") version "0.3.0"
 }
 
 stal {
@@ -63,15 +63,15 @@ stal {
             extra["artifactPrefix"] = ""
             extra["aliasPrefix"] = ""
         }
-        on("libs main") {
+        "libs main" {
             extra["artifactPrefix"] = "kone."
             extra["aliasPrefix"] = ""
         }
-        on("libs misc") {
+        "libs misc" {
             extra["artifactPrefix"] = "kone.misc."
             extra["aliasPrefix"] = "misc-"
         }
-        on("libs util") {
+        "libs util" {
             extra["artifactPrefix"] = "kone.util."
             extra["aliasPrefix"] = "util-"
         }
