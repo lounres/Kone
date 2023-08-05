@@ -474,6 +474,14 @@ stal {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
+                    }
+                }
+            }
+        }
+        case { hasAllOf("dokka", "publishing") } implies {
+            afterEvaluate {
+                configure<PublishingExtension> {
+                    publications.withType<MavenPublication> {
                         artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }
