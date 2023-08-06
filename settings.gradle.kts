@@ -23,18 +23,18 @@ plugins {
 }
 
 stal {
-    fun File.testSubdir(): Boolean = listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false
     structure {
+        defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
         "libs" {
             "main" {
                 "core"("libs main")
-                subdirs("libs main", "uses libs main core", includeIf = File::testSubdir)
+                subdirs("libs main", "uses libs main core")
             }
             "misc" {
-                subdirs("libs misc", "uses libs main core", includeIf = File::testSubdir)
+                subdirs("libs misc", "uses libs main core")
             }
             "util" {
-                subdirs("libs util", includeIf = File::testSubdir)
+                subdirs("libs util")
             }
         }
     }
