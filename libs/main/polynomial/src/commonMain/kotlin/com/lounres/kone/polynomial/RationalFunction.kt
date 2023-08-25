@@ -7,7 +7,6 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.context.invoke
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -27,7 +26,7 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
     public val polynomialSpace: PS get() = this@PS
     // endregion
 
-    // region Rational functions  constants
+    // region Rational functions constants
     public val rationalFunctionZero: RF get() = zero
     public val rationalFunctionOne: RF get() = one
     // endregion
