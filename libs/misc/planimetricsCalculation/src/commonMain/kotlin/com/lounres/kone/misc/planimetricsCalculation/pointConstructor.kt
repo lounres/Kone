@@ -22,9 +22,9 @@ public fun <C, A: Ring<C>> Point(name: String): Point<C> = Point<C>((name + "_x"
 context(PlanimetricsCalculationContext<C, *>)
 public fun <C> Point(name: String): Point<C> = polynomialSpace {
     Point<C>(
-        Symbol(name + "_x").value,
-        Symbol(name + "_y").value,
-        Symbol(name + "_z").value
+        Symbol(name + "_x").polynomialValue,
+        Symbol(name + "_y").polynomialValue,
+        Symbol(name + "_z").polynomialValue
     )
 }
 public fun <C> Point(rowVector: RowVector<LabeledPolynomial<C>>): Point<C> = Point(

@@ -83,9 +83,9 @@ context(A)
 public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring<C>>: PolynomialSpace<C, P, A> {
     // region Variable-to-Polynomial conversion
     @JvmName("valueOfVariable")
-    public fun valueOf(variable: V): P = +variable
+    public fun polynomialValueOf(variable: V): P = +variable
     @get:JvmName("valueVariable")
-    public val V.value: P get() = valueOf(this)
+    public val V.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
     // region Variable-Int operations

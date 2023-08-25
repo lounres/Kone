@@ -24,12 +24,12 @@ public fun <C, A: Ring<C>> A.Quadric(name: String): Quadric<C> = Quadric<C>(
 )
 public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(name: String): Quadric<C> = polynomialSpace {
     Quadric<C>(
-        Symbol(name + "_xx").value,
-        Symbol(name + "_yy").value,
-        Symbol(name + "_zz").value,
-        Symbol(name + "_xy").value,
-        Symbol(name + "_xz").value,
-        Symbol(name + "_yz").value
+        Symbol(name + "_xx").polynomialValue,
+        Symbol(name + "_yy").polynomialValue,
+        Symbol(name + "_zz").polynomialValue,
+        Symbol(name + "_xy").polynomialValue,
+        Symbol(name + "_xz").polynomialValue,
+        Symbol(name + "_yz").polynomialValue
     )
 }
 public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(matrix: SquareMatrix<LabeledPolynomial<C>>): Quadric<C> = polynomialSpace {
