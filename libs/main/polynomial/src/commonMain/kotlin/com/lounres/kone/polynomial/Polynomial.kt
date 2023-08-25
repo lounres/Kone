@@ -90,38 +90,38 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
 
     // region Variable-Int operations
     @JvmName("plusVariableInt")
-    public operator fun V.plus(other: Int): P
+    public operator fun V.plus(other: Int): P = this + other.constantValue
     @JvmName("minusVariableInt")
-    public operator fun V.minus(other: Int): P
+    public operator fun V.minus(other: Int): P = this - other.constantValue
     @JvmName("timesVariableInt")
-    public operator fun V.times(other: Int): P
+    public operator fun V.times(other: Int): P = this * other.constantValue
     // endregion
 
     // region Variable-Long operations
     @JvmName("plusVariableLong")
-    public operator fun V.plus(other: Long): P
+    public operator fun V.plus(other: Long): P = this + other.constantValue
     @JvmName("minusVariableLong")
-    public operator fun V.minus(other: Long): P
+    public operator fun V.minus(other: Long): P = this - other.constantValue
     @JvmName("timesVariableLong")
-    public operator fun V.times(other: Long): P
+    public operator fun V.times(other: Long): P = this * other.constantValue
     // endregion
 
     // region Int-Variable operations
     @JvmName("plusIntVariable")
-    public operator fun Int.plus(other: V): P
+    public operator fun Int.plus(other: V): P = this.constantValue + other
     @JvmName("minusIntVariable")
-    public operator fun Int.minus(other: V): P
+    public operator fun Int.minus(other: V): P = this.constantValue - other
     @JvmName("timesIntVariable")
-    public operator fun Int.times(other: V): P
+    public operator fun Int.times(other: V): P = this.constantValue * other
     // endregion
 
     // region Long-Variable operations
     @JvmName("plusLongVariable")
-    public operator fun Long.plus(other: V): P
+    public operator fun Long.plus(other: V): P = this.constantValue + other
     @JvmName("minusLongVariable")
-    public operator fun Long.minus(other: V): P
+    public operator fun Long.minus(other: V): P = this.constantValue - other
     @JvmName("timesLongVariable")
-    public operator fun Long.times(other: V): P
+    public operator fun Long.times(other: V): P = this.constantValue * other
     // endregion
 
     // region Variable-Constant operations
