@@ -16,4 +16,4 @@ context(Ring<C>)
 internal fun <C> String.convert(): LabeledPolynomial<C> =
     LabeledPolynomialWithoutCheck(mapOf(Symbol(this) to 1U) to one)
 context(MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, *>)
-internal fun <C> String.convert(): LabeledPolynomial<C> = Symbol(this).value
+internal fun <C> String.convert(): LabeledPolynomial<C> = Symbol(this).polynomialValue

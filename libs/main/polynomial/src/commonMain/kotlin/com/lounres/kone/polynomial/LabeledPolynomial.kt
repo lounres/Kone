@@ -356,12 +356,12 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         )
 
     public override operator fun Symbol.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@plus.value
+        if (other.coefficients.isEmpty()) this@plus.polynomialValue
         else LabeledPolynomialAsIs(
             other.coefficients.withPutOrChanged(mapOf(this@plus to 1U), constantOne) { _, it, _ -> constantOne + it }
         )
     public override operator fun Symbol.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@minus.value
+        if (other.coefficients.isEmpty()) this@minus.polynomialValue
         else LabeledPolynomialAsIs(
             buildMap(other.coefficients.size + 1) {
                 put(mapOf(this@minus to 1U), constantOne)
@@ -375,12 +375,12 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         )
 
     public override operator fun LabeledPolynomial<C>.plus(other: Symbol): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.value
+        if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
             coefficients.withPutOrChanged(mapOf(other to 1U), constantOne) { _, it, _ -> it + constantOne }
         )
     public override operator fun LabeledPolynomial<C>.minus(other: Symbol): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.value
+        if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
             coefficients.withPutOrChanged(mapOf(other to 1U), -constantOne) { _, it, _ -> it - constantOne }
         )

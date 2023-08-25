@@ -20,9 +20,9 @@ public fun <C> Line(x: C, y: C, z: C): Line<C> = Line(x.asLabeledPolynomial(), y
 public fun <C, A: Ring<C>> A.Line(name: String): Line<C> = Line<C>((name + "_x").convert(), (name + "_y").convert(), (name + "_z").convert())
 public fun <C> PlanimetricsCalculationContext<C, *>.Line(name: String): Line<C> = polynomialSpace {
     Line<C>(
-        Symbol(name + "_x").value,
-        Symbol(name + "_y").value,
-        Symbol(name + "_z").value
+        Symbol(name + "_x").polynomialValue,
+        Symbol(name + "_y").polynomialValue,
+        Symbol(name + "_z").polynomialValue
     )
 }
 public fun <C> Line(rowVector: RowVector<LabeledPolynomial<C>>): Line<C> = Line(

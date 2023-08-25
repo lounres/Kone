@@ -10,3 +10,9 @@ public sealed interface Option<out E> {
     public data class Some<out E>(val value: E): Option<E>
     public data object None: Option<Nothing>
 }
+
+public fun <E> Option<E>.getOrDefault(default: E): E =
+    when(this) {
+        Option.None -> default
+        is Option.Some -> value
+    }

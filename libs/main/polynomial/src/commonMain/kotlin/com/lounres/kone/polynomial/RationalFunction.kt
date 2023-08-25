@@ -416,7 +416,7 @@ public interface MultivariateRationalFunctionSpace<
 
     // region Variable-to-Polynomial conversion
     @JvmName("polynomialValueOfVariable")
-    public fun polynomialValueOf(variable: V): P = polynomialSpace.run { valueOf(variable) }
+    public fun polynomialValueOf(variable: V): P = polynomialSpace.run { polynomialValueOf(variable) }
     @get:JvmName("polynomialValueVariable")
     public val V.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
