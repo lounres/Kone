@@ -10,7 +10,7 @@ import com.lounres.kone.algebraic.Ring
 
 public inline operator fun <
         C,
-        P: Polynomial<C>,
+        P,
         A: Ring<C>,
         PS: PolynomialSpace<C, P, A>,
         R
@@ -24,7 +24,7 @@ public inline operator fun <
 
 public inline operator fun <
         C,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         A: Ring<C>,
         PS: PolynomialSpace<C, P, A>,

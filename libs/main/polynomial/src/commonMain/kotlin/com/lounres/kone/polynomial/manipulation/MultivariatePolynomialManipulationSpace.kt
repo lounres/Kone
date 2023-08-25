@@ -6,15 +6,14 @@
 package com.lounres.kone.polynomial.manipulation
 
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.optional.Option
+import com.lounres.kone.util.option.Option
 import com.lounres.kone.polynomial.MultivariatePolynomialSpace
-import com.lounres.kone.polynomial.Polynomial
 import kotlin.math.max
 
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS, M, P: Polynomial<C>, MutP: P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
+public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS, M, P, MutP: P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
     // region Manipulation
     public fun variablePower(variable: V, power: UInt): VP
     public val VP.variable: V
@@ -26,21 +25,28 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
 
     public fun signatureOf(vararg variablePowers: VP): MS
     public fun signatureOf(variablePowers: Collection<VP>): MS
+    @get:JvmName("MS_getSize")
     public val MS.size: Int
+    @JvmName("MS_isEmpty")
     public fun MS.isEmpty(): Boolean = size == 0
     public infix fun MS.containsVariable(variable: V): Boolean
     public operator fun MS.get(variable: V): UInt
-    public fun MS.getOption(variable: V): Option<UInt>
+    @JvmName("MS_getOptional")
+    public fun MS.getOptional(variable: V): Option<UInt>
+    @get:JvmName("MS_getVariables")
     public val MS.variables: Set<V>
     public val MS.powers: Set<VP>
+    @JvmName("MS_iterator")
     public operator fun MS.iterator(): Iterator<VP> = powers.iterator()
 
     public fun mutableSignatureOf(vararg variablePowers: VP): MutMS
     public fun mutableSignatureOf(variablePowers: Collection<VP>): MutMS
     public fun MutMS.getAndSet(variable: V, power: UInt): UInt
     public operator fun MutMS.set(variable: V, power: UInt)
-    public fun MutMS.getAndRemove(variable: V): Option<UInt>
+    public fun MutMS.getAndRemove(variable: V): UInt
+    @JvmName("MutMS_remove")
     public fun MutMS.remove(variable: V)
+    @JvmName("MS_toMutable")
     public fun MS.toMutable(): MutMS
 
     public fun monomial(signature: MS, coefficient: C): M
@@ -53,23 +59,32 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
 
     public fun polynomialOf(vararg monomials: M): P
     public fun polynomialOf(monomials: Collection<M>): P
+    @get:JvmName("P_getSize")
     public val P.size: Int
+    @JvmName("P_isEmpty")
     public fun P.isEmpty(): Boolean
     public infix fun P.containsSignature(signature: MS): Boolean
     public operator fun P.get(signature: MS): C
-    public fun P.getOption(signature: MS): Option<C>
+    @JvmName("P_getOptional")
+    public fun P.getOptional(signature: MS): Option<C>
     public val P.signatures: Set<MS>
     public val P.monomials: Set<M>
+    @JvmName("P_iterator")
     public operator fun P.iterator(): Iterator<M>
-    public fun P.toMutable(): MutP
 
     public fun mutablePolynomialOf(vararg monomials: M): MutP
     public fun mutablePolynomialOf(monomials: Collection<M>): MutP
-    public fun MutP.getAndSet(signature: MS, coefficient: C): Option<C>
+    public fun MutP.getAndSet(signature: MS, coefficient: C): C
     public operator fun MutP.set(signature: MS, coefficient: C)
-    public fun MutP.getAndRemove(signature: MS): Option<C>
+    public fun MutP.getAndRemove(signature: MS): C
+    @JvmName("MutP_remove")
     public fun MutP.remove(signature: MS)
+    @JvmName("P_toMutable")
+    public fun P.toMutable(): MutP
     // endregion
+
+    public override val zero: P get() = polynomialOf()
+    public override val one: P get() = polynomialOf(monomial(signatureOf(), constantOne))
 
     @JvmName("polynomialValueOfConstant")
     public override fun polynomialValueOf(value: C): P = polynomialOf(monomial(signatureOf(), value))
@@ -106,11 +121,13 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
         monomial(signatureOf(variablePower(other, 1u)), this),
     )
 
+    @JvmName("plusConstantPolynomial")
     public override operator fun C.plus(other: P): P = other.toMutable().apply {
         val emptySignature = signatureOf()
         if (this containsSignature emptySignature) this[emptySignature] = this@C + this[emptySignature]
         else this[emptySignature] = this@C
     }
+    @JvmName("minusConstantPolynomial")
     public override operator fun C.minus(other: P): P = other.toMutable().apply {
         for ((signature, coefficient) in this)
             if (!signature.isEmpty()) this[signature] = -coefficient
@@ -119,20 +136,24 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
         if (this containsSignature emptySignature) this[emptySignature] = this@C - this[emptySignature]
         else this[emptySignature] = this@C
     }
+    @JvmName("timesConstantPolynomial")
     public override operator fun C.times(other: P): P = other.toMutable().apply {
         for ((signature, coefficient) in this) this[signature] = this@C * coefficient
     }
 
+    @JvmName("plusPolynomialConstant")
     public override operator fun P.plus(other: C): P = this.toMutable().apply {
         val emptySignature = signatureOf()
         if (this containsSignature emptySignature) this[emptySignature] = this[emptySignature] + other
         else this[emptySignature] = other
     }
+    @JvmName("minusPolynomialConstant")
     public override operator fun P.minus(other: C): P = this.toMutable().apply {
         val emptySignature = signatureOf()
         if (this containsSignature emptySignature) this[emptySignature] = this[emptySignature] - other
         else this[emptySignature] = -other
     }
+    @JvmName("timesPolynomialConstant")
     public override operator fun P.times(other: C): P = this.toMutable().apply {
         for ((signature, coefficient) in this) this[signature] = coefficient * other
     }
@@ -227,4 +248,23 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
             for ((signature) in this) max = max(max, signature.powers.sumOf { it.power }.toInt())
             return max
         }
+    public override val P.degrees: Map<V, UInt>
+        get() = buildMap {
+            for ((signature) in this@P) for ((variable, power) in signature) this[variable] = max(power, this.getOrDefault(variable, 0u))
+        }
+    public override fun P.degreeBy(variable: V): UInt {
+        var degree = 0u
+        for ((signature) in this@P) degree = max(signature[variable], degree)
+        return degree
+    }
+    public override fun P.degreeBy(variables: Collection<V>): UInt {
+        var degree = 0u
+        for ((signature) in this@P) degree = max(variables.sumOf { signature[it] }, degree)
+        return degree
+    }
+    public override val P.variables: Set<V>
+        get() = buildSet {
+            for ((signature) in this@P) addAll(signature.variables)
+        }
+    public override val P.countOfVariables: Int get() = variables.size
 }

@@ -11,7 +11,7 @@ import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-public interface RationalFunction<C, P: Polynomial<C>> {
+public interface RationalFunction<C, P> {
     public val numerator: P
     public val denominator: P
     public operator fun component1(): P = numerator
@@ -20,7 +20,7 @@ public interface RationalFunction<C, P: Polynomial<C>> {
 
 context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
-public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
+public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
     // region Context accessors
     public val ring: A get() = this@A
     public val polynomialSpace: PS get() = this@PS
@@ -60,12 +60,16 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
     // endregion
 
     // region Constant-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfConstant")
     public fun rationalFunctionValueOf(value: C): RF = rationalFunctionValueOf(polynomialValueOf(value))
+    @get:JvmName("rationalFunctionValueConstant")
     public val C.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfPolynomial")
     public fun rationalFunctionValueOf(value: P): RF = one * value
+    @get:JvmName("rationalFunctionValuePolynomial")
     public val P.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
     // endregion
 
@@ -136,7 +140,7 @@ context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public abstract class PolynomialSpaceOfFractions<
         C,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         out A: Ring<C>,
         out PS: PolynomialSpace<C, P, A>
@@ -155,10 +159,12 @@ public abstract class PolynomialSpaceOfFractions<
     // endregion
 
     // region Constant-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfConstant")
     public override fun rationalFunctionValueOf(value: C): RF = constructRationalFunction(polynomialValueOf(value))
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfPolynomial")
     public override fun rationalFunctionValueOf(value: P): RF = constructRationalFunction(value)
     // endregion
 
@@ -407,7 +413,7 @@ context(A, PS)
 public interface MultivariateRationalFunctionSpace<
         C,
         V,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         out A: Ring<C>,
         out PS: MultivariatePolynomialSpace<C, V, P, A>
@@ -460,7 +466,7 @@ context(A, PS)
 public abstract class MultivariatePolynomialSpaceOfFractions<
         C,
         V,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         out A: Ring<C>,
         out PS: MultivariatePolynomialSpace<C, V, P, A>
@@ -525,7 +531,7 @@ context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface RationalFunctionSpaceOverField<
         C,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         out A: Field<C>,
         out PS: PolynomialSpaceOverField<C, P, A>
@@ -543,7 +549,7 @@ context(A, PS)
 public interface MultivariateRationalFunctionSpaceOverField<
         C,
         V,
-        P: Polynomial<C>,
+        P,
         RF: RationalFunction<C, P>,
         out A: Field<C>,
         out PS: MultivariatePolynomialSpaceOverField<C, V, P, A>

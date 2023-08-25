@@ -5,9 +5,14 @@
 
 package com.lounres.kone.util.mapOperations
 
+import com.lounres.kone.util.option.Option
 import kotlin.contracts.InvocationKind.*
 import kotlin.contracts.contract
 
+
+public fun <K, V> Map<K, V>.getOption(key: K): Option<V> =
+    if (key in this) Option.Some(get(key)!!)
+    else Option.None
 
 /**
  * Computes the given lambda [compute] on value corresponding to the provided [key] or `null` if the key is not present.

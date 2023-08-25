@@ -9,17 +9,19 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.polynomial.manipulation.MultivariatePolynomialManipulationSpace
 import com.lounres.kone.util.mapOperations.*
+import com.lounres.kone.util.option.Option
 import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
-import kotlin.math.max
+import kotlin.math.sign
 
 
-public data class LabeledPolynomial<C>
+public open class LabeledPolynomial<C>
 @PublishedApi
 internal constructor(
-    public val coefficients: LabeledPolynomialCoefficients<C>
-) : Polynomial<C> {
+    public open val coefficients: LabeledPolynomialCoefficients<C>
+) {
     override fun toString(): String = "LabeledPolynomial$coefficients"
 
     public object signatureComparator {
@@ -53,388 +55,101 @@ internal constructor(
     }
 }
 
+public data class MutableLabeledPolynomial<C>
+@PublishedApi
+internal constructor(
+    public override val coefficients: MutableLabeledPolynomialCoefficients<C>
+) : LabeledPolynomial<C>(coefficients) {
+    override fun toString(): String = "MutableLabeledPolynomial$coefficients"
+}
+
 public typealias LabeledMonomialSignature = Map<Symbol, UInt>
+public typealias MutableLabeledMonomialSignature = MutableMap<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
+public typealias MutableLabeledPolynomialCoefficients<C> = MutableMap<LabeledMonomialSignature, C>
 
 context(A)
-public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, A> {
-    override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
-    override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
+public open class LabeledPolynomialSpace<C, out A : Ring<C>> :
+    MultivariatePolynomialManipulationSpace<C, Symbol, Pair<Symbol, UInt>, LabeledMonomialSignature, MutableLabeledMonomialSignature, Pair<LabeledMonomialSignature, C>, LabeledPolynomial<C>, MutableLabeledPolynomial<C>, A>
+{
+    // region Manipulation
+    public override fun variablePower(variable: Symbol, power: UInt): Pair<Symbol, UInt> = Pair(variable, power)
+    public override val Pair<Symbol, UInt>.variable: Symbol get() = first
+    public override val Pair<Symbol, UInt>.power: UInt get() = second
 
-    public override infix fun LabeledPolynomial<C>.equalsTo(other: LabeledPolynomial<C>): Boolean =
-        mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 }
-    public override fun LabeledPolynomial<C>.isZero(): Boolean = coefficients.values.all { it.isZero() }
-    public override fun LabeledPolynomial<C>.isOne(): Boolean = coefficients.all { it.key.isEmpty() || it.value.isZero() }
+    public override fun signatureOf(vararg variablePowers: Pair<Symbol, UInt>): LabeledMonomialSignature = mapOf(*variablePowers)
+    public override fun signatureOf(variablePowers: Collection<Pair<Symbol, UInt>>): LabeledMonomialSignature = variablePowers.toMap()
+    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+    public override val LabeledMonomialSignature.size: Int get() = this.size
+    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+    public override fun LabeledMonomialSignature.isEmpty(): Boolean = isEmpty()
+    public override infix fun LabeledMonomialSignature.containsVariable(variable: Symbol): Boolean = variable in this
+    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+    public override operator fun LabeledMonomialSignature.get(variable: Symbol): UInt = getOrDefault(variable, 0u)
+    public override fun LabeledMonomialSignature.getOptional(variable: Symbol): Option<UInt> = computeOnOrElse(variable, Option.None) { _, power -> Option.Some(power) }
+    public override val LabeledMonomialSignature.variables: Set<Symbol> get() = keys
+    public override val LabeledMonomialSignature.powers: Set<Pair<Symbol, UInt>> get() = buildSet { entries.mapTo(this) { Pair(it.key, it.value) } }
+    public override operator fun LabeledMonomialSignature.iterator(): Iterator<Pair<Symbol, UInt>> = powers.iterator()
 
-    public override fun polynomialValueOf(value: C): LabeledPolynomial<C> = value.asLabeledPolynomial()
+    public override fun mutableSignatureOf(vararg variablePowers: Pair<Symbol, UInt>): MutableLabeledMonomialSignature = mutableMapOf(*variablePowers)
+    public override fun mutableSignatureOf(variablePowers: Collection<Pair<Symbol, UInt>>): MutableLabeledMonomialSignature = variablePowers.toMap().toMutableMap()
+    public override fun MutableLabeledMonomialSignature.getAndSet(variable: Symbol, power: UInt): UInt {
+        var result = 0u
+        this.putOrChange(variable, { power }) { it -> result = it; power }
+        return result
+    }
+    public override operator fun MutableLabeledMonomialSignature.set(variable: Symbol, power: UInt) { this.put(variable, power) }
+    public override fun MutableLabeledMonomialSignature.getAndRemove(variable: Symbol): UInt {
+        val result = this.getOrDefault(variable, 0u)
+        this.remove(variable)
+        return result
+    }
+    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+    public override fun MutableLabeledMonomialSignature.remove(variable: Symbol) {
+        this.remove(variable)
+    }
+    public override fun LabeledMonomialSignature.toMutable(): MutableLabeledMonomialSignature = this.toMutableMap()
 
-    public override operator fun Symbol.plus(other: Int): LabeledPolynomial<C> =
-        if (other == 0) LabeledPolynomialAsIs(
-            mapOf(this@plus to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this@plus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to other.constantValue,
-        )
-    public override operator fun Symbol.minus(other: Int): LabeledPolynomial<C> =
-        if (other == 0) LabeledPolynomialAsIs(
-            mapOf(this@minus to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this@minus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to (-other).constantValue,
-        )
-    public override operator fun Symbol.times(other: Int): LabeledPolynomial<C> =
-        if (other == 0) zero
-        else LabeledPolynomialAsIs(
-            mapOf(this to 1U) to other.constantValue,
-        )
+    public override fun monomial(signature: LabeledMonomialSignature, coefficient: C): Pair<LabeledMonomialSignature, C> = Pair(signature, coefficient)
+    public override val Pair<LabeledMonomialSignature, C>.signature: LabeledMonomialSignature get() = first
+    public override val Pair<LabeledMonomialSignature, C>.coefficient: C get() = second
 
-    public override operator fun Symbol.plus(other: Long): LabeledPolynomial<C> =
-        if (other == 0L) LabeledPolynomialAsIs(
-            mapOf(this@plus to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this@plus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to other.constantValue,
-        )
-    public override operator fun Symbol.minus(other: Long): LabeledPolynomial<C> =
-        if (other == 0L) LabeledPolynomialAsIs(
-            mapOf(this@minus to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this@minus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to (-other).constantValue,
-        )
-    public override operator fun Symbol.times(other: Long): LabeledPolynomial<C> =
-        if (other == 0L) zero
-        else LabeledPolynomialAsIs(
-            mapOf(this to 1U) to other.constantValue,
-        )
-
-    public override operator fun Int.plus(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0) LabeledPolynomialAsIs(
-            mapOf(other to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to this@plus.constantValue,
-        )
-    public override operator fun Int.minus(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0) LabeledPolynomialAsIs(
-            mapOf(other to 1U) to -constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to -constantOne,
-            emptyMap<Symbol, UInt>() to constantOne * this@minus,
-        )
-    public override operator fun Int.times(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0) zero
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to this@times.constantValue,
-        )
-
-    public override operator fun Long.plus(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0L) LabeledPolynomialAsIs(
-            mapOf(other to 1U) to constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to this@plus.constantValue,
-        )
-    public override operator fun Long.minus(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0L) LabeledPolynomialAsIs(
-            mapOf(other to 1U) to -constantOne,
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to -constantOne,
-            emptyMap<Symbol, UInt>() to constantOne * this@minus,
-        )
-    public override operator fun Long.times(other: Symbol): LabeledPolynomial<C> =
-        if (this == 0L) zero
-        else LabeledPolynomialAsIs(
-            mapOf(other to 1U) to this@times.constantValue,
-        )
-
-    public override operator fun LabeledPolynomial<C>.plus(other: Int): LabeledPolynomial<C> =
-        when {
-            other == 0 -> this
-            coefficients.isEmpty() -> other.value
-            else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
-            )
-        }
-    public override operator fun LabeledPolynomial<C>.minus(other: Int): LabeledPolynomial<C> =
-        when {
-            other == 0 -> this
-            coefficients.isEmpty() -> other.value
-            else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), { (-other).constantValue }) { it -> it - other }
-            )
-        }
-    public override operator fun LabeledPolynomial<C>.times(other: Int): LabeledPolynomial<C> =
-        when(other) {
-            0 -> zero
-            1 -> this
-            else -> LabeledPolynomialAsIs(
-                coefficients.mapValues { (_, value) -> value * other }
-            )
+    public override fun polynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): LabeledPolynomial<C> = LabeledPolynomialAsIs(*monomials)
+    public override fun polynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): LabeledPolynomial<C> = LabeledPolynomialAsIs(monomials)
+    public override val LabeledPolynomial<C>.size: Int get() = this.coefficients.size
+    public override fun LabeledPolynomial<C>.isEmpty(): Boolean = this.coefficients.isEmpty()
+    public override infix fun LabeledPolynomial<C>.containsSignature(signature: LabeledMonomialSignature): Boolean = signature in coefficients
+    public override operator fun LabeledPolynomial<C>.get(signature: LabeledMonomialSignature): C = coefficients.getOrDefault(signature, constantZero)
+    public override fun LabeledPolynomial<C>.getOptional(signature: LabeledMonomialSignature): Option<C> = coefficients.getOption(signature)
+    public override val LabeledPolynomial<C>.signatures: Set<LabeledMonomialSignature> get() = coefficients.keys
+    public override val LabeledPolynomial<C>.monomials: Set<Pair<LabeledMonomialSignature, C>> get() = buildSet { coefficients.entries.mapTo(this) { Pair(it.key, it.value) } }
+    public override operator fun LabeledPolynomial<C>.iterator(): Iterator<Pair<LabeledMonomialSignature, C>> =
+        object: Iterator<Pair<LabeledMonomialSignature, C>> {
+            val innerIterator = coefficients.entries.iterator()
+            override fun hasNext(): Boolean = innerIterator.hasNext()
+            override fun next(): Pair<LabeledMonomialSignature, C> = innerIterator.next().let { Pair(it.key, it.value) }
         }
 
-    public override operator fun LabeledPolynomial<C>.plus(other: Long): LabeledPolynomial<C> =
-        when {
-            other == 0L -> this
-            coefficients.isEmpty() -> other.value
-            else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
-            )
-        }
-    public override operator fun LabeledPolynomial<C>.minus(other: Long): LabeledPolynomial<C> =
-        when {
-            other == 0L -> this
-            coefficients.isEmpty() -> other.value
-            else -> LabeledPolynomialAsIs(
-                coefficients.withPutOrChanged(emptyMap(), { (-other).constantValue }) { it -> it - other }
-            )
-        }
-    public override operator fun LabeledPolynomial<C>.times(other: Long): LabeledPolynomial<C> =
-        when(other) {
-            0L -> zero
-            1L -> this
-            else -> LabeledPolynomialAsIs(
-                coefficients.mapValues { (_, value) -> value * other }
-            )
-        }
-
-    public override operator fun Int.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when {
-            this == 0 -> other
-            other.coefficients.isEmpty() -> this@plus.value
-            else -> LabeledPolynomialAsIs(
-                other.coefficients.withPutOrChanged(emptyMap(), { this@plus.constantValue }) { it -> this@plus + it }
-            )
-        }
-    public override operator fun Int.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when {
-            this == 0 -> -other
-            other.coefficients.isEmpty() -> this@minus.value
-            else -> LabeledPolynomialAsIs(
-                buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), { this@minus.constantValue }) { it -> this@minus - it })
-                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
-                }
-            )
-        }
-    public override operator fun Int.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when(this) {
-            0 -> zero
-            1 -> other
-            else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValues { (_, value) -> this@times * value }
-            )
-        }
-
-    public override operator fun Long.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when {
-            this == 0L -> other
-            other.coefficients.isEmpty() -> this@plus.value
-            else -> LabeledPolynomialAsIs(
-                other.coefficients.withPutOrChanged(emptyMap(), this@plus.constantValue) { _, it, _ -> this@plus + it }
-            )
-        }
-    public override operator fun Long.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when {
-            this == 0L -> -other
-            other.coefficients.isEmpty() -> this@minus.value
-            else -> LabeledPolynomialAsIs(
-                buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { _, it -> this@minus - it })
-                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
-                }
-            )
-        }
-    public override operator fun Long.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        when(this) {
-            0L -> zero
-            1L -> other
-            else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValues { (_, value) -> this@times * value }
-            )
-        }
-
-    public override operator fun Symbol.plus(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(this@plus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to other,
-        )
-    public override operator fun Symbol.minus(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(this@minus to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to -other,
-        )
-    public override operator fun Symbol.times(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(this@times to 1U) to other,
-        )
-
-    public override operator fun C.plus(other: Symbol): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(other to 1U) to constantOne,
-            emptyMap<Symbol, UInt>() to this@plus,
-        )
-    public override operator fun C.minus(other: Symbol): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(other to 1U) to -constantOne,
-            emptyMap<Symbol, UInt>() to this@minus,
-        )
-    public override operator fun C.times(other: Symbol): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(other to 1U) to this@times,
-        )
-
-    override operator fun LabeledPolynomial<C>.plus(other: C): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.asLabeledPolynomial()
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), other) { _, it, _ -> it + other }
-        )
-    override operator fun LabeledPolynomial<C>.minus(other: C): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.asLabeledPolynomial()
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), -other) { _, it, _ -> it - other }
-        )
-    override operator fun LabeledPolynomial<C>.times(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            coefficients.mapValues { it.value * other }
-        )
-
-    override operator fun C.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@plus.asLabeledPolynomial()
-        else LabeledPolynomialAsIs(
-            other.coefficients.withPutOrChanged(emptyMap(), this@plus) { _, it, _ -> this@plus + it }
-        )
-    override operator fun C.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@minus.polynomialValue
-        else LabeledPolynomialAsIs(
-            buildMap(other.coefficients.size + 1) {
-                put(emptyMap(), this@minus)
-                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
-            }
-        )
-    override operator fun C.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            other.coefficients.mapValues { this@times * it.value }
-        )
-
-    public override operator fun Symbol.unaryPlus(): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(this to 1U) to constantOne,
-        )
-    public override operator fun Symbol.unaryMinus(): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mapOf(this to 1U) to -constantOne,
-        )
-    public override operator fun Symbol.plus(other: Symbol): LabeledPolynomial<C> =
-        if (this == other) LabeledPolynomialAsIs(
-            mapOf(this to 1U) to constantOne * 2
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this to 1U) to constantOne,
-            mapOf(other to 1U) to constantOne,
-        )
-    public override operator fun Symbol.minus(other: Symbol): LabeledPolynomial<C> =
-        if (this == other) zero
-        else LabeledPolynomialAsIs(
-            mapOf(this to 1U) to constantOne,
-            mapOf(other to 1U) to -constantOne,
-        )
-    public override operator fun Symbol.times(other: Symbol): LabeledPolynomial<C> =
-        if (this == other) LabeledPolynomialAsIs(
-            mapOf(this to 2U) to constantOne
-        )
-        else LabeledPolynomialAsIs(
-            mapOf(this to 1U, other to 1U) to constantOne,
-        )
-
-    public override operator fun Symbol.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@plus.polynomialValue
-        else LabeledPolynomialAsIs(
-            other.coefficients.withPutOrChanged(mapOf(this@plus to 1U), constantOne) { _, it, _ -> constantOne + it }
-        )
-    public override operator fun Symbol.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        if (other.coefficients.isEmpty()) this@minus.polynomialValue
-        else LabeledPolynomialAsIs(
-            buildMap(other.coefficients.size + 1) {
-                put(mapOf(this@minus to 1U), constantOne)
-                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
-            }
-        )
-    public override operator fun Symbol.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            other.coefficients
-                .mapKeys { (degs, _) -> degs.withPutOrChanged(this, 1u) { _, it, _ -> it + 1u } }
-        )
-
-    public override operator fun LabeledPolynomial<C>.plus(other: Symbol): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.polynomialValue
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(mapOf(other to 1U), constantOne) { _, it, _ -> it + constantOne }
-        )
-    public override operator fun LabeledPolynomial<C>.minus(other: Symbol): LabeledPolynomial<C> =
-        if (coefficients.isEmpty()) other.polynomialValue
-        else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(mapOf(other to 1U), -constantOne) { _, it, _ -> it - constantOne }
-        )
-    public override operator fun LabeledPolynomial<C>.times(other: Symbol): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            coefficients
-                .mapKeys { (degs, _) -> degs.withPutOrChanged(other, 1u) { _, it, _ -> it + 1u } }
-        )
-
-    override fun LabeledPolynomial<C>.unaryMinus(): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            coefficients.mapValues { -it.value }
-        )
-    override operator fun LabeledPolynomial<C>.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            mergeBy(coefficients, other.coefficients) { _, c1, c2 -> c1 + c2 }
-        )
-    override operator fun LabeledPolynomial<C>.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            buildMap(coefficients.size + other.coefficients.size) {
-                coefficients.copyTo(this)
-                other.coefficients.copyMapToBy(this, { (_, c) -> -c }, { _, currentC, newC -> currentC - newC })
-            }
-        )
-    override operator fun LabeledPolynomial<C>.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
-            buildMap(coefficients.size * other.coefficients.size) {
-                for ((degs1, c1) in coefficients) for ((degs2, c2) in other.coefficients) {
-                    val degs = mergeBy(degs1, degs2) { _, deg1, deg2 -> deg1 + deg2 }
-                    val c = c1 * c2
-                    this.putOrChange(degs, c) { _, it, _ -> it + c }
-                }
-            }
-        )
-
-    override val LabeledPolynomial<C>.degree: Int
-        get() = coefficients.entries.maxOfOrNull { (degs, _) -> degs.values.sum().toInt() } ?: -1
-    public override val LabeledPolynomial<C>.degrees: LabeledMonomialSignature
-        get() =
-            buildMap {
-                coefficients.keys.forEach { degs ->
-                    degs.copyToBy(this) { _, currentDeg, newDeg -> max(currentDeg, newDeg) }
-                }
-            }
-    public override fun LabeledPolynomial<C>.degreeBy(variable: Symbol): UInt =
-        coefficients.entries.maxOfOrNull { (degs, _) -> degs.getOrElse(variable) { 0u } } ?: 0u
-    public override fun LabeledPolynomial<C>.degreeBy(variables: Collection<Symbol>): UInt =
-        coefficients.entries.maxOfOrNull { (degs, _) -> degs.filterKeys { it in variables }.values.sum() } ?: 0u
-    public override val LabeledPolynomial<C>.variables: Set<Symbol>
-        get() =
-            buildSet {
-                coefficients.entries.forEach { (degs, _) -> addAll(degs.keys) }
-            }
-    public override val LabeledPolynomial<C>.countOfVariables: Int get() = variables.size
+    public override fun mutablePolynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(mutableMapOf(*monomials))
+    public override fun mutablePolynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(monomials.toMap().toMutableMap())
+    public override fun MutableLabeledPolynomial<C>.getAndSet(signature: LabeledMonomialSignature, coefficient: C): C {
+        var result = constantZero
+        this.coefficients.putOrChange(signature, { coefficient }) { it -> result = it; coefficient }
+        return result
+    }
+    public override operator fun MutableLabeledPolynomial<C>.set(signature: LabeledMonomialSignature, coefficient: C) {
+        this.coefficients[signature] = coefficient
+    }
+    public override fun MutableLabeledPolynomial<C>.getAndRemove(signature: LabeledMonomialSignature): C {
+        val result = this.coefficients.getOrDefault(signature, constantZero)
+        this.coefficients.remove(signature)
+        return result
+    }
+    public override fun MutableLabeledPolynomial<C>.remove(signature: LabeledMonomialSignature) {
+        this.coefficients.remove(signature)
+    }
+    public override fun LabeledPolynomial<C>.toMutable(): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(coefficients.toMutableMap())
+    // endregion
 
     // FIXME: When context receivers will be ready move all of these substitutions and invocations to utilities with
     //  [ListPolynomialSpace] as a context receiver

@@ -15,7 +15,7 @@ import kotlin.math.min
 
 public data class ListPolynomial<C>(
     public val coefficients: List<C>
-) : Polynomial<C> {
+) {
     override fun toString(): String = "ListPolynomial$coefficients"
 }
 
