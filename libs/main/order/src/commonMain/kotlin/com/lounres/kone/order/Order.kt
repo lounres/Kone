@@ -45,3 +45,8 @@ public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> {
         0
     }
 }
+
+public fun <E> Comparator<E>.asOrder(): Order<E> =
+    object: Order<E> {
+        override fun E.compareTo(other: E): Int = this@Comparator.compare(this, other)
+    }

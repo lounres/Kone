@@ -14,7 +14,6 @@ import com.lounres.kone.util.mapOperations.*
 import com.lounres.kone.util.option.Option
 import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
-import kotlin.math.sign
 
 
 public open class LabeledPolynomial<C>

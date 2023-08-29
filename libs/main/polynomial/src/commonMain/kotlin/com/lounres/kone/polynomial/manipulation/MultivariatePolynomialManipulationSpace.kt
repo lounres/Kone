@@ -202,9 +202,9 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
         else this[theSignature] = constantOne
     }
     @JvmName("timesVariablePolynomial")
-    public override operator fun V.times(other: P): P = /*mutablePolynomialOf().apply {
-        for ((signature, coefficient) in other) this[signature + this@V] = coefficient
-    }*/ TODO("Not yet implemented")
+    public override operator fun V.times(other: P): P = mutablePolynomialOf().apply {
+        for ((signature, coefficient) in other) this[signature * this@V] = coefficient
+    }
 
     @JvmName("plusPolynomialVariable")
     public override operator fun P.plus(other: V): P = this.toMutable().apply {
@@ -219,9 +219,9 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
         else this[signature] = -constantOne
     }
     @JvmName("timesPolynomialVariable")
-    public override operator fun P.times(other: V): P = /*mutablePolynomialOf().apply {
-        for ((signature, coefficient) in this@P) this[signature + other] = coefficient
-    }*/ TODO("Not yet implemented")
+    public override operator fun P.times(other: V): P = mutablePolynomialOf().apply {
+        for ((signature, coefficient) in this@P) this[signature * other] = coefficient
+    }
 
     public override operator fun P.unaryMinus(): P = this.toMutable().apply {
         for ((signature, coefficient) in this)
@@ -239,7 +239,7 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
     }
     public override operator fun P.times(other: P): P = mutablePolynomialOf().apply {
         for ((signature1, coefficient1) in this@P) for ((signature2, coefficient2) in other)
-            TODO("Not yet implemented")
+            this[signature1 * signature2] += coefficient1 * coefficient2
     }
 
     public override val P.degree: Int
