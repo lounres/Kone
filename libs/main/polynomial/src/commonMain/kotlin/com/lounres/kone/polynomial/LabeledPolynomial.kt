@@ -113,8 +113,8 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(override val consta
     public override val Pair<LabeledMonomialSignature, C>.signature: LabeledMonomialSignature get() = first
     public override val Pair<LabeledMonomialSignature, C>.coefficient: C get() = second
 
-    public override fun polynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): LabeledPolynomial<C> = LabeledPolynomialAsIs(*monomials)
-    public override fun polynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): LabeledPolynomial<C> = LabeledPolynomialAsIs(monomials)
+    public override fun polynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): LabeledPolynomial<C> = LabeledPolynomial(monomials.toMap())
+    public override fun polynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): LabeledPolynomial<C> = LabeledPolynomial(monomials.toMap())
     public override val LabeledPolynomial<C>.size: Int get() = this.coefficients.size
     public override fun LabeledPolynomial<C>.isEmpty(): Boolean = this.coefficients.isEmpty()
     public override infix fun LabeledPolynomial<C>.containsSignature(signature: LabeledMonomialSignature): Boolean = signature in coefficients
@@ -162,7 +162,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(override val consta
 
 public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(constantRing: A) : LabeledPolynomialSpace<C, A>(constantRing), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
     public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
-        LabeledPolynomialAsIs(
+        LabeledPolynomial(
             coefficients.mapValues { constantRing { it.value / other } }
         )
 }

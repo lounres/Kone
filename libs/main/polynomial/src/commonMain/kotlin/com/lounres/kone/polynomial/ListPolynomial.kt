@@ -22,8 +22,8 @@ public data class ListPolynomial<C>(
 
 public open class ListPolynomialSpace<C, out A : Ring<C>>(override val constantRing: A) : PolynomialSpace<C, ListPolynomial<C>, A> {
     override val zero: ListPolynomial<C> = ListPolynomial(emptyList())
-    override val one: ListPolynomial<C> by lazy { constantOne.asListPolynomial() }
-    public val freeVariable: ListPolynomial<C> by lazy { ListPolynomial(constantZero, constantOne) }
+    override val one: ListPolynomial<C> by lazy { ListPolynomial(listOf(constantOne)) }
+    public val freeVariable: ListPolynomial<C> by lazy { ListPolynomial(listOf(constantZero, constantOne)) }
 
     public override infix fun ListPolynomial<C>.equalsTo(other: ListPolynomial<C>): Boolean {
         for (index in 0 .. max(this.coefficients.lastIndex, other.coefficients.lastIndex))
@@ -37,7 +37,7 @@ public open class ListPolynomialSpace<C, out A : Ring<C>>(override val constantR
     public override fun ListPolynomial<C>.isZero(): Boolean = coefficients.all { constantRing { it.isZero() } }
     public override fun ListPolynomial<C>.isOne(): Boolean = coefficients.subList(1, coefficients.size).all { constantRing { it.isZero() } }
 
-    public override fun polynomialValueOf(value: C): ListPolynomial<C> = value.asListPolynomial()
+    public override fun polynomialValueOf(value: C): ListPolynomial<C> = ListPolynomial(listOf(value))
 
     public override operator fun ListPolynomial<C>.plus(other: Int): ListPolynomial<C> =
         if (other == 0) this
