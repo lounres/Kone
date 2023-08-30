@@ -13,11 +13,10 @@ import kotlin.jvm.JvmName
 
 public interface Polynomial<C>
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
 public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> {
     // region Context accessors
-    public val constantRing: A get() = this@A
+    public val constantRing: A
     // endregion
 
     // region Constant constants
@@ -78,7 +77,6 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring<C>>: PolynomialSpace<C, P, A> {
     // region Variable-to-Polynomial conversion
@@ -182,7 +180,6 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: Field<C>> : PolynomialSpace<C, P, A> {
     // region Constant-Int operations
@@ -204,21 +201,20 @@ public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: Field<C>> 
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
-    public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Int): P = this * constantRing.run { other.constantValue.reciprocal }
     // endregion
 
     // region Variable-Long operations
     @JvmName("divVariableLong")
-    public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Long): P = this * constantRing.run { other.constantValue.reciprocal }
     // endregion
 
     // region Variable-Constant operations
     @JvmName("divVariableConstant")
-    public operator fun V.div(other: C): P = this * other.reciprocal
+    public operator fun V.div(other: C): P = this * constantRing.run { other.reciprocal }
     // endregion
 }

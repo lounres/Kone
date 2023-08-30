@@ -15,27 +15,8 @@ public interface Order<in E> : KoneContext {
     public infix operator fun E.compareTo(other: E): Int
 }
 
-context(Order<E>)
-public inline infix fun <E> E.greaterThan(other: E): Boolean = this > other
-context(Order<E>)
-public inline infix fun <E> E.greaterThanOrEqual(other: E): Boolean = this >= other
-context(Order<E>)
-public inline infix fun <E> E.lessThen(other: E): Boolean = this < other
-context(Order<E>)
-public inline infix fun <E> E.lessThenOrEqual(other: E): Boolean = this <= other
-context(Order<E>)
-public inline infix fun <E> E.gt(other: E): Boolean = this > other
-context(Order<E>)
-public inline infix fun <E> E.geq(other: E): Boolean = this >= other
-context(Order<E>)
-public inline infix fun <E> E.lt(other: E): Boolean = this < other
-context(Order<E>)
-public inline infix fun <E> E.leq(other: E): Boolean = this <= other
-
-context(Order<E>)
-public val <E> comparator: Comparator<E> get() = Comparator { a, b -> a.compareTo(b) }
-context(Order<E>)
-public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> {
+public val <E> Order<E>.comparator: Comparator<E> get() = Comparator { a, b -> a.compareTo(b) }
+public fun <T, E> Order<E>.compareByOrdered(vararg selectors: (T) -> E): Comparator<T> {
     require(selectors.isNotEmpty())
     return Comparator { a, b ->
         for (s in selectors) {
