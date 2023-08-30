@@ -20,8 +20,7 @@ public data class LabeledRationalFunction<C>(
     override fun toString(): String = "LabeledRationalFunction${numerator.coefficients}/${denominator.coefficients}"
 }
 
-context(A, PS)
-public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: LabeledPolynomialSpace<C, A>> :
+public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: LabeledPolynomialSpace<C, A>>(override val polynomialSpace: PS) :
     MultivariatePolynomialSpaceOfFractions<
             C,
             Symbol,
@@ -50,9 +49,10 @@ public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: Labele
 
 public typealias DefaultLabeledRationalFunctionSpace<C, A> = LabeledRationalFunctionSpace<C, A, LabeledPolynomialSpace<C, A>>
 
-context(A, PS)
-public class LabeledRationalFunctionSpaceOverField<C, out A: Field<C>, out PS: LabeledPolynomialSpaceOverField<C, A>> :
-    LabeledRationalFunctionSpace<C, A, PS>(),
+public class LabeledRationalFunctionSpaceOverField<C, out A: Field<C>, out PS: LabeledPolynomialSpaceOverField<C, A>>(
+    polynomialSpace: PS
+) :
+    LabeledRationalFunctionSpace<C, A, PS>(polynomialSpace),
     MultivariateRationalFunctionSpaceOverField<C, Symbol, LabeledPolynomial<C>, LabeledRationalFunction<C>, A, PS>
 
 public typealias DefaultLabeledRationalFunctionSpaceOverField<C, A> = LabeledRationalFunctionSpaceOverField<C, A, LabeledPolynomialSpaceOverField<C, A>>

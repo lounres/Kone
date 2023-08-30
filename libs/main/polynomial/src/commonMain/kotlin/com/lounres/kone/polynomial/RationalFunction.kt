@@ -18,12 +18,10 @@ public interface RationalFunction<C, P> {
     public operator fun component2(): P = denominator
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
 public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
     // region Context accessors
-    public val ring: A get() = this@A
-    public val polynomialSpace: PS get() = this@PS
+    public val polynomialSpace: PS
     // endregion
 
     // region Rational functions constants
@@ -32,10 +30,10 @@ public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: 
     // endregion
 
     // region Equality
-    public override infix fun RF.equalsTo(other: RF): Boolean = numerator * other.denominator equalsTo denominator * other.numerator
+    public override infix fun RF.equalsTo(other: RF): Boolean = polynomialSpace.run { numerator * other.denominator equalsTo denominator * other.numerator }
     public override infix fun RF.eq(other: RF): Boolean = this equalsTo other
-    public override fun RF.isZero(): Boolean = numerator equalsTo polynomialZero
-    public override fun RF.isOne(): Boolean = numerator equalsTo denominator
+    public override fun RF.isZero(): Boolean = polynomialSpace.run { numerator equalsTo polynomialZero }
+    public override fun RF.isOne(): Boolean = polynomialSpace.run { numerator equalsTo denominator }
     // endregion
 
     // region Integer-to-Polynomial conversion
@@ -55,7 +53,7 @@ public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: 
     // endregion
 
     // region Constant-to-Polynomial conversion
-    public fun polynomialValueOf(value: C): P = polynomialOne * value
+    public fun polynomialValueOf(value: C): P = polynomialSpace.run { polynomialOne * value }
     public val C.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
@@ -131,12 +129,11 @@ public interface RationalFunctionSpace<C, P, RF: RationalFunction<C, P>, out A: 
     // endregion
 
     // region Rational Function properties
-    public val RF.numeratorDegree: Int get() = numerator.degree
-    public val RF.denominatorDegree: Int get() = denominator.degree
+    public val RF.numeratorDegree: Int get() = polynomialSpace.run { numerator.degree }
+    public val RF.denominatorDegree: Int get() = polynomialSpace.run { denominator.degree }
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public abstract class PolynomialSpaceOfFractions<
         C,
@@ -146,11 +143,11 @@ public abstract class PolynomialSpaceOfFractions<
         out PS: PolynomialSpace<C, P, A>
         > : RationalFunctionSpace<C, P, RF, A, PS> {
 
-    protected abstract fun constructRationalFunction(numerator: P, denominator: P = polynomialOne) : RF
+    protected abstract fun constructRationalFunction(numerator: P, denominator: P = polynomialSpace.polynomialOne) : RF
 
     // region Rational Function constants
-    public override val zero: RF by lazy { constructRationalFunction(polynomialZero) }
-    public override val one: RF by lazy { constructRationalFunction(polynomialOne) }
+    public override val zero: RF by lazy { constructRationalFunction(polynomialSpace.polynomialZero) }
+    public override val one: RF by lazy { constructRationalFunction(polynomialSpace.polynomialOne) }
     // endregion
 
     // region Integer-to-Rational-Function conversion
@@ -171,68 +168,68 @@ public abstract class PolynomialSpaceOfFractions<
     // region Rational-Function-Int operations
     public override operator fun RF.plus(other: Int): RF =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace.run { numerator + denominator * other },
             denominator
         )
     public override operator fun RF.minus(other: Int): RF =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace.run { numerator - denominator * other },
             denominator
         )
     public override operator fun RF.times(other: Int): RF =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace.run { numerator * other },
             denominator
         )
     public override operator fun RF.div(other: Int): RF =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace.run { denominator * other }
         )
     // endregion
 
     // region Rational-Function-Long operations
     public override operator fun RF.plus(other: Long): RF =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace.run { numerator + denominator * other },
             denominator
         )
     public override operator fun RF.minus(other: Long): RF =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace.run { numerator - denominator * other },
             denominator
         )
     public override operator fun RF.times(other: Long): RF =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace.run { numerator * other },
             denominator
         )
     public override operator fun RF.div(other: Long): RF =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace.run { denominator * other }
         )
     // endregion
 
     // region Int-Rational-Function operations
     public override operator fun Int.plus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace.run { other.denominator * this@plus + other.numerator },
             other.denominator
         )
     public override operator fun Int.minus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace.run { other.denominator * this@minus - other.numerator },
             other.denominator
         )
     public override operator fun Int.times(other: RF): RF =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace.run { this@times * other.numerator },
             other.denominator
         )
     public override operator fun Int.div(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace.run { this@div * other.denominator },
             other.numerator
         )
     // endregion
@@ -240,22 +237,22 @@ public abstract class PolynomialSpaceOfFractions<
     // region Long-Rational-Function operations
     public override operator fun Long.plus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace.run { other.denominator * this@plus + other.numerator },
             other.denominator
         )
     public override operator fun Long.minus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace.run { other.denominator * this@minus - other.numerator },
             other.denominator
         )
     public override operator fun Long.times(other: RF): RF =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace.run { this@times * other.numerator },
             other.denominator
         )
     public override operator fun Long.div(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace.run { this@div * other.denominator },
             other.numerator
         )
     // endregion
@@ -264,25 +261,25 @@ public abstract class PolynomialSpaceOfFractions<
     @JvmName("plusConstantRational")
     public override operator fun C.plus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace.run { other.denominator * this@plus + other.numerator },
             other.denominator
         )
     @JvmName("minusConstantRational")
     public override operator fun C.minus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace.run { other.denominator * this@minus - other.numerator },
             other.denominator
         )
     @JvmName("timesConstantRational")
     public override operator fun C.times(other: RF): RF =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace.run { this@times * other.numerator },
             other.denominator
         )
     @JvmName("divConstantRational")
     public override operator fun C.div(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace.run { this@div * other.denominator },
             other.numerator
         )
     // endregion
@@ -291,26 +288,26 @@ public abstract class PolynomialSpaceOfFractions<
     @JvmName("plusRationalConstant")
     public override operator fun RF.plus(other: C): RF =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace.run { numerator + denominator * other },
             denominator
         )
     @JvmName("minusRationalConstant")
     public override operator fun RF.minus(other: C): RF =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace.run { numerator - denominator * other },
             denominator
         )
     @JvmName("timesRationalConstant")
     public override operator fun RF.times(other: C): RF =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace.run { numerator * other },
             denominator
         )
     @JvmName("divRationalConstant")
     public override operator fun RF.div(other: C): RF =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace.run { denominator * other }
         )
     // endregion
 
@@ -323,25 +320,25 @@ public abstract class PolynomialSpaceOfFractions<
     @JvmName("plusPolynomialRational")
     public override operator fun P.plus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace.run { other.denominator * this@plus + other.numerator },
             other.denominator
         )
     @JvmName("minusPolynomialRational")
     public override operator fun P.minus(other: RF): RF =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace.run { other.denominator * this@minus - other.numerator },
             other.denominator
         )
     @JvmName("timesPolynomialRational")
     public override operator fun P.times(other: RF): RF =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace.run { this@times * other.numerator },
             other.denominator
         )
     @JvmName("divPolynomialRational")
     public override operator fun P.div(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace.run { this@div * other.denominator },
             other.numerator
         )
     // endregion
@@ -350,65 +347,64 @@ public abstract class PolynomialSpaceOfFractions<
     @JvmName("plusRationalPolynomial")
     public override operator fun RF.plus(other: P): RF =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace.run { numerator + denominator * other },
             denominator
         )
     @JvmName("minusRationalPolynomial")
     public override operator fun RF.minus(other: P): RF =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace.run { numerator - denominator * other },
             denominator
         )
     @JvmName("timesRationalPolynomial")
     public override operator fun RF.times(other: P): RF =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace.run { numerator * other },
             denominator
         )
     @JvmName("divRationalPolynomial")
     public override operator fun RF.div(other: P): RF =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace.run { denominator * other }
         )
     // endregion
 
     // region Rational-Function-Rational-Function operations
-    public override operator fun RF.unaryMinus(): RF = constructRationalFunction(-numerator, denominator)
+    public override operator fun RF.unaryMinus(): RF = constructRationalFunction(polynomialSpace.run { -numerator }, denominator)
     public override operator fun RF.plus(other: RF): RF =
         constructRationalFunction(
-            numerator * other.denominator + denominator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace.run { numerator * other.denominator + denominator * other.numerator },
+            polynomialSpace.run { denominator * other.denominator }
         )
     public override operator fun RF.minus(other: RF): RF =
         constructRationalFunction(
-            numerator * other.denominator - denominator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace.run { numerator * other.denominator - denominator * other.numerator },
+            polynomialSpace.run { denominator * other.denominator }
         )
     public override operator fun RF.times(other: RF): RF =
         constructRationalFunction(
-            numerator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace.run { numerator * other.numerator },
+            polynomialSpace.run { denominator * other.denominator }
         )
     public override operator fun RF.div(other: RF): RF =
         constructRationalFunction(
-            numerator * other.denominator,
-            denominator * other.numerator
+            polynomialSpace.run { numerator * other.denominator },
+            polynomialSpace.run { denominator * other.numerator }
         )
     public override fun power(base: RF, exponent: UInt): RF =
         constructRationalFunction(
-            power(base.numerator, exponent),
-            power(base.denominator, exponent),
+            polynomialSpace.power(base.numerator, exponent),
+            polynomialSpace.power(base.denominator, exponent),
         )
     public override fun power(base: RF, exponent: ULong): RF =
         constructRationalFunction(
-            power(base.numerator, exponent),
-            power(base.denominator, exponent),
+            polynomialSpace.power(base.numerator, exponent),
+            polynomialSpace.power(base.denominator, exponent),
         )
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariateRationalFunctionSpace<
         C,
@@ -456,12 +452,11 @@ public interface MultivariateRationalFunctionSpace<
     // endregion
 
     // region Rational Function properties
-    public val RF.variables: Set<V> get() = numerator.variables union denominator.variables
+    public val RF.variables: Set<V> get() = polynomialSpace.run { numerator.variables union denominator.variables }
     public val RF.countOfVariables: Int get() = variables.size
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public abstract class MultivariatePolynomialSpaceOfFractions<
         C,
@@ -476,25 +471,25 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
     @JvmName("plusVariableRational")
     public override operator fun V.plus(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator + other.numerator,
+            polynomialSpace.run { this@plus * other.denominator + other.numerator },
             other.denominator
         )
     @JvmName("minusVariableRational")
     public override operator fun V.minus(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator - other.numerator,
+            polynomialSpace.run { this@minus * other.denominator - other.numerator },
             other.denominator
         )
     @JvmName("timesVariableRational")
     public override operator fun V.times(other: RF): RF =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace.run { this@times * other.numerator },
             other.denominator
         )
     @JvmName("divVariableRational")
     public override operator fun V.div(other: RF): RF =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace.run { this@div * other.denominator },
             other.numerator
         )
     // endregion
@@ -503,31 +498,30 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
     @JvmName("plusRationalVariable")
     public override operator fun RF.plus(other: V): RF =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace.run { numerator + denominator * other },
             denominator
         )
     @JvmName("minusRationalVariable")
     public override operator fun RF.minus(other: V): RF =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace.run { numerator - denominator * other },
             denominator
         )
     @JvmName("timesRationalVariable")
     public override operator fun RF.times(other: V): RF =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace.run { numerator * other },
             denominator
         )
     @JvmName("divRationalVariable")
     public override operator fun RF.div(other: V): RF =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace.run { denominator * other }
         )
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface RationalFunctionSpaceOverField<
         C,
@@ -544,7 +538,6 @@ public interface RationalFunctionSpaceOverField<
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariateRationalFunctionSpaceOverField<
         C,

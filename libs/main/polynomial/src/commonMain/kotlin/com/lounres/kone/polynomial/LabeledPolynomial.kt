@@ -9,6 +9,7 @@ package com.lounres.kone.polynomial
 
 import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
+import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.manipulation.MultivariatePolynomialManipulationSpace
 import com.lounres.kone.util.mapOperations.*
 import com.lounres.kone.util.option.Option
@@ -67,8 +68,7 @@ public typealias MutableLabeledMonomialSignature = MutableMap<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 public typealias MutableLabeledPolynomialCoefficients<C> = MutableMap<LabeledMonomialSignature, C>
 
-context(A)
-public open class LabeledPolynomialSpace<C, out A : Ring<C>> :
+public open class LabeledPolynomialSpace<C, out A : Ring<C>>(override val constantRing: A) :
     MultivariatePolynomialManipulationSpace<C, Symbol, Pair<Symbol, UInt>, LabeledMonomialSignature, MutableLabeledMonomialSignature, Pair<LabeledMonomialSignature, C>, LabeledPolynomial<C>, MutableLabeledPolynomial<C>, A>
 {
     // region Manipulation
@@ -160,10 +160,9 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> :
     public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(constantRing, *arguments)
 }
 
-context(A)
-public class LabeledPolynomialSpaceOverField<C, out A : Field<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
+public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(constantRing: A) : LabeledPolynomialSpace<C, A>(constantRing), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
     public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
-            coefficients.mapValues { it.value / other }
+            coefficients.mapValues { constantRing { it.value / other } }
         )
 }
