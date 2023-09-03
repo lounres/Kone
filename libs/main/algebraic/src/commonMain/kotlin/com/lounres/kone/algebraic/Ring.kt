@@ -33,9 +33,9 @@ public interface Ring<V>: KoneContext {
     // endregion
 
     // region Integers conversion
-    public fun valueOf(arg: Int): V = one doublingTimes arg
+    public fun valueOf(arg: Int): V = doublingTimes(one, arg)
 //    public fun valueOf(arg: UInt): V = one doublingTimes arg
-    public fun valueOf(arg: Long): V = one doublingTimes arg
+    public fun valueOf(arg: Long): V = doublingTimes(one, arg)
 //    public fun valueOf(arg: ULong): V = one doublingTimes arg
     public val Int.value: V get() = valueOf(this)
 //    public val UInt.value: V get() = valueOf(this)
@@ -44,9 +44,9 @@ public interface Ring<V>: KoneContext {
     // endregion
 
     // region Value-Int operations
-    public operator fun V.plus(other: Int): V = this doublingPlus other
-    public operator fun V.minus(other: Int): V = this doublingMinus other
-    public operator fun V.times(other: Int): V = this doublingTimes other
+    public operator fun V.plus(other: Int): V = doublingPlus(this, other)
+    public operator fun V.minus(other: Int): V = doublingMinus(this, other)
+    public operator fun V.times(other: Int): V = doublingTimes(this, other)
     // endregion
 
 //    // region Value-UInt operations
@@ -56,9 +56,9 @@ public interface Ring<V>: KoneContext {
 //    // endregion
 
     // region Value-Long operations
-    public operator fun V.plus(other: Long): V = this doublingPlus other
-    public operator fun V.minus(other: Long): V = this doublingMinus other
-    public operator fun V.times(other: Long): V = this doublingTimes other
+    public operator fun V.plus(other: Long): V = doublingPlus(this, other)
+    public operator fun V.minus(other: Long): V = doublingMinus(this, other)
+    public operator fun V.times(other: Long): V = doublingTimes(this, other)
     // endregion
 
 //    // region Value-ULong operations
@@ -68,9 +68,9 @@ public interface Ring<V>: KoneContext {
 //    // endregion
 
     // region Int-Value operations
-    public operator fun Int.plus(other: V): V = this doublingPlus other
-    public operator fun Int.minus(other: V): V = this doublingMinus other
-    public operator fun Int.times(other: V): V = this doublingTimes other
+    public operator fun Int.plus(other: V): V = doublingPlus(this, other)
+    public operator fun Int.minus(other: V): V = doublingMinus(this, other)
+    public operator fun Int.times(other: V): V = doublingTimes(this, other)
     // endregion
 
 //    // region UInt-Value operations
@@ -80,9 +80,9 @@ public interface Ring<V>: KoneContext {
 //    // endregion
 
     // region Long-Value operations
-    public operator fun Long.plus(other: V): V = this doublingPlus other
-    public operator fun Long.minus(other: V): V = this doublingMinus other
-    public operator fun Long.times(other: V): V = this doublingTimes other
+    public operator fun Long.plus(other: V): V = doublingPlus(this, other)
+    public operator fun Long.minus(other: V): V = doublingMinus(this, other)
+    public operator fun Long.times(other: V): V = doublingTimes(this, other)
     // endregion
 
 //    // region ULong-Value operations
@@ -97,7 +97,7 @@ public interface Ring<V>: KoneContext {
     public operator fun V.plus(other: V): V
     public operator fun V.minus(other: V): V
     public operator fun V.times(other: V): V
-    public fun power(base: V, exponent: UInt): V = base squaringPower exponent
+    public fun power(base: V, exponent: UInt): V = squaringPower(base, exponent)
     public fun power(base: V, exponent: ULong): V = squaringPower(base, exponent)
     public infix fun V.pow(exponent: UInt): V = power(this, exponent)
     public infix fun V.pow(exponent: ULong): V = power(this, exponent)

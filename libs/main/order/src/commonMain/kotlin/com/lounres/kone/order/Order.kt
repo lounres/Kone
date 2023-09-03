@@ -29,5 +29,5 @@ public fun <T, E> Order<E>.compareByOrdered(vararg selectors: (T) -> E): Compara
 
 public fun <E> Comparator<E>.asOrder(): Order<E> =
     object: Order<E> {
-        override fun E.compareTo(other: E): Int = this@Comparator.compare(this, other)
+        override fun E.compareTo(other: E): Int = this@asOrder.compare(this, other)
     }

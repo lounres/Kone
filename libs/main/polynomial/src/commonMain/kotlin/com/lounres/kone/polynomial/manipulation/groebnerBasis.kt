@@ -14,23 +14,22 @@ import kotlin.jvm.JvmInline
 @JvmInline
 public value class Ideal<P>(public val basis: List<P>)
 
-context(MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> Ideal<P>.groebnerBasisByBuchbergersAlgorithm(): Ideal<P> = constantRing {
-    val basis = basis.toMutableList()
+public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>.groebnerBasisByBuchbergersAlgorithm(order: Order<MS>, ideal: Ideal<P>): Ideal<P> = constantRing {
+    val basis = ideal.basis.toMutableList()
     var i = 1
     var j = 0
     while (i < basis.size) {
         val fi = basis[i]
         val fj = basis[j]
 
-        val gi = fi.leadingTerm
-        val gj = fj.leadingTerm
+        val gi = leadingTerm(order, fi)
+        val gj = leadingTerm(order, fj)
 
         val (_, ai, aj) = lcmWithMultipliers(gi.signature, gj.signature)
 
         var s = fi * polynomialOf(monomial(ai, gj.coefficient)) - fj * polynomialOf(monomial(aj, gi.coefficient)) // TODO: Implement multiplication on signatures and replace the expression with them.
 
-        s = s.divRem(basis).remainder
+        s = divRem(order, s, basis).remainder
 
         basis.add(s)
 

@@ -149,15 +149,6 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(override val consta
     }
     public override fun LabeledPolynomial<C>.toMutable(): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(coefficients.toMutableMap())
     // endregion
-
-    // FIXME: When context receivers will be ready move all of these substitutions and invocations to utilities with
-    //  [ListPolynomialSpace] as a context receiver
-    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, C>): LabeledPolynomial<C> = substitute(constantRing, arguments)
-    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, C>): LabeledPolynomial<C> = substitute(constantRing, *arguments)
-    @JvmName("substitutePolynomial")
-    public inline fun LabeledPolynomial<C>.substitute(arguments: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> = substitute(constantRing, arguments)
-    @JvmName("substitutePolynomial")
-    public inline fun LabeledPolynomial<C>.substitute(vararg arguments: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> = substitute(constantRing, *arguments)
 }
 
 public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(constantRing: A) : LabeledPolynomialSpace<C, A>(constantRing), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {

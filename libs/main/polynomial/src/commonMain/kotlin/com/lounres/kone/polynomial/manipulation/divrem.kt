@@ -6,6 +6,7 @@
 package com.lounres.kone.polynomial.manipulation
 
 import com.lounres.kone.algebraic.Field
+import com.lounres.kone.context.invoke
 import com.lounres.kone.order.Order
 
 
@@ -14,19 +15,18 @@ public data class IncompleteQuotientAndRemainder<out P>(
     val remainder: P,
 )
 
-context(A, MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, VP, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.leadDivRem(divisor: P): IncompleteQuotientAndRemainder<P> {
+public fun <C, V, VP, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS, M, P, MutP, A>.leadDivRem(order: Order<MS>, that: P, divisor: P): IncompleteQuotientAndRemainder<P> {
     val quotient = mutablePolynomialOf()
-    val remainder = mutablePolynomialOf(this.monomials)
-    val divisorLeadingSignature = divisor.leadingSignature
+    val remainder = mutablePolynomialOf(that.monomials)
+    val divisorLeadingSignature = leadingSignature(order, divisor)
     val divisorLeadingCoefficient = divisor[divisorLeadingSignature]
-    var remainderLeadingSignature = remainder.leadingSignature
+    var remainderLeadingSignature = leadingSignature(order, remainder)
 
-    while (remainderLeadingSignature isDivisibleBy divisorLeadingSignature) {
-        val quotCoefficient = remainder[remainderLeadingSignature] / divisorLeadingCoefficient
-        val quotSignature = remainderLeadingSignature.div(divisorLeadingSignature)
-        remainder.minusAssignProduct(divisor, polynomialOf(monomial(quotSignature, quotCoefficient)))
-        remainderLeadingSignature = remainder.leadingSignature
+    while (isDivisibleBy(remainderLeadingSignature, divisorLeadingSignature)) {
+        val quotCoefficient = constantRing { remainder[remainderLeadingSignature] / divisorLeadingCoefficient }
+        val quotSignature = div(remainderLeadingSignature, divisorLeadingSignature)
+        minusAssignProduct(remainder, divisor, polynomialOf(monomial(quotSignature, quotCoefficient)))
+        remainderLeadingSignature = leadingSignature(order, remainder)
         quotient[quotSignature] = quotCoefficient
     }
 
@@ -36,21 +36,20 @@ public fun <C, V, VP, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.leadDivRem(di
     )
 }
 
-context(A, MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.divRem(divisor: P): IncompleteQuotientAndRemainder<P> {
+public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>.divRem(order: Order<MS>, that: P, divisor: P): IncompleteQuotientAndRemainder<P> {
     val quotient = mutablePolynomialOf()
-    val dividend = mutablePolynomialOf(this.monomials)
+    val dividend = mutablePolynomialOf(that.monomials)
     val remainder = mutablePolynomialOf()
-    val divisorLeadingSignature = divisor.leadingSignature
+    val divisorLeadingSignature = leadingSignature(order, divisor)
     val divisorLeadingCoefficient = divisor[divisorLeadingSignature]
-    var dividendLeadingSignature = dividend.leadingSignature
+    var dividendLeadingSignature = leadingSignature(order, dividend)
 
     while (!dividend.isEmpty()) {
-        if (dividendLeadingSignature isDivisibleBy divisorLeadingSignature) {
-            val quotCoefficient = remainder[dividendLeadingSignature] / divisorLeadingCoefficient
-            val quotSignature = dividendLeadingSignature.div(divisorLeadingSignature)
-            remainder.minusAssignProduct(divisor, polynomialOf(monomial(quotSignature, quotCoefficient)))
-            dividendLeadingSignature = dividend.leadingSignature
+        if (isDivisibleBy(dividendLeadingSignature, divisorLeadingSignature)) {
+            val quotCoefficient = constantRing { remainder[dividendLeadingSignature] / divisorLeadingCoefficient }
+            val quotSignature = div(dividendLeadingSignature, divisorLeadingSignature)
+            minusAssignProduct(remainder, divisor, polynomialOf(monomial(quotSignature, quotCoefficient)))
+            dividendLeadingSignature = leadingSignature(order, dividend)
             quotient[quotSignature] = quotCoefficient
         } else {
             remainder[dividendLeadingSignature] = dividend[dividendLeadingSignature]
@@ -64,24 +63,23 @@ public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.divRem(divisor: P
     )
 }
 
-context(A, MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.leadDivRem(divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
+public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>.leadDivRem(order: Order<MS>, that: P, divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
     val divisorsList = divisors.toList()
 
     val quotient = mutablePolynomialOf()
-    val remainder = mutablePolynomialOf(this.monomials)
-    val divisorsLeadingSignatures = divisorsList.map { it.leadingSignature }
+    val remainder = mutablePolynomialOf(that.monomials)
+    val divisorsLeadingSignatures = divisorsList.map { leadingSignature(order, it) }
     val divisorsLeadingCoefficients = divisorsList.mapIndexed { i, divisor -> divisor[divisorsLeadingSignatures[i]] }
-    var remainderLeadingSignature = remainder.leadingSignature
+    var remainderLeadingSignature = leadingSignature(order, remainder)
 
     while (true) {
-        val divisorIndex = divisorsLeadingSignatures.indexOfFirst { it divides remainderLeadingSignature }
+        val divisorIndex = divisorsLeadingSignatures.indexOfFirst { divides(it, remainderLeadingSignature) }
         if (divisorIndex == -1) break
 
-        val quotCoefficient = remainder[remainderLeadingSignature] / divisorsLeadingCoefficients[divisorIndex]
-        val quotSignature = remainderLeadingSignature.div(divisorsLeadingSignatures[divisorIndex])
-        remainder.minusAssignProduct(divisorsList[divisorIndex], polynomialOf(monomial(quotSignature, quotCoefficient)))
-        remainderLeadingSignature = remainder.leadingSignature
+        val quotCoefficient = constantRing { remainder[remainderLeadingSignature] / divisorsLeadingCoefficients[divisorIndex] }
+        val quotSignature = div(remainderLeadingSignature, divisorsLeadingSignatures[divisorIndex])
+        minusAssignProduct(remainder, divisorsList[divisorIndex], polynomialOf(monomial(quotSignature, quotCoefficient)))
+        remainderLeadingSignature = leadingSignature(order, remainder)
         quotient[quotSignature] = quotCoefficient
     }
 
@@ -91,25 +89,24 @@ public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.leadDivRem(diviso
     )
 }
 
-context(A, MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> P.divRem(divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
+public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>.divRem(order: Order<MS>, that: P, divisors: Collection<P>): IncompleteQuotientAndRemainder<P> {
     val divisorsList = divisors.toList()
 
     val quotient = mutablePolynomialOf()
-    val dividend = mutablePolynomialOf(this.monomials)
+    val dividend = mutablePolynomialOf(that.monomials)
     val remainder = mutablePolynomialOf()
-    val divisorsLeadingSignatures = divisorsList.map { it.leadingSignature }
+    val divisorsLeadingSignatures = divisorsList.map { leadingSignature(order, it) }
     val divisorsLeadingCoefficients = divisorsList.mapIndexed { i, divisor -> divisor[divisorsLeadingSignatures[i]] }
-    var dividendLeadingSignature = dividend.leadingSignature
+    var dividendLeadingSignature = leadingSignature(order, dividend)
 
     while (!dividend.isEmpty()) {
-        val divisorIndex = divisorsLeadingSignatures.indexOfFirst { it divides dividendLeadingSignature }
+        val divisorIndex = divisorsLeadingSignatures.indexOfFirst { divides(it, dividendLeadingSignature) }
 
         if (divisorIndex != -1) {
-            val quotCoefficient = remainder[dividendLeadingSignature] / divisorsLeadingCoefficients[divisorIndex]
-            val quotSignature = dividendLeadingSignature.div(divisorsLeadingSignatures[divisorIndex])
-            remainder.minusAssignProduct(divisorsList[divisorIndex], polynomialOf(monomial(quotSignature, quotCoefficient)))
-            dividendLeadingSignature = dividend.leadingSignature
+            val quotCoefficient = constantRing { remainder[dividendLeadingSignature] / divisorsLeadingCoefficients[divisorIndex] }
+            val quotSignature = div(dividendLeadingSignature, divisorsLeadingSignatures[divisorIndex])
+            minusAssignProduct(remainder, divisorsList[divisorIndex], polynomialOf(monomial(quotSignature, quotCoefficient)))
+            dividendLeadingSignature = leadingSignature(order, dividend)
             quotient[quotSignature] = quotCoefficient
         } else {
             remainder[dividendLeadingSignature] = dividend[dividendLeadingSignature]
