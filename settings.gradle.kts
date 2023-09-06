@@ -37,6 +37,7 @@ stal {
                 subdirs("libs util")
             }
         }
+        "test"("kotlin multiplatform")
     }
 
     tag {
