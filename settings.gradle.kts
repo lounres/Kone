@@ -30,12 +30,6 @@ stal {
                 "core"("libs main")
                 subdirs("libs main", "uses libs main core")
             }
-            "misc" {
-                subdirs("libs misc", "uses libs main core")
-            }
-            "util" {
-                subdirs("libs util")
-            }
         }
         "test"("kotlin multiplatform")
     }

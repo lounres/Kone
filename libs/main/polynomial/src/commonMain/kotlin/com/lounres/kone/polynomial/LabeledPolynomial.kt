@@ -7,14 +7,9 @@
 
 package com.lounres.kone.polynomial
 
-import com.lounres.kone.algebraic.Field
 import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.context.invoke
 import com.lounres.kone.polynomial.manipulation.MultivariatePolynomialManipulationSpace
-import com.lounres.kone.util.mapOperations.*
-import com.lounres.kone.util.option.Option
 import space.kscience.kmath.expressions.Symbol
-import kotlin.jvm.JvmName
 
 
 public open class LabeledPolynomial<C>
@@ -73,87 +68,11 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>>(override val consta
 {
     // region Manipulation
     public override fun variablePower(variable: Symbol, power: UInt): Pair<Symbol, UInt> = Pair(variable, power)
-    public override val Pair<Symbol, UInt>.variable: Symbol get() = first
-    public override val Pair<Symbol, UInt>.power: UInt get() = second
 
     public override fun signatureOf(vararg variablePowers: Pair<Symbol, UInt>): LabeledMonomialSignature = mapOf(*variablePowers)
-    public override fun signatureOf(variablePowers: Collection<Pair<Symbol, UInt>>): LabeledMonomialSignature = variablePowers.toMap()
-    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-    public override val LabeledMonomialSignature.size: Int get() = this.size
-    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-    public override fun LabeledMonomialSignature.isEmpty(): Boolean = isEmpty()
-    public override infix fun LabeledMonomialSignature.containsVariable(variable: Symbol): Boolean = variable in this
-    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-    public override operator fun LabeledMonomialSignature.get(variable: Symbol): UInt = getOrDefault(variable, 0u)
-    public override fun LabeledMonomialSignature.getOptional(variable: Symbol): Option<UInt> = computeOnOrElse(variable, Option.None) { _, power -> Option.Some(power) }
-    public override val LabeledMonomialSignature.variables: Set<Symbol> get() = keys
-    public override val LabeledMonomialSignature.powers: Set<Pair<Symbol, UInt>> get() = buildSet { entries.mapTo(this) { Pair(it.key, it.value) } }
-    public override operator fun LabeledMonomialSignature.iterator(): Iterator<Pair<Symbol, UInt>> = powers.iterator()
-
-    public override fun mutableSignatureOf(vararg variablePowers: Pair<Symbol, UInt>): MutableLabeledMonomialSignature = mutableMapOf(*variablePowers)
-    public override fun mutableSignatureOf(variablePowers: Collection<Pair<Symbol, UInt>>): MutableLabeledMonomialSignature = variablePowers.toMap().toMutableMap()
-    public override fun MutableLabeledMonomialSignature.getAndSet(variable: Symbol, power: UInt): UInt {
-        var result = 0u
-        this.putOrChange(variable, { power }) { it -> result = it; power }
-        return result
-    }
-    public override operator fun MutableLabeledMonomialSignature.set(variable: Symbol, power: UInt) { this.put(variable, power) }
-    public override fun MutableLabeledMonomialSignature.getAndRemove(variable: Symbol): UInt {
-        val result = this.getOrDefault(variable, 0u)
-        this.remove(variable)
-        return result
-    }
-    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-    public override fun MutableLabeledMonomialSignature.remove(variable: Symbol) {
-        this.remove(variable)
-    }
-    public override fun LabeledMonomialSignature.toMutable(): MutableLabeledMonomialSignature = this.toMutableMap()
 
     public override fun monomial(signature: LabeledMonomialSignature, coefficient: C): Pair<LabeledMonomialSignature, C> = Pair(signature, coefficient)
-    public override val Pair<LabeledMonomialSignature, C>.signature: LabeledMonomialSignature get() = first
-    public override val Pair<LabeledMonomialSignature, C>.coefficient: C get() = second
 
     public override fun polynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): LabeledPolynomial<C> = LabeledPolynomial(monomials.toMap())
-    public override fun polynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): LabeledPolynomial<C> = LabeledPolynomial(monomials.toMap())
-    public override val LabeledPolynomial<C>.size: Int get() = this.coefficients.size
-    public override fun LabeledPolynomial<C>.isEmpty(): Boolean = this.coefficients.isEmpty()
-    public override infix fun LabeledPolynomial<C>.containsSignature(signature: LabeledMonomialSignature): Boolean = signature in coefficients
-    public override operator fun LabeledPolynomial<C>.get(signature: LabeledMonomialSignature): C = coefficients.getOrDefault(signature, constantZero)
-    public override fun LabeledPolynomial<C>.getOptional(signature: LabeledMonomialSignature): Option<C> = coefficients.getOption(signature)
-    public override val LabeledPolynomial<C>.signatures: Set<LabeledMonomialSignature> get() = coefficients.keys
-    public override val LabeledPolynomial<C>.monomials: Set<Pair<LabeledMonomialSignature, C>> get() = buildSet { coefficients.entries.mapTo(this) { Pair(it.key, it.value) } }
-    public override operator fun LabeledPolynomial<C>.iterator(): Iterator<Pair<LabeledMonomialSignature, C>> =
-        object: Iterator<Pair<LabeledMonomialSignature, C>> {
-            val innerIterator = coefficients.entries.iterator()
-            override fun hasNext(): Boolean = innerIterator.hasNext()
-            override fun next(): Pair<LabeledMonomialSignature, C> = innerIterator.next().let { Pair(it.key, it.value) }
-        }
-
-    public override fun mutablePolynomialOf(vararg monomials: Pair<LabeledMonomialSignature, C>): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(mutableMapOf(*monomials))
-    public override fun mutablePolynomialOf(monomials: Collection<Pair<LabeledMonomialSignature, C>>): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(monomials.toMap().toMutableMap())
-    public override fun MutableLabeledPolynomial<C>.getAndSet(signature: LabeledMonomialSignature, coefficient: C): C {
-        var result = constantZero
-        this.coefficients.putOrChange(signature, { coefficient }) { it -> result = it; coefficient }
-        return result
-    }
-    public override operator fun MutableLabeledPolynomial<C>.set(signature: LabeledMonomialSignature, coefficient: C) {
-        this.coefficients[signature] = coefficient
-    }
-    public override fun MutableLabeledPolynomial<C>.getAndRemove(signature: LabeledMonomialSignature): C {
-        val result = this.coefficients.getOrDefault(signature, constantZero)
-        this.coefficients.remove(signature)
-        return result
-    }
-    public override fun MutableLabeledPolynomial<C>.remove(signature: LabeledMonomialSignature) {
-        this.coefficients.remove(signature)
-    }
-    public override fun LabeledPolynomial<C>.toMutable(): MutableLabeledPolynomial<C> = MutableLabeledPolynomial(coefficients.toMutableMap())
     // endregion
-}
-
-public class LabeledPolynomialSpaceOverField<C, out A : Field<C>>(constantRing: A) : LabeledPolynomialSpace<C, A>(constantRing), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
-    public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
-        LabeledPolynomial(
-            coefficients.mapValues { constantRing { it.value / other } }
-        )
 }

@@ -311,9 +311,6 @@ stal {
                     defaultSourceSet {
                         kotlin.setSrcDirs(listOf("src/examples/kotlin"))
                         resources.setSrcDirs(listOf("src/examples/resources"))
-                        dependencies {
-                            implementation(rootProject.projects.libs.util.examples)
-                        }
                     }
 
                     task<JavaExec>("runJvmExample") {
