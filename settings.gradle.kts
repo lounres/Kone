@@ -27,11 +27,9 @@ stal {
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
         "libs" {
             "main" {
-                "core"("libs main")
-                subdirs("libs main", "uses libs main core")
+                "polynomial"("libs main")
             }
         }
-        "test"("kotlin multiplatform")
     }
 
     tag {

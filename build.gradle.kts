@@ -131,33 +131,6 @@ tasks.dokkaHtmlMultiModule {
 
 stal {
     action {
-        "uses libs main core" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val main by getting {
-                            dependencies {
-                                api(rootProject.projects.libs.main.core)
-                            }
-                        }
-                    }
-                }
-            }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                apply<KotestMultiplatformCompilerGradlePlugin>()
-                configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val commonMain by getting {
-                            dependencies {
-                                api(rootProject.projects.libs.main.core)
-                            }
-                        }
-                    }
-                }
-            }
-        }
         "kotlin jvm" {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
