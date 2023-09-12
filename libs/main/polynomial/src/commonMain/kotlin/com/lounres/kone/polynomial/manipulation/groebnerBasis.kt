@@ -27,11 +27,11 @@ public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> MultivariatePolynom
 
         val (_, ai, aj) = lcmWithMultipliers(gi.signature, gj.signature)
 
-        var s = fi * polynomialOf(monomial(ai, gj.coefficient)) - fj * polynomialOf(monomial(aj, gi.coefficient)) // TODO: Implement multiplication on signatures and replace the expression with them.
+        var s = fi * polynomialOf(listOf(monomial(ai, gj.coefficient))) - fj * polynomialOf(listOf(monomial(aj, gi.coefficient))) // TODO: Implement multiplication on signatures and replace the expression with them.
 
-        s = divRem(order, s, basis).remainder
+        s = rem(order, s, basis)
 
-        basis.add(s)
+        if (!s.isEmpty()) basis.add(s)
 
         j++
         if (j == i) {

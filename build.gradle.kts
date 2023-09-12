@@ -227,6 +227,7 @@ stal {
         "kotlin common settings" {
             pluginManager.withPlugins(rootProject.libs.plugins.kotlin.jvm, rootProject.libs.plugins.kotlin.multiplatform) {
                 configure<KotlinProjectExtension> {
+                    @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val commonMain by getting {
                             dependencies {

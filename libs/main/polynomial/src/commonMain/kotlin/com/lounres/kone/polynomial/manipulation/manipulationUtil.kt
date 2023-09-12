@@ -18,6 +18,7 @@ public fun <V, VP, MS> MultivariatePolynomialManipulationSpace<*, V, VP, MS, *, 
     return true
 }
 
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <V, MS> MultivariatePolynomialManipulationSpace<*, V, *, MS, *, *, *, *, *>.isDivisibleBy(that: MS, other: MS): Boolean = divides(other, that)
 
 @JvmName("timesSignatureSignature")
@@ -35,7 +36,7 @@ public fun <V, VP, MS> MultivariatePolynomialManipulationSpace<*, V, VP, MS, *, 
             val otherPower = other[it]
             require(thisPower >= otherPower)
             variablePower(it, thisPower - otherPower)
-        }
+        }.filter { it.power != 0u }
     )
 
 public fun <V, MS> MultivariatePolynomialManipulationSpace<*, V, *, MS, *, *, *, *, *>.gcd(signature1: MS, signature2: MS): MS =
@@ -43,7 +44,7 @@ public fun <V, MS> MultivariatePolynomialManipulationSpace<*, V, *, MS, *, *, *,
     else gcdInternalLogic(signature2, signature1)
 
 public fun <V, VP, MS, MutMS: MS> MultivariatePolynomialManipulationSpace<*, V, VP, MS, MutMS, *, *, *, *>.gcdInternalLogic(signature1: MS, signature2: MS): MS {
-    val gcd = mutableSignatureOf()
+    val gcd = mutableSignatureOf(listOf())
     for ((v, power) in signature1) {
         if (signature2 containsVariable v) gcd[v] = min(power, signature2[v])
     }
@@ -59,13 +60,13 @@ public data class GcdWithDivisors<out MS>(
 public fun <V, VP, MS, MutMS: MS> MultivariatePolynomialManipulationSpace<*, V, VP, MS, MutMS, *, *, *, *>.gcdWithDivisors(signature1: MS, signature2: MS): GcdWithDivisors<MS> {
     val gcd = gcd(signature1, signature2)
 
-    val divisor1 = mutableSignatureOf()
+    val divisor1 = mutableSignatureOf(listOf())
     for ((v, power) in signature1) {
         val gcdPower = gcd[v]
         if (power > gcdPower) divisor1[v] = power - gcdPower
     }
 
-    val divisor2 = mutableSignatureOf()
+    val divisor2 = mutableSignatureOf(listOf())
     for ((v, power) in signature2) {
         val gcdPower = gcd[v]
         if (power > gcdPower) divisor2[v] = power - gcdPower
@@ -79,7 +80,7 @@ public fun <V, VP, MS, MutMS: MS> MultivariatePolynomialManipulationSpace<*, V, 
 }
 
 public fun <V, MS, MutMS: MS> MultivariatePolynomialManipulationSpace<*, V, *, MS, MutMS, *, *, *, *>.lcm(signature1: MS, signature2: MS): MS {
-    val lcm = mutableSignatureOf()
+    val lcm = mutableSignatureOf(listOf())
     for (v in signature1.variables union signature2.variables) {
         lcm[v] = max(signature1[v], signature2[v])
     }
@@ -95,13 +96,13 @@ public data class LcmWithMultipliers<out MS>(
 public fun <V, VP, MS, MutMS: MS> MultivariatePolynomialManipulationSpace<*, V, VP, MS, MutMS, *, *, *, *>.lcmWithMultipliers(signature1: MS, signature2: MS): LcmWithMultipliers<MS> {
     val lcm = lcm(signature1, signature2)
 
-    val multiplier1 = mutableSignatureOf()
+    val multiplier1 = mutableSignatureOf(listOf())
     for ((v, power) in signature1) {
         val lcmPower = lcm[v]
         if (lcmPower > power) multiplier1[v] = lcmPower - power
     }
 
-    val multiplier2 = mutableSignatureOf()
+    val multiplier2 = mutableSignatureOf(listOf())
     for ((v, power) in signature2) {
         val lcmPower = lcm[v]
         if (lcmPower > power) multiplier2[v] = lcmPower - power
@@ -138,6 +139,6 @@ public fun <C, MS, M, P, MutP: P, A: Ring<C>> MultivariatePolynomialManipulation
 public fun <C, MS, M, P, MutP: P, A: Ring<C>> MultivariatePolynomialManipulationSpace<C, *, *, MS, *, M, P, MutP, A>.minusAssignProduct(that: MutP, multiplier1: P, multiplier2: P) {
     for ((ms1, c1) in multiplier1) for ((ms2, c2) in multiplier2) {
         val ms = times(ms1, ms2)
-        that[ms] = with(constantRing) { that[ms] + c1 * c2 }
+        that[ms] = with(constantRing) { that[ms] - c1 * c2 }
     }
 }

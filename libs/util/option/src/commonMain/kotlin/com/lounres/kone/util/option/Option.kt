@@ -16,3 +16,11 @@ public fun <E> Option<E>.getOrDefault(default: E): E =
         Option.None -> default
         is Option.Some -> value
     }
+
+public fun <E> Option<E>.maybe(default: (E) -> Boolean): Option<E> =
+    when(this) {
+        Option.None -> Option.None
+        is Option.Some ->
+            if (default(value)) this
+            else Option.None
+    }
