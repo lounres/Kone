@@ -3,15 +3,15 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.polynomial.examples
+package dev.lounres.kone.polynomial.examples
 
-import com.lounres.kone.algebraic.field
-import com.lounres.kone.context.invoke
-import com.lounres.kone.examples.execute
-import com.lounres.kone.polynomial.NumberedPolynomial
-import com.lounres.kone.polynomial.labeledPolynomialSpace
-import com.lounres.kone.polynomial.listPolynomialSpace
-import com.lounres.kone.polynomial.numberedPolynomialSpace
+import dev.lounres.kone.algebraic.field
+import dev.lounres.kone.context.invoke
+import dev.lounres.kone.examples.execute
+import dev.lounres.kone.polynomial.NumberedPolynomial
+import dev.lounres.kone.polynomial.labeledPolynomialSpace
+import dev.lounres.kone.polynomial.listPolynomialSpace
+import dev.lounres.kone.polynomial.numberedPolynomialSpace
 import space.kscience.kmath.expressions.symbol
 
 

@@ -1,6 +1,6 @@
-package com.lounres.kone.examples.kone_numberTheory
+package dev.lounres.kone.examples.kone_numberTheory
 
-import com.lounres.kone.algebraic.Rational
+import dev.lounres.kone.algebraic.Rational
 
 
 fun main() {

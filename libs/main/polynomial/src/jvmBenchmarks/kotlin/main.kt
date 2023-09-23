@@ -5,12 +5,12 @@
 
 @file:Suppress("unused")
 
-package com.lounres.kone.polynomial.benchmarks
+package dev.lounres.kone.polynomial.benchmarks
 
-import com.lounres.kone.algebraic.field
-import com.lounres.kone.context.invoke
-import com.lounres.kone.polynomial.ListPolynomial
-import com.lounres.kone.polynomial.listPolynomialSpace
+import dev.lounres.kone.algebraic.field
+import dev.lounres.kone.context.invoke
+import dev.lounres.kone.polynomial.ListPolynomial
+import dev.lounres.kone.polynomial.listPolynomialSpace
 import kotlinx.benchmark.*
 import java.util.concurrent.TimeUnit
 

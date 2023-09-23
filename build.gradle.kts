@@ -231,8 +231,6 @@ stal {
                         all {
                             languageSettings {
                                 progressiveMode = true
-                                languageVersion = "1.9"
-                                enableLanguageFeature("ContextReceivers")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                             }
