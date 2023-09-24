@@ -24,6 +24,7 @@ plugins {
 
 stal {
     structure {
+        taggedWith("publishing")
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
         "libs" {
             "main" {

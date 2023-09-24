@@ -27,6 +27,10 @@
           <option name="issueRegexp" value="#(\d+)" />
           <option name="linkRegexp" value="https://github.com/lounres/Kone/issues/$1" />
         </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GR-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/gradle/gradle/issues/$1" />
+        </IssueNavigationLink>
       </list>
     </option>
   </component>

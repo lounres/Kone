@@ -31,6 +31,7 @@ plugins {
     }
     `version-catalog`
     `maven-publish`
+    signing
 }
 
 val koneVersion = project.properties["version"] as String
@@ -448,7 +449,6 @@ stal {
                 archiveClassifier = "javadoc"
                 afterEvaluate {
                     val dokkaHtml by tasks.getting
-                    dependsOn(dokkaHtml)
                     from(dokkaHtml)
                 }
             }
@@ -462,11 +462,52 @@ stal {
         }
         "publishing" {
             apply<MavenPublishPlugin>()
+            apply<SigningPlugin>()
             afterEvaluate {
                 configure<PublishingExtension> {
+                    repositories {
+                        maven {
+                            name = "sonatype"
+                            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                            credentials {
+                                username = project.properties["ossrhUsername"].toString()
+                                password = project.properties["ossrhPassword"].toString()
+                            }
+                        }
+                    }
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
+                        pom {
+                            name = "Kone library"
+                            description = "Set of libraries for experimental mathematics"
+                            url = "https://github.com/lounres/kone"
+
+                            licenses {
+                                license {
+                                    name = "Apache License, Version 2.0"
+                                    url = "https://opensource.org/license/apache-2-0/"
+                                }
+                            }
+                            developers {
+                                developer {
+                                    id = "lounres"
+                                    name = "Gleb Minaev"
+                                    email = "minaevgleb@yandex.ru"
+                                }
+                            }
+                            scm {
+                                url = "https://github.com/lounres/kone"
+                            }
+                        }
                     }
+                }
+                configure<SigningExtension> {
+                    sign(the<PublishingExtension>().publications)
+                }
+                // GR-26091
+                tasks.withType<AbstractPublishToMaven>().configureEach {
+                    val signingTasks = tasks.withType<Sign>()
+                    mustRunAfter(signingTasks)
                 }
             }
         }
