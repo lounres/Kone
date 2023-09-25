@@ -19,23 +19,23 @@ pluginManagement {
 }
 
 plugins {
-    id("com.lounres.gradle.stal") version "0.1.0"
+    id("com.lounres.gradle.stal") version "0.3.0"
 }
 
 stal {
-    fun File.testSubdir(): Boolean = listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false
     structure {
+        defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
         "libs" {
             "main" {
                 "core"("libs main")
-                subdirs("libs main", "uses libs main core", includeIf = File::testSubdir)
+                subdirs("libs main", "uses libs main core")
                 "geometry"(/*"kotlin multiplatform"*/)
             }
             "misc" {
-                subdirs("libs misc", "uses libs main core", includeIf = File::testSubdir)
+                subdirs("libs misc", "uses libs main core")
             }
             "util" {
-                subdirs("libs util", includeIf = File::testSubdir)
+                subdirs("libs util")
             }
         }
     }
@@ -53,7 +53,7 @@ stal {
         "benchmark" since { has("libs public") }
         "kotest" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
-        "dokka" since { has("publishing") }
+        "dokka" since { has("libs") }
         "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
         "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
         "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }
@@ -64,15 +64,15 @@ stal {
             extra["artifactPrefix"] = ""
             extra["aliasPrefix"] = ""
         }
-        on("libs main") {
+        "libs main" {
             extra["artifactPrefix"] = "kone."
             extra["aliasPrefix"] = ""
         }
-        on("libs misc") {
+        "libs misc" {
             extra["artifactPrefix"] = "kone.misc."
             extra["aliasPrefix"] = "misc-"
         }
-        on("libs util") {
+        "libs util" {
             extra["artifactPrefix"] = "kone.util."
             extra["aliasPrefix"] = "util-"
         }

@@ -1,0 +1,136 @@
+---
+title: Algebraic
+sidebar_position: 2
+---
+import DependencyTabs from '@site/src/components/DependencyTabs';
+
+# Kone: Algebraic
+
+This module provides the basic concept of working with algebraic structures and their implementations.
+
+## Applying the dependencies
+
+<DependencyTabs artifact="kone.algebraic"/>
+
+## Concept
+
+Do you remember what is [*ring in algebra*](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition)? It's a tuple $\langle R; +^2, -^1, \cdot^2; 0, 1 \rangle$ satisfying ring axioms. In detail, it's
+1. some set $R$, which elements we call "elements" or "numbers" of the ring, and we work with,
+2. binary operations $+$ and $\cdot$ on $R$ that we call "addition" and "multiplication" respectively,
+3. unary operation $-$ on $R$ that we call "additive inversion" or "getting opposite element", and
+4. constants $0$ and $1$ from $R$ that we call "additive identity" and "multiplicative identity" respectively or "zero" and "unit" respectively
+
+that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach, then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
+
+<!-- TODO: hyperlink to API -->
+So in Kone any ring is implemented as an object that holds all the operation of the ring, so it can be used as an algebraic context. For example, there `kone.numberTheory` provides class of Rational numbers and field context for them:
+```
+// Simplified definition. See actual API in API reference
+data class Rational(val numerator: Long, val denumerator: Long)
+
+public object RationalField : Field<Rational> /* Field is an extension interface of Ring */ {
+    // Constants of the field
+    public override val zero: Rational = Rational(0L)
+    public override val one: Rational = Rational(1L)
+
+    // The context's equality checkers
+    public override infix fun Rational.equalsTo(other: Rational): Boolean = this == other
+    public override fun Rational.isZero(): Boolean = numerator == 0L
+    public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1L
+
+    // Integers conversion
+    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
+    public override fun valueOf(arg: Long): Rational = Rational(arg)
+
+    // Main algebraic operations of the ring
+    public override operator fun Rational.unaryMinus(): Rational = ...
+    public override operator fun Rational.plus(other: Rational): Rational = ...
+    public override operator fun Rational.minus(other: Rational): Rational = ...
+    public override operator fun Rational.times(other: Rational): Rational = ...
+    // It's an operation from Field interface
+    public override operator fun Rational.div(other: Rational): Rational = ...
+
+    // And copies of the operation with the second argument as Int
+    public override operator fun Rational.plus(other: Int): Rational = ...
+    public override operator fun Rational.minus(other: Int): Rational = ...
+    public override operator fun Rational.times(other: Int): Rational = ...
+    // It's an operation from Field interface
+    public override operator fun Rational.div(other: Int): Rational = ...
+
+    // There are also similar operations but with Long instead of Int and/or
+    // the first argument to be substituted instead of the first
+
+    // Also some operations comes from Ring/Field interface as derived from the operations above
+}
+```
+
+## Examples
+Here is an example of standard way to use context of rational numbers:
+<!-- TODO: examples for signed integer power -->
+```kotlin showLineNumbers
+import com.lounres.kone.algebraic.*
+import com.lounres.kone.numberTheory.*
+
+// highlight-start
+Rational.field /* It's another reference to RationalField */ {
+    val a = Rational(1, 2)
+    val b = Rational(1, 3)
+
+    // Operations with Rationals
+    println(+a)
+//  >>> 1/2
+    println(-b)
+//  >>> -1/3
+    println(a + b)
+//  >>> 5/6
+    println(a - b)
+//  >>> 1/6
+    println(a * b)
+//  >>> 1/6
+    println(a / b)
+//  >>> 3/2
+
+    // Operations with Rationals and integers
+    println(b - 1)
+//  >>> -2/3
+    println(34 * a)
+//  >>> 17
+
+    // Operations with only integers are not supported! Kotlin built-in operations are used
+    println((5 * 7)::class.simpleName)
+//  >>> Int
+
+    // Context equality checkers does not support default Kotlin `equals` operator.
+    // Instead, there are `equalsTo`, `notEqualsTo`, `eq`, `neq` infix operations.
+    println(a equalsTo b)
+//  >>> false
+    println(a * 2 eq b * 3)
+//  >>> true
+    println(a * b neq b * a)
+//  >>> false
+
+    // Also, there are other equality checkers and operations defined in Ring and Field interfaces.
+    // See API reference for the details.
+}
+// highlight-end
+
+// highlight-start
+// Contexts can also be used to return result of computation inside them
+fun bernoulliNumber(n: Int): Rational = Rational.field {
+    // Initialise a list for storing the recursively computed Bernoulli numbers
+    val bernoulliNumbers = Array<Rational?>(n + 1) { null }
+    bernoulliNumbers[0] = one
+
+    // Compute the numbers with recurrent formula
+    for (i in 1..n) bernoulliNumbers[i] =
+        (1..i)
+            .map { k -> binomial(i + 1, k + 1) * bernoulliNumbers[i - k]!! }
+            .reduce { acc, r -> acc + r } / -(i + 1)
+
+    // Return result
+    bernoulliNumbers[n]!!
+}
+println(bernoulliNumber(14))
+// >>> 7/6
+// highlight-end
+```

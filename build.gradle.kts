@@ -33,21 +33,41 @@ plugins {
     `maven-publish`
 }
 
-val version: String by project
-val group: String by project
+val koneVersion = project.properties["version"] as String
+val koneGroup = project.properties["group"] as String
+val koneUrl: String by project
+val koneBaseUrl: String by project
 
-tasks.register("docusaurusInputDataUpdate") {
+tasks.register<Copy>("docusaurusProcessResources") {
     group = "documentation"
-    description = "Updates `inputData.ts` file for Docusaurus"
-    doFirst {
+    dependsOn("dokkaHtmlMultiModule")
+    from("build/dokka/htmlMultiModule")
+    into("docs/static/api")
+    outputs.files("docs/src/inputData.ts", "docs/inputData.js")
+    doLast {
         rootDir.resolve("docs/src/inputData.ts").writer().use {
             it.write(
                 """
-                    export const koneGroup = "${rootProject.group}"
-                    export const koneVersion = "${rootProject.version}"
+                    export const koneGroup = "$koneGroup"
+                    export const koneVersion = "$koneVersion"
+                    export const koneUrl = "$koneUrl"
+                    export const koneBaseUrl = "$koneBaseUrl"
                 """.trimIndent()
             )
         }
+        rootDir.resolve("docs/inputData.js").writer().use {
+            it.write(
+                """
+                    module.exports = {
+                        koneGroup: "$koneGroup",
+                        koneVersion: "$koneVersion",
+                        koneUrl: "$koneUrl",
+                        koneBaseUrl: "$koneBaseUrl",
+                    }
+                """.trimIndent()
+            )
+        }
+
     }
 }
 
@@ -65,13 +85,15 @@ val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "tr
 
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
+fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
+fun PluginManager.withPlugins(vararg pluginDeps: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
 val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
 val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
 
 catalog.versionCatalog {
-    version("kone", version)
+    version("kone", koneVersion)
 }
 
 gradle.projectsEvaluated {
@@ -84,7 +106,7 @@ gradle.projectsEvaluated {
     val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
         for (p in bundleProjects)
-            library(p.alias, group, p.artifact).versionRef("kone")
+            library(p.alias, koneGroup, p.artifact).versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -103,16 +125,20 @@ publishing {
     }
 }
 
+tasks.dokkaHtmlMultiModule {
+
+}
+
 stal {
     action {
-        on("uses libs main core") {
+        "uses libs main core" {
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val main by getting {
                             dependencies {
-                                api(projects.libs.main.core)
+                                api(rootProject.projects.libs.main.core)
                             }
                         }
                     }
@@ -125,14 +151,14 @@ stal {
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                api(projects.libs.main.core)
+                                api(rootProject.projects.libs.main.core)
                             }
                         }
                     }
                 }
             }
         }
-        on("kotlin jvm") {
+        "kotlin jvm" {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
                 target.compilations.all {
@@ -157,7 +183,7 @@ stal {
                 }
             }
         }
-        on("kotlin multiplatform") {
+        "kotlin multiplatform" {
             apply<KotlinMultiplatformPluginWrapper>()
             configure<KotlinMultiplatformExtension> {
                 jvm {
@@ -198,15 +224,16 @@ stal {
                 yarn.lockFileDirectory = rootDir.resolve("gradle")
             }
         }
-        on("kotlin common settings") {
-            configure<KotlinProjectExtension> {
-                sourceSets {
-                    all {
-                        languageSettings {
-                            progressiveMode = true
-                            languageVersion = "1.9"
+        "kotlin common settings" {
+            pluginManager.withPlugins(rootProject.libs.plugins.kotlin.jvm, rootProject.libs.plugins.kotlin.multiplatform) {
+                configure<KotlinProjectExtension> {
+                    sourceSets {
+                        all {
+                            languageSettings {
+                                progressiveMode = true
+                                languageVersion = "1.9"
                             optIn("kotlin.contracts.ExperimentalContracts")
-                            optIn("kotlin.ExperimentalStdlibApi")
+                            optIn("kotlin.ExperimentalStdlibApi")}
                         }
                     }
                 }
@@ -220,12 +247,12 @@ stal {
                 }
             }
         }
-        on("kotlin library settings") {
+        "kotlin library settings" {
             configure<KotlinProjectExtension> {
                 explicitApi = Warning
             }
         }
-        on("kotest") {
+        "kotest" {
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
@@ -268,7 +295,7 @@ stal {
                 }
             }
         }
-        on("examples") {
+        "examples" {
             @Suppress("UNUSED_VARIABLE")
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
                 val main by getting
@@ -286,7 +313,7 @@ stal {
                         group = "examples"
                         description = "Runs the module's examples"
                         classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
-                        mainClass.set("com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt")
+                        mainClass = "com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt"
                     }
                 }
             }
@@ -301,7 +328,7 @@ stal {
                 }
             }
         }
-        on("benchmark") {
+        "benchmark" {
             apply<BenchmarksPlugin>()
             apply<AllOpenGradleSubplugin>()
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
@@ -409,7 +436,7 @@ stal {
                 }
             }
         }
-        on("dokka") {
+        "dokka" {
             apply<DokkaPlugin>()
             dependencies {
                 dokkaPlugin(rootProject.libs.dokka.mathjax)
@@ -418,7 +445,7 @@ stal {
             task<Jar>("dokkaJar") {
                 group = JavaBasePlugin.DOCUMENTATION_GROUP
                 description = "Assembles Kotlin docs with Dokka"
-                archiveClassifier.set("javadoc")
+                archiveClassifier = "javadoc"
                 afterEvaluate {
                     val dokkaHtml by tasks.getting
                     dependsOn(dokkaHtml)
@@ -428,17 +455,25 @@ stal {
 
             afterEvaluate {
                 tasks.withType<AbstractDokkaLeafTask> {
-                    moduleName.set("${project.extra["artifactPrefix"]}${project.name}")
+                    moduleName = "${project.extra["artifactPrefix"]}${project.name}"
                     // TODO
                 }
             }
         }
-        on("publishing") {
+        "publishing" {
             apply<MavenPublishPlugin>()
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
                         artifactId = "${extra["artifactPrefix"]}$artifactId"
+                    }
+                }
+            }
+        }
+        case { hasAllOf("dokka", "publishing") } implies {
+            afterEvaluate {
+                configure<PublishingExtension> {
+                    publications.withType<MavenPublication> {
 //                        artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }
