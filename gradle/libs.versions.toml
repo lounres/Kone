@@ -1,20 +1,19 @@
 [versions]
-kotlin = "1.9.0"
+kotlin = "1.9.10"
 
 kmath = "0.3.1"
 
-kotlinx-coroutines = "1.7.2"
-kotlinx-atomicfu = "0.21.0"
-kotlinx-serialization = "1.5.1"
-kotlinx-datetime = "0.4.0"
+kotlinx-coroutines = "1.7.3"
+kotlinx-atomicfu = "0.22.0"
+kotlinx-serialization = "1.6.0"
+kotlinx-datetime = "0.4.1"
 kotlinx-kover = "0.6.0"
-kotlinx-benchmark = "0.4.8"
+kotlinx-benchmark = "0.4.9"
 kotlinx-binary-compatibility-validator = "0.13.2"
 kotlinx-knit = "0.4.0"
 
-kotest = "5.6.2"
-dokka = "1.8.20"
-mkdocs-gradle-plugin = "2.4.0"
+kotest = "5.7.2"
+dokka = "1.9.0"
 
 [plugins]
 # Kotlin plugins
@@ -34,7 +33,6 @@ kotlinx-knit = { id = "org.jetbrains.kotlinx:kotlinx-knit", version.ref = "kotli
 
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-mkdocs = { id = "ru.vyarus.mkdocs", version.ref = "mkdocs-gradle-plugin" }
 
 [libraries]
 # kotlinx.coroutines
