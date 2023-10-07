@@ -5,9 +5,7 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.field
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.context.invoke
@@ -19,16 +17,22 @@ import kotlin.jvm.JvmName
 
 
 public inline val <C, A : Ring<C>> A.labeledPolynomialSpace: LabeledPolynomialSpace<C, A>
-    get() = LabeledPolynomialSpace(this)
+    get() = LabeledPolynomialSpace()
 
 public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C, A>
-    get() = LabeledPolynomialSpaceOverField(this)
+    get() = LabeledPolynomialSpaceOverField()
+
+public inline val <C, A : Ring<C>> LabeledPolynomialSpace<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
+    get() = constantRing { LabeledRationalFunctionSpace() }
+
+public inline val <C, A : Field<C>> LabeledPolynomialSpaceOverField<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
+    get() = constantRing { LabeledRationalFunctionSpaceOverField() }
 
 public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
-    get() = LabeledRationalFunctionSpace(this.labeledPolynomialSpace)
+    get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace
 
 public inline val <C, A : Field<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
-    get() = LabeledRationalFunctionSpaceOverField(this.labeledPolynomialSpace)
+    get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace
 
 public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.field {
     if (coefficients.isEmpty()) return this@substitute
@@ -161,7 +165,7 @@ public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(
                                 }
                             }
                         },
-                        doublingTimes(c, degs[variable]!!)
+                        (c doublingTimes degs[variable]!!)
                     )
                 }
         }
@@ -191,7 +195,7 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
                         },
                         degs[variable]!!.let { deg ->
                             (deg downTo deg - order + 1u)
-                                .fold(c) { acc, ord -> doublingTimes(acc, ord) }
+                                .fold(c) { acc, ord -> (acc doublingTimes ord) }
                         }
                     )
                 }
@@ -230,7 +234,7 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->
                             degs[index]!!.let { deg ->
                                 (deg downTo deg - order + 1u)
-                                    .fold(acc1) { acc2, ord -> doublingTimes(acc2, ord) }
+                                    .fold(acc1) { acc2, ord -> (acc2 doublingTimes ord) }
                             }
                         }
                     )
@@ -251,7 +255,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
                     val newDegs = degs.withPutOrChanged(variable, 1u) { _, it, _ -> it + 1u }
                     put(
                         newDegs,
-                        c / doublingTimes(one, newDegs[variable]!!)
+                        c / (one doublingTimes newDegs[variable]!!)
                     )
                 }
         }
@@ -274,7 +278,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
                         newDegs,
                         newDegs[variable]!!.let { deg ->
                             (deg downTo  deg - order + 1u)
-                                .fold(c) { acc, ord -> acc / doublingTimes(one, ord) }
+                                .fold(c) { acc, ord -> acc / (one doublingTimes ord) }
                         }
                     )
                 }
@@ -299,7 +303,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
                         filteredVariablesAndOrders.entries.fold(c) { acc1, (index, order) ->
                             newDegs[index]!!.let { deg ->
                                 (deg downTo deg - order + 1u)
-                                    .fold(acc1) { acc2, ord -> acc2 / doublingTimes(one, ord) }
+                                    .fold(acc1) { acc2, ord -> acc2 / (one doublingTimes ord) }
                             }
                         }
                     )

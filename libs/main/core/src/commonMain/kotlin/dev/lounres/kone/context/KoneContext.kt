@@ -12,21 +12,10 @@ import kotlin.contracts.InvocationKind.*
 public interface KoneContext
 
 @OptIn(ExperimentalContracts::class)
-public inline operator fun <A: KoneContext, R> A.invoke(block: A.() -> R): R {
+public inline operator fun <A: KoneContext, R> A.invoke(block: context(A) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
     return run(block)
 }
-
-
-// FIXME: KT-51243
-//@OptIn(ExperimentalContracts::class)
-//public inline operator fun <A: KoneContext, R> A.invoke(block: context(A) () -> R): R {
-////    FIXME: KT-32313
-////    contract {
-////        callsInPlace(block, EXACTLY_ONCE)
-////    }
-//    return run(block)
-//}

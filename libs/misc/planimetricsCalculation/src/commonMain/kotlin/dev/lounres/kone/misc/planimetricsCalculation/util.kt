@@ -12,5 +12,8 @@ import dev.lounres.kone.polynomial.*
 import space.kscience.kmath.expressions.Symbol
 
 
-internal fun <C, A: Ring<C>> A.convert(name: String): LabeledPolynomial<C> =
-    LabeledPolynomialWithoutCheck(mapOf(Symbol(name) to 1U) to one)
+context(Ring<C>)
+internal fun <C> String.convert(): LabeledPolynomial<C> =
+    LabeledPolynomialWithoutCheck(mapOf(Symbol(this) to 1U) to one)
+context(MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, *>)
+internal fun <C> String.convert(): LabeledPolynomial<C> = Symbol(this).polynomialValue

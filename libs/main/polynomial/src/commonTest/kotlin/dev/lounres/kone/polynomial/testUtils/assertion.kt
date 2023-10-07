@@ -7,8 +7,6 @@ package dev.lounres.kone.polynomial.testUtils
 
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledRationalFunction
-import dev.lounres.kone.polynomial.NumberedPolynomial
-import dev.lounres.kone.polynomial.NumberedRationalFunction
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -24,20 +22,6 @@ fun <T> assertContentEquals(
 }
 
 fun assertEquals(
-    expected: NumberedPolynomial<Double>,
-    actual: NumberedPolynomial<Double>,
-    absoluteTolerance: Double,
-    message: String? = null
-) {
-    assertContentEquals(
-        expected.coefficients,
-        actual.coefficients,
-        absoluteTolerance,
-        message
-    )
-}
-
-fun assertEquals(
     expected: LabeledPolynomial<Double>,
     actual: LabeledPolynomial<Double>,
     absoluteTolerance: Double,
@@ -46,26 +30,6 @@ fun assertEquals(
     assertContentEquals(
         expected.coefficients,
         actual.coefficients,
-        absoluteTolerance,
-        message
-    )
-}
-
-fun assertEquals(
-    expected: NumberedRationalFunction<Double>,
-    actual: NumberedRationalFunction<Double>,
-    absoluteTolerance: Double,
-    message: String? = null
-) {
-    assertEquals(
-        expected.numerator,
-        actual.numerator,
-        absoluteTolerance,
-        message
-    )
-    assertEquals(
-        expected.denominator,
-        actual.denominator,
         absoluteTolerance,
         message
     )
