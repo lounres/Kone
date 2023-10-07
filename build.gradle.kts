@@ -231,7 +231,6 @@ stal {
                         all {
                             languageSettings {
                                 progressiveMode = true
-                                languageVersion = "1.9"
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                             }
@@ -475,7 +474,7 @@ stal {
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
-//                        artifact(tasks.named<Jar>("dokkaJar"))
+                        artifact(tasks.named<Jar>("dokkaJar"))
                     }
                 }
             }
