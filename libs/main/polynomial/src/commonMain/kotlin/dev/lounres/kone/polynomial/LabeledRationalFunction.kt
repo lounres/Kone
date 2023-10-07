@@ -8,8 +8,8 @@
 package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Field
-import space.kscience.kmath.expressions.Symbol
 import dev.lounres.kone.algebraic.Ring
+import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
 
 
