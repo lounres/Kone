@@ -78,8 +78,13 @@ internal class KoneWrapperMutableIterableCollection<E>(private val collection: M
     override fun containsAll(elements: KoneIterableCollection<@UnsafeVariance E>): Boolean = collection.containsAll(elements.asKotlinStdlib())
 
     override fun remove(element: E) { collection.remove(element) }
-    override fun removeAll(elements: KoneIterableCollection<E>) { collection.removeAll(elements.asKotlinStdlib()) }
-    override fun retainAll(elements: KoneIterableCollection<E>) { collection.retainAll(elements.asKotlinStdlib()) }
+    override fun removeAllThat(predicate: (E) -> Boolean) {
+        val iterator = collection.iterator()
+        while (iterator.hasNext()) {
+            val nextElement = iterator.next()
+            if (predicate(nextElement)) iterator.remove()
+        }
+    }
     override fun clear() { collection.clear() }
 
     override fun iterator(): KoneRemovableIterator<E> = collection.iterator().asKone()
@@ -118,8 +123,13 @@ internal class KoneWrapperMutableList<E>(private val list: MutableList<E>): Kone
     override fun set(index: UInt, element: E) { list.set(index.toInt(), element)}
     override fun remove(element: E) { list.remove(element) }
     override fun removeAt(index: UInt) { list.removeAt(index.toInt()) }
-    override fun removeAll(elements: KoneIterableCollection<E>) { list.removeAll(elements.asKotlinStdlib()) }
-    override fun retainAll(elements: KoneIterableCollection<E>) { list.retainAll(elements.asKotlinStdlib()) }
+    override fun removeAllThat(predicate: (E) -> Boolean) {
+        val iterator = list.iterator()
+        while (iterator.hasNext()) {
+            val nextElement = iterator.next()
+            if (predicate(nextElement)) iterator.remove()
+        }
+    }
 
     override fun iterator(): KoneMutableLinearIterator<E> = list.listIterator().asKone()
 }
@@ -147,8 +157,13 @@ internal class KoneWrapperMutableSet<E>(private val set: MutableSet<E>): KoneMut
     override fun addAll(elements: KoneIterableCollection<E>) { set.addAll(elements.asKotlinStdlib()) }
 
     override fun remove(element: @UnsafeVariance E) { set.remove(element) }
-    override fun removeAll(elements: KoneIterableCollection<@UnsafeVariance E>) { set.removeAll(elements.asKotlinStdlib()) }
-    override fun retainAll(elements: KoneIterableCollection<@UnsafeVariance E>) { set.retainAll(elements.asKotlinStdlib()) }
+    override fun removeAllThat(predicate: (E) -> Boolean) {
+        val iterator = set.iterator()
+        while (iterator.hasNext()) {
+            val nextElement = iterator.next()
+            if (predicate(nextElement)) iterator.remove()
+        }
+    }
     override fun clear() { set.clear() }
 
     override fun iterator(): KoneRemovableIterator<E> = set.iterator().asKone()

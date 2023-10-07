@@ -18,8 +18,7 @@ public sealed interface ListAction<out E> {
     public data class AddAllIndex<E>(val index: UInt, val elements: KoneIterableCollection<E>): ListAction<E>
     public data class Remove<E>(val element: E): ListAction<E>
     public data class RemoveAt<E>(val index: UInt): ListAction<E>
-    public data class RemoveAll<E>(val elements: KoneIterableCollection<E>): ListAction<E>
-    public data class RetainAll<E>(val elements: KoneIterableCollection<E>): ListAction<E>
+    public data class RemoveAllThat<E>(val predicate: (E) -> Boolean): ListAction<E>
     public data object Clear: ListAction<Nothing>
 }
 
@@ -63,16 +62,10 @@ public abstract class KoneMutableListDelegate<E>(public val delegate: KoneMutabl
         afterAction(delegate, RemoveAt(index))
     }
 
-    override fun removeAll(elements: KoneIterableCollection<E>) {
-        beforeAction(delegate, RemoveAll(elements))
-        delegate.removeAll(elements)
-        afterAction(delegate, RemoveAll(elements))
-    }
-
-    override fun retainAll(elements: KoneIterableCollection<E>) {
-        beforeAction(delegate, RetainAll(elements))
-        delegate.retainAll(elements)
-        afterAction(delegate, RetainAll(elements))
+    override fun removeAllThat(predicate: (E) -> Boolean) {
+        beforeAction(delegate, RemoveAllThat(predicate))
+        delegate.removeAllThat(predicate)
+        afterAction(delegate, RemoveAllThat(predicate))
     }
 
     override fun clear() {

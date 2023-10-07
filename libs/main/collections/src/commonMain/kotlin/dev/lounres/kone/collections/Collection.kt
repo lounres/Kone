@@ -25,8 +25,7 @@ public interface KoneExtendableCollection<E> : KoneCollection<E> {
 
 public interface KoneRemovableCollection<out E> : KoneCollection<E> {
     public fun remove(element: @UnsafeVariance E)
-    public fun removeAll(elements: KoneCollection<@UnsafeVariance E>)
-    public fun retainAll(elements: KoneCollection<@UnsafeVariance E>)
+    public fun removeAllThat(predicate: (E) -> Boolean)
     public fun clear()
 }
 

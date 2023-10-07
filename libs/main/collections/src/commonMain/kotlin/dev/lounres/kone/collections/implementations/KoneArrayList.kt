@@ -148,23 +148,12 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         for (i in index..(size-2u)) data[i] = data[i+1u]
         data[size-1u] = null
     }
-    override fun removeAll(elements: KoneCollection<E>) {
+
+    override fun removeAllThat(predicate: (E) -> Boolean) {
         var checkingMark = 0u
         var resultMark = 0u
         while (checkingMark < size) {
-            if (data[checkingMark] as E !in elements) {
-                data[resultMark] = data[checkingMark]
-                resultMark++
-            }
-            checkingMark++
-        }
-        TODO("Implement data resizing")
-    }
-    override fun retainAll(elements: KoneCollection<E>) {
-        var checkingMark = 0u
-        var resultMark = 0u
-        while (checkingMark < size) {
-            if (data[checkingMark] as E in elements) {
+            if (!predicate(data[checkingMark] as E)) {
                 data[resultMark] = data[checkingMark]
                 resultMark++
             }
