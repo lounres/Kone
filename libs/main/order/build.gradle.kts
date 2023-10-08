@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
-                
+
             }
         }
         commonMain {
