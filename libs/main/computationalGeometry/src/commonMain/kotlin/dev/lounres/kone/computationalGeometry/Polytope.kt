@@ -9,14 +9,22 @@ package dev.lounres.kone.computationalGeometry
 /**
  * See [polytope](https://en.wikipedia.org/wiki/Polytope) and [abstract polytope](https://en.wikipedia.org/wiki/Abstract_polytope)
  */
-public interface Polytope {
+public interface Face {
     public val rank: UInt
-    public val faces: List<Set<Polytope>>
+    public val faces: List<Set<Face>>
     public val vertices: Set<Vertex>
 }
 
-public abstract class Vertex: Polytope {
+public abstract class Vertex: Face {
     public final override val rank: UInt = 0u
-    public final override val faces: List<Set<Polytope>> by lazy { listOf(vertices) }
+    public final override val faces: List<Set<Face>> by lazy { listOf(vertices) }
     public final override val vertices: Set<Vertex> by lazy { setOf(this) }
+}
+
+public interface PolytopicConstruction<P, V: P> {
+    public val P.rank: UInt
+    public val P.faces: List<Set<P>>
+    public val P.vertices: Set<V>
+
+    public val V.coordinates: Nothing?
 }
