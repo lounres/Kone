@@ -12,25 +12,52 @@ public interface Graph<V, E> {
 
     public val V.incidentEdges: Set<E>
     public val V.adjacentVertices: Set<V>
+    public val V.degree: UInt
 
     public val E.ends: Pair<V, V>
     public val E.adjacentEdges: Set<E> get() = ends.first.incidentEdges + ends.second.incidentEdges
 }
 
 public interface Digraph<V, E>: Graph<V, E> {
+    public val V.outgoingEdges: Set<E>
+    public val V.incomingEdges: Set<E>
+    public val V.adjacentOutgoingVertices: Set<V>
+    public val V.adjacentIncomingVertices: Set<V>
+    public val V.outdegree: UInt
+    public val V.indegree: UInt
+
     public val E.head: V
     public val E.tail: V
 }
 
-public inline fun <V, E> Graph<V, E>.breadthFirstSearch(start: V, onEach: (V) -> Unit): List<V> {
+context(Graph<V, E>)
+public inline fun <V, E> V.breadthFirstSearch(onEach: (vertex: V) -> Unit) {
     val queue = ArrayDeque<V>()
-    queue.add(start)
-    val result = ArrayList<V>(vertices.size)
+    queue.add(this)
+    val exploredVertices = HashSet<V>(vertices.size)
     while (queue.isNotEmpty()) {
         val v = queue.removeFirst()
-        result.add(v)
-        for (u in v.adjacentVertices) if (u !in result) queue.add(u)
+        exploredVertices.add(v)
+        for (u in v.adjacentVertices) if (u !in exploredVertices) queue.add(u)
         onEach(v)
     }
-    return result
+}
+
+context(Graph<V, E>)
+public inline fun <V, E> V.depthFirstSearch(onEach: (vertex: V) -> Unit) {
+    val stack = ArrayDeque<Iterator<V>>()
+    stack.add(iterator { yield(this@V) })
+    val exploredVertices = HashSet<V>(vertices.size)
+    while (stack.isNotEmpty()) {
+        val lastIterator = stack.last()
+        if (lastIterator.hasNext()) {
+            val nextVertex = lastIterator.next()
+            if (nextVertex in exploredVertices) continue
+            onEach(nextVertex)
+            exploredVertices.add(nextVertex)
+            stack.add(nextVertex.adjacentVertices.iterator())
+        } else {
+            stack.removeLast()
+        }
+    }
 }
