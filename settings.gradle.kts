@@ -52,7 +52,7 @@ stal {
         "benchmark" since { has("libs public") }
         "kotest" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
-        "dokka" since { has("libs") }
+//        "dokka" since { has("libs") }
         "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
         "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
         "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }

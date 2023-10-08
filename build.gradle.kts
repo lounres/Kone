@@ -202,13 +202,13 @@ stal {
                     }
                 }
 
-                js(IR) {
-                    browser()
-                    nodejs()
-                }
+//                js(IR) {
+//                    browser()
+//                    nodejs()
+//                }
 
-                linuxX64()
-                mingwX64()
+//                linuxX64()
+//                mingwX64()
 //                macosX64()
 
                 @Suppress("UNUSED_VARIABLE")
@@ -228,6 +228,12 @@ stal {
             pluginManager.withPlugins(rootProject.libs.plugins.kotlin.jvm, rootProject.libs.plugins.kotlin.multiplatform) {
                 configure<KotlinProjectExtension> {
                     sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                // FIXME: For some reason standard library is not imported in IntelliJ IDEA
+                                implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.libs.versions.kotlin}")
+                            }
+                        }
                         all {
                             languageSettings {
                                 progressiveMode = true

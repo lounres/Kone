@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(UnstableKoneAPI::class)
+@file:OptIn(dev.lounres.kone.annotations.UnstableKoneAPI::class)
 
 package dev.lounres.kone.polynomial
 

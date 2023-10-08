@@ -19,9 +19,8 @@ public data class ListPolynomial<C>(
     override fun toString(): String = "ListPolynomial$coefficients"
 }
 
-public open class ListPolynomialSpace<C, out A : Ring<C>>(
-    public override val ring: A,
-) : PolynomialSpaceWithRing<C, ListPolynomial<C>, A> {
+context(A)
+public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, ListPolynomial<C>, A> {
     override val zero: ListPolynomial<C> = ListPolynomial(emptyList())
     override val one: ListPolynomial<C> by lazy { constantOne.asListPolynomial() }
     public val freeVariable: ListPolynomial<C> by lazy { ListPolynomial(constantZero, constantOne) }
@@ -38,7 +37,7 @@ public open class ListPolynomialSpace<C, out A : Ring<C>>(
     public override fun ListPolynomial<C>.isZero(): Boolean = coefficients.all { it.isZero() }
     public override fun ListPolynomial<C>.isOne(): Boolean = coefficients.subList(1, coefficients.size).all { it.isZero() }
 
-    public override fun valueOf(value: C): ListPolynomial<C> = value.asListPolynomial()
+    public override fun polynomialValueOf(value: C): ListPolynomial<C> = value.asListPolynomial()
 
     public override operator fun ListPolynomial<C>.plus(other: Int): ListPolynomial<C> =
         if (other == 0) this
@@ -294,25 +293,10 @@ public open class ListPolynomialSpace<C, out A : Ring<C>>(
     override fun power(base: ListPolynomial<C>, exponent: UInt): ListPolynomial<C> = super.power(base, exponent)
 
     public override val ListPolynomial<C>.degree: Int get() = coefficients.lastIndex
-
-    // TODO: When context receivers will be ready move all of this substitutions and invocations to utilities with
-    //  [ListPolynomialSpace] as a context receiver
-    public inline fun ListPolynomial<C>.substitute(argument: C): C = substitute(ring, argument)
-    public inline fun ListPolynomial<C>.substitute(argument: ListPolynomial<C>): ListPolynomial<C> = substitute(ring, argument)
-
-    public inline fun ListPolynomial<C>.asFunction(): (C) -> C = asFunctionOver(ring)
-    public inline fun ListPolynomial<C>.asFunctionOfConstant(): (C) -> C = asFunctionOfConstantOver(ring)
-    public inline fun ListPolynomial<C>.asFunctionOfPolynomial(): (ListPolynomial<C>) -> ListPolynomial<C> = asFunctionOfPolynomialOver(ring)
-
-    public inline operator fun ListPolynomial<C>.invoke(argument: C): C = substitute(ring, argument)
-    public inline operator fun ListPolynomial<C>.invoke(argument: ListPolynomial<C>): ListPolynomial<C> = substitute(ring, argument)
 }
 
-public class ListPolynomialSpaceOverField<C, out A : Field<C>>(
-    ring: A,
-) : ListPolynomialSpace<C, A>(ring), PolynomialSpaceWithField<C, ListPolynomial<C>, A> {
+context(A)
+public class ListPolynomialSpaceOverField<C, out A : Field<C>> : ListPolynomialSpace<C, A>(), PolynomialSpaceOverField<C, ListPolynomial<C>, A> {
     public override fun ListPolynomial<C>.div(other: C): ListPolynomial<C> =
-        ListPolynomial(
-            coefficients.map { it / other }
-        )
+        ListPolynomial(coefficients.map { it / other })
 }

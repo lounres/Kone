@@ -70,7 +70,7 @@ class LabeledConstructorsTest: FreeSpec({
         }
     }
 
-    @OptIn(ExperimentalKoneAPI::class)
+    @OptIn(dev.lounres.kone.annotations.ExperimentalKoneAPI::class)
     "test DSL1" - {
         data class DSL1TestData<C>(
             val explicitConstructorArgument: Map<Map<Symbol, UInt>, C>,
