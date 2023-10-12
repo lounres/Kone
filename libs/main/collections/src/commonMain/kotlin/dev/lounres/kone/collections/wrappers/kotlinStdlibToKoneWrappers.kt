@@ -98,8 +98,6 @@ internal class KoneWrapperList<out E>(private val list: List<E>): KoneIterableLi
     override fun get(index: UInt): E = list.get(index.toInt())
     override fun contains(element: @UnsafeVariance E): Boolean = list.contains(element)
     override fun containsAll(elements: KoneIterableCollection<@UnsafeVariance E>): Boolean = list.containsAll(elements.asKotlinStdlib())
-    override fun indexOf(element: @UnsafeVariance E): UInt = list.indexOf(element).toUInt()
-    override fun lastIndexOf(element: @UnsafeVariance E): UInt = list.lastIndexOf(element).toUInt()
 
     override fun iterator(): KoneLinearIterator<E> = list.listIterator().asKone()
 }
@@ -112,8 +110,6 @@ internal class KoneWrapperMutableList<E>(private val list: MutableList<E>): Kone
     override fun containsAll(elements: KoneIterableCollection<E>): Boolean = list.containsAll(elements.asKotlinStdlib())
 
     override fun get(index: UInt): E = list.get(index.toInt())
-    override fun indexOf(element: E): UInt = list.indexOf(element).toUInt()
-    override fun lastIndexOf(element: E): UInt = list.lastIndexOf(element).toUInt()
 
     override fun clear() = list.clear()
     override fun add(element: E) { list.add(element) }

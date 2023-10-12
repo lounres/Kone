@@ -3,8 +3,6 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalUnsignedTypes::class)
-
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
@@ -19,7 +17,7 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
     private var dataSizeNumber = 1
     private var sizeLowerBound = 0u
     private var sizeUpperBound = 2u
-    private var data = KoneMutableInlineArray<Any?>(sizeUpperBound) { null }
+    private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
 
     override fun isEmpty(): Boolean = size == 0u
     override fun contains(element: E): Boolean = data.contains(element)
@@ -29,8 +27,6 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
     }
 
     override fun get(index: UInt): E = data[index] as E
-    override fun indexOf(element: E): UInt = data.indexOf(element)
-    override fun lastIndexOf(element: E): UInt = data.lastIndexOf(element)
 
     override fun set(index: UInt, element: E) {
         if (index !in 0u..<size) throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
@@ -42,14 +38,14 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         dataSizeNumber = 1
         sizeLowerBound = 0u
         sizeUpperBound = 2u
-        data = KoneMutableInlineArray(sizeUpperBound) { null }
+        data = KoneMutableArray(sizeUpperBound) { null }
     }
     override fun add(element: E) {
         if (size == sizeUpperBound) {
             dataSizeNumber++
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             sizeUpperBound = powersOf2[dataSizeNumber+1]
-            data = KoneMutableInlineArray(sizeUpperBound) {
+            data = KoneMutableArray(sizeUpperBound) {
                 when {
                     it < size -> data[it]
                     it == size -> element
@@ -67,7 +63,7 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             dataSizeNumber++
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             sizeUpperBound = powersOf2[dataSizeNumber+1]
-            data = KoneMutableInlineArray(sizeUpperBound) {
+            data = KoneMutableArray(sizeUpperBound) {
                 when {
                     it < index -> data[it]
                     it == index -> element
@@ -91,7 +87,7 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             }
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             val iter = elements.iterator()
-            data = KoneMutableInlineArray(sizeUpperBound) {
+            data = KoneMutableArray(sizeUpperBound) {
                 when {
                     it < size -> data[it]
                     iter.hasNext() -> iter.next()
@@ -119,7 +115,7 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             }
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             val iter = elements.iterator()
-            data = KoneMutableInlineArray(sizeUpperBound) {
+            data = KoneMutableArray(sizeUpperBound) {
                 when {
                     it < index -> data[it]
                     iter.hasNext() -> iter.next()
