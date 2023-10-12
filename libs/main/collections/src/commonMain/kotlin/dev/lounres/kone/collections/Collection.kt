@@ -33,10 +33,22 @@ public interface KoneMutableCollection<E> : KoneExtendableCollection<E>, KoneRem
 
 public interface KoneList<out E> : KoneCollection<E> {
     public operator fun get(index: UInt): E
-    // TODO: Replace with `public fun indexOfThat(predicate: (E) -> Boolean): UInt`
-    public fun indexOf(element: @UnsafeVariance E): UInt
-    // TODO: Replace with `public fun lastIndexOfThat(predicate: (E) -> Boolean): UInt`
-    public fun lastIndexOf(element: @UnsafeVariance E): UInt
+    public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
+        var i = 0u
+        while (i < size) {
+            if (predicate(i, get(i))) break
+            i++
+        }
+        return i
+    }
+    public fun lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
+        var i = size - 1u
+        while (i >= 0u) {
+            if (predicate(i, get(i))) break
+            i--
+        }
+        return i
+    }
 }
 
 public interface KoneSettableList<E> : KoneList<E> {

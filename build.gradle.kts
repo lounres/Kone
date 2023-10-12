@@ -164,6 +164,9 @@ stal {
                 target.compilations.all {
                     kotlinOptions {
                         jvmTarget = jvmTargetVersion
+                        freeCompilerArgs += listOf(
+                            "-Xlambdas=indy"
+                        )
                     }
                     compileTaskProvider.apply {
                         // TODO: Check if really is necessary
@@ -191,7 +194,7 @@ stal {
                         kotlinOptions {
                             jvmTarget = jvmTargetVersion
                             freeCompilerArgs += listOf(
-//                                "-Xlambdas=indy"
+                                "-Xlambdas=indy"
                             )
                         }
                     }
@@ -240,6 +243,7 @@ stal {
                                 enableLanguageFeature("ContextReceivers")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
+                                optIn("kotlin.ExperimentalUnsignedTypes")
                             }
                         }
                     }

@@ -17,3 +17,7 @@ public fun <E> KoneRemovableCollection<E>.removeAllFrom(elements: KoneCollection
 public fun <E> KoneRemovableCollection<E>.retainAllFrom(elements: KoneCollection<E>) {
     retainAllThat { it in elements }
 }
+
+public fun <E> KoneList<E>.indexOf(element: E): UInt = indexThat { _, collectionElement -> collectionElement == element }
+
+public fun <E> KoneList<E>.lastIndexOf(element: E): UInt = lastIndexThat { _, collectionElement -> collectionElement == element }
