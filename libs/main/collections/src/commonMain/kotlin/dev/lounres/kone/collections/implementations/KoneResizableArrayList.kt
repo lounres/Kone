@@ -8,16 +8,19 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
-private val powersOf2: UIntArray = UIntArray(34) { if (it == 0) 0u else 1u shl (it - 1) }
+private /*const*/ val powersOf2: UIntArray = UIntArray(33) { if (it == 0) 0u else 1u shl (it - 1) }
 
 @Suppress("UNCHECKED_CAST")
-public class KoneArrayList<E> : KoneMutableIterableList<E> {
+public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     override var size: UInt = 0u
         private set
     private var dataSizeNumber = 1
     private var sizeLowerBound = 0u
     private var sizeUpperBound = 2u
     private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
+    private fun KoneMutableArray<Any?>.dispose(size: UInt) {
+        for (i in 0u ..< size) this[i] = null
+    }
 
     override fun isEmpty(): Boolean = size == 0u
     override fun contains(element: E): Boolean = data.contains(element)
@@ -26,10 +29,13 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         return true
     }
 
-    override fun get(index: UInt): E = data[index] as E
+    override fun get(index: UInt): E {
+        if (index >= size) indexException(index, size)
+        return data[index] as E
+    }
 
     override fun set(index: UInt, element: E) {
-        if (index !in 0u..<size) throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
+        if (index >= size) indexException(index, size)
         data[index] = element
     }
 
@@ -45,13 +51,15 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             dataSizeNumber++
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             sizeUpperBound = powersOf2[dataSizeNumber+1]
+            val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
-                    it < size -> data[it]
+                    it < size -> oldData[it]
                     it == size -> element
                     else -> null
                 }
             }
+            oldData.dispose(size)
             size++
         } else {
             data[size] = element
@@ -59,18 +67,22 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         }
     }
     override fun addAt(index: UInt, element: E) {
+        if (index > size) indexException(index, size)
+        require(index <= size)
         if (size == sizeUpperBound) {
             dataSizeNumber++
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             sizeUpperBound = powersOf2[dataSizeNumber+1]
+            val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
-                    it < index -> data[it]
+                    it < index -> oldData[it]
                     it == index -> element
-                    it <= size -> data[it-1u]
+                    it <= size -> oldData[it-1u]
                     else -> null
                 }
             }
+            oldData.dispose(size)
             size++
         } else {
             for (i in (size-1u) downTo index) data[i+1u] = data[i]
@@ -87,14 +99,16 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             }
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             val iter = elements.iterator()
+            val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
-                    it < size -> data[it]
+                    it < size -> oldData[it]
                     iter.hasNext() -> iter.next()
                     else -> null
                 }
             }
-            this.size = newSize
+            oldData.dispose(size)
+            size = newSize
         } else {
             var index = size
             val iter = elements.iterator()
@@ -102,10 +116,11 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
                 data[index] = iter.next()
                 index++
             }
-            this.size = newSize
+            size = newSize
         }
     }
     override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+        if (index > size) indexException(index, size)
         val newSize = size + elements.size
         val elementsSize = elements.size
         if (newSize > sizeUpperBound) {
@@ -115,15 +130,17 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
             }
             sizeLowerBound = powersOf2[dataSizeNumber-1]
             val iter = elements.iterator()
+            val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
-                    it < index -> data[it]
+                    it < index -> oldData[it]
                     iter.hasNext() -> iter.next()
-                    it < newSize -> data[it-elementsSize]
+                    it < newSize -> oldData[it-elementsSize]
                     else -> null
                 }
             }
-            this.size = newSize
+            oldData.dispose(size)
+            size = newSize
         } else {
             for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
             var index = index
@@ -132,33 +149,94 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
                 data[index] = iter.next()
                 index++
             }
-            this.size = newSize
+            size = newSize
         }
     }
     override fun remove(element: E) {
         val index = data.indexOf(element)
-        for (i in index..<size) data[i] = data[i+1u]
-        data[size-1u] = null
+        if (index == size) return
+        val newSize = size - 1u
+        if (newSize < sizeLowerBound) {
+            dataSizeNumber--
+            sizeLowerBound = powersOf2[dataSizeNumber-1]
+            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            val oldData = data
+            data = KoneMutableArray(sizeUpperBound) {
+                when {
+                    it < index -> oldData[it]
+                    it < newSize -> oldData[it+1u]
+                    else -> null
+                }
+            }
+            oldData.dispose(size)
+            size = newSize
+        } else {
+            for (i in index..<newSize) data[i] = data[i + 1u]
+            data[size - 1u] = null
+            size = newSize
+        }
     }
     override fun removeAt(index: UInt) {
-        for (i in index..(size-2u)) data[i] = data[i+1u]
-        data[size-1u] = null
+        if (index >= size) indexException(index, size)
+        val newSize = size - 1u
+        if (newSize < sizeLowerBound) {
+            dataSizeNumber--
+            sizeLowerBound = powersOf2[dataSizeNumber-1]
+            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            val oldData = data
+            data = KoneMutableArray(sizeUpperBound) {
+                when {
+                    it < index -> oldData[it]
+                    it < newSize -> oldData[it+1u]
+                    else -> null
+                }
+            }
+            oldData.dispose(size)
+            size = newSize
+        } else {
+            for (i in index..<newSize) data[i] = data[i + 1u]
+            data[size - 1u] = null
+            size = newSize
+        }
     }
 
-    override fun removeAllThat(predicate: (E) -> Boolean) {
-        var checkingMark = 0u
-        var resultMark = 0u
-        while (checkingMark < size) {
-            if (!predicate(data[checkingMark] as E)) {
-                data[resultMark] = data[checkingMark]
-                resultMark++
+    override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
+        val newSize: UInt
+        run {
+            var checkingMark = 0u
+            var resultMark = 0u
+            while (checkingMark < size) {
+                if (!predicate(checkingMark, data[checkingMark] as E)) {
+                    data[resultMark] = data[checkingMark]
+                    resultMark++
+                }
+                checkingMark++
             }
-            checkingMark++
+            newSize = checkingMark
         }
-        TODO("Implement data resizing")
+        if (newSize < sizeLowerBound) {
+            while (newSize < sizeLowerBound) {
+                dataSizeNumber--
+                sizeLowerBound = powersOf2[dataSizeNumber-1]
+            }
+            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            val oldData = data
+            data = KoneMutableArray(sizeUpperBound) {
+                when {
+                    it < newSize -> oldData[it]
+                    else -> null
+                }
+            }
+            oldData.dispose(size)
+            size = newSize
+        } else {
+            for (i in newSize ..< size) data[i] = null
+            size = newSize
+        }
     }
 
     override fun iterator(): KoneMutableLinearIterator<E> = Iterator()
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E> = Iterator(index)
 
     override fun toString(): String = buildString {
         append('[')
@@ -170,8 +248,7 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         append(']')
     }
 
-    internal inner class Iterator: KoneMutableLinearIterator<E> {
-        var currentIndex = 0u
+    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
         var lastIndex = UInt.MAX_VALUE
         override fun hasNext(): Boolean = currentIndex < size
         override fun next(): E {
@@ -190,15 +267,18 @@ public class KoneArrayList<E> : KoneMutableIterableList<E> {
         override fun previousIndex(): UInt = currentIndex - 1u
 
         override fun set(element: E) {
-            this@KoneArrayList[lastIndex] = element
+            require(lastIndex != UInt.MAX_VALUE)
+            this@KoneResizableArrayList[lastIndex] = element
         }
 
         override fun add(element: E) {
-            this@KoneArrayList.addAt(lastIndex, element)
+            require(lastIndex != UInt.MAX_VALUE)
+            this@KoneResizableArrayList.addAt(lastIndex, element)
         }
 
         override fun remove() {
-            this@KoneArrayList.removeAt(lastIndex)
+            require(lastIndex != UInt.MAX_VALUE)
+            this@KoneResizableArrayList.removeAt(lastIndex)
         }
     }
 }
