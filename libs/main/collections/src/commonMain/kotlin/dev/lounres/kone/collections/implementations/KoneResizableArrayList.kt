@@ -8,25 +8,18 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
-private /*const*/ val powersOf2: UIntArray = UIntArray(33) { if (it == 0) 0u else 1u shl (it - 1) }
+private /*const*/ val powersOf2: KoneUIntArray = KoneUIntArray(33u) { if (it == 0u) 0u else 1u shl (it.toInt() - 1) }
 
 @Suppress("UNCHECKED_CAST")
 public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     override var size: UInt = 0u
         private set
-    private var dataSizeNumber = 1
+    private var dataSizeNumber = 1u
     private var sizeLowerBound = 0u
     private var sizeUpperBound = 2u
     private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
-    }
-
-    override fun isEmpty(): Boolean = size == 0u
-    override fun contains(element: E): Boolean = data.contains(element)
-    override fun containsAll(elements: KoneIterableCollection<E>): Boolean {
-        for (e in elements) if (e !in data) return false
-        return true
     }
 
     override fun get(index: UInt): E {
@@ -41,16 +34,17 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
 
     override fun clear() {
         size = 0u
-        dataSizeNumber = 1
+        dataSizeNumber = 1u
         sizeLowerBound = 0u
         sizeUpperBound = 2u
+        data.dispose(size)
         data = KoneMutableArray(sizeUpperBound) { null }
     }
     override fun add(element: E) {
         if (size == sizeUpperBound) {
             dataSizeNumber++
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
-            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
+            sizeUpperBound = powersOf2[dataSizeNumber+1u]
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
@@ -68,11 +62,10 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     }
     override fun addAt(index: UInt, element: E) {
         if (index > size) indexException(index, size)
-        require(index <= size)
         if (size == sizeUpperBound) {
             dataSizeNumber++
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
-            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
+            sizeUpperBound = powersOf2[dataSizeNumber+1u]
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
@@ -95,9 +88,9 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         if (newSize > sizeUpperBound) {
             while (newSize > sizeUpperBound) {
                 dataSizeNumber++
-                sizeUpperBound = powersOf2[dataSizeNumber+1]
+                sizeUpperBound = powersOf2[dataSizeNumber+1u]
             }
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
             val iter = elements.iterator()
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
@@ -126,9 +119,9 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         if (newSize > sizeUpperBound) {
             while (newSize > sizeUpperBound) {
                 dataSizeNumber++
-                sizeUpperBound = powersOf2[dataSizeNumber+1]
+                sizeUpperBound = powersOf2[dataSizeNumber+1u]
             }
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
             val iter = elements.iterator()
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
@@ -158,8 +151,8 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
             dataSizeNumber--
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
-            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
+            sizeUpperBound = powersOf2[dataSizeNumber+1u]
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
@@ -181,8 +174,8 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
             dataSizeNumber--
-            sizeLowerBound = powersOf2[dataSizeNumber-1]
-            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            sizeLowerBound = powersOf2[dataSizeNumber-1u]
+            sizeUpperBound = powersOf2[dataSizeNumber+1u]
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
@@ -217,9 +210,9 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         if (newSize < sizeLowerBound) {
             while (newSize < sizeLowerBound) {
                 dataSizeNumber--
-                sizeLowerBound = powersOf2[dataSizeNumber-1]
+                sizeLowerBound = powersOf2[dataSizeNumber-1u]
             }
-            sizeUpperBound = powersOf2[dataSizeNumber+1]
+            sizeUpperBound = powersOf2[dataSizeNumber+1u]
             val oldData = data
             data = KoneMutableArray(sizeUpperBound) {
                 when {
@@ -252,7 +245,7 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         var lastIndex = UInt.MAX_VALUE
         override fun hasNext(): Boolean = currentIndex < size
         override fun next(): E {
-            if (!hasNext()) throw NoSuchElementException("Index $currentIndex out of bounds for length $size")
+            if (!hasNext()) noElementException(currentIndex, size)
             lastIndex = currentIndex
             return (data[currentIndex] as E).also { currentIndex++ }
         }
@@ -260,7 +253,7 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun previous(): E {
-            if (!hasPrevious()) throw NoSuchElementException("Index $currentIndex out of bounds for length $size")
+            if (!hasPrevious()) noElementException(currentIndex, size)
             lastIndex = --currentIndex
             return data[currentIndex] as E
         }

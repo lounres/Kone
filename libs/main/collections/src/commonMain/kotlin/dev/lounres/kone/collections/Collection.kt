@@ -32,6 +32,8 @@ public interface KoneRemovableCollection<out E> : KoneCollection<E> {
 public interface KoneMutableCollection<E> : KoneExtendableCollection<E>, KoneRemovableCollection<E>
 
 public interface KoneList<out E> : KoneCollection<E> {
+    override fun contains(element: @UnsafeVariance E): Boolean = indexThat { _, collectionElement -> element == collectionElement } == size
+
     public operator fun get(index: UInt): E
     public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = 0u
