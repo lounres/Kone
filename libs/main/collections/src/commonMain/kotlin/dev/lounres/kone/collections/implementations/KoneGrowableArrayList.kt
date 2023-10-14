@@ -249,6 +249,9 @@ private /*const*/ val powersOf2: UIntArray = UIntArray(32) { 1u shl it }
 //    }
 //
 //    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
+//        init {
+//            if (currentIndex > size) indexException(currentIndex, size)
+//        }
 //        var lastIndex = UInt.MAX_VALUE
 //        override fun hasNext(): Boolean = currentIndex < size
 //        override fun next(): E {

@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections
 
 
-public inline fun indexException(index: UInt, size: UInt): Nothing =
+public fun indexException(index: UInt, size: UInt): Nothing =
     throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
 
-public inline fun noElementException(index: UInt, size: UInt): Nothing =
+public fun noElementException(index: UInt, size: UInt): Nothing =
     throw NoSuchElementException("Index $index out of bounds for length $size")

@@ -242,6 +242,9 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     }
 
     internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
+        init {
+            if (currentIndex > size) indexException(currentIndex, size)
+        }
         var lastIndex = UInt.MAX_VALUE
         override fun hasNext(): Boolean = currentIndex < size
         override fun next(): E {
@@ -249,7 +252,7 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
             lastIndex = currentIndex
             return (data[currentIndex] as E).also { currentIndex++ }
         }
-        override fun nextIndex(): UInt = currentIndex
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun previous(): E {
@@ -257,7 +260,7 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
             lastIndex = --currentIndex
             return data[currentIndex] as E
         }
-        override fun previousIndex(): UInt = currentIndex - 1u
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
 
         override fun set(element: E) {
             require(lastIndex != UInt.MAX_VALUE)
