@@ -119,11 +119,13 @@ internal class KoneWrapperMutableList<E>(private val list: MutableList<E>): Kone
     override fun set(index: UInt, element: E) { list.set(index.toInt(), element)}
     override fun remove(element: E) { list.remove(element) }
     override fun removeAt(index: UInt) { list.removeAt(index.toInt()) }
-    override fun removeAllThat(predicate: (E) -> Boolean) {
+    override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
+        var index = 0u
         val iterator = list.iterator()
         while (iterator.hasNext()) {
             val nextElement = iterator.next()
-            if (predicate(nextElement)) iterator.remove()
+            if (predicate(index, nextElement)) iterator.remove()
+            index++
         }
     }
 
