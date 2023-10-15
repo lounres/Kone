@@ -5,7 +5,9 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
 
-public interface WithShape {
-    public val shape: ShapeND
+
+public interface Formation1D<out E>: FormationND<E>, KoneList<E> {
 }
