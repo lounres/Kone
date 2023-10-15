@@ -43,6 +43,27 @@ public class KoneResizableLinkedList<E>: KoneMutableIterableList<E> {
                 currentIndex
             }
         }
+    private fun justAddAfterTheEnd(element: E) {
+        end = nextCellIndex[end]
+        data[end] = element
+        size++
+    }
+    private fun justAddBefore(actualIndex: UInt, element: E) {
+        val freeIndex = nextCellIndex[end]
+        val indexAfterTheFreeIndex = nextCellIndex[freeIndex]
+        nextCellIndex[end] = indexAfterTheFreeIndex
+        previousCellIndex[indexAfterTheFreeIndex] = end
+
+        val indexBeforeTheActualIndex = previousCellIndex[actualIndex]
+        nextCellIndex[freeIndex] = actualIndex
+        previousCellIndex[freeIndex] = indexBeforeTheActualIndex
+        nextCellIndex[indexBeforeTheActualIndex] = freeIndex
+        previousCellIndex[actualIndex] = freeIndex
+
+        if (actualIndex == start) start = freeIndex
+
+        size++
+    }
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)
@@ -88,9 +109,7 @@ public class KoneResizableLinkedList<E>: KoneMutableIterableList<E> {
             end = size
             size++
         } else {
-            end = nextCellIndex[end]
-            data[end] = element
-            size++
+            justAddAfterTheEnd(element)
         }
     }
 
@@ -118,28 +137,8 @@ public class KoneResizableLinkedList<E>: KoneMutableIterableList<E> {
                 end = size
                 size++
             }
-            index == size -> {
-                end = nextCellIndex[end]
-                data[end] = element
-                size++
-            }
-            else -> {
-                val freeIndex = nextCellIndex[end]
-                val indexAfterTheFreeIndex = nextCellIndex[freeIndex]
-                nextCellIndex[end] = indexAfterTheFreeIndex
-                previousCellIndex[indexAfterTheFreeIndex] = end
-
-                val actualIndex = actualIndex(index)
-                val indexBeforeTheActualIndex = previousCellIndex[actualIndex]
-                nextCellIndex[freeIndex] = actualIndex
-                previousCellIndex[freeIndex] = indexBeforeTheActualIndex
-                nextCellIndex[indexBeforeTheActualIndex] = freeIndex
-                previousCellIndex[actualIndex] = freeIndex
-
-                if (index == 0u) start = freeIndex
-
-                size++
-            }
+            index == size -> justAddAfterTheEnd(element)
+            else -> justAddBefore(actualIndex(index), element)
         }
     }
     override fun addAll(elements: KoneIterableCollection<E>) { TODO("Not yet implemented")
@@ -308,45 +307,49 @@ public class KoneResizableLinkedList<E>: KoneMutableIterableList<E> {
             if (currentIndex > size) indexException(currentIndex, size)
         }
         var actualCurrentIndex = actualIndex(currentIndex)
-        var lastIndex = UInt.MAX_VALUE
-        var actualLastIndex = UInt.MAX_VALUE
         override fun hasNext(): Boolean = currentIndex < size
-        override fun next(): E {
+        override fun getNext(): E {
             if (!hasNext()) noElementException(currentIndex, size)
-            lastIndex = currentIndex++
-            actualLastIndex = actualCurrentIndex
-            return (data[actualCurrentIndex] as E).also { actualCurrentIndex = nextCellIndex[actualCurrentIndex] }
+            return data[actualCurrentIndex] as E
+        }
+        override fun moveNext() {
+            if (!hasNext()) noElementException(currentIndex, size)
+            currentIndex++
+            actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun setNext(element: E) {
+            if (!hasNext()) noElementException(currentIndex, size)
+            data[currentIndex] = element
+        }
+        override fun addNext(element: E) {
+            if (currentIndex == size) justAddAfterTheEnd(element)
+            else justAddBefore(actualCurrentIndex, element)
+        }
+        override fun removeNext() {
+            TODO("Not yet implemented")
+        }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun previous(): E {
+        override fun getPrevious(): E {
             if (!hasPrevious()) noElementException(currentIndex, size)
-            lastIndex = --currentIndex
-            actualLastIndex = previousCellIndex[actualCurrentIndex]
-            return (data[actualCurrentIndex] as E).also { actualCurrentIndex = previousCellIndex[actualCurrentIndex] }
+            return data[previousCellIndex[actualCurrentIndex]] as E
+        }
+        override fun movePrevious() {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            currentIndex--
+            actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
-
-        override fun set(element: E) {
-            require(lastIndex != UInt.MAX_VALUE)
-            if (lastIndex == currentIndex) {
-                data[actualCurrentIndex] = element
-            } else {
-                data[previousCellIndex[actualCurrentIndex]] = element
-            }
+        override fun setPrevious(element: E) {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            data[previousCellIndex[actualCurrentIndex]] = element
         }
-
-        override fun add(element: E) {
-            require(lastIndex != UInt.MAX_VALUE)
+        override fun addPrevious(element: E) {
             TODO("Not yet implemented")
-            this@KoneResizableLinkedList.addAt(lastIndex, element)
         }
-
-        override fun remove() {
-            require(lastIndex != UInt.MAX_VALUE)
+        override fun removePrevious() {
             TODO("Not yet implemented")
-            this@KoneResizableLinkedList.removeAt(lastIndex)
         }
     }
 }

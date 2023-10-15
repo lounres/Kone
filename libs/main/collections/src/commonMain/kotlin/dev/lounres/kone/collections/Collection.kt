@@ -8,12 +8,7 @@ package dev.lounres.kone.collections
 
 public interface KoneCollection<out E> {
     public val size: UInt
-    public fun isEmpty(): Boolean = size == 0u
     public operator fun contains(element: @UnsafeVariance E): Boolean
-    public fun containsAll(elements: KoneIterableCollection<@UnsafeVariance E>): Boolean {
-        for (e in elements) if (e !in this) return false
-        return true
-    }
 }
 
 public interface KoneExtendableCollection<E> : KoneCollection<E> {

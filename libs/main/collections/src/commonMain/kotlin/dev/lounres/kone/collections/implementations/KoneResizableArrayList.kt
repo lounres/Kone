@@ -245,36 +245,49 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
-        var lastIndex = UInt.MAX_VALUE
         override fun hasNext(): Boolean = currentIndex < size
-        override fun next(): E {
+        override fun getNext(): E {
             if (!hasNext()) noElementException(currentIndex, size)
-            lastIndex = currentIndex
-            return (data[currentIndex] as E).also { currentIndex++ }
-        }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
-
-        override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun previous(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
-            lastIndex = --currentIndex
             return data[currentIndex] as E
         }
+        override fun moveNext() {
+            if (!hasNext()) noElementException(currentIndex, size)
+            currentIndex++
+        }
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun setNext(element: E) {
+            if (!hasNext()) noElementException(currentIndex, size)
+            data[currentIndex] = element
+        }
+        override fun addNext(element: E) {
+            addAt(currentIndex, element)
+        }
+        override fun removeNext() {
+            if (!hasNext()) noElementException(currentIndex, size)
+            removeAt(currentIndex)
+        }
+
+        override fun hasPrevious(): Boolean = currentIndex > 0u
+        override fun getPrevious(): E {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            return data[currentIndex - 1u] as E
+        }
+        override fun movePrevious() {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            currentIndex--
+        }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
-
-        override fun set(element: E) {
-            require(lastIndex != UInt.MAX_VALUE)
-            this@KoneResizableArrayList[lastIndex] = element
+        override fun setPrevious(element: E) {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            data[currentIndex - 1u] = element
         }
-
-        override fun add(element: E) {
-            require(lastIndex != UInt.MAX_VALUE)
-            this@KoneResizableArrayList.addAt(lastIndex, element)
+        override fun addPrevious(element: E) {
+            addAt(currentIndex, element)
+            currentIndex++
         }
-
-        override fun remove() {
-            require(lastIndex != UInt.MAX_VALUE)
-            this@KoneResizableArrayList.removeAt(lastIndex)
+        override fun removePrevious() {
+            if (!hasPrevious()) noElementException(currentIndex, size)
+            removeAt(--currentIndex)
         }
     }
 }
