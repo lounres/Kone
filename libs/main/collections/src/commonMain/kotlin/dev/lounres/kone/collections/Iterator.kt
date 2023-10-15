@@ -8,37 +8,55 @@ package dev.lounres.kone.collections
 
 public interface KoneIterator<out E> {
     public operator fun hasNext(): Boolean
-    public operator fun next(): E
+    public fun getNext(): E
+    public fun moveNext()
+
+    public operator fun next(): E = getAndMoveNext()
+}
+
+public interface KoneReversibleIterator<out E> : KoneIterator<E> {
+    public fun hasPrevious(): Boolean
+    public fun getPrevious(): E
+    public fun movePrevious()
 }
 
 public interface KoneSettableIterator<E> : KoneIterator<E> {
-    public fun set(element: E)
+    public fun setNext(element: E)
+}
+
+public interface KoneReversibleSettableIterator<E> : KoneReversibleIterator<E>, KoneSettableIterator<E> {
+    public fun setPrevious(element: E)
 }
 
 public interface KoneExtendableIterator<E> : KoneIterator<E> {
-    public fun add(element: E)
+    public fun addNext(element: E)
+}
+
+public interface KoneReversibleExtendableIterator<E> : KoneReversibleIterator<E>, KoneExtendableIterator<E> {
+    public fun addPrevious(element: E)
 }
 
 public interface KoneRemovableIterator<out E> : KoneIterator<E> {
-    public fun remove()
+    public fun removeNext()
+}
+
+public interface KoneReversibleRemovableIterator<out E> : KoneReversibleIterator<E>, KoneRemovableIterator<E> {
+    public fun removePrevious()
 }
 
 public interface KoneMutableIterator<E>: KoneSettableIterator<E>, KoneExtendableIterator<E>, KoneRemovableIterator<E>
 
-public interface KoneLinearIterator<out E> : KoneIterator<E> {
-    public override operator fun hasNext(): Boolean
-    public override operator fun next(): E
-    public fun nextIndex(): UInt
+public interface KoneReversibleMutableIterator<E>: KoneMutableIterator<E>, KoneReversibleSettableIterator<E>, KoneReversibleExtendableIterator<E>, KoneReversibleRemovableIterator<E>
 
-    public fun hasPrevious(): Boolean
-    public fun previous(): E
+public interface KoneLinearIterator<out E> : KoneReversibleIterator<E> {
+    public fun nextIndex(): UInt
     public fun previousIndex(): UInt
 }
 
-public interface KoneSettableLinearIterator<E>: KoneLinearIterator<E>, KoneSettableIterator<E>
+public interface KoneSettableLinearIterator<E>: KoneLinearIterator<E>, KoneReversibleSettableIterator<E>
 
-public interface KoneExtendableLinearIterator<E>: KoneLinearIterator<E>, KoneExtendableIterator<E>
+public interface KoneExtendableLinearIterator<E>: KoneLinearIterator<E>, KoneReversibleExtendableIterator<E>
 
-public interface KoneRemovableLinearIterator<out E>: KoneLinearIterator<E>, KoneRemovableIterator<E>
+public interface KoneRemovableLinearIterator<out E>: KoneLinearIterator<E>, KoneReversibleRemovableIterator<E>
 
-public interface KoneMutableLinearIterator<E>: KoneMutableIterator<E>, KoneSettableLinearIterator<E>, KoneExtendableLinearIterator<E>, KoneRemovableLinearIterator<E>
+public interface KoneMutableLinearIterator<E>: KoneReversibleMutableIterator<E>, KoneSettableLinearIterator<E>, KoneExtendableLinearIterator<E>, KoneRemovableLinearIterator<E>

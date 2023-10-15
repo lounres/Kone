@@ -6,19 +6,12 @@
 package dev.lounres.kone.collections
 
 
-public inline fun <E> KoneList<E>.forEach(block: (value: E) -> Unit) {
-    for (index in 0u ..< size) block(get(index))
-}
-
-public inline fun <E> KoneList<E>.forEachIndexed(block: (index: UInt, value: E) -> Unit) {
-    for (index in 0u ..< size) block(index, get(index))
-}
-
-public inline fun <E> KoneIterableList<E>.forEach(block: (value: E) -> Unit) {
-    for (element in this) block(element)
-}
-
-public inline fun <E> KoneIterableList<E>.forEachIndexed(block: (index: UInt, value: E) -> Unit) {
-    var index = 0u
-    for (element in this) block(index++, element)
+public inline fun KoneUIntArray.runningFold(initial: UInt, operation: (acc: UInt, UInt) -> UInt): KoneUIntArray {
+    val result = IntArray(size.toInt() + 1) { initial.toInt() }
+    var accumulator = initial
+    for (index in 0u ..< size) {
+        accumulator = operation(accumulator, get(index))
+        result[index.toInt()] = accumulator.toInt()
+    }
+    return KoneUIntArray(result)
 }
