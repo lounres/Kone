@@ -33,12 +33,12 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     }
 
     override fun clear() {
-        size = 0u
         dataSizeNumber = 1u
         sizeLowerBound = 0u
         sizeUpperBound = 2u
         data.dispose(size)
         data = KoneMutableArray(sizeUpperBound) { null }
+        size = 0u
     }
     override fun add(element: E) {
         if (size == sizeUpperBound) {

@@ -6,6 +6,12 @@
 package dev.lounres.kone.collections
 
 
+public inline fun KoneUIntArray.anyIndexed(block: (index: UInt, value: UInt) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) return true
+    return false
+}
+
 public inline fun KoneUIntArray.runningFold(initial: UInt, operation: (acc: UInt, UInt) -> UInt): KoneUIntArray {
     val result = IntArray(size.toInt() + 1) { initial.toInt() }
     var accumulator = initial
