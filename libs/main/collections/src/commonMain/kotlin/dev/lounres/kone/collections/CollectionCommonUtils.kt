@@ -24,13 +24,31 @@ public inline fun <E> KoneIterable<E>.any(block: (value: E) -> Boolean): Boolean
     return false
 }
 
+public inline fun <E> KoneIterable<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) return true
+    return false
+}
+
 public inline fun <E> KoneIterable<E>.all(block: (value: E) -> Boolean): Boolean {
     for (element in this) if (!block(element)) return false
     return true
 }
 
+public inline fun <E> KoneIterable<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (!block(currentIndex++, element)) return false
+    return true
+}
+
 public inline fun <E> KoneIterable<E>.none(block: (value: E) -> Boolean): Boolean {
     for (element in this) if (block(element)) return false
+    return true
+}
+
+public inline fun <E> KoneIterable<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) return false
     return true
 }
 
@@ -65,13 +83,28 @@ public inline fun <E> KoneList<E>.any(block: (value: E) -> Boolean): Boolean {
     return false
 }
 
+public inline fun <E> KoneList<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    for (index in 0u ..< size) if (block(index, get(index))) return true
+    return false
+}
+
 public inline fun <E> KoneList<E>.all(block: (value: E) -> Boolean): Boolean {
     for (index in 0u ..< size) if (!block(get(index))) return false
     return true
 }
 
+public inline fun <E> KoneList<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    for (index in 0u ..< size) if (!block(index, get(index))) return false
+    return true
+}
+
 public inline fun <E> KoneList<E>.none(block: (value: E) -> Boolean): Boolean {
     for (index in 0u ..< size) if (block(get(index))) return false
+    return true
+}
+
+public inline fun <E> KoneList<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    for (index in 0u ..< size) if (block(index, get(index))) return false
     return true
 }
 
@@ -97,13 +130,31 @@ public inline fun <E> KoneIterableList<E>.any(block: (value: E) -> Boolean): Boo
     return false
 }
 
+public inline fun <E> KoneIterableList<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) return true
+    return false
+}
+
 public inline fun <E> KoneIterableList<E>.all(block: (value: E) -> Boolean): Boolean {
     for (element in this) if (!block(element)) return false
     return true
 }
 
+public inline fun <E> KoneIterableList<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (!block(currentIndex++, element)) return false
+    return true
+}
+
 public inline fun <E> KoneIterableList<E>.none(block: (value: E) -> Boolean): Boolean {
     for (element in this) if (block(element)) return false
+    return true
+}
+
+public inline fun <E> KoneIterableList<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) return false
     return true
 }
 
