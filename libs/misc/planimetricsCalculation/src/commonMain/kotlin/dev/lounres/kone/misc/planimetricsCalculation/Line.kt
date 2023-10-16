@@ -8,8 +8,6 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.linearAlgebra.ColumnVector
-import dev.lounres.kone.linearAlgebra.RowVector
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.reflect.KProperty
 

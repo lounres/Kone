@@ -7,7 +7,6 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
-import dev.lounres.kone.linearAlgebra.SquareMatrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 
 

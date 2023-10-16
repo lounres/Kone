@@ -9,7 +9,6 @@ package dev.lounres.kone.misc.planimetricsCalculation
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.linearAlgebra.MatrixSpace
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledPolynomialSpace
 import dev.lounres.kone.polynomial.labeledPolynomialSpace

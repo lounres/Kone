@@ -3,6 +3,8 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.libs.main.algebraic)
+                api(projects.libs.main.collections)
+                api(projects.libs.main.multidimensionalCollections)
             }
         }
         commonTest {

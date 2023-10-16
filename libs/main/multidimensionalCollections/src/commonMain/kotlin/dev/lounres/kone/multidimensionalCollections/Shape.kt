@@ -6,20 +6,30 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.aliases.*
+import dev.lounres.kone.collections.any
+import dev.lounres.kone.collections.anyIndexed
 import dev.lounres.kone.collections.fold
 import dev.lounres.kone.collections.forEachIndexed
 import dev.lounres.kone.context.KoneContext
 
 
-public typealias ShapeND = UIntArray
+public typealias Shape = UIntArray
 
 public interface ShapeIndexer: KoneContext, Iterable<UIntArray> {
-    public val shape: ShapeND
+    public val shape: Shape
 
-    public fun UIntArray.hasNext()
+    public fun UIntArray.hasNext(): Boolean
     public fun UIntArray.next(): UIntArray
 
-    public fun asSequence(): Sequence<UIntArray>
+    public fun asSequence(): Sequence<UIntArray> = sequence {
+        if (shape.any { it == 0u }) return@sequence
+        var index = UIntArray(shape.size) { 0u }
+        while (true) {
+            yield(index)
+            if (!index.hasNext()) break
+            index = index.next()
+        }
+    }
     public override operator fun iterator(): Iterator<UIntArray> = asSequence().iterator()
 }
 
@@ -41,8 +51,6 @@ public abstract class ShapeStrides: ShapeOffseter {
         }
         return res
     }
-
-    public override fun asSequence(): Sequence<UIntArray> = (0u until linearSize).asSequence().map(::index)
 }
 
 //public class ColumnStrides(override val shape: ShapeND): ShapeStrides() {
@@ -125,7 +133,27 @@ public abstract class ShapeStrides: ShapeOffseter {
 //
 //public fun Strides(shape: ShapeND): Strides = defaultStridesCache.getOrPut(shape) { RowStrides(shape) }
 
+public class ShapeMismatchException(public val left: Shape, public val right: Shape) :
+    RuntimeException("Shapes $left and $right mismatch.")
+
+public class IndexOutOfShapeException(public val shape: Shape, public val index: UIntArray) :
+    RuntimeException("Index $index is out of shape $shape")
+
+public fun requireShapeEquality(left: Shape, right: Shape) {
+    if (
+        left.size != right.size ||
+        left.anyIndexed { index, value -> value != right[index] }
+    ) throw ShapeMismatchException(left = left, right = right)
+}
+
+public fun requireIndexInShape(index: UIntArray, shape: Shape) {
+    if (
+        index.size != shape.size ||
+        index.anyIndexed { dim, value -> value >= shape[dim] }
+    ) throw IndexOutOfShapeException(shape = shape, index = index)
+}
+
 public interface WithShape {
-    public val shape: ShapeND
+    public val shape: Shape
     public val indexer: ShapeIndexer
 }
