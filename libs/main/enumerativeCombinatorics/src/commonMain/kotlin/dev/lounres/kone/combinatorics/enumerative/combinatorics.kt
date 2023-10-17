@@ -272,3 +272,244 @@ public fun <E> List<E>.allPermutations(): Sequence<List<E>> {
         }
     }
 }
+
+public fun <E> List<E>.combinationsWithoutRepetitions(k: Int = size): Sequence<List<E>> {
+    TODO("Not yet implemented")
+    require(k >= 0) { "Size of combinations must be non-negative" }
+
+    val collection = this
+
+    return sequence {
+        if (collection.size < k) return@sequence
+
+        val addition = collection.size - k
+        val currentIndices = IntArray(k) { it }
+        val currentElements = MutableList(k) { collection[it] }
+
+        while (true) {
+            yield(currentElements.toList())
+
+            val firstToIncrease = currentIndices.lastIndexThat { t, index -> index < addition + t }
+            if (firstToIncrease == -1) return@sequence
+
+            var index = currentIndices[firstToIncrease]
+            for (t in firstToIncrease ..< k) {
+                currentIndices[t] = ++index
+                currentElements[t] = collection[index]
+            }
+        }
+    }
+}
+
+public fun <E> List<E>.allCombinationsWithoutRepetitions(): Sequence<List<E>> {
+    TODO("Not yet implemented")
+    val collection = this
+
+    return sequence {
+        val size = collection.size
+        val currentState = BooleanArray(size) { false }
+        var currentElements = emptyList<E>()
+
+        while (true) {
+            yield(currentElements)
+
+            val firstToIncrease = currentState.indexOfFirst { !it }
+            if (firstToIncrease == -1) return@sequence
+
+            currentState[firstToIncrease] = true
+            for (i in 0 ..< firstToIncrease) currentState[i] = false
+            currentElements = buildList {
+                add(collection[firstToIncrease])
+                addAll(currentElements.drop(firstToIncrease))
+            }
+
+        }
+    }
+}
+
+public fun <E> List<E>.permutationsWithoutRepetitions(k: Int = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<List<E>> {
+    require(k >= 0) { "Size of permutations must be non-negative" }
+
+    val collection = this
+
+    return sequence {
+        if (collection.size < k) return@sequence
+
+        val size = collection.size
+        val references = IntArray(size + 1) { it + 1 }
+        val nextSameElement = IntArray(size + 1) { size + 1 }
+        run {
+            var indexOfLastNewElement = 0
+            for (i in 1..size) {
+                var j = i-1
+                while (j != 0) {
+                    if (equalityTest(collection[j-1], collection[i-1])) break
+                    j--
+                }
+                if (j == 0) {
+                    references[indexOfLastNewElement] = i
+                    indexOfLastNewElement = i
+                } else {
+                    references[i] = j
+                    nextSameElement[j] = i
+                }
+            }
+            references[indexOfLastNewElement] = size + 1
+        }
+        val currentIndices = IntArray(k) { it + 1 }
+        val currentElements = MutableList(k) { collection[it] }
+
+        fun addMarkAt(index: Int): Int {
+            val next = references[index]
+            if (nextSameElement[next] != size + 1) {
+                references[nextSameElement[next]] = references[next]
+                references[index] = nextSameElement[next]
+                references[next] = index
+            } else {
+                references[index] = references[next]
+                references[next] = index
+            }
+            return next
+        }
+        // FIXME: KT-17579
+        fun addStartMark(): Int = addMarkAt(0)
+        // FIXME: KT-17579
+        fun removeMarkFrom(index: Int) {
+            val prev = references[index]
+            val next = references[prev]
+            if (nextSameElement[index] != size + 1) {
+                check(nextSameElement[index] == next)
+                references[prev] = index
+                references[index] = references[next]
+                references[next] = index
+            } else {
+                references[prev] = index
+                references[index] = next
+            }
+        }
+
+        repeat(k) {
+            val index = addStartMark()
+            currentIndices[it] = index
+            currentElements[it] = collection[index-1]
+        }
+
+        while (true) {
+            yield(currentElements.toList())
+
+            val firstToIncrease = run {
+                var current = k - 1
+                while (current >= 0) {
+                    val index = currentIndices[current]
+                    removeMarkFrom(index)
+                    if (references[index] != size + 1) break
+                    current--
+                }
+                current
+            }
+            if (firstToIncrease == -1) return@sequence
+
+            val newIndex = addMarkAt(currentIndices[firstToIncrease])
+            currentIndices[firstToIncrease] = newIndex
+            currentElements[firstToIncrease] = collection[newIndex-1]
+
+            for (t in firstToIncrease+1 ..< k) {
+                val index = addStartMark()
+                currentIndices[t] = index
+                currentElements[t] = collection[index-1]
+            }
+        }
+    }
+}
+
+public fun <E> List<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<List<E>> {
+    val collection = this
+
+    return sequence {
+        val size = collection.size
+        val references = IntArray(size + 1) { it + 1 }
+        val nextSameElement = IntArray(size + 1) { size + 1 }
+        run {
+            var indexOfLastNewElement = 0
+            for (i in 1..size) {
+                var j = i-1
+                while (j != 0) {
+                    if (equalityTest(collection[j-1], collection[i-1])) break
+                    j--
+                }
+                if (j == 0) {
+                    references[indexOfLastNewElement] = i
+                    indexOfLastNewElement = i
+                } else {
+                    references[i] = j
+                    nextSameElement[j] = i
+                }
+            }
+            references[indexOfLastNewElement] = size + 1
+        }
+        var currentSize = 0
+        val currentIndices = IntArray(size) { it + 1 }
+        val currentElements = MutableList(size) { collection[it] }
+
+        // FIXME: KT-45725
+        fun getElements(): List<E> = @Suppress("UNCHECKED_CAST") (currentElements.take(currentSize) as List<E>)
+
+        fun addMarkAt(index: Int): Int {
+            val next = references[index]
+            if (nextSameElement[next] != size + 1) {
+                references[nextSameElement[next]] = references[next]
+                references[index] = nextSameElement[next]
+                references[next] = index
+            } else {
+                references[index] = references[next]
+                references[next] = index
+            }
+            return next
+        }
+        // FIXME: KT-17579
+        fun addStartMark(): Int = addMarkAt(0)
+        // FIXME: KT-17579
+        fun removeMarkFrom(index: Int) {
+            val prev = references[index]
+            val next = references[prev]
+            if (nextSameElement[index] != size + 1) {
+                check(nextSameElement[index] == next)
+                references[prev] = index
+                references[index] = references[next]
+                references[next] = index
+            } else {
+                references[prev] = index
+                references[index] = next
+            }
+        }
+
+        while (true) {
+            yield(getElements())
+
+            if (currentSize != size) {
+                val index = addStartMark()
+                currentIndices[currentSize] = index
+                currentElements[currentSize] = collection[index-1]
+                currentSize++
+                continue
+            }
+
+            val firstToIncrease = run {
+                var current = size - 1
+                while (current >= 0) {
+                    val index = currentIndices[current]
+                    removeMarkFrom(index)
+                    if (references[index] != size + 1) break
+                    current--
+                }
+                current
+            }
+            if (firstToIncrease == -1) return@sequence
+
+            val newIndex = addMarkAt(currentIndices[firstToIncrease])
+            currentIndices[firstToIncrease] = newIndex
+            currentElements[firstToIncrease] = collection[newIndex-1]
+            currentSize = firstToIncrease + 1
+        }
+    }
+}
