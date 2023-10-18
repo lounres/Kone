@@ -8,8 +8,6 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
-private /*const*/ val powersOf2: KoneUIntArray = KoneUIntArray(33u) { if (it == 0u) 0u else 1u shl (it.toInt() - 1) }
-
 @Suppress("UNCHECKED_CAST")
 public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     override var size: UInt = 0u
@@ -18,8 +16,38 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     private var sizeLowerBound = 0u
     private var sizeUpperBound = 2u
     private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
+
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
+    }
+    private fun reinitializeBounds(newSize: UInt) {
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneGrowableArrayList implementation can not allocate array of size more than 2^31")
+        when {
+            newSize > sizeUpperBound -> {
+                while (newSize > sizeUpperBound) {
+                    dataSizeNumber++
+                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
+                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+                }
+            }
+            newSize < sizeLowerBound -> {
+                while (newSize < sizeUpperBound) {
+                    dataSizeNumber--
+                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
+                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+                }
+            }
+        }
+    }
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        val oldData = data
+        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        oldData.dispose(oldSize)
+    }
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        reinitializeBounds(newSize)
+        reinitializeData(generator = generator)
+        size = newSize
     }
 
     override fun get(index: UInt): E {
@@ -36,25 +64,18 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         dataSizeNumber = 1u
         sizeLowerBound = 0u
         sizeUpperBound = 2u
-        data.dispose(size)
-        data = KoneMutableArray(sizeUpperBound) { null }
+        reinitializeData { null }
         size = 0u
     }
     override fun add(element: E) {
         if (size == sizeUpperBound) {
-            dataSizeNumber++
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
-            sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> oldData[it]
+                    it < size -> get(it)
                     it == size -> element
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size++
         } else {
             data[size] = element
             size++
@@ -63,20 +84,14 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     override fun addAt(index: UInt, element: E) {
         if (index > size) indexException(index, size)
         if (size == sizeUpperBound) {
-            dataSizeNumber++
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
-            sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < index -> oldData[it]
+                    it < index -> get(it)
                     it == index -> element
-                    it <= size -> oldData[it-1u]
+                    it <= size -> get(it-1u)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size++
         } else {
             for (i in (size-1u) downTo index) data[i+1u] = data[i]
             data[index] = element
@@ -86,22 +101,14 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
     override fun addAll(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                dataSizeNumber++
-                sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            }
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
             val iter = elements.iterator()
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> oldData[it]
+                    it < size -> get(it)
                     iter.hasNext() -> iter.next()
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             var index = size
             val iter = elements.iterator()
@@ -117,23 +124,15 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         val newSize = size + elements.size
         val elementsSize = elements.size
         if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                dataSizeNumber++
-                sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            }
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
             val iter = elements.iterator()
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < index -> oldData[it]
+                    it < index -> get(it)
                     iter.hasNext() -> iter.next()
-                    it < newSize -> oldData[it-elementsSize]
+                    it < newSize -> get(it-elementsSize)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
             var index = index
@@ -146,46 +145,21 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
         }
     }
     override fun remove(element: E) {
-        val index = data.indexOf(element)
+        val index = this.indexOf(element)
         if (index == size) return
-        val newSize = size - 1u
-        if (newSize < sizeLowerBound) {
-            dataSizeNumber--
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
-            sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
-                when {
-                    it < index -> oldData[it]
-                    it < newSize -> oldData[it+1u]
-                    else -> null
-                }
-            }
-            oldData.dispose(size)
-            size = newSize
-        } else {
-            for (i in index..<newSize) data[i] = data[i + 1u]
-            data[size - 1u] = null
-            size = newSize
-        }
+        removeAt(index)
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
-            dataSizeNumber--
-            sizeLowerBound = powersOf2[dataSizeNumber-1u]
-            sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < index -> oldData[it]
-                    it < newSize -> oldData[it+1u]
+                    it < index -> get(it)
+                    it < newSize -> get(it+1u)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             for (i in index..<newSize) data[i] = data[i + 1u]
             data[size - 1u] = null
@@ -208,20 +182,12 @@ public class KoneResizableArrayList<E>: KoneMutableIterableList<E> {
             newSize = checkingMark
         }
         if (newSize < sizeLowerBound) {
-            while (newSize < sizeLowerBound) {
-                dataSizeNumber--
-                sizeLowerBound = powersOf2[dataSizeNumber-1u]
-            }
-            sizeUpperBound = powersOf2[dataSizeNumber+1u]
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < newSize -> oldData[it]
+                    it < newSize -> get(it)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             for (i in newSize ..< size) data[i] = null
             size = newSize

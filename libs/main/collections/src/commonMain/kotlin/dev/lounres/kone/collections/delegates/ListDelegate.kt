@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.KoneIterableCollection
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.delegates.ListAction.*
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 
 
 public sealed interface ListAction<out E> {
@@ -76,7 +77,7 @@ public abstract class KoneMutableListDelegate<E>(public val delegate: KoneMutabl
 }
 
 public inline fun <E> KoneMutableListDelegate(
-    initial: KoneMutableList<E> = TODO(),
+    initial: KoneMutableList<E> = KoneGrowableArrayList(),
     crossinline before: (state: KoneList<E>, action: ListAction<E>) -> Unit = { _, _ -> },
     crossinline after: (state: KoneList<E>, action: ListAction<E>) -> Unit = { _, _ -> },
 ): KoneMutableListDelegate<E> = object : KoneMutableListDelegate<E>(initial) {

@@ -21,3 +21,19 @@ public inline fun KoneUIntArray.runningFold(initial: UInt, operation: (acc: UInt
     }
     return KoneUIntArray(result)
 }
+
+public inline fun KoneUIntArray.first(predicate: (UInt) -> Boolean): UInt {
+    for (element in this) if (predicate(element)) return element
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public fun KoneUIntArray.min(): UInt {
+    val iterator = iterator()
+    if (!iterator.hasNext()) throw NoSuchElementException()
+    var min = iterator.next()
+    while (iterator.hasNext()) {
+        val e = iterator.next()
+        if (min > e) min = e
+    }
+    return min
+}

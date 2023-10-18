@@ -8,15 +8,47 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
-// TODO: Finish implementation
 @Suppress("UNCHECKED_CAST")
-public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
-    override var size: UInt = 0u
+public class KoneGrowableArrayList<E> internal constructor(
+    size: UInt,
+    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+): KoneMutableIterableList<E> {
+    override var size: UInt = size
         private set
-    private var sizeUpperBound = 1u
-    private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
+
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
+    }
+    private fun reinitializeBounds(newSize: UInt) {
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
+        if (newSize > sizeUpperBound) {
+            while (newSize > sizeUpperBound) {
+                sizeUpperBound shl 1
+            }
+        }
+    }
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        val oldData = data
+        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        oldData.dispose(oldSize)
+    }
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        reinitializeBounds(newSize)
+        reinitializeData(generator = generator)
+        size = newSize
+    }
+
+    public fun ensureCapacity(minimalCapacity: UInt) {
+        if (sizeUpperBound < minimalCapacity) {
+            reinitializeBounds(minimalCapacity)
+            reinitializeData {
+                when {
+                    it < size -> get(it)
+                    else -> null
+                }
+            }
+        }
     }
 
     override fun get(index: UInt): E {
@@ -30,24 +62,17 @@ public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
     }
 
     override fun clear() {
-        sizeUpperBound = 1u
-        data.dispose(size)
-        data = KoneMutableArray(sizeUpperBound) { null }
-        size = 0u
+        reinitializeBoundsAndData(0u) { null }
     }
     override fun add(element: E) {
         if (size == sizeUpperBound) {
-            sizeUpperBound = sizeUpperBound shl 1
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> oldData[it]
+                    it < size -> get(it)
                     it == size -> element
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size++
         } else {
             data[size] = element
             size++
@@ -56,18 +81,14 @@ public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
     override fun addAt(index: UInt, element: E) {
         if (index > size) indexException(index, size)
         if (size == sizeUpperBound) {
-            sizeUpperBound = sizeUpperBound shl 1
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < index -> oldData[it]
+                    it < index -> get(it)
                     it == index -> element
-                    it <= size -> oldData[it-1u]
+                    it <= size -> get(it-1u)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size++
         } else {
             for (i in (size-1u) downTo index) data[i+1u] = data[i]
             data[index] = element
@@ -77,20 +98,14 @@ public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
     override fun addAll(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                sizeUpperBound = sizeUpperBound shl 1
-            }
             val iter = elements.iterator()
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> oldData[it]
+                    it < size -> get(it)
                     iter.hasNext() -> iter.next()
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             var index = size
             val iter = elements.iterator()
@@ -106,21 +121,15 @@ public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
         val newSize = size + elements.size
         val elementsSize = elements.size
         if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                sizeUpperBound = sizeUpperBound shl 1
-            }
             val iter = elements.iterator()
-            val oldData = data
-            data = KoneMutableArray(sizeUpperBound) {
+            reinitializeBoundsAndData(newSize) {
                 when {
-                    it < index -> oldData[it]
+                    it < index -> get(it)
                     iter.hasNext() -> iter.next()
-                    it < newSize -> oldData[it-elementsSize]
+                    it < newSize -> get(it-elementsSize)
                     else -> null
                 }
             }
-            oldData.dispose(size)
-            size = newSize
         } else {
             for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
             var index = index
@@ -133,7 +142,7 @@ public class KoneGrowableArrayList<E> : KoneMutableIterableList<E> {
         }
     }
     override fun remove(element: E) {
-        val index = data.indexOf(element)
+        val index = this.indexOf(element)
         if (index == size) return
         val newSize = size - 1u
         for (i in index..<newSize) data[i] = data[i + 1u]
