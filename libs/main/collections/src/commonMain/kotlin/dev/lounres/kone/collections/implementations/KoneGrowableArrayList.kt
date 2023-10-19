@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.*
 @Suppress("UNCHECKED_CAST")
 public class KoneGrowableArrayList<E> internal constructor(
     size: UInt,
-    private var sizeUpperBound: UInt = POWERS_OF_2[powerOf2IndexGreaterOrEqualTo(size)],
+    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
 ): KoneMutableIterableList<E> {
     override var size: UInt = size
