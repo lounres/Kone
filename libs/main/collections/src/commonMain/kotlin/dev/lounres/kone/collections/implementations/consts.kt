@@ -16,3 +16,7 @@ internal /*const*/ val POWERS_OF_2: KoneUIntArray = KoneUIntArray(33u) { if (it 
 internal fun powerOf2GreaterOrEqualTo(size: UInt): UInt =
     if (size > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
     else POWERS_OF_2.first { it >= size }
+
+internal fun powerOf2IndexGreaterOrEqualTo(size: UInt): UInt =
+    if (size > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
+    else POWERS_OF_2.indexThat { _, power -> power >= size }

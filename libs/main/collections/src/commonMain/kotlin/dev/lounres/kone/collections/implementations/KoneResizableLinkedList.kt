@@ -6,20 +6,23 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
+import kotlin.math.min
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneResizableLinkedList<E>: KoneMutableIterableList<E> {
-    override var size: UInt = 0u
+public class KoneResizableLinkedList<E> internal constructor(
+    size: UInt,
+    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(min(size, 2u)) - 1u,
+    private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
+    private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
+    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+    private var nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
+    private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
+    private var start: UInt = 0u,
+    private var end: UInt = sizeUpperBound - 1u,
+): KoneMutableIterableList<E> {
+    override var size: UInt = size
         private set
-    private var dataSizeNumber = 1u
-    private var sizeLowerBound = 0u
-    private var sizeUpperBound = 2u
-    private var data = KoneMutableArray<Any?>(sizeUpperBound) { null }
-    private var nextCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
-    private var previousCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
-    private var start = 0u
-    private var end = sizeUpperBound - 1u
 
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         var currentActualIndexToClear = start

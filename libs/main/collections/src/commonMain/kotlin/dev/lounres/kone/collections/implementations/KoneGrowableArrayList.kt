@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.*
 @Suppress("UNCHECKED_CAST")
 public class KoneGrowableArrayList<E> internal constructor(
     size: UInt,
-    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    private var sizeUpperBound: UInt = POWERS_OF_2[powerOf2IndexGreaterOrEqualTo(size)],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
 ): KoneMutableIterableList<E> {
     override var size: UInt = size
@@ -132,7 +132,7 @@ public class KoneGrowableArrayList<E> internal constructor(
             }
         } else {
             for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
-            var index = index
+            var     index = index
             val iter = elements.iterator()
             while (iter.hasNext()) {
                 data[index] = iter.next()
