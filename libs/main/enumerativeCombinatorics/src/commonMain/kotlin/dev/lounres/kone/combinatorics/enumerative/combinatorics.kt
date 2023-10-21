@@ -588,7 +588,7 @@ public fun <E> List<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E) ->
         val currentElements = MutableList(size) { collection[it] }
 
         // FIXME: KT-45725
-        fun getElements(): List<E> = @Suppress("UNCHECKED_CAST") (currentElements.take(currentSize) as List<E>)
+        fun getElements(): List<E> = currentElements.take(currentSize)
 
         fun addMarkAt(index: Int): Int {
             val next = references[index]
