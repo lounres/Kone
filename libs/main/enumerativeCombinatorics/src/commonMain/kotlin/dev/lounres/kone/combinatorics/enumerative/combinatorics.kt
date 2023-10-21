@@ -273,56 +273,192 @@ public fun <E> List<E>.allPermutations(): Sequence<List<E>> {
     }
 }
 
-public fun <E> List<E>.combinationsWithoutRepetitions(k: Int = size): Sequence<List<E>> {
-    TODO("Not yet implemented")
+public fun <E> List<E>.combinationsWithoutRepetitions(k: Int = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<List<E>> {
     require(k >= 0) { "Size of combinations must be non-negative" }
 
     val collection = this
 
     return sequence {
         if (collection.size < k) return@sequence
+        if (collection.size == 0) {
+            yield(emptyList())
+            return@sequence
+        }
 
-        val addition = collection.size - k
-        val currentIndices = IntArray(k) { it }
-        val currentElements = MutableList(k) { collection[it] }
+        val size = collection.size
+        val sortedCollection: List<E>
+        val counts: IntArray
+        val groupStarts: IntArray
+        run {
+            val references = IntArray(size + 1) { size + 1 }
+            val countsBuilder = ArrayList<Int>()
+            run {
+                val countIndices = IntArray(size)
+                var indexOfLastElement = 0
+                for (i in 1..size) {
+                    var j = i - 1
+                    while (j != 0) {
+                        if (equalityTest(collection[j - 1], collection[i - 1])) break
+                        j--
+                    }
+                    if (j == 0) {
+                        references[indexOfLastElement] = i
+                        indexOfLastElement = i
+
+                        countIndices[i - 1] = countsBuilder.size
+                        countsBuilder.add(1)
+                    } else {
+                        references[i] = references[j]
+                        references[j] = i
+                        if (indexOfLastElement == j) indexOfLastElement = i
+
+                        countIndices[i - 1] = countIndices[j - 1]
+                        countsBuilder[countIndices[j - 1]]++
+                    }
+                }
+            }
+
+            counts = countsBuilder.toIntArray()
+            sortedCollection = run {
+                var lastIndex = 0
+                List(size) {
+                    lastIndex = references[lastIndex]
+                    collection[lastIndex-1]
+                }
+            }
+            groupStarts = run {
+                var lastStart = 0
+                IntArray(countsBuilder.size) { index ->
+                    lastStart.also { lastStart += countsBuilder[index] }
+                }
+            }
+        }
+
+        val currentCounts = IntArray(counts.size)
+        val restCounts = IntArray(counts.size) { 0 }
+        val currentElements = MutableList<E>(k) { sortedCollection[0] }
+
+        fun reinitializeCurrentCountsFrom(startIndex: Int, restCount: Int) {
+            if (startIndex == counts.size) return
+            var currentIndex = startIndex
+            var currentElementStart = k - restCount
+            var rest = restCount
+            while (true) {
+                if (counts[currentIndex] >= rest) {
+                    currentCounts[currentIndex] = rest
+                    for (i in 0 ..< rest) {
+                        currentElements[currentElementStart + i] = sortedCollection[groupStarts[currentIndex] + i]
+                    }
+                    for (i in currentIndex ..< counts.size) restCounts[i] = 0
+                    break
+                } else {
+                    currentCounts[currentIndex] = counts[currentIndex]
+                    rest -= currentCounts[currentIndex]
+                    restCounts[currentIndex] = rest
+                    for (i in 0 ..< currentCounts[currentIndex]) {
+                        currentElements[currentElementStart + i] = sortedCollection[groupStarts[currentIndex] + i]
+                    }
+                    currentElementStart += currentCounts[currentIndex]
+                    currentIndex++
+                }
+            }
+        }
+
+        reinitializeCurrentCountsFrom(0, k)
 
         while (true) {
             yield(currentElements.toList())
 
-            val firstToIncrease = currentIndices.lastIndexThat { t, index -> index < addition + t }
-            if (firstToIncrease == -1) return@sequence
-
-            var index = currentIndices[firstToIncrease]
-            for (t in firstToIncrease ..< k) {
-                currentIndices[t] = ++index
-                currentElements[t] = collection[index]
+            val firstToDecrease = currentCounts.lastIndexThat { index, count ->
+                index < counts.size - 1 &&
+                        currentCounts[index + 1] < counts[index + 1] &&
+                        count > 0
             }
+            if (firstToDecrease == -1) return@sequence
+
+            currentCounts[firstToDecrease]--
+            restCounts[firstToDecrease]++
+            reinitializeCurrentCountsFrom(startIndex = firstToDecrease + 1, restCount = restCounts[firstToDecrease])
         }
     }
 }
 
-public fun <E> List<E>.allCombinationsWithoutRepetitions(): Sequence<List<E>> {
-    TODO("Not yet implemented")
+public fun <E> List<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<List<E>> {
     val collection = this
 
     return sequence {
+        if (collection.size == 0) {
+            yield(emptyList())
+            return@sequence
+        }
+
         val size = collection.size
-        val currentState = BooleanArray(size) { false }
-        var currentElements = emptyList<E>()
+        val sortedCollection: List<E>
+        val counts: IntArray
+        val groupStarts: IntArray
+        run {
+            val references = IntArray(size + 1) { size + 1 }
+            val countsBuilder = ArrayList<Int>()
+            run {
+                val countIndices = IntArray(size)
+                var indexOfLastElement = 0
+                for (i in 1..size) {
+                    var j = i - 1
+                    while (j != 0) {
+                        if (equalityTest(collection[j - 1], collection[i - 1])) break
+                        j--
+                    }
+                    if (j == 0) {
+                        references[indexOfLastElement] = i
+                        indexOfLastElement = i
 
-        while (true) {
-            yield(currentElements)
+                        countIndices[i - 1] = countsBuilder.size
+                        countsBuilder.add(1)
+                    } else {
+                        references[i] = references[j]
+                        references[j] = i
+                        if (indexOfLastElement == j) indexOfLastElement = i
 
-            val firstToIncrease = currentState.indexOfFirst { !it }
-            if (firstToIncrease == -1) return@sequence
-
-            currentState[firstToIncrease] = true
-            for (i in 0 ..< firstToIncrease) currentState[i] = false
-            currentElements = buildList {
-                add(collection[firstToIncrease])
-                addAll(currentElements.drop(firstToIncrease))
+                        countIndices[i - 1] = countIndices[j - 1]
+                        countsBuilder[countIndices[j - 1]]++
+                    }
+                }
             }
 
+            counts = countsBuilder.toIntArray()
+            sortedCollection = run {
+                var lastIndex = 0
+                List(size) {
+                    lastIndex = references[lastIndex]
+                    collection[lastIndex-1]
+                }
+            }
+            groupStarts = run {
+                var lastStart = 0
+                IntArray(countsBuilder.size) { index ->
+                    lastStart.also { lastStart += countsBuilder[index] }
+                }
+            }
+        }
+
+        val currentCounts = IntArray(counts.size) { 0 }
+        val currentElements = MutableList<E?>(size) { null }
+        var currentSize = 0
+
+        while (true) {
+            @Suppress("UNCHECKED_CAST")
+            yield(currentElements.take(currentSize) as List<E>)
+
+            val firstToIncrease = currentCounts.lastIndexThat { index, count -> count < counts[index] }
+            if (firstToIncrease == -1) return@sequence
+
+            currentCounts[firstToIncrease]++
+            currentSize++
+            for (index in firstToIncrease+1 ..< counts.size) {
+                currentSize -= currentCounts[index]
+                currentCounts[index] = 0
+            }
+            currentElements[currentSize-1] = sortedCollection[groupStarts[firstToIncrease] + currentCounts[firstToIncrease]-1]
         }
     }
 }
