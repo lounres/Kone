@@ -8,12 +8,7 @@ package dev.lounres.kone.collections
 
 public interface KoneCollection<out E> {
     public val size: UInt
-    public fun isEmpty(): Boolean = size == 0u
     public operator fun contains(element: @UnsafeVariance E): Boolean
-    public fun containsAll(elements: KoneIterableCollection<@UnsafeVariance E>): Boolean {
-        for (e in elements) if (e !in this) return false
-        return true
-    }
 }
 
 public interface KoneExtendableCollection<E> : KoneCollection<E> {
@@ -25,18 +20,32 @@ public interface KoneExtendableCollection<E> : KoneCollection<E> {
 
 public interface KoneRemovableCollection<out E> : KoneCollection<E> {
     public fun remove(element: @UnsafeVariance E)
-    public fun removeAllThat(predicate: (E) -> Boolean)
+    public fun removeAllThat(predicate: (element: E) -> Boolean)
     public fun clear()
 }
 
 public interface KoneMutableCollection<E> : KoneExtendableCollection<E>, KoneRemovableCollection<E>
 
 public interface KoneList<out E> : KoneCollection<E> {
+    override fun contains(element: @UnsafeVariance E): Boolean = indexThat { _, collectionElement -> element == collectionElement } == size
+
     public operator fun get(index: UInt): E
-    // TODO: Replace with `public fun indexOfThat(predicate: (E) -> Boolean): UInt`
-    public fun indexOf(element: @UnsafeVariance E): UInt
-    // TODO: Replace with `public fun lastIndexOfThat(predicate: (E) -> Boolean): UInt`
-    public fun lastIndexOf(element: @UnsafeVariance E): UInt
+    public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
+        var i = 0u
+        while (i < size) {
+            if (predicate(i, get(i))) break
+            i++
+        }
+        return i
+    }
+    public fun lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
+        var i = size - 1u
+        while (i >= 0u) {
+            if (predicate(i, get(i))) break
+            i--
+        }
+        return i
+    }
 }
 
 public interface KoneSettableList<E> : KoneList<E> {
@@ -47,6 +56,10 @@ public interface KoneMutableList<E> : KoneSettableList<E>, KoneMutableCollection
     public fun addAt(index: UInt, element: E)
     public fun addAllAt(index: UInt, elements: KoneIterableCollection<E>)
     public fun removeAt(index: UInt)
+    public override fun removeAllThat(predicate: (element: E) -> Boolean) {
+        removeAllThatIndexed { _, element -> predicate(element) }
+    }
+    public fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean)
 }
 
 public interface KoneSet<out E> : KoneCollection<E>

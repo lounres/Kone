@@ -8,7 +8,6 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.linearAlgebra.SquareMatrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import space.kscience.kmath.expressions.Symbol
 import kotlin.properties.ReadOnlyProperty
