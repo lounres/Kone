@@ -8,23 +8,24 @@ package dev.lounres.kone.collections.delegates
 import dev.lounres.kone.collections.KoneIterableCollection
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.delegates.ListAction.*
+import dev.lounres.kone.collections.delegates.KoneListAction.*
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 
 
-public sealed interface ListAction<out E> {
-    public data class Add<E>(val element: E): ListAction<E>
-    public data class AddAll<E>(val elements: KoneIterableCollection<E>): ListAction<E>
-    public data class AddAt<E>(val index: UInt, val element: E): ListAction<E>
-    public data class AddAllIndex<E>(val index: UInt, val elements: KoneIterableCollection<E>): ListAction<E>
-    public data class Remove<E>(val element: E): ListAction<E>
-    public data class RemoveAt<E>(val index: UInt): ListAction<E>
-    public data class RemoveAllThat<E>(val predicate: (E) -> Boolean): ListAction<E>
-    public data object Clear: ListAction<Nothing>
+public sealed interface KoneListAction<out E> {
+    public data class Add<E>(val element: E): KoneListAction<E>
+    public data class AddAll<E>(val elements: KoneIterableCollection<E>): KoneListAction<E>
+    public data class AddAt<E>(val index: UInt, val element: E): KoneListAction<E>
+    public data class AddAllIndex<E>(val index: UInt, val elements: KoneIterableCollection<E>): KoneListAction<E>
+    public data class Remove<E>(val element: E): KoneListAction<E>
+    public data class RemoveAt<E>(val index: UInt): KoneListAction<E>
+    public data class RemoveAllThat<E>(val predicate: (E) -> Boolean): KoneListAction<E>
+    public data object Clear: KoneListAction<Nothing>
 }
 
 public abstract class KoneMutableListDelegate<E>(public val delegate: KoneMutableList<E>) : KoneMutableList<E> by delegate {
-    public abstract fun beforeAction(state: KoneList<E>, action: ListAction<E>)
-    public abstract fun afterAction(state: KoneList<E>, action: ListAction<E>)
+    public abstract fun beforeAction(state: KoneList<E>, action: KoneListAction<E>)
+    public abstract fun afterAction(state: KoneList<E>, action: KoneListAction<E>)
 
     override fun add(element: E) {
         beforeAction(delegate, Add(element))
@@ -76,10 +77,10 @@ public abstract class KoneMutableListDelegate<E>(public val delegate: KoneMutabl
 }
 
 public inline fun <E> KoneMutableListDelegate(
-    initial: KoneMutableList<E> = TODO(),
-    crossinline before: (state: KoneList<E>, action: ListAction<E>) -> Unit = { _, _ -> },
-    crossinline after: (state: KoneList<E>, action: ListAction<E>) -> Unit = { _, _ -> },
+    initial: KoneMutableList<E> = KoneGrowableArrayList(),
+    crossinline before: (state: KoneList<E>, action: KoneListAction<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: KoneList<E>, action: KoneListAction<E>) -> Unit = { _, _ -> },
 ): KoneMutableListDelegate<E> = object : KoneMutableListDelegate<E>(initial) {
-    override fun beforeAction(state: KoneList<E>, action: ListAction<E>) = before(state, action)
-    override fun afterAction(state: KoneList<E>, action: ListAction<E>) = after(state, action)
+    override fun beforeAction(state: KoneList<E>, action: KoneListAction<E>) = before(state, action)
+    override fun afterAction(state: KoneList<E>, action: KoneListAction<E>) = after(state, action)
 }

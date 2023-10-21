@@ -6,15 +6,11 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import kotlin.math.min
 
 
-@Suppress("UNCHECKED_CAST")
-public class KoneResizableLinkedList<E> internal constructor(
+public class KoneGrowableLinkedList<E> internal constructor(
     size: UInt,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(min(size, 2u)) - 1u,
-    private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
-    private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
+    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
     private var nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
@@ -33,20 +29,9 @@ public class KoneResizableLinkedList<E> internal constructor(
     }
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneGrowableArrayList implementation can not allocate array of size more than 2^31")
-        when {
-            newSize > sizeUpperBound -> {
-                while (newSize > sizeUpperBound) {
-                    dataSizeNumber++
-                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
-                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-                }
-            }
-            newSize < sizeLowerBound -> {
-                while (newSize < sizeUpperBound) {
-                    dataSizeNumber--
-                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
-                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-                }
+        if (newSize > sizeUpperBound) {
+            while (newSize > sizeUpperBound) {
+                sizeUpperBound shl 1
             }
         }
     }
@@ -63,6 +48,19 @@ public class KoneResizableLinkedList<E> internal constructor(
         reinitializeData(generator = generator)
         size = newSize
         end = if (size > 0u) size - 1u else sizeUpperBound - 1u
+    }
+
+    public fun ensureCapacity(minimalCapacity: UInt) {
+        if (sizeUpperBound < minimalCapacity) {
+            reinitializeBounds(minimalCapacity)
+            var actualIndex = start
+            reinitializeData {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    else -> null
+                }
+            }
+        }
     }
 
     private fun actualIndex(index: UInt): UInt =
@@ -255,40 +253,12 @@ public class KoneResizableLinkedList<E> internal constructor(
             return
         }
         val newSize = size - 1u
-        if (newSize < sizeLowerBound) {
-            var actualIndex = start
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < targetIndex -> get(actualIndex).also { _ ->
-                        actualIndex = nextCellIndex[actualIndex]
-                        if (it == targetIndex - 1u) actualIndex = nextCellIndex[actualIndex]
-                    }
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        } else {
-            justRemoveAt(actualTargetIndex)
-        }
+        justRemoveAt(actualTargetIndex)
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
         val newSize = size - 1u
-        if (newSize < sizeLowerBound) {
-            var actualIndex = start
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < index -> get(actualIndex).also { _ ->
-                        actualIndex = nextCellIndex[actualIndex]
-                        if (it == index - 1u) actualIndex = nextCellIndex[actualIndex]
-                    }
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        } else {
-            justRemoveAt(actualIndex(index))
-        }
+        justRemoveAt(actualIndex(index))
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
@@ -311,20 +281,10 @@ public class KoneResizableLinkedList<E> internal constructor(
             newSize = resultSize
             firstCellToClear = resultActualMark
         }
-        if (newSize < sizeLowerBound) {
-            var actualIndex = start
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        } else {
-            var currentActualIndexToClear = firstCellToClear
-            for (i in 0u ..< size - newSize) {
-                data[currentActualIndexToClear] = null
-                currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
-            }
+        var currentActualIndexToClear = firstCellToClear
+        for (i in 0u ..< size - newSize) {
+            data[currentActualIndexToClear] = null
+            currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
         }
     }
 

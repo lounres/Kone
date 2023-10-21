@@ -11,7 +11,6 @@ public fun KoneCollection<*>.isNotEmpty(): Boolean = !isEmpty()
 
 public fun <E> KoneCollection<E>.containsAll(elements: KoneIterableCollection<E>): Boolean {
     for (e in elements) if (e !in this) return false
-    arrayListOf(1, 2, 3).containsAll(listOf(1, 2, 3))
     return true
 }
 
