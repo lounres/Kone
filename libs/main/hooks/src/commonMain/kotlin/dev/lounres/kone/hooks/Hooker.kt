@@ -5,6 +5,10 @@
 
 package dev.lounres.kone.hooks
 
+import dev.lounres.kone.collections.KoneMutableIterableList
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import kotlin.reflect.KProperty
+
 
 public interface Hookable<out O, out A> {
     public val output: O
@@ -15,7 +19,7 @@ public interface Hookable<out O, out A> {
  * @param A type of the possible actions.
  * @param I type of the [input] entity that is mutated by the actions.
  */
-public interface Hooker<out I, out O, out A>: Hookable<O, A> {
+public interface Hooker<I, out O, out A>: Hookable<O, A> {
     public val input: I
 }
 
@@ -46,3 +50,12 @@ public inline fun <O, A> ResponseAfterAction(crossinline respond: (entity: O, ac
         override fun respondBeforeAction(entity: O, action: A) {}
         override fun respondAfterAction(entity: O, action: A) = respond(entity, action)
     }
+
+// TODO: Check of `O` and `A` can really be covariant
+public abstract class AbstractHookable<out O, out A>(
+    protected val hooks: KoneMutableIterableList<Response<@UnsafeVariance O, @UnsafeVariance A>> = KoneGrowableArrayList()
+): Hookable<O, A> {
+    override fun hookUp(response: Response<O, A>) { hooks.add(response) }
+}
+
+public operator fun <O> Hookable<O, *>.getValue(thisRef: Any?, property: KProperty<*>): O = output

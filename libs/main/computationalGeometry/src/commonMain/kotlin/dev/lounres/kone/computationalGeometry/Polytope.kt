@@ -21,10 +21,10 @@ public abstract class Vertex: Face {
     public final override val vertices: Set<Vertex> by lazy { setOf(this) }
 }
 
-public interface PolytopicConstruction<P, V: P> {
+public interface PolytopicConstruction<N, P, V: P> {
     public val P.rank: UInt
     public val P.faces: List<Set<P>>
     public val P.vertices: Set<V>
 
-    public val V.coordinates: Nothing?
+    public val V.coordinates: Point<N>
 }

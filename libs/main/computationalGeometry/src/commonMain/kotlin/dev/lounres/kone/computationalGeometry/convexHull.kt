@@ -8,23 +8,49 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.delegates.ListAction
-import dev.lounres.kone.collections.delegates.SetAction
-import dev.lounres.kone.hooks.Hookable
+import dev.lounres.kone.collections.delegates.KoneSetAction
+import dev.lounres.kone.collections.implementations.KoneResizableArrayList
+import dev.lounres.kone.hooks.*
+import dev.lounres.kone.linearAlgebra.experiment1.LinearSpace
+import dev.lounres.kone.multidimensionalCollections.experiment1.MDFormation1
 import dev.lounres.kone.order.Order
-import dev.lounres.kone.order.compareByOrder
+import dev.lounres.kone.order.compareByOrdered
+import dev.lounres.kone.order.geq
 
 
-public data class Vector<out E>(val x: E, val y: E)
-public data class Point<out E>(val x: E, val y: E)
-context(Ring<E>)
-public operator fun <E> Point<E>.minus(other: Point<E>): Vector<E> = Vector(this.x - other.x, this.y - other.y)
-context(Ring<E>)
-public infix fun <E> Vector<E>.cross(other: Vector<E>): E = (this.x * other.y - this.y * other.x)
-context(Ring<E>, Order<E>)
+// FIXME: KT-42977
+@JvmInline
+public value class Vector<out N>(public val coordinates: MDFormation1<N>)
+@JvmInline
+public value class Vector2<out N>(public val coordinates: MDFormation1<N>) {
+    init {
+        require(coordinates.size == 2u) { /*TODO*/ }
+    }
+    public val x: N get() = coordinates[0u]
+    public val y: N get() = coordinates[1u]
+}
+
+// FIXME: KT-42977
+@JvmInline
+public value class Point<out N>(public val coordinates: MDFormation1<N>)
+@JvmInline
+public value class Point2<out N>(public val coordinates: MDFormation1<N>) {
+    init {
+        require(coordinates.size == 2u) { /*TODO*/ }
+    }
+    public val x: N get() = coordinates[0u]
+    public val y: N get() = coordinates[1u]
+}
+
+context(LinearSpace<N, *>)
+public operator fun <N> Point<N>.minus(other: Point<N>): Vector<N> = Vector(this.coordinates + other.coordinates)
+context(LinearSpace<N, *>)
+public operator fun <N> Point2<N>.minus(other: Point2<N>): Vector2<N> = Vector2(this.coordinates + other.coordinates)
+context(Ring<N>)
+public infix fun <N> Vector2<N>.cross(other: Vector2<N>): N = (this.x * other.y - this.y * other.x)
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
 @Suppress("LocalVariableName")
-public fun <E> Point<E>.inTriangle(A: Point<E>, B: Point<E>, C: Point<E>): Boolean {
+public fun <N> Point2<N>.inTriangle(A: Point2<N>, B: Point2<N>, C: Point2<N>): Boolean {
     val a = ((this - A) cross (B - A)).sign
     val b = ((this - B) cross (C - B)).sign
     val c = ((this - C) cross (A - C)).sign
@@ -32,14 +58,14 @@ public fun <E> Point<E>.inTriangle(A: Point<E>, B: Point<E>, C: Point<E>): Boole
 }
 
 context(Order<E>)
-private val <E> lexicographicComparator: Comparator<Point<E>>
-    get() = compareByOrder({ it.x }, { it.y })
+private val <E> lexicographicComparator: Comparator<Point2<E>>
+    get() = compareByOrdered({ it.x }, { it.y })
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm) for more.
  */
-context(R)
-public fun <E, R> Collection<Point<E>>.convexHullByGiftWrapping(): List<Point<E>> where R : Ring<E>, R: Order<E> {
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+public fun <N> Collection<Point2<N>>.convexHullByGiftWrapping(): List<Point2<N>> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -47,14 +73,14 @@ public fun <E, R> Collection<Point<E>>.convexHullByGiftWrapping(): List<Point<E>
 
     val startPoint = this.minWith(lexicographicComparator)
     var currentPoint = startPoint
-    val result = mutableListOf<Point<E>>()
+    val result = mutableListOf<Point2<N>>()
     do {
         val iterator = this.iterator()
         var nextPoint = iterator.next()
-        if (nextPoint === currentPoint) nextPoint = iterator.next()
+        if (nextPoint == currentPoint) nextPoint = iterator.next()
         val nextPoints = mutableListOf(nextPoint)
         for (p in iterator) {
-            if (p === currentPoint) continue
+            if (p == currentPoint) continue
             val product = (nextPoint - currentPoint) cross (p - currentPoint)
             when {
                 product >= zero -> {
@@ -71,15 +97,15 @@ public fun <E, R> Collection<Point<E>>.convexHullByGiftWrapping(): List<Point<E>
         result += currentPoint
         currentPoint = nextPoints.removeAt(nextPoints.lastIndex)
         result += nextPoints
-    } while (currentPoint !== startPoint)
+    } while (currentPoint != startPoint)
     return result
 }
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Graham_scan) for more.
  */
-context(R)
-public fun <E, R> Collection<Point<E>>.convexHullByGrahamScan(): List<Point<E>> where R : Ring<E>, R: Order<E> {
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+public fun <N> Collection<Point2<N>>.convexHullByGrahamScan(): List<Point2<N>> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -90,7 +116,7 @@ public fun <E, R> Collection<Point<E>>.convexHullByGrahamScan(): List<Point<E>> 
     val points = this.toMutableList()
     points -= centralPoint
     points.sortWith(
-        Comparator<Point<E>> { p1, p2 -> (p1 - centralPoint) cross (p2 - centralPoint) compareTo zero }
+        Comparator<Point2<N>> { p1, p2 -> (p1 - centralPoint) cross (p2 - centralPoint) compareTo zero }
             .then(lexicographicComparator)
     )
 
@@ -137,8 +163,8 @@ public fun <E, R> Collection<Point<E>>.convexHullByGrahamScan(): List<Point<E>> 
 /**
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
-context(R)
-public fun <E, R> Collection<Point<E>>.convexHullByQuickhull(): List<Point<E>> where R : Ring<E>, R: Order<E> {
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+public fun <N> Collection<Point2<N>>.convexHullByQuickhull(): List<Point2<N>> {
     when (size) {
         0 -> return emptyList()
         1 -> return toList()
@@ -163,11 +189,11 @@ public fun <E, R> Collection<Point<E>>.convexHullByQuickhull(): List<Point<E>> w
 /**
  * See [here](https://en.wikipedia.org/wiki/Quickhull) for more.
  */
-context(R)
-internal fun <E, R> convexHullByQuickhullInternalLogic(leftPoint: Point<E>, rightPoint: Point<E>, points: Collection<Point<E>>): List<Point<E>> where R : Ring<E>, R: Order<E> {
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+internal fun <N> convexHullByQuickhullInternalLogic(leftPoint: Point2<N>, rightPoint: Point2<N>, points: Collection<Point2<N>>): List<Point2<N>> {
     val v = rightPoint - leftPoint
     if (points.none { v cross (it - rightPoint) > zero }) return points.toList()
-    val nextPoint = points.maxWith(compareByOrder({ v cross (it - rightPoint) }))
+    val nextPoint = points.maxWith(compareByOrdered({ v cross (it - rightPoint) }))
     val newPoints = points - nextPoint
 
     val leftV = nextPoint - leftPoint
@@ -182,8 +208,8 @@ internal fun <E, R> convexHullByQuickhullInternalLogic(leftPoint: Point<E>, righ
 /**
  * See [here](https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain) for more.
  */
-context(R)
-public fun <E, R> Collection<Point<E>>.convexHullByMonotoneChain(): List<Point<E>> where R : Ring<E>, R: Order<E> {
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+public fun <N> Collection<Point2<N>>.convexHullByMonotoneChain(): List<Point2<N>> {
     when (size) {
         0 -> return emptyList()
         1, 2 -> return toList()
@@ -191,7 +217,7 @@ public fun <E, R> Collection<Point<E>>.convexHullByMonotoneChain(): List<Point<E
 
     val points = this.sortedWith(lexicographicComparator)
 
-    fun Iterator<Point<E>>.generateHalfHull(): List<Point<E>> {
+    fun Iterator<Point2<N>>.generateHalfHull(): List<Point2<N>> {
         val halfHull = mutableListOf(next(), next())
         for (p in this) {
             while (halfHull.size >= 2) {
@@ -220,7 +246,43 @@ public fun <E, R> Collection<Point<E>>.convexHullByMonotoneChain(): List<Point<E
 //    return this.filter { !it.inTriangle(leftPoint, topPoint, rightPoint) && !it.inTriangle(leftPoint, bottomPoint, rightPoint) }
 //}
 
-public fun <E> Hookable<KoneIterableSet<E>, SetAction<E>>.convexHullBy(): Hookable<KoneIterableList<E>, ListAction<E>> {
+context(LinearSpace<N, *>)
+public fun <N> MutableSetHookable<Point2<N>>.convexHullBy(): ListHookable<Point2<N>> {
     TODO()
 }
 
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+internal fun <N> ExtendableSetHookable<Point2<N>>.upperConvexHullBySweepingLine(): UpdateHookable<KoneIterableList<Point2<N>>> =
+    UpdateHooker(KoneResizableArrayList<Point2<N>>()).also {
+        var outputList by it
+        val upperHull = KoneResizableArrayList<Point2<N>>()
+
+        fun processPoint(point: Point2<N>) {
+            if (upperHull.size <= 1u) {
+                upperHull.add(point)
+                return
+            }
+            while (outputList.size > 1u) {
+                val last = outputList[outputList.size - 1u]
+                val preLast = outputList[outputList.size - 2u]
+                if (((point - last) cross (last - preLast)) geq zero) break
+                outputList.removeAt(outputList.size - 1u)
+            }
+        }
+
+        hookUp(
+            ResponseBeforeAction { _, action ->
+                outputList = when(action) {
+                    is KoneSetAction.Add -> {
+                        processPoint(action.element)
+                        upperHull
+                    }
+
+                    is KoneSetAction.AddAll -> {
+                        for (point in action.elements) processPoint(point)
+                        upperHull
+                    }
+                }
+            }
+        )
+    }
