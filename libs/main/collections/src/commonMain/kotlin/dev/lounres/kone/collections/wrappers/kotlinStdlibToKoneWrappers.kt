@@ -241,10 +241,8 @@ internal class KoneWrapperMutableList<E>(private val list: MutableList<E>): Kone
 //public fun <E> MutableSet<E>.asKone(): KoneMutableIterableSet<E> = KoneWrapperMutableSet(this)
 //internal class KoneWrapperMutableSet<E>(private val set: MutableSet<E>): KoneMutableIterableSet<E> {
 //    override val size: UInt get() = set.size.toUInt()
-//    override fun isEmpty(): Boolean = set.isEmpty()
 //
 //    override fun contains(element: @UnsafeVariance E): Boolean = set.contains(element)
-//    override fun containsAll(elements: KoneIterableCollection<@UnsafeVariance E>): Boolean = set.containsAll(elements.asKotlinStdlib())
 //
 //    override fun add(element: E) { set.add(element) }
 //    override fun addAll(elements: KoneIterableCollection<E>) { set.addAll(elements.asKotlinStdlib()) }

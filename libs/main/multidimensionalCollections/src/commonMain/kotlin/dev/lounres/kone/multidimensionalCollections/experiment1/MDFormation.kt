@@ -21,12 +21,12 @@ public interface MDFormation<out E>: WithShape {
     public val elements: Sequence<ElementWithMDIndex<E>> get() = indexer.asSequence().map { ElementWithMDIndex(it, get(it)) }
 }
 
-public operator fun <E> MDFormation<E>.get(vararg index: UInt): E = get(KoneUIntArray(index.toIntArray()))
+public operator fun <E> MDFormation<E>.get(vararg index: UInt): E = get(KoneUIntArray(index))
 
 public interface MutableMDFormation<E>: MDFormation<E> {
     public operator fun set(index: UIntArray, element: E)
 }
 
 public operator fun <E> MutableMDFormation<E>.set(vararg index: UInt, element: E) {
-    set(KoneUIntArray(index.toIntArray()), element)
+    set(KoneUIntArray(index), element)
 }

@@ -5,16 +5,33 @@
 
 package dev.lounres.kone.collections.aliases.delegates
 
-import dev.lounres.kone.collections.KoneMutableSet
-import dev.lounres.kone.collections.KoneSet
-import dev.lounres.kone.collections.delegates.KoneMutableSetDelegate
+import dev.lounres.kone.collections.aliases.IterableSet
+import dev.lounres.kone.collections.aliases.MutableIterableSet
+import dev.lounres.kone.collections.delegates.KoneExtendableIterableSetDelegate
+import dev.lounres.kone.collections.delegates.KoneMutableIterableSetDelegate
+import dev.lounres.kone.collections.delegates.KoneRemovableIterableSetDelegate
 import dev.lounres.kone.collections.delegates.KoneSetAction
 
 
 public typealias SetAction<E> = KoneSetAction<E>
-public typealias MutableSetDelegate<E> = KoneMutableSetDelegate<E>
-public inline fun <E> MutableSetDelegate(
-    initial: KoneMutableSet<E> = TODO(),
-    crossinline before: (state: KoneSet<E>, action: SetAction<E>) -> Unit = { _, _ -> },
-    crossinline after: (state: KoneSet<E>, action: SetAction<E>) -> Unit = { _, _ -> },
-): MutableSetDelegate<E> = KoneMutableSetDelegate(initial, before, after)
+
+public typealias ExtendableIterableSetDelegate<E> = KoneExtendableIterableSetDelegate<E>
+public inline fun <E> ExtendableIterableSetDelegate(
+    initial: MutableIterableSet<E> = TODO(),
+    crossinline before: (state: IterableSet<E>, action: KoneSetAction.Extending<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: IterableSet<E>, action: KoneSetAction.Extending<E>) -> Unit = { _, _ -> },
+): ExtendableIterableSetDelegate<E> = KoneExtendableIterableSetDelegate(initial, before, after)
+
+public typealias RemovableIterableSetDelegate<E> = KoneRemovableIterableSetDelegate<E>
+public inline fun <E> RemovableIterableSetDelegate(
+    initial: MutableIterableSet<E> = TODO(),
+    crossinline before: (state: IterableSet<E>, action: KoneSetAction.Removing<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: IterableSet<E>, action: KoneSetAction.Removing<E>) -> Unit = { _, _ -> },
+): RemovableIterableSetDelegate<E> = KoneRemovableIterableSetDelegate(initial, before, after)
+
+public typealias MutableIterableSetDelegate<E> = KoneMutableIterableSetDelegate<E>
+public inline fun <E> MutableIterableSetDelegate(
+    initial: MutableIterableSet<E> = TODO(),
+    crossinline before: (state: IterableSet<E>, action: SetAction<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: IterableSet<E>, action: SetAction<E>) -> Unit = { _, _ -> },
+): MutableIterableSetDelegate<E> = KoneMutableIterableSetDelegate(initial, before, after)
