@@ -15,7 +15,7 @@ import dev.lounres.kone.multidimensionalCollections.Shape
 public interface MDFormation2<out E>: MDFormation<E>, KoneIterableList<E> {
     public val rowNumber: UInt
     public val columnNumber: UInt
-    override val shape: Shape get() = Shape(intArrayOf(rowNumber.toInt(), columnNumber.toInt()))
+    override val shape: Shape get() = uintArrayOf(rowNumber, columnNumber)
     public val rows: IterableList<IterableList<E>>
         get() = KoneVirtualList(rowNumber) { row -> KoneVirtualList(columnNumber) { column -> get(row, column) } }
     public val columns: IterableList<IterableList<E>>
@@ -30,7 +30,7 @@ public interface MDFormation2<out E>: MDFormation<E>, KoneIterableList<E> {
 
     override val elements: Sequence<ElementWithMDIndex<E>> get() = sequence {
         for (i in 0u ..< rowNumber)
-            for (j in 0u ..< columnNumber) yield(ElementWithMDIndex(index = UIntArray(intArrayOf(i.toInt(), j.toInt())), element = get(i, j)))
+            for (j in 0u ..< columnNumber) yield(ElementWithMDIndex(index = uintArrayOf(i, j), element = get(i, j)))
     }
 }
 
