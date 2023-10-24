@@ -69,4 +69,8 @@ public interface KoneMutableIterableList<E> : KoneMutableList<E>, KoneSettableIt
 
 public interface KoneIterableSet<out E> : KoneSet<E>, KoneReversibleIterableCollection<E>
 
-public interface KoneMutableIterableSet<E> : KoneMutableSet<E>, KoneIterableSet<E>, KoneReversibleRemovableIterableCollection<E>
+public interface KoneExtendableIterableSet<E> : KoneExtendableSet<E>, KoneIterableSet<E>, KoneReversibleExtendableIterableCollection<E>
+
+public interface KoneRemovableIterableSet<out E> : KoneRemovableSet<E>, KoneIterableSet<E>, KoneReversibleRemovableIterableCollection<E>
+
+public interface KoneMutableIterableSet<E> : KoneMutableSet<E>, KoneRemovableIterableSet<E>, KoneExtendableIterableSet<E>, KoneReversibleMutableIterableCollection<E>

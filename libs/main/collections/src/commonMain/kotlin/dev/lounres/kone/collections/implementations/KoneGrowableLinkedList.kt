@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
+@Suppress("UNCHECKED_CAST")
 public class KoneGrowableLinkedList<E> internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
@@ -238,13 +239,11 @@ public class KoneGrowableLinkedList<E> internal constructor(
         }
     }
     override fun remove(element: E) {
-        val targetIndex: UInt
         val actualTargetIndex: UInt
         run {
             var actualCurrentIndex = start
             for (i in 0u ..< size) {
                 if (data[actualCurrentIndex] == element) {
-                    targetIndex = i
                     actualTargetIndex = actualCurrentIndex
                     return@run
                 }
@@ -252,12 +251,10 @@ public class KoneGrowableLinkedList<E> internal constructor(
             }
             return
         }
-        val newSize = size - 1u
         justRemoveAt(actualTargetIndex)
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
-        val newSize = size - 1u
         justRemoveAt(actualIndex(index))
     }
 

@@ -12,6 +12,8 @@ import dev.lounres.kone.collections.delegates.KoneListAction.*
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 
 
+// TODO: Add more delegates as for sets
+
 public sealed interface KoneListAction<out E> {
     public data class Add<E>(val element: E): KoneListAction<E>
     public data class AddAll<E>(val elements: KoneIterableCollection<E>): KoneListAction<E>

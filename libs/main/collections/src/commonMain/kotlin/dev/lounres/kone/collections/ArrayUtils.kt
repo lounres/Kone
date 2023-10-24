@@ -13,11 +13,11 @@ public inline fun KoneUIntArray.anyIndexed(block: (index: UInt, value: UInt) -> 
 }
 
 public inline fun KoneUIntArray.runningFold(initial: UInt, operation: (acc: UInt, UInt) -> UInt): KoneUIntArray {
-    val result = IntArray(size.toInt() + 1) { initial.toInt() }
+    val result = UIntArray(size.toInt() + 1) { initial }
     var accumulator = initial
     for (index in 0u ..< size) {
         accumulator = operation(accumulator, get(index))
-        result[index.toInt()] = accumulator.toInt()
+        result[index.toInt() + 1] = accumulator
     }
     return KoneUIntArray(result)
 }

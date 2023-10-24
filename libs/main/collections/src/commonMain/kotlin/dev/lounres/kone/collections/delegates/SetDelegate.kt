@@ -5,23 +5,82 @@
 
 package dev.lounres.kone.collections.delegates
 
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.KoneMutableSet
-import dev.lounres.kone.collections.KoneSet
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.delegates.KoneSetAction.*
 
 
 public sealed interface KoneSetAction<out E> {
-    public data class Add<E>(val element: E): KoneSetAction<E>
-    public data class AddAll<E>(val elements: KoneIterableCollection<E>): KoneSetAction<E>
-    public data class Remove<E>(val element: E): KoneSetAction<E>
-    public data class RemoveAllThat<E>(val predicate: (E) -> Boolean): KoneSetAction<E>
-    public data object Clear: KoneSetAction<Nothing>
+    public sealed interface Extending<out E>: KoneSetAction<E>
+    public data class Add<out E>(val element: E): Extending<E>
+    public data class AddAll<out E>(val elements: KoneIterableCollection<E>): Extending<E>
+
+    public sealed interface Removing<out E>: KoneSetAction<E>
+    public data class Remove<out E>(val element: E): Removing<E>
+    public data class RemoveAllThat<out E>(val predicate: (@UnsafeVariance E) -> Boolean): Removing<E>
+    public data object Clear: Removing<Nothing>
 }
 
-public abstract class KoneMutableSetDelegate<E>(public val delegate: KoneMutableSet<E>) : KoneMutableSet<E> by delegate {
-    public abstract fun beforeAction(state: KoneSet<E>, action: KoneSetAction<E>)
-    public abstract fun afterAction(state: KoneSet<E>, action: KoneSetAction<E>)
+public abstract class KoneExtendableIterableSetDelegate<E>(public val delegate: KoneExtendableIterableSet<E>) : KoneExtendableIterableSet<E> by delegate {
+    public abstract fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>)
+    public abstract fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>)
+
+    override fun add(element: E) {
+        beforeAction(delegate, Add(element))
+        delegate.add(element)
+        afterAction(delegate, Add(element))
+    }
+
+    override fun addAll(elements: KoneIterableCollection<E>) {
+        beforeAction(delegate, AddAll(elements))
+        delegate.addAll(elements)
+        afterAction(delegate, AddAll(elements))
+    }
+}
+
+public inline fun <E> KoneExtendableIterableSetDelegate(
+    initial: KoneExtendableIterableSet<E> = TODO(),
+    crossinline before: (state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>) -> Unit = { _, _ -> },
+): KoneExtendableIterableSetDelegate<E> = object : KoneExtendableIterableSetDelegate<E>(initial) {
+    override fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>) = before(state, action)
+    override fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction.Extending<E>) = after(state, action)
+}
+
+public abstract class KoneRemovableIterableSetDelegate<E>(public val delegate: KoneRemovableIterableSet<E>) : KoneRemovableIterableSet<E> by delegate {
+    public abstract fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>)
+    public abstract fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>)
+
+    override fun remove(element: E) {
+        beforeAction(delegate, Remove(element))
+        delegate.remove(element)
+        afterAction(delegate, Remove(element))
+    }
+
+    override fun removeAllThat(predicate: (E) -> Boolean) {
+        beforeAction(delegate, RemoveAllThat(predicate))
+        delegate.removeAllThat(predicate)
+        afterAction(delegate, RemoveAllThat(predicate))
+    }
+
+    override fun clear() {
+        beforeAction(delegate, Clear)
+        delegate.clear()
+        afterAction(delegate, Clear)
+    }
+}
+
+public inline fun <E> KoneRemovableIterableSetDelegate(
+    initial: KoneRemovableIterableSet<E> = TODO(),
+    crossinline before: (state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>) -> Unit = { _, _ -> },
+): KoneRemovableIterableSetDelegate<E> = object : KoneRemovableIterableSetDelegate<E>(initial) {
+    override fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>) = before(state, action)
+    override fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction.Removing<E>) = after(state, action)
+}
+
+public abstract class KoneMutableIterableSetDelegate<E>(public val delegate: KoneMutableIterableSet<E>) : KoneMutableIterableSet<E> by delegate {
+    public abstract fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction<E>)
+    public abstract fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction<E>)
 
     override fun add(element: E) {
         beforeAction(delegate, Add(element))
@@ -54,11 +113,11 @@ public abstract class KoneMutableSetDelegate<E>(public val delegate: KoneMutable
     }
 }
 
-public inline fun <E> KoneMutableSetDelegate(
-    initial: KoneMutableSet<E> = TODO(),
-    crossinline before: (state: KoneSet<E>, action: KoneSetAction<E>) -> Unit = { _, _ -> },
-    crossinline after: (state: KoneSet<E>, action: KoneSetAction<E>) -> Unit = { _, _ -> },
-): KoneMutableSetDelegate<E> = object : KoneMutableSetDelegate<E>(initial) {
-    override fun beforeAction(state: KoneSet<E>, action: KoneSetAction<E>) = before(state, action)
-    override fun afterAction(state: KoneSet<E>, action: KoneSetAction<E>) = after(state, action)
+public inline fun <E> KoneMutableIterableSetDelegate(
+    initial: KoneMutableIterableSet<E> = TODO(),
+    crossinline before: (state: KoneIterableSet<E>, action: KoneSetAction<E>) -> Unit = { _, _ -> },
+    crossinline after: (state: KoneIterableSet<E>, action: KoneSetAction<E>) -> Unit = { _, _ -> },
+): KoneMutableIterableSetDelegate<E> = object : KoneMutableIterableSetDelegate<E>(initial) {
+    override fun beforeAction(state: KoneIterableSet<E>, action: KoneSetAction<E>) = before(state, action)
+    override fun afterAction(state: KoneIterableSet<E>, action: KoneSetAction<E>) = after(state, action)
 }
