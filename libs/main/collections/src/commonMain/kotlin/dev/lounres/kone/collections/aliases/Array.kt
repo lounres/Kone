@@ -13,10 +13,17 @@ import dev.lounres.kone.collections.KoneUIntArray
 
 public typealias Array<E> = KoneArray<E>
 public inline fun <reified E> Array(size: UInt, init: (UInt) -> E): Array<E> = Array(Array(size.toInt()) { init(it.toUInt()) })
+public fun <E> arrayOf(vararg elements: E): Array<E> = Array(elements)
 public typealias MutableArray<E> = KoneMutableArray<E>
 public inline fun <reified E> MutableArray(size: UInt, init: (UInt) -> E): MutableArray<E> = MutableArray(Array(size.toInt()) { init(it.toUInt()) })
+@Suppress("UNCHECKED_CAST")
+public fun <E> mutableArrayOf(vararg elements: E): MutableArray<E> = MutableArray(elements as kotlin.Array<E>)
 
 public typealias UIntArray = KoneUIntArray
-public inline fun UIntArray(size: UInt, init: (UInt) -> UInt): UIntArray = UIntArray(IntArray(size.toInt()) { init(it.toUInt()).toInt() })
+public inline fun UIntArray(size: UInt, init: (UInt) -> UInt): UIntArray = UIntArray(UIntArray(size.toInt()) { init(it.toUInt()) })
+public fun UIntArray(size: UInt): UIntArray = UIntArray(UIntArray(size.toInt()))
+public fun uintArrayOf(vararg elements: UInt): UIntArray = UIntArray(elements)
 public typealias MutableUIntArray = KoneMutableUIntArray
-public inline fun MutableUIntArray(size: UInt, init: (UInt) -> UInt): MutableUIntArray = KoneMutableUIntArray(IntArray(size.toInt()) { init(it.toUInt()).toInt() })
+public fun MutableUIntArray(size: UInt): MutableUIntArray = MutableUIntArray(UIntArray(size.toInt()))
+public fun mutableUIntArrayOf(vararg elements: UInt): MutableUIntArray = MutableUIntArray(elements)
+public inline fun mutableUIntArray(size: UInt, init: (UInt) -> UInt): MutableUIntArray = MutableUIntArray(UIntArray(size.toInt()) { init(it.toUInt()) })
