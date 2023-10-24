@@ -13,6 +13,7 @@ import dev.lounres.kone.context.KoneContext
 
 
 // TODO: KONE-42
+// TODO: Extract equality to separate interface
 public interface Ring<V>: KoneContext {
 
     // region Constants
