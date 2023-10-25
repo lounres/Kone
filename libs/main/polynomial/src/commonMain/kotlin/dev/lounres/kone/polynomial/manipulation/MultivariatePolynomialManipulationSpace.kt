@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.polynomial.manipulation
+package dev.lounres.kone.polynomial.manipulation
 
-import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.util.option.Option
-import com.lounres.kone.polynomial.MultivariatePolynomialSpace
+import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.option.Option
+import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import kotlin.math.max
 
 

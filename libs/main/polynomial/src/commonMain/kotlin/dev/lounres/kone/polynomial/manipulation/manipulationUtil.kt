@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.polynomial.manipulation
+package dev.lounres.kone.polynomial.manipulation
 
-import com.lounres.kone.algebraic.Ring
-import com.lounres.kone.order.Order
-import com.lounres.kone.order.comparator
+import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.order.Order
+import dev.lounres.kone.order.comparator
 import kotlin.math.max
 import kotlin.math.min
 

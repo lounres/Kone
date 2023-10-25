@@ -3,10 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package com.lounres.kone.polynomial.manipulation
+package dev.lounres.kone.polynomial.manipulation
 
-import com.lounres.kone.algebraic.Field
-import com.lounres.kone.order.Order
+import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.order.Order
 
 
 public data class IncompleteQuotientAndRemainder<out P>(
