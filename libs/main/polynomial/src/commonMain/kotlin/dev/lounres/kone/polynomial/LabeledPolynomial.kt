@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.polynomial.manipulation.MultivariatePolynomialManipulationSpace
 import dev.lounres.kone.util.mapOperations.*
-import dev.lounres.kone.util.option.Option
+import dev.lounres.kone.option.Option
 import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
 
