@@ -1,7 +1,7 @@
-package com.lounres.kone.examples.kone_algebraic
+package dev.lounres.kone.examples.kone_algebraic
 
-import com.lounres.kone.algebraic.Rational
-import com.lounres.kone.context.invoke
+import dev.lounres.kone.algebraic.Rational
+import dev.lounres.kone.context.invoke
 
 
 fun binomial(n: Int, k: Int): Int {
