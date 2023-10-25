@@ -9,98 +9,98 @@ import dev.lounres.kone.algebraic.Ring
 import kotlin.jvm.JvmName
 
 
-// region Value-Int additive operations
-context(Ring<V>)
-public infix fun <V> V.doublingPlus(other: Int): V = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> V.doublingMinus(other: Int): V = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> V.doublingTimes(other: Int): V = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
+// region Number-Int additive operations
+context(Ring<N>)
+public infix fun <N> N.doublingPlus(other: Int): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> N.doublingMinus(other: Int): N = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> N.doublingTimes(other: Int): N = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region Value-UInt additive operations
-context(Ring<V>)
-public infix fun <V> V.doublingPlus(other: UInt): V = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> V.doublingMinus(other: UInt): V = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> V.doublingTimes(other: UInt): V = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
+// region Number-UInt additive operations
+context(Ring<N>)
+public infix fun <N> N.doublingPlus(other: UInt): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> N.doublingMinus(other: UInt): N = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> N.doublingTimes(other: UInt): N = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
 // endregion
 
-// region Value-Long additive operations
-context(Ring<V>)
-public infix fun <V> V.doublingPlus(other: Long): V = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> V.doublingMinus(other: Long): V = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> V.doublingTimes(other: Long): V = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
+// region Number-Long additive operations
+context(Ring<N>)
+public infix fun <N> N.doublingPlus(other: Long): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> N.doublingMinus(other: Long): N = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> N.doublingTimes(other: Long): N = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region Value-ULong additive operations
-context(Ring<V>)
-public infix fun <V> V.doublingPlus(other: ULong): V = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> V.doublingMinus(other: ULong): V = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> V.doublingTimes(other: ULong): V = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
+// region Number-ULong additive operations
+context(Ring<N>)
+public infix fun <N> N.doublingPlus(other: ULong): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> N.doublingMinus(other: ULong): N = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> N.doublingTimes(other: ULong): N = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
 // endregion
 
-// region Int-Value additive operations
-context(Ring<V>)
-public infix fun <V> Int.doublingPlus(other: V): V = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> Int.doublingMinus(other: V): V = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> Int.doublingTimes(other: V): V = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
+// region Int-Number additive operations
+context(Ring<N>)
+public infix fun <N> Int.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> Int.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> Int.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region UInt-Value additive operations
-context(Ring<V>)
-public infix fun <V> UInt.doublingPlus(other: V): V = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> UInt.doublingMinus(other: V): V = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> UInt.doublingTimes(other: V): V = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
+// region UInt-Number additive operations
+context(Ring<N>)
+public infix fun <N> UInt.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> UInt.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> UInt.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
 // endregion
 
-// region Long-Value additive operations
-context(Ring<V>)
-public infix fun <V> Long.doublingPlus(other: V): V = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> Long.doublingMinus(other: V): V = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
-context(Ring<V>)
-public infix fun <V> Long.doublingTimes(other: V): V = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
+// region Long-Number additive operations
+context(Ring<N>)
+public infix fun <N> Long.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> Long.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
+context(Ring<N>)
+public infix fun <N> Long.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region ULong-Value additive operations
-context(Ring<V>)
-public infix fun <V> ULong.doublingPlus(other: V): V = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> ULong.doublingMinus(other: V): V = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
-context(Ring<V>)
-public infix fun <V> ULong.doublingTimes(other: V): V = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
+// region ULong-Number additive operations
+context(Ring<N>)
+public infix fun <N> ULong.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> ULong.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
+context(Ring<N>)
+public infix fun <N> ULong.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
 // endregion
 
 //region Multiplicative operations
-context(Ring<V>)
-public fun <V> squaringPower(base: V, exponent: Int): V = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
-context(Ring<V>)
-public fun <V> squaringPower(base: V, exponent: UInt): V = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
-context(Ring<V>)
-public fun <V> squaringPower(base: V, exponent: Long): V = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
-context(Ring<V>)
-public fun <V> squaringPower(base: V, exponent: ULong): V = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
+context(Ring<N>)
+public fun <N> squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+context(Ring<N>)
+public fun <N> squaringPower(base: N, exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
+context(Ring<N>)
+public fun <N> squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+context(Ring<N>)
+public fun <N> squaringPower(base: N, exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
 
-context(Ring<V>)
+context(Ring<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <V> V.squaringPower(exponent: Int): V = squaringPower(this, exponent)
-context(Ring<V>)
+public inline infix fun <N> N.squaringPower(exponent: Int): N = squaringPower(this, exponent)
+context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <V> V.squaringPower(exponent: UInt): V = squaringPower(this, exponent)
-context(Ring<V>)
+public inline infix fun <N> N.squaringPower(exponent: UInt): N = squaringPower(this, exponent)
+context(Ring<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <V> V.squaringPower(exponent: Long): V = squaringPower(this, exponent)
-context(Ring<V>)
+public inline infix fun <N> N.squaringPower(exponent: Long): N = squaringPower(this, exponent)
+context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <V> V.squaringPower(exponent: ULong): V = squaringPower(this, exponent)
+public inline infix fun <N> N.squaringPower(exponent: ULong): N = squaringPower(this, exponent)
 //endregion
