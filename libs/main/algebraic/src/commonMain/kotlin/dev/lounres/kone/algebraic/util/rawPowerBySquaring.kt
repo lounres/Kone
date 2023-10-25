@@ -12,15 +12,15 @@ import kotlin.math.abs
 
 // region Int
 
-public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: Int, lazyZero: () -> C, additionOp: (C, C) -> C, negationOp: (C) -> C): C =
+public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toUInt(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toUInt(), lazyZero, additionOp)
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: Int, additionOp: (C, C) -> C, negationOp: (C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toUInt(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toUInt(), additionOp)
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: Int, additionOp: (C, C) -> C, rightSubtractionOp: (C, C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, rightSubtractionOp)
 
@@ -29,9 +29,9 @@ public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: 
 // region UInt
 
 @Suppress("NAME_SHADOWING")
-public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: UInt, lazyZero: () -> C, additionOp: (C, C) -> C): C {
+public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero: () -> N, additionOp: (N, N) -> N): N {
     // FIXME: KT-17579
-//    tailrec fun theLogic(arg: C, multiplier: UInt): C =
+//    tailrec fun theLogic(arg: N, multiplier: UInt): N =
 //        when {
 //            multiplier == 1u -> arg
 //            multiplier and 1u == 0u -> theLogic(additionOp(arg, arg), multiplier shr 1)
@@ -55,14 +55,14 @@ public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: UInt, lazyZero
     }
 }
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: UInt, additionOp: (C, C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
 
 @Suppress("NAME_SHADOWING")
 @PublishedApi
-internal inline fun <C> rightAddMultipliedByDoublingInternalLogic(base: C, arg: C, multiplier: UInt, additionOp: (C, C) -> C, additionToBaseOp: (C, C) -> C): C {
+internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N, additionToBaseOp: (N, N) -> N): N {
     // FIXME: KT-17579
-//    tailrec fun theLogic(base: C, arg: C, multiplier: UInt): C =
+//    tailrec fun theLogic(base: N, arg: N, multiplier: UInt): N =
 //        if (multiplier == 1u) additionToBaseOp(base, arg)
 //        else theLogic(
 //            base = if (multiplier and 1u == 0u) base else additionToBaseOp(base, arg),
@@ -90,15 +90,15 @@ internal inline fun <C> rightAddMultipliedByDoublingInternalLogic(base: C, arg: 
 
 // region Long
 
-public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: Long, lazyZero: () -> C, additionOp: (C, C) -> C, negationOp: (C) -> C): C =
+public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toULong(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toULong(), lazyZero, additionOp)
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: Long, additionOp: (C, C) -> C, negationOp: (C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toULong(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toULong(), additionOp)
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: Long, additionOp: (C, C) -> C, rightSubtractionOp: (C, C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, rightSubtractionOp)
 
@@ -107,9 +107,9 @@ public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: 
 // region ULong
 
 @Suppress("NAME_SHADOWING")
-public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: ULong, lazyZero: () -> C, additionOp: (C, C) -> C): C {
+public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZero: () -> N, additionOp: (N, N) -> N): N {
     // FIXME: KT-17579
-//    tailrec fun theLogic(arg: C, multiplier: ULong): C =
+//    tailrec fun theLogic(arg: N, multiplier: ULong): N =
 //        when {
 //            multiplier == 1uL -> arg
 //            multiplier and 1uL == 0uL -> theLogic(additionOp(arg, arg), multiplier shr 1)
@@ -133,14 +133,14 @@ public inline fun <C> rightMultiplyByDoubling(arg: C, multiplier: ULong, lazyZer
     }
 }
 
-public inline fun <C> rightAddMultipliedByDoubling(base: C, arg: C, multiplier: ULong, additionOp: (C, C) -> C): C =
+public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
 
 @Suppress("NAME_SHADOWING")
 @PublishedApi
-internal inline fun <C> rightAddMultipliedByDoublingInternalLogic(base: C, arg: C, multiplier: ULong, additionOp: (C, C) -> C, additionToBaseOp: (C, C) -> C): C {
+internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N, additionToBaseOp: (N, N) -> N): N {
     // FIXME: KT-17579
-//    tailrec fun theLogic(base: C, arg: C, multiplier: ULong): C =
+//    tailrec fun theLogic(base: N, arg: N, multiplier: ULong): N =
 //        if (multiplier == 1uL) additionToBaseOp(base, arg)
 //        else theLogic(
 //            base = if (multiplier and 1uL == 0uL) base else additionToBaseOp(base, arg),
