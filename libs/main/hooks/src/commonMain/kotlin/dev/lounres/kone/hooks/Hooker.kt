@@ -19,7 +19,7 @@ public interface Hookable<out O, out A> {
  * @param A type of the possible actions.
  * @param I type of the [input] entity that is mutated by the actions.
  */
-public interface Hooker<I, out O, out A>: Hookable<O, A> {
+public interface Hooker<out I, out O, out A>: Hookable<O, A> {
     public val input: I
 }
 
