@@ -272,17 +272,16 @@ internal fun <N> ExtendableSetHookable<Point2<N>>.upperConvexHullBySweepingLine(
 
         hookUp(
             ResponseBeforeAction { _, action ->
-                outputList = when(action) {
+                when(action) {
                     is KoneSetAction.Add -> {
                         processPoint(action.element)
-                        upperHull
                     }
 
                     is KoneSetAction.AddAll -> {
                         for (point in action.elements) processPoint(point)
-                        upperHull
                     }
                 }
+                outputList = upperHull
             }
         )
     }
