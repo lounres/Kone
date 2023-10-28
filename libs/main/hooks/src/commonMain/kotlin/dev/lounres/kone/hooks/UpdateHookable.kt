@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.hooks
 
+import dev.lounres.kone.collections.forEach
 import kotlin.reflect.KProperty
 
 
@@ -21,8 +22,15 @@ internal class UpdateHookerImpl<O>(private var state: O): UpdatableState<O>, Upd
     override val input: UpdatableState<O> get() = this
     override val output: O get() = state
     override fun set(value: O) {
+        hooks.forEach { it.respondBeforeAction(state, UpdateAction(value)) }
         state = value
+        hooks.forEach { it.respondAfterAction(state, UpdateAction(value)) }
     }
 }
 
 public operator fun <O> UpdateHooker<O>.setValue(thisRef: Any?, property: KProperty<*>, value: O) { input.set(value) }
+
+public fun <O, R> Hookable<O, *>.updateHookableBy(block: (O) -> R): UpdateHookable<R> =
+    UpdateHooker(block(output)).also {
+        hookUp(ResponseAfterAction { entity, _ -> it.input.set(block(entity)) })
+    }
