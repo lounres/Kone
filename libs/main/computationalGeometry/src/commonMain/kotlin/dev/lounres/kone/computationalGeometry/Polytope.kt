@@ -5,26 +5,39 @@
 
 package dev.lounres.kone.computationalGeometry
 
+import dev.lounres.kone.context.KoneContext
+import kotlin.experimental.ExperimentalTypeInference
 
-/**
- * See [polytope](https://en.wikipedia.org/wiki/Polytope) and [abstract polytope](https://en.wikipedia.org/wiki/Abstract_polytope)
- */
-public interface Face {
-    public val rank: UInt
-    public val faces: List<Set<Face>>
-    public val vertices: Set<Vertex>
-}
 
-public abstract class Vertex: Face {
-    public final override val rank: UInt = 0u
-    public final override val faces: List<Set<Face>> by lazy { listOf(vertices) }
-    public final override val vertices: Set<Vertex> by lazy { setOf(this) }
-}
+public interface PolytopicConstruction<N, P, V: P>: KoneContext {
+    public val spaceDimension: UInt
 
-public interface PolytopicConstruction<N, P, V: P> {
-    public val P.rank: UInt
+    public val polytopes: List<Set<P>>
+    public fun polytopesOfDimension(dim: UInt): Set<P>
+    public operator fun get(dim: UInt): Set<P>
+    public val P.dimension: UInt
     public val P.faces: List<Set<P>>
+    public fun P.facesOfDimension(dim: UInt): Set<P>
+    public operator fun P.get(dim: UInt): Set<P>
     public val P.vertices: Set<V>
 
+    public val vertices: Set<V>
     public val V.coordinates: Point<N>
 }
+
+public interface PolytopicConstruction2D<N, P, V: P>: PolytopicConstruction<N, P, V> {
+    override val spaceDimension: UInt get() = 2u
+
+    override val V.coordinates: Point2<N>
+}
+
+public interface MutablePolytopicConstruction<N, P, V: P>: PolytopicConstruction<N, P, V> {
+    public fun addPolytope(vertices: Set<V>, faces: List<Set<P>>): P
+    public fun removePolytope(polytope: P)
+    public operator fun P.set(dim: UInt, faces: Set<P>)
+
+    public fun addVertex(coordinates: Point<N>): V
+}
+
+@OptIn(ExperimentalTypeInference::class)
+public inline fun <N, P, V: P> buildPolytopicConstruction(@BuilderInference builder: MutablePolytopicConstruction<N, P, V>.() -> Unit): PolytopicConstruction<N, P, V> = TODO()

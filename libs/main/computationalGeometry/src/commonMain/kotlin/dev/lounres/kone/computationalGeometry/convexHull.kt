@@ -6,60 +6,15 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.delegates.KoneSetAction
 import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 import dev.lounres.kone.hooks.*
 import dev.lounres.kone.linearAlgebra.experiment1.LinearSpace
-import dev.lounres.kone.multidimensionalCollections.experiment1.MDFormation1
 import dev.lounres.kone.order.Order
 import dev.lounres.kone.order.compareByOrdered
 import dev.lounres.kone.order.geq
 
-
-// FIXME: KT-42977
-@JvmInline
-public value class Vector<out N>(public val coordinates: MDFormation1<N>)
-@JvmInline
-public value class Vector2<out N>(public val coordinates: MDFormation1<N>) {
-    init {
-        require(coordinates.size == 2u) { /*TODO*/ }
-    }
-    public val x: N get() = coordinates[0u]
-    public val y: N get() = coordinates[1u]
-}
-
-// FIXME: KT-42977
-@JvmInline
-public value class Point<out N>(public val coordinates: MDFormation1<N>)
-@JvmInline
-public value class Point2<out N>(public val coordinates: MDFormation1<N>) {
-    init {
-        require(coordinates.size == 2u) { /*TODO*/ }
-    }
-    public val x: N get() = coordinates[0u]
-    public val y: N get() = coordinates[1u]
-}
-
-context(LinearSpace<N, *>)
-public operator fun <N> Point<N>.minus(other: Point<N>): Vector<N> = Vector(this.coordinates + other.coordinates)
-context(LinearSpace<N, *>)
-public operator fun <N> Point2<N>.minus(other: Point2<N>): Vector2<N> = Vector2(this.coordinates + other.coordinates)
-context(Ring<N>)
-public infix fun <N> Vector2<N>.cross(other: Vector2<N>): N = (this.x * other.y - this.y * other.x)
-context(Ring<N>, Order<N>, LinearSpace<N, *>)
-@Suppress("LocalVariableName")
-public fun <N> Point2<N>.inTriangle(A: Point2<N>, B: Point2<N>, C: Point2<N>): Boolean {
-    val a = ((this - A) cross (B - A)).sign
-    val b = ((this - B) cross (C - B)).sign
-    val c = ((this - C) cross (A - C)).sign
-    return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)
-}
-
-context(Order<E>)
-private val <E> lexicographicComparator: Comparator<Point2<E>>
-    get() = compareByOrdered({ it.x }, { it.y })
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm) for more.
@@ -71,7 +26,7 @@ public fun <N> Collection<Point2<N>>.convexHullByGiftWrapping(): List<Point2<N>>
         1 -> return toList()
     }
 
-    val startPoint = this.minWith(lexicographicComparator)
+    val startPoint = this.minWith(lexicographic2DComparator)
     var currentPoint = startPoint
     val result = mutableListOf<Point2<N>>()
     do {
@@ -93,13 +48,25 @@ public fun <N> Collection<Point2<N>>.convexHullByGiftWrapping(): List<Point2<N>>
                 }
             }
         }
-        nextPoints.sortWith(lexicographicComparator)
+        nextPoints.sortWith(lexicographic2DComparator)
         result += currentPoint
         currentPoint = nextPoints.removeAt(nextPoints.lastIndex)
         result += nextPoints
     } while (currentPoint != startPoint)
     return result
 }
+
+context(Ring<N>, Order<N>, LinearSpace<N, *>)
+public fun <N, P, V: P> Collection<Point<N>>.convexHullByGiftWrapping(): PolytopicConstruction<N, P, V> =
+    buildPolytopicConstruction {
+        val collection = this@Collection.toMutableList()
+
+        var currentDim = 0u
+        var currentPolytope: P = addVertex(collection.first)
+        var minimumIndex = 1u
+
+        TODO()
+    }
 
 /**
  * See [here](https://en.wikipedia.org/wiki/Graham_scan) for more.
@@ -112,12 +79,12 @@ public fun <N> Collection<Point2<N>>.convexHullByGrahamScan(): List<Point2<N>> {
     }
 
 
-    val centralPoint = this.minWith(lexicographicComparator)
+    val centralPoint = this.minWith(lexicographic2DComparator)
     val points = this.toMutableList()
     points -= centralPoint
     points.sortWith(
         Comparator<Point2<N>> { p1, p2 -> (p1 - centralPoint) cross (p2 - centralPoint) compareTo zero }
-            .then(lexicographicComparator)
+            .then(lexicographic2DComparator)
     )
 
     val iterator = points.iterator()
@@ -170,8 +137,8 @@ public fun <N> Collection<Point2<N>>.convexHullByQuickhull(): List<Point2<N>> {
         1 -> return toList()
     }
 
-    val leftPoint = this.minWith(lexicographicComparator)
-    val rightPoint = this.maxWith(lexicographicComparator)
+    val leftPoint = this.minWith(lexicographic2DComparator)
+    val rightPoint = this.maxWith(lexicographic2DComparator)
     val points = buildList {
         addAll(this@convexHullByQuickhull)
         remove(leftPoint)
@@ -215,7 +182,7 @@ public fun <N> Collection<Point2<N>>.convexHullByMonotoneChain(): List<Point2<N>
         1, 2 -> return toList()
     }
 
-    val points = this.sortedWith(lexicographicComparator)
+    val points = this.sortedWith(lexicographic2DComparator)
 
     fun Iterator<Point2<N>>.generateHalfHull(): List<Point2<N>> {
         val halfHull = mutableListOf(next(), next())
