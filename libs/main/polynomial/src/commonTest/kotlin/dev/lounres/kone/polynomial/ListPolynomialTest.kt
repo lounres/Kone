@@ -8,7 +8,7 @@
 package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Rational
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.polynomial.testUtils.IntBox
 import dev.lounres.kone.polynomial.testUtils.IntBoxModuloRing
@@ -84,7 +84,7 @@ class ListPolynomialTest: FreeSpec() {
     )
 
     @JvmName("produceTestsInt")
-    suspend fun <C, A: Ring<C>> ContainerScope.produceIntTests(
+    suspend fun <C, A: RingOperations<C>> ContainerScope.produceIntTests(
         testDataList: List<PolynomialIntTestData<C>>,
         polynomialSpace: ListPolynomialSpace<C, A>,
         polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
@@ -227,7 +227,7 @@ class ListPolynomialTest: FreeSpec() {
         }
     }
 
-    suspend inline fun <C, A: Ring<C>> ContainerScope.produceConstantTests(
+    suspend inline fun <C, A: RingOperations<C>> ContainerScope.produceConstantTests(
         testDataList: List<PolynomialIntTestData<C>>,
         polynomialSpace: ListPolynomialSpace<C, A>,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },

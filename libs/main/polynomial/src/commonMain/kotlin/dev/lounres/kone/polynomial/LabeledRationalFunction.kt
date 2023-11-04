@@ -7,10 +7,9 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 import space.kscience.kmath.expressions.Symbol
-import kotlin.jvm.JvmName
 
 
 public data class LabeledRationalFunction<C>(
@@ -21,7 +20,7 @@ public data class LabeledRationalFunction<C>(
 }
 
 context(A, PS)
-public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: LabeledPolynomialSpace<C, A>> :
+public open class LabeledRationalFunctionSpace<C, out A: RingOperations<C>, out PS: LabeledPolynomialSpace<C, A>> :
     MultivariatePolynomialSpaceOfFractions<
             C,
             Symbol,
@@ -51,7 +50,7 @@ public open class LabeledRationalFunctionSpace<C, out A: Ring<C>, out PS: Labele
 public typealias DefaultLabeledRationalFunctionSpace<C, A> = LabeledRationalFunctionSpace<C, A, LabeledPolynomialSpace<C, A>>
 
 context(A, PS)
-public class LabeledRationalFunctionSpaceOverField<C, out A: Field<C>, out PS: LabeledPolynomialSpaceOverField<C, A>> :
+public class LabeledRationalFunctionSpaceOverField<C, out A: FieldOperations<C>, out PS: LabeledPolynomialSpaceOverField<C, A>> :
     LabeledRationalFunctionSpace<C, A, PS>(),
     MultivariateRationalFunctionSpaceOverField<C, Symbol, LabeledPolynomial<C>, LabeledRationalFunction<C>, A, PS>
 

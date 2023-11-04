@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 import dev.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
@@ -57,7 +57,7 @@ public typealias LabeledMonomialSignature = Map<Symbol, UInt>
 public typealias LabeledPolynomialCoefficients<C> = Map<LabeledMonomialSignature, C>
 
 context(A)
-public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, A> {
+public open class LabeledPolynomialSpace<C, out A : RingOperations<C>> : MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, A> {
     override val zero: LabeledPolynomial<C> = LabeledPolynomialAsIs()
     override val one: LabeledPolynomial<C> by lazy { constantOne.asLabeledPolynomial() }
 
@@ -447,7 +447,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
 }
 
 context(A)
-public class LabeledPolynomialSpaceOverField<C, out A : Field<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
+public class LabeledPolynomialSpaceOverField<C, out A : FieldOperations<C>> : LabeledPolynomialSpace<C, A>(), MultivariatePolynomialSpaceOverField<C, Symbol, LabeledPolynomial<C>, A> {
     public override fun LabeledPolynomial<C>.div(other: C): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             coefficients.mapValues { it.value / other }

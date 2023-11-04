@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 
 
 /**
@@ -46,7 +46,7 @@ public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, denominatorC
 /**
  * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
  */
-context(Ring<C>)
+context(RingOperations<C>)
 @Suppress("FunctionName")
 public fun <C> ListRationalFunction(numerator: ListPolynomial<C>): ListRationalFunction<C> =
     ListRationalFunction<C>(numerator, ListPolynomial(listOf(one)))
@@ -61,7 +61,7 @@ public fun <C> ListRationalFunction(numerator: ListPolynomial<C>): ListRationalF
  * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
  * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
  */
-context(Ring<C>)
+context(RingOperations<C>)
 @Suppress("FunctionName")
 public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boolean = false): ListRationalFunction<C> =
     ListRationalFunction<C>(
@@ -83,7 +83,7 @@ public fun <C> ListRationalFunction(numeratorCoefficients: List<C>, reverse: Boo
 /**
  * Represents [this] constant as a rational function.
  */
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())
 /**
  * Represents [this] constant as a rational function.

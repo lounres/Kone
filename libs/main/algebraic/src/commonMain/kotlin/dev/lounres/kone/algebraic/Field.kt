@@ -6,7 +6,7 @@
 package dev.lounres.kone.algebraic
 
 
-public interface Field<N>: Ring<N> {
+public interface FieldOperations<N>: RingOperations<N> {
     public operator fun N.div(other: N): N
     public val N.reciprocal: N get() = one / this
     public operator fun N.div(other: Int): N = this / other.value
@@ -26,3 +26,5 @@ public interface Field<N>: Ring<N> {
     public infix fun N.pow(exponent: Int): N = power(this, exponent)
     public infix fun N.pow(exponent: Long): N = power(this, exponent)
 }
+
+public interface Field<N>: Ring<N>, FieldOperations<N>

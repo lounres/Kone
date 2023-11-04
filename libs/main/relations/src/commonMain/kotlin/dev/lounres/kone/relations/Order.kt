@@ -5,15 +5,13 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package dev.lounres.kone.order
-
-import dev.lounres.kone.context.KoneContext
+package dev.lounres.kone.relations
 
 
 /**
- * Context of [linear (total) order](https://en.wikipedia.org/wiki/Total_order).
+ * Context of [linear (total) (pre)order](https://en.wikipedia.org/wiki/Total_order).
  */
-public interface Order<in E> : KoneContext {
+public interface Order<in E> : Equality<E> {
     public infix operator fun E.compareTo(other: E): Int
 }
 

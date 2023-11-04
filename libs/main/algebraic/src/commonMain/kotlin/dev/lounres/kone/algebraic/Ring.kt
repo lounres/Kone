@@ -10,30 +10,15 @@ import dev.lounres.kone.algebraic.util.doublingPlus
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.relations.Equality
 
 
 // TODO: KONE-42
-// TODO: Extract equality to separate interface
-public interface Ring<N>: KoneContext {
+public interface RingOperations<N>: KoneContext {
 
     // region Constants
     public val zero: N
     public val one: N
-    // endregion
-
-    // region Equality
-    public infix fun N.equalsTo(other: N): Boolean = this == other
-    // FIXME: KT-5351
-    public infix fun N.notEqualsTo(other: N): Boolean = !(this equalsTo other)
-    public infix fun N.eq(other: N): Boolean = this equalsTo other
-    // FIXME: KT-5351
-    public infix fun N.neq(other: N): Boolean = !(this equalsTo other)
-    public fun N.isZero(): Boolean = this equalsTo zero
-    public fun N.isOne(): Boolean = this equalsTo one
-    // FIXME: KT-5351
-    public fun N.isNotZero(): Boolean = !isZero()
-    // FIXME: KT-5351
-    public fun N.isNotOne(): Boolean = !isOne()
     // endregion
 
     // region Integers conversion
@@ -107,3 +92,17 @@ public interface Ring<N>: KoneContext {
     public infix fun N.pow(exponent: ULong): N = power(this, exponent)
     // endregion
 }
+
+public interface Ring<N>: RingOperations<N>, Equality<N> {
+    // region Equality
+    public fun N.isZero(): Boolean = this equalsTo zero
+    public fun N.isOne(): Boolean = this equalsTo one
+    // endregion
+}
+
+// FIXME: KT-5351
+context(Ring<N>)
+public fun <N> N.isNotZero(): Boolean = !isZero()
+// FIXME: KT-5351
+context(Ring<N>)
+public fun <N> N.isNotOne(): Boolean = !isOne()

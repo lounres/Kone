@@ -5,13 +5,13 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 
 
 public inline operator fun <
         C,
         P: Polynomial<C>,
-        A: Ring<C>,
+        A: RingOperations<C>,
         PS: PolynomialSpace<C, P, A>,
         R
         > PS.invoke(block: context(A, PS) () -> R): R {
@@ -26,7 +26,7 @@ public inline operator fun <
         C,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        A: Ring<C>,
+        A: RingOperations<C>,
         PS: PolynomialSpace<C, P, A>,
         RFS: RationalFunctionSpace<C, P, RF, A, PS>,
         R

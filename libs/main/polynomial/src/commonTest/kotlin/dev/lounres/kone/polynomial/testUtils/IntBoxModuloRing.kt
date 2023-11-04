@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.polynomial.testUtils
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 import kotlin.jvm.JvmInline
 
 
@@ -17,7 +17,7 @@ value class IntBox(
 )
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
-class IntBoxModuloRing(modulus: Int) : Ring<IntBox> {
+class IntBoxModuloRing(modulus: Int) : RingOperations<IntBox> {
 
     val modulus: Int
 

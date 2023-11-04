@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 
 
 /**
@@ -25,10 +25,10 @@ public data class ListRationalFunction<C>(
  * Arithmetic context for univariate rational functions with numerator and denominator represented as [ListPolynomial]s.
  *
  * @param C the type of constants. Polynomials have them a coefficients in their terms.
- * @param A type of provided underlying ring of constants. It's [Ring] of [C].
+ * @param A type of provided underlying ring of constants. It's [RingOperations] of [C].
  */
 context(A, PS)
-public open class ListRationalFunctionSpace<C, out A : Ring<C>, out PS: ListPolynomialSpace<C, A>> :
+public open class ListRationalFunctionSpace<C, out A : RingOperations<C>, out PS: ListPolynomialSpace<C, A>> :
     RationalFunctionSpace<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>,
     PolynomialSpaceOfFractions<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>() {
 
@@ -42,7 +42,7 @@ public open class ListRationalFunctionSpace<C, out A : Ring<C>, out PS: ListPoly
 public typealias DefaultListRationalFunctionSpace<C, A> = ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>
 
 context(A, PS)
-public class ListRationalFunctionSpaceOverField<C, out A : Field<C>, out PS: ListPolynomialSpaceOverField<C, A>> :
+public class ListRationalFunctionSpaceOverField<C, out A : FieldOperations<C>, out PS: ListPolynomialSpaceOverField<C, A>> :
     ListRationalFunctionSpace<C, A, PS>(),
     RationalFunctionSpaceOverField<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>
 

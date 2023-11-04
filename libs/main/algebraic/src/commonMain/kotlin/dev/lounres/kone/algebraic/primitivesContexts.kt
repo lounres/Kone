@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.order.Order
+import dev.lounres.kone.relations.Order
 import kotlin.math.pow as kpow
 
 

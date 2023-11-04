@@ -5,14 +5,14 @@
 
 package dev.lounres.kone.polynomial.testUtils
 
-import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.FieldOperations
 import kotlin.jvm.JvmInline
 
 
 @JvmInline
 value class StringExpr(val expr: String)
 
-object StringExprRing : Field<StringExpr> {
+object StringExprRing : FieldOperations<StringExpr> {
     override val zero: StringExpr = StringExpr("0")
     override val one: StringExpr = StringExpr("1")
     override fun StringExpr.unaryMinus(): StringExpr = StringExpr("-${expr}")
@@ -34,7 +34,7 @@ sealed interface TreeExpr {
     data class Quoitient(val left: TreeExpr, val right: TreeExpr): TreeExpr
 }
 
-object TreeExprRing : Field<TreeExpr> {
+object TreeExprRing : FieldOperations<TreeExpr> {
     override val zero: TreeExpr = TreeExpr.Constant("0")
     override val one: TreeExpr = TreeExpr.Constant("1")
     override fun TreeExpr.unaryPlus(): TreeExpr = TreeExpr.UnaryPlus(this)

@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.order)
+                implementation(projects.libs.main.relations)
             }
         }
         commonTest {

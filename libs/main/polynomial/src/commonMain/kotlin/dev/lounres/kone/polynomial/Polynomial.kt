@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -15,7 +15,7 @@ public interface Polynomial<C>
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
-public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> {
+public interface PolynomialSpace<C, P: Polynomial<C>, out A: RingOperations<C>> : RingOperations<P> {
     // region Context accessors
     public val constantRing: A get() = this@A
     // endregion
@@ -80,7 +80,7 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring<C>>: PolynomialSpace<C, P, A> {
+public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: RingOperations<C>>: PolynomialSpace<C, P, A> {
     // region Variable-to-Polynomial conversion
     @JvmName("valueOfVariable")
     public fun polynomialValueOf(variable: V): P = +variable
@@ -184,7 +184,7 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: Field<C>> : PolynomialSpace<C, P, A> {
+public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: FieldOperations<C>> : PolynomialSpace<C, P, A> {
     // region Constant-Int operations
     @JvmName("divPolynomialInt")
     @JsName("divPolynomialInt")
@@ -206,7 +206,7 @@ public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: Field<C>> 
 
 context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
+public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>, out A: FieldOperations<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
     public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal

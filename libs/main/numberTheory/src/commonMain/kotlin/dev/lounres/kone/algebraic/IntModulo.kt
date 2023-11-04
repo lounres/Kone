@@ -20,6 +20,8 @@ public class IntModuloRing(modulus: Int) : Ring<Int> {
     public override val zero: Int = 0
     public override val one: Int = 1
 
+    override fun Int.equalsTo(other: Int): Boolean = (this - other) % modulus == 0
+
     public override fun valueOf(arg: Int): Int = arg % modulus
     public override fun valueOf(arg: Long): Int = (arg % modulus).toInt()
 

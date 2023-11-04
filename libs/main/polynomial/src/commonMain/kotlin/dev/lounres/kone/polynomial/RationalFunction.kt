@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -20,7 +20,7 @@ public interface RationalFunction<C, P: Polynomial<C>> {
 
 context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
-public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
+public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction<C, P>, out A: RingOperations<C>, out PS: PolynomialSpace<C, P, A>> : FieldOperations<RF> {
     // region Context accessors
     public val ring: A get() = this@A
     public val polynomialSpace: PS get() = this@PS
@@ -138,7 +138,7 @@ public abstract class PolynomialSpaceOfFractions<
         C,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        out A: Ring<C>,
+        out A: RingOperations<C>,
         out PS: PolynomialSpace<C, P, A>
         > : RationalFunctionSpace<C, P, RF, A, PS> {
 
@@ -409,7 +409,7 @@ public interface MultivariateRationalFunctionSpace<
         V,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        out A: Ring<C>,
+        out A: RingOperations<C>,
         out PS: MultivariatePolynomialSpace<C, V, P, A>
         > : RationalFunctionSpace<C, P, RF, A, PS> {
 
@@ -462,7 +462,7 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
         V,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        out A: Ring<C>,
+        out A: RingOperations<C>,
         out PS: MultivariatePolynomialSpace<C, V, P, A>
         > : MultivariateRationalFunctionSpace<C, V, P, RF, A, PS>,  PolynomialSpaceOfFractions<C, P, RF, A, PS>() {
 
@@ -527,7 +527,7 @@ public interface RationalFunctionSpaceOverField<
         C,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        out A: Field<C>,
+        out A: FieldOperations<C>,
         out PS: PolynomialSpaceOverField<C, P, A>
         > : RationalFunctionSpace<C, P, RF, A, PS> {
 
@@ -545,6 +545,6 @@ public interface MultivariateRationalFunctionSpaceOverField<
         V,
         P: Polynomial<C>,
         RF: RationalFunction<C, P>,
-        out A: Field<C>,
+        out A: FieldOperations<C>,
         out PS: MultivariatePolynomialSpaceOverField<C, V, P, A>
         > : RationalFunctionSpaceOverField<C, P, RF, A, PS>, MultivariateRationalFunctionSpace<C, V, P, RF, A, PS>

@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.util.mapOperations.*
@@ -49,24 +49,24 @@ public fun <C> LabeledPolynomial(vararg pairs: Pair<LabeledMonomialSignature, C>
         pairs.asIterable().associateBy({ it.first.cleanUp() }, { it.second }, { _, c1, c2 -> add(c1, c2)})
     )
 
-context(LabeledPolynomialSpace<C, Ring<C>>)
+context(LabeledPolynomialSpace<C, RingOperations<C>>)
 public inline fun <C> LabeledPolynomial(coefs: LabeledPolynomialCoefficients<C>) : LabeledPolynomial<C> = LabeledPolynomial(coefs) { left: C, right: C -> constantRing { left + right } }
 
 //context(Ring<C>)
 //public inline fun <C> LabeledPolynomial(coefs: LabeledPolynomialCoefficients<C>) : LabeledPolynomial<C> = LabeledPolynomial(coefs) { left, right -> left + right }
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public inline fun <C> LabeledPolynomial(coefs: LabeledPolynomialCoefficients<C>) : LabeledPolynomial<C> = LabeledPolynomial(coefs) { left: C, right: C -> polynomialSpace.constantRing { left + right } }
 
 //public inline fun <C> Ring<C>.LabeledPolynomial(pairs: Collection<Pair<LabeledMonomialSignature, C>>) : LabeledPolynomial<C> = LabeledPolynomial(pairs) { left, right -> left + right }
-context(LabeledPolynomialSpace<C, Ring<C>>)
+context(LabeledPolynomialSpace<C, RingOperations<C>>)
 public inline fun <C> LabeledPolynomial(pairs: Collection<Pair<LabeledMonomialSignature, C>>) : LabeledPolynomial<C> = LabeledPolynomial(pairs) { left: C, right: C -> constantRing { left + right } }
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public inline fun <C> LabeledPolynomial(pairs: Collection<Pair<LabeledMonomialSignature, C>>) : LabeledPolynomial<C> = LabeledPolynomial(pairs) { left: C, right: C -> polynomialSpace.constantRing { left + right } }
 
 //public inline fun <C> Ring<C>.LabeledPolynomial(vararg pairs: Pair<LabeledMonomialSignature, C>) : LabeledPolynomial<C> = LabeledPolynomial(*pairs) { left: C, right: C -> left + right }
-context(LabeledPolynomialSpace<C, Ring<C>>)
+context(LabeledPolynomialSpace<C, RingOperations<C>>)
 public inline fun <C> LabeledPolynomial(vararg pairs: Pair<LabeledMonomialSignature, C>) : LabeledPolynomial<C> = LabeledPolynomial(*pairs) { left: C, right: C -> constantRing { left + right } }
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public inline fun <C> LabeledPolynomial(vararg pairs: Pair<LabeledMonomialSignature, C>) : LabeledPolynomial<C> = LabeledPolynomial(*pairs) { left: C, right: C -> polynomialSpace.constantRing { left + right } }
 
 public inline fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomialAsIs(mapOf(emptyMap<Symbol, UInt>() to this))
@@ -74,7 +74,7 @@ public inline fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPo
 /**
 // * Converts [this] variable to [LabeledPolynomial].
 // */
-context(Ring<C>)
+context(RingOperations<C>)
 public inline fun <C> Symbol.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(mapOf(mapOf(this to 1u) to one))
 /**
  * Converts [this] variable to [LabeledPolynomial].
@@ -84,7 +84,7 @@ public inline fun <C> Symbol.asLabeledPolynomial() : LabeledPolynomial<C> = Labe
 /**
  * Converts [this] variable to [LabeledPolynomial].
  */
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public inline fun <C> Symbol.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(mapOf(mapOf(this to 1u) to polynomialSpace.constantRing.one))
 
 @DslMarker
@@ -148,10 +148,10 @@ public class DSL1LabeledPolynomialBuilder<C>(
 //context(Ring<C>)
 //@ExperimentalKoneAPI
 //public inline fun <C> LabeledPolynomialDSL1(initialCapacity: Int? = null, block: DSL1LabeledPolynomialBuilder<C>.() -> Unit) : LabeledPolynomial<C> = DSL1LabeledPolynomialBuilder({ left: C, right: C -> left + right }, initialCapacity).apply(block).build()
-context(LabeledPolynomialSpace<C, Ring<C>>)
+context(LabeledPolynomialSpace<C, RingOperations<C>>)
 @ExperimentalKoneAPI
 public inline fun <C> LabeledPolynomialDSL1(initialCapacity: Int? = null, block: DSL1LabeledPolynomialBuilder<C>.() -> Unit) : LabeledPolynomial<C> = DSL1LabeledPolynomialBuilder({ left: C, right: C -> constantRing { left + right } }, initialCapacity).apply(block).build()
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 @ExperimentalKoneAPI
 public inline fun <C> LabeledPolynomialDSL1(initialCapacity: Int? = null, block: DSL1LabeledPolynomialBuilder<C>.() -> Unit) : LabeledPolynomial<C> = DSL1LabeledPolynomialBuilder({ left: C, right: C -> polynomialSpace.constantRing { left + right } }, initialCapacity).apply(block).build()
 
@@ -162,7 +162,7 @@ internal annotation class LabeledPolynomialBuilderDSL2
 @ExperimentalKoneAPI
 @LabeledPolynomialBuilderDSL2
 public class DSL2LabeledPolynomialBuilder<C>(
-    private val ring: Ring<C>,
+    private val ring: RingOperations<C>,
     initialCapacity: Int? = null
 ) {
     private val coefficients: MutableMap<LabeledMonomialSignature, C> = if (initialCapacity != null) LinkedHashMap(initialCapacity) else LinkedHashMap()
@@ -175,11 +175,11 @@ public class DSL2LabeledPolynomialBuilder<C>(
         internal val coefficient: C
     )
 
-    private inline fun submit(signature: LabeledMonomialSignature, onPut: Ring<C>.() -> C, onChange: Ring<C>.(C) -> C) {
+    private inline fun submit(signature: LabeledMonomialSignature, onPut: RingOperations<C>.() -> C, onChange: RingOperations<C>.(C) -> C) {
         coefficients.putOrChange<_, C>(signature, { ring.onPut() }, { ring.onChange(it) })
     }
 
-    private inline fun submit(signature: LabeledMonomialSignature, lazyCoefficient: Ring<C>.() -> C) {
+    private inline fun submit(signature: LabeledMonomialSignature, lazyCoefficient: RingOperations<C>.() -> C) {
         submit(signature, lazyCoefficient, { it + lazyCoefficient() })
     }
 
@@ -373,19 +373,19 @@ public class DSL2LabeledPolynomialBuilder<C>(
         )
 }
 
-context(Ring<C>)
+context(RingOperations<C>)
 @ExperimentalKoneAPI
-public fun <C> LabeledPolynomialDSL2(initialCapacity: Int? = null, block: DSL2LabeledPolynomialBuilder<C>.() -> Unit): LabeledPolynomial<C> = DSL2LabeledPolynomialBuilder(this@Ring, initialCapacity).apply(block).build()
+public fun <C> LabeledPolynomialDSL2(initialCapacity: Int? = null, block: DSL2LabeledPolynomialBuilder<C>.() -> Unit): LabeledPolynomial<C> = DSL2LabeledPolynomialBuilder(this@RingOperations, initialCapacity).apply(block).build()
 
-context(LabeledPolynomialSpace<C, Ring<C>>)
+context(LabeledPolynomialSpace<C, RingOperations<C>>)
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomialDSL2(initialCapacity: Int? = null, block: DSL2LabeledPolynomialBuilder<C>.() -> Unit): LabeledPolynomial<C> = DSL2LabeledPolynomialBuilder(constantRing, initialCapacity).apply(block).build()
 
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomialDSL2(initialCapacity: Int? = null, block: DSL2LabeledPolynomialBuilder<C>.() -> Unit): LabeledPolynomial<C> = DSL2LabeledPolynomialBuilder(polynomialSpace.constantRing, initialCapacity).apply(block).build()
 
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>, denominatorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
     LabeledRationalFunction<C>(
         LabeledPolynomial(numeratorCoefficients),
@@ -398,14 +398,14 @@ public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialC
         LabeledPolynomial(denominatorCoefficients)
     )
 
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
     LabeledRationalFunction<C>(numerator, LabeledPolynomial(mapOf(emptyMap<Symbol, UInt>() to one)))
 context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, *>>)
 public fun <C> LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
     LabeledRationalFunction<C>(numerator, polynomialSpace.polynomialOne)
 
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
     LabeledRationalFunction<C>(
         LabeledPolynomial(numeratorCoefficients),
@@ -421,7 +421,7 @@ public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialC
 /**
  * Converts [this] constant to [LabeledRationalFunction].
  */
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
         LabeledPolynomialAsIs(mapOf(emptyMap<Symbol, UInt>() to this)),
@@ -430,7 +430,7 @@ public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
 /**
  * Converts [this] constant to [LabeledRationalFunction].
  */
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
         LabeledPolynomialAsIs(mapOf(emptyMap<Symbol, UInt>() to this)),
@@ -440,7 +440,7 @@ public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
 /**
  * Converts [this] variable to [LabeledRationalFunction].
  */
-context(Ring<C>)
+context(RingOperations<C>)
 public fun <C> Symbol.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
         LabeledPolynomialAsIs(mapOf(mapOf(this to 1u) to one)),
@@ -449,7 +449,7 @@ public fun <C> Symbol.asLabeledRationalFunction() : LabeledRationalFunction<C> =
 /**
  * Converts [this] variable to [LabeledRationalFunction].
  */
-context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, Ring<C>>>)
+context(LabeledRationalFunctionSpace<C, *, LabeledPolynomialSpace<C, RingOperations<C>>>)
 public fun <C> Symbol.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
         LabeledPolynomialAsIs(mapOf(mapOf(this to 1u) to polynomialSpace.constantRing.one)),

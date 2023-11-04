@@ -16,22 +16,22 @@ import space.kscience.kmath.expressions.Symbol
 import kotlin.jvm.JvmName
 
 
-public inline val <C, A : Ring<C>> A.labeledPolynomialSpace: LabeledPolynomialSpace<C, A>
+public inline val <C, A : RingOperations<C>> A.labeledPolynomialSpace: LabeledPolynomialSpace<C, A>
     get() = LabeledPolynomialSpace()
 
-public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C, A>
+public inline val <C, A : FieldOperations<C>> A.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C, A>
     get() = LabeledPolynomialSpaceOverField()
 
-public inline val <C, A : Ring<C>> LabeledPolynomialSpace<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
+public inline val <C, A : RingOperations<C>> LabeledPolynomialSpace<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
     get() = constantRing { LabeledRationalFunctionSpace() }
 
-public inline val <C, A : Field<C>> LabeledPolynomialSpaceOverField<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
+public inline val <C, A : FieldOperations<C>> LabeledPolynomialSpaceOverField<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
     get() = constantRing { LabeledRationalFunctionSpaceOverField() }
 
-public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
+public inline val <C, A : RingOperations<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
     get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace
 
-public inline val <C, A : Field<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
+public inline val <C, A : FieldOperations<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
     get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace
 
 public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.field {
@@ -54,7 +54,7 @@ public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): Labe
 public inline fun LabeledPolynomial<Double>.substitute(vararg inputs: Pair<Symbol, Double>): LabeledPolynomial<Double> =
     this.substitute(mapOf(*inputs))
 
-public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, C>): LabeledPolynomial<C> = ring {
+public fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, C>): LabeledPolynomial<C> = ring {
     if (coefficients.isEmpty()) return this@substitute
     LabeledPolynomial<C>(
         buildMap {
@@ -71,12 +71,12 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
 }
 
 @Suppress("NOTHING_TO_INLINE")
-public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, C>): LabeledPolynomial<C> =
+public inline fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, C>): LabeledPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
 
  // TODO: To optimize boxing
 @JvmName("substitutePolynomial")
-public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> =
+public fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, LabeledPolynomial<C>>) : LabeledPolynomial<C> =
     ring.labeledPolynomialSpace {
         coefficients.entries.fold(zero) { acc, (degs, c) ->
             val newDegs = degs.filterKeys { it !in args }
@@ -89,12 +89,12 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
-public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> =
+public inline fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledPolynomial<C> =
     this.substitute(ring, mapOf(*inputs))
 
  // TODO: To optimize boxing
 @JvmName("substituteRationalFunction")
-public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
+public fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
     ring.labeledRationalFunctionSpace {
         coefficients.entries.fold(zero) { acc, (degs, c) ->
             val newDegs = degs.filterKeys { it !in args }
@@ -107,7 +107,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
-public inline fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
+public inline fun <C> LabeledPolynomial<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
 public fun LabeledRationalFunction<Double>.substitute(args: Map<Symbol, Double>): LabeledRationalFunction<Double> =
@@ -117,38 +117,38 @@ public fun LabeledRationalFunction<Double>.substitute(args: Map<Symbol, Double>)
 public inline fun LabeledRationalFunction<Double>.substitute(vararg inputs: Pair<Symbol, Double>): LabeledRationalFunction<Double> =
     this.substitute(mapOf(*inputs))
 
-public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Symbol, C>): LabeledRationalFunction<C> =
+public fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, C>): LabeledRationalFunction<C> =
     LabeledRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
 @Suppress("NOTHING_TO_INLINE")
-public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, C>): LabeledRationalFunction<C> =
+public inline fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, C>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
  // TODO: To optimize calculation
 @JvmName("substitutePolynomial")
-public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Symbol, LabeledPolynomial<C>>) : LabeledRationalFunction<C> =
+public fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, LabeledPolynomial<C>>) : LabeledRationalFunction<C> =
     LabeledRationalFunction(numerator.substitute(ring, args), denominator.substitute(ring, args))
 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("substitutePolynomial")
-public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
+public inline fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
  // TODO: To optimize calculation
 @JvmName("substituteRationalFunction")
-public fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, args: Map<Symbol, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
+public fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, args: Map<Symbol, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
     ring.labeledRationalFunctionSpace {
         numerator.substitute(ring, args) / denominator.substitute(ring, args)
     }
 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("substituteRationalFunction")
-public inline fun <C> LabeledRationalFunction<C>.substitute(ring: Ring<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
+public inline fun <C> LabeledRationalFunction<C>.substitute(ring: RingOperations<C>, vararg inputs: Pair<Symbol, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
     this.substitute(ring, mapOf(*inputs))
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(
-    algebra: Ring<C>,
+    algebra: RingOperations<C>,
     variable: Symbol,
 ): LabeledPolynomial<C> = algebra {
     LabeledPolynomial<C>(
@@ -174,7 +174,7 @@ public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
-    algebra: Ring<C>,
+    algebra: RingOperations<C>,
     variable: Symbol,
     order: UInt
 ): LabeledPolynomial<C> = algebra {
@@ -205,7 +205,7 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
-    algebra: Ring<C>,
+    algebra: RingOperations<C>,
     variablesAndOrders: Map<Symbol, UInt>,
 ): LabeledPolynomial<C> = algebra {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }
@@ -245,7 +245,7 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
-    algebra: Field<C>,
+    algebra: FieldOperations<C>,
     variable: Symbol,
 ): LabeledPolynomial<C> = algebra {
     LabeledPolynomial<C>(
@@ -264,7 +264,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
-    algebra: Field<C>,
+    algebra: FieldOperations<C>,
     variable: Symbol,
     order: UInt
 ): LabeledPolynomial<C> = algebra {
@@ -288,7 +288,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
 
 @ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
-    algebra: Field<C>,
+    algebra: FieldOperations<C>,
     variablesAndOrders: Map<Symbol, UInt>,
 ): LabeledPolynomial<C> = algebra {
     val filteredVariablesAndOrders = variablesAndOrders.filterValues { it != 0u }

@@ -8,7 +8,7 @@
 package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Rational
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.RingOperations
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.polynomial.testUtils.*
 import io.kotest.core.spec.style.FreeSpec
@@ -241,7 +241,7 @@ class LabeledPolynomialTest : FreeSpec() {
     )
 
     @JvmName("produceTestsInt")
-    suspend fun <C, A: Ring<C>> ContainerScope.produceIntTests(
+    suspend fun <C, A: RingOperations<C>> ContainerScope.produceIntTests(
         testDataList: List<PolynomialIntTestData<C>>,
         polynomialSpace: LabeledPolynomialSpace<C, A>,
         polynomialArgumentCoefficientsTransform: (A.(C) -> C)? = null,
@@ -594,7 +594,7 @@ class LabeledPolynomialTest : FreeSpec() {
         }
     }
 
-    suspend inline fun <C, A: Ring<C>> ContainerScope.produceConstantTests(
+    suspend inline fun <C, A: RingOperations<C>> ContainerScope.produceConstantTests(
         testDataList: List<PolynomialIntTestData<C>>,
         polynomialSpace: LabeledPolynomialSpace<C, A>,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },
@@ -683,7 +683,7 @@ class LabeledPolynomialTest : FreeSpec() {
         val resultCoefficients: Map<Map<Symbol, UInt>, C>,
     )
 
-    suspend inline fun <C, A: Ring<C>> ContainerScope.produceVariableTests(
+    suspend inline fun <C, A: RingOperations<C>> ContainerScope.produceVariableTests(
         testDataList: List<PolynomialVariableTestData<C>>,
         polynomialSpace: LabeledPolynomialSpace<C, A>,
         crossinline polynomialArgumentCoefficientsTransform: A.(C) -> C = { it },

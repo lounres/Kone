@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.FieldOperations
+import dev.lounres.kone.algebraic.RingOperations
 import kotlin.math.max
 import kotlin.math.min
 
@@ -20,7 +20,7 @@ public data class ListPolynomial<C>(
 }
 
 context(A)
-public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, ListPolynomial<C>, A> {
+public open class ListPolynomialSpace<C, out A : RingOperations<C>> : PolynomialSpace<C, ListPolynomial<C>, A> {
     override val zero: ListPolynomial<C> = ListPolynomial(emptyList())
     override val one: ListPolynomial<C> by lazy { constantOne.asListPolynomial() }
     public val freeVariable: ListPolynomial<C> by lazy { ListPolynomial(constantZero, constantOne) }
@@ -296,7 +296,7 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
 }
 
 context(A)
-public class ListPolynomialSpaceOverField<C, out A : Field<C>> : ListPolynomialSpace<C, A>(), PolynomialSpaceOverField<C, ListPolynomial<C>, A> {
+public class ListPolynomialSpaceOverField<C, out A : FieldOperations<C>> : ListPolynomialSpace<C, A>(), PolynomialSpaceOverField<C, ListPolynomial<C>, A> {
     public override fun ListPolynomial<C>.div(other: C): ListPolynomial<C> =
         ListPolynomial(coefficients.map { it / other })
 }

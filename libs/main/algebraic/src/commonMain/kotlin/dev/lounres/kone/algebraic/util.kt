@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.order.Order
+import dev.lounres.kone.relations.Order
 
 
-context(Ring<N>, Order<N>)
+context(RingOperations<N>, Order<N>)
 public val <N> N.sign: Int get() {
-    val compareResult = this.compareTo(zero)
+    val compareResult = this compareTo zero
     return when {
         compareResult > 0 -> 1
         compareResult < 0 -> -1
