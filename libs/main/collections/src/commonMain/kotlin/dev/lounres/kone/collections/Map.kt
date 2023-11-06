@@ -32,10 +32,17 @@ public interface KoneMap<K, out V> {
 public interface KoneMutableMap<K, V>: KoneMap<K, V> {
     public operator fun set(key: K, value: V)
     public fun getAndSet(key: K, value: V): V = getOptionalAndSet(key, value).orThrow { NoMatchingKeyException() }
-    public fun getOptionalAndSet(key: K, value: V): Option<V> = getOptional(key).also { set(key, value) }
+    public fun getOptionalAndSet(key: K, value: V): Option<V>
+    public fun getOrSet(key: K, defaultValue: () -> V)
 
     // TODO: Think about "definitely remove".
     public fun remove(key: K)
     public fun getAndRemove(key: K): V = getOptionalAndRemove(key).orThrow { NoMatchingKeyException() }
     public fun getOptionalAndRemove(key: K): Option<V> = getOptional(key).also { remove(key) }
+    public fun removeAllThat(predicate: (key: K, value: V) -> Boolean)
+
+    // TODO: Think about bulk operations.
+    public fun setAll(from: KoneMap<out K, V>)
+    public fun setAll(from: KoneIterable<KoneMap.Entry<K, V>>)
+    public fun clear()
 }

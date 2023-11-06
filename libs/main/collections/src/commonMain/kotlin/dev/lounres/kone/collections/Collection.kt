@@ -59,15 +59,20 @@ public interface KoneSettableList<E> : KoneList<E> {
     public operator fun set(index: UInt, element: E)
 }
 
-public interface KoneMutableList<E> : KoneSettableList<E>, KoneMutableCollection<E> {
+public interface KoneExtendableList<E>: KoneList<E>, KoneExtendableCollection<E> {
     public fun addAt(index: UInt, element: E)
     public fun addAllAt(index: UInt, elements: KoneIterableCollection<E>)
+}
+
+public interface KoneRemovableList<out E>: KoneList<E>, KoneRemovableCollection<E> {
     public fun removeAt(index: UInt)
     public override fun removeAllThat(predicate: (element: E) -> Boolean) {
         removeAllThatIndexed { _, element -> predicate(element) }
     }
     public fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean)
 }
+
+public interface KoneMutableList<E> : KoneSettableList<E>, KoneExtendableList<E>, KoneRemovableList<E>, KoneMutableCollection<E>
 
 public interface KoneSet<out E> : KoneCollection<E>
 
