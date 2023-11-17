@@ -189,6 +189,8 @@ stal {
         "kotlin multiplatform" {
             apply<KotlinMultiplatformPluginWrapper>()
             configure<KotlinMultiplatformExtension> {
+                applyDefaultHierarchyTemplate()
+
                 jvm {
                     compilations.all {
                         kotlinOptions {
@@ -213,6 +215,12 @@ stal {
                 linuxX64()
                 mingwX64()
 //                macosX64()
+
+//                androidTarget()
+//                iosX64()
+//                iosArm64()
+//                iosSimulatorArm64()
+//                macosArm64()
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
@@ -349,7 +357,7 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     val commonMain by sourceSets.getting
                     val commonBenchmarks by sourceSets.creating {
-                        dependsOn(commonMain)
+//                        dependsOn(commonMain)
                         dependencies {
                             implementation(rootProject.libs.kotlinx.benchmark.runtime)
                         }
