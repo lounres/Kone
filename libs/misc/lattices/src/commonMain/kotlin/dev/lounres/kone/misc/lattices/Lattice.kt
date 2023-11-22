@@ -56,7 +56,7 @@ public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke
 internal data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: Set<Cell<C, K, A>>)
 
 context(Lattice<C, K, V>)
-public fun <C, K, A, V> Set<Cell<C, K, A>>.divideInParts(numberOfParts: Int): List<List<Set<Cell<C, K, A>>>> {
+public fun <C, K, A, V> Set<Cell<C, K, A>>.divideInParts(numberOfParts: Int, takeFormIf: (Set<Position<C, K>>) -> Boolean = { true }): List<List<Set<Cell<C, K, A>>>> {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
     if (this.groupingBy { it.attributes }.eachCount().values.any { it % numberOfParts != 0 }) return listOf()
     if (isEmpty()) return listOf(listOf())
@@ -68,6 +68,7 @@ public fun <C, K, A, V> Set<Cell<C, K, A>>.divideInParts(numberOfParts: Int): Li
     val firstCell = allCells.first()
     for (otherCellsOfFirstPart in (allCells - firstCell).toList().combinations(cellsPerPart - 1)) {
         val firstPart = otherCellsOfFirstPart.toSet() + firstCell
+        if (!takeFormIf(firstPart.mapTo(HashSet(firstPart.size)) { it.position })) continue
         val restCells = allCells - firstPart
         val forms = rotations.map { Form(it(firstCell), it(firstPart)) }
 

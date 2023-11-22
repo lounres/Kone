@@ -7,18 +7,18 @@ package dev.lounres.kone.misc.lattices
 
 
 public enum class TriangleKind {
-    UP, DOWN
+    Up, Down
 }
 
 internal operator fun TriangleKind.not(): TriangleKind =
     when(this) {
-        TriangleKind.UP -> TriangleKind.DOWN
-        TriangleKind.DOWN -> TriangleKind.UP
+        TriangleKind.Up -> TriangleKind.Down
+        TriangleKind.Down -> TriangleKind.Up
     }
 internal fun Position<Pair<Int, Int>, TriangleKind>.rotate60(): Position<Pair<Int, Int>, TriangleKind> =
     when(kind) {
-        TriangleKind.UP -> Position(Pair(-coordinates.second - 1, coordinates.first + coordinates.second), TriangleKind.DOWN)
-        TriangleKind.DOWN -> Position(Pair(-coordinates.second - 1, coordinates.first + coordinates.second + 1), TriangleKind.UP)
+        TriangleKind.Up -> Position(Pair(-coordinates.second - 1, coordinates.first + coordinates.second), TriangleKind.Down)
+        TriangleKind.Down -> Position(Pair(-coordinates.second - 1, coordinates.first + coordinates.second + 1), TriangleKind.Up)
     }
 internal fun Position<Pair<Int, Int>, TriangleKind>.xySymmetry(): Position<Pair<Int, Int>, TriangleKind> =
     Position(Pair(coordinates.second, coordinates.first), kind)
