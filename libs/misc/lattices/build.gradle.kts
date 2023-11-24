@@ -7,8 +7,8 @@ kotlin {
         }
         commonMain {
             dependencies {
-                api(projects.libs.main.core)
                 implementation(projects.libs.main.enumerativeCombinatorics)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
     }

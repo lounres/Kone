@@ -31,7 +31,7 @@ internal fun Position<Pair<Int, Int>, QuadroSquareKind>.rotate90(): Position<Pai
         }
     )
 
-public object QuadroSquareLattice: Lattice<Pair<Int, Int>, QuadroSquareKind, Pair<Int, Int>> {
+public object QuadroSquareLattice: LatticeWithConnectivity<Pair<Int, Int>, QuadroSquareKind, Pair<Int, Int>> {
 
     override fun Pair<Int, Int>.plus(other: Pair<Int, Int>): Pair<Int, Int> =
         Pair(this.first + other.first, this.second + other.second)
@@ -51,4 +51,40 @@ public object QuadroSquareLattice: Lattice<Pair<Int, Int>, QuadroSquareKind, Pai
             { it.xSymmetry().rotate90().rotate90() },
             { it.xSymmetry().rotate90().rotate90().rotate90() },
         )
+
+    override fun Collection<Position<Pair<Int, Int>, QuadroSquareKind>>.isConnected(): Boolean {
+        val startPosition = this.first()
+        val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, QuadroSquareKind>>()
+        positionsToTest.add(startPosition)
+        val testedPositions = mutableSetOf<Position<Pair<Int, Int>, QuadroSquareKind>>()
+        while (positionsToTest.isNotEmpty()) {
+            val nextPosition = positionsToTest.removeFirst()
+            testedPositions.add(nextPosition)
+            val adjacentPositions = when(nextPosition.kind) {
+                QuadroSquareKind.Up -> listOf(
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second+1), QuadroSquareKind.Down),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Left),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Right),
+                )
+                QuadroSquareKind.Down -> listOf(
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second-1), QuadroSquareKind.Up),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Left),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Right),
+                )
+                QuadroSquareKind.Left -> listOf(
+                    Position(Pair(nextPosition.coordinates.first-1, nextPosition.coordinates.second), QuadroSquareKind.Right),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Up),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Down),
+                )
+                QuadroSquareKind.Right -> listOf(
+                    Position(Pair(nextPosition.coordinates.first+1, nextPosition.coordinates.second), QuadroSquareKind.Left),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Up),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), QuadroSquareKind.Down),
+                )
+            }
+
+            for (position in adjacentPositions) if (position !in testedPositions && position in this) positionsToTest.add(position)
+        }
+        return testedPositions.size == this.size
+    }
 }

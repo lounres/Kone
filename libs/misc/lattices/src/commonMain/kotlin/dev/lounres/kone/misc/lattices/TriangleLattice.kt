@@ -25,7 +25,7 @@ internal fun Position<Pair<Int, Int>, TriangleKind>.xySymmetry(): Position<Pair<
 internal fun Position<Pair<Int, Int>, TriangleKind>.xyPerpSymmetry(): Position<Pair<Int, Int>, TriangleKind> =
     Position(Pair(-coordinates.first, -coordinates.second), !kind)
 
-public object TriangleLattice: Lattice<Pair<Int, Int>, TriangleKind, Pair<Int, Int>> {
+public object TriangleLattice: LatticeWithConnectivity<Pair<Int, Int>, TriangleKind, Pair<Int, Int>> {
 
     override fun Pair<Int, Int>.plus(other: Pair<Int, Int>): Pair<Int, Int> =
         Pair(this.first + other.first, this.second + other.second)
@@ -49,4 +49,30 @@ public object TriangleLattice: Lattice<Pair<Int, Int>, TriangleKind, Pair<Int, I
             { it.xySymmetry().rotate60().rotate60().rotate60().rotate60() },
             { it.xySymmetry().rotate60().rotate60().rotate60().rotate60().rotate60() },
         )
+
+    override fun Collection<Position<Pair<Int, Int>, TriangleKind>>.isConnected(): Boolean {
+        val startPosition = this.first()
+        val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, TriangleKind>>()
+        positionsToTest.add(startPosition)
+        val testedPositions = mutableSetOf<Position<Pair<Int, Int>, TriangleKind>>()
+        while (positionsToTest.isNotEmpty()) {
+            val nextPosition = positionsToTest.removeFirst()
+            testedPositions.add(nextPosition)
+            val adjacentPositions = when(nextPosition.kind) {
+                TriangleKind.Up -> listOf(
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second-1), TriangleKind.Down),
+                    Position(Pair(nextPosition.coordinates.first-1, nextPosition.coordinates.second), TriangleKind.Down),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), TriangleKind.Down),
+                )
+                TriangleKind.Down -> listOf(
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second+1), TriangleKind.Up),
+                    Position(Pair(nextPosition.coordinates.first+1, nextPosition.coordinates.second), TriangleKind.Up),
+                    Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second), TriangleKind.Up),
+                )
+            }
+
+            for (position in adjacentPositions) if (position !in testedPositions && position in this) positionsToTest.add(position)
+        }
+        return testedPositions.size == this.size
+    }
 }
