@@ -14,12 +14,13 @@ dependencyResolutionManagement {
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        mavenLocal()
+        mavenCentral()
+//        mavenLocal()
     }
 }
 
 plugins {
-    id("com.lounres.gradle.stal") version "0.3.0"
+    id("dev.lounres.gradle.stal") version "0.3.1"
 }
 
 stal {
