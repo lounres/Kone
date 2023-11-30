@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -211,6 +212,13 @@ stal {
                     browser()
                     nodejs()
                 }
+
+//                @OptIn(ExperimentalWasmDsl::class)
+//                wasmJs {
+//                    browser()
+//                    nodejs()
+//                    d8()
+//                }
 
                 linuxX64()
                 mingwX64()

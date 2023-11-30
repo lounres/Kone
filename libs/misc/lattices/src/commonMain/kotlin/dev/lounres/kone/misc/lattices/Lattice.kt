@@ -58,20 +58,19 @@ public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke
 internal data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: Set<Cell<C, K, A>>)
 
 context(CoroutineScope, Lattice<C, K, V>)
-public fun <C, K, A, V> Set<Cell<C, K, A>>.divideInParts(numberOfParts: Int, takeFormIf: (Set<Position<C, K>>) -> Boolean = { true }): List<List<Set<Cell<C, K, A>>>> =
-    this.divideInPartsTo(destination = mutableListOf(), numberOfParts = numberOfParts, takeFormIf = takeFormIf)
-
-context(CoroutineScope, Lattice<C, K, V>)
-public fun <C, K, A, V, D: MutableCollection<in List<Set<Cell<C, K, A>>>>> Set<Cell<C, K, A>>.divideInPartsTo(destination: D, numberOfParts: Int, takeFormIf: (Set<Position<C, K>>) -> Boolean = { true }): D {
+public fun <C, K, A, V> Set<Cell<C, K, A>>.divideInParts(numberOfParts: Int, takeFormIf: (Set<Position<C, K>>) -> Boolean = { true }): Sequence<List<Set<Cell<C, K, A>>>> = sequence {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
-    if (this.groupingBy { it.attributes }.eachCount().values.any { it % numberOfParts != 0 }) return destination
-    if (this.isEmpty()) return destination.also { it.add(emptyList()) }
+    if (this@divideInParts.groupingBy { it.attributes }.eachCount().values.any { it % numberOfParts != 0 }) return@sequence
+    if (this@divideInParts.isEmpty()) {
+        yield(emptyList())
+        return@sequence
+    }
     val cellsPerPart = size / numberOfParts
-    val allCells = this
+    val allCells = this@divideInParts
 
     val firstCell = allCells.first()
     for (otherCellsOfFirstPart in (allCells - firstCell).toList().combinations(cellsPerPart - 1)) {
-        if(!isActive) return destination
+        if(!isActive) return@sequence
         val firstPart = otherCellsOfFirstPart.toSet() + firstCell
         if (!takeFormIf(firstPart.mapTo(HashSet(firstPart.size)) { it.position })) continue
         val restCells = allCells - firstPart
@@ -79,7 +78,7 @@ public fun <C, K, A, V, D: MutableCollection<in List<Set<Cell<C, K, A>>>>> Set<C
 
         val allPossibleParts = buildSet {
             for (form in forms) for (otherFirstCell in restCells) {
-                if(!isActive) return destination
+                if(!isActive) return@sequence
                 if (otherFirstCell.position.kind != form.startCell.position.kind) continue
                 val shift = otherFirstCell - form.startCell
                 val part = form.cells.mapTo(HashSet(cellsPerPart)) { it + shift }
@@ -88,11 +87,9 @@ public fun <C, K, A, V, D: MutableCollection<in List<Set<Cell<C, K, A>>>>> Set<C
         }.toList()
 
         for (parts in allPossibleParts.combinations(numberOfParts - 1)) {
-            if(!isActive) return destination
+            if(!isActive) return@sequence
             if (parts.combinations(2).any { (part1, part2) -> part1.any { it in part2 } }) continue
-            destination.add(buildList { addAll(parts); add(firstPart) })
+            yield(buildList { addAll(parts); add(firstPart) })
         }
     }
-
-    return destination
 }
