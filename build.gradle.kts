@@ -1,6 +1,5 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
-import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.BenchmarksPlugin
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -13,9 +12,9 @@ import org.jetbrains.kotlin.allopen.gradle.AllOpenGradleSubplugin
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -26,7 +25,7 @@ plugins {
         alias(kotlin.multiplatform) apply false
         alias(allopen) apply false
         alias(kotlinx.benchmark) apply false
-        alias(kotest.multiplatform) apply false
+//        alias(kotest.multiplatform) apply false
         alias(dokka)
     }
     `version-catalog`
@@ -145,7 +144,7 @@ stal {
                 }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                apply<KotestMultiplatformCompilerGradlePlugin>()
+//                apply<KotestMultiplatformCompilerGradlePlugin>()
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -189,6 +188,8 @@ stal {
         "kotlin multiplatform" {
             apply<KotlinMultiplatformPluginWrapper>()
             configure<KotlinMultiplatformExtension> {
+                applyDefaultHierarchyTemplate()
+
                 jvm {
                     compilations.all {
                         kotlinOptions {
@@ -213,6 +214,12 @@ stal {
 //                linuxX64()
 //                mingwX64()
 //                macosX64()
+
+//                androidTarget()
+//                iosX64()
+//                iosArm64()
+//                iosSimulatorArm64()
+//                macosArm64()
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
@@ -263,49 +270,49 @@ stal {
                 explicitApi = Warning
             }
         }
-        "kotest" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val test by getting {
-                            dependencies {
-                                with(rootProject.libs.kotest) {
-                                    implementation(framework.engine)
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                    implementation(runner.junit5)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                apply<KotestMultiplatformCompilerGradlePlugin>()
-                configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val commonTest by getting {
-                            dependencies {
-                                with(rootProject.libs.kotest) {
-                                    implementation(framework.engine)
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                }
-                            }
-                        }
-                        val jvmTest by getting {
-                            dependencies {
-                                implementation(rootProject.libs.kotest.runner.junit5)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        "kotest" {
+//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+//                configure<KotlinJvmProjectExtension> {
+//                    @Suppress("UNUSED_VARIABLE")
+//                    sourceSets {
+//                        val test by getting {
+//                            dependencies {
+//                                with(rootProject.libs.kotest) {
+//                                    implementation(framework.engine)
+//                                    implementation(framework.datatest)
+//                                    implementation(assertions.core)
+//                                    implementation(property)
+//                                    implementation(runner.junit5)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+//                apply<KotestMultiplatformCompilerGradlePlugin>()
+//                configure<KotlinMultiplatformExtension> {
+//                    @Suppress("UNUSED_VARIABLE")
+//                    sourceSets {
+//                        val commonTest by getting {
+//                            dependencies {
+//                                with(rootProject.libs.kotest) {
+//                                    implementation(framework.engine)
+//                                    implementation(framework.datatest)
+//                                    implementation(assertions.core)
+//                                    implementation(property)
+//                                }
+//                            }
+//                        }
+//                        val jvmTest by getting {
+//                            dependencies {
+//                                implementation(rootProject.libs.kotest.runner.junit5)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         "examples" {
             @Suppress("UNUSED_VARIABLE")
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
@@ -356,7 +363,7 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     val commonMain by sourceSets.getting
                     val commonBenchmarks by sourceSets.creating {
-                        dependsOn(commonMain)
+//                        dependsOn(commonMain)
                         dependencies {
                             implementation(rootProject.libs.kotlinx.benchmark.runtime)
                         }
@@ -403,7 +410,7 @@ stal {
                                     val benchmarkTarget = JsBenchmarkTarget(
                                         extension = benchmarksExtension,
                                         name = benchmarksSourceSetName,
-                                        compilation = benchmarks as KotlinJsCompilation
+                                        compilation = benchmarks as KotlinJsIrCompilation
                                     )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
                                 }

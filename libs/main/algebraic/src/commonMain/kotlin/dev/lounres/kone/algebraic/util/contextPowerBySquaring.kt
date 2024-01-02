@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic.util
 
+import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
 import kotlin.jvm.JvmName
 
@@ -82,25 +83,16 @@ public infix fun <N> ULong.doublingTimes(other: N): N = rightMultiplyByDoubling(
 // endregion
 
 //region Multiplicative operations
-context(Ring<N>)
-public fun <N> squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
-context(Ring<N>)
-public fun <N> squaringPower(base: N, exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
-context(Ring<N>)
-public fun <N> squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
-context(Ring<N>)
-public fun <N> squaringPower(base: N, exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
-
-context(Ring<N>)
+context(Field<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <N> N.squaringPower(exponent: Int): N = squaringPower(this, exponent)
+public inline infix fun <N> N.squaringPower(exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <N> N.squaringPower(exponent: UInt): N = squaringPower(this, exponent)
-context(Ring<N>)
+public inline infix fun <N> N.squaringPower(exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
+context(Field<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <N> N.squaringPower(exponent: Long): N = squaringPower(this, exponent)
+public inline infix fun <N> N.squaringPower(exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <N> N.squaringPower(exponent: ULong): N = squaringPower(this, exponent)
+public inline infix fun <N> N.squaringPower(exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
 //endregion

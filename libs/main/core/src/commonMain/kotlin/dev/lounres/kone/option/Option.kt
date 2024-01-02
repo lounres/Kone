@@ -11,6 +11,21 @@ public sealed interface Option<out E>
 public data class Some<out E>(val value: E): Option<E>
 public data object None: Option<Nothing>
 
+
+public fun Option<*>.isSome(): Boolean =
+    when(this) {
+        None -> false
+        is Some -> true
+    }
+
+public fun Option<*>.isNone(): Boolean = !isSome()
+
+public inline fun <E> Option<E>.orThrow(error: () -> Throwable): E =
+    when(this) {
+        None -> throw error()
+        is Some -> value
+    }
+
 public fun <E> Option<E>.orDefault(default: E): E =
     when(this) {
         None -> default
@@ -39,4 +54,10 @@ public inline fun <E, R> Option<E>.computeOnOrElse(default: () -> R, compute: (E
     when(this) {
         None -> default()
         is Some -> compute(value)
+    }
+
+public fun <E> Option<Option<E>>.flatten(): Option<E> =
+    when (this) {
+        None -> None
+        is Some -> value
     }
