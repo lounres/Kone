@@ -35,6 +35,7 @@ stal {
                 subdirs("libs misc", "uses libs main core")
             }
             "util" {
+                "kotest"()
                 subdirs("libs util")
             }
         }
@@ -51,7 +52,7 @@ stal {
         // Extra
         "examples" since { has("libs public") }
         "benchmark" since { has("libs public") }
-        "kotest" since { has("libs public") }
+//        "kotest" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
         "dokka" since { has("libs") }
         "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }

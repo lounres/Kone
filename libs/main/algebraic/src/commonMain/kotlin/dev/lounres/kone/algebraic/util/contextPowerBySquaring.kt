@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic.util
 
+import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
 
 
@@ -122,17 +123,17 @@ public fun <N> Ring<N>.doublingTimes(first: ULong, other: N): N = rightMultiplyB
 
 //region Multiplicative operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
-//context(Ring<N>)
-//public fun <N> squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+//context(Field<N>)
+//public fun <N> squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 //context(Ring<N>)
 //public fun <N> squaringPower(base: N, exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
-//context(Ring<N>)
-//public fun <N> squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+//context(Field<N>)
+//public fun <N> squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 //context(Ring<N>)
 //public fun <N> squaringPower(base: N, exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
 
-public fun <N> Ring<N>.squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+public fun <N> Field<N>.squaringPower(base: N, exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 public fun <N> Ring<N>.squaringPower(base: N, exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one) { left, right -> left * right }
-public fun <N> Ring<N>.squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> -v })
+public fun <N> Field<N>.squaringPower(base: N, exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 public fun <N> Ring<N>.squaringPower(base: N, exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one) { left, right -> left * right }
 //endregion
