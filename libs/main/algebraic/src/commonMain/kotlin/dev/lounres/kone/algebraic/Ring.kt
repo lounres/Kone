@@ -102,7 +102,7 @@ public interface Ring<N>: KoneContext {
     public operator fun N.minus(other: N): N
     public operator fun N.times(other: N): N
     public fun power(base: N, exponent: UInt): N = base squaringPower exponent
-    public fun power(base: N, exponent: ULong): N = squaringPower(base, exponent)
+    public fun power(base: N, exponent: ULong): N = base squaringPower exponent
     public infix fun N.pow(exponent: UInt): N = power(this, exponent)
     public infix fun N.pow(exponent: ULong): N = power(this, exponent)
     // endregion

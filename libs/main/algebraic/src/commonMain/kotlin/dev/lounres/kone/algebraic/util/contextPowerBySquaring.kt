@@ -85,14 +85,14 @@ public infix fun <N> ULong.doublingTimes(other: N): N = rightMultiplyByDoubling(
 //region Multiplicative operations
 context(Field<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <N> N.squaringPower(exponent: Int): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <N> N.squaringPower(exponent: Int): N = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <N> N.squaringPower(exponent: UInt): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
+public infix fun <N> N.squaringPower(exponent: UInt): N = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right })
 context(Field<N>)
 @JvmName("squaringPowerReceiver")
-public inline infix fun <N> N.squaringPower(exponent: Long): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <N> N.squaringPower(exponent: Long): N = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
-public inline infix fun <N> N.squaringPower(exponent: ULong): N = rightMultiplyByDoubling(base, exponent, ::one, { left, right -> left * right })
+public infix fun <N> N.squaringPower(exponent: ULong): N = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right })
 //endregion
