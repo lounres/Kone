@@ -1,6 +1,5 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 
-import io.kotest.framework.multiplatform.gradle.KotestMultiplatformCompilerGradlePlugin
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.BenchmarksPlugin
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -27,7 +26,7 @@ plugins {
         alias(kotlin.multiplatform) apply false
         alias(allopen) apply false
         alias(kotlinx.benchmark) apply false
-        alias(kotest.multiplatform) apply false
+//        alias(kotest.multiplatform) apply false
         alias(dokka)
     }
     `version-catalog`
@@ -146,7 +145,6 @@ stal {
                 }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                apply<KotestMultiplatformCompilerGradlePlugin>()
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -213,12 +211,12 @@ stal {
                     nodejs()
                 }
 
-//                @OptIn(ExperimentalWasmDsl::class)
-//                wasmJs {
-//                    browser()
-//                    nodejs()
-//                    d8()
-//                }
+                @OptIn(ExperimentalWasmDsl::class)
+                wasmJs {
+                    browser()
+                    nodejs()
+                    d8()
+                }
 
                 linuxX64()
                 mingwX64()
@@ -272,49 +270,49 @@ stal {
                 explicitApi = Warning
             }
         }
-        "kotest" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val test by getting {
-                            dependencies {
-                                with(rootProject.libs.kotest) {
-                                    implementation(framework.engine)
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                    implementation(runner.junit5)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
-                apply<KotestMultiplatformCompilerGradlePlugin>()
-                configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val commonTest by getting {
-                            dependencies {
-                                with(rootProject.libs.kotest) {
-                                    implementation(framework.engine)
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                }
-                            }
-                        }
-                        val jvmTest by getting {
-                            dependencies {
-                                implementation(rootProject.libs.kotest.runner.junit5)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        "kotest" {
+//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+//                configure<KotlinJvmProjectExtension> {
+//                    @Suppress("UNUSED_VARIABLE")
+//                    sourceSets {
+//                        val test by getting {
+//                            dependencies {
+//                                with(rootProject.libs.kotest) {
+//                                    implementation(framework.engine)
+//                                    implementation(framework.datatest)
+//                                    implementation(assertions.core)
+//                                    implementation(property)
+//                                    implementation(runner.junit5)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+//                apply<KotestMultiplatformCompilerGradlePlugin>()
+//                configure<KotlinMultiplatformExtension> {
+//                    @Suppress("UNUSED_VARIABLE")
+//                    sourceSets {
+//                        val commonTest by getting {
+//                            dependencies {
+//                                with(rootProject.libs.kotest) {
+//                                    implementation(framework.engine)
+//                                    implementation(framework.datatest)
+//                                    implementation(assertions.core)
+//                                    implementation(property)
+//                                }
+//                            }
+//                        }
+//                        val jvmTest by getting {
+//                            dependencies {
+//                                implementation(rootProject.libs.kotest.runner.junit5)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         "examples" {
             @Suppress("UNUSED_VARIABLE")
             fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
