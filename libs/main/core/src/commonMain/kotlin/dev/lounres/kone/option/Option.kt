@@ -55,3 +55,9 @@ public inline fun <E, R> Option<E>.computeOnOrElse(default: () -> R, compute: (E
         None -> default()
         is Some -> compute(value)
     }
+
+public fun <E> Option<Option<E>>.flatten(): Option<E> =
+    when (this) {
+        None -> None
+        is Some -> value
+    }

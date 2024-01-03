@@ -47,55 +47,55 @@ public interface Ring<N>: KoneContext {
 //    public val ULong.value: N get() = valueOf(this)
     // endregion
 
-    // region Value-Int operations
+    // region Number-Int operations
     public operator fun N.plus(other: Int): N = doublingPlus(this, other)
     public operator fun N.minus(other: Int): N = doublingMinus(this, other)
     public operator fun N.times(other: Int): N = doublingTimes(this, other)
     // endregion
 
-//    // region Value-UInt operations
+//    // region Number-UInt operations
 //    public operator fun N.plus(other: UInt): N = doublingPlus(this, other)
 //    public operator fun N.minus(other: UInt): N = doublingMinus(this, other)
 //    public operator fun N.times(other: UInt): N = doublingTimes(this, other)
 //    // endregion
 
-    // region Value-Long operations
+    // region Number-Long operations
     public operator fun N.plus(other: Long): N = doublingPlus(this, other)
     public operator fun N.minus(other: Long): N = doublingMinus(this, other)
     public operator fun N.times(other: Long): N = doublingTimes(this, other)
     // endregion
 
-//    // region Value-ULong operations
+//    // region Number-ULong operations
 //    public operator fun N.plus(other: ULong): N = doublingPlus(this, other)
 //    public operator fun N.minus(other: ULong): N = doublingMinus(this, other)
 //    public operator fun N.times(other: ULong): N = doublingTimes(this, other)
 //    // endregion
 
-    // region Int-Value operations
+    // region Int-Number operations
     public operator fun Int.plus(other: N): N = doublingPlus(this, other)
     public operator fun Int.minus(other: N): N = doublingMinus(this, other)
     public operator fun Int.times(other: N): N = doublingTimes(this, other)
     // endregion
 
-//    // region UInt-Value operations
+//    // region UInt-Number operations
 //    public operator fun UInt.plus(other: N): N = doublingPlus(this, other)
 //    public operator fun UInt.minus(other: N): N = doublingMinus(this, other)
 //    public operator fun UInt.times(other: N): N = doublingTimes(this, other)
 //    // endregion
 
-    // region Long-Value operations
+    // region Long-Number operations
     public operator fun Long.plus(other: N): N = doublingPlus(this, other)
     public operator fun Long.minus(other: N): N = doublingMinus(this, other)
     public operator fun Long.times(other: N): N = doublingTimes(this, other)
     // endregion
 
-//    // region ULong-Value operations
+//    // region ULong-Number operations
 //    public operator fun ULong.plus(other: N): N = doublingPlus(this, other)
 //    public operator fun ULong.minus(other: N): N = doublingMinus(this, other)
 //    public operator fun ULong.times(other: N): N = doublingTimes(this, other)
 //    // endregion
 
-    // region Value-Value operations
+    // region Number-Number operations
     public operator fun N.unaryPlus(): N = this
     public operator fun N.unaryMinus(): N
     public operator fun N.plus(other: N): N
