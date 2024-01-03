@@ -11,7 +11,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.libs.main.numberTheory)
-                implementation(projects.libs.util.kotest)
+//                implementation(projects.libs.util.kotest)
             }
         }
     }
