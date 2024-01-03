@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
 
 
-// region Value-Int additive operations
+// region Number-Int additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> N.doublingPlus(other: Int): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
@@ -23,7 +23,7 @@ public fun <N> Ring<N>.doublingMinus(first: N, other: Int): N = rightAddMultipli
 public fun <N> Ring<N>.doublingTimes(first: N, other: Int): N = rightMultiplyByDoubling(first, other, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region Value-UInt additive operations
+// region Number-UInt additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> N.doublingPlus(other: UInt): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
@@ -37,7 +37,7 @@ public fun <N> Ring<N>.doublingMinus(first: N, other: UInt): N = rightAddMultipl
 public fun <N> Ring<N>.doublingTimes(first: N, other: UInt): N = rightMultiplyByDoubling(first, other, ::zero) { left, right -> left + right }
 // endregion
 
-// region Value-Long additive operations
+// region Number-Long additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> N.doublingPlus(other: Long): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
@@ -51,7 +51,7 @@ public fun <N> Ring<N>.doublingMinus(first: N, other: Long): N = rightAddMultipl
 public fun <N> Ring<N>.doublingTimes(first: N, other: Long): N = rightMultiplyByDoubling(first, other, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region Value-ULong additive operations
+// region Number-ULong additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> N.doublingPlus(other: ULong): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
@@ -65,7 +65,7 @@ public fun <N> Ring<N>.doublingMinus(first: N, other: ULong): N = rightAddMultip
 public fun <N> Ring<N>.doublingTimes(first: N, other: ULong): N = rightMultiplyByDoubling(first, other, ::zero) { left, right -> left + right }
 // endregion
 
-// region Int-Value additive operations
+// region Int-Number additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> Int.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -79,7 +79,7 @@ public fun <N> Ring<N>.doublingMinus(first: Int, other: N): N = rightAddMultipli
 public fun <N> Ring<N>.doublingTimes(first: Int, other: N): N = rightMultiplyByDoubling(other, first, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region UInt-Value additive operations
+// region UInt-Number additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> UInt.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
@@ -93,7 +93,7 @@ public fun <N> Ring<N>.doublingMinus(first: UInt, other: N): N = rightAddMultipl
 public fun <N> Ring<N>.doublingTimes(first: UInt, other: N): N = rightMultiplyByDoubling(other, first, ::zero) { left, right -> left + right }
 // endregion
 
-// region Long-Value additive operations
+// region Long-Number additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> Long.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -107,7 +107,7 @@ public fun <N> Ring<N>.doublingMinus(first: Long, other: N): N = rightAddMultipl
 public fun <N> Ring<N>.doublingTimes(first: Long, other: N): N = rightMultiplyByDoubling(other, first, ::zero, { left, right -> left + right }, { c -> -c })
 // endregion
 
-// region ULong-Value additive operations
+// region ULong-Number additive operations
 // Waiting for context receivers :( FIXME: Uncomment and delete replacements when context receivers will be available
 //context(Ring<N>)
 //public fun <N> ULong.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
