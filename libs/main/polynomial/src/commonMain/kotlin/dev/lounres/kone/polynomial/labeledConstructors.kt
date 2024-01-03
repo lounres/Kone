@@ -189,7 +189,7 @@ public class DSL2LabeledPolynomialBuilder<C>(
 
     // TODO: `@submit` will be resolved differently. Change it to `@C`.
     @Suppress("LABEL_RESOLVE_WILL_CHANGE")
-    private fun C.submit() = submit(emptyMap(), { this@submit })
+    private fun C.submit() = this.let { submit(emptyMap(), { it }) }
 
     private fun Symbol.submit() = submit(mapOf(this to 1u), { one })
 

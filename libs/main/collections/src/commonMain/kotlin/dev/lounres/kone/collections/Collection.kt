@@ -5,6 +5,10 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Some
+
 
 public interface KoneCollection<out E> {
     public val size: UInt
@@ -30,6 +34,9 @@ public interface KoneList<out E> : KoneCollection<E> {
     override fun contains(element: @UnsafeVariance E): Boolean = indexThat { _, collectionElement -> element == collectionElement } == size
 
     public operator fun get(index: UInt): E
+    public fun getOptional(index: UInt): Option<E> =
+        if (index < size) Some(get(index))
+        else None
     public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = 0u
         while (i < size) {
@@ -52,15 +59,20 @@ public interface KoneSettableList<E> : KoneList<E> {
     public operator fun set(index: UInt, element: E)
 }
 
-public interface KoneMutableList<E> : KoneSettableList<E>, KoneMutableCollection<E> {
+public interface KoneExtendableList<E>: KoneList<E>, KoneExtendableCollection<E> {
     public fun addAt(index: UInt, element: E)
     public fun addAllAt(index: UInt, elements: KoneIterableCollection<E>)
+}
+
+public interface KoneRemovableList<out E>: KoneList<E>, KoneRemovableCollection<E> {
     public fun removeAt(index: UInt)
     public override fun removeAllThat(predicate: (element: E) -> Boolean) {
         removeAllThatIndexed { _, element -> predicate(element) }
     }
     public fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean)
 }
+
+public interface KoneMutableList<E> : KoneSettableList<E>, KoneExtendableList<E>, KoneRemovableList<E>, KoneMutableCollection<E>
 
 public interface KoneSet<out E> : KoneCollection<E>
 
