@@ -15,7 +15,7 @@ import kotlin.jvm.JvmInline
 public value class Ideal<P>(public val basis: List<P>)
 
 context(MultivariatePolynomialManipulationSpace<C, V, *, MS, MutMS, M, P, MutP, A>, Order<MS>)
-public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> Ideal<P>.groebnerBasisByBuchbergersAlgorithm(): Ideal<P> = constantRing {
+public fun <C, V, MS, MutMS: MS, M, P, MutP: P, A: Field<C>> Ideal<P>.groebnerBasisByBuchbergersAlgorithm(): Ideal<P> = numericalRing {
     val basis = basis.toMutableList()
     var i = 1
     var j = 0

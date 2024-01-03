@@ -7,20 +7,18 @@ package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.context.invoke
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
-public interface PolynomialSpace<C, P, out A: Ring<C>> : Ring<P> {
-    // region Context accessors
-    public val constantRing: A get() = this@A
-    // endregion
+public interface PolynomialSpace<N, P, out A: Ring<N>> : Ring<P> {
+    public val numericalRing: A
 
-    // region Constant constants
-    public val constantZero: C get() = constantRing.zero
-    public val constantOne: C get() = constantRing.one
+    // region Number constants
+    public val numericalZero: N get() = numericalRing.zero
+    public val numericalOne: N get() = numericalRing.one
     // endregion
 
     // region Polynomial constants
@@ -28,45 +26,45 @@ public interface PolynomialSpace<C, P, out A: Ring<C>> : Ring<P> {
     public val polynomialOne: P get() = one
     // endregion
 
-    // region Integer-to-Constant conversion
-    public fun constantValueOf(value: Int): C = constantRing.run { valueOf(value) }
-    public fun constantValueOf(value: Long): C = constantRing.run { valueOf(value) }
-    public val Int.constantValue: C get() = constantRing.run { this@constantValue.value }
-    public val Long.constantValue: C get() = constantRing.run { this@constantValue.value }
+    // region Integer-to-Number conversion
+    public fun numericalValueOf(value: Int): N = numericalRing.run { valueOf(value) }
+    public fun numericalValueOf(value: Long): N = numericalRing.run { valueOf(value) }
+    public val Int.numericalValue: N get() = numericalRing.run { this@numericalValue.value }
+    public val Long.numericalValue: N get() = numericalRing.run { this@numericalValue.value }
     // endregion
 
     // region Integer-to-Polynomial conversion
-    public override fun valueOf(value: Int): P = polynomialValueOf(constantValueOf(value))
-    public override fun valueOf(value: Long): P = polynomialValueOf(constantValueOf(value))
+    public override fun valueOf(value: Int): P = polynomialValueOf(numericalValueOf(value))
+    public override fun valueOf(value: Long): P = polynomialValueOf(numericalValueOf(value))
     public fun polynomialValueOf(value: Int): P = valueOf(value)
     public fun polynomialValueOf(value: Long): P = valueOf(value)
     public val Int.polynomialValue: P get() = polynomialValueOf(this)
     public val Long.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
-    // region Constant-to-Polynomial conversion
-    @JvmName("polynomialValueOfConstant")
-    public fun polynomialValueOf(value: C): P = one * value
-    @get:JvmName("polynomialValueConstant")
-    public val C.polynomialValue: P get() = polynomialValueOf(this)
+    // region Number-to-Polynomial conversion
+    @JvmName("polynomialValueOfNumber")
+    public fun polynomialValueOf(value: N): P = one * value
+    @get:JvmName("polynomialValueNumber")
+    public val N.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
-    // region Constant-Polynomial operations
-    @JvmName("plusConstantPolynomial")
-    public operator fun C.plus(other: P): P
-    @JvmName("minusConstantPolynomial")
-    public operator fun C.minus(other: P): P
-    @JvmName("timesConstantPolynomial")
-    public operator fun C.times(other: P): P
+    // region Number-Polynomial operations
+    @JvmName("plusNumberPolynomial")
+    public operator fun N.plus(other: P): P
+    @JvmName("minusNumberPolynomial")
+    public operator fun N.minus(other: P): P
+    @JvmName("timesNumberPolynomial")
+    public operator fun N.times(other: P): P
     // endregion
 
-    // region Polynomial-Constant operations
-    @JvmName("plusPolynomialConstant")
-    public operator fun P.plus(other: C): P
-    @JvmName("minusPolynomialConstant")
-    public operator fun P.minus(other: C): P
-    @JvmName("timesPolynomialConstant")
-    public operator fun P.times(other: C): P
+    // region Polynomial-Number operations
+    @JvmName("plusPolynomialNumber")
+    public operator fun P.plus(other: N): P
+    @JvmName("minusPolynomialNumber")
+    public operator fun P.minus(other: N): P
+    @JvmName("timesPolynomialNumber")
+    public operator fun P.times(other: N): P
     // endregion
 
     // region Polynomial-Polynomial operations
@@ -82,9 +80,8 @@ public interface PolynomialSpace<C, P, out A: Ring<C>> : Ring<P> {
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: PolynomialSpace<C, P, A> {
+public interface MultivariatePolynomialSpace<N, V, P, out A: Ring<N>>: PolynomialSpace<N, P, A> {
     // region Variable-to-Polynomial conversion
     @JvmName("valueOfVariable")
     public fun polynomialValueOf(variable: V): P = +variable
@@ -94,56 +91,56 @@ public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: Polynomia
 
     // region Variable-Int operations
     @JvmName("plusVariableInt")
-    public operator fun V.plus(other: Int): P = this + other.constantValue
+    public operator fun V.plus(other: Int): P = this + other.numericalValue
     @JvmName("minusVariableInt")
-    public operator fun V.minus(other: Int): P = this - other.constantValue
+    public operator fun V.minus(other: Int): P = this - other.numericalValue
     @JvmName("timesVariableInt")
-    public operator fun V.times(other: Int): P = this * other.constantValue
+    public operator fun V.times(other: Int): P = this * other.numericalValue
     // endregion
 
     // region Variable-Long operations
     @JvmName("plusVariableLong")
-    public operator fun V.plus(other: Long): P = this + other.constantValue
+    public operator fun V.plus(other: Long): P = this + other.numericalValue
     @JvmName("minusVariableLong")
-    public operator fun V.minus(other: Long): P = this - other.constantValue
+    public operator fun V.minus(other: Long): P = this - other.numericalValue
     @JvmName("timesVariableLong")
-    public operator fun V.times(other: Long): P = this * other.constantValue
+    public operator fun V.times(other: Long): P = this * other.numericalValue
     // endregion
 
     // region Int-Variable operations
     @JvmName("plusIntVariable")
-    public operator fun Int.plus(other: V): P = this.constantValue + other
+    public operator fun Int.plus(other: V): P = this.numericalValue + other
     @JvmName("minusIntVariable")
-    public operator fun Int.minus(other: V): P = this.constantValue - other
+    public operator fun Int.minus(other: V): P = this.numericalValue - other
     @JvmName("timesIntVariable")
-    public operator fun Int.times(other: V): P = this.constantValue * other
+    public operator fun Int.times(other: V): P = this.numericalValue * other
     // endregion
 
     // region Long-Variable operations
     @JvmName("plusLongVariable")
-    public operator fun Long.plus(other: V): P = this.constantValue + other
+    public operator fun Long.plus(other: V): P = this.numericalValue + other
     @JvmName("minusLongVariable")
-    public operator fun Long.minus(other: V): P = this.constantValue - other
+    public operator fun Long.minus(other: V): P = this.numericalValue - other
     @JvmName("timesLongVariable")
-    public operator fun Long.times(other: V): P = this.constantValue * other
+    public operator fun Long.times(other: V): P = this.numericalValue * other
     // endregion
 
-    // region Variable-Constant operations
-    @JvmName("plusVariableConstant")
-    public operator fun V.plus(other: C): P
-    @JvmName("minusVariableConstant")
-    public operator fun V.minus(other: C): P
-    @JvmName("timesVariableConstant")
-    public operator fun V.times(other: C): P
+    // region Variable-Number operations
+    @JvmName("plusVariableNumber")
+    public operator fun V.plus(other: N): P
+    @JvmName("minusVariableNumber")
+    public operator fun V.minus(other: N): P
+    @JvmName("timesVariableNumber")
+    public operator fun V.times(other: N): P
     // endregion
 
-    // region Constant-Variable operations
-    @JvmName("plusConstantVariable")
-    public operator fun C.plus(other: V): P
-    @JvmName("minusConstantVariable")
-    public operator fun C.minus(other: V): P
-    @JvmName("timesConstantVariable")
-    public operator fun C.times(other: V): P
+    // region Number-Variable operations
+    @JvmName("plusNumberVariable")
+    public operator fun N.plus(other: V): P
+    @JvmName("minusNumberVariable")
+    public operator fun N.minus(other: V): P
+    @JvmName("timesNumberVariable")
+    public operator fun N.times(other: V): P
     // endregion
 
     // region Variable-Variable operations
@@ -186,43 +183,41 @@ public interface MultivariatePolynomialSpace<C, V, P, out A: Ring<C>>: Polynomia
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface PolynomialSpaceOverField<C, P, out A: Field<C>> : PolynomialSpace<C, P, A> {
-    // region Constant-Int operations
+public interface PolynomialSpaceOverField<N, P, out A: Field<N>> : PolynomialSpace<N, P, A> {
+    // region Number-Int operations
     @JvmName("divPolynomialInt")
     @JsName("divPolynomialInt")
-    public operator fun P.div(other: Int): P = this / other.constantValue
+    public operator fun P.div(other: Int): P = this / other.numericalValue
     // endregion
 
-    // region Constant-Long operations
+    // region Number-Long operations
     @JvmName("divPolynomialLong")
     @JsName("divPolynomialLong")
-    public operator fun P.div(other: Long): P = this / other.constantValue
+    public operator fun P.div(other: Long): P = this / other.numericalValue
     // endregion
 
-    // region Polynomial-Constant operations
-    @JvmName("divPolynomialConstant")
-    @JsName("divPolynomialConstant")
-    public operator fun P.div(other: C): P
+    // region Polynomial-Number operations
+    @JvmName("divPolynomialNumber")
+    @JsName("divPolynomialNumber")
+    public operator fun P.div(other: N): P
     // endregion
 }
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpaceOverField<C, V, P, out A: Field<C>>: PolynomialSpaceOverField<C, P, A>, MultivariatePolynomialSpace<C, V, P, A> {
+public interface MultivariatePolynomialSpaceOverField<N, V, P, out A: Field<N>>: PolynomialSpaceOverField<N, P, A>, MultivariatePolynomialSpace<N, V, P, A> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
-    public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Int): P = numericalRing { this * other.numericalValue.reciprocal }
     // endregion
 
     // region Variable-Long operations
     @JvmName("divVariableLong")
-    public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    public operator fun V.div(other: Long): P = numericalRing { this * other.numericalValue.reciprocal }
     // endregion
 
-    // region Variable-Constant operations
-    @JvmName("divVariableConstant")
-    public operator fun V.div(other: C): P = this * other.reciprocal
+    // region Variable-Number operations
+    @JvmName("divVariableNumber")
+    public operator fun V.div(other: N): P = numericalRing { this * other.reciprocal }
     // endregion
 }

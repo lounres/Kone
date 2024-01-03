@@ -6,12 +6,12 @@
 package dev.lounres.kone.polynomial.manipulation
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import kotlin.math.max
 
 
-context(A)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS, M, P, MutP: P, out A: Ring<C>>: MultivariatePolynomialSpace<C, V, P, A> {
     // region Manipulation
@@ -84,22 +84,22 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
     // endregion
 
     public override val zero: P get() = polynomialOf()
-    public override val one: P get() = polynomialOf(monomial(signatureOf(), constantOne))
+    public override val one: P get() = polynomialOf(monomial(signatureOf(), numericalOne))
 
     @JvmName("polynomialValueOfConstant")
     public override fun polynomialValueOf(value: C): P = polynomialOf(monomial(signatureOf(), value))
     @JvmName("valueOfVariable")
-    public override fun polynomialValueOf(variable: V): P = polynomialOf(monomial(signatureOf(variablePower(variable, 1u)), constantOne))
+    public override fun polynomialValueOf(variable: V): P = polynomialOf(monomial(signatureOf(variablePower(variable, 1u)), numericalOne))
 
     @JvmName("plusVariableConstant")
     public override operator fun V.plus(other: C): P = polynomialOf(
-        monomial(signatureOf(variablePower(this, 1u)), constantOne),
+        monomial(signatureOf(variablePower(this, 1u)), numericalOne),
         monomial(signatureOf(), other),
     )
     @JvmName("minusVariableConstant")
     public override operator fun V.minus(other: C): P = polynomialOf(
-        monomial(signatureOf(variablePower(this, 1u)), constantOne),
-        monomial(signatureOf(), -other),
+        monomial(signatureOf(variablePower(this, 1u)), numericalOne),
+        monomial(signatureOf(), numericalRing { -other }),
     )
     @JvmName("timesVariableConstant")
     public override operator fun V.times(other: C): P = polynomialOf(
@@ -108,13 +108,13 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
 
     @JvmName("plusConstantVariable")
     public override operator fun C.plus(other: V): P = polynomialOf(
-        monomial(signatureOf(variablePower(other, 1u)), constantOne),
+        monomial(signatureOf(variablePower(other, 1u)), numericalOne),
         monomial(signatureOf(), this),
     )
     @JvmName("minusConstantVariable")
     public override operator fun C.minus(other: V): P = polynomialOf(
-        monomial(signatureOf(variablePower(other, 1u)), constantOne),
-        monomial(signatureOf(), -this),
+        monomial(signatureOf(variablePower(other, 1u)), numericalOne),
+        monomial(signatureOf(), numericalRing { -this }),
     )
     @JvmName("timesConstantVariable")
     public override operator fun C.times(other: V): P = polynomialOf(
@@ -124,82 +124,82 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
     @JvmName("plusConstantPolynomial")
     public override operator fun C.plus(other: P): P = other.toMutable().apply {
         val emptySignature = signatureOf()
-        if (this containsSignature emptySignature) this[emptySignature] = this@C + this[emptySignature]
+        if (this containsSignature emptySignature) this[emptySignature] = numericalRing { this@C + this[emptySignature] }
         else this[emptySignature] = this@C
     }
     @JvmName("minusConstantPolynomial")
     public override operator fun C.minus(other: P): P = other.toMutable().apply {
         for ((signature, coefficient) in this)
-            if (!signature.isEmpty()) this[signature] = -coefficient
+            if (!signature.isEmpty()) this[signature] = numericalRing { -coefficient }
 
         val emptySignature = signatureOf()
-        if (this containsSignature emptySignature) this[emptySignature] = this@C - this[emptySignature]
+        if (this containsSignature emptySignature) this[emptySignature] = numericalRing { this@C - this[emptySignature] }
         else this[emptySignature] = this@C
     }
     @JvmName("timesConstantPolynomial")
     public override operator fun C.times(other: P): P = other.toMutable().apply {
-        for ((signature, coefficient) in this) this[signature] = this@C * coefficient
+        for ((signature, coefficient) in this) this[signature] = numericalRing { this@C * coefficient }
     }
 
     @JvmName("plusPolynomialConstant")
     public override operator fun P.plus(other: C): P = this.toMutable().apply {
         val emptySignature = signatureOf()
-        if (this containsSignature emptySignature) this[emptySignature] = this[emptySignature] + other
+        if (this containsSignature emptySignature) this[emptySignature] = numericalRing { this[emptySignature] + other }
         else this[emptySignature] = other
     }
     @JvmName("minusPolynomialConstant")
     public override operator fun P.minus(other: C): P = this.toMutable().apply {
         val emptySignature = signatureOf()
-        if (this containsSignature emptySignature) this[emptySignature] = this[emptySignature] - other
-        else this[emptySignature] = -other
+        if (this containsSignature emptySignature) this[emptySignature] = numericalRing { this[emptySignature] - other }
+        else this[emptySignature] = numericalRing { -other }
     }
     @JvmName("timesPolynomialConstant")
     public override operator fun P.times(other: C): P = this.toMutable().apply {
-        for ((signature, coefficient) in this) this[signature] = coefficient * other
+        for ((signature, coefficient) in this) this[signature] = numericalRing { coefficient * other }
     }
 
     @JvmName("unaryPlusVariable")
     public override operator fun V.unaryPlus(): P = polynomialOf(
-        monomial(signatureOf(variablePower(this, 1u)), constantOne)
+        monomial(signatureOf(variablePower(this, 1u)), numericalOne)
     )
     @JvmName("unaryMinusVariable")
     public override operator fun V.unaryMinus(): P = polynomialOf(
-        monomial(signatureOf(variablePower(this, 1u)), -constantOne)
+        monomial(signatureOf(variablePower(this, 1u)), numericalRing { -numericalOne })
     )
     @JvmName("plusVariableVariable")
     public override operator fun V.plus(other: V): P =
-        if (this == other) polynomialOf(monomial(signatureOf(variablePower(this, 2u)), constantOne))
+        if (this == other) polynomialOf(monomial(signatureOf(variablePower(this, 2u)), numericalOne))
         else polynomialOf(
-            monomial(signatureOf(variablePower(this, 2u)), constantOne),
-            monomial(signatureOf(variablePower(other, 1u)), constantOne)
+            monomial(signatureOf(variablePower(this, 2u)), numericalOne),
+            monomial(signatureOf(variablePower(other, 1u)), numericalOne)
         )
     @JvmName("minusVariableVariable")
     public override operator fun V.minus(other: V): P =
         if (this == other) polynomialOf()
         else polynomialOf(
-            monomial(signatureOf(variablePower(this, 2u)), constantOne),
-            monomial(signatureOf(variablePower(other, 1u)), -constantOne)
+            monomial(signatureOf(variablePower(this, 2u)), numericalOne),
+            monomial(signatureOf(variablePower(other, 1u)), numericalRing { -numericalOne })
         )
     @JvmName("timesVariableVariable")
     public override operator fun V.times(other: V): P = polynomialOf(
-        monomial(signatureOf(variablePower(this, 1u), variablePower(other, 1u)), constantOne),
+        monomial(signatureOf(variablePower(this, 1u), variablePower(other, 1u)), numericalOne),
     )
 
     @JvmName("plusVariablePolynomial")
     public override operator fun V.plus(other: P): P = other.toMutable().apply {
         val signature = signatureOf(variablePower(this@V, 1u))
-        if (this containsSignature signature) this[signature] = constantOne + this[signature]
-        else this[signature] = constantOne
+        if (this containsSignature signature) this[signature] = numericalRing { numericalOne + this[signature] }
+        else this[signature] = numericalOne
     }
     @JvmName("minusVariablePolynomial")
     public override operator fun V.minus(other: P): P = other.toMutable().apply {
         val theSignature = signatureOf(variablePower(this@V, 1u))
 
         for ((signature, coefficient) in this)
-            if (signature != theSignature) this[signature] = -coefficient
+            if (signature != theSignature) this[signature] = numericalRing { -coefficient }
 
-        if (this containsSignature theSignature) this[theSignature] = constantOne - this[theSignature]
-        else this[theSignature] = constantOne
+        if (this containsSignature theSignature) this[theSignature] = numericalRing { numericalOne - this[theSignature] }
+        else this[theSignature] = numericalOne
     }
     @JvmName("timesVariablePolynomial")
     public override operator fun V.times(other: P): P = mutablePolynomialOf().apply {
@@ -209,14 +209,14 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
     @JvmName("plusPolynomialVariable")
     public override operator fun P.plus(other: V): P = this.toMutable().apply {
         val signature = signatureOf(variablePower(other, 1u))
-        if (this containsSignature signature) this[signature] = this[signature] + constantOne
-        else this[signature] = constantOne
+        if (this containsSignature signature) this[signature] = numericalRing { this[signature] + numericalOne }
+        else this[signature] = numericalOne
     }
     @JvmName("minusPolynomialVariable")
     public override operator fun P.minus(other: V): P = this.toMutable().apply {
         val signature = signatureOf(variablePower(other, 1u))
-        if (this containsSignature signature) this[signature] = this[signature] - constantOne
-        else this[signature] = -constantOne
+        if (this containsSignature signature) this[signature] = numericalRing { this[signature] - numericalOne }
+        else this[signature] = numericalRing { -numericalOne }
     }
     @JvmName("timesPolynomialVariable")
     public override operator fun P.times(other: V): P = mutablePolynomialOf().apply {
@@ -225,21 +225,21 @@ public interface MultivariatePolynomialManipulationSpace<C, V, VP, MS, MutMS: MS
 
     public override operator fun P.unaryMinus(): P = this.toMutable().apply {
         for ((signature, coefficient) in this)
-            if (!signature.isEmpty()) this[signature] = -coefficient
+            if (!signature.isEmpty()) this[signature] = numericalRing { -coefficient }
     }
     public override operator fun P.plus(other: P): P = this.toMutable().apply {
         for ((signature, coefficient) in other)
-            if (this containsSignature signature) this[signature] = this[signature] + coefficient
+            if (this containsSignature signature) this[signature] = numericalRing { this[signature] + coefficient }
             else this[signature] = coefficient
     }
     public override operator fun P.minus(other: P): P = this.toMutable().apply {
         for ((signature, coefficient) in other)
-            if (this containsSignature signature) this[signature] = this[signature] - coefficient
-            else this[signature] = -coefficient
+            if (this containsSignature signature) this[signature] = numericalRing { this[signature] - coefficient }
+            else this[signature] = numericalRing { -coefficient }
     }
     public override operator fun P.times(other: P): P = mutablePolynomialOf().apply {
         for ((signature1, coefficient1) in this@P) for ((signature2, coefficient2) in other)
-            this[signature1 * signature2] += coefficient1 * coefficient2
+            numericalRing { this[signature1 * signature2] += coefficient1 * coefficient2 }
     }
 
     public override val P.degree: Int

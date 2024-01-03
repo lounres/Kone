@@ -17,16 +17,16 @@ import kotlin.jvm.JvmName
 
 
 public inline val <C, A : Ring<C>> A.labeledPolynomialSpace: LabeledPolynomialSpace<C, A>
-    get() = LabeledPolynomialSpace()
+    get() = LabeledPolynomialSpace(this)
 
 public inline val <C, A : Field<C>> A.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C, A>
-    get() = LabeledPolynomialSpaceOverField()
+    get() = LabeledPolynomialSpaceOverField(this)
 
 public inline val <C, A : Ring<C>> LabeledPolynomialSpace<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
-    get() = constantRing { LabeledRationalFunctionSpace() }
+    get() = numericalRing { LabeledRationalFunctionSpace(this) }
 
 public inline val <C, A : Field<C>> LabeledPolynomialSpaceOverField<C, A>.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
-    get() = constantRing { LabeledRationalFunctionSpaceOverField() }
+    get() = numericalRing { LabeledRationalFunctionSpaceOverField(this) }
 
 public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpace<C, A>
     get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace

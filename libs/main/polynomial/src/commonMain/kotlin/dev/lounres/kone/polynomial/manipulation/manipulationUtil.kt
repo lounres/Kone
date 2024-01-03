@@ -154,6 +154,6 @@ context(/*A, */MultivariatePolynomialManipulationSpace<C, *, *, MS, *, M, P, Mut
 public fun <C, MS, M, P, MutP: P, A: Ring<C>> MutP.minusAssignProduct(multiplier1: P, multiplier2: P) {
     for ((ms1, c1) in multiplier1) for ((ms2, c2) in multiplier2) {
         val ms = ms1.times(ms2)
-        this[ms] = with(constantRing) { this@MutP[ms] + c1 * c2 }
+        this[ms] = with(numericalRing) { this@MutP[ms] + c1 * c2 }
     }
 }

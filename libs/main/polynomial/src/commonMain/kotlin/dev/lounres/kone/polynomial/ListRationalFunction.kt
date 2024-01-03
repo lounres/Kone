@@ -27,8 +27,7 @@ public data class ListRationalFunction<C>(
  * @param C the type of constants. Polynomials have them a coefficients in their terms.
  * @param A type of provided underlying ring of constants. It's [Ring] of [C].
  */
-context(A, PS)
-public open class ListRationalFunctionSpace<C, out A : Ring<C>, out PS: ListPolynomialSpace<C, A>> :
+public open class ListRationalFunctionSpace<C, out A : Ring<C>, out PS: ListPolynomialSpace<C, A>>(override val polynomialSpace: PS) :
     RationalFunctionSpace<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>,
     PolynomialSpaceOfFractions<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>() {
 
@@ -42,8 +41,8 @@ public open class ListRationalFunctionSpace<C, out A : Ring<C>, out PS: ListPoly
 public typealias DefaultListRationalFunctionSpace<C, A> = ListRationalFunctionSpace<C, A, ListPolynomialSpace<C, A>>
 
 context(A, PS)
-public class ListRationalFunctionSpaceOverField<C, out A : Field<C>, out PS: ListPolynomialSpaceOverField<C, A>> :
-    ListRationalFunctionSpace<C, A, PS>(),
+public class ListRationalFunctionSpaceOverField<C, out A : Field<C>, out PS: ListPolynomialSpaceOverField<C, A>>(polynomialSpace: PS) :
+    ListRationalFunctionSpace<C, A, PS>(polynomialSpace),
     RationalFunctionSpaceOverField<C, ListPolynomial<C>, ListRationalFunction<C>, A, PS>
 
 public typealias DefaultListRationalFunctionSpaceOverField<C, A> = ListRationalFunctionSpaceOverField<C, A, ListPolynomialSpaceOverField<C, A>>
