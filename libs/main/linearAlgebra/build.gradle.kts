@@ -7,7 +7,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(projects.libs.util.kotest)
+//                implementation(projects.libs.util.kotest)
             }
         }
     }
