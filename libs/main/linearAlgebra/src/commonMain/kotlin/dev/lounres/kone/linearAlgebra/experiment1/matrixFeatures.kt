@@ -9,9 +9,9 @@ package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.standard.KoneMutableArray
+import dev.lounres.kone.collections.standard.KoneUIntArray
+import dev.lounres.kone.collections.standard.utils.*
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.feature.FeatureProvider

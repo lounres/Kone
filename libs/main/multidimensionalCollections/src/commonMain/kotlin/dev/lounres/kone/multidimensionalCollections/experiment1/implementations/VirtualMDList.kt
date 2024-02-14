@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1.implementations
 
-import dev.lounres.kone.collections.aliases.UIntArray
-import dev.lounres.kone.collections.utils.fold
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.utils.fold
 import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.experiment1.*
 

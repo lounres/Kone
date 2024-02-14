@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment2
 
-import dev.lounres.kone.collections.aliases.UIntArray
+import dev.lounres.kone.collections.standard.aliases.UIntArray
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.requireShapeEquality

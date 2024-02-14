@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.KoneMutableIterableList
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.standard.KoneMutableIterableList
+import dev.lounres.kone.collections.standard.implementations.KoneGrowableArrayList
 import kotlin.reflect.KProperty
 
 

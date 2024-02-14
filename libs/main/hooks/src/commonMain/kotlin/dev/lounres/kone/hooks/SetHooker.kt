@@ -5,11 +5,12 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.delegates.KoneExtendableIterableSetDelegate
-import dev.lounres.kone.collections.delegates.KoneMutableIterableSetDelegate
-import dev.lounres.kone.collections.delegates.KoneRemovableIterableSetDelegate
-import dev.lounres.kone.collections.delegates.KoneSetAction
+import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.standard.*
+import dev.lounres.kone.collections.standard.delegates.KoneExtendableIterableSetDelegate
+import dev.lounres.kone.collections.standard.delegates.KoneMutableIterableSetDelegate
+import dev.lounres.kone.collections.standard.delegates.KoneRemovableIterableSetDelegate
+import dev.lounres.kone.collections.standard.delegates.KoneSetAction
 
 
 public typealias ExtendableSetHookable<E> = Hookable<KoneIterableSet<E>, KoneSetAction.Extending<E>>

@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.standard.KoneIterableList
+import dev.lounres.kone.collections.standard.KoneIterableSet
+import dev.lounres.kone.collections.standard.utils.*
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.logging.koneLogger
 import kotlin.experimental.ExperimentalTypeInference

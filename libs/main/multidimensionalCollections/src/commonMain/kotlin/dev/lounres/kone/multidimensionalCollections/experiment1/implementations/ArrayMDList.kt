@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1.implementations
 
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.aliases.UIntArray
-import dev.lounres.kone.collections.contentEquals
-import dev.lounres.kone.collections.utils.joinToString
+import dev.lounres.kone.collections.standard.KoneMutableArray
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.contentEquals
+import dev.lounres.kone.collections.standard.utils.joinToString
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.*
 

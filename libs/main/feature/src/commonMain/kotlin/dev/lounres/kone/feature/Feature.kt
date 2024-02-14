@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.feature
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneMutableIterableList
-import dev.lounres.kone.collections.utils.indices
+import dev.lounres.kone.collections.standard.KoneIterableList
+import dev.lounres.kone.collections.standard.KoneMutableIterableList
+import dev.lounres.kone.collections.standard.utils.indices
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 import kotlin.reflect.KClass

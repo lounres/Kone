@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.aliases.IterableList
-import dev.lounres.kone.collections.aliases.UIntArray
-import dev.lounres.kone.collections.aliases.uintArrayOf
-import dev.lounres.kone.collections.implementations.KoneVirtualList
+import dev.lounres.kone.collections.standard.aliases.IterableList
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.aliases.uintArrayOf
+import dev.lounres.kone.collections.standard.implementations.KoneVirtualList
 import dev.lounres.kone.multidimensionalCollections.IndexOutOfShapeException
 import dev.lounres.kone.multidimensionalCollections.Shape
 
@@ -56,6 +56,8 @@ internal open /*value*/ class MDList2Wrapper<out E>(open val list: MDList<E>): M
 
 /*@JvmInline*/
 internal /*value*/ class SettableMDList2Wrapper<E>(override val list: SettableMDList<E>): MDList2Wrapper<E>(list),  SettableMDList2<E> {
+    // FIXME: KT-65793
+    override val shape: Shape get() = list.shape
     override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
         list[uintArrayOf(rowIndex, columnIndex)] = element
     }

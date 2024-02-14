@@ -5,9 +5,11 @@
 
 package dev.lounres.kone.combinatorics.enumerative
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.standard.*
+import dev.lounres.kone.collections.standard.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.standard.utils.*
 import dev.lounres.kone.misc.scope
 
 

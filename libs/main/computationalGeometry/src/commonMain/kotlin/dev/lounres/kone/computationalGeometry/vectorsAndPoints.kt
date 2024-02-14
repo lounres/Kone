@@ -8,9 +8,9 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isPositive
 import dev.lounres.kone.algebraic.sign
-import dev.lounres.kone.collections.KoneArray
-import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.utils.all
+import dev.lounres.kone.collections.standard.KoneArray
+import dev.lounres.kone.collections.standard.KoneUIntArray
+import dev.lounres.kone.collections.standard.utils.all
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.linearAlgebra.experiment1.minor
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1

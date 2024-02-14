@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.KoneCollection
-import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.aliases.*
-import dev.lounres.kone.collections.utils.fold
+import dev.lounres.kone.collections.standard.KoneCollection
+import dev.lounres.kone.collections.standard.KoneUIntArray
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.utils.fold
 import dev.lounres.kone.multidimensionalCollections.ShapeStrides
 import dev.lounres.kone.multidimensionalCollections.Shaped
 

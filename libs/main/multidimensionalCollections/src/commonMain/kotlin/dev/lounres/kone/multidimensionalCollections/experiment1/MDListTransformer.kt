@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.aliases.UIntArray
-import dev.lounres.kone.collections.utils.component1
-import dev.lounres.kone.collections.utils.component2
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.utils.component1
+import dev.lounres.kone.collections.standard.utils.component2
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.ShapeStrides

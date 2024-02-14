@@ -6,8 +6,8 @@
 package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.KoneMutableIterableList
-import dev.lounres.kone.collections.utils.koneMutableIterableListOf
+import dev.lounres.kone.collections.standard.KoneMutableIterableList
+import dev.lounres.kone.collections.standard.utils.koneMutableIterableListOf
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.feature.ExtendableFeatureProviderHolder
 import dev.lounres.kone.feature.FeatureProvider

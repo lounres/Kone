@@ -5,8 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.utils.KoneIterableList
+import dev.lounres.kone.collections.standard.KoneIterableList
 import dev.lounres.kone.multidimensionalCollections.experiment1.implementations.ArrayMDList2
 
 

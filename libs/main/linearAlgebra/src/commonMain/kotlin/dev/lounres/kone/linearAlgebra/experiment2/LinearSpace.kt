@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.linearAlgebra.experiment2
 
-import dev.lounres.kone.collections.aliases.uintArrayOf
+import dev.lounres.kone.collections.standard.aliases.uintArrayOf
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.multidimensionalCollections.experiment2.MDSpace
 import dev.lounres.kone.multidimensionalCollections.requireShapeEquality

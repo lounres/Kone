@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.delegates.KoneMutableListDelegate
-import dev.lounres.kone.collections.delegates.KoneListAction
+import dev.lounres.kone.collections.standard.KoneList
+import dev.lounres.kone.collections.standard.KoneMutableList
+import dev.lounres.kone.collections.standard.delegates.KoneMutableListDelegate
+import dev.lounres.kone.collections.standard.delegates.KoneListAction
 
 
 public typealias ListHookable<E> = Hookable<KoneList<E>, KoneListAction<E>>

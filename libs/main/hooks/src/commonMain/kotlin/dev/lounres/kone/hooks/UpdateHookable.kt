@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.utils.forEach
+import dev.lounres.kone.collections.standard.utils.forEach
 import kotlin.reflect.KProperty
 
 

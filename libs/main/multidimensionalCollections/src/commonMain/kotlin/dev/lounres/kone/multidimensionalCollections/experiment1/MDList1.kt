@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.aliases.UIntArray
-import dev.lounres.kone.collections.aliases.uintArrayOf
+import dev.lounres.kone.collections.standard.aliases.UIntArray
+import dev.lounres.kone.collections.standard.aliases.uintArrayOf
 import dev.lounres.kone.multidimensionalCollections.IndexOutOfShapeException
 import dev.lounres.kone.multidimensionalCollections.Shape
 
@@ -48,6 +48,8 @@ internal open /*value*/ class MDList1Wrapper<out E>(open val list: MDList<E>): M
 
 /*@JvmInline*/
 internal /*value*/ class SettableMDList1Wrapper<E>(override val list: SettableMDList<E>): MDList1Wrapper<E>(list),  SettableMDList1<E> {
+    // FIXME: KT-65793
+    override val shape: Shape get() = list.shape
     override fun set(index: UInt, element: E) {
         list[uintArrayOf(index)] = element
     }

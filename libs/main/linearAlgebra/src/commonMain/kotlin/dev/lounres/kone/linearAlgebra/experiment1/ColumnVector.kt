@@ -5,10 +5,9 @@
 
 package dev.lounres.kone.linearAlgebra.experiment1
 
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.utils.koneMutableMapOf
-import dev.lounres.kone.collections.wrappers.asKone
+import dev.lounres.kone.collections.standard.KoneMutableMap
+import dev.lounres.kone.collections.standard.getOrNull
+import dev.lounres.kone.collections.standard.utils.koneMutableMapOf
 import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1

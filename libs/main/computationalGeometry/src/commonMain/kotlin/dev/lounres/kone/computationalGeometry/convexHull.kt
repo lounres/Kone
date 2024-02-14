@@ -6,12 +6,13 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.delegates.KoneSetAction
-import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
-import dev.lounres.kone.collections.implementations.KoneResizableArrayList
-import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.collections.wrappers.asKone
+import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.standard.*
+import dev.lounres.kone.collections.standard.delegates.KoneSetAction
+import dev.lounres.kone.collections.standard.implementations.KoneFixedCapacityArrayList
+import dev.lounres.kone.collections.standard.implementations.KoneResizableArrayList
+import dev.lounres.kone.collections.standard.utils.*
+import dev.lounres.kone.collections.standard.wrappers.asKone
 import dev.lounres.kone.hooks.*
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.logging.koneLogger
@@ -542,7 +543,6 @@ internal fun <N, A> ExtendableSetHookable<Point2<N>>.upperConvexHullBySweepingLi
                     is KoneSetAction.Add -> {
                         processPoint(action.element)
                     }
-
                     is KoneSetAction.AddAll -> {
                         for (point in action.elements) processPoint(point)
                     }
