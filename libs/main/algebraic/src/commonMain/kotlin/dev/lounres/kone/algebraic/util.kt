@@ -5,11 +5,20 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.order.Order
+import dev.lounres.kone.comparison.Order
 
 
-context(Ring<N>, Order<N>)
-public val <N> N.sign: Int get() {
+context(A)
+public fun <N, A> N.isPositive(): Boolean where A: Ring<N>, A: Order<N> = this > zero
+context(A)
+public fun <N, A> N.isNonPositive(): Boolean where A: Ring<N>, A: Order<N> = this <= zero
+context(A)
+public fun <N, A> N.isNegative(): Boolean where A: Ring<N>, A: Order<N> = this < zero
+context(A)
+public fun <N, A> N.isNonNegative(): Boolean where A: Ring<N>, A: Order<N> = this >= zero
+
+context(A)
+public val <N, A> N.sign: Int where A: Ring<N>, A: Order<N> get() {
     val compareResult = this.compareTo(zero)
     return when {
         compareResult > 0 -> 1

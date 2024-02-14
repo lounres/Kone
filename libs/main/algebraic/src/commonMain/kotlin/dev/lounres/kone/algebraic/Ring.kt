@@ -9,12 +9,13 @@ import dev.lounres.kone.algebraic.util.doublingMinus
 import dev.lounres.kone.algebraic.util.doublingPlus
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.KoneContext
 
 
 // TODO: KONE-42
 // TODO: Extract equality to separate interface
-public interface Ring<N>: KoneContext {
+public interface Ring<N>: Equality<N> {
 
     // region Constants
     public val zero: N
@@ -22,12 +23,6 @@ public interface Ring<N>: KoneContext {
     // endregion
 
     // region Equality
-    public infix fun N.equalsTo(other: N): Boolean = this == other
-    // FIXME: KT-5351
-    public infix fun N.notEqualsTo(other: N): Boolean = !(this equalsTo other)
-    public infix fun N.eq(other: N): Boolean = this equalsTo other
-    // FIXME: KT-5351
-    public infix fun N.neq(other: N): Boolean = !(this equalsTo other)
     public fun N.isZero(): Boolean = this equalsTo zero
     public fun N.isOne(): Boolean = this equalsTo one
     // FIXME: KT-5351

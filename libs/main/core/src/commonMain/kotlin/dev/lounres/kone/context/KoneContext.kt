@@ -17,5 +17,5 @@ public inline operator fun <A: KoneContext, R> A.invoke(block: context(A) () -> 
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
-    return run(block)
+    return block(this)
 }

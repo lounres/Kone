@@ -31,10 +31,10 @@ public interface KoneRemovableCollection<out E> : KoneCollection<E> {
 public interface KoneMutableCollection<E> : KoneExtendableCollection<E>, KoneRemovableCollection<E>
 
 public interface KoneList<out E> : KoneCollection<E> {
-    override fun contains(element: @UnsafeVariance E): Boolean = indexThat { _, collectionElement -> element == collectionElement } == size
+    override fun contains(element: @UnsafeVariance E): Boolean = indexThat { _, collectionElement -> element == collectionElement } != size
 
     public operator fun get(index: UInt): E
-    public fun getOptional(index: UInt): Option<E> =
+    public fun getMaybe(index: UInt): Option<E> =
         if (index < size) Some(get(index))
         else None
     public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
@@ -47,7 +47,7 @@ public interface KoneList<out E> : KoneCollection<E> {
     }
     public fun lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = size - 1u
-        while (i >= 0u) {
+        while (i != UInt.MAX_VALUE) {
             if (predicate(i, get(i))) break
             i--
         }

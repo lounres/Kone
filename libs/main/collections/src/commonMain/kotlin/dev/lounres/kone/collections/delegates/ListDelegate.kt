@@ -5,11 +5,10 @@
 
 package dev.lounres.kone.collections.delegates
 
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.delegates.KoneListAction.*
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 
 
 // TODO: Add more delegates as for sets
@@ -75,6 +74,17 @@ public abstract class KoneMutableListDelegate<E>(public val delegate: KoneMutabl
         beforeAction(delegate, Clear)
         delegate.clear()
         afterAction(delegate, Clear)
+    }
+
+    override fun hashCode(): Int = delegate.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (this.size != other.size) return false
+
+        if (other is KoneMutableListDelegate<*>) return this.delegate == other.delegate
+
+        return this.delegate == other
     }
 }
 

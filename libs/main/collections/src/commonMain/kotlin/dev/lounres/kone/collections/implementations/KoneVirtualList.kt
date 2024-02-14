@@ -5,10 +5,8 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.KoneIterableList
 
 
 public class KoneVirtualList<out E>(override val size: UInt, private val generator: (UInt) -> E): KoneIterableList<E> {
@@ -16,6 +14,38 @@ public class KoneVirtualList<out E>(override val size: UInt, private val generat
 
     override fun iterator(): KoneLinearIterator<E> = Iterator(size = size, generator = generator)
     override fun iteratorFrom(index: UInt): KoneLinearIterator<E> = Iterator(size = size, currentIndex = index, generator = generator)
+
+    override fun hashCode(): Int {
+        var hashCode = 1
+        for (i in 0u..<size) {
+            hashCode = 31 * hashCode + this[i].hashCode()
+        }
+        return hashCode
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (this.size != other.size) return false
+
+        when (other) {
+            is KoneVirtualList<*> ->
+                for (i in 0u..<size) {
+                    if (this[i] != other[i]) return false
+                }
+            is KoneIterableList<*> -> {
+                val otherIterator = other.iterator()
+                for (i in 0u..<size) {
+                    if (this[i] != otherIterator.getAndMoveNext()) return false
+                }
+            }
+            else ->
+                for (i in 0u..<size) {
+                    if (this[i] != other[i]) return false
+                }
+        }
+
+        return true
+    }
 
     internal class Iterator<E>(val size: UInt, var currentIndex: UInt = 0u, val generator: (UInt) -> E): KoneLinearIterator<E> {
         init {

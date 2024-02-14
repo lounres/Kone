@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections
 
 import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.orElse
 import dev.lounres.kone.option.orThrow
 
 
@@ -15,30 +16,33 @@ public class NoMatchingKeyException: NoSuchElementException {
 }
 
 public interface KoneMap<K, out V> {
-    public val size: Int
+    public val size: UInt
     public fun containsKey(key: K): Boolean
     public fun containsValue(value: @UnsafeVariance V): Boolean
 
-    public operator fun get(key: K): V = getOptional(key).orThrow { NoMatchingKeyException() }
-    public fun getOptional(key: K): Option<V>
+    public operator fun get(key: K): V = getMaybe(key).orThrow { NoMatchingKeyException() }
+    public fun getMaybe(key: K): Option<V>
 
     public val keys: KoneIterableSet<K>
     public val values: KoneIterableCollection<V>
     public val entries: KoneIterableSet<Entry<K, V>>
 
-    public open class Entry<out K, out V>(public val key: K, public open val value: V)
+    public open class Entry<out K, out V>(public val key: K, public open val value: V) {
+        public operator fun component1(): K = key
+        public operator fun component2(): V = value
+    }
 }
 
 public interface KoneMutableMap<K, V>: KoneMap<K, V> {
     public operator fun set(key: K, value: V)
-    public fun getAndSet(key: K, value: V): V = getOptionalAndSet(key, value).orThrow { NoMatchingKeyException() }
-    public fun getOptionalAndSet(key: K, value: V): Option<V>
-    public fun getOrSet(key: K, defaultValue: () -> V)
+    public fun getAndSet(key: K, value: V): V = getMaybeAndSet(key, value).orThrow { NoMatchingKeyException() }
+    public fun getMaybeAndSet(key: K, value: V): Option<V> = getMaybe(key).also { this[key] = value }
+    public fun getOrSet(key: K, defaultValue: () -> V): V = getMaybe(key).orElse { defaultValue().also { this[key] = it } }
 
     // TODO: Think about "definitely remove".
     public fun remove(key: K)
     public fun getAndRemove(key: K): V = getOptionalAndRemove(key).orThrow { NoMatchingKeyException() }
-    public fun getOptionalAndRemove(key: K): Option<V> = getOptional(key).also { remove(key) }
+    public fun getOptionalAndRemove(key: K): Option<V> = getMaybe(key).also { remove(key) }
     public fun removeAllThat(predicate: (key: K, value: V) -> Boolean)
 
     // TODO: Think about bulk operations.

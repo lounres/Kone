@@ -10,7 +10,7 @@ import kotlin.jvm.JvmInline
 
 // KT-42977
 @JvmInline
-public value class KoneArray<out E>(protected val array: Array<out E>): KoneIterableList<E> {
+public value class KoneArray<out E>(internal val array: Array<out E>): KoneIterableList<E> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -52,7 +52,7 @@ public value class KoneArray<out E>(protected val array: Array<out E>): KoneIter
 }
 
 @JvmInline
-public value class KoneMutableArray<E>(private val array: Array<E>): KoneSettableIterableList<E> {
+public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettableIterableList<E> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -89,7 +89,7 @@ public value class KoneMutableArray<E>(private val array: Array<E>): KoneSettabl
 
 // KT-42977
 @JvmInline
-public value class KoneUIntArray(protected val array: UIntArray): KoneIterableList<UInt> {
+public value class KoneUIntArray(internal val array: UIntArray): KoneIterableList<UInt> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -104,10 +104,10 @@ public value class KoneUIntArray(protected val array: UIntArray): KoneIterableLi
 
     override fun toString(): String = buildString {
         append('[')
-        if (size >= 0u) append(array[0])
+        if (size > 0u) append(array[0])
         for (i in 1..<array.size) {
             append(", ")
-            append(array[i].toUInt())
+            append(array[i])
         }
         append(']')
     }
@@ -139,13 +139,13 @@ public value class KoneUIntArray(protected val array: UIntArray): KoneIterableLi
 }
 
 @JvmInline
-public value class KoneMutableUIntArray(private val array: UIntArray): KoneSettableIterableList<UInt> {
+public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSettableIterableList<UInt> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
     public override val size: UInt get() = array.size.toUInt()
     override fun contains(element: UInt): Boolean = element in array
-    public override operator fun get(index: UInt): UInt = array[index.toInt()].toUInt()
+    public override operator fun get(index: UInt): UInt = array[index.toInt()]
     public override operator fun set(index: UInt, element: UInt) { array[index.toInt()] = element }
     public override operator fun iterator(): KoneSettableLinearIterator<UInt> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<UInt> {
@@ -155,10 +155,10 @@ public value class KoneMutableUIntArray(private val array: UIntArray): KoneSetta
 
     override fun toString(): String = buildString {
         append('[')
-        if (size >= 0u) append(array[0])
+        if (size > 0u) append(array[0])
         for (i in 1..<array.size) {
             append(", ")
-            append(array[i].toUInt())
+            append(array[i])
         }
         append(']')
     }

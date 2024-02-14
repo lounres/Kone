@@ -10,17 +10,17 @@ public interface KoneIterableCollection<out E> : KoneCollection<E>, KoneIterable
 
 public interface KoneReversibleIterableCollection<out E> : KoneIterableCollection<E>, KoneReversibleIterable<E>
 
-public interface KoneExtendableIterableCollection<E> : KoneIterableCollection<E>, KoneExtendableIterable<E>, KoneExtendableCollection<E>
+public interface KoneExtendableIterableCollection<E> : KoneIterableCollection<E>, KoneExtendableCollection<E>
 
-public interface KoneReversibleExtendableIterableCollection<E> : KoneExtendableIterableCollection<E>, KoneReversibleIterableCollection<E>, KoneReversibleExtendableIterable<E>
+public interface KoneReversibleExtendableIterableCollection<E> : KoneExtendableIterableCollection<E>, KoneReversibleIterableCollection<E>
 
 public interface KoneRemovableIterableCollection<out E> : KoneIterableCollection<E>, KoneRemovableIterable<E>, KoneRemovableCollection<E>
 
 public interface KoneReversibleRemovableIterableCollection<out E> : KoneRemovableIterableCollection<E>, KoneReversibleIterableCollection<E>, KoneReversibleRemovableIterable<E>
 
-public interface KoneMutableIterableCollection<E> : KoneExtendableIterableCollection<E>, KoneRemovableIterableCollection<E>, KoneMutableIterable<E>
+public interface KoneMutableIterableCollection<E> : KoneExtendableIterableCollection<E>, KoneRemovableIterableCollection<E>
 
-public interface KoneReversibleMutableIterableCollection<E> : KoneReversibleExtendableIterableCollection<E>, KoneReversibleRemovableIterableCollection<E>, KoneMutableIterableCollection<E>, KoneReversibleMutableIterable<E>
+public interface KoneReversibleMutableIterableCollection<E> : KoneReversibleExtendableIterableCollection<E>, KoneReversibleRemovableIterableCollection<E>, KoneMutableIterableCollection<E>
 
 public interface KoneIterableList<out E> : KoneList<E>, KoneIterableCollection<E>, KoneLinearIterable<E> {
     public fun iteratorFrom(index: UInt): KoneLinearIterator<E> {
@@ -69,8 +69,8 @@ public interface KoneMutableIterableList<E> : KoneMutableList<E>, KoneSettableIt
 
 public interface KoneIterableSet<out E> : KoneSet<E>, KoneIterableCollection<E>
 
-public interface KoneExtendableIterableSet<E> : KoneExtendableSet<E>, KoneIterableSet<E>/*, KoneExtendableIterableCollection<E>*/
+public interface KoneExtendableIterableSet<E> : KoneExtendableSet<E>, KoneIterableSet<E>, KoneExtendableIterableCollection<E>
 
 public interface KoneRemovableIterableSet<out E> : KoneRemovableSet<E>, KoneIterableSet<E>, KoneRemovableIterableCollection<E>
 
-public interface KoneMutableIterableSet<E> : KoneMutableSet<E>, KoneRemovableIterableSet<E>, KoneExtendableIterableSet<E>/*, KoneMutableIterableCollection<E>*/
+public interface KoneMutableIterableSet<E> : KoneMutableSet<E>, KoneRemovableIterableSet<E>, KoneExtendableIterableSet<E>, KoneMutableIterableCollection<E>

@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.collections.aliases.implementations
 
-import dev.lounres.kone.collections.implementations.KoneResizableLinkedList
+import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 
 
-public typealias ResizableLinkedList<E> = KoneResizableLinkedList<E>
-public fun <E> ResizableLinkedList(): ResizableLinkedList<E> = KoneResizableLinkedList()
-public fun <E> ResizableLinkedList(size: UInt, initializer: (index: UInt) -> E): ResizableLinkedList<E> = KoneResizableLinkedList(size, initializer)
+public typealias ResizableLinkedList<E> = KoneResizableLinkedArrayList<E>
+public fun <E> ResizableLinkedList(): ResizableLinkedList<E> = KoneResizableLinkedArrayList()
+public fun <E> ResizableLinkedList(size: UInt, initializer: (index: UInt) -> E): ResizableLinkedList<E> = KoneResizableLinkedArrayList(size, initializer)

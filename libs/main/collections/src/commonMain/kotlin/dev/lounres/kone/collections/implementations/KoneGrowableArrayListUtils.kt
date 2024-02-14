@@ -10,6 +10,12 @@ import dev.lounres.kone.collections.KoneMutableArray
 
 public fun <E> KoneGrowableArrayList(): KoneGrowableArrayList<E> = KoneGrowableArrayList(size = 0u)
 
+public fun <E> KoneGrowableArrayList(initialCapacity: UInt): KoneGrowableArrayList<E> =
+    KoneGrowableArrayList(
+        size = 0u,
+        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
+    )
+
 public fun <E> KoneGrowableArrayList(size: UInt, initializer: (index: UInt) -> E): KoneGrowableArrayList<E> {
     val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
     return KoneGrowableArrayList(

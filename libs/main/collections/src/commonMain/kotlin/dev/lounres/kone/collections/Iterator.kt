@@ -10,9 +10,9 @@ public interface KoneIterator<out E> {
     public operator fun hasNext(): Boolean
     public fun getNext(): E
     public fun moveNext()
-
-    public operator fun next(): E = getAndMoveNext()
 }
+
+public operator fun <E> KoneIterator<E>.next(): E = getAndMoveNext()
 
 public interface KoneReversibleIterator<out E> : KoneIterator<E> {
     public fun hasPrevious(): Boolean

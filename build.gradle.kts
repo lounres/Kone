@@ -75,6 +75,7 @@ allprojects {
         mavenCentral()
         maven("https://repo.kotlin.link")
 //        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        mavenLocal()
     }
 }
 
@@ -242,6 +243,8 @@ stal {
                             languageSettings {
                                 progressiveMode = true
                                 enableLanguageFeature("ContextReceivers")
+                                enableLanguageFeature("ValueClasses")
+                                enableLanguageFeature("ContractSyntaxV2")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalUnsignedTypes")

@@ -9,6 +9,8 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.linearAlgebra.experiment1.Matrix
+import dev.lounres.kone.linearAlgebra.experiment1.isSymmetric
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import space.kscience.kmath.expressions.Symbol
 
@@ -31,15 +33,15 @@ public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(name: String): Quadr
         Symbol(name + "_yz").polynomialValue
     )
 }
-public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(matrix: SquareMatrix<LabeledPolynomial<C>>): Quadric<C> = polynomialSpace {
-    require(matrix.countOfRows == 3) { "Defining matrix should have sizes 3×3." }
+public fun <C> PlanimetricsCalculationContext<C, *>.Quadric(matrix: Matrix<LabeledPolynomial<C>>): Quadric<C> = polynomialSpace {
+    require(matrix.rowNumber == 3u && matrix.columnNumber == 3u) { "Defining matrix should have sizes 3×3." }
     require(matrixSpace { matrix.isSymmetric }) { "Defining matrix should be symmetric." }
     Quadric(
-        xx = matrix[0, 0],
-        yy = matrix[1, 1],
-        zz = matrix[2, 2],
-        xy = 2 * matrix[0, 1],
-        xz = 2 * matrix[0, 2],
-        yz = 2 * matrix[1, 2]
+        xx = matrix[0u, 0u],
+        yy = matrix[1u, 1u],
+        zz = matrix[2u, 2u],
+        xy = 2 * matrix[0u, 1u],
+        xz = 2 * matrix[0u, 2u],
+        yz = 2 * matrix[1u, 2u]
     )
 }

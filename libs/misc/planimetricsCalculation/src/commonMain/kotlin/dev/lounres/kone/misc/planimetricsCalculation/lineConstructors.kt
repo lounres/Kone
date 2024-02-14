@@ -9,6 +9,8 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
+import dev.lounres.kone.linearAlgebra.experiment1.RowVector
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.asLabeledPolynomial
 import space.kscience.kmath.expressions.Symbol
@@ -24,12 +26,12 @@ public fun <C> PlanimetricsCalculationContext<C, *>.Line(name: String): Line<C> 
     )
 }
 public fun <C> Line(rowVector: RowVector<LabeledPolynomial<C>>): Line<C> = Line(
-    rowVector[0],
-    rowVector[1],
-    rowVector[2]
+    rowVector[0u],
+    rowVector[1u],
+    rowVector[2u]
 )
 public fun <C> Line(columnVector: ColumnVector<LabeledPolynomial<C>>): Line<C> = Line(
-    columnVector[0],
-    columnVector[1],
-    columnVector[2]
+    columnVector[0u],
+    columnVector[1u],
+    columnVector[2u]
 )

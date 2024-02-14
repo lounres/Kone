@@ -24,6 +24,6 @@ public inline fun UIntArray(size: UInt, init: (UInt) -> UInt): UIntArray = UIntA
 public fun UIntArray(size: UInt): UIntArray = UIntArray(UIntArray(size.toInt()))
 public fun uintArrayOf(vararg elements: UInt): UIntArray = UIntArray(elements)
 public typealias MutableUIntArray = KoneMutableUIntArray
+public inline fun MutableUIntArray(size: UInt, init: (UInt) -> UInt): MutableUIntArray = MutableUIntArray(UIntArray(size.toInt()) { init(it.toUInt()) })
 public fun MutableUIntArray(size: UInt): MutableUIntArray = MutableUIntArray(UIntArray(size.toInt()))
 public fun mutableUIntArrayOf(vararg elements: UInt): MutableUIntArray = MutableUIntArray(elements)
-public inline fun mutableUIntArray(size: UInt, init: (UInt) -> UInt): MutableUIntArray = MutableUIntArray(UIntArray(size.toInt()) { init(it.toUInt()) })

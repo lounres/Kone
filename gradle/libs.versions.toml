@@ -1,17 +1,18 @@
 [versions]
-kotlin = "2.0.0-Beta2"
+kotlin = "2.0.0-Beta4"
 
 kmath = "0.3.1"
 
 kotlinx-coroutines = "1.8.0-RC2"
-kotlinx-atomicfu = "0.23.1"
+kotlinx-atomicfu = "0.23.2"
 kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.5.0"
 kotlinx-kover = "0.6.0"
 kotlinx-benchmark = "0.4.10"
-kotlinx-binary-compatibility-validator = "0.13.2"
+kotlinx-binary-compatibility-validator = "0.14.0"
 kotlinx-knit = "0.4.0"
 
+logkube = "0.1.0"
 kotest = "5.8.0"
 dokka = "1.9.10"
 
@@ -63,3 +64,6 @@ dokka-mathjax = { module = "org.jetbrains.dokka:mathjax-plugin", version.ref = "
 
 # KMath
 kmath-core = { module = "space.kscience:kmath-core", version.ref = "kmath" }
+
+# LogKube
+logkube-core = { module = "dev.lounres:logKube.core", version.ref = "logkube" }

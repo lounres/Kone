@@ -9,8 +9,8 @@ import dev.lounres.kone.collections.*
 
 
 @Suppress("UNCHECKED_CAST")
-@JvmInline
-public value class KoneSettableArrayList<E> internal constructor(private val data: KoneMutableArray<Any?>): KoneSettableIterableList<E> {
+/*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes to make the class be value class
+public /*value*/ class KoneSettableArrayList<E> internal constructor(private val data: KoneMutableArray<Any?>): KoneSettableIterableList<E> {
     override val size: UInt get() = data.size
 
     override fun get(index: UInt): E {
@@ -28,12 +28,43 @@ public value class KoneSettableArrayList<E> internal constructor(private val dat
 
     override fun toString(): String = buildString {
         append('[')
-        if (size >= 0u) append(data[0u])
+        if (size > 0u) append(data[0u])
         for (i in 1u..<size) {
             append(", ")
             append(data[i])
         }
         append(']')
+    }
+    override fun hashCode(): Int {
+        var hashCode = 1
+        for (i in 0u..<size) {
+            hashCode = 31 * hashCode + this.data[i].hashCode()
+        }
+        return hashCode
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (this.size != other.size) return false
+
+        when (other) {
+            is KoneSettableArrayList<*> ->
+                for (i in 0u..<size) {
+                    if (this.data[i] != other.data[i]) return false
+                }
+            is KoneIterableList<*> -> {
+                val otherIterator = other.iterator()
+                for (i in 0u..<size) {
+                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
+                }
+            }
+            else ->
+                for (i in 0u..<size) {
+                    if (this.data[i] != other[i]) return false
+                }
+        }
+
+        return true
     }
 
     internal class Iterator<E>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<E> {

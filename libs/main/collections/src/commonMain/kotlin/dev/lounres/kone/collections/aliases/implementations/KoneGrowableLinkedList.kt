@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.collections.aliases.implementations
 
-import dev.lounres.kone.collections.implementations.KoneGrowableLinkedList
+import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 
 
-public typealias GrowableLinkedList<E> = KoneGrowableLinkedList<E>
-public fun <E> GrowableLinkedList(): GrowableLinkedList<E> = KoneGrowableLinkedList()
-public fun <E> GrowableLinkedList(size: UInt, initializer: (index: UInt) -> E): GrowableLinkedList<E> = KoneGrowableLinkedList(size, initializer)
+public typealias GrowableLinkedList<E> = KoneGrowableLinkedArrayList<E>
+public fun <E> GrowableLinkedList(): GrowableLinkedList<E> = KoneGrowableLinkedArrayList()
+public fun <E> GrowableLinkedList(size: UInt, initializer: (index: UInt) -> E): GrowableLinkedList<E> = KoneGrowableLinkedArrayList(size, initializer)

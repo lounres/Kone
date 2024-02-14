@@ -11,3 +11,8 @@ public fun indexException(index: UInt, size: UInt): Nothing =
 
 public fun noElementException(index: UInt, size: UInt): Nothing =
     throw NoSuchElementException("Index $index out of bounds for length $size")
+
+public class CapacityOverflowException(message: String = "An operation is not implemented.") : RuntimeException(message)
+
+public fun capacityOverflowException(capacity: UInt): Nothing =
+    throw CapacityOverflowException("Overflow of collection with fixed capacity of $capacity")

@@ -35,6 +35,17 @@ public abstract class KoneExtendableIterableSetDelegate<E>(public val delegate: 
         delegate.addAll(elements)
         afterAction(delegate, AddAll(elements))
     }
+
+    override fun hashCode(): Int = delegate.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneSet<*>) return false
+        if (this.size != other.size) return false
+
+        if (other is KoneMutableListDelegate<*>) return this.delegate == other.delegate
+
+        return this.delegate == other
+    }
 }
 
 public inline fun <E> KoneExtendableIterableSetDelegate(
@@ -66,6 +77,17 @@ public abstract class KoneRemovableIterableSetDelegate<E>(public val delegate: K
         beforeAction(delegate, Clear)
         delegate.clear()
         afterAction(delegate, Clear)
+    }
+
+    override fun hashCode(): Int = delegate.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneSet<*>) return false
+        if (this.size != other.size) return false
+
+        if (other is KoneMutableListDelegate<*>) return this.delegate == other.delegate
+
+        return this.delegate == other
     }
 }
 
@@ -110,6 +132,17 @@ public abstract class KoneMutableIterableSetDelegate<E>(public val delegate: Kon
         beforeAction(delegate, Clear)
         delegate.clear()
         afterAction(delegate, Clear)
+    }
+
+    override fun hashCode(): Int = delegate.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneSet<*>) return false
+        if (this.size != other.size) return false
+
+        if (other is KoneMutableListDelegate<*>) return this.delegate == other.delegate
+
+        return this.delegate == other
     }
 }
 

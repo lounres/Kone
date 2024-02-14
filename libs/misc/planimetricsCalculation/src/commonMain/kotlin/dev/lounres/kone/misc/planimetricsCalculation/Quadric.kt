@@ -8,6 +8,8 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.collections.utils.koneIterableListOf
+import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.reflect.KProperty
 
@@ -56,11 +58,11 @@ context(PlanimetricsCalculationContext<E, *>)
 public inline infix fun <E> Quadric<E>.neq(other: Quadric<E>): Boolean = !(this equalsTo other)
 
 context(PlanimetricsCalculationContext<E, *>)
-public val <E> Quadric<E>.matrix: SquareMatrix<LabeledPolynomial<E>>
+public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
     get() = calculate {
-        SquareMatrix(
-            listOf(2 * xx, xy, xz),
-            listOf(xy, 2 * yy, yz),
-            listOf(xz, yz, 2 * zz)
+        Matrix(
+            koneIterableListOf(2 * xx, xy, xz),
+            koneIterableListOf(xy, 2 * yy, yz),
+            koneIterableListOf(xz, yz, 2 * zz)
         )
     }

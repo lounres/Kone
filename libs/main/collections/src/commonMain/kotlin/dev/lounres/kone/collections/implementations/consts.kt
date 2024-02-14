@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.first
+import dev.lounres.kone.collections.utils.first
 
 
 internal const val MAX_CAPACITY = 0b10000000000000000000000000000000u

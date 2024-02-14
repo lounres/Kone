@@ -28,7 +28,7 @@ So in Kone any ring is implemented as an object that holds all the operation of 
 // Simplified definition. See actual API in API reference
 data class Rational(val numerator: Long, val denumerator: Long)
 
-public object RationalField : Field<Rational> /* Field is an extension interface of Ring */ {
+public data object RationalField : Field<Rational> /* Field is an extension interface of Ring */ {
     // Constants of the field
     public override val zero: Rational = Rational(0L)
     public override val one: Rational = Rational(1L)

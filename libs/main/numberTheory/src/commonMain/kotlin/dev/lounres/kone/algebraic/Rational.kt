@@ -62,7 +62,7 @@ public class Rational {
     }
 }
 
-public object RationalField : Field<Rational> {
+public data object RationalField : Field<Rational> {
     // region Constants
     public override val zero: Rational = Rational(0L)
     public override val one: Rational = Rational(1L)

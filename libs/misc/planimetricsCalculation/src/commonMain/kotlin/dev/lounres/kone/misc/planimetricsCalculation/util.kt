@@ -13,6 +13,7 @@ import space.kscience.kmath.expressions.Symbol
 
 
 context(Ring<C>)
+@OptIn(DelicatePolynomialAPI::class)
 internal fun <C> String.convert(): LabeledPolynomial<C> =
     LabeledPolynomialWithoutCheck(mapOf(Symbol(this) to 1U) to one)
 context(MultivariatePolynomialSpace<C, Symbol, LabeledPolynomial<C>, *>)
