@@ -5,11 +5,10 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.collections.contextual.KoneContextualIterableList
-import dev.lounres.kone.collections.contextual.KoneContextualIterableSet
-import dev.lounres.kone.collections.contextual.koneContextualIterableListHashing
-import dev.lounres.kone.collections.contextual.koneContextualIterableSetHashing
+import dev.lounres.kone.collections.common.utils.KoneIterableList
+import dev.lounres.kone.collections.contextual.*
 import dev.lounres.kone.collections.contextual.utils.*
+import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -247,3 +246,37 @@ internal class MutableAbstractPolytopicConstruction2Impl<N, NE: Equality<N>> : M
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <N, NE: Equality<N>> buildAbstractPolytopicConstruction2(@BuilderInference builder: context(Hashing<AbstractPolytope>) MutableAbstractPolytopicConstruction2<N, NE>.() -> Unit): AbstractPolytopicConstruction<N, NE> =
     MutableAbstractPolytopicConstruction2Impl<N, NE>().also { builder(defaultHashing(), it) }
+
+context(NE, PE1, PE2)
+public infix fun <N, NE: Equality<N>, P1, V1: P1, PE1: Equality<P1>, P2, V2: P2, PE2: Equality<P2>> PolytopicConstruction<N, NE, P1, V1, PE1>.eq(other: PolytopicConstruction<N, NE, P2, V2, PE2>): Boolean {
+    if (this.spaceDimension != other.spaceDimension) return false
+    if ((0u..this.spaceDimension).any { this.polytopes[it].size != other.polytopes[it].size }) return false
+
+    val thisToOtherPolytopesMapping = KoneIterableList(this.spaceDimension + 1u) { koneContextualMutableMapOf<P1, P2>() }
+    @Suppress("UNCHECKED_CAST")
+    val thisToOtherVertexMapping = thisToOtherPolytopesMapping[0u] as KoneContextualMutableMap<V1, PE1, V2>
+
+    this.vertices.map { this { it.coordinates } }
+    val thisPointToVertexMapping = pointEquality(this@NE).invoke { this.vertices.associateBy { it.coordinates } }
+    val otherPointToVertexMapping = pointEquality(this@NE).invoke { other.vertices.associateBy { other { it.coordinates } } }
+    if (koneContextualIterableSetEquality(pointEquality(this@NE)).invoke { thisPointToVertexMapping.keys neq otherPointToVertexMapping.keys }) return false
+    for ((point, thisVertex) in thisPointToVertexMapping) {
+        thisToOtherVertexMapping[thisVertex] = pointEquality(this@NE).invoke { otherPointToVertexMapping[point] }
+    }
+
+    for (dim in 1u..this.spaceDimension) {
+        val dimMapping = thisToOtherPolytopesMapping[dim]
+        val thisFacesToPolytopeMapping = koneContextualIterableListEquality(koneContextualIterableSetEquality(this@PE2)).invoke {
+            this.polytopes[dim].associateBy { polytope -> this { polytope.faces.mapIndexed { dim, dimPolytopes -> dimPolytopes.map { thisToOtherPolytopesMapping[dim][it] }.toKoneContextualIterableSet() } } }
+        }
+        val otherFacesToPolytopeMapping = koneContextualIterableListEquality(koneContextualIterableSetEquality(this@PE2)).invoke {
+            other.polytopes[dim].associateBy { other.invoke { it.faces } }
+        }
+        if (koneContextualIterableSetEquality(koneContextualIterableListEquality(koneContextualIterableSetEquality(this@PE2))).invoke { thisFacesToPolytopeMapping.keys neq otherFacesToPolytopeMapping.keys }) return false
+        for ((faces, thisPolytope) in thisFacesToPolytopeMapping) {
+            dimMapping[thisPolytope] = koneContextualIterableListEquality(koneContextualIterableSetEquality(this@PE2)).invoke { otherFacesToPolytopeMapping[faces] }
+        }
+    }
+
+    return true
+}
