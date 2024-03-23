@@ -7,6 +7,9 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.algebraic.LongRing.compareTo
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.numberTheory.gcd
 import kotlin.jvm.JvmField
 
@@ -22,10 +25,10 @@ public class Rational {
         if (toCheckInput) {
             if (denominator == 0L) throw ArithmeticException("/ by zero")
 
-            val greatestCommonDivider = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
+            val greatestCommonDivisor = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
 
-            this.numerator = numerator / greatestCommonDivider
-            this.denominator = denominator / greatestCommonDivider
+            this.numerator = numerator / greatestCommonDivisor
+            this.denominator = denominator / greatestCommonDivisor
         } else {
             this.numerator = numerator
             this.denominator = denominator
@@ -62,16 +65,24 @@ public class Rational {
     }
 }
 
-public data object RationalField : Field<Rational> {
+public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rational> {
     // region Constants
     public override val zero: Rational = Rational(0L)
     public override val one: Rational = Rational(1L)
     // endregion
 
-    // region Equality
+    // region Equality, comparison, and hashing
     public override infix fun Rational.equalsTo(other: Rational): Boolean = this == other
     public override fun Rational.isZero(): Boolean = numerator == 0L
     public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1L
+
+    public override fun Rational.compareTo(other: Rational): Int {
+        val numeratorGcd = gcd(this.numerator, other.numerator)
+        val denominatorGcd = gcd(this.denominator, other.denominator)
+
+        return ((this.numerator / numeratorGcd) * (other.denominator / denominatorGcd)) compareTo ((other.numerator / numeratorGcd) * (this.denominator / denominatorGcd))
+    }
+    public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
     // endregion
 
     // region Integers conversion

@@ -2,7 +2,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.comparison)
+                api(projects.libs.main.comparison)
+                implementation(projects.libs.main.algebraic)
             }
         }
     }

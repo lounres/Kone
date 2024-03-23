@@ -10,11 +10,9 @@ import dev.lounres.kone.algebraic.util.doublingPlus
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.KoneContext
 
 
 // TODO: KONE-42
-// TODO: Extract equality to separate interface
 public interface Ring<N>: Equality<N> {
 
     // region Constants

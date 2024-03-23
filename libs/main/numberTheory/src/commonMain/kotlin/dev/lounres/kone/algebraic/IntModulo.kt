@@ -7,9 +7,11 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.comparison.Hashing
+
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
-public class IntModuloRing(modulus: Int) : Ring<Int> {
+public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
 
     public val modulus: Int
 
@@ -17,8 +19,13 @@ public class IntModuloRing(modulus: Int) : Ring<Int> {
         require(modulus != 0) { "modulus can not be zero" }
         this.modulus = if (modulus < 0) -modulus else modulus
     }
+
+    override fun Int.hash(): Int = this.mod(modulus)
+
     public override val zero: Int = 0
     public override val one: Int = 1
+
+    // TODO: Replace `%` with `mod`
 
     public override fun valueOf(arg: Int): Int = arg % modulus
     public override fun valueOf(arg: Long): Int = (arg % modulus).toInt()

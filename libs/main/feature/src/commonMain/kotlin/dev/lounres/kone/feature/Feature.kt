@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.feature
 
-import dev.lounres.kone.collections.standard.KoneIterableList
-import dev.lounres.kone.collections.standard.KoneMutableIterableList
-import dev.lounres.kone.collections.standard.utils.indices
+import dev.lounres.kone.collections.common.KoneIterableList
+import dev.lounres.kone.collections.common.KoneMutableIterableList
+import dev.lounres.kone.collections.common.utils.indices
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 import kotlin.reflect.KClass
@@ -73,6 +73,6 @@ public interface FeatureProviderHolder<in T>: FeatureProvider<T> {
 public interface ExtendableFeatureProviderHolder<T>: FeatureProviderHolder<T> {
     override val featureProviders: KoneMutableIterableList<FeatureProvider<T>>
     public fun install(featureProvider: FeatureProvider<T>) {
-        featureProviders.add(featureProvider)
+        featureProviders.addAtTheEnd(featureProvider)
     }
 }

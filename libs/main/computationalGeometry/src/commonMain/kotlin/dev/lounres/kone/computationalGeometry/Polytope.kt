@@ -5,57 +5,84 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.collections.standard.KoneIterableList
-import dev.lounres.kone.collections.standard.KoneIterableSet
-import dev.lounres.kone.collections.standard.utils.*
+import dev.lounres.kone.collections.contextual.KoneContextualIterableList
+import dev.lounres.kone.collections.contextual.KoneContextualIterableSet
+import dev.lounres.kone.collections.contextual.koneContextualIterableListHashing
+import dev.lounres.kone.collections.contextual.koneContextualIterableSetHashing
+import dev.lounres.kone.collections.contextual.utils.*
+import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.logging.koneLogger
 import kotlin.experimental.ExperimentalTypeInference
 
 
-public interface PolytopicConstruction<N, P, V: P>: KoneContext {
+public interface PolytopicConstruction<N, in NE: Equality<N>, P, V: P, in PE: Equality<P>>: KoneContext {
     public val spaceDimension: UInt
 
-    public val polytopes: KoneIterableList<KoneIterableSet<P>>
-    public fun polytopesOfDimension(dim: UInt): KoneIterableSet<P>
-    public operator fun get(dim: UInt): KoneIterableSet<P>
+    context(PE)
+    public val polytopes: KoneContextualIterableList<KoneContextualIterableSet<P, PE>, Equality<KoneContextualIterableSet<P, PE>>>
+    context(PE)
+    public fun polytopesOfDimension(dim: UInt): KoneContextualIterableSet<P, PE>
+    context(PE)
+    public operator fun get(dim: UInt): KoneContextualIterableSet<P, PE>
+    context(PE)
     public val P.dimension: UInt
-    public val P.faces: KoneIterableList<KoneIterableSet<P>>
-    public fun P.facesOfDimension(dim: UInt): KoneIterableSet<P>
-    public operator fun P.get(dim: UInt): KoneIterableSet<P>
-    public val P.vertices: KoneIterableSet<V>
-    public val P.cofaces: KoneIterableList<KoneIterableSet<P>>
+    context(PE)
+    public val P.faces: KoneContextualIterableList<KoneContextualIterableSet<P, PE>, Equality<KoneContextualIterableSet<P, PE>>>
+    context(PE)
+    public fun P.facesOfDimension(dim: UInt): KoneContextualIterableSet<P, PE>
+    context(PE)
+    public operator fun P.get(dim: UInt): KoneContextualIterableSet<P, PE>
+    context(PE)
+    public val P.vertices: KoneContextualIterableSet<V, PE>
+    context(PE)
+    public val P.cofaces: KoneContextualIterableList<KoneContextualIterableSet<P, PE>, Equality<KoneContextualIterableSet<P, PE>>>
         get() =
             polytopes
                 .drop(this.dimension + 1u)
-                .map { polytopes -> polytopes.filterTo(koneMutableIterableSetOf()) { this in it.facesOfDimension(this.dimension) } }
-    public fun P.superPolytopesOfDimension(dim: UInt): KoneIterableSet<P> =
-        polytopes[dim].filterTo(koneMutableIterableSetOf()) { this in it.facesOfDimension(this.dimension) }
+                .map { polytopes -> polytopes.filterTo(koneContextualMutableIterableSetOf()) { this in it.facesOfDimension(this.dimension) } }
+    context(PE)
+    public fun P.cofacesOfDimension(dim: UInt): KoneContextualIterableSet<P, PE> =
+        polytopes[dim].filterTo(koneContextualMutableIterableSetOf()) { this in it.facesOfDimension(this.dimension) }
 
-    public val vertices: KoneIterableSet<V>
-    public val V.coordinates: Point<N>
+    context(PE)
+    public val vertices: KoneContextualIterableSet<V, PE>
+    context(PE)
+    public val V.coordinates: Point<N, NE>
 }
 
-public interface PolytopicConstruction2<N, P, V: P>: PolytopicConstruction<N, P, V> {
+public interface PolytopicConstruction2<N, in NE: Equality<N>, P, V: P, PE: Equality<P>>: PolytopicConstruction<N, NE, P, V, PE> {
     override val spaceDimension: UInt get() = 2u
 
-    override val V.coordinates: Point2<N>
+    context(PE)
+    override val V.coordinates: Point2<N, NE>
 }
 
-public interface MutablePolytopicConstruction<N, P, V: P>: PolytopicConstruction<N, P, V> {
-    public fun addPolytope(vertices: KoneIterableSet<V>, faces: KoneIterableList<KoneIterableSet<P>>): P
+public interface MutablePolytopicConstruction<N, NE: Equality<N>, P, V: P, PE: Equality<P>>: PolytopicConstruction<N, NE, P, V, PE> {
+    context(PE)
+    public fun addPolytope(vertices: KoneContextualIterableSet<V, PE>, faces: KoneContextualIterableList<KoneContextualIterableSet<P, PE>, Equality<KoneContextualIterableSet<P, PE>>>): P
+    context(PE)
+    public fun removePolytope(polytope: P)
+//    context(PE)
+//    public operator fun P.set(dim: UInt, faces: Set<P>)
+
+    context(NE, PE)
+    public fun addVertex(coordinates: Point<N, NE>): V
+}
+
+public interface MutablePolytopicConstruction2<N, NE: Equality<N>, P, V: P, PE: Equality<P>>: PolytopicConstruction2<N, NE, P, V, PE> {
+    context(PE)
+    public fun addPolytope(vertices: KoneContextualIterableSet<V, PE>, faces: KoneContextualIterableList<KoneContextualIterableSet<P, PE>, Equality<KoneContextualIterableSet<P, PE>>>): P
+    context(PE)
     public fun removePolytope(polytope: P)
 //    public operator fun P.set(dim: UInt, faces: Set<P>)
 
-    public fun addVertex(coordinates: Point<N>): V
-}
-
-public interface MutablePolytopicConstruction2<N, P, V: P>: PolytopicConstruction2<N, P, V> {
-    public fun addPolytope(vertices: KoneIterableSet<V>, faces: KoneIterableList<KoneIterableSet<P>>): P
-    public fun removePolytope(polytope: P)
-//    public operator fun P.set(dim: UInt, faces: Set<P>)
-
-    public fun addVertex(coordinates: Point2<N>): V
+    context(NE, PE)
+    public fun addVertex(coordinates: Point2<N, NE>): V
 }
 
 public open class AbstractPolytope internal constructor() {
@@ -65,43 +92,63 @@ public class AbstractVertex internal constructor(): AbstractPolytope() {
     override fun toString(): String = "AbstractVertex$${hashCode().toHexString()}"
 }
 
-public typealias AbstractPolytopicConstruction<N> = PolytopicConstruction<N, AbstractPolytope, AbstractVertex>
-public typealias MutableAbstractPolytopicConstruction<N> = MutablePolytopicConstruction<N, AbstractPolytope, AbstractVertex>
+public typealias AbstractPolytopicConstruction<N, NE> = PolytopicConstruction<N, NE, AbstractPolytope, AbstractVertex, Hashing<AbstractPolytope>>
+public typealias MutableAbstractPolytopicConstruction<N, NE> = MutablePolytopicConstruction<N, NE, AbstractPolytope, AbstractVertex, Hashing<AbstractPolytope>>
 
-public typealias AbstractPolytopicConstruction2<N> = PolytopicConstruction2<N, AbstractPolytope, AbstractVertex>
-public typealias MutableAbstractPolytopicConstruction2<N> = MutablePolytopicConstruction2<N, AbstractPolytope, AbstractVertex>
+public typealias AbstractPolytopicConstruction2<N, NE> = PolytopicConstruction2<N, NE, AbstractPolytope, AbstractVertex, Hashing<AbstractPolytope>>
+public typealias MutableAbstractPolytopicConstruction2<N, NE> = MutablePolytopicConstruction2<N, NE, AbstractPolytope, AbstractVertex, Hashing<AbstractPolytope>>
 
 
-// Replace the dummy implementation with accurate, checking one
+// TODO: Replace the dummy implementation with accurate, checking one
 @PublishedApi
-internal class MutableAbstractPolytopicConstructionImpl<N>(override val spaceDimension: UInt) : MutableAbstractPolytopicConstruction<N> {
-    private val _polytopes = KoneIterableList(spaceDimension + 1u) { koneMutableIterableSetOf<AbstractPolytope>() }
-    private val _dimensionOf = koneMutableMapOf<AbstractPolytope, UInt>()
-    private val _facesOf = koneMutableMapOf<AbstractPolytope, KoneIterableList<KoneIterableSet<AbstractPolytope>>>()
+internal class MutableAbstractPolytopicConstructionImpl<N, NE: Equality<N>>(override val spaceDimension: UInt) : MutableAbstractPolytopicConstruction<N, NE> {
+    private val _polytopes = KoneContextualIterableList(spaceDimension + 1u) { koneContextualMutableIterableSetOf<AbstractPolytope>() }
+    private val _dimensionOf = koneContextualMutableMapOf<AbstractPolytope, UInt>()
+    private val _facesOf = koneContextualMutableMapOf<AbstractPolytope, KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>>>()
 //    private val _superPolytopesOf = mutableMapOf<AbstractPolytope, List<MutableSet<AbstractPolytope>>>()
-    private val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneIterableSet<AbstractVertex>>()
-    private val _coordinatesOf = koneMutableMapOf<AbstractVertex, Point<N>>()
+    private val _verticesOf = koneContextualMutableMapOf<AbstractPolytope, KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>>>()
+    private val _coordinatesOf = koneContextualMutableMapOf<AbstractVertex, Point<N, NE>>()
 
-    override val polytopes: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _polytopes
-    override fun polytopesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _polytopes[dim]
-    override fun get(dim: UInt): KoneIterableSet<AbstractPolytope> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
+    override val polytopes: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>> get() = _polytopes
+    context(Hashing<AbstractPolytope>)
+    override fun polytopesOfDimension(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
+    override fun get(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
     override val AbstractPolytope.dimension: UInt get() = _dimensionOf[this]
-    override val AbstractPolytope.faces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _facesOf[this]
-    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _facesOf[this][dim]
-    override operator fun AbstractPolytope.get(dim: UInt): KoneIterableSet<AbstractPolytope> = _facesOf[this][dim]
-    override val AbstractPolytope.vertices: KoneIterableSet<AbstractVertex> get() = _verticesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override val AbstractPolytope.faces: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>> get() = _facesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _facesOf[this][dim]
+    context(Hashing<AbstractPolytope>)
+    override operator fun AbstractPolytope.get(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _facesOf[this][dim]
+    context(Hashing<AbstractPolytope>)
+    override val AbstractPolytope.vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>> get() = _verticesOf[this]
 
-    override val vertices: KoneIterableSet<AbstractVertex> get() = _coordinatesOf.keys
-    override val AbstractVertex.coordinates: Point<N> get() = _coordinatesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override val vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>> get() = _coordinatesOf.keys
+    context(Hashing<AbstractPolytope>)
+    override val AbstractVertex.coordinates: Point<N, NE> get() = _coordinatesOf[this]
 
-    override fun addPolytope(vertices: KoneIterableSet<AbstractVertex>, faces: KoneIterableList<KoneIterableSet<AbstractPolytope>>): AbstractPolytope =
-        _polytopes[faces.size].firstOrNull { it.faces == faces } ?: AbstractPolytope().also {
-            koneLogger.info { "New polytope: $it, vertices $vertices, faces $faces\n" }
+    context(Hashing<AbstractPolytope>)
+    override fun addPolytope(vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>>, faces: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>>): AbstractPolytope =
+        _polytopes[faces.size].firstOrNull { koneContextualIterableListHashing(koneContextualIterableSetHashing(this@Hashing)).invoke { it.faces eq faces } } ?: AbstractPolytope().also {
+            koneLogger.info(
+                items = {
+                    mapOf(
+                        "polytope" to it,
+                        "vertices" to vertices,
+                        "faces" to faces,
+                    )
+                }
+            ) { "fun dev.lounres.kone.computationalGeometry.MutableAbstractPolytopicConstructionImpl.addPolytope: New polytope" }
             _polytopes[faces.size].add(it)
             _dimensionOf[it] = faces.size
             _facesOf[it] = faces
             _verticesOf[it] = vertices
         }
+    context(Hashing<AbstractPolytope>)
     override fun removePolytope(polytope: AbstractPolytope) {
         val dim = _dimensionOf[polytope]
         _polytopes[dim].remove(polytope)
@@ -112,50 +159,70 @@ internal class MutableAbstractPolytopicConstructionImpl<N>(override val spaceDim
     }
 //    override operator fun AbstractPolytope.set(dim: UInt, faces: Set<AbstractPolytope>)
 
-    override fun addVertex(coordinates: Point<N>): AbstractVertex =
+    context(NE, Hashing<AbstractPolytope>)
+    override fun addVertex(coordinates: Point<N, NE>): AbstractVertex =
         _coordinatesOf.entries.firstOrNull { it.value == coordinates }?.key ?: AbstractVertex().also {
-            koneLogger.info { "New vertex: $it, coordinates $coordinates\n" }
+            koneLogger.info(
+                items = {
+                    mapOf(
+                        "vertex" to it,
+                        "coordinates" to coordinates,
+                    )
+                }
+            ) { "fun dev.lounres.kone.computationalGeometry.MutableAbstractPolytopicConstructionImpl.addVertex: New vertex" }
             _polytopes[0u].add(it)
             _dimensionOf[it] = 0u
-            _facesOf[it] = emptyKoneIterableList()
-            _verticesOf[it] = koneIterableSetOf(it)
+            _facesOf[it] = emptyKoneContextualIterableList()
+            _verticesOf[it] = koneContextualIterableSetOf<AbstractVertex>(it)
             _coordinatesOf[it] = coordinates
         }
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <N> buildAbstractPolytopicConstruction(spaceDimension: UInt, @BuilderInference builder: MutableAbstractPolytopicConstruction<N>.() -> Unit): AbstractPolytopicConstruction<N> =
-    MutableAbstractPolytopicConstructionImpl<N>(spaceDimension).apply(builder)
+public inline fun <N, NE: Equality<N>> buildAbstractPolytopicConstruction(spaceDimension: UInt, @BuilderInference builder: MutableAbstractPolytopicConstruction<N, NE>.() -> Unit): AbstractPolytopicConstruction<N, NE> =
+    MutableAbstractPolytopicConstructionImpl<N, NE>(spaceDimension).also(builder)
 
 @PublishedApi
-internal class MutableAbstractPolytopicConstruction2Impl<N> : MutableAbstractPolytopicConstruction2<N> {
+internal class MutableAbstractPolytopicConstruction2Impl<N, NE: Equality<N>> : MutableAbstractPolytopicConstruction2<N, NE> {
     override val spaceDimension: UInt = 2u
 
-    private val _polytopes = KoneIterableList(spaceDimension) { koneMutableIterableSetOf<AbstractPolytope>() }
-    private val _dimensionOf = koneMutableMapOf<AbstractPolytope, UInt>()
-    private val _facesOf = koneMutableMapOf<AbstractPolytope, KoneIterableList<KoneIterableSet<AbstractPolytope>>>()
+    private val _polytopes = KoneContextualIterableList(spaceDimension) { koneContextualMutableIterableSetOf<AbstractPolytope>() }
+    private val _dimensionOf = koneContextualMutableMapOf<AbstractPolytope, UInt>()
+    private val _facesOf = koneContextualMutableMapOf<AbstractPolytope, KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>>>()
     //    private val _superPolytopesOf = mutableMapOf<AbstractPolytope, List<MutableSet<AbstractPolytope>>>()
-    private val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneIterableSet<AbstractVertex>>()
-    private val _coordinatesOf = koneMutableMapOf<AbstractVertex, Point2<N>>()
+    private val _verticesOf = koneContextualMutableMapOf<AbstractPolytope, KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>>>()
+    private val _coordinatesOf = koneContextualMutableMapOf<AbstractVertex, Point2<N, NE>>()
 
-    override val polytopes: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _polytopes
-    override fun polytopesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _polytopes[dim]
-    override fun get(dim: UInt): KoneIterableSet<AbstractPolytope> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
+    override val polytopes: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>> get() = _polytopes
+    context(Hashing<AbstractPolytope>)
+    override fun polytopesOfDimension(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
+    override fun get(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _polytopes[dim]
+    context(Hashing<AbstractPolytope>)
     override val AbstractPolytope.dimension: UInt get() = _dimensionOf[this]
-    override val AbstractPolytope.faces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _facesOf[this]
-    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _facesOf[this][dim]
-    override operator fun AbstractPolytope.get(dim: UInt): KoneIterableSet<AbstractPolytope> = _facesOf[this][dim]
-    override val AbstractPolytope.vertices: KoneIterableSet<AbstractVertex> get() = _verticesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override val AbstractPolytope.faces: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>> get() = _facesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _facesOf[this][dim]
+    context(Hashing<AbstractPolytope>)
+    override operator fun AbstractPolytope.get(dim: UInt): KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>> = _facesOf[this][dim]
+    context(Hashing<AbstractPolytope>)
+    override val AbstractPolytope.vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>> get() = _verticesOf[this]
 
-    override val vertices: KoneIterableSet<AbstractVertex> get() = _coordinatesOf.keys
-    override val AbstractVertex.coordinates: Point2<N> get() = _coordinatesOf[this]
+    context(Hashing<AbstractPolytope>)
+    override val vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>> get() = _coordinatesOf.keys
+    context(Hashing<AbstractPolytope>)
+    override val AbstractVertex.coordinates: Point2<N, NE> get() = _coordinatesOf[this]
 
-    override fun addPolytope(vertices: KoneIterableSet<AbstractVertex>, faces: KoneIterableList<KoneIterableSet<AbstractPolytope>>): AbstractPolytope = AbstractPolytope().also {
+    context(Hashing<AbstractPolytope>)
+    override fun addPolytope(vertices: KoneContextualIterableSet<AbstractVertex, Hashing<AbstractPolytope>>, faces: KoneContextualIterableList<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>, Equality<KoneContextualIterableSet<AbstractPolytope, Hashing<AbstractPolytope>>>>): AbstractPolytope = AbstractPolytope().also {
         _polytopes[faces.size].add(it)
         _dimensionOf[it] = faces.size
         _facesOf[it] = faces
         _verticesOf[it] = vertices
     }
+    context(Hashing<AbstractPolytope>)
     override fun removePolytope(polytope: AbstractPolytope) {
         val dim = _dimensionOf[polytope]
         _polytopes[dim].remove(polytope)
@@ -164,17 +231,19 @@ internal class MutableAbstractPolytopicConstruction2Impl<N> : MutableAbstractPol
         _verticesOf.remove(polytope)
         if (polytope is AbstractVertex) _coordinatesOf.remove(polytope)
     }
+//    context(Hashing<AbstractPolytope>)
 //    override operator fun AbstractPolytope.set(dim: UInt, faces: Set<AbstractPolytope>)
 
-    override fun addVertex(coordinates: Point2<N>): AbstractVertex = AbstractVertex().also {
+    context(NE, Hashing<AbstractPolytope>)
+    override fun addVertex(coordinates: Point2<N, NE>): AbstractVertex = AbstractVertex().also {
         _polytopes[0u].add(it)
         _dimensionOf[it] = 0u
-        _facesOf[it] = emptyKoneIterableList()
-        _verticesOf[it] = koneIterableSetOf(it)
+        _facesOf[it] = emptyKoneContextualIterableList()
+        _verticesOf[it] = koneContextualIterableSetOf<AbstractVertex>(it)
         _coordinatesOf[it] = coordinates
     }
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <N> buildAbstractPolytopicConstruction2(@BuilderInference builder: MutableAbstractPolytopicConstruction2<N>.() -> Unit): AbstractPolytopicConstruction<N> =
-    MutableAbstractPolytopicConstruction2Impl<N>().apply(builder)
+public inline fun <N, NE: Equality<N>> buildAbstractPolytopicConstruction2(@BuilderInference builder: context(Hashing<AbstractPolytope>) MutableAbstractPolytopicConstruction2<N, NE>.() -> Unit): AbstractPolytopicConstruction<N, NE> =
+    MutableAbstractPolytopicConstruction2Impl<N, NE>().also { builder(defaultHashing(), it) }

@@ -10,7 +10,7 @@ import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.linearAlgebra.experiment1.VectorSpace
 
 
-public class EuclideanSpace<N, out A>(
+public class EuclideanSpace<N, A>(
     public val numberRing: A,
     public val vectorSpace: VectorSpace<N, A>
 ) where A: Ring<N>, A: Order<N>

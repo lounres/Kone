@@ -3,6 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.libs.main.algebraic)
+                implementation(projects.libs.main.comparison)
             }
         }
         commonTest {

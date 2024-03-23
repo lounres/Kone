@@ -162,6 +162,7 @@ stal {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
                 target.compilations.all {
+                    // TODO: Deprecated. Replace with `compilerOptions` DSL
                     kotlinOptions {
                         jvmTarget = jvmTargetVersion
                         freeCompilerArgs += listOf(
@@ -170,6 +171,7 @@ stal {
                     }
                     compileTaskProvider.apply {
                         // TODO: Check if really is necessary
+                        // TODO: Deprecated. Replace with `compilerOptions` DSL
                         kotlinOptions {
                             jvmTarget = jvmTargetVersion
                         }
@@ -193,6 +195,7 @@ stal {
 
                 jvm {
                     compilations.all {
+                        // TODO: Deprecated. Replace with `compilerOptions` DSL
                         kotlinOptions {
                             jvmTarget = jvmTargetVersion
                             freeCompilerArgs += listOf(

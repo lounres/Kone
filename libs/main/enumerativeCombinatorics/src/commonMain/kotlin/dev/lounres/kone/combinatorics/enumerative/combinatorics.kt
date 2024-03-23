@@ -6,10 +6,10 @@
 package dev.lounres.kone.combinatorics.enumerative
 
 import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.common.*
+import dev.lounres.kone.collections.common.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.common.utils.*
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.standard.*
-import dev.lounres.kone.collections.standard.implementations.KoneGrowableArrayList
-import dev.lounres.kone.collections.standard.utils.*
 import dev.lounres.kone.misc.scope
 
 
@@ -28,6 +28,7 @@ public fun <E1, E2, E3> cartesianProduct(
     for (e1 in collection1) for (e2 in collection2) for (e3 in collection3) yield(Triple(e1, e2, e3))
 }
 
+// TODO: Make such utilities return list views instead of copies
 public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<KoneList<E>> = sequence {
     if (collections.any { it.isEmpty() }) return@sequence
     // TODO: Remove eventually. It just fixes some strange bug
@@ -159,8 +160,8 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
             currentState[firstToIncrease] = 1u
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
             currentElements = buildKoneIterableList {
-                add(collection[firstToIncrease])
-                addAll(currentElements.drop(firstToIncrease))
+                addAtTheEnd(collection[firstToIncrease])
+                addAllAtTheEnd(currentElements.drop(firstToIncrease))
             }
         }
     }
@@ -336,7 +337,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equali
                         indexOfLastElement = i
 
                         countIndices[i - 1u] = countsBuilder.size
-                        countsBuilder.add(1u)
+                        countsBuilder.addAtTheEnd(1u)
                     } else {
                         references[i] = references[j]
                         references[j] = i
@@ -443,7 +444,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
                         indexOfLastElement = i
 
                         countIndices[i - 1u] = countsBuilder.size
-                        countsBuilder.add(1u)
+                        countsBuilder.addAtTheEnd(1u)
                     } else {
                         references[i] = references[j]
                         references[j] = i

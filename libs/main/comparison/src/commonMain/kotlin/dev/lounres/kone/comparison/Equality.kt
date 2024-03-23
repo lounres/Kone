@@ -16,3 +16,12 @@ public interface Equality<in E>: KoneContext {
     // FIXME: KT-5351
     public infix fun E.neq(other: E): Boolean = !(this equalsTo other)
 }
+
+public inline fun <E> Equality(crossinline comparator: (left: E, right: E) -> Boolean): Equality<E> =
+    object : Equality<E> {
+        override fun E.equalsTo(other: E): Boolean = comparator(this, other)
+    }
+
+internal object DefaultEquality : Equality<Any?>
+
+public fun <E> defaultEquality(): Equality<E> = DefaultEquality
