@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1.contextual.utils
 
+import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.common.KoneUIntArray
 import dev.lounres.kone.multidimensionalCollections.ShapeStrides
 import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.ContextualMDList
@@ -67,5 +68,16 @@ public inline fun <E, R> ContextualMDList<E, *>.foldIndexed(initial: R, operatio
     for (index in ShapeStrides(shape)) accumulator = operation(index, accumulator, get(index))
     return accumulator
 }
+
+// TODO: Add `reduce`-like extensions
+
+context(Ring<E>)
+public fun <E> ContextualMDList<E, *>.sum(): E = fold(zero) { acc, e -> acc + e }
+
+context(Ring<A>)
+public fun <E, A> ContextualMDList<E, *>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
+
+context(Ring<A>)
+public inline fun <E, A> ContextualMDList<E, *>.sumOfIndexed(selector: (index: KoneUIntArray, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
 // TODO: Add bulk operations
