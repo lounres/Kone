@@ -16,6 +16,8 @@ import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.logging.koneLogger
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
 
 
@@ -178,8 +180,10 @@ internal class MutableAbstractPolytopicConstructionImpl<N, NE: Equality<N>>(over
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <N, NE: Equality<N>> buildAbstractPolytopicConstruction(spaceDimension: UInt, @BuilderInference builder: MutableAbstractPolytopicConstruction<N, NE>.() -> Unit): AbstractPolytopicConstruction<N, NE> =
-    MutableAbstractPolytopicConstructionImpl<N, NE>(spaceDimension).also(builder)
+public inline fun <N, NE: Equality<N>> buildAbstractPolytopicConstruction(spaceDimension: UInt, @BuilderInference builder: MutableAbstractPolytopicConstruction<N, NE>.() -> Unit): AbstractPolytopicConstruction<N, NE> {
+    contract { callsInPlace(builder, InvocationKind.EXACTLY_ONCE) }
+    return MutableAbstractPolytopicConstructionImpl<N, NE>(spaceDimension).also(builder)
+}
 
 @PublishedApi
 internal class MutableAbstractPolytopicConstruction2Impl<N, NE: Equality<N>> : MutableAbstractPolytopicConstruction2<N, NE> {

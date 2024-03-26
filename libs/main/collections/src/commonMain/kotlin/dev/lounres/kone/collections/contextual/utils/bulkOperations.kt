@@ -262,21 +262,21 @@ public inline fun <E, R> KoneContextualIterableList<E, *>.firstOfMaybe(transform
     return None
 }
 
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneIterable<E>.mapTo(destination: D, transform: (E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneIterable<E>.mapTo(destination: D, transform: (E) -> R): D {
     for (element in this) destination.add(transform(element))
     return destination
 }
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneContextualList<E, *>.mapTo(destination: D, transform: (E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneContextualList<E, *>.mapTo(destination: D, transform: (E) -> R): D {
     for (index in indices) {
         val element = this[index]
         destination.add(transform(element))
     }
     return destination
 }
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneContextualIterableList<E, *>.mapTo(destination: D, transform: (E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneContextualIterableList<E, *>.mapTo(destination: D, transform: (E) -> R): D {
     for (element in this) destination.add(transform(element))
     return destination
 }
@@ -297,22 +297,22 @@ public inline fun <E, R, D: KoneContextualExtendableList<R, *>> KoneContextualIt
     return destination
 }
 
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneIterable<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneIterable<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
     for (element in this) destination.add(transform(currentIndex++, element))
     return destination
 }
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneContextualList<E, *>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneContextualList<E, *>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     for (index in indices) {
         val element = this[index]
         destination.add(transform(index, element))
     }
     return destination
 }
-context(EE)
-public inline fun <E, EE: Equality<E>, R, D: KoneContextualExtendableCollection<R, EE>> KoneContextualIterableList<E, *>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
+context(RE)
+public inline fun <E, R, RE: Equality<R>, D: KoneContextualExtendableCollection<R, RE>> KoneContextualIterableList<E, *>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
     for (element in this) destination.add(transform(currentIndex++, element))
     return destination

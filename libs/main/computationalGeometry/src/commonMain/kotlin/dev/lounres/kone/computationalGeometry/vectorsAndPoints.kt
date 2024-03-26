@@ -21,6 +21,7 @@ import dev.lounres.kone.linearAlgebra.experiment1.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.experiment1.columnVectorHashing
 import dev.lounres.kone.linearAlgebra.experiment1.minor
 import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.ContextualMDList1
+import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.utils.fold
 
 
 // FIXME: KT-42977
@@ -92,6 +93,9 @@ context(EuclideanSpace<N, A>)
 public operator fun <N, A> Point<N, A>.minus(other: Point<N, A>): Vector<N, A> where A: Ring<N>, A: Order<N> = vectorSpace { Vector(this.coordinates - other.coordinates) }
 context(EuclideanSpace<N, A>)
 public operator fun <N, A> Point2<N, A>.minus(other: Point2<N, A>): Vector2<N, A> where A: Ring<N>, A: Order<N> = vectorSpace { Vector2(this.coordinates - other.coordinates) }
+
+context(EuclideanSpace<N, A>)
+public val <N, A> Vector<N, A>.length: N where A: Ring<N>, A: Order<N> get() = vectorSpace { this.coordinates.coefficients.fold(numberRing.zero) { acc, n -> numberRing { acc + n * n } } }
 
 context(EuclideanSpace<N, A>)
 public infix fun <N, A> Vector<N, A>.dot(other: Vector<N, A>): N where A: Ring<N>, A: Order<N> = numberRing {
