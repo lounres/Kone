@@ -13,15 +13,15 @@ import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
-import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.ContextualMDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.ContextualSettableMDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.contextual.indices
+import dev.lounres.kone.multidimensionalCollections.experiment1.complex.MDList1
+import dev.lounres.kone.multidimensionalCollections.experiment1.complex.SettableMDList1
+import dev.lounres.kone.multidimensionalCollections.experiment1.complex.indices
 import kotlin.reflect.KClass
 
 
 /*@JvmInline*/
-public open /*value*/ class RowVector<out N, in NE: Equality<@UnsafeVariance N>>(
-    public open val coefficients: ContextualMDList1<N, NE>,
+public open /*value*/ class RowVector<N>(
+    public open val coefficients: MDList1<N>,
     protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf() // TODO: Replace `Equality` with `Hashing`
 ): FeatureStorage {
     @Suppress("UNCHECKED_CAST")
@@ -38,22 +38,22 @@ public open /*value*/ class RowVector<out N, in NE: Equality<@UnsafeVariance N>>
     override fun toString(): String = "RowVector$coefficients"
 }
 /*@JvmInline*/
-public /*value*/ class SettableRowVector<N, in NE: Equality<N>>(
-    override val coefficients: ContextualSettableMDList1<N, NE>,
+public /*value*/ class SettableRowVector<N>(
+    override val coefficients: SettableMDList1<N>,
     override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf()
-): RowVector<N, NE>(coefficients, features) {
+): RowVector<N>(coefficients, features) {
     public operator fun set(index: UInt, coefficient: N) {
         features.clear()
         coefficients[index] = coefficient
     }
 }
 
-public fun <E> RowVector(vararg elements: E): RowVector<E, Equality<E>> = RowVector(ContextualMDList1(*elements))
-public fun <N> RowVector(size: UInt, initializer: (coefficient: UInt) -> N): RowVector<N, Equality<N>> = RowVector(ContextualMDList1(size, initializer))
+public fun <N> RowVector(vararg elements: N, context: Equality<N>): RowVector<N> = RowVector(MDList1(*elements, context = context))
+public fun <N> RowVector(size: UInt, context: Equality<N>, initializer: (coefficient: UInt) -> N): RowVector<N> = RowVector(MDList1(size, context = context, initializer))
 
-public fun requireShapeEquality(left: RowVector<*, *>, right: RowVector<*, *>) {
+public fun requireShapeEquality(left: RowVector<*>, right: RowVector<*>) {
     if (left.size != right.size)
         throw ShapeMismatchException(left = left.coefficients.shape, right = right.coefficients.shape)
 }
 
-public val RowVector<*, *>.indices: UIntRange get() = coefficients.indices
+public val RowVector<*>.indices: UIntRange get() = coefficients.indices

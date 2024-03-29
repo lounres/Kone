@@ -17,7 +17,7 @@ import dev.lounres.kone.comparison.Order
 
 
 internal data class GramSchmidtOrtogonalizationIntermediateState<N, NE: Equality<N>>(
-    val orthogonalizedBasis: KoneContextualMutableIterableList<Vector<N, NE>, Equality<Vector<N, NE>>>,
+    val orthogonalizedBasis: KoneContextualMutableIterableList<Vector<N>, Equality<Vector<N>>>,
     var product: N,
     val exclusiveProducts: KoneMutableIterableList<N>,
 )
@@ -31,7 +31,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.clone(): 
     )
 
 context(EuclideanSpace<N, A>)
-internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmidtOrthogonalizationStep(newVector: Vector<N, A>) where A: Ring<N>, A: Order<N> {
+internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) where A: Ring<N>, A: Order<N> {
     val newIndex = orthogonalizedBasis.size
     val newOrthogonalizedVector = (0u..<newIndex).fold(newVector * product) { acc, index ->
         val previousOrthogonalizedVector = orthogonalizedBasis[index]
@@ -47,7 +47,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmi
 }
 
 context(EuclideanSpace<N, A>)
-internal fun <N, A> KoneContextualIterableList<Vector<N, A>, *>.gramSchmidtOrtogonalization(): KoneContextualIterableList<Vector<N, A>, Equality<Vector<N, A>>> where A: Ring<N>, A: Order<N> {
+internal fun <N, A> KoneContextualIterableList<Vector<N>, *>.gramSchmidtOrtogonalization(): KoneContextualIterableList<Vector<N>, Equality<Vector<N>>> where A: Ring<N>, A: Order<N> {
     val result = GramSchmidtOrtogonalizationIntermediateState<N, A>(
         orthogonalizedBasis = KoneContextualFixedCapacityArrayList(size),
         product = numberRing.one,
