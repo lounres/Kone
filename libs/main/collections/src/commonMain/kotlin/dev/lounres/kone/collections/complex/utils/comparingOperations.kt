@@ -546,7 +546,7 @@ public inline fun <E, R> KoneIterableList<E>.minBy(selector: (E) -> R): E {
 context(Order<R>)
 public inline fun <E, R> KoneIterable<E>.minListBy(context: Equality<E> = defaultEquality(), selector: (E) -> R): KoneIterableList<E> {
     val iterator = iterator()
-    if (!iterator.hasNext()) return emptyKoneIterableList(context = context)
+    if (!iterator.hasNext()) return emptyKoneIterableList()
     val firstElem = iterator.next()
     if (!iterator.hasNext()) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -569,8 +569,8 @@ public inline fun <E, R> KoneIterable<E>.minListBy(context: Equality<E> = defaul
     return minList
 }
 context(Order<R>)
-public inline fun <E, R> KoneList<E>.minListBy(context: Equality<E> = this.context, selector: (E) -> R): KoneIterableList<E> {
-    if (isEmpty()) return emptyKoneIterableList(context = context)
+public inline fun <E, R> KoneList<E>.minListBy(context: Equality<E> = defaultEquality(), selector: (E) -> R): KoneIterableList<E> {
+    if (isEmpty()) return emptyKoneIterableList()
     val firstElem = get(0u)
     if (size == 1u) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -594,9 +594,9 @@ public inline fun <E, R> KoneList<E>.minListBy(context: Equality<E> = this.conte
     return minList
 }
 context(Order<R>)
-public inline fun <E, R> KoneIterableList<E>.minListBy(context: Equality<E> = this.context, selector: (E) -> R): KoneIterableList<E> {
+public inline fun <E, R> KoneIterableList<E>.minListBy(context: Equality<E> = defaultEquality(), selector: (E) -> R): KoneIterableList<E> {
     val iterator = iterator()
-    if (!iterator.hasNext()) return emptyKoneIterableList(context = context)
+    if (!iterator.hasNext()) return emptyKoneIterableList()
     val firstElem = iterator.next()
     if (!iterator.hasNext()) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -722,7 +722,7 @@ public inline fun <E, R> KoneIterableList<E>.minWithBy(comparator: Comparator<in
 
 public inline fun <E, R> KoneIterable<E>.minListWithBy(context: Equality<E> = defaultEquality(), comparator: Comparator<in R>, selector: (E) -> R): KoneIterableList<E> {
     val iterator = iterator()
-    if (!iterator.hasNext()) return emptyKoneIterableList(context = context)
+    if (!iterator.hasNext()) return emptyKoneIterableList()
     val firstElem = iterator.next()
     if (!iterator.hasNext()) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -744,8 +744,8 @@ public inline fun <E, R> KoneIterable<E>.minListWithBy(context: Equality<E> = de
     } while (iterator.hasNext())
     return minList
 }
-public inline fun <E, R> KoneList<E>.minListWithBy(context: Equality<E> = this.context, comparator: Comparator<in R>, selector: (E) -> R): KoneIterableList<E> {
-    if (isEmpty()) return emptyKoneIterableList(context = context)
+public inline fun <E, R> KoneList<E>.minListWithBy(context: Equality<E> = defaultEquality(), comparator: Comparator<in R>, selector: (E) -> R): KoneIterableList<E> {
+    if (isEmpty()) return emptyKoneIterableList()
     val firstElem = get(0u)
     if (size == 1u) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -768,9 +768,9 @@ public inline fun <E, R> KoneList<E>.minListWithBy(context: Equality<E> = this.c
     } while (index < size)
     return minList
 }
-public inline fun <E, R> KoneIterableList<E>.minListWithBy(context: Equality<E> = this.context, comparator: Comparator<in R>, selector: (E) -> R): KoneIterableList<E> {
+public inline fun <E, R> KoneIterableList<E>.minListWithBy(context: Equality<E> = defaultEquality(), comparator: Comparator<in R>, selector: (E) -> R): KoneIterableList<E> {
     val iterator = iterator()
-    if (!iterator.hasNext()) return emptyKoneIterableList(context = context)
+    if (!iterator.hasNext()) return emptyKoneIterableList()
     val firstElem = iterator.next()
     if (!iterator.hasNext()) return koneIterableListOf(firstElem, context = context)
     var minValue = selector(firstElem)
@@ -844,7 +844,7 @@ public inline fun <E, R> KoneIterableList<E>.maxWithBy(comparator: Comparator<in
 
 context(Equality<E>)
 public fun <E> KoneIterable<E>.hasDuplicates(): Boolean {
-    val setOfElements = koneMutableIterableSetOf<E>()
+    val setOfElements = koneMutableIterableSetOf<E>(context = this@Equality)
     for (element in this) {
         if (element in setOfElements) return true
         setOfElements.add(element)
@@ -853,7 +853,7 @@ public fun <E> KoneIterable<E>.hasDuplicates(): Boolean {
 }
 context(Equality<E>)
 public fun <E> KoneList<E>.hasDuplicates(): Boolean {
-    val setOfElements = koneMutableIterableSetOf<E>()
+    val setOfElements = koneMutableIterableSetOf<E>(context = this@Equality)
     setOf<Int>()
     for (index in indices) {
         val element = this[index]
@@ -864,7 +864,7 @@ public fun <E> KoneList<E>.hasDuplicates(): Boolean {
 }
 context(Equality<E>)
 public fun <E> KoneIterableList<E>.hasDuplicates(): Boolean {
-    val setOfElements = koneMutableIterableSetOf<E>()
+    val setOfElements = koneMutableIterableSetOf<E>(context = this@Equality)
     for (element in this) {
         if (element in setOfElements) return true
         setOfElements.add(element)

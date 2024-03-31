@@ -9,11 +9,8 @@ import dev.lounres.kone.collections.common.KoneIterableList
 import dev.lounres.kone.collections.common.KoneUIntArray
 import dev.lounres.kone.collections.common.implementations.KoneVirtualList
 import dev.lounres.kone.collections.common.koneUIntArrayOf
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.multidimensionalCollections.IndexOutOfShapeException
 import dev.lounres.kone.multidimensionalCollections.Shape
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.MDList
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.SettableMDList
 
 
 public interface MDList2<E>: MDList<E> {
@@ -52,11 +49,10 @@ internal open /*value*/ class MDList2Wrapper<E>(open val list: MDList<E>): MDLis
         require(list.shape.size == 2u) { "Cannot wrap MDList with shape ${list.shape} as a MDList2" }
     }
 
-    override val context: Equality<E> get() = list.context
-
     override val rowNumber: UInt get() = list.shape[0u]
     override val columnNumber: UInt get() = list.shape[1u]
     override val shape: Shape get() = list.shape
+    override fun contains(element: E): Boolean = list.contains(element)
     override fun get(rowIndex: UInt, columnIndex: UInt): E = list[koneUIntArrayOf(rowIndex, columnIndex)]
 }
 

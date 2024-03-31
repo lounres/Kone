@@ -22,6 +22,6 @@ public inline fun <E> Equality(crossinline comparator: (left: E, right: E) -> Bo
         override fun E.equalsTo(other: E): Boolean = comparator(this, other)
     }
 
-internal object DefaultEquality : Equality<Any?>
+internal data object DefaultEquality : Equality<Any?>
 
 public fun <E> defaultEquality(): Equality<E> = DefaultEquality

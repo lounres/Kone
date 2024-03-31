@@ -7,6 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.complex.*
+import dev.lounres.kone.collections.complex.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.complex.utils.*
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.utils.first
@@ -19,13 +20,14 @@ import dev.lounres.kone.logging.koneLogger
 import dev.lounres.kone.misc.scope
 
 
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>)
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, PE)
 internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrappingAtom(
     startPoint: Point<N>,
     normalGiftWrappingVector: Vector<N>,
     tangentGiftWrappingVector: Vector<N>,
 ): KoneIterableList<V> where A: Ring<N>, A: Order<N> {
     koneLogger.info(
+        source = "dev.lounres.kone.computationalGeometry.giftWrappingAtom",
         items = {
             mapOf(
                 "points" to this,
@@ -34,16 +36,17 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                 "tangentGiftWrappingVector" to tangentGiftWrappingVector,
             )
         }
-    ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingAtom: Input data" }
+    ) { "Input data" }
     data class TangentFraction<N>(val numerator: N, val denominator: N)
     return this.minListWithBy(
-        context = polytopeContext,
+        context = this@PE,
         { left, right -> numberRing { (left.numerator * right.denominator) compareTo (right.numerator * left.denominator) } }
     ) {
         val v = it.coordinates - startPoint
         TangentFraction(v dot tangentGiftWrappingVector, v dot normalGiftWrappingVector)
     }.also {
         koneLogger.info(
+            source = "dev.lounres.kone.computationalGeometry.giftWrappingAtom",
             items = {
                 mapOf(
                     "points" to this,
@@ -53,7 +56,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                     "result" to it,
                 )
             }
-        ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingAtom: Result" }
+        ) { "Result" }
     }
 }
 
@@ -63,12 +66,13 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>, PE)
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, PE)
 internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrappingIncrement(
     subspaceDimension: UInt,
     startFacet: P,
 ): P where A: Ring<N>, A: Order<N> {
     koneLogger.info(
+        source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
         items = {
             mapOf(
                 "subspaceDimension" to subspaceDimension,
@@ -76,7 +80,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                 "otherPoints" to this,
             )
         }
-    ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Started incrementation" }
+    ) { "Started incrementation" }
     require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
     if (subspaceDimension == 1u) {
         @Suppress("UNCHECKED_CAST")
@@ -89,8 +93,9 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
             }
         }
         val vertices = koneIterableSetOf(startVertex, endVertex)
-        return addPolytope(vertices, koneIterableListOf(vertices.toKoneIterableSet<P>(context = polytopeContext), context = koneIterableSetEquality(polytopeContext))).also {
+        return addPolytope(vertices, koneIterableListOf(vertices.toKoneIterableSet<P>(context = this@PE), context = koneIterableSetEquality(this@PE))).also {
             koneLogger.info(
+                source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                 items = {
                     mapOf(
                         "subspaceDimension" to subspaceDimension,
@@ -99,23 +104,23 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                         "result" to it
                     )
                 }
-            ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Increment 1D result" }
+            ) { "Increment 1D result" }
         }
     }
 
-    val allVertices = (this@giftWrappingIncrement).toKoneMutableIterableSet(context = polytopeContext).apply { addAll(startFacet.vertices) }
+    val allVertices = (this@giftWrappingIncrement).toKoneMutableIterableSet(context = this@PE).apply { addAll(startFacet.vertices) }
 
-    val convexHullVertices = koneMutableIterableSetOf<V>()
+    val convexHullVertices = koneMutableIterableSetOf<V>(context = this@PE)
     @Suppress("UNCHECKED_CAST")
-    val convexHullFaces = KoneIterableList(subspaceDimension, context = ) { if (it == 0u) convexHullVertices as KoneMutableIterableSet<P, PE> else koneMutableIterableSetOf() }
+    val convexHullFaces = KoneIterableList(subspaceDimension, context = koneIterableSetEquality(this@PE)) { if (it == 0u) convexHullVertices as KoneMutableIterableSet<P> else koneMutableIterableSetOf(context = this@PE) }
 
     for (dim in 0u .. subspaceDimension-2u) {
         convexHullFaces[dim].addAll(startFacet.facesOfDimension(dim))
     }
     convexHullFaces[subspaceDimension-1u].add(startFacet)
 
-    val facetsToProcess = koneMutableIterableSetOf<P>() // TODO: Replace with queue
-    val subfacetsToProcess = koneMutableIterableSetOf<P>()
+    val facetsToProcess = koneMutableIterableSetOf<P>(context = this@PE) // TODO: Replace with queue
+    val subfacetsToProcess = koneMutableIterableSetOf<P>(context = this@PE)
 
     facetsToProcess.add(startFacet)
     subfacetsToProcess.addAll(startFacet.facesOfDimension(subspaceDimension - 2u))
@@ -136,17 +141,19 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                 @Suppress("UNCHECKED_CAST")
                 startPoint = (facetFlag[0u] as V).coordinates
                 koneLogger.info(
+                    source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                     items = {
                         mapOf(
                             "facetFlag" to facetFlag,
                             "otherPoints" to this,
                         )
                     }
-                ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Increment facetFlag" }
+                ) { "Increment facetFlag" }
                 val basis = KoneIterableList(subspaceDimension) { index ->
                     if (index + 1u < subspaceDimension) {
                         val basisElement = facetFlag[index + 1u].vertices.first { it !in facetFlag[index].vertices }.coordinates - startPoint
                         koneLogger.debug(
+                            source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                             items = {
                                 mapOf(
                                     "subspaceDimension" to subspaceDimension,
@@ -159,12 +166,13 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                                 )
                             }
                         ) {
-                            "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Basis element"
+                            "Basis element"
                         }
                         basisElement
                     } else {
                         val basisElement = allVertices.first { it !in facet.vertices }.coordinates - startPoint
                         koneLogger.debug(
+                            source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                             items = {
                                 mapOf(
                                     "subspaceDimension" to subspaceDimension,
@@ -173,13 +181,14 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                                 )
                             }
                         ) {
-                            "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Basis element"
+                            "Basis element"
                         }
                         basisElement
                     }
                 }
                 val orthogonalizedBasis = basis.gramSchmidtOrtogonalization()
                 koneLogger.debug(
+                    source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                     items = {
                         mapOf(
                             "subspaceDimension" to subspaceDimension,
@@ -187,12 +196,12 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                             "orthogonalizedBasis" to orthogonalizedBasis,
                         )
                     }
-                ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Increment orthogonalizedBasis" }
+                ) { "Increment orthogonalizedBasis" }
                 tangentGiftWrappingVector = orthogonalizedBasis[subspaceDimension-2u]
                 normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
             }
 
-            val newVertices: KoneIterableList<V, PE> = buildKoneIterableSet {
+            val newVertices: KoneIterableList<V> = buildKoneIterableSet<V>(context = this@PE) {
                 addAll(allVertices)
                 removeAllFrom(subfacet.vertices)
             }.giftWrappingAtom(startPoint, normalGiftWrappingVector, tangentGiftWrappingVector)
@@ -213,11 +222,12 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
         }
     }
 
-    check(subfacetsToProcess.isEmpty()) { TODO("Error message is not specified") }
+    check(subfacetsToProcess.isEmpty()) { "For some reason some subfacets are left after \"gift wrapping increment\" procedure" }
 
     // TODO: Separate polytope creation and polytope finding
     return addPolytope(convexHullVertices, convexHullFaces).also {
         koneLogger.info(
+            source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
             items = {
                 mapOf(
                     "subspaceDimension" to subspaceDimension,
@@ -226,7 +236,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                     "result" to it
                 )
             }
-        ) { "fun dev.lounres.kone.computationalGeometry.giftWrappingIncrement: Increment result" }
+        ) { "Increment result" }
     }
 }
 
@@ -237,8 +247,8 @@ internal data class WrappingResult<N, NE: Equality<N>, P>(
     val orthogonalizationState: GramSchmidtOrtogonalizationIntermediateState<N, NE>,
 )
 
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>, PE)
-internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.giftWrappingExtension(
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, PE)
+internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrappingExtension(
     subspaceDimension: UInt,
     wrappingResult: WrappingResult<N, A, P>,
     normalVector: Vector<N>,
@@ -246,7 +256,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.gift
     if (this.isEmpty()) return wrappingResult
     require(subspaceDimension >= 1u) { TODO() }
 
-    val otherPoints = this.toKoneMutableIterableSet()
+    val otherPoints = this.toKoneMutableIterableSet(context = this@PE)
     var currentNormalVector = normalVector
 
     while (otherPoints.isNotEmpty()) {
@@ -265,7 +275,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.gift
         val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
         this@EuclideanSpace {
             val newIndex = extendedOrthogonalizationState.orthogonalizedBasis.size
-            extendedOrthogonalizationState.orthogonalizedBasis.addAtTheEnd(currentNormalVector)
+            extendedOrthogonalizationState.orthogonalizedBasis.add(currentNormalVector)
             val currentNorm = currentNormalVector dot currentNormalVector
             for (j in 0u..<newIndex) {
                 extendedOrthogonalizationState.exclusiveProducts[j] *= currentNorm
@@ -315,8 +325,8 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.gift
     return wrappingResult
 }
 
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>, PE)
-internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.giftWrapping(
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, PE)
+internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrapping(
     subspaceDimension: UInt,
 ): WrappingResult<N, A, P> where A: Ring<N>, A: Order<N> {
     require(this.isNotEmpty()) { TODO("Error message is not specified") }
@@ -337,7 +347,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.gift
     val startPoints = numberRing { this.minListBy { it.coordinates.coordinates[subspaceDimension - 1u] } }
     val wrappingResult = startPoints.giftWrapping(subspaceDimension - 1u)
 
-    this.toKoneMutableIterableSet().apply { removeAllFrom(startPoints) }.giftWrappingExtension(
+    this.toKoneMutableIterableSet(context = this@PE).apply { removeAllFrom(startPoints) }.giftWrappingExtension(
         subspaceDimension = subspaceDimension,
         wrappingResult = wrappingResult,
         normalVector = Vector(ColumnVector(spaceDimension, context = numberRing) { numberRing { if (it == subspaceDimension - 1u) one else zero } })
@@ -346,12 +356,12 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.gift
     return wrappingResult
 }
 
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>, PE)
-public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, PE)
+public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
     this.giftWrapping(spaceDimension).polytope
 
 context(EuclideanSpace<N, A>, PE)
-public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.constructConvexHullByGiftWrapping3(construction: MutablePolytopicConstruction<N, A, P, V, PE>): P where A: Ring<N>, A: Order<N> =
+public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructConvexHullByGiftWrapping3(construction: MutablePolytopicConstruction<N, P, V>): P where A: Ring<N>, A: Order<N> =
     with(construction) { this@constructConvexHullByGiftWrapping3.giftWrapping(spaceDimension).polytope }
 
 //public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.constructConvexHullByGiftWrapping4(euclideanSpace: EuclideanSpace<N, A>, construction: MutablePolytopicConstruction<N, A, P, V, PE>): P where A: Ring<N>, A: Order<N> =

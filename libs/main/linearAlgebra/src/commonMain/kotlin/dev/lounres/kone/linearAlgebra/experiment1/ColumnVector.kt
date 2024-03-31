@@ -48,13 +48,8 @@ public /*value*/ class SettableColumnVector<N>(
 }
 
 public fun <N> ColumnVector(vararg elements: N, context: Equality<N>): ColumnVector<N> = ColumnVector(MDList1(*elements, context = context))
-context(Equality<N>)
-public fun <N> ColumnVector(vararg elements: N): ColumnVector<N> = ColumnVector(MDList1(*elements, context = this@Equality))
 public fun <N> ColumnVector(size: UInt, context: Equality<N>, initializer: (coefficient: UInt) -> N): ColumnVector<N> =
     ColumnVector(MDList1(size, context = context, initializer))
-context(Equality<N>)
-public fun <N> ColumnVector(size: UInt, initializer: (coefficient: UInt) -> N): ColumnVector<N> =
-    ColumnVector(MDList1(size, context = this@Equality, initializer))
 
 public fun requireShapeEquality(left: ColumnVector<*>, right: ColumnVector<*>) {
     if (left.size != right.size)

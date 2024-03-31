@@ -13,7 +13,6 @@ import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.misc.scope
 import kotlin.math.max
 
@@ -25,8 +24,8 @@ public class KoneResizableArrayList<E> internal constructor(
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    override val context: Equality<E>
-): KoneMutableIterableList<E> {
+    override val context: Equality<E>,
+) : KoneListWithContext<E>, KoneMutableIterableList<E> {
     override var size: UInt = size
         private set
 
@@ -44,7 +43,7 @@ public class KoneResizableArrayList<E> internal constructor(
                 }
             }
             newSize < sizeLowerBound -> {
-                while (newSize < sizeUpperBound) {
+                while (newSize < sizeUpperBound && dataSizeNumber >= 2u) {
                     dataSizeNumber--
                     sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
                     sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]

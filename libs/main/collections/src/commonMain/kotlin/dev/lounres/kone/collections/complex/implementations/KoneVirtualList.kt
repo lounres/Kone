@@ -10,11 +10,15 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.complex.KoneIterableList
 import dev.lounres.kone.collections.complex.KoneList
+import dev.lounres.kone.collections.complex.KoneListWithContext
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.invoke
 
 
-public class KoneVirtualList<E>(override val size: UInt, override val context: Equality<E>, private val generator: (UInt) -> E): KoneIterableList<E> {
+public class KoneVirtualList<E>(
+    override val size: UInt,
+    override val context: Equality<E>,
+    private val generator: (UInt) -> E
+) : KoneListWithContext<E>, KoneIterableList<E> {
     override fun get(index: UInt): E = generator(index)
 
     override fun iterator(): KoneLinearIterator<E> = Iterator(size = size, generator = generator)

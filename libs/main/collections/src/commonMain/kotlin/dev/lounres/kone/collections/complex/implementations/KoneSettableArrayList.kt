@@ -6,15 +6,11 @@
 package dev.lounres.kone.collections.complex.implementations
 
 import dev.lounres.kone.collections.KoneSettableLinearIterator
-import dev.lounres.kone.collections.complex.KoneIterableList
-import dev.lounres.kone.collections.complex.KoneList
-import dev.lounres.kone.collections.complex.KoneMutableArray
-import dev.lounres.kone.collections.complex.KoneSettableIterableList
+import dev.lounres.kone.collections.complex.*
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.invoke
 
 
 @Suppress("UNCHECKED_CAST")
@@ -22,7 +18,7 @@ import dev.lounres.kone.context.invoke
 public /*value*/ class KoneSettableArrayList<E> internal constructor(
     private val data: KoneMutableArray<Any?>,
     override val context: Equality<E>,
-): KoneSettableIterableList<E> {
+) : KoneListWithContext<E>, KoneSettableIterableList<E> {
     override val size: UInt get() = data.size
 
     override fun get(index: UInt): E {

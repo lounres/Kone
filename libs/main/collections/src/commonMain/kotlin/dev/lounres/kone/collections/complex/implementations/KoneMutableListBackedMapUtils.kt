@@ -13,6 +13,5 @@ public fun <K, V> KoneMutableListBackedMap(keyContext: Equality<K>, valueContext
     KoneMutableListBackedMap(
         keyContext = keyContext,
         valueContext = valueContext,
-        entryContext = koneMapEntryEquality(keyContext, valueContext),
         backingList = KoneResizableLinkedArrayList(context = koneMapEntryEquality(keyContext, valueContext)),
     )

@@ -24,10 +24,10 @@ import dev.lounres.kone.multidimensionalCollections.experiment1.complex.utils.su
 
 // TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
 //   and that there are at least 2 triangles in the triangulation
-context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, A, P, V, PE>, A, PE)
+context(EuclideanSpace<N, A>, MutablePolytopicConstruction<N, P, V>, A, PE)
 public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructDelaunayTriangulation(): KoneIterableList<P> where A: Ring<N>, A: Order<N> {
     val theDimension = spaceDimension + 1u
-    buildAbstractPolytopicConstruction<N, A>(theDimension) {
+    buildAbstractPolytopicConstruction<N>(theDimension, numberContext = this@A) {
         defaultHashing<AbstractPolytope>().run {
             val simplicesMapping = koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality(), valueContext = this@PE)
 
@@ -55,18 +55,16 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
                 for (dim in 1u .. simplex.dimension - 1u) for (face in simplex.facesOfDimension(dim)) {
                     simplicesMapping[face] = this@MutablePolytopicConstruction.addPolytope(
                         face.vertices.mapTo<AbstractVertex, V, _>(koneMutableIterableSetOf<V>(context = this@PE)) { simplicesMapping[it] as V },
-                        koneIterableSetEquality(this@PE).invoke {
-                            face.faces.mapTo(koneMutableIterableListOf()) { dimFaces ->
-                                dimFaces.mapTo<AbstractPolytope, P, _>(koneMutableIterableSetOf<P>()) { simplicesMapping[it] }
-                            }
+                        face.faces.mapTo(koneMutableIterableListOf(context = koneIterableSetEquality(this@PE))) { dimFaces ->
+                            dimFaces.mapTo<AbstractPolytope, P, _>(koneMutableIterableSetOf<P>(context = this@PE)) { simplicesMapping[it] }
                         }
                     )
                 }
                 simplicesMapping[simplex] = this@MutablePolytopicConstruction.addPolytope(
-                    simplex.vertices.mapTo<AbstractVertex, V, PE, _>(koneMutableIterableSetOf<V>()) { simplicesMapping[it] as V },
+                    simplex.vertices.mapTo<AbstractVertex, V, _>(koneMutableIterableSetOf<V>(context = this@PE)) { simplicesMapping[it] as V },
                     koneIterableSetEquality(this@PE).invoke {
-                        simplex.faces.mapTo(koneMutableIterableListOf()) { dimFaces ->
-                            dimFaces.mapTo<AbstractPolytope, P, PE, _>(koneMutableIterableSetOf<P>()) { simplicesMapping[it] }
+                        simplex.faces.mapTo(koneMutableIterableListOf(context = koneIterableSetEquality(this@PE))) { dimFaces ->
+                            dimFaces.mapTo<AbstractPolytope, P, _>(koneMutableIterableSetOf<P>(context = this@PE)) { simplicesMapping[it] }
                         }
                     }
                 )

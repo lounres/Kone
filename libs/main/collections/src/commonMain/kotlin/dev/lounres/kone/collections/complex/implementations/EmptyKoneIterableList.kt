@@ -6,16 +6,14 @@
 package dev.lounres.kone.collections.complex.implementations
 
 import dev.lounres.kone.collections.KoneLinearIterator
+import dev.lounres.kone.collections.complex.KoneDefaultList
 import dev.lounres.kone.collections.complex.KoneIterableList
 import dev.lounres.kone.collections.complex.KoneList
 import dev.lounres.kone.collections.complex.isEmpty
 import dev.lounres.kone.collections.implementations.EmptyKoneIterator
-import dev.lounres.kone.comparison.Equality
 
 
-internal class EmptyKoneIterableList<E>(
-    override val context: Equality<E>
-): KoneIterableList<E> {
+internal open class EmptyKoneIterableListTemplate<E> : KoneDefaultList<E>, KoneIterableList<E> {
     override val size: UInt = 0u
 
     override fun contains(element: @UnsafeVariance E): Boolean = false
@@ -28,3 +26,5 @@ internal class EmptyKoneIterableList<E>(
     override fun hashCode(): Int = 1
     override fun equals(other: Any?): Boolean = other is KoneList<*> && other.isEmpty()
 }
+
+internal object EmptyKoneIterableList : EmptyKoneIterableListTemplate<Nothing>()

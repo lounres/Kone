@@ -22,7 +22,7 @@ public interface MDList<E> : Shaped, KoneCollection<E> {
     public operator fun get(index: KoneUIntArray): E
 
     override val size: UInt get() = shape.fold(1u) { acc, dim -> acc * dim }
-    override fun contains(element: @UnsafeVariance E): Boolean = ShapeStrides(shape).asSequence().any { element == get(it) }
+    override fun contains(element: @UnsafeVariance E): Boolean
 }
 
 public operator fun <E> MDList<E>.get(vararg index: UInt): E = get(KoneUIntArray(index))

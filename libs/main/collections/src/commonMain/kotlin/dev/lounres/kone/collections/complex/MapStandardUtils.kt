@@ -18,7 +18,7 @@ public fun KoneMap<*, *>.isNotEmpty(): Boolean = !isEmpty()
 
 public operator fun <K> KoneMap<in K, *>.contains(key: K): Boolean = containsKey(key)
 
-public fun <K, V> KoneMap<in K, out V>.getOrNull(key: K): V? = getMaybe(key).orDefault(null)
+public fun <K, V> KoneMap<in K, V>.getOrNull(key: K): V? = getMaybe(key).orDefault(null)
 
 public fun <K, V> KoneMap<in K, V>.getOrDefault(key: K, default: V): V = getMaybe(key).orDefault(default)
 

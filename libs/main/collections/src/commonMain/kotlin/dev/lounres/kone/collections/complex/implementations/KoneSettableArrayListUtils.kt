@@ -7,11 +7,8 @@ package dev.lounres.kone.collections.complex.implementations
 
 import dev.lounres.kone.collections.complex.KoneMutableArray
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.defaultEquality
 
 
-public fun <E> KoneSettableArrayList(size: UInt, context: Equality<E>, initializer: (index: UInt) -> E): KoneSettableArrayList<E> =
+public fun <E> KoneSettableArrayList(size: UInt, context: Equality<E> = defaultEquality(), initializer: (index: UInt) -> E): KoneSettableArrayList<E> =
     KoneSettableArrayList(KoneMutableArray(size, initializer), context = context)
-
-context(Equality<E>)
-public fun <E> KoneSettableArrayList(size: UInt, initializer: (index: UInt) -> E): KoneSettableArrayList<E> =
-    KoneSettableArrayList(KoneMutableArray(size, initializer), context = this@Equality)

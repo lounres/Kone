@@ -11,33 +11,44 @@ import dev.lounres.kone.collections.complex.KoneIterableSet
 import dev.lounres.kone.collections.complex.KoneMap
 import dev.lounres.kone.collections.complex.KoneMutableIterableList
 import dev.lounres.kone.collections.complex.utils.map
-import dev.lounres.kone.collections.utils.KoneMapEntryEquality
+import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.utils.firstMaybe
-import dev.lounres.kone.collections.utils.koneMapEntryEquality
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.computeOn
 
 
 public class KoneListBackedMap<K, V> internal constructor(
-    override val keyContext: Equality<K>,
-    override val valueContext: Equality<V>,
-    private val entryEquality: KoneMapEntryEquality<K, V>,
+    private val keyContext: Equality<K>,
+    private val valueContext: Equality<V>,
     internal val backingList: KoneMutableIterableList<KoneMapEntry<K, V>>,
 ) : KoneMap<K, V> {
 
     override val size: UInt
         get() = backingList.size
     override val keys: KoneIterableSet<K>
-        get() = KoneListBackedSet(context = keyContext, backingList.map(context = keyContext) { it.key })
+        get() = KoneListBackedSet(backingList.map(context = keyContext) { it.key })
     override val values: KoneIterableCollection<V>
         get() = backingList.map(context = valueContext) { it.value }
     override val entries: KoneIterableSet<KoneMapEntry<K, V>>
-        get() = KoneListBackedSet(context = entryEquality, backingList)
+        get() = KoneListBackedSet(backingList)
 
     override fun containsKey(key: K): Boolean = backingList.indexThat { _, entry -> entry.key == key } < backingList.size
 
     override fun containsValue(value: V): Boolean = backingList.indexThat { _, entry -> entry.value == value } < backingList.size
 
     override fun getMaybe(key: K): Option<V> = backingList.firstMaybe { it.key == key }.computeOn { it.value } // TODO: This code can be optimised by eliminating first `Option` construction
+
+    // TODO: Override equals and `hashCode`
+
+    override fun toString(): String = buildString {
+        append('{')
+        val iterator = backingList.iterator()
+        if (iterator.hasNext()) append(iterator.getAndMoveNext())
+        while (iterator.hasNext()) {
+            append(", ")
+            append(iterator.getAndMoveNext())
+        }
+        append('}')
+    }
 }

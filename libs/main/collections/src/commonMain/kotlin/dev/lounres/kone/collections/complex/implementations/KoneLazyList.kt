@@ -8,11 +8,9 @@ package dev.lounres.kone.collections.complex.implementations
 import dev.lounres.kone.collections.KoneSettableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.complex.KoneIterableList
-import dev.lounres.kone.collections.complex.KoneList
-import dev.lounres.kone.collections.complex.KoneMutableArray
-import dev.lounres.kone.collections.complex.KoneSettableIterableList
+import dev.lounres.kone.collections.complex.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
@@ -20,15 +18,11 @@ import dev.lounres.kone.option.Some
 import dev.lounres.kone.option.orElse
 
 
-context(Equality<E>)
-public fun <E> KoneLazyList(size: UInt, generator: (UInt) -> E): KoneLazyList<E> =
-    KoneLazyList(size = size, context = this@Equality, generator = generator)
-
 public class KoneLazyList<E>(
     override val size: UInt,
-    override val context: Equality<E>,
+    override val context: Equality<E> = defaultEquality(),
     private val generator: (UInt) -> E,
-): KoneSettableIterableList<E> {
+) : KoneListWithContext<E>, KoneSettableIterableList<E> {
     private val buffer: KoneMutableArray<Option<E>> = KoneMutableArray(size) { None }
 
     override fun get(index: UInt): E = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }

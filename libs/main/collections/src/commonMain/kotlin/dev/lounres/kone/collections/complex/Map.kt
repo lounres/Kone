@@ -9,18 +9,15 @@ import dev.lounres.kone.collections.KoneIterable
 import dev.lounres.kone.collections.KoneMapEntry
 import dev.lounres.kone.collections.NoMatchingKeyException
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.orElse
 import dev.lounres.kone.option.orThrow
 
 
-public interface KoneMap<K, V> {
+public interface KoneMap<K, out V> {
     public val size: UInt
-    public val keyContext: Equality<K>
-    public val valueContext: Equality<V>
     public fun containsKey(key: K): Boolean
-    public fun containsValue(value: V): Boolean
+    public fun containsValue(value: @UnsafeVariance V): Boolean
 
     public operator fun get(key: K): V = getMaybe(key).orThrow { NoMatchingKeyException("There is no value for key $key") }
     public fun getMaybe(key: K): Option<V>

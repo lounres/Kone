@@ -7,20 +7,18 @@ package dev.lounres.kone.collections.complex
 
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneSettableLinearIterator
+import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.noElementException
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
 import kotlin.jvm.JvmInline
 
 
 // KT-42977
 @JvmInline
-public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableList<E> {
+public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableList<E>, KoneDefaultList<E> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
     public override val size: UInt get() = array.size.toUInt()
-    override val context: Equality<E> get() = defaultEquality()
     override fun contains(element: @UnsafeVariance E): Boolean {
         for (currentElement in array) if (element == currentElement) return true
         return false
@@ -28,6 +26,22 @@ public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableL
     public override operator fun get(index: UInt): E =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
         else noElementException(index, array.size.toUInt())
+    override fun indexOf(element: E): UInt {
+        var i = 0u
+        while (i < size) {
+            if (array[i.toInt()] == element) break
+            i++
+        }
+        return i
+    }
+    override fun lastIndexOf(element: E): UInt {
+        var i = size - 1u
+        while (i != UInt.MAX_VALUE) {
+            if (array[i.toInt()] == element) break
+            i--
+        }
+        return i
+    }
     public override operator fun iterator(): KoneLinearIterator<E> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneLinearIterator<E> {
         require(index <= size)
@@ -63,12 +77,11 @@ public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableL
 }
 
 @JvmInline
-public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettableIterableList<E> {
+public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettableIterableList<E>, KoneDefaultList<E> {
     // KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
     public override val size: UInt get() = array.size.toUInt()
-    override val context: Equality<E> get() = defaultEquality()
     override fun contains(element: @UnsafeVariance E): Boolean {
         for (currentElement in array) if (element == currentElement) return true
         return false
@@ -80,6 +93,11 @@ public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettab
         if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
+
+    override fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
+        return super<KoneSettableIterableList>.indexThat(predicate)
+    }
+
     public override operator fun iterator(): KoneSettableLinearIterator<E> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<E> {
         require(index <= size)
@@ -114,7 +132,6 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneIterableLis
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
     public override val size: UInt get() = array.size.toUInt()
-    override val context: Equality<UInt> get() = defaultEquality()
     override fun contains(element: UInt): Boolean {
         for (currentElement in array) if (element == currentElement) return true
         return false
@@ -122,6 +139,10 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneIterableLis
     public override operator fun get(index: UInt): UInt =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
         else noElementException(index, array.size.toUInt())
+    override fun indexOf(element: UInt): UInt =
+        indexThat { _, currentElement -> currentElement == element }
+    override fun lastIndexOf(element: UInt): UInt =
+        lastIndexThat { _, currentElement -> currentElement == element }
     public override operator fun iterator(): KoneLinearIterator<UInt> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneLinearIterator<UInt> {
         require(index <= size)
@@ -170,7 +191,6 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
     public override val size: UInt get() = array.size.toUInt()
-    override val context: Equality<UInt> get() = defaultEquality()
     override fun contains(element: UInt): Boolean {
         for (currentElement in array) if (element == currentElement) return true
         return false
@@ -182,6 +202,10 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
         if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
+    override fun indexOf(element: UInt): UInt =
+        indexThat { _, currentElement -> currentElement == element }
+    override fun lastIndexOf(element: UInt): UInt =
+        lastIndexThat { _, currentElement -> currentElement == element }
     public override operator fun iterator(): KoneSettableLinearIterator<UInt> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<UInt> {
         require(index <= size)

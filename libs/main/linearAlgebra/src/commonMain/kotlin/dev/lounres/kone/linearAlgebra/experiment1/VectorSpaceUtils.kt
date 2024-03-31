@@ -14,7 +14,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public inline operator fun <N, A: Ring<N>, R> VectorSpace<N, A>.invoke(block: context(A, SettableMDListTransformer<N>, VectorSpace<N, A>) () -> R): R {
+public inline operator fun <N, A: Ring<N>, R> VectorSpace<N, A>.invoke(block: context(A, SettableMDListTransformer, VectorSpace<N, A>) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
@@ -26,13 +26,13 @@ public val <N, A: Ring<N>> A.vectorSpace: VectorSpace<N, A>
     get() = VectorSpace(this, SettableMDListTransformer())
 
 public fun <N, NE: Equality<N>, A: Ring<N>> A.vectorSpace(
-    mdListTransformer: SettableMDListTransformer<N> = SettableMDListTransformer(),
+    mdListTransformer: SettableMDListTransformer = SettableMDListTransformer(),
 ): VectorSpace<N, A> =
     VectorSpace(this, mdListTransformer)
 
 public inline fun <N, NE: Equality<N>, A: Ring<N>, R> A.vectorSpace(
-    mdListTransformer: SettableMDListTransformer<N> = SettableMDListTransformer(),
-    block: context(A, SettableMDListTransformer<N>, VectorSpace<N, A>) () -> R
+    mdListTransformer: SettableMDListTransformer = SettableMDListTransformer(),
+    block: context(A, SettableMDListTransformer, VectorSpace<N, A>) () -> R
 ): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)

@@ -36,20 +36,20 @@ public fun <E> KoneIterable<E>.take(n: UInt, context: Equality<E> = defaultEqual
     }
     return list.optimizeReadOnlyList(context = context)
 }
-public fun <E> KoneList<E>.take(n: UInt): KoneIterableList<E> {
+public fun <E> KoneList<E>.take(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     val size = min(size, n)
-    if (size == 0u) return emptyKoneIterableList(context = context)
+    if (size == 0u) return emptyKoneIterableList()
     return KoneIterableList(size, context = context) { this[it] }
 }
-public fun <E> KoneIterableCollection<E>.take(n: UInt): KoneIterableList<E> {
+public fun <E> KoneIterableCollection<E>.take(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     val size = min(size, n)
-    if (size == 0u) return emptyKoneIterableList(context = context)
+    if (size == 0u) return emptyKoneIterableList()
     val iterator = iterator()
     return KoneIterableList(size, context = context) { iterator.getAndMoveNext() }
 }
-public fun <E> KoneIterableList<E>.take(n: UInt): KoneIterableList<E> {
+public fun <E> KoneIterableList<E>.take(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     val size = min(size, n)
-    if (size == 0u) return emptyKoneIterableList(context = context)
+    if (size == 0u) return emptyKoneIterableList()
     val iterator = iterator()
     return KoneIterableList(size, context = context) { iterator.getAndMoveNext() }
 }
@@ -63,9 +63,9 @@ public fun <E> KoneIterable<E>.drop(n: UInt, context: Equality<E> = defaultEqual
     }
     return list.optimizeReadOnlyList(context = context)
 }
-public fun <E> KoneIterableCollection<E>.drop(n: UInt, context: Equality<E> = this.context): KoneIterableList<E> {
+public fun <E> KoneIterableCollection<E>.drop(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     if (n == 0u) return toKoneIterableList()
-    if (n >= size) return emptyKoneIterableList(context = context)
+    if (n >= size) return emptyKoneIterableList()
     val resultSize = size - n
     val list = KoneGrowableArrayList<E>(resultSize, context = context)
     var count = 0u
@@ -74,15 +74,15 @@ public fun <E> KoneIterableCollection<E>.drop(n: UInt, context: Equality<E> = th
     }
     return list.optimizeReadOnlyList(context = context)
 }
-public fun <E> KoneList<E>.drop(n: UInt, context: Equality<E> = this.context): KoneIterableList<E> {
+public fun <E> KoneList<E>.drop(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     if (n == 0u) return toKoneIterableList()
-    if (n >= size) return emptyKoneIterableList(context = context)
+    if (n >= size) return emptyKoneIterableList()
     val resultSize = size - n
     return KoneIterableList(resultSize, context = context) { this[it + n] }
 }
-public fun <E> KoneIterableList<E>.drop(n: UInt, context: Equality<E> = this.context): KoneIterableList<E> {
+public fun <E> KoneIterableList<E>.drop(n: UInt, context: Equality<E> = defaultEquality()): KoneIterableList<E> {
     if (n == 0u) return toKoneIterableList()
-    if (n >= size) return emptyKoneIterableList(context = context)
+    if (n >= size) return emptyKoneIterableList()
     val resultSize = size - n
     val list = KoneGrowableArrayList<E>(resultSize, context = context)
     var count = 0u
@@ -331,18 +331,18 @@ public inline fun <E, R, D: KoneExtendableList<R>> KoneIterableList<E>.mapIndexe
     return destination
 }
 
-public inline fun <E, R> KoneIterable<E>.map(context: Equality<R>, transform: (E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneIterable<E>.map(context: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
     mapTo(koneMutableIterableListOf(context = context), transform)
-public inline fun <E, R> KoneList<E>.map(context: Equality<R>, transform: (E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneList<E>.map(context: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
     mapTo(koneMutableIterableListOf(context = context), transform)
-public inline fun <E, R> KoneIterableList<E>.map(context: Equality<R>, transform: (E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneIterableList<E>.map(context: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
     mapTo(koneMutableIterableListOf(context = context), transform)
 
-public inline fun <E, R> KoneIterable<E>.mapIndexed(context: Equality<R>, transform: (index: UInt, E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneIterable<E>.mapIndexed(context: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
     mapIndexedTo(koneMutableIterableListOf(context = context), transform)
-public inline fun <E, R> KoneList<E>.mapIndexed(context: Equality<R>, transform: (index: UInt, E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneList<E>.mapIndexed(context: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
     mapIndexedTo(koneMutableIterableListOf(context = context), transform)
-public inline fun <E, R> KoneIterableList<E>.mapIndexed(context: Equality<R>, transform: (index: UInt, E) -> R): KoneIterableList<R> =
+public inline fun <E, R> KoneIterableList<E>.mapIndexed(context: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
     mapIndexedTo(koneMutableIterableListOf(context = context), transform)
 
 public inline fun <E, D: KoneExtendableCollection<E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
@@ -379,9 +379,9 @@ public inline fun <E, D: KoneExtendableList<E>> KoneIterableList<E>.filterTo(des
 
 public inline fun <E> KoneIterable<E>.filter(context: Equality<E> = defaultEquality(), predicate: (E) -> Boolean): KoneIterableList<E> =
     filterTo(koneMutableIterableListOf(context = context), predicate)
-public inline fun <E> KoneList<E>.filter(context: Equality<E> = this.context, predicate: (E) -> Boolean): KoneIterableList<E> =
+public inline fun <E> KoneList<E>.filter(context: Equality<E> = defaultEquality(), predicate: (E) -> Boolean): KoneIterableList<E> =
     filterTo(koneMutableIterableListOf(context = context), predicate)
-public inline fun <E> KoneIterableList<E>.filter(context: Equality<E> = this.context, predicate: (E) -> Boolean): KoneIterableList<E> =
+public inline fun <E> KoneIterableList<E>.filter(context: Equality<E> = defaultEquality(), predicate: (E) -> Boolean): KoneIterableList<E> =
     filterTo(koneMutableIterableListOf(context = context), predicate)
 
 public inline fun <E, R> KoneList<E>.fold(initial: R, operation: (acc: R, E) -> R): R {

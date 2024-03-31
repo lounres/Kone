@@ -24,7 +24,7 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
     private var start: UInt = 0u,
     private var end: UInt = sizeUpperBound - 1u,
     override val context: Equality<E>,
-): KoneMutableIterableList<E> {
+) : KoneMutableIterableList<E>, KoneListWithContext<E>, KoneCollectionWithGrowableCapacity<E>, KoneDequeue<E> {
     override var size: UInt = size
         private set
 
@@ -67,7 +67,7 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
         end = if (size > 0u) size - 1u else sizeUpperBound - 1u
     }
 
-    public fun ensureCapacity(minimalCapacity: UInt) {
+    override fun ensureCapacity(minimalCapacity: UInt) {
         if (sizeUpperBound < minimalCapacity) {
             reinitializeBounds(minimalCapacity)
             var actualIndex = start
@@ -91,9 +91,9 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
                 currentIndex
             }
             else -> {
-                var currentIndex = start
-                for (i in 0u..<index) {
-                    currentIndex = nextCellIndex[currentIndex]
+                var currentIndex = end
+                for (i in index + 1u ..< end) {
+                    currentIndex = previousCellIndex[currentIndex]
                 }
                 currentIndex
             }
@@ -149,6 +149,10 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
         return data[actualIndex(index)] as E
     }
 
+    override fun getFirst(): E = if (isEmpty()) indexException(0u, size) else data[start] as E
+
+    override fun getLast(): E = if (isEmpty()) indexException(size, size) else data[end] as E
+
     override fun set(index: UInt, element: E) {
         if (index >= size) indexException(index, size)
         data[actualIndex(index)] = element
@@ -190,6 +194,14 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
             index == size -> justAddAfterTheEnd(element)
             else -> justAddBefore(actualIndex(index), element)
         }
+    }
+
+    override fun addFirst(element: E) {
+        addAt(0u, element)
+    }
+
+    override fun addLast(element: E) {
+        justAddAfterTheEnd(element)
     }
     override fun addAll(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
@@ -274,6 +286,14 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
         justRemoveAt(actualIndex(index))
     }
 
+    override fun removeFirst() {
+        justRemoveAt(start)
+    }
+
+    override fun removeLast() {
+        justRemoveAt(end)
+    }
+
     override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
         val newSize: UInt
         val firstCellToClear: UInt
@@ -307,18 +327,20 @@ public class KoneGrowableLinkedArrayList<E> internal constructor(
     override fun toString(): String = buildString {
         append('[')
         if (size > 0u) append(data[start])
-        var currentIndex = start
+        var currentActualIndex = start
         for (i in 1u..<size) {
-            currentIndex = nextCellIndex[currentIndex]
+            currentActualIndex = nextCellIndex[currentActualIndex]
             append(", ")
-            append(data[currentIndex])
+            append(data[currentActualIndex])
         }
         append(']')
     }
     override fun hashCode(): Int {
         var hashCode = 1
+        var currentActualIndex = start
         for (i in 0u..<size) {
-            hashCode = 31 * hashCode + data[i].hashCode()
+            hashCode = 31 * hashCode + data[currentActualIndex].hashCode()
+            currentActualIndex = nextCellIndex[currentActualIndex]
         }
         return hashCode
     }

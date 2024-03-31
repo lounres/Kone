@@ -12,26 +12,26 @@ import dev.lounres.kone.collections.complex.KoneMutableIterableList
 import dev.lounres.kone.collections.complex.KoneMutableMap
 import dev.lounres.kone.collections.complex.utils.firstMaybe
 import dev.lounres.kone.collections.complex.utils.map
+import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.computeOn
 
 
 public class KoneMutableListBackedMap<K, V> internal constructor(
-    override val keyContext: Equality<K>,
-    override val valueContext: Equality<V>,
-    private val entryContext: Equality<KoneMapEntry<K, V>>,
+    private val keyContext: Equality<K>,
+    private val valueContext: Equality<V>,
     internal val backingList: KoneMutableIterableList<KoneMapEntry<K, V>>,
 ) : KoneMutableMap<K, V> {
 
     override val size: UInt
         get() = backingList.size
     override val keys: KoneIterableSet<K>
-        get() = KoneListBackedSet(context = keyContext, backingList.map(context = keyContext) { it.key })
+        get() = KoneListBackedSet(backingList.map(context = keyContext) { it.key })
     override val values: KoneIterableCollection<V>
         get() = backingList.map(context = valueContext) { it.value }
     override val entries: KoneIterableSet<KoneMapEntry<K, V>>
-        get() = KoneListBackedSet(context = entryContext, backingList)
+        get() = KoneListBackedSet(backingList)
 
     override fun containsKey(key: K): Boolean = backingList.indexThat { _, entry -> entry.key == key } < backingList.size
 
@@ -57,5 +57,18 @@ public class KoneMutableListBackedMap<K, V> internal constructor(
 
     override fun removeAll() {
         backingList.removeAll()
+    }
+
+    // TODO: Override equals and `hashCode`
+
+    override fun toString(): String = buildString {
+        append('{')
+        val iterator = backingList.iterator()
+        if (iterator.hasNext()) append(iterator.getAndMoveNext())
+        while (iterator.hasNext()) {
+            append(", ")
+            append(iterator.getAndMoveNext())
+        }
+        append('}')
     }
 }

@@ -26,14 +26,14 @@ import kotlin.reflect.KClass
 
 public data class ZeroMatrixFeature(val value: Boolean)
 
-public class ZeroMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class ZeroMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == ZeroMatrixFeature::class) ZeroMatrixFeature(mdListTransformer { this.coefficients.all { ring { it.isZero() } } }) as F else null
 }
 
 public data class OneMatrixFeature(val value: Boolean)
 
-public class OneMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class OneMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == OneMatrixFeature::class) OneMatrixFeature(mdListTransformer { this.coefficients.allIndexed { index, it -> ring { if (index[0u] == index[1u]) it.isOne() else it.isZero() } } }) as F else null
 }
@@ -47,21 +47,21 @@ public class SquareMatrixFeatureProvider: FeatureProvider<Matrix<*>> {
 
 public data class TransposeMatrixFeature<N>(public val transpose: Matrix<N>)
 
-public class TransposeMatrixFeatureProvider<N, in NE: Equality<N>>(private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class TransposeMatrixFeatureProvider<N, in NE: Equality<N>>(private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
-        if (type == TransposeMatrixFeature::class && columnNumber == rowNumber) TransposeMatrixFeature(Matrix(mdListTransformer.mdList2(columnNumber, rowNumber, context = coefficients.context) { column, row -> this[row, column] })) as F else null
+        if (type == TransposeMatrixFeature::class && columnNumber == rowNumber) TransposeMatrixFeature(Matrix(mdListTransformer.mdList2(columnNumber, rowNumber, context = defaultEquality() /* TODO: Is default equality enough? */) { column, row -> this[row, column] })) as F else null
 }
 
 public data class SymmetricMatrixFeature(val value: Boolean)
 
-public class SymmetricMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class SymmetricMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == SymmetricMatrixFeature::class) SymmetricMatrixFeature(mdListTransformer { this.coefficients.allIndexed { (row, column), coef -> row <= column || ring { coef eq this[column, row] } }}) as F else null
 }
 
 public data class AntisymmetricMatrixFeature(val value: Boolean)
 
-public class AntisymmetricMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class AntisymmetricMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == SymmetricMatrixFeature::class) SymmetricMatrixFeature(mdListTransformer { this.coefficients.allIndexed { (row, column), coef -> (row == column && ring { coef.isZero() }) || row < column || ring { coef eq -this[column, row] } } }) as F else null
 }
@@ -69,14 +69,14 @@ public class AntisymmetricMatrixFeatureProvider<N>(private val ring: Ring<N>, pr
 // TODO: Finish the implementation
 public data class DiagonalMatrixFeature(val value: Boolean)
 
-public class DiagonalMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class DiagonalMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == DiagonalMatrixFeature::class) DiagonalMatrixFeature(columnNumber == rowNumber && mdListTransformer { this.coefficients.allIndexed { index, it -> if (index[0u] == index[1u]) true else ring { it.isZero() } } }) as F else null
 }
 
 public data class ScalarMatrixFeature(val value: Boolean)
 
-public class ScalarMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class ScalarMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == ScalarMatrixFeature::class) ScalarMatrixFeature(columnNumber == rowNumber && mdListTransformer { this.coefficients.allIndexed { index, it -> if (index[0u] == index[1u]) ring { it eq this[0u, 0u] } else ring { it.isZero() } } }) as F else null
 }
@@ -91,12 +91,12 @@ public class AdjugateMatrixFeatureProvider<N>(private val vectorSpace: VectorSpa
 
 public data class InvertibleMatrixFeature<N>(val inverseMatrix: Matrix<N>)
 
-public class InvertibleMatrixViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class InvertibleMatrixViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? {
         if (type != DeterminantMatrixFeature::class || rowNumber != columnNumber) return null
 
-        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = this.coefficients.context) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
-        val inverseMatrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = this.coefficients.context) { rowIndex, columnIndex -> if (rowIndex == columnIndex) field.one else field.zero }
+        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = defaultEquality() /* TODO: Is default equality enough? */) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
+        val inverseMatrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = defaultEquality() /* TODO: Is default equality enough? */) { rowIndex, columnIndex -> if (rowIndex == columnIndex) field.one else field.zero }
         var matrixDeterminant = field.one
 
         var fromRow = 0u
@@ -147,11 +147,11 @@ public class InvertibleMatrixViaGaussianAlgorithmFeatureProvider<N>(private val 
 
 public data class DeterminantMatrixFeature<out N>(val determinant: N)
 
-public class DeterminantMatrixViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class DeterminantMatrixViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? {
         if (type != DeterminantMatrixFeature::class || rowNumber != columnNumber) return null
 
-        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = this.coefficients.context) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
+        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = defaultEquality() /* TODO: Is default equality enough? */) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
 
         var fromRow = 0u
         while (fromRow < matrix.columnNumber && fromRow < matrix.rowNumber) {
@@ -185,11 +185,11 @@ public class DeterminantMatrixViaGaussianAlgorithmFeatureProvider<N>(private val
 
 public data class RankMatrixFeature(val rank: UInt)
 
-public class RankMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: SettableMDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class RankMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: SettableMDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? {
         if (type != DeterminantMatrixFeature::class) return null
 
-        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = this.coefficients.context) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
+        val matrix = mdListTransformer.settableMdList2(rowNumber, columnNumber, context = defaultEquality() /* TODO: Is default equality enough? */) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
 
         var columnNow = 0u
         var fromRow = 0u
@@ -263,14 +263,14 @@ public class MatrixMinorComputerViaBruteForceFeatureProvider<N>(private val ring
         } as F else null
 }
 
-public class MatrixMinorComputerViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class MatrixMinorComputerViaGaussianAlgorithmFeatureProvider<N>(private val field: Field<N>, private val mdListTransformer: SettableMDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == MatrixMinorComputerFeature::class) MatrixMinorComputerFeature(this) { rowIndices, columnIndices ->
             require(rowIndices.size == columnIndices.size)
             val minorSize = rowIndices.size
             if ((defaultEquality<UInt>()) { rowIndices.hasDuplicates() || columnIndices.hasDuplicates() }) return@MatrixMinorComputerFeature field.zero
 
-            val minor = mdListTransformer.settableMdList2(minorSize, minorSize, context = this.coefficients.context) { row, column -> this[rowIndices[row], columnIndices[column]] }
+            val minor = mdListTransformer.settableMdList2(minorSize, minorSize, context = defaultEquality() /* TODO: Is default equality enough? */) { row, column -> this[rowIndices[row], columnIndices[column]] }
 
             var fromRow = 0u
             var changeSign = false
@@ -309,14 +309,14 @@ public class MatrixMinorComputerViaGaussianAlgorithmFeatureProvider<N>(private v
 
 public data class UpperTriangleMatrixFeature(val value: Boolean)
 
-public class UpperTriangleMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class UpperTriangleMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == UpperTriangleMatrixFeature::class) UpperTriangleMatrixFeature(mdListTransformer { this.coefficients.allIndexed { index, it -> if (index[0u] > index[1u]) ring { it.isZero() } else true } }) as F else null
 }
 
 public data class LowerTriangleMatrixFeature(val value: Boolean)
 
-public class LowerTriangleMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer<N>): FeatureProvider<Matrix<N>> {
+public class LowerTriangleMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: MDListTransformer): FeatureProvider<Matrix<N>> {
     override fun <F : Any> Matrix<N>.getFeature(type: KClass<F>): F? =
         if (type == LowerTriangleMatrixFeature::class) LowerTriangleMatrixFeature(mdListTransformer { this.coefficients.allIndexed { index, it -> if (index[0u] < index[1u]) ring { it.isZero() } else true } }) as F else null
 }

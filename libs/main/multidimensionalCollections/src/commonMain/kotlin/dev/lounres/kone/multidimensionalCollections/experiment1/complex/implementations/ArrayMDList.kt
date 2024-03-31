@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.common.contentEquals
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.utils.joinToString
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.complex.*
 
@@ -18,7 +19,7 @@ import dev.lounres.kone.multidimensionalCollections.experiment1.complex.*
 public class ArrayMDList<E> internal constructor(
     override val shape: Shape,
     internal val offsetting: ShapeOffsetting = ShapeStrides(shape),
-    override val context: Equality<E>,
+    private val context: Equality<E>,
     initializer: (KoneUIntArray) -> E,
 ): SettableMDList<E> {
     override val size: UInt get() = offsetting.linearSize
@@ -30,6 +31,12 @@ public class ArrayMDList<E> internal constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
+    override fun contains(element: E): Boolean {
+        for (currentElement in data) if (context { element eq (currentElement as E) }) return true
+        return false
+    }
+
+    @Suppress("UNCHECKED_CAST")
     override fun get(index: KoneUIntArray): E {
         requireIndexInShape(index = index, shape = shape)
         return data[offsetting.offset(index)] as E
@@ -38,12 +45,6 @@ public class ArrayMDList<E> internal constructor(
     override fun set(index: KoneUIntArray, element: E) {
         requireIndexInShape(index = index, shape = shape)
         data[offsetting.offset(index)] = element
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun contains(element: E): Boolean {
-        for (currentElement in data) if (element == (currentElement as E)) return true
-        return false
     }
 
     override fun hashCode(): Int = shape.hashCode() * 31 + data.hashCode()
@@ -58,7 +59,7 @@ public class ArrayMDList<E> internal constructor(
 
 public class ArrayMDList1<E> internal constructor(
     override val size: UInt,
-    override val context: Equality<E>,
+    private val context: Equality<E>,
     initializer: (index: UInt) -> E,
 ): SettableMDList1<E> {
     internal val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(size) { null }
@@ -80,7 +81,7 @@ public class ArrayMDList1<E> internal constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun contains(element: E): Boolean {
-        for (currentElement in data) if (element == (currentElement as E)) return true
+        for (currentElement in data) if (context { element eq (currentElement as E) }) return true
         return false
     }
 
@@ -99,7 +100,7 @@ public class ArrayMDList1<E> internal constructor(
 public class ArrayMDList2<E> internal constructor(
     override val rowNumber: UInt,
     override val columnNumber: UInt,
-    override val context: Equality<E>,
+    private val context: Equality<E>,
     initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
 ): SettableMDList2<E> {
     internal val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(rowNumber * columnNumber) { null }
@@ -138,7 +139,7 @@ public class ArrayMDList2<E> internal constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun contains(element: E): Boolean {
-        for (currentElement in data) if (element == (currentElement as E)) return true
+        for (currentElement in data) if (context { element eq (currentElement as E) }) return true
         return false
     }
 
@@ -160,18 +161,15 @@ public class ArrayMDList2<E> internal constructor(
     }
 }
 
-public class ArrayMDListTransformer<E>: SettableMDListTransformer<E> {
-    override fun settableMdList(shape: Shape, context: Equality<E>, initializer: (index: KoneUIntArray) -> E): SettableMDList<E> =
+public data object ArrayMDListTransformer: SettableMDListTransformer {
+    override fun <E> settableMdList(shape: Shape, context: Equality<E>, initializer: (index: KoneUIntArray) -> E): SettableMDList<E> =
         ArrayMDList(shape = shape, context = context, initializer = initializer)
-    override fun settableMdList1(size: UInt, context: Equality<E>, initializer: (index: UInt) -> E): SettableMDList1<E> =
+    override fun <E> settableMdList1(size: UInt, context: Equality<E>, initializer: (index: UInt) -> E): SettableMDList1<E> =
         ArrayMDList1(size = size, context = context, initializer = initializer)
-    override fun settableMdList2(rowNumber: UInt, columnNumber: UInt, context: Equality<E>, initializer: (rowIndex: UInt, columnIndex: UInt) -> E): SettableMDList2<E> =
+    override fun <E> settableMdList2(rowNumber: UInt, columnNumber: UInt, context: Equality<E>, initializer: (rowIndex: UInt, columnIndex: UInt) -> E): SettableMDList2<E> =
         ArrayMDList2(rowNumber = rowNumber, columnNumber = columnNumber, context = context, initializer = initializer)
 
-    override fun hashCode(): Int = -1711128378 // Just a random `Int`eger
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is ArrayMDListTransformer<*>
-    }
+//    override fun hashCode(): Int = -1711128378 // Just a random `Int`eger
+//    override fun equals(other: Any?): Boolean = this === other
     override fun toString(): String = "ArrayMDListTransformer"
 }

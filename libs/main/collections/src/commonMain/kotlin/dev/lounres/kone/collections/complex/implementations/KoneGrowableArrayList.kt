@@ -23,7 +23,7 @@ public class KoneGrowableArrayList<E> internal constructor(
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
     override val context: Equality<E>,
-): KoneMutableIterableList<E> {
+) : KoneListWithContext<E>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E> {
     override var size: UInt = size
         private set
 
@@ -54,7 +54,7 @@ public class KoneGrowableArrayList<E> internal constructor(
         size = newSize
     }
 
-    public fun ensureCapacity(minimalCapacity: UInt) {
+    override fun ensureCapacity(minimalCapacity: UInt) {
         if (sizeUpperBound < minimalCapacity) {
             reinitializeBounds(minimalCapacity)
             reinitializeData {

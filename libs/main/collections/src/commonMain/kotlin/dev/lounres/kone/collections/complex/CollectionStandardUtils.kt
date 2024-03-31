@@ -6,7 +6,9 @@
 package dev.lounres.kone.collections.complex
 
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Some
 
 
 public fun KoneCollection<*>.isEmpty(): Boolean = size == 0u
@@ -29,6 +31,48 @@ public fun <E> KoneRemovableCollection<E>.retainAllFrom(elements: KoneCollection
     retainAllThat { it in elements }
 }
 
-public fun <E> KoneList<E>.indexOf(element: E): UInt = indexThat { _, collectionElement -> context { collectionElement eq element } }
+public fun <E> KoneDequeue<out E>.getFirstOrNull(): E? = if (size > 0u) getFirst() else null
 
-public fun <E> KoneList<E>.lastIndexOf(element: E): UInt = lastIndexThat { _, collectionElement -> context { collectionElement eq element } }
+public fun <E> KoneDequeue<out E>.getLastOrNull(): E? = if (size > 0u) getLast() else null
+
+public fun <E> KoneDequeue<out E>.getFirstMaybe(): Option<E> = if (size > 0u) Some(getFirst()) else None
+
+public fun <E> KoneDequeue<out E>.getLastMaybe(): Option<E> = if (size > 0u) Some(getLast()) else None
+
+public fun <E> KoneDequeue<out E>.getFirstOrDefault(default: E): E = if (size > 0u) getFirst() else default
+
+public fun <E> KoneDequeue<out E>.getLastOrDefault(default: E): E = if (size > 0u) getLast() else default
+
+public inline fun <E> KoneDequeue<out E>.getFirstOrElse(default: () -> E): E = if (size > 0u) getFirst() else default()
+
+public inline fun <E> KoneDequeue<out E>.getLastOrElse(default: () -> E): E = if (size > 0u) getLast() else default()
+
+public fun <E> KoneDequeue<out E>.popFirst(): E = getFirst().also { removeFirst() }
+
+public fun <E> KoneDequeue<out E>.popLast(): E = getLast().also { removeLast() }
+
+public fun <E> KoneDequeue<out E>.popFirstOrNull(): E? = if (size > 0u) getFirst().also { removeFirst() } else null
+
+public fun <E> KoneDequeue<out E>.popLastOrNull(): E? = if (size > 0u) getLast().also { removeLast() } else null
+
+public fun <E> KoneDequeue<out E>.popFirstMaybe(): Option<E> = if (size > 0u) Some(getFirst()).also { removeFirst() } else None
+
+public fun <E> KoneDequeue<out E>.popLastMaybe(): Option<E> = if (size > 0u) Some(getLast()).also { removeLast() } else None
+
+public fun <E> KoneDequeue<out E>.popFirstOrDefault(default: E): E = if (size > 0u) getFirst().also { removeFirst() } else default
+
+public fun <E> KoneDequeue<out E>.popLastOrDefault(default: E): E = if (size > 0u) getLast().also { removeLast() } else default
+
+public inline fun <E> KoneDequeue<out E>.popFirstOrElse(default: () -> E): E = if (size > 0u) getFirst().also { removeFirst() } else default()
+
+public inline fun <E> KoneDequeue<out E>.popLastOrElse(default: () -> E): E = if (size > 0u) getLast().also { removeLast() } else default()
+
+public fun <E> KoneDequeue<E>.replaceFirst(element: E) {
+    removeFirst()
+    addFirst(element)
+}
+
+public fun <E> KoneDequeue<E>.replaceLast(element: E) {
+    removeLast()
+    addLast(element)
+}

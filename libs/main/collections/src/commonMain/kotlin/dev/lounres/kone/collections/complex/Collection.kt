@@ -13,9 +13,8 @@ import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 
 
-public interface KoneCollection<E> {
+public interface KoneCollection<out E> {
     public val size: UInt
-    public val context: Equality<E>
     public operator fun contains(element: @UnsafeVariance E): Boolean
 }
 
@@ -26,7 +25,7 @@ public interface KoneExtendableCollection<E> : KoneCollection<E> {
     }
 }
 
-public interface KoneRemovableCollection<E> : KoneCollection<E> {
+public interface KoneRemovableCollection<out E> : KoneCollection<E> {
     public fun remove(element: @UnsafeVariance E)
     public fun removeAllThat(predicate: (element: E) -> Boolean)
     public fun removeAll()
@@ -34,14 +33,14 @@ public interface KoneRemovableCollection<E> : KoneCollection<E> {
 
 public interface KoneMutableCollection<E> : KoneExtendableCollection<E>, KoneRemovableCollection<E>
 
-public interface KoneList<E> : KoneCollection<E> {
-    override fun contains(element: @UnsafeVariance E): Boolean =
-        indexThat { _, currentElement -> context { currentElement eq element } } != size
+public interface KoneList<out E> : KoneCollection<E> {
+    override fun contains(element: @UnsafeVariance E): Boolean
 
     public operator fun get(index: UInt): E
     public fun getMaybe(index: UInt): Option<E> =
         if (index < size) Some(get(index))
         else None
+    public fun indexOf(element: @UnsafeVariance E): UInt
     public fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = 0u
         while (i < size) {
@@ -50,6 +49,7 @@ public interface KoneList<E> : KoneCollection<E> {
         }
         return i
     }
+    public fun lastIndexOf(element: @UnsafeVariance E): UInt
     public fun lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = size - 1u
         while (i != UInt.MAX_VALUE) {
@@ -82,10 +82,10 @@ public interface KoneRemovableList<E>: KoneList<E>, KoneRemovableCollection<E> {
 
 public interface KoneMutableList<E> : KoneSettableList<E>, KoneExtendableList<E>, KoneRemovableList<E>, KoneMutableCollection<E>
 
-public interface KoneSet<E> : KoneCollection<E>
+public interface KoneSet<out E> : KoneCollection<E>
 
 public interface KoneExtendableSet<E> : KoneSet<E>, KoneExtendableCollection<E>
 
-public interface KoneRemovableSet<E> : KoneSet<E>, KoneRemovableCollection<E>
+public interface KoneRemovableSet<out E> : KoneSet<E>, KoneRemovableCollection<E>
 
 public interface KoneMutableSet<E> : KoneExtendableSet<E>, KoneRemovableSet<E>, KoneMutableCollection<E>

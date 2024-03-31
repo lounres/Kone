@@ -10,34 +10,28 @@ import dev.lounres.kone.collections.complex.KoneIterableCollection
 import dev.lounres.kone.collections.complex.KoneIterableSet
 import dev.lounres.kone.collections.complex.KoneMap
 import dev.lounres.kone.collections.complex.isEmpty
-import dev.lounres.kone.collections.complex.utils.emptyKoneIterableList
-import dev.lounres.kone.collections.complex.utils.emptyKoneIterableSet
 import dev.lounres.kone.collections.noMatchingKeyException
-import dev.lounres.kone.collections.utils.KoneMapEntryEquality
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 
 
-internal class EmptyKoneMap<K, V>(
-    override val keyContext: Equality<K>,
-    override val valueContext: Equality<V>
-): KoneMap<K, V> {
+internal open class EmptyKoneMapTemplate<K, V> : KoneMap<K, V> {
     override val size: UInt = 0u
     override fun containsKey(key: K): Boolean = false
     override fun containsValue(value: V): Boolean = false
-    private val entryContext = KoneMapEntryEquality(keyContext = keyContext, valueContext = valueContext)
 
     override fun get(key: K): Nothing {
         noMatchingKeyException(key)
     }
     override fun getMaybe(key: K): Option<Nothing> = None
 
-    override val keys: KoneIterableSet<K> = emptyKoneIterableSet(context = keyContext)
-    override val values: KoneIterableCollection<V> = emptyKoneIterableList(context = valueContext)
-    override val entries: KoneIterableSet<KoneMapEntry<K, V>> = emptyKoneIterableSet(context = entryContext)
+    override val keys: KoneIterableSet<K> = EmptyKoneIterableSet
+    override val values: KoneIterableCollection<V> = EmptyKoneIterableList
+    override val entries: KoneIterableSet<KoneMapEntry<K, V>> = EmptyKoneIterableSet
 
     override fun toString(): String = "{}"
     override fun hashCode(): Int = 0
     override fun equals(other: Any?): Boolean = other is KoneMap<*, *> && other.isEmpty()
 }
+
+internal object EmptyKoneMap: EmptyKoneMapTemplate<Any?, Nothing>()

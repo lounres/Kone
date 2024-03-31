@@ -21,7 +21,7 @@ public class KoneFixedCapacityArrayList<E> internal constructor(
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
     override val context: Equality<E>,
-): KoneMutableIterableList<E> {
+): KoneListWithContext<E>, KoneMutableIterableList<E> {
     override var size: UInt = size
         private set
 
