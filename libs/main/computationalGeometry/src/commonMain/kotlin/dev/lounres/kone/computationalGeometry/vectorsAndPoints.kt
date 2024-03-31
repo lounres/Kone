@@ -8,9 +8,9 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isPositive
 import dev.lounres.kone.algebraic.sign
-import dev.lounres.kone.collections.common.KoneArray
-import dev.lounres.kone.collections.common.KoneUIntArray
-import dev.lounres.kone.collections.common.utils.all
+import dev.lounres.kone.collections.KoneArray
+import dev.lounres.kone.collections.KoneUIntArray
+import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
@@ -20,8 +20,8 @@ import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.linearAlgebra.experiment1.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.experiment1.columnVectorHashing
 import dev.lounres.kone.linearAlgebra.experiment1.minor
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.MDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.utils.fold
+import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
+import dev.lounres.kone.multidimensionalCollections.experiment1.utils.fold
 
 
 // FIXME: KT-42977
@@ -57,12 +57,12 @@ public /*value*/ class Point2<N>(coordinates: ColumnVector<N>): Point<N>(coordin
 }
 
 public fun <N> Vector(coordinates: MDList1<N>): Vector<N> = Vector(ColumnVector(coordinates))
-public fun <N> Vector(vararg coordinates: N, context: Equality<N>): Vector<N> = Vector(ColumnVector(*coordinates, context = context))
-public fun <N> Vector(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Vector<N> = Vector(ColumnVector(size, context, initializer))
+public fun <N> Vector(vararg coordinates: N, context: Equality<N>): Vector<N> = Vector(ColumnVector(*coordinates))
+public fun <N> Vector(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Vector<N> = Vector(ColumnVector(size, initializer))
 
 public fun <N> Point(coordinates: MDList1<N>): Point<N> = Point(ColumnVector(coordinates))
-public fun <N> Point(vararg coordinates: N, context: Equality<N>): Point<N> = Point(ColumnVector(*coordinates, context = context))
-public fun <N> Point(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, context = context, initializer))
+public fun <N> Point(vararg coordinates: N, context: Equality<N>): Point<N> = Point(ColumnVector(*coordinates))
+public fun <N> Point(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, initializer))
 
 context(EuclideanSpace<N, A>)
 public operator fun <N, A> Vector<N>.unaryMinus(): Vector<N> where A: Ring<N>, A: Order<N> = Vector(vectorSpace { -this.coordinates })

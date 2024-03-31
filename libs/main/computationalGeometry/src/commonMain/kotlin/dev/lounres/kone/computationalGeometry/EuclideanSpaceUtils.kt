@@ -8,7 +8,7 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.linearAlgebra.experiment1.VectorSpace
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.SettableMDListTransformer
+import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDListTransformer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 

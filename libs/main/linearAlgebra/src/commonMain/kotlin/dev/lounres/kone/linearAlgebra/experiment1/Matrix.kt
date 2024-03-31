@@ -5,32 +5,32 @@
 
 package dev.lounres.kone.linearAlgebra.experiment1
 
-import dev.lounres.kone.collections.common.KoneMutableMap
-import dev.lounres.kone.collections.common.getOrNull
-import dev.lounres.kone.collections.common.utils.koneMutableMapOf
-import dev.lounres.kone.collections.complex.KoneIterableList
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneMutableMap
+import dev.lounres.kone.collections.getOrNull
+import dev.lounres.kone.collections.utils.koneMutableMapOf
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.MDList2
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.SettableMDList2
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.columnIndices
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.rowIndices
+import dev.lounres.kone.multidimensionalCollections.experiment1.MDList2
+import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList2
+import dev.lounres.kone.multidimensionalCollections.experiment1.columnIndices
+import dev.lounres.kone.multidimensionalCollections.experiment1.rowIndices
 import kotlin.reflect.KClass
 
 
 /*@JvmInline*/
 public open /*value*/ class Matrix<N>(
     public open val coefficients: MDList2<N>,
-    protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf()
+    protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
 ): FeatureStorage {
     @Suppress("UNCHECKED_CAST")
     override fun <F : Any> getFeature(key: Any, type: KClass<F>): F? = (defaultHashing<Any>()) { features.getOrNull(key)?.getOrNull(type) as? F }
     override fun <F : Any> storeFeature(key: Any, type: KClass<F>, value: F) {
         (defaultHashing<Any>()) {
-            features.getOrSet(key) { koneMutableMapOf() }[type] = value
+            features.getOrSet(key) { koneMutableMapOf(keyContext = defaultHashing()) }[type] = value
         }
     }
 
@@ -43,10 +43,10 @@ public open /*value*/ class Matrix<N>(
 /*@JvmInline*/
 public /*value*/ class SettableMatrix<N>(
     override val coefficients: SettableMDList2<N>,
-    override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf()
+    override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
 ): Matrix<N>(coefficients, features) {
     public operator fun set(rowIndex: UInt, columnIndex: UInt, coefficient: N) {
-        features.clear()
+        features.removeAll()
         coefficients[rowIndex, columnIndex] = coefficient
     }
 }

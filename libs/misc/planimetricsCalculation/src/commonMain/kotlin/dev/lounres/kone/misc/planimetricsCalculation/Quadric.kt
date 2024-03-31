@@ -9,6 +9,7 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.utils.koneIterableListOf
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.reflect.KProperty
@@ -63,6 +64,7 @@ public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
         Matrix(
             koneIterableListOf(2 * xx, xy, xz),
             koneIterableListOf(xy, 2 * yy, yz),
-            koneIterableListOf(xz, yz, 2 * zz)
+            koneIterableListOf(xz, yz, 2 * zz),
+            context = defaultEquality() // TODO: Maybe, the contexts should be replaced
         )
     }

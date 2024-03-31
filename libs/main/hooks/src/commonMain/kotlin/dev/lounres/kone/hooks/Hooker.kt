@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.common.KoneMutableIterableList
-import dev.lounres.kone.collections.common.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.KoneMutableIterableList
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import kotlin.reflect.KProperty
 
 
@@ -55,7 +55,7 @@ public inline fun <O, A> ResponseAfterAction(crossinline respond: (entity: O, ac
 public abstract class AbstractHookable<out O, out A>(
     protected val hooks: KoneMutableIterableList<Response<@UnsafeVariance O, @UnsafeVariance A>> = KoneGrowableArrayList()
 ): Hookable<O, A> {
-    override fun hookUp(response: Response<O, A>) { hooks.addAtTheEnd(response) }
+    override fun hookUp(response: Response<O, A>) { hooks.add(response) }
 }
 
 public operator fun <O> Hookable<O, *>.getValue(thisRef: Any?, property: KProperty<*>): O = output

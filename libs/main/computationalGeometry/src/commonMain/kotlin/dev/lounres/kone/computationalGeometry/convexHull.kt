@@ -6,12 +6,10 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.complex.*
-import dev.lounres.kone.collections.complex.implementations.KoneFixedCapacityArrayList
-import dev.lounres.kone.collections.complex.utils.*
-import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.utils.first
-import dev.lounres.kone.collections.utils.firstOfOrNull
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.context.invoke
@@ -93,7 +91,12 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
             }
         }
         val vertices = koneIterableSetOf(startVertex, endVertex)
-        return addPolytope(vertices, koneIterableListOf(vertices.toKoneIterableSet<P>(context = this@PE), context = koneIterableSetEquality(this@PE))).also {
+        return addPolytope(vertices,
+            dev.lounres.kone.collections.utils.koneIterableListOf(
+                vertices.toKoneIterableSet<P>(context = this@PE),
+                context = koneIterableSetEquality(this@PE)
+            )
+        ).also {
             koneLogger.info(
                 source = "dev.lounres.kone.computationalGeometry.giftWrappingIncrement",
                 items = {
@@ -112,7 +115,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
 
     val convexHullVertices = koneMutableIterableSetOf<V>(context = this@PE)
     @Suppress("UNCHECKED_CAST")
-    val convexHullFaces = KoneIterableList(subspaceDimension, context = koneIterableSetEquality(this@PE)) { if (it == 0u) convexHullVertices as KoneMutableIterableSet<P> else koneMutableIterableSetOf(context = this@PE) }
+    val convexHullFaces = KoneIterableList(subspaceDimension, context = koneIterableSetEquality(this@PE)) { if (it == 0u) convexHullVertices as KoneMutableIterableSet<P> else dev.lounres.kone.collections.utils.koneMutableIterableSetOf(context = this@PE) }
 
     for (dim in 0u .. subspaceDimension-2u) {
         convexHullFaces[dim].addAll(startFacet.facesOfDimension(dim))
@@ -201,7 +204,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
                 normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
             }
 
-            val newVertices: KoneIterableList<V> = buildKoneIterableSet<V>(context = this@PE) {
+            val newVertices: KoneIterableList<V> = dev.lounres.kone.collections.utils.buildKoneIterableSet<V>(context = this@PE) {
                 addAll(allVertices)
                 removeAllFrom(subfacet.vertices)
             }.giftWrappingAtom(startPoint, normalGiftWrappingVector, tangentGiftWrappingVector)
@@ -350,7 +353,7 @@ internal fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.giftWrap
     this.toKoneMutableIterableSet(context = this@PE).apply { removeAllFrom(startPoints) }.giftWrappingExtension(
         subspaceDimension = subspaceDimension,
         wrappingResult = wrappingResult,
-        normalVector = Vector(ColumnVector(spaceDimension, context = numberRing) { numberRing { if (it == subspaceDimension - 1u) one else zero } })
+        normalVector = Vector(ColumnVector(spaceDimension) { numberRing { if (it == subspaceDimension - 1u) one else zero } })
     )
 
     return wrappingResult

@@ -5,11 +5,9 @@
 
 package dev.lounres.kone.combinatorics.enumerative
 
-import dev.lounres.kone.collections.KoneIterable
-import dev.lounres.kone.collections.common.*
-import dev.lounres.kone.collections.common.implementations.KoneGrowableArrayList
-import dev.lounres.kone.collections.common.utils.*
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.misc.scope
 
 
@@ -160,8 +158,8 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
             currentState[firstToIncrease] = 1u
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
             currentElements = buildKoneIterableList {
-                addAtTheEnd(collection[firstToIncrease])
-                addAllAtTheEnd(currentElements.drop(firstToIncrease))
+                add(collection[firstToIncrease])
+                addAll(currentElements.drop(firstToIncrease))
             }
         }
     }
@@ -337,7 +335,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equali
                         indexOfLastElement = i
 
                         countIndices[i - 1u] = countsBuilder.size
-                        countsBuilder.addAtTheEnd(1u)
+                        countsBuilder.add(1u)
                     } else {
                         references[i] = references[j]
                         references[j] = i
@@ -444,7 +442,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
                         indexOfLastElement = i
 
                         countIndices[i - 1u] = countsBuilder.size
-                        countsBuilder.addAtTheEnd(1u)
+                        countsBuilder.add(1u)
                     } else {
                         references[i] = references[j]
                         references[j] = i

@@ -6,13 +6,13 @@
 package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.common.KoneMutableIterableList
-import dev.lounres.kone.collections.common.utils.koneMutableIterableListOf
+import dev.lounres.kone.collections.KoneMutableIterableList
+import dev.lounres.kone.collections.utils.koneMutableIterableListOf
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.feature.ExtendableFeatureProviderHolder
 import dev.lounres.kone.feature.FeatureProvider
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.MDListTransformer
-import dev.lounres.kone.multidimensionalCollections.experiment1.complex.SettableMDListTransformer
+import dev.lounres.kone.multidimensionalCollections.experiment1.MDListTransformer
+import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDListTransformer
 
 
 public class VectorSpace<N, A: Ring<N>>(
@@ -23,18 +23,18 @@ public class VectorSpace<N, A: Ring<N>>(
     override val featureStorageKey: Any = numberRing
 
     public fun rowVector(size: UInt, mdListTransformer: MDListTransformer = defaultSettableMdListTransformer, initializer: (index: UInt) -> N): RowVector<N> =
-        RowVector(mdListTransformer.mdList1(size, context = numberRing, initializer))
+        RowVector(mdListTransformer.mdList1(size, initializer))
     public fun columnVector(size: UInt, mdListTransformer: MDListTransformer = defaultSettableMdListTransformer, initializer: (index: UInt) -> N): ColumnVector<N> =
-        ColumnVector(mdListTransformer.mdList1(size, context = numberRing, initializer))
+        ColumnVector(mdListTransformer.mdList1(size, initializer))
     public fun matrix(rows: UInt, columns: UInt, mdListTransformer: MDListTransformer = defaultSettableMdListTransformer, initializer: (rowIndex: UInt, columnIndex: UInt) -> N): Matrix<N> =
-        Matrix(mdListTransformer.mdList2(rows, columns, context = numberRing, initializer))
+        Matrix(mdListTransformer.mdList2(rows, columns, initializer))
 
     public fun settableRowVector(size: UInt, settableMdListTransformer: SettableMDListTransformer = defaultSettableMdListTransformer, initializer: (index: UInt) -> N): SettableRowVector<N> =
-        SettableRowVector(settableMdListTransformer.settableMdList1(size, context = numberRing, initializer))
+        SettableRowVector(settableMdListTransformer.settableMdList1(size, initializer))
     public fun settableColumnVector(size: UInt, settableMdListTransformer: SettableMDListTransformer = defaultSettableMdListTransformer, initializer: (index: UInt) -> N): ColumnVector<N> =
-        SettableColumnVector(settableMdListTransformer.settableMdList1(size, context = numberRing, initializer))
+        SettableColumnVector(settableMdListTransformer.settableMdList1(size, initializer))
     public fun settableMatrix(rows: UInt, columns: UInt, settableMdListTransformer: SettableMDListTransformer = defaultSettableMdListTransformer, initializer: (rowIndex: UInt, columnIndex: UInt) -> N): Matrix<N> =
-        SettableMatrix(settableMdListTransformer.settableMdList2(rows, columns, context = numberRing, initializer))
+        SettableMatrix(settableMdListTransformer.settableMdList2(rows, columns, initializer))
 
     public fun SettableRowVector<N>.mutate(transformer: (index: UInt, current: N) -> N) {
         for (index in 0u..<this.size)

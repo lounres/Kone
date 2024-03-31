@@ -5,12 +5,8 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.common.KoneMutableUIntArray
-import dev.lounres.kone.collections.common.KoneUIntArray
-import dev.lounres.kone.collections.common.koneUIntArrayOf
-import dev.lounres.kone.collections.common.toKoneUIntArray
-import dev.lounres.kone.collections.common.utils.*
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.context.KoneContext
 
 

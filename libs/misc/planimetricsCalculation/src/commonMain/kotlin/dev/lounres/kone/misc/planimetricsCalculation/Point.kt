@@ -8,6 +8,7 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.linearAlgebra.experiment1.RowVector
 import dev.lounres.kone.polynomial.LabeledPolynomial

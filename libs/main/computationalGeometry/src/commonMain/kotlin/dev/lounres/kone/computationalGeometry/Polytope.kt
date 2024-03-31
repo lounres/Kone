@@ -5,13 +5,13 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.collections.complex.KoneIterableList
-import dev.lounres.kone.collections.complex.KoneIterableSet
-import dev.lounres.kone.collections.complex.koneIterableSetEquality
-import dev.lounres.kone.collections.complex.utils.drop
-import dev.lounres.kone.collections.complex.utils.filterTo
-import dev.lounres.kone.collections.complex.utils.koneMutableIterableSetOf
-import dev.lounres.kone.collections.complex.utils.map
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneIterableSet
+import dev.lounres.kone.collections.koneIterableSetEquality
+import dev.lounres.kone.collections.utils.drop
+import dev.lounres.kone.collections.utils.filterTo
+import dev.lounres.kone.collections.utils.koneMutableIterableSetOf
+import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.KoneContext
 

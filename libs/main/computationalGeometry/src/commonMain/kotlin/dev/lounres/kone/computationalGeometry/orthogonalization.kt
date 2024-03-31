@@ -6,9 +6,9 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.complex.KoneIterableList
-import dev.lounres.kone.collections.complex.KoneMutableIterableList
-import dev.lounres.kone.collections.complex.implementations.KoneFixedCapacityArrayList
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneMutableIterableList
+import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order

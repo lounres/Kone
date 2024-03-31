@@ -19,7 +19,7 @@ import kotlin.contracts.contract
 
 
 context(A)
-public class PlanimetricsCalculationContext<E, out A : Ring<E>>: KoneContext {
+public class PlanimetricsCalculationContext<E, A : Ring<E>>: KoneContext {
     public val ring: A = this@A
     public val polynomialSpace: LabeledPolynomialSpace<E, A> by lazy { ring.labeledPolynomialSpace }
     public val matrixSpace: VectorSpace<LabeledPolynomial<E>, LabeledPolynomialSpace<E, A>> by lazy { polynomialSpace.vectorSpace }

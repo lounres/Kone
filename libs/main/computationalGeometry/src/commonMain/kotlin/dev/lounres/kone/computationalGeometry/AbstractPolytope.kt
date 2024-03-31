@@ -5,9 +5,8 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.collections.complex.*
-import dev.lounres.kone.collections.complex.utils.*
-import dev.lounres.kone.collections.utils.firstOrNull
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -22,7 +21,6 @@ import kotlin.experimental.ExperimentalTypeInference
 
 public open class AbstractPolytope internal constructor() {
     internal val id: String = randomUUID()
-//    internal val id: String = randomUUID()
     override fun equals(other: Any?): Boolean = other is AbstractPolytope && this.id == other.id
     override fun hashCode(): Int = id.hashCode()
     override fun toString(): String = "AbstractPolytope($id)"
@@ -48,9 +46,7 @@ internal class MutableAbstractPolytopicConstructionImpl<N>(
 
     private val _polytopes = KoneIterableList(spaceDimension + 1u, context = koneIterableSetEquality(polytopeContext)) { koneMutableIterableSetOf<AbstractPolytope>(context = polytopeContext) }
     private val _dimensionOf = koneMutableMapOf<AbstractPolytope, UInt>(keyContext = polytopeContext, valueContext = defaultEquality())
-    private val _facesOf = koneMutableMapOf<AbstractPolytope, KoneIterableList<KoneIterableSet<AbstractPolytope>>>(keyContext = polytopeContext, valueContext = koneIterableListHashing(
-        koneIterableSetHashing(polytopeContext)
-    )
+    private val _facesOf = koneMutableMapOf(keyContext = polytopeContext, valueContext = koneIterableListHashing(koneIterableSetHashing(polytopeContext))
     )
     //    private val _superPolytopesOf = mutableMapOf<AbstractPolytope, List<MutableSet<AbstractPolytope>>>()
     private val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneIterableSet<AbstractVertex>>(keyContext = polytopeContext, valueContext = koneIterableSetEquality(polytopeContext))

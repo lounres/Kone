@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry
 
+import dev.lounres.kone.algebraic.LongRing
 import dev.lounres.kone.algebraic.ring
 import dev.lounres.kone.collections.KoneMutableMap
 import dev.lounres.kone.collections.iterator
@@ -16,70 +17,42 @@ import dev.lounres.kone.linearAlgebra.experiment1.vectorSpace
 import kotlin.test.Test
 
 
-fun <N, P, V: P> PolytopicConstruction<N, P, V>.eq(other: PolytopicConstruction<N, P, V>): Boolean {
-    if (this.spaceDimension != other.spaceDimension) return false
-    if ((0u..this.spaceDimension).any { this.polytopes[it].size != other.polytopes[it].size }) return false
-
-    val polytopesMapping = KoneIterableList(this.spaceDimension + 1u) { koneMutableMapOf<P, P>() }
-    @Suppress("UNCHECKED_CAST")
-    val vertexMapping = polytopesMapping[0u] as KoneMutableMap<V, V>
-
-    val thisPointToVertexMapping = this.vertices.associateBy { this { it.coordinates } }
-    val otherPointToVertexMapping = other.vertices.associateBy { other { it.coordinates } }
-    if (thisPointToVertexMapping.keys != otherPointToVertexMapping.keys) return false
-    for ((point, thisVertex) in thisPointToVertexMapping) {
-        vertexMapping[thisVertex] = otherPointToVertexMapping[point]
-    }
-
-    for (dim in 1u..this.spaceDimension) {
-        val dimMapping = polytopesMapping[dim]
-        val thisFacesToPolytopeMapping = this.polytopes[dim].associateBy { this { it.faces } }
-        val otherFacesToPolytopeMapping = other.polytopes[dim].associateBy { other { it.faces } }
-        if (thisFacesToPolytopeMapping.keys != otherFacesToPolytopeMapping.keys) return false
-        for ((faces, thisPolytope) in thisFacesToPolytopeMapping) {
-            dimMapping[thisPolytope] = otherFacesToPolytopeMapping[faces]
-        }
-    }
-
-    return true
-}
-
 class ConvexHullTest {
     @Test
     fun `MD gift wrapping test 1`(): Unit = Long.ring.vectorSpace {
         install(MatrixMinorComputerViaBruteForceFeatureProvider(numberRing))
-        val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u) {
+        val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.ring) {
             val vertices = koneIterableListOf(
-                addVertex(Point(0, 0, 0L)),
-                addVertex(Point(0, 0, 1L)),
-                addVertex(Point(0, 0, 2L)),
-                addVertex(Point(0, 1, 0L)),
-                addVertex(Point(0, 1, 1L)),
-                addVertex(Point(0, 1, 2L)),
-                addVertex(Point(0, 2, 0L)),
-                addVertex(Point(0, 2, 1L)),
-                addVertex(Point(0, 2, 2L)),
-                addVertex(Point(1, 0, 0L)),
-                addVertex(Point(1, 0, 1L)),
-                addVertex(Point(1, 0, 2L)),
-                addVertex(Point(1, 1, 0L)),
-                addVertex(Point(1, 1, 1L)),
-                addVertex(Point(1, 1, 2L)),
-                addVertex(Point(1, 2, 0L)),
-                addVertex(Point(1, 2, 1L)),
-                addVertex(Point(1, 2, 2L)),
-                addVertex(Point(2, 0, 0L)),
-                addVertex(Point(2, 0, 1L)),
-                addVertex(Point(2, 0, 2L)),
-                addVertex(Point(2, 1, 0L)),
-                addVertex(Point(2, 1, 1L)),
-                addVertex(Point(2, 1, 2L)),
-                addVertex(Point(2, 2, 0L)),
-                addVertex(Point(2, 2, 1L)),
-                addVertex(Point(2, 2, 2L)),
+                addVertex(Point(0, 0, 0L, context = Long.ring)),
+                addVertex(Point(0, 0, 1L, context = Long.ring)),
+                addVertex(Point(0, 0, 2L, context = Long.ring)),
+                addVertex(Point(0, 1, 0L, context = Long.ring)),
+                addVertex(Point(0, 1, 1L, context = Long.ring)),
+                addVertex(Point(0, 1, 2L, context = Long.ring)),
+                addVertex(Point(0, 2, 0L, context = Long.ring)),
+                addVertex(Point(0, 2, 1L, context = Long.ring)),
+                addVertex(Point(0, 2, 2L, context = Long.ring)),
+                addVertex(Point(1, 0, 0L, context = Long.ring)),
+                addVertex(Point(1, 0, 1L, context = Long.ring)),
+                addVertex(Point(1, 0, 2L, context = Long.ring)),
+                addVertex(Point(1, 1, 0L, context = Long.ring)),
+                addVertex(Point(1, 1, 1L, context = Long.ring)),
+                addVertex(Point(1, 1, 2L, context = Long.ring)),
+                addVertex(Point(1, 2, 0L, context = Long.ring)),
+                addVertex(Point(1, 2, 1L, context = Long.ring)),
+                addVertex(Point(1, 2, 2L, context = Long.ring)),
+                addVertex(Point(2, 0, 0L, context = Long.ring)),
+                addVertex(Point(2, 0, 1L, context = Long.ring)),
+                addVertex(Point(2, 0, 2L, context = Long.ring)),
+                addVertex(Point(2, 1, 0L, context = Long.ring)),
+                addVertex(Point(2, 1, 1L, context = Long.ring)),
+                addVertex(Point(2, 1, 2L, context = Long.ring)),
+                addVertex(Point(2, 2, 0L, context = Long.ring)),
+                addVertex(Point(2, 2, 1L, context = Long.ring)),
+                addVertex(Point(2, 2, 2L, context = Long.ring)),
             )
 
-            vertices.constructConvexHullByGiftWrapping3(this)
+//            vertices.constructConvexHullByGiftWrapping2()
         }
 //        val expectedPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u) {
 //            val p000 = addVertex(Point(0, 0, 0L))
