@@ -14,17 +14,17 @@ import dev.lounres.kone.misc.scope
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneGrowableArrayList<E> internal constructor(
+public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    override val context: Equality<E>,
-) : KoneListWithContext<E>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E> {
+    override val elementContext: EC,
+) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E> {
     override var size: UInt = size
         private set
 
     override fun contains(element: E): Boolean {
-        for (index in 0u ..< size) if (context { (data[index] as E) eq element }) return true
+        for (index in 0u ..< size) if (elementContext { (data[index] as E) eq element }) return true
         return false
     }
 
@@ -211,7 +211,7 @@ public class KoneGrowableArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableArrayList<*> ->
+            is KoneGrowableArrayList<*, *> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }

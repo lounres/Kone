@@ -8,11 +8,7 @@ package dev.lounres.kone.multidimensionalCollections.experiment1.implementations
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneUIntArray
 import dev.lounres.kone.collections.contentEquals
-import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.utils.joinToString
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.*
 
@@ -139,17 +135,4 @@ public class ArrayMDList2<E>(
 
         return  ShapeStrides(this.shape).all { this[it] == other[it] }
     }
-}
-
-public data object ArrayMDListTransformer: SettableMDListTransformer {
-    override fun <E> settableMdList(shape: Shape, initializer: (index: KoneUIntArray) -> E): SettableMDList<E> =
-        ArrayMDList(shape = shape, initializer = initializer)
-    override fun <E> settableMdList1(size: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
-        ArrayMDList1(size = size, initializer = initializer)
-    override fun <E> settableMdList2(rowNumber: UInt, columnNumber: UInt, initializer: (rowIndex: UInt, columnIndex: UInt) -> E): SettableMDList2<E> =
-        ArrayMDList2(rowNumber = rowNumber, columnNumber = columnNumber, initializer = initializer)
-
-//    override fun hashCode(): Int = -1711128378 // Just a random `Int`eger
-//    override fun equals(other: Any?): Boolean = this === other
-    override fun toString(): String = "ArrayMDListTransformer"
 }

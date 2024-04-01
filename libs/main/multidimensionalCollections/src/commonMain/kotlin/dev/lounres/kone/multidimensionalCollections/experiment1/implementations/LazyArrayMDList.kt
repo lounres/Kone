@@ -8,13 +8,10 @@ package dev.lounres.kone.multidimensionalCollections.experiment1.implementations
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneUIntArray
 import dev.lounres.kone.collections.utils.fold
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList
 import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList1
 import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList2
-import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDListTransformer
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
@@ -75,17 +72,4 @@ public class LazyArrayMDList2<E>(
         if (rowIndex >= rowNumber || columnIndex >= columnNumber) throw IndexOutOfShapeException(shape = shape, index = Shape(rowIndex, columnIndex))
         buffer[rowIndex + columnIndex * rowNumber] = Some(element)
     }
-}
-
-public data object LazyArrayMDListTransformer : SettableMDListTransformer {
-    override fun <E> settableMdList(shape: Shape, initializer: (index: KoneUIntArray) -> E): SettableMDList<E> =
-        LazyArrayMDList(shape = shape, generator = initializer)
-    override fun <E> settableMdList1(size: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
-        LazyArrayMDList1(size = size, generator = initializer)
-    override fun <E> settableMdList2(rowNumber: UInt, columnNumber: UInt, initializer: (rowIndex: UInt, columnIndex: UInt) -> E): SettableMDList2<E> =
-        LazyArrayMDList2(rowNumber = rowNumber, columnNumber = columnNumber, generator = initializer)
-
-//    override fun hashCode(): Int = 1489807662 // Just a random `Int`eger
-//    override fun equals(other: Any?): Boolean = this === other
-    override fun toString(): String = "LazyArrayMDListTransformer"
 }

@@ -22,7 +22,7 @@ context(A)
 public class PlanimetricsCalculationContext<E, A : Ring<E>>: KoneContext {
     public val ring: A = this@A
     public val polynomialSpace: LabeledPolynomialSpace<E, A> by lazy { ring.labeledPolynomialSpace }
-    public val matrixSpace: VectorSpace<LabeledPolynomial<E>, LabeledPolynomialSpace<E, A>> by lazy { polynomialSpace.vectorSpace }
+    public val matrixSpace: VectorSpace<LabeledPolynomial<E>> by lazy { polynomialSpace.vectorSpace }
 
     public val origin: Point<E> = Point(polynomialSpace.zero, polynomialSpace.zero, polynomialSpace.one)
     public val xBasis: Point<E> = Point(polynomialSpace.one, polynomialSpace.zero, polynomialSpace.one)
@@ -34,7 +34,7 @@ public class PlanimetricsCalculationContext<E, A : Ring<E>>: KoneContext {
 public inline val <E, A: Ring<E>> A.planimetricsCalculationContext: PlanimetricsCalculationContext<E, A> get() = this { PlanimetricsCalculationContext() }
 
 context(PC)
-public inline fun <E, A: Ring<E>, PC: PlanimetricsCalculationContext<E, A>, R> calculate(block: context(A, LabeledPolynomialSpace<E, A>, VectorSpace<LabeledPolynomial<E>, LabeledPolynomialSpace<E, A>>, PC) () -> R): R {
+public inline fun <E, A: Ring<E>, PC: PlanimetricsCalculationContext<E, A>, R> calculate(block: context(A, LabeledPolynomialSpace<E, A>, VectorSpace<LabeledPolynomial<E>>, PC) () -> R): R {
     contract { callsInPlace(block, EXACTLY_ONCE) }
     return block(ring, polynomialSpace, matrixSpace, this@PC)
 }

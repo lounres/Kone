@@ -45,6 +45,14 @@ internal class KoneIterableSetEquality<E, EE: Equality<E>>(val elementsEquality:
 public fun <E, EE: Equality<E>> koneIterableSetEquality(elementEquality: EE): Equality<KoneIterableSet<E>> =
     KoneIterableSetEquality(elementEquality)
 
+internal open class KoneMapEntryEquality<K, V>(val keyContext: Equality<K>, var valueContext: Equality<V>) : Equality<KoneMapEntry<K, V>> {
+    override fun KoneMapEntry<K, V>.equalsTo(other: KoneMapEntry<K, V>): Boolean =
+        keyContext { this.key eq other.key } && valueContext { this.value eq other.value }
+}
+
+public fun <K, V> koneMapEntryEquality(keyContext: Equality<K>, valueContext: Equality<V>): Equality<KoneMapEntry<K, V>> =
+    KoneMapEntryEquality(keyContext, valueContext)
+
 internal class KoneMapEquality<K, KE: Equality<K>, V>(val keyEquality: KE, val valueEquality: Equality<V>) : Equality<KoneMap<K, V>> {
     override fun KoneMap<K, V>.equalsTo(other: KoneMap<K, V>): Boolean {
         if (this === other) return true

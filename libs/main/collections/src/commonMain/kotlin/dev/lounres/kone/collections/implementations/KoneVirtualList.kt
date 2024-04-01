@@ -14,12 +14,14 @@ import dev.lounres.kone.collections.KoneListWithContext
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
+public fun <E> KoneVirtualList(size: UInt, generator: (UInt) -> E): KoneVirtualList<E, Equality<E>> =
+    KoneVirtualList(size = size, elementContext = defaultEquality(), generator = generator)
 
-public class KoneVirtualList<E>(
+public class KoneVirtualList<E, EC: Equality<E>>(
     override val size: UInt,
-    override val context: Equality<E> = defaultEquality(),
+    override val elementContext: EC,
     private val generator: (UInt) -> E
-) : KoneListWithContext<E>, KoneIterableList<E> {
+) : KoneListWithContext<E, EC>, KoneIterableList<E> {
     override fun get(index: UInt): E = generator(index)
 
     override fun iterator(): KoneLinearIterator<E> = Iterator(size = size, generator = generator)
@@ -38,7 +40,7 @@ public class KoneVirtualList<E>(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneVirtualList<*> ->
+            is KoneVirtualList<*, *> ->
                 for (i in 0u..<size) {
                     if (this[i] != other[i]) return false
                 }

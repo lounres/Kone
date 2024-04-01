@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneLinearIterator
 
+
 internal data object EmptyKoneIterator: KoneLinearIterator<Nothing> {
     override fun hasNext(): Boolean = false
     override fun getNext(): Nothing = throw NoSuchElementException("Empty iterator has no next element")

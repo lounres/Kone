@@ -6,64 +6,114 @@
 package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.feature.getFeature
-import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDListTransformer
+import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.KoneUIntArray
+import dev.lounres.kone.collections.toKoneIterableList
+import dev.lounres.kone.collections.utils.foldIndexed
+import dev.lounres.kone.collections.utils.hasDuplicates
+import dev.lounres.kone.combinatorics.enumerative.permutations
+import dev.lounres.kone.misc.scope
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public inline operator fun <N, A: Ring<N>, R> VectorSpace<N, A>.invoke(block: context(A, SettableMDListTransformer, VectorSpace<N, A>) () -> R): R {
+internal class VectorSpaceImpl<N, out A: Ring<N>>(
+    override val numberRing: A,
+) : VectorSpaceOverRing<N, A>
+
+public inline operator fun <N, A: Ring<N>, R> VectorSpaceOverRing<N, A>.invoke(block: context(A, VectorSpace<N>) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
-    return block(this.numberRing, this.defaultSettableMdListTransformer, this)
+    return block(this.numberRing, this)
 }
 
-public val <N, A: Ring<N>> A.vectorSpace: VectorSpace<N, A>
-    get() = VectorSpace(this, SettableMDListTransformer())
+public val <N, A: Ring<N>> A.vectorSpace: VectorSpaceOverRing<N, A>
+    get() = VectorSpaceImpl(this)
 
-public fun <N, NE: Equality<N>, A: Ring<N>> A.vectorSpace(
-    mdListTransformer: SettableMDListTransformer = SettableMDListTransformer(),
-): VectorSpace<N, A> =
-    VectorSpace(this, mdListTransformer)
-
-public inline fun <N, NE: Equality<N>, A: Ring<N>, R> A.vectorSpace(
-    mdListTransformer: SettableMDListTransformer = SettableMDListTransformer(),
-    block: context(A, SettableMDListTransformer, VectorSpace<N, A>) () -> R
+public inline fun <N, A: Ring<N>, R> A.vectorSpace(
+    block: context(A, VectorSpace<N>) () -> R
 ): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return VectorSpace(this, mdListTransformer).invoke(block)
+    return this.vectorSpace.invoke(block)
 }
 
-context(VectorSpace<N, A>)
-public val <N, A> Matrix<N>.isSymmetric: Boolean where A : Ring<N>
-    get() = (this.getFeature<_, SymmetricMatrixFeature>() ?: throw IllegalArgumentException("Could not check symmetricity of the matrix")).value
+context(Ring<N>)
+public val <N> Matrix<N>.isSymmetric: Boolean
+    get() {
+        if (rowNumber != columnNumber) return false
 
-context(VectorSpace<N, A>)
-public val <N, A> Matrix<N>.isAntisymmetric: Boolean where A : Ring<N>
-    get() = (this.getFeature<_, AntisymmetricMatrixFeature>() ?: throw IllegalArgumentException("Could not check antisymmetricity of the matrix")).value
+        for (row in 0u ..< rowNumber) for (column in row + 1u ..< columnNumber) if (this[row, column] neq this[column, row]) return false
 
-context(VectorSpace<N, A>)
+        return true
+    }
+
+context(Ring<N>)
+public val <N> Matrix<N>.isAntisymmetric: Boolean
+    get() {
+        if (rowNumber != columnNumber) return false
+
+        for (row in 0u ..< rowNumber) {
+            if (this[row, row].isNotZero()) return false
+            for (column in row + 1u..<columnNumber) if ((this[row, column] + this[column, row]).isNotZero()) return false
+        }
+
+        return true
+    }
+
+context(A, VectorSpace<N>)
 public val <N, A> Matrix<N>.transpose: Matrix<N> where A : Ring<N>
-    get() = (this.getFeature<_, TransposeMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute transposed matrix")).transpose
+    get() = Matrix(this.columnNumber, this.rowNumber) { row, column -> this[column, row] }
 
-context(VectorSpace<N, A>)
+context(A, VectorSpace<N>)
 public val <N, A> Matrix<N>.det: N where A : Ring<N>
-    get() = (this.getFeature<_, DeterminantMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute determinant")).determinant
+    get() = TODO("Not yet implemented")
 
-context(VectorSpace<N, A>)
-public val <N, A> Matrix<N>.reciprocal: Matrix<N> where A : Ring<N>
-    get() = (this.getFeature<_, InvertibleMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute reciprocal matrix")).inverseMatrix
+//context(VectorSpace<N>)
+//public val <N, A> Matrix<N>.reciprocal: Matrix<N> where A : Ring<N>
+//    get() = (this.getFeature<_, InvertibleMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute reciprocal matrix")).inverseMatrix
 
-context(VectorSpace<N, A>)
+context(A, VectorSpace<N>)
 public val <N, A> Matrix<N>.adjugate: Matrix<N> where A : Ring<N>
-    get() = (this.getFeature<_, AdjugateMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute adjugate matrix")).adjugateMatrix
+    get() = TODO("Not yet implemented")
 
-context(VectorSpace<N, A>)
-public val <N, A> Matrix<N>.minor: MatrixMinorComputerFeature<N> where A : Ring<N>
-    get() = this.getFeature<_, MatrixMinorComputerFeature<N>>() ?: throw IllegalArgumentException("Could not create minor computer of the matrix")
+public data class MatrixMinorComputerFeature<N>(private val matrix: Matrix<N>, private val minorComputer: (rowIndices: KoneUIntArray, columnIndices: KoneUIntArray) -> N) {
+    public operator fun get(rowIndices: KoneUIntArray, columnIndices: KoneUIntArray): N = minorComputer(rowIndices, columnIndices)
+    public fun first(rowIndex: UInt, columnIndex: UInt): N =
+        minorComputer(
+            KoneUIntArray(matrix.rowNumber - 1u) { if (it < rowIndex) it else it + 1u },
+            KoneUIntArray(matrix.columnNumber - 1u) { if (it < columnIndex) it else it + 1u }
+        )
+}
+
+context(A, VectorSpace<N>)
+public val <N, A: Ring<N>> Matrix<N>.minor: MatrixMinorComputerFeature<N>
+    get() = MatrixMinorComputerFeature(this) { rowIndices, columnIndices ->
+        require(rowIndices.size == columnIndices.size) { TODO("Error message is not specified") }
+        val minorSize = rowIndices.size
+        if (rowIndices.hasDuplicates() || columnIndices.hasDuplicates()) return@MatrixMinorComputerFeature zero
+
+        (0u ..< minorSize).toKoneIterableList().permutations().fold(zero) { result, permutation ->
+            val permutationIsEven = scope {
+                var permutationIsEven = true
+                val visited = KoneMutableArray(minorSize) { false } // TODO: Can be replaced with specialised array
+                for (i in 0u ..< minorSize) if (!visited[i]) {
+                    var current = i
+                    visited[i] = true
+                    var cycleIsEven = false
+                    while (true) {
+                        current = permutation[current]
+                        if (current == i) break
+                        cycleIsEven = !cycleIsEven
+                        visited[current] = true
+                    }
+                    if (cycleIsEven) permutationIsEven = !permutationIsEven
+                }
+                permutationIsEven
+            }
+            result + permutation.foldIndexed(one) { row, product, column -> product * this[rowIndices[row], columnIndices[column]] }.let { if (permutationIsEven) it else -it }
+        }
+    }

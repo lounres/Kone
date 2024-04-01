@@ -16,6 +16,4 @@ public inline fun <E> Hashing(crossinline comparator: (left: E, right: E) -> Boo
         override fun E.hash(): Int = hasher(this)
     }
 
-internal data object DefaultHashing : Hashing<Any?>
-
-public fun <E> defaultHashing(): Hashing<E> = DefaultHashing
+public fun <E> defaultHashing(): Hashing<E> = DefaultContext

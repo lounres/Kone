@@ -119,11 +119,3 @@ public fun requireIndexInShape(index: KoneUIntArray, shape: Shape) {
         index.anyIndexed { dim, value -> value >= shape[dim] }
     ) throw IndexOutOfShapeException(shape = shape, index = index)
 }
-
-public interface Shaped {
-    public val shape: Shape
-}
-
-public interface LinearlyShaped: Shaped {
-    public val indexer: ShapeOffsetting
-}

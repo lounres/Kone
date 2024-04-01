@@ -7,9 +7,8 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
-import dev.lounres.kone.collections.utils.KoneIterableList
-import dev.lounres.kone.collections.utils.koneIterableListOf
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.koneIterableListOf
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.linearAlgebra.experiment1.adjugate
@@ -496,7 +495,6 @@ public fun <E> reflectionThrough(l: Line<E>): Transformation<E> = calculate {
             koneIterableListOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
             koneIterableListOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
             koneIterableListOf(zero, zero, -(l.x * l.x + l.y * l.y)),
-            context = defaultEquality() // TODO: Maybe, the contexts should be replaced
         )
     )
 }
@@ -519,7 +517,6 @@ public fun <E> reflectionThrough(P: Point<E>): Transformation<E> = calculate {
             koneIterableListOf(-P.z, zero, 2 * P.x),
             koneIterableListOf(zero, -P.z, 2 * P.y),
             koneIterableListOf(zero, zero, P.z),
-            context = defaultEquality() // TODO: Maybe, the contexts should be replaced
         )
     )
 }
@@ -532,7 +529,6 @@ public fun <E> homothetyBy(P: Point<E>, k: E): Transformation<E> = calculate {
             koneIterableListOf(k * P.z, zero, (1 - k) * P.x),
             koneIterableListOf(zero, k * P.z, (1 - k) * P.y),
             koneIterableListOf(zero, zero, P.z),
-            context = defaultEquality() // TODO: Maybe, the contexts should be replaced
         )
     )
 }
@@ -605,7 +601,6 @@ public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Po
         koneIterableListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
         koneIterableListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
         koneIterableListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
-        context = defaultEquality() // TODO: Maybe, the contexts should be replaced
     ).det
 }
 
@@ -782,7 +777,6 @@ public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E
             koneIterableListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
             koneIterableListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
             koneIterableListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
-            context = defaultEquality() // TODO: Maybe, the contexts should be replaced
         )
     ) {
         Quadric(
@@ -844,7 +838,7 @@ context(PlanimetricsCalculationContext<E, *>)
 public fun <E> involutionBy(A: Point<E>, l: Line<E>): Transformation<E> = calculate {
     Transformation(
         (l.rowVector * A.columnVector).let {
-            Matrix(3u, 3u, context = defaultEquality() /* TODO: Maybe, the contexts should be replaced */) { rowIndex, columnIndex ->
+            Matrix(3u, 3u) { rowIndex, columnIndex ->
                 with(-2 * A.rowVector[rowIndex] * l.rowVector[columnIndex]) {
                     if (rowIndex == columnIndex) this + it else this
                 }

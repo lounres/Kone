@@ -11,22 +11,42 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
-public fun <E> KoneGrowableLinkedArrayList(context: Equality<E> = defaultEquality()): dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList<E> =
-    dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList(size = 0u, context = context)
+public fun <E, EC: Equality<E>> KoneGrowableLinkedArrayList(elementContext: EC): KoneGrowableLinkedArrayList<E, EC> =
+    KoneGrowableLinkedArrayList(size = 0u, elementContext = elementContext)
 
-public fun <E> KoneGrowableLinkedArrayList(initialCapacity: UInt, context: Equality<E> = defaultEquality()): dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList<E> =
-    dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList(
+public fun <E> KoneGrowableLinkedArrayList(): KoneGrowableLinkedArrayList<E, Equality<E>> =
+    KoneGrowableLinkedArrayList(size = 0u, elementContext = defaultEquality())
+
+public fun <E, EC: Equality<E>> KoneGrowableLinkedArrayList(initialCapacity: UInt, elementContext: EC): KoneGrowableLinkedArrayList<E, EC> =
+    KoneGrowableLinkedArrayList(
         size = 0u,
         sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
-        context = context,
+        elementContext = elementContext,
     )
 
-public fun <E> KoneGrowableLinkedArrayList(size: UInt, context: Equality<E> = defaultEquality(), initializer: (index: UInt) -> E): dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList<E> {
+public fun <E> KoneGrowableLinkedArrayList(initialCapacity: UInt): KoneGrowableLinkedArrayList<E, Equality<E>> =
+    KoneGrowableLinkedArrayList(
+        size = 0u,
+        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
+        elementContext = defaultEquality(),
+    )
+
+public fun <E, EC: Equality<E>> KoneGrowableLinkedArrayList(size: UInt, elementContext: EC, initializer: (index: UInt) -> E): KoneGrowableLinkedArrayList<E, EC> {
     val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
-    return dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList(
+    return KoneGrowableLinkedArrayList(
         size = size,
         sizeUpperBound = sizeUpperBound,
         data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
-        context = context,
+        elementContext = elementContext,
+    )
+}
+
+public fun <E> KoneGrowableLinkedArrayList(size: UInt, initializer: (index: UInt) -> E): KoneGrowableLinkedArrayList<E, Equality<E>> {
+    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
+    return KoneGrowableLinkedArrayList(
+        size = size,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+        elementContext = defaultEquality(),
     )
 }

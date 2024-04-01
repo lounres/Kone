@@ -5,15 +5,14 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneIterator
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.comparison.Equality
 
 
-public class KoneListBackedSet<E> internal constructor(
+public class KoneListBackedSet<E, EC: Equality<E>> @PublishedApi internal constructor(
+    override val elementContext: EC,
     internal val backingList: KoneIterableList<E>,
-) : KoneIterableSet<E> {
+) : KoneIterableSet<E>, KoneSetWithContext<E, EC> {
     override val size: UInt
         get() = backingList.size
 

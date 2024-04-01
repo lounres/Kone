@@ -15,7 +15,7 @@ public interface KoneMap<K, out V> {
     public fun containsKey(key: K): Boolean
     public fun containsValue(value: @UnsafeVariance V): Boolean
 
-    public operator fun get(key: K): V = getMaybe(key).orThrow { NoMatchingKeyException("There is no value for key $key") }
+    public operator fun get(key: K): V
     public fun getMaybe(key: K): Option<V>
 
     public val keys: KoneIterableSet<K>

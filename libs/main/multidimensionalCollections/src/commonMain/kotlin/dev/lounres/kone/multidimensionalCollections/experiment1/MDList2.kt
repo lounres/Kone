@@ -13,7 +13,7 @@ import dev.lounres.kone.multidimensionalCollections.IndexOutOfShapeException
 import dev.lounres.kone.multidimensionalCollections.Shape
 
 
-public interface MDList2<E>: MDList<E> {
+public interface MDList2<out E>: MDList<E> {
     public val rowNumber: UInt
     public val columnNumber: UInt
     override val shape: Shape get() = Shape(rowNumber, columnNumber)

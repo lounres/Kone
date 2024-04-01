@@ -16,12 +16,18 @@ import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.option.orElse
 
+public fun <E> KoneLazyList(size: UInt, generator: (UInt) -> E): KoneLazyList<E, Equality<E>> =
+    KoneLazyList(
+        size = size,
+        elementContext = defaultEquality(),
+        generator = generator,
+    )
 
-public class KoneLazyList<E>(
+public class KoneLazyList<E, EC: Equality<E>>(
     override val size: UInt,
-    override val context: Equality<E> = defaultEquality(),
+    override val elementContext: EC,
     private val generator: (UInt) -> E,
-) : KoneListWithContext<E>, KoneSettableIterableList<E> {
+) : KoneListWithContext<E, EC>, KoneSettableIterableList<E> {
     private val buffer: KoneMutableArray<Option<E>> = KoneMutableArray(size) { None }
 
     override fun get(index: UInt): E = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
@@ -30,7 +36,7 @@ public class KoneLazyList<E>(
     }
 
     override fun contains(element: E): Boolean {
-        for (index in 0u ..< size) if (context { this[index] eq element }) return true
+        for (index in 0u ..< size) if (elementContext { this[index] eq element }) return true
         return false
     }
 
@@ -50,7 +56,7 @@ public class KoneLazyList<E>(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneLazyList<*> ->
+            is KoneLazyList<*, *> ->
                 for (i in 0u..<size) {
                     if (this[i] != other[i]) return false
                 }

@@ -5,39 +5,38 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneMapEntry
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.KoneMutableIterableList
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstMaybe
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.computeOn
 
 
-public class KoneMutableListBackedMap<K, V> internal constructor(
-    private val keyContext: Equality<K>,
-    private val valueContext: Equality<V>,
+public class KoneMutableListBackedMap<K, KC: Equality<K>, V, VC: Equality<V>> @PublishedApi internal constructor(
+    override val keyContext: KC,
+    override val valueContext: VC,
     internal val backingList: KoneMutableIterableList<KoneMapEntry<K, V>>,
-) : KoneMutableMap<K, V> {
+) : KoneMutableMapWithContext<K, KC, V, VC> {
 
     override val size: UInt
         get() = backingList.size
     override val keys: KoneIterableSet<K>
-        get() = KoneListBackedSet(backingList.map(context = keyContext) { it.key })
+        get() = KoneListBackedSet(keyContext, backingList.map(elementContext = keyContext) { it.key })
     override val values: KoneIterableCollection<V>
-        get() = backingList.map(context = valueContext) { it.value }
+        get() = backingList.map(elementContext = valueContext) { it.value }
     override val entries: KoneIterableSet<KoneMapEntry<K, V>>
-        get() = KoneListBackedSet(backingList)
+        get() = KoneListBackedSet(koneMapEntryEquality(keyContext, valueContext), backingList)
 
-    override fun containsKey(key: K): Boolean = backingList.indexThat { _, entry -> entry.key == key } < backingList.size
+    override fun containsKey(key: K): Boolean = backingList.indexThat { _, entry -> keyContext { entry.key eq key } } < backingList.size
 
-    override fun containsValue(value: V): Boolean = backingList.indexThat { _, entry -> entry.value == value } < backingList.size
+    override fun containsValue(value: V): Boolean = backingList.indexThat { _, entry -> valueContext { entry.value eq value } } < backingList.size
 
-    override fun getMaybe(key: K): Option<V> = backingList.firstMaybe { it.key == key }.computeOn { it.value } // TODO: This code can be optimised by eliminating first `Option` construction
+    override fun get(key: K): V = backingList.first{ keyContext { it.key eq key } }.value
+
+    override fun getMaybe(key: K): Option<V> = backingList.firstMaybe { keyContext { it.key eq key } }.computeOn { it.value } // TODO: This code can be optimised by eliminating first `Option` construction
 
     override fun set(key: K, value: V) {
         val index = backingList.indexThat { _, entry -> entry.key == key }
@@ -47,7 +46,7 @@ public class KoneMutableListBackedMap<K, V> internal constructor(
 
     override fun remove(key: K) {
         // TODO: This code can be optimised if it's replaced with `backingList.removeFirstThat { it.key eq key }`
-        val index = backingList.indexThat { _, entry -> entry.key == key }
+        val index = backingList.indexThat { _, entry -> keyContext { entry.key eq key } }
         backingList.removeAt(index)
     }
 

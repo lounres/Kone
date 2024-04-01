@@ -5,9 +5,12 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.KoneMutableIterableList
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
 
 
-public fun <E> KoneMutableListBackedSet(context: Equality<E> = defaultEquality()): KoneMutableListBackedSet<E> =
-    KoneMutableListBackedSet(KoneResizableLinkedArrayList(context = context))
+public inline fun <E, EC: Equality<E>> KoneMutableListBackedSet(elementContext: EC, backingListFabric: (EC) -> KoneMutableIterableList<E>): KoneMutableListBackedSet<E, EC> =
+    KoneMutableListBackedSet(elementContext, backingListFabric(elementContext))
+
+public fun <E, EC: Equality<E>> KoneMutableListBackedSet(elementContext: EC): KoneMutableListBackedSet<E, EC> =
+    KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList(elementContext = elementContext))

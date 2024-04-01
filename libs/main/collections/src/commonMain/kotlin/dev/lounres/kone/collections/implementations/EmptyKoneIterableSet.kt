@@ -5,14 +5,14 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneIterator
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.KoneSet
-import dev.lounres.kone.collections.isEmpty
-import dev.lounres.kone.collections.implementations.EmptyKoneIterator
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.defaultEquality
 
 
-internal open class EmptyKoneIterableSetTemplate<out E> : KoneIterableSet<E> {
+internal open class EmptyKoneIterableSetTemplate<E> : KoneIterableSet<E>, KoneSetWithContext<E, Equality<E>> {
+    override val elementContext: Equality<E> = defaultEquality()
+
     override val size: UInt = 0u
 
     override fun contains(element: @UnsafeVariance E): Boolean = false

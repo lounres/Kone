@@ -6,10 +6,12 @@
 package dev.lounres.kone.collections
 
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.comparison.defaultEquality
 
 
-internal interface KoneDefaultList<out E> : KoneList<E> {
+internal interface KoneDefaultList<E> : KoneListWithContext<E, Equality<E>> {
+    override val elementContext: Equality<E> get() = defaultEquality()
+
     override fun contains(element: @UnsafeVariance E): Boolean =
         indexThat { _, currentElement -> currentElement == element } != size
 
@@ -18,17 +20,4 @@ internal interface KoneDefaultList<out E> : KoneList<E> {
 
     override fun lastIndexOf(element: @UnsafeVariance E): UInt =
         lastIndexThat { _, currentElement -> currentElement == element }
-}
-
-internal interface KoneListWithContext<E> : KoneList<E> {
-    val context: Equality<E>
-
-    override fun contains(element: @UnsafeVariance E): Boolean =
-        indexThat { _, currentElement -> context { currentElement eq element } } != size
-
-    override fun indexOf(element: @UnsafeVariance E): UInt =
-        indexThat { _, currentElement -> context { currentElement eq element } }
-
-    override fun lastIndexOf(element: @UnsafeVariance E): UInt =
-        lastIndexThat { _, currentElement -> context { currentElement eq element } }
 }

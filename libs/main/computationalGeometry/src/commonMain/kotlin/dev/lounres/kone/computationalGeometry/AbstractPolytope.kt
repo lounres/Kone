@@ -44,7 +44,7 @@ internal class MutableAbstractPolytopicConstructionImpl<N>(
 ) : PolytopicConstructionFrame<N, AbstractPolytope, AbstractVertex>, MutableAbstractPolytopicConstruction<N> {
     override val polytopeContext: Hashing<AbstractPolytope> = defaultHashing()
 
-    private val _polytopes = KoneIterableList(spaceDimension + 1u, context = koneIterableSetEquality(polytopeContext)) { koneMutableIterableSetOf<AbstractPolytope>(context = polytopeContext) }
+    private val _polytopes = KoneIterableList(spaceDimension + 1u, elementContext = koneIterableSetEquality(polytopeContext)) { koneMutableIterableSetOf<AbstractPolytope>(elementContext = polytopeContext) }
     private val _dimensionOf = koneMutableMapOf<AbstractPolytope, UInt>(keyContext = polytopeContext, valueContext = defaultEquality())
     private val _facesOf = koneMutableMapOf(keyContext = polytopeContext, valueContext = koneIterableListHashing(koneIterableSetHashing(polytopeContext))
     )
@@ -105,7 +105,7 @@ internal class MutableAbstractPolytopicConstructionImpl<N>(
             _polytopes[0u].add(it)
             _dimensionOf[it] = 0u
             _facesOf[it] = emptyKoneIterableList()
-            _verticesOf[it] = koneIterableSetOf(it, context = polytopeContext)
+            _verticesOf[it] = koneIterableSetOf(it, elementContext = polytopeContext)
             _coordinatesOf[it] = coordinates
         }
 }
@@ -124,7 +124,7 @@ internal class MutableAbstractPolytopicConstruction2Impl<N>(
 
     override val spaceDimension: UInt = 2u
 
-    private val _polytopes = KoneIterableList(spaceDimension, context = koneIterableSetEquality(polytopeContext)) { koneMutableIterableSetOf(context = polytopeContext) }
+    private val _polytopes = KoneIterableList(spaceDimension, elementContext = koneIterableSetEquality(polytopeContext)) { koneMutableIterableSetOf(elementContext = polytopeContext) }
     private val _dimensionOf = koneMutableMapOf<AbstractPolytope, UInt>(keyContext = polytopeContext, valueContext = defaultEquality())
     private val _facesOf = koneMutableMapOf<AbstractPolytope, KoneIterableList<KoneIterableSet<AbstractPolytope>>>(keyContext = polytopeContext, valueContext = koneIterableListHashing(
         koneIterableSetHashing(polytopeContext)
@@ -166,7 +166,7 @@ internal class MutableAbstractPolytopicConstruction2Impl<N>(
         _polytopes[0u].add(it)
         _dimensionOf[it] = 0u
         _facesOf[it] = emptyKoneIterableList()
-        _verticesOf[it] = koneIterableSetOf(it, context = polytopeContext)
+        _verticesOf[it] = koneIterableSetOf(it, elementContext = polytopeContext)
         _coordinatesOf[it] = coordinates
     }
 }

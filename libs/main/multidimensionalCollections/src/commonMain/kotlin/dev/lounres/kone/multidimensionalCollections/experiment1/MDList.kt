@@ -11,12 +11,13 @@ import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.ShapeStrides
-import dev.lounres.kone.multidimensionalCollections.Shaped
 import dev.lounres.kone.multidimensionalCollections.experiment1.utils.fold
 
 
-public interface MDList<E> : Shaped {
+public interface MDList<out E> {
+    public val shape: Shape
     public val dimension: UInt get() = shape.size
     public operator fun get(index: KoneUIntArray): E
 
@@ -33,7 +34,7 @@ public operator fun <E> SettableMDList<E>.set(vararg index: UInt, element: E) {
     set(KoneUIntArray(index), element)
 }
 
-public class MDListEquality<E>(private val elementEquality: Equality<E>) : Equality<MDList<E>> {
+internal class MDListEquality<E>(private val elementEquality: Equality<E>) : Equality<MDList<E>> {
     override fun MDList<E>.equalsTo(other: MDList<E>): Boolean {
         if (this === other) return true
         if (!(this.shape contentEquals other.shape)) return false
@@ -44,7 +45,9 @@ public class MDListEquality<E>(private val elementEquality: Equality<E>) : Equal
     }
 }
 
-public class MDListHashing<E>(private val elementHashing: Hashing<E>) : Hashing<MDList<E>> {
+public fun <E> mdListEquality(elementEquality: Equality<E>): Equality<MDList<E>> = MDListEquality(elementEquality)
+
+internal class MDListHashing<E>(private val elementHashing: Hashing<E>) : Hashing<MDList<E>> {
     override fun MDList<E>.equalsTo(other: MDList<E>): Boolean {
         if (this === other) return true
         if (!(this.shape contentEquals other.shape)) return false
@@ -56,3 +59,5 @@ public class MDListHashing<E>(private val elementHashing: Hashing<E>) : Hashing<
 
     override fun MDList<E>.hash(): Int = this.fold(0) { acc, element -> acc xor elementHashing { element.hash() } } // Maybe replace with `foldIndexed` with more complex hashing
 }
+
+public fun <E> mdListHashing(elementHashing: Hashing<E>): Hashing<MDList<E>> = MDListHashing(elementHashing)

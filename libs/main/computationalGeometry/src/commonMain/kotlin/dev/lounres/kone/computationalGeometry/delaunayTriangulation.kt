@@ -7,10 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isPositive
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.koneIterableSetEquality
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
@@ -30,7 +27,7 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
         defaultHashing<AbstractPolytope>().run {
             val simplicesMapping = koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality(), valueContext = this@PE)
 
-            val newPoints = this@constructDelaunayTriangulation.map(context = defaultEquality()) { oldVertex ->
+            val newPoints = this@constructDelaunayTriangulation.map(elementContext = defaultEquality()) { oldVertex ->
                 val newVertex = addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.coordinates.coordinates[it] else oldVertex.coordinates.coordinates.coefficients.sumOf { c -> c * c } }))
                 simplicesMapping[newVertex] = oldVertex
                 newVertex
@@ -44,7 +41,7 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
                     flag[dim] = flag[dim+1u].facesOfDimension(dim).first()
                 }
                 val startPoint = (flag[0u] as AbstractVertex).coordinates
-                val basis = KoneSettableIterableList(simplex.dimension + 1u, context = vectorEquality(this@A)) { dim -> flag[dim+1u].vertices.first { it !in flag[dim].vertices }.coordinates - startPoint }
+                val basis = KoneSettableIterableList(simplex.dimension + 1u, elementContext = vectorEquality(this@A)) { dim -> flag[dim+1u].vertices.first { it !in flag[dim].vertices }.coordinates - startPoint }
                 val ortogonalizedBasis = basis.gramSchmidtOrtogonalization()
                 val lastBasisVector = ortogonalizedBasis.last()
                 !((lastBasisVector dot basis.last()).isPositive() xor lastBasisVector.coordinates[theDimension-1u].isPositive())
@@ -54,14 +51,14 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
                 for (dim in 1u .. simplex.dimension - 1u) for (face in simplex.facesOfDimension(dim)) {
                     simplicesMapping[face] = this@MutablePolytopicConstruction.addPolytope(
                         face.vertices.mapTo<AbstractVertex, V, _>(
-                            dev.lounres.kone.collections.utils.koneMutableIterableSetOf<V>(
-                                context = this@PE
+                            koneMutableIterableSetOf<V>(
+                                elementContext = this@PE
                             )
                         ) { simplicesMapping[it] as V },
-                        face.faces.mapTo(koneMutableIterableListOf(context = koneIterableSetEquality(this@PE))) { dimFaces ->
+                        face.faces.mapTo(koneMutableIterableListOf(elementContext = koneIterableSetEquality(this@PE))) { dimFaces ->
                             dimFaces.mapTo<AbstractPolytope, P, _>(
-                                dev.lounres.kone.collections.utils.koneMutableIterableSetOf<P>(
-                                    context = this@PE
+                                koneMutableIterableSetOf<P>(
+                                    elementContext = this@PE
                                 )
                             ) { simplicesMapping[it] }
                         }
@@ -69,15 +66,15 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
                 }
                 simplicesMapping[simplex] = this@MutablePolytopicConstruction.addPolytope(
                     simplex.vertices.mapTo<AbstractVertex, V, _>(
-                        dev.lounres.kone.collections.utils.koneMutableIterableSetOf<V>(
-                            context = this@PE
+                        koneMutableIterableSetOf<V>(
+                            elementContext = this@PE
                         )
                     ) { simplicesMapping[it] as V },
                     koneIterableSetEquality(this@PE).invoke {
-                        simplex.faces.mapTo(koneMutableIterableListOf(context = koneIterableSetEquality(this@PE))) { dimFaces ->
+                        simplex.faces.mapTo(koneMutableIterableListOf(elementContext = koneIterableSetEquality(this@PE))) { dimFaces ->
                             dimFaces.mapTo<AbstractPolytope, P, _>(
-                                dev.lounres.kone.collections.utils.koneMutableIterableSetOf<P>(
-                                    context = this@PE
+                                koneMutableIterableSetOf<P>(
+                                    elementContext = this@PE
                                 )
                             ) { simplicesMapping[it] }
                         }
@@ -85,7 +82,7 @@ public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V>.constructD
                 )
             }
 
-            return necessarySimplices.map(context = this@PE) { simplicesMapping[it] }
+            return necessarySimplices.map(elementContext = this@PE) { simplicesMapping[it] }
         }
     }
 }

@@ -12,5 +12,5 @@ import dev.lounres.kone.linearAlgebra.experiment1.VectorSpace
 
 public class EuclideanSpace<N, A>(
     public val numberRing: A,
-    public val vectorSpace: VectorSpace<N, A>
+    public val vectorSpace: VectorSpace<N>
 ) where A: Ring<N>, A: Order<N>

@@ -16,7 +16,7 @@ import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneResizableLinkedArrayList<E> internal constructor(
+public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
@@ -26,8 +26,8 @@ public class KoneResizableLinkedArrayList<E> internal constructor(
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-    override val context: Equality<E>,
-) : KoneMutableIterableList<E>, KoneListWithContext<E>, KoneDequeue<E> {
+    override val elementContext: EC,
+) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E> {
     override var size: UInt = size
         private set
 
@@ -976,7 +976,7 @@ public class KoneResizableLinkedArrayList<E> internal constructor(
         scope {
             var actualCurrentIndex = start
             for (i in 0u ..< size) {
-                if (context { (data[actualCurrentIndex] as E) eq element }) {
+                if (elementContext { (data[actualCurrentIndex] as E) eq element }) {
                     targetIndex = i
                     actualTargetIndex = actualCurrentIndex
                     return@scope
@@ -1294,7 +1294,7 @@ public class KoneResizableLinkedArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneResizableLinkedArrayList<*> -> {
+            is KoneResizableLinkedArrayList<*, *> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 for (i in 0u..<size) {

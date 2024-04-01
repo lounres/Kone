@@ -11,7 +11,7 @@ import dev.lounres.kone.multidimensionalCollections.IndexOutOfShapeException
 import dev.lounres.kone.multidimensionalCollections.Shape
 
 
-public interface MDList1<E>: MDList<E> {
+public interface MDList1<out E>: MDList<E> {
     public override val size: UInt
     override val shape: Shape get() = Shape(size)
     public operator fun get(index: UInt): E
@@ -36,7 +36,7 @@ public interface SettableMDList1<E>: SettableMDList<E>, MDList1<E> {
 }
 
 /*@JvmInline*/
-internal open /*value*/ class MDList1Wrapper<E>(open val list: MDList<E>): MDList1<E> {
+internal open /*value*/ class MDList1Wrapper<out E>(open val list: MDList<E>): MDList1<E> {
     init {
         @Suppress("LeakingThis")
         require(list.shape.size == 1u) { "Cannot wrap MDList with shape ${list.shape} as a MDList1" }

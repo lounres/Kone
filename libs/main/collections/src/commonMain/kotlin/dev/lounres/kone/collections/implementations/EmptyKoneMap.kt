@@ -5,17 +5,17 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneMapEntry
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.KoneIterableSet
-import dev.lounres.kone.collections.KoneMap
-import dev.lounres.kone.collections.isEmpty
-import dev.lounres.kone.collections.noMatchingKeyException
+import dev.lounres.kone.collections.*
+import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 
 
-internal open class EmptyKoneMapTemplate<K, V> : KoneMap<K, V> {
+internal open class EmptyKoneMapTemplate<K, V> : KoneMapWithContext<K, Equality<K>, V, Equality<V>> {
+    override val keyContext: Equality<K> get() = defaultHashing()
+    override val valueContext: Equality<V> get() = defaultHashing()
+
     override val size: UInt = 0u
     override fun containsKey(key: K): Boolean = false
     override fun containsValue(value: V): Boolean = false

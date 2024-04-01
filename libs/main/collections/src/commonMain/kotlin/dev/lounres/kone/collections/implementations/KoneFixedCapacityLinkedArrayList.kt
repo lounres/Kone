@@ -12,7 +12,7 @@ import dev.lounres.kone.misc.scope
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneFixedCapacityLinkedArrayList<E> internal constructor(
+public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal constructor(
     size: UInt,
     private val capacity: UInt,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
@@ -20,15 +20,15 @@ public class KoneFixedCapacityLinkedArrayList<E> internal constructor(
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = capacity - 1u,
-    override val context: Equality<E>,
-) : KoneMutableIterableList<E>, KoneListWithContext<E>, KoneDequeue<E> {
+    override val elementContext: EC,
+) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E> {
     override var size: UInt = size
         private set
 
     override fun contains(element: E): Boolean {
         var currentIndex = start
         for (index in 0u ..< size) {
-            if (context { (data[currentIndex] as E) eq element }) return true
+            if (elementContext { (data[currentIndex] as E) eq element }) return true
             currentIndex = nextCellIndex[currentIndex]
         }
         return false
@@ -192,7 +192,7 @@ public class KoneFixedCapacityLinkedArrayList<E> internal constructor(
         scope {
             var actualCurrentIndex = start
             for (i in 0u ..< size) {
-                if ((data[actualCurrentIndex] as E) == element) {
+                if (elementContext { (data[actualCurrentIndex] as E) eq element }) {
                     actualTargetIndex = actualCurrentIndex
                     return@scope
                 }
@@ -269,7 +269,7 @@ public class KoneFixedCapacityLinkedArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneFixedCapacityLinkedArrayList<*> -> {
+            is KoneFixedCapacityLinkedArrayList<*, *> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 for (i in 0u..<size) {

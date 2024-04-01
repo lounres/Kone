@@ -15,16 +15,16 @@ import dev.lounres.kone.misc.scope
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneFixedCapacityArrayList<E> internal constructor(
+public class KoneFixedCapacityArrayList<E, EC: Equality<E>> internal constructor(
     size: UInt,
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
-    override val context: Equality<E>,
-): KoneListWithContext<E>, KoneMutableIterableList<E> {
+    override val elementContext: EC,
+): KoneMutableListWithContext<E, EC>, KoneMutableIterableList<E> {
     override var size: UInt = size
         private set
 
-    override fun contains(element: E): Boolean = data.any { context { (it as E) eq element } }
+    override fun contains(element: E): Boolean = data.any { elementContext { (it as E) eq element } }
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)
@@ -136,7 +136,7 @@ public class KoneFixedCapacityArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneFixedCapacityArrayList<*> ->
+            is KoneFixedCapacityArrayList<*, *> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }

@@ -5,32 +5,17 @@
 
 package dev.lounres.kone.linearAlgebra.experiment1
 
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.utils.koneMutableMapOf
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
 import dev.lounres.kone.multidimensionalCollections.experiment1.*
-import kotlin.reflect.KClass
 
 
 /*@JvmInline*/
-public open /*value*/ class ColumnVector<N>(
-    public open val coefficients: MDList1<N>,
-    protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): FeatureStorage {
-    @Suppress("UNCHECKED_CAST")
-    override fun <F : Any> getFeature(key: Any, type: KClass<F>): F? = (defaultHashing<Any>()) { features.getOrNull(key)?.getOrNull(type) as? F }
-    override fun <F : Any> storeFeature(key: Any, type: KClass<F>, value: F) {
-        (defaultHashing<Any>()) {
-            features.getOrSet(key) { koneMutableMapOf(keyContext = defaultHashing()) } [type] = value
-        }
-    }
-
+public open /*value*/ class ColumnVector<out N>(
+    public open val coefficients: MDList1<N>
+) {
     public val size: UInt get() = coefficients.size
     public operator fun get(index: UInt): N = coefficients[index]
 
@@ -38,11 +23,9 @@ public open /*value*/ class ColumnVector<N>(
 }
 /*@JvmInline*/
 public /*value*/ class SettableColumnVector<N>(
-    override val coefficients: SettableMDList1<N>,
-    override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): ColumnVector<N>(coefficients, features) {
+    override val coefficients: SettableMDList1<N>
+): ColumnVector<N>(coefficients) {
     public operator fun set(index: UInt, coefficient: N) {
-        features.removeAll()
         coefficients[index] = coefficient
     }
 }
@@ -58,20 +41,20 @@ public fun requireShapeEquality(left: ColumnVector<*>, right: ColumnVector<*>) {
 
 public val ColumnVector<*>.indices: UIntRange get() = coefficients.indices
 
-internal class ColumnVectorEquality<N, NE: Equality<N>>(elementEquality: NE) : Equality<ColumnVector<N>> {
-    val mdListEquality: Equality<MDList1<N>> = MDListEquality(elementEquality)
+internal class ColumnVectorEquality<N>(elementEquality: Equality<N>) : Equality<ColumnVector<N>> {
+    private val mdListEquality: Equality<MDList1<N>> = mdListEquality(elementEquality)
     override fun ColumnVector<N>.equalsTo(other: ColumnVector<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
 }
 
-public fun <N, NE: Equality<N>> columnVectorEquality(elementEquality: NE): Equality<ColumnVector<N>> =
+public fun <N> columnVectorEquality(elementEquality: Equality<N>): Equality<ColumnVector<N>> =
     ColumnVectorEquality(elementEquality)
 
-internal class ColumnVectorHashing<N, NH: Hashing<N>>(elementHashing: NH) : Hashing<ColumnVector<N>> {
-    val mdListHashing: Hashing<MDList1<N>> = MDListHashing(elementHashing)
+internal class ColumnVectorHashing<N>(elementHashing: Hashing<N>) : Hashing<ColumnVector<N>> {
+    private val mdListHashing: Hashing<MDList1<N>> = mdListHashing(elementHashing)
     override fun ColumnVector<N>.equalsTo(other: ColumnVector<N>): Boolean = mdListHashing { this.coefficients eq other.coefficients }
 
     override fun ColumnVector<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
 }
 
-public fun <N, NH: Hashing<N>> columnVectorHashing(elementHashing: NH): Hashing<ColumnVector<N>> =
+public fun <N> columnVectorHashing(elementHashing: Hashing<N>): Hashing<ColumnVector<N>> =
     ColumnVectorHashing(elementHashing)

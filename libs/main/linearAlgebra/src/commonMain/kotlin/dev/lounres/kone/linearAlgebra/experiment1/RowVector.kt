@@ -5,33 +5,17 @@
 
 package dev.lounres.kone.linearAlgebra.experiment1
 
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.utils.koneMutableMapOf
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
-import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.indices
-import kotlin.reflect.KClass
+import dev.lounres.kone.multidimensionalCollections.experiment1.*
 
 
 /*@JvmInline*/
-public open /*value*/ class RowVector<N>(
+public open /*value*/ class RowVector<out N>(
     public open val coefficients: MDList1<N>,
-    protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): FeatureStorage {
-    @Suppress("UNCHECKED_CAST")
-    override fun <F : Any> getFeature(key: Any, type: KClass<F>): F? = (defaultHashing<Any>()) { features.getOrNull(key)?.getOrNull(type) as? F }
-    override fun <F : Any> storeFeature(key: Any, type: KClass<F>, value: F) {
-        (defaultHashing<Any>()) {
-            features.getOrSet(key) { koneMutableMapOf(keyContext = defaultHashing()) } [type] = value
-        }
-    }
-
+) {
     public val size: UInt get() = coefficients.size
     public operator fun get(index: UInt): N = coefficients[index]
 
@@ -39,19 +23,17 @@ public open /*value*/ class RowVector<N>(
 }
 /*@JvmInline*/
 public /*value*/ class SettableRowVector<N>(
-    override val coefficients: SettableMDList1<N>,
-    override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): RowVector<N>(coefficients, features) {
+    override val coefficients: SettableMDList1<N>
+): RowVector<N>(coefficients) {
     public operator fun set(index: UInt, coefficient: N) {
-        features.removeAll()
         coefficients[index] = coefficient
     }
 }
 
-public fun <N> RowVector(vararg elements: N): RowVector<N> = RowVector(MDList1(*elements))
-public fun <N> RowVector(size: UInt, initializer: (coefficient: UInt) -> N): RowVector<N> = RowVector(
-    MDList1(size, initializer)
-)
+public fun <N> RowVector(vararg elements: N): RowVector<N> =
+    RowVector(MDList1(*elements))
+public fun <N> RowVector(size: UInt, initializer: (coefficient: UInt) -> N): RowVector<N> =
+    RowVector(MDList1(size, initializer))
 
 public fun requireShapeEquality(left: RowVector<*>, right: RowVector<*>) {
     if (left.size != right.size)
@@ -59,3 +41,21 @@ public fun requireShapeEquality(left: RowVector<*>, right: RowVector<*>) {
 }
 
 public val RowVector<*>.indices: UIntRange get() = coefficients.indices
+
+internal class RowVectorEquality<N>(elementEquality: Equality<N>) : Equality<RowVector<N>> {
+    private val mdListEquality: Equality<MDList1<N>> = mdListEquality(elementEquality)
+    override fun RowVector<N>.equalsTo(other: RowVector<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
+}
+
+public fun <N> rowVectorEquality(elementEquality: Equality<N>): Equality<RowVector<N>> =
+    RowVectorEquality(elementEquality)
+
+internal class RowVectorHashing<N>(elementHashing: Hashing<N>) : Hashing<RowVector<N>> {
+    private val mdListHashing: Hashing<MDList1<N>> = mdListHashing(elementHashing)
+    override fun RowVector<N>.equalsTo(other: RowVector<N>): Boolean = mdListHashing { this.coefficients eq other.coefficients }
+
+    override fun RowVector<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
+}
+
+public fun <N> rowVectorHashing(elementHashing: Hashing<N>): Hashing<RowVector<N>> =
+    RowVectorHashing(elementHashing)

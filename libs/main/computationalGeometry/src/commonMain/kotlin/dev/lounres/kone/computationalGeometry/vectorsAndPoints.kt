@@ -16,21 +16,18 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.compareByOrdered
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
-import dev.lounres.kone.linearAlgebra.experiment1.columnVectorEquality
-import dev.lounres.kone.linearAlgebra.experiment1.columnVectorHashing
-import dev.lounres.kone.linearAlgebra.experiment1.minor
+import dev.lounres.kone.linearAlgebra.experiment1.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
 import dev.lounres.kone.multidimensionalCollections.experiment1.utils.fold
 
 
 // FIXME: KT-42977
 //@JvmInline
-public open /*value*/ class Vector<N>(public val coordinates: ColumnVector<N>) {
+public open /*value*/ class Vector<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Vector(${coordinates.coefficients})"
 }
 //@JvmInline
-public /*value*/ class Vector2<N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
+public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
         require(coordinates.size == 2u) { "Cannot create a euclidean vector of dimension 2 from column vector of size ${coordinates.size}" }
     }
@@ -42,11 +39,11 @@ public /*value*/ class Vector2<N>(coordinates: ColumnVector<N>): Vector<N>(coord
 
 // FIXME: KT-42977
 //@JvmInline
-public open /*value*/ class Point<N>(public open val coordinates: ColumnVector<N>) {
+public open /*value*/ class Point<out N>(public open val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Point(${coordinates.coefficients})"
 }
 //@JvmInline
-public /*value*/ class Point2<N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
+public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
         require(coordinates.size == 2u) { "Cannot create a euclidean point of dimension 2 from column vector of size ${coordinates.size}" }
     }
@@ -57,12 +54,12 @@ public /*value*/ class Point2<N>(coordinates: ColumnVector<N>): Point<N>(coordin
 }
 
 public fun <N> Vector(coordinates: MDList1<N>): Vector<N> = Vector(ColumnVector(coordinates))
-public fun <N> Vector(vararg coordinates: N, context: Equality<N>): Vector<N> = Vector(ColumnVector(*coordinates))
-public fun <N> Vector(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Vector<N> = Vector(ColumnVector(size, initializer))
+public fun <N> Vector(vararg coordinates: N): Vector<N> = Vector(ColumnVector(*coordinates))
+public fun <N> Vector(size: UInt, initializer: (coordinate: UInt) -> N): Vector<N> = Vector(ColumnVector(size, initializer))
 
 public fun <N> Point(coordinates: MDList1<N>): Point<N> = Point(ColumnVector(coordinates))
-public fun <N> Point(vararg coordinates: N, context: Equality<N>): Point<N> = Point(ColumnVector(*coordinates))
-public fun <N> Point(size: UInt, context: Equality<N>, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, initializer))
+public fun <N> Point(vararg coordinates: N): Point<N> = Point(ColumnVector(*coordinates))
+public fun <N> Point(size: UInt, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, initializer))
 
 context(EuclideanSpace<N, A>)
 public operator fun <N, A> Vector<N>.unaryMinus(): Vector<N> where A: Ring<N>, A: Order<N> = Vector(vectorSpace { -this.coordinates })
@@ -159,9 +156,9 @@ context(EuclideanSpace<N, A>)
 internal fun <N, A> perpendicularTo(dimension: UInt, vectors: KoneArray<Vector<N>>, positiveDirection: Vector<N>): Vector<N> where A: Ring<N>, A: Order<N> {
     require(dimension >= 1u && vectors.size + 1u == dimension && vectors.all { it.coordinates.size == dimension } && positiveDirection.coordinates.size == dimension)
 
-    val minor = vectorSpace { matrix(dimension - 1u, dimension) { rowIndex, columnIndex -> vectors[rowIndex].coordinates[columnIndex] }.minor }
+    val minor = numberRing { this@EuclideanSpace.vectorSpace { Matrix(dimension - 1u, dimension) { rowIndex, columnIndex -> vectors[rowIndex].coordinates[columnIndex] }.minor } }
 
-    val normalVector = Vector(dimension, context = numberRing) { coordinate -> minor[KoneUIntArray(dimension - 1u) { it }, KoneUIntArray(dimension - 1u) { if (it < coordinate) it else it + 1u }].let { if (coordinate % 2u != 0u) numberRing { -it } else it } }
+    val normalVector = Vector(dimension) { coordinate -> minor[KoneUIntArray(dimension - 1u) { it }, KoneUIntArray(dimension - 1u) { if (it < coordinate) it else it + 1u }].let { if (coordinate % 2u != 0u) numberRing { -it } else it } }
 
     return (normalVector dot positiveDirection).let { if (numberRing { it.isPositive() }) normalVector else -normalVector }
 }

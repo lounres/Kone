@@ -15,8 +15,7 @@ public interface KoneExtendableIterableCollection<E> : KoneIterableCollection<E>
 public interface KoneReversibleExtendableIterableCollection<E> : KoneExtendableIterableCollection<E>,
     KoneReversibleIterableCollection<E>
 
-public interface KoneRemovableIterableCollection<out E> : KoneIterableCollection<E>, KoneRemovableIterable<E>,
-    KoneRemovableCollection<E>
+public interface KoneRemovableIterableCollection<out E> : KoneIterableCollection<E>, KoneRemovableIterable<E>, KoneRemovableCollection<E>
 
 public interface KoneReversibleRemovableIterableCollection<out E> : KoneRemovableIterableCollection<E>,
     KoneReversibleIterableCollection<E>, KoneReversibleRemovableIterable<E>

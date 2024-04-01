@@ -10,27 +10,52 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
-public fun <E> KoneFixedCapacityLinkedArrayList(capacity: UInt, context: Equality<E> = defaultEquality()): KoneFixedCapacityLinkedArrayList<E> =
+public fun <E, EC: Equality<E>> KoneFixedCapacityLinkedArrayList(capacity: UInt, elementContext: EC): KoneFixedCapacityLinkedArrayList<E, EC> =
     KoneFixedCapacityLinkedArrayList(
         size = 0u,
         capacity = capacity,
-        context = context,
+        elementContext = elementContext,
     )
 
-public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, context: Equality<E> = defaultEquality(), initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E> =
+public fun <E> KoneFixedCapacityLinkedArrayList(capacity: UInt): KoneFixedCapacityLinkedArrayList<E, Equality<E>> =
+    KoneFixedCapacityLinkedArrayList(
+        size = 0u,
+        capacity = capacity,
+        elementContext = defaultEquality(),
+    )
+
+public fun <E, EC: Equality<E>> KoneFixedCapacityLinkedArrayList(size: UInt, elementContext: EC, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, EC> =
     KoneFixedCapacityLinkedArrayList(
         size = size,
         capacity = size,
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
-        context = context,
+        elementContext = elementContext,
     )
 
-public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, capacity: UInt, context: Equality<E> = defaultEquality(), initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E> {
+public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, Equality<E>> =
+    KoneFixedCapacityLinkedArrayList(
+        size = size,
+        capacity = size,
+        data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
+        elementContext = defaultEquality(),
+    )
+
+public fun <E, EC: Equality<E>> KoneFixedCapacityLinkedArrayList(size: UInt, capacity: UInt, elementContext: EC, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, EC> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneFixedCapacityLinkedArrayList(
         size = size,
         capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
-        context = context,
+        elementContext = elementContext,
+    )
+}
+
+public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, capacity: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, Equality<E>> {
+    require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
+    return KoneFixedCapacityLinkedArrayList(
+        size = size,
+        capacity = capacity,
+        data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
+        elementContext = defaultEquality(),
     )
 }

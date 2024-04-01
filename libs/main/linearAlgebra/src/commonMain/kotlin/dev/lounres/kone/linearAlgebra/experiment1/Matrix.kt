@@ -6,34 +6,17 @@
 package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.utils.koneMutableMapOf
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.feature.FeatureStorage
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
-import dev.lounres.kone.multidimensionalCollections.experiment1.MDList2
-import dev.lounres.kone.multidimensionalCollections.experiment1.SettableMDList2
-import dev.lounres.kone.multidimensionalCollections.experiment1.columnIndices
-import dev.lounres.kone.multidimensionalCollections.experiment1.rowIndices
-import kotlin.reflect.KClass
+import dev.lounres.kone.multidimensionalCollections.experiment1.*
 
 
 /*@JvmInline*/
-public open /*value*/ class Matrix<N>(
-    public open val coefficients: MDList2<N>,
-    protected open val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): FeatureStorage {
-    @Suppress("UNCHECKED_CAST")
-    override fun <F : Any> getFeature(key: Any, type: KClass<F>): F? = (defaultHashing<Any>()) { features.getOrNull(key)?.getOrNull(type) as? F }
-    override fun <F : Any> storeFeature(key: Any, type: KClass<F>, value: F) {
-        (defaultHashing<Any>()) {
-            features.getOrSet(key) { koneMutableMapOf(keyContext = defaultHashing()) }[type] = value
-        }
-    }
-
+public open /*value*/ class Matrix<out N>(
+    public open val coefficients: MDList2<N>
+) {
     public val rowNumber: UInt get() = coefficients.rowNumber
     public val columnNumber: UInt get() = coefficients.columnNumber
     public operator fun get(rowIndex: UInt, columnIndex: UInt): N = coefficients[rowIndex, columnIndex]
@@ -42,21 +25,19 @@ public open /*value*/ class Matrix<N>(
 }
 /*@JvmInline*/
 public /*value*/ class SettableMatrix<N>(
-    override val coefficients: SettableMDList2<N>,
-    override val features: KoneMutableMap<Any, KoneMutableMap<KClass<*>, Any>> = koneMutableMapOf(keyContext = defaultHashing())
-): Matrix<N>(coefficients, features) {
+    override val coefficients: SettableMDList2<N>
+): Matrix<N>(coefficients) {
     public operator fun set(rowIndex: UInt, columnIndex: UInt, coefficient: N) {
-        features.removeAll()
         coefficients[rowIndex, columnIndex] = coefficient
     }
 }
 
-public fun <E> Matrix(vararg elements: KoneIterableList<E>, context: Equality<E>): Matrix<E> {
+public fun <E> Matrix(vararg elements: KoneIterableList<E>): Matrix<E> {
     require(elements.all { it.size == elements[0].size }) { "Cannot construct Matrix from list of list of different sizes" }
-    return Matrix(MDList2(*elements, context = context))
+    return Matrix(MDList2(*elements))
 }
-public fun <E> Matrix(rowNumber: UInt, columnNumber: UInt, context: Equality<E>, initializer: (row: UInt, column: UInt) -> E): Matrix<E> =
-    Matrix(MDList2(rowNumber, columnNumber, context = context, initializer))
+public fun <E> Matrix(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): Matrix<E> =
+    Matrix(MDList2(rowNumber, columnNumber, initializer))
 
 public fun requireShapeEquality(left: Matrix<*>, right: Matrix<*>) {
     if (left.rowNumber != right.rowNumber || left.columnNumber != right.columnNumber)
@@ -65,3 +46,21 @@ public fun requireShapeEquality(left: Matrix<*>, right: Matrix<*>) {
 
 public val Matrix<*>.rowIndices: UIntRange get() = coefficients.rowIndices
 public val Matrix<*>.columnIndices: UIntRange get() = coefficients.columnIndices
+
+internal class MatrixEquality<N>(elementEquality: Equality<N>) : Equality<Matrix<N>> {
+    private val mdListEquality: Equality<MDList2<N>> = mdListEquality(elementEquality)
+    override fun Matrix<N>.equalsTo(other: Matrix<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
+}
+
+public fun <N> matrixEquality(elementEquality: Equality<N>): Equality<Matrix<N>> =
+    MatrixEquality(elementEquality)
+
+internal class MatrixHashing<N>(elementHashing: Hashing<N>) : Hashing<Matrix<N>> {
+    private val mdListHashing: Hashing<MDList2<N>> = mdListHashing(elementHashing)
+    override fun Matrix<N>.equalsTo(other: Matrix<N>): Boolean = mdListHashing { this.coefficients eq other.coefficients }
+
+    override fun Matrix<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
+}
+
+public fun <N> matrixHashing(elementHashing: Hashing<N>): Hashing<Matrix<N>> =
+    MatrixHashing(elementHashing)

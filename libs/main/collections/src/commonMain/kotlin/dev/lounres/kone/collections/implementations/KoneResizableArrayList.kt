@@ -14,14 +14,14 @@ import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneResizableArrayList<E> internal constructor(
+public class KoneResizableArrayList<E, EC: Equality<E>> internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    override val context: Equality<E>,
-) : KoneListWithContext<E>, KoneMutableIterableList<E> {
+    override val elementContext: EC,
+) : KoneListWithContext<E, EC>, KoneMutableIterableList<E> {
     override var size: UInt = size
         private set
 
@@ -227,7 +227,7 @@ public class KoneResizableArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneResizableArrayList<*> ->
+            is KoneResizableArrayList<*, *> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }

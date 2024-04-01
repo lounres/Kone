@@ -11,10 +11,10 @@ import dev.lounres.kone.comparison.Equality
 
 @Suppress("UNCHECKED_CAST")
 /*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes to make the class be value class
-public /*value*/ class KoneSettableArrayList<E> internal constructor(
+public /*value*/ class KoneSettableArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
     private val data: KoneMutableArray<Any?>,
-    override val context: Equality<E>,
-) : KoneListWithContext<E>, KoneSettableIterableList<E> {
+    override val elementContext: EC,
+) : KoneListWithContext<E, EC>, KoneSettableIterableList<E> {
     override val size: UInt get() = data.size
 
     override fun get(index: UInt): E {
@@ -52,7 +52,7 @@ public /*value*/ class KoneSettableArrayList<E> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneSettableArrayList<*> ->
+            is KoneSettableArrayList<*, *> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }

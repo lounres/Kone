@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.isEmpty
 
 
-internal open class EmptyKoneIterableListTemplate<E> : KoneDefaultList<E>, KoneIterableList<E> {
+internal open class EmptyKoneIterableListTemplate<E> : KoneIterableList<E>, KoneDefaultList<E> {
     override val size: UInt = 0u
 
     override fun contains(element: @UnsafeVariance E): Boolean = false

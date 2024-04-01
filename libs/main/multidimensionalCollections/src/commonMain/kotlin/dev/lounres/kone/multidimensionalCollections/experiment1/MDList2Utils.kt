@@ -6,18 +6,16 @@
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
 import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.multidimensionalCollections.experiment1.implementations.ArrayMDList2
 
 
-public fun <E> MDList2(rowNumber: UInt, columnNumber: UInt, context: Equality<E> = defaultEquality(), initializer: (row: UInt, column: UInt) -> E): MDList2<E> =
+public fun <E> MDList2(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): MDList2<E> =
     ArrayMDList2(rowNumber, columnNumber) { row, column -> initializer(row, column) }
 
-public fun <E> SettableMDList2(rowNumber: UInt, columnNumber: UInt, context: Equality<E> = defaultEquality(), initializer: (row: UInt, column: UInt) -> E): SettableMDList2<E> =
+public fun <E> SettableMDList2(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): SettableMDList2<E> =
     ArrayMDList2(rowNumber, columnNumber) { row, column -> initializer(row, column) }
 
-public fun <E> MDList2(vararg elements: KoneIterableList<E>, context: Equality<E> = defaultEquality()): MDList2<E> {
+public fun <E> MDList2(vararg elements: KoneIterableList<E>): MDList2<E> {
     require(elements.all { it.size == elements[0].size }) { "Cannot construct MDList2 from list of lists of different sizes" }
     return ArrayMDList2(elements.size.toUInt(), elements[0].size) { row, column -> elements[row.toInt()][column] }
 }
