@@ -17,28 +17,29 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-internal class VectorSpaceImpl<N, out A: Ring<N>>(
-    override val numberRing: A,
-) : VectorSpaceOverRing<N, A>
+public data class VectorSpaceScope<N, A: Ring<N>, V: VectorSpace<N>>(val numberRing: A, val vectorSpace: V)
 
-public inline operator fun <N, A: Ring<N>, R> VectorSpaceOverRing<N, A>.invoke(block: context(A, VectorSpace<N>) () -> R): R {
+public inline operator fun <N, A: Ring<N>, V: VectorSpace<N>, R> VectorSpaceScope<N, A, V>.invoke(block: context(A, V) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
 //    }
-    return block(this.numberRing, this)
+    return block(this.numberRing, this.vectorSpace)
 }
 
-public val <N, A: Ring<N>> A.vectorSpace: VectorSpaceOverRing<N, A>
-    get() = VectorSpaceImpl(this)
+public val <N> Ring<N>.vectorSpace: VectorSpace<N>
+    get() = VectorSpaceWithNumberRing(this)
 
-public inline fun <N, A: Ring<N>, R> A.vectorSpace(
+public val <N, A: Ring<N>> A.vectorSpaceScope: VectorSpaceScope<N, A, VectorSpace<N>>
+    get() = VectorSpaceScope(this, vectorSpace)
+
+public inline fun <N, A: Ring<N>, R> A.vectorSpaceScope(
     block: context(A, VectorSpace<N>) () -> R
 ): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return this.vectorSpace.invoke(block)
+    return this.vectorSpaceScope.invoke(block)
 }
 
 context(Ring<N>)

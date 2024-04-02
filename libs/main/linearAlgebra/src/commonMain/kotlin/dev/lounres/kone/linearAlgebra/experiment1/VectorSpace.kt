@@ -45,9 +45,7 @@ public interface VectorSpace<N> : KoneContext {
     public operator fun RowVector<N>.times(other: ColumnVector<N>): N
 }
 
-public interface VectorSpaceOverRing<N, out A: Ring<N>> : VectorSpace<N> {
-    public val numberRing: A
-
+internal class VectorSpaceWithNumberRing<N, out A: Ring<N>>(val numberRing: A) : VectorSpace<N> {
     override val rowVectorEquality: Equality<RowVector<N>> get() = rowVectorEquality(numberRing)
     override val columnVectorEquality: Equality<ColumnVector<N>> get() = columnVectorEquality(numberRing)
     override val matrixEquality: Equality<Matrix<N>> get() = MatrixEquality(numberRing)

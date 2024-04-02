@@ -28,7 +28,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.clone(): 
         exclusiveProducts = KoneFixedCapacityArrayList(exclusiveProducts.size, spaceDimension) { exclusiveProducts[it] }
     )
 
-context(EuclideanSpace<N, A>)
+context(A, EuclideanSpace<N>)
 internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) where A: Ring<N>, A: Order<N> {
     val newIndex = orthogonalizedBasis.size
     val newOrthogonalizedVector = (0u..<newIndex).fold(newVector * product) { acc, index ->
@@ -37,18 +37,16 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmi
     }
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
-    for (j in 0u..<newIndex) this@EuclideanSpace {
-        exclusiveProducts[j] *= currentNorm
-    }
+    for (j in 0u..<newIndex) exclusiveProducts[j] *= currentNorm
     exclusiveProducts.add(product)
-    this@EuclideanSpace { product *= currentNorm }
+    product *= currentNorm
 }
 
-context(EuclideanSpace<N, A>)
+context(A, EuclideanSpace<N>)
 internal fun <N, A> KoneIterableList<Vector<N>>.gramSchmidtOrtogonalization(): KoneIterableList<Vector<N>> where A: Ring<N>, A: Order<N> {
     val result = GramSchmidtOrtogonalizationIntermediateState<N, A>(
         orthogonalizedBasis = KoneFixedCapacityArrayList(size),
-        product = numberRing.one,
+        product = one,
         exclusiveProducts = KoneFixedCapacityArrayList(size),
     )
 
