@@ -6,8 +6,6 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.implementations.POWERS_OF_2
-import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 import kotlin.math.max

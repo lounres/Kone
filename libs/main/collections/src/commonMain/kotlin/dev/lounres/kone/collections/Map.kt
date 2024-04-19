@@ -25,6 +25,7 @@ public interface KoneMap<K, out V> {
 
 public interface KoneMutableMap<K, V>: KoneMap<K, V> {
     public operator fun set(key: K, value: V)
+    public fun set(entry: KoneMapEntry<K, V>)
     public fun getAndSet(key: K, value: V): V = getMaybeAndSet(key, value).orThrow { NoMatchingKeyException("There is no value for key $key") }
     public fun getMaybeAndSet(key: K, value: V): Option<V> = getMaybe(key).also { this[key] = value }
     public fun getOrSet(key: K, defaultValue: () -> V): V = getMaybe(key).orElse { defaultValue().also { this[key] = it } }
@@ -36,10 +37,10 @@ public interface KoneMutableMap<K, V>: KoneMap<K, V> {
     public fun removeAllThat(predicate: (key: K, value: V) -> Boolean)
 
     // TODO: Think about bulk operations.
-    public fun setAll(from: KoneMap<out K, V>) {
+    public fun setAllFrom(from: KoneMap<out K, V>) {
         for ((key, value) in from) set(key, value)
     }
-    public fun setAll(from: KoneIterable<KoneMapEntry<K, V>>) {
+    public fun setAllFrom(from: KoneIterable<KoneMapEntry<K, V>>) {
         for ((key, value) in from) set(key, value)
     }
     public fun removeAll()

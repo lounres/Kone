@@ -1,6 +1,10 @@
-package dev.lounres.kone.examples.kone_algebraic
+/*
+ * Copyright © 2024 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
 
-import dev.lounres.kone.algebraic.Rational
+package dev.lounres.kone.algebraic
+
 import dev.lounres.kone.context.invoke
 
 

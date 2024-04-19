@@ -14,8 +14,12 @@ import dev.lounres.kone.comparison.Equality
 public /*value*/ class KoneSettableArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
     private val data: KoneMutableArray<Any?>,
     override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneSettableIterableList<E> {
+) : KoneListWithContext<E, EC>, KoneSettableIterableList<E>, Disposable {
     override val size: UInt get() = data.size
+
+    override fun dispose() {
+        for (index in 0u ..< size) data[index] = null
+    }
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)

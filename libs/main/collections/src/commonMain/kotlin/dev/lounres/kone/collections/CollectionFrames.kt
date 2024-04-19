@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.defaultHashing
 
 
-internal interface KoneDefaultList<E> : KoneListWithContext<E, Equality<E>> {
-    override val elementContext: Equality<E> get() = defaultEquality()
+internal interface KoneDefaultList<E> : KoneListWithContext<E, Hashing<E>> {
+    override val elementContext: Hashing<E> get() = defaultHashing()
 
     override fun contains(element: @UnsafeVariance E): Boolean =
         indexThat { _, currentElement -> currentElement == element } != size

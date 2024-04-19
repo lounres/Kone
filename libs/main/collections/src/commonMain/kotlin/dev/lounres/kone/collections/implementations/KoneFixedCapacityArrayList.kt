@@ -20,9 +20,13 @@ public class KoneFixedCapacityArrayList<E, EC: Equality<E>> internal constructor
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
     override val elementContext: EC,
-): KoneMutableListWithContext<E, EC>, KoneMutableIterableList<E> {
+): KoneMutableListWithContext<E, EC>, KoneMutableIterableList<E>, Disposable {
     override var size: UInt = size
         private set
+
+    override fun dispose() {
+        for (index in 0u ..< size) data[index] = null
+    }
 
     override fun contains(element: E): Boolean = data.any { elementContext { (it as E) eq element } }
 
@@ -52,7 +56,14 @@ public class KoneFixedCapacityArrayList<E, EC: Equality<E>> internal constructor
         data[index] = element
         size++
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        val newSize = size + number
+        if (newSize > capacity) capacityOverflowException(capacity)
+        var index = size
+        for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+        size = newSize
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > capacity) capacityOverflowException(capacity)
         var index = size
@@ -63,7 +74,16 @@ public class KoneFixedCapacityArrayList<E, EC: Equality<E>> internal constructor
         }
         size = newSize
     }
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+        if (index > size) indexException(index, size)
+        val newSize = size + number
+        if (newSize > capacity) capacityOverflowException(capacity)
+        for (i in (size-1u) downTo index) data[i + number] = data[i]
+        var index = index
+        for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+        size = newSize
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
         if (index > size) indexException(index, size)
         val elementsSize = elements.size
         val newSize = size + elementsSize

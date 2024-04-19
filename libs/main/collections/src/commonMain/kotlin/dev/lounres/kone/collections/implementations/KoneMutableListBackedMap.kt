@@ -44,6 +44,12 @@ public class KoneMutableListBackedMap<K, KC: Equality<K>, V, VC: Equality<V>> @P
         else backingList[index] = KoneMapEntry(key, value)
     }
 
+    override fun set(entry: KoneMapEntry<K, V>) {
+        val index = backingList.indexThat { _, currentEntry -> entry.key == currentEntry.key }
+        if (index == backingList.size) backingList.add(entry)
+        else backingList[index] = entry
+    }
+
     override fun remove(key: K) {
         // TODO: This code can be optimised if it's replaced with `backingList.removeFirstThat { it.key eq key }`
         val index = backingList.indexThat { _, entry -> keyContext { entry.key eq key } }

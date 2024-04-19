@@ -21,15 +21,18 @@ public class KoneResizableArrayList<E, EC: Equality<E>> internal constructor(
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
     override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneMutableIterableList<E> {
+) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, Disposable {
     override var size: UInt = size
         private set
 
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
     }
+    override fun dispose() {
+        data.dispose(size)
+    }
     private fun reinitializeBounds(newSize: UInt) {
-        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneGrowableArrayList implementation can not allocate array of size more than 2^31")
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneResizableArrayList implementation can not allocate array of size more than 2^31")
         when {
             newSize > sizeUpperBound -> {
                 while (newSize > sizeUpperBound) {
@@ -106,7 +109,24 @@ public class KoneResizableArrayList<E, EC: Equality<E>> internal constructor(
             size++
         }
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < size -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    else -> null
+                }
+            }
+        } else {
+            var index = size
+            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            size = newSize
+        }
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
             val iter = elements.iterator()
@@ -127,7 +147,27 @@ public class KoneResizableArrayList<E, EC: Equality<E>> internal constructor(
             size = newSize
         }
     }
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+        if (index > size) indexException(index, size)
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < index -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    it < newSize -> get(it - number)
+                    else -> null
+                }
+            }
+        } else {
+            for (i in (size-1u) downTo index) data[i + number] = data[i]
+            var index = index
+            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            size = newSize
+        }
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
         if (index > size) indexException(index, size)
         val newSize = size + elements.size
         val elementsSize = elements.size

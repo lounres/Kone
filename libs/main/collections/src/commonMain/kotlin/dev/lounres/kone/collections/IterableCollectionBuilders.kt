@@ -35,7 +35,7 @@ public inline fun <E> KoneMutableIterableList(size: UInt, elementContext: Equali
 @Suppress("UNUSED_PARAMETER")
 public fun <E> koneIterableListOf(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> = emptyKoneIterableList()
 
-// TODO: Add single-element implementations
+public fun <E> koneIterableListOf(element: E, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> = SingletonList(element, elementContext)
 
 public fun <E> koneIterableListOf(vararg elements: E, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
     KoneSettableArrayList(KoneMutableArray(elements as Array<Any?>), elementContext = elementContext)

@@ -21,7 +21,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
     private var start: UInt = 0u,
     private var end: UInt = capacity - 1u,
     override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E> {
+) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -32,6 +32,13 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             currentIndex = nextCellIndex[currentIndex]
         }
         return false
+    }
+    override fun dispose() {
+        var currentIndex = start
+        for (index in 0u ..< size) {
+            data[currentIndex] = null
+            currentIndex = nextCellIndex[currentIndex]
+        }
     }
 
     private fun actualIndex(index: UInt): UInt =
@@ -145,15 +152,56 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             else -> justAddBefore(actualIndex(index), element)
         }
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        if (number == 0u) return
+        val newSize = size + number
+        if (newSize > capacity) capacityOverflowException(capacity)
+
+        var localIndex = 0u
+        justAddAfterTheEnd(number) { builder(localIndex++) }
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
+        if (elements.size == 0u) return
         val newSize = size + elements.size
         if (newSize > capacity) capacityOverflowException(capacity)
 
         val iter = elements.iterator()
         justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
     }
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+        if (index > size) indexException(index, size)
+        if (number == 0u) return
+        val newSize = size + number
+        when {
+            newSize > capacity -> capacityOverflowException(capacity)
+            index == size -> {
+                var localIndex = 0u
+                justAddAfterTheEnd(number) { builder(localIndex++) }
+            }
+            else -> {
+                val actualRightPartIndex = actualIndex(index)
+                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
+                val actualInnerPartLeftEndIndex = nextCellIndex[end]
+                val actualInnerPartRightEndIndex: UInt
+                scope {
+                    var currentActualIndex = end
+                    for (localIndex in 0u ..< number) {
+                        currentActualIndex = nextCellIndex[currentActualIndex]
+                        data[currentActualIndex] = builder(localIndex)
+                    }
+                    actualInnerPartRightEndIndex = currentActualIndex
+                }
 
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
+                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
+                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
+                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
+                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+            }
+        }
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
         if (index > size) indexException(index, size)
         if (elements.size == 0u) return
         val newSize = size + elements.size

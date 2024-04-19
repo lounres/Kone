@@ -23,7 +23,7 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
     private var start: UInt = 0u,
     private var end: UInt = sizeUpperBound - 1u,
     override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneCollectionWithGrowableCapacity<E>, KoneDequeue<E> {
+) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneCollectionWithGrowableCapacity<E>, KoneDequeue<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -42,6 +42,9 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
             this[currentActualIndexToClear] = null
             currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
         }
+    }
+    override fun dispose() {
+        data.dispose(size)
     }
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneGrowableArrayList implementation can not allocate array of size more than 2^31")
@@ -202,7 +205,24 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
     override fun addLast(element: E) {
         justAddAfterTheEnd(element)
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var actualIndex = start
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    localIndex < number -> builder(localIndex++)
+                    else -> null
+                }
+            }
+        } else {
+            var localIndex = 0u
+            justAddAfterTheEnd(number) { builder(localIndex++) }
+        }
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
             var actualIndex = start
@@ -220,7 +240,51 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
         }
     }
 
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+        if (index > size) indexException(index, size)
+        if (number == 0u) return
+        val newSize = size + number
+        when {
+            newSize > sizeUpperBound -> {
+                var actualIndex = start
+                var localIndex = 0u
+                reinitializeBoundsAndData(newSize) {
+                    when {
+                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        localIndex < number -> builder(localIndex++)
+                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        else -> null
+                    }
+                }
+            }
+            index == size -> {
+                var localIndex = 0u
+                justAddAfterTheEnd(number) { builder(localIndex++) }
+            }
+            else -> {
+                val actualRightPartIndex = actualIndex(index)
+                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
+                val actualInnerPartLeftEndIndex = nextCellIndex[end]
+                val actualInnerPartRightEndIndex: UInt
+                scope {
+                    var currentActualIndex = end
+                    for (localIndex in 0u ..< number) {
+                        currentActualIndex = nextCellIndex[currentActualIndex]
+                        data[currentActualIndex] = builder(localIndex)
+                    }
+                    actualInnerPartRightEndIndex = currentActualIndex
+                }
+
+                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
+                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
+                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
+                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
+                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+            }
+        }
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
         if (index > size) indexException(index, size)
         if (elements.size == 0u) return
         val newSize = size + elements.size

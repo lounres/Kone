@@ -17,8 +17,12 @@ public interface KoneCollection<out E> {
 
 public interface KoneExtendableCollection<E> : KoneCollection<E> {
     public fun add(element: E)
-    public fun addAll(elements: KoneIterableCollection<E>) {
-        for (e in elements) add(e)
+    public fun addSeveral(number: UInt, builder: (index: UInt) -> E) {
+        for (index in 0u ..< number) add(builder(index))
+    }
+    public fun addAllFrom(elements: KoneIterableCollection<E>) {
+        val iterator = elements.iterator()
+        addSeveral(elements.size) { iterator.getAndMoveNext() }
     }
 }
 
@@ -62,11 +66,9 @@ public interface KoneSettableList<E> : KoneList<E> {
 }
 
 public interface KoneExtendableList<E>: KoneList<E>, KoneExtendableCollection<E> {
-    override fun add(element: E)
-    override fun addAll(elements: KoneIterableCollection<E>)
-
     public fun addAt(index: UInt, element: E)
-    public fun addAllAt(index: UInt, elements: KoneIterableCollection<E>)
+    public fun addSeveralAt(number: UInt, index: UInt, builder: (index: UInt) -> E)
+    public fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>)
 }
 
 public interface KoneRemovableList<E>: KoneList<E>, KoneRemovableCollection<E> {

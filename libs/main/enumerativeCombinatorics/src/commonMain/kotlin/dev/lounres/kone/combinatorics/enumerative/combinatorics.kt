@@ -159,7 +159,7 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
             currentElements = buildKoneIterableList {
                 add(collection[firstToIncrease])
-                addAll(currentElements.drop(firstToIncrease))
+                addAllFrom(currentElements.drop(firstToIncrease))
             }
         }
     }

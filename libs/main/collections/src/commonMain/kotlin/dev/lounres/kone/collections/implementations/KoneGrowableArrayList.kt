@@ -19,7 +19,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
     override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E> {
+) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -30,6 +30,9 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
 
     private fun KoneMutableArray<Any?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
+    }
+    override fun dispose() {
+        data.dispose(size)
     }
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
@@ -106,7 +109,24 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
             size++
         }
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < size -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    else -> null
+                }
+            }
+        } else {
+            var index = size
+            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            size = newSize
+        }
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
             val iter = elements.iterator()
@@ -120,14 +140,31 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
         } else {
             var index = size
             val iter = elements.iterator()
-            while (iter.hasNext()) {
-                data[index] = iter.getAndMoveNext()
-                index++
-            }
+            while (iter.hasNext()) data[index++] = iter.getAndMoveNext()
             size = newSize
         }
     }
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+        if (index > size) indexException(index, size)
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < index -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    it < newSize -> get(it - number)
+                    else -> null
+                }
+            }
+        } else {
+            for (i in (size-1u) downTo index) data[i + number] = data[i]
+            var index = index
+            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            size = newSize
+        }
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
         if (index > size) indexException(index, size)
         val elementsSize = elements.size
         val newSize = size + elementsSize
@@ -145,10 +182,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
             for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
             var index = index
             val iter = elements.iterator()
-            while (iter.hasNext()) {
-                data[index] = iter.getAndMoveNext()
-                index++
-            }
+            while (iter.hasNext()) data[index++] = iter.getAndMoveNext()
             size = newSize
         }
     }

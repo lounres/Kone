@@ -22,7 +22,7 @@ public data class VectorSpaceScope<N, A: Ring<N>, V: VectorSpace<N>>(val numberR
 public inline operator fun <N, A: Ring<N>, V: VectorSpace<N>, R> VectorSpaceScope<N, A, V>.invoke(block: context(A, V) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
-//        callsInPlace(block, EXACTLY_ONCE)
+//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //    }
     return block(this.numberRing, this.vectorSpace)
 }

@@ -1,4 +1,5 @@
 @file:Suppress("SuspiciousCollectionReassignment")
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.BenchmarksPlugin
@@ -9,6 +10,7 @@ import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenGradleSubplugin
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
@@ -16,7 +18,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
-import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -161,20 +162,10 @@ stal {
         "kotlin jvm" {
             apply<KotlinPluginWrapper>()
             configure<KotlinJvmProjectExtension> {
-                target.compilations.all {
-                    // TODO: Deprecated. Replace with `compilerOptions` DSL
-                    kotlinOptions {
-                        jvmTarget = jvmTargetVersion
-                        freeCompilerArgs += listOf(
-                            "-Xlambdas=indy"
-                        )
-                    }
-                    compileTaskProvider.apply {
-                        // TODO: Check if really is necessary
-                        // TODO: Deprecated. Replace with `compilerOptions` DSL
-                        kotlinOptions {
-                            jvmTarget = jvmTargetVersion
-                        }
+                target {
+                    compilerOptions {
+                        jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
+                        freeCompilerArgs = freeCompilerArgs.get() + listOf("-Xlambdas=indy")
                     }
                 }
 
@@ -194,14 +185,9 @@ stal {
                 applyDefaultHierarchyTemplate()
 
                 jvm {
-                    compilations.all {
-                        // TODO: Deprecated. Replace with `compilerOptions` DSL
-                        kotlinOptions {
-                            jvmTarget = jvmTargetVersion
-                            freeCompilerArgs += listOf(
-                                "-Xlambdas=indy"
-                            )
-                        }
+                    compilerOptions {
+                        jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
+                        freeCompilerArgs = freeCompilerArgs.get() + listOf("-Xlambdas=indy")
                     }
                     testRuns.all {
                         executionTask {
@@ -314,39 +300,46 @@ stal {
 //            }
 //        }
         "examples" {
-            @Suppress("UNUSED_VARIABLE")
-            fun NamedDomainObjectContainer<out KotlinCompilation<*>>.configureExamples() {
-                val main by getting
-                val examples by creating {
-                    associateWith(main)
-                    defaultSourceSet {
-                        kotlin.setSrcDirs(listOf("src/examples/kotlin"))
-                        resources.setSrcDirs(listOf("src/examples/resources"))
-                        dependencies {
-                            implementation(rootProject.projects.libs.util.examples)
-                        }
-                    }
-
-                    task<JavaExec>("runJvmExample") {
-                        group = "examples"
-                        description = "Runs the module's examples"
-                        classpath = output.classesDirs + compileDependencyFiles + runtimeDependencyFiles!!
-                        mainClass = "com.lounres.${project.extra["artifactPrefix"]}${project.name}.examples.MainKt"
-                    }
-                }
-            }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
-                    target.compilations.configureExamples()
+
                 }
             }
             pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
-                    targets.getByName<KotlinJvmTarget>("jvm").compilations.configureExamples()
+                    sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                implementation(project(project.parent!!.path))
+                                // TODO: Investigate why it creates tasks cycle.
+//                                implementation(rootProject.projects.libs.util.examples)
+                            }
+                        }
+                    }
                 }
             }
         }
-        "benchmark" {
+        "algorithms" {
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+                logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
+//                configure<KotlinJvmProjectExtension> {
+//                    // ...
+//                }
+            }
+            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                @Suppress("UNUSED_VARIABLE")
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                api(project(project.parent!!.path))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "benchmarks" {
             apply<BenchmarksPlugin>()
             apply<AllOpenGradleSubplugin>()
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
@@ -361,75 +354,66 @@ stal {
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
-                    val commonMain by sourceSets.getting
-                    val commonBenchmarks by sourceSets.creating {
-//                        dependsOn(commonMain)
+                    val commonMain by sourceSets.getting {
                         dependencies {
                             implementation(rootProject.libs.kotlinx.benchmark.runtime)
+                            implementation(project(project.parent!!.path))
                         }
                     }
                     targets.filter { it.platformType != KotlinPlatformType.common }.withEach {
-                        compilations {
-                            val main by getting
-                            val benchmarks by creating {
-                                associateWith(main)
-                                defaultSourceSet {
-                                    dependsOn(commonBenchmarks)
-                                }
-                            }
+                        val main by compilations.getting
 
-                            val benchmarksSourceSetName = benchmarks.defaultSourceSet.name
+                        val benchmarksSourceSetName = main.defaultSourceSet.name
 
-                            // TODO: For now js target causes problems with tasks initialisation
-                            //  Looks similar to
-                            //  1. https://github.com/Kotlin/kotlinx-benchmark/issues/101
-                            //  2. https://github.com/Kotlin/kotlinx-benchmark/issues/93
-                            // TODO: For now native targets work unstable
-                            //  May be similar to https://github.com/Kotlin/kotlinx-benchmark/issues/94
-                            // Because of all the issues, only JVM targets are registered for now
-                            when (platformType) {
-                                KotlinPlatformType.common, KotlinPlatformType.androidJvm -> {}
-                                KotlinPlatformType.jvm -> {
-                                    val benchmarkTarget = KotlinJvmBenchmarkTarget(
-                                        extension = benchmarksExtension,
-                                        name = benchmarksSourceSetName,
-                                        compilation = benchmarks as KotlinJvmCompilation
-                                    )
-                                    benchmarksExtension.targets.add(benchmarkTarget)
+                        // TODO: For now js target causes problems with tasks initialisation
+                        //  Looks similar to
+                        //  1. https://github.com/Kotlin/kotlinx-benchmark/issues/101
+                        //  2. https://github.com/Kotlin/kotlinx-benchmark/issues/93
+                        // TODO: For now native targets work unstable
+                        //  May be similar to https://github.com/Kotlin/kotlinx-benchmark/issues/94
+                        // Because of all the issues, only JVM targets are registered for now
+                        when (platformType) {
+                            KotlinPlatformType.common, KotlinPlatformType.androidJvm -> {}
+                            KotlinPlatformType.jvm -> {
+                                val benchmarkTarget = KotlinJvmBenchmarkTarget(
+                                    extension = benchmarksExtension,
+                                    name = benchmarksSourceSetName,
+                                    compilation = main as KotlinJvmCompilation
+                                )
+                                benchmarksExtension.targets.add(benchmarkTarget)
 
-                                    // Fix kotlinx-benchmarks bug
-                                    afterEvaluate {
-                                        val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
-                                        tasks.findByName(jarTaskName).let { it as? org.gradle.jvm.tasks.Jar }?.run {
-                                            if (!ignoreManualBugFixes) project.logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
-                                            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                                        }
+                                // Fix kotlinx-benchmarks bug
+                                afterEvaluate {
+                                    val jarTaskName = "${benchmarksSourceSetName}BenchmarkJar"
+                                    tasks.findByName(jarTaskName).let { it as? org.gradle.jvm.tasks.Jar }?.run {
+                                        if (!ignoreManualBugFixes) project.logger.warn("Corrected kotlinx.benchmark task $jarTaskName")
+                                        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                                     }
                                 }
-                                KotlinPlatformType.js -> {
-                                    val benchmarkTarget = JsBenchmarkTarget(
-                                        extension = benchmarksExtension,
-                                        name = benchmarksSourceSetName,
-                                        compilation = benchmarks as KotlinJsIrCompilation
-                                    )
+                            }
+                            KotlinPlatformType.js -> {
+                                val benchmarkTarget = JsBenchmarkTarget(
+                                    extension = benchmarksExtension,
+                                    name = benchmarksSourceSetName,
+                                    compilation = main as KotlinJsIrCompilation
+                                )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
-                                }
-                                KotlinPlatformType.wasm -> {
+                            }
+                            KotlinPlatformType.wasm -> {
 //                                    val benchmarkTarget = JsBenchmarkTarget(
 //                                        extension = benchmarksExtension,
 //                                        name = benchmarksSourceSetName,
 //                                        compilation = benchmarks as KotlinJsCompilation
 //                                    )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
-                                }
-                                KotlinPlatformType.native -> {
-                                    val benchmarkTarget = NativeBenchmarkTarget(
-                                        extension = benchmarksExtension,
-                                        name = benchmarksSourceSetName,
-                                        compilation = benchmarks as KotlinNativeCompilation
-                                    )
+                            }
+                            KotlinPlatformType.native -> {
+                                val benchmarkTarget = NativeBenchmarkTarget(
+                                    extension = benchmarksExtension,
+                                    name = benchmarksSourceSetName,
+                                    compilation = main as KotlinNativeCompilation
+                                )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
-                                }
                             }
                         }
                     }
@@ -444,12 +428,35 @@ stal {
                         warmups = 20
                         iterations = 10
                         iterationTime = 3
+                        iterationTimeUnit = "s"
                     }
                     val smoke by creating {
                         warmups = 5
                         iterations = 3
                         iterationTime = 500
                         iterationTimeUnit = "ms"
+                    }
+                }
+            }
+        }
+        "libs non-core main" {
+            val algorithmsSubproject = project("${project.path}:algorithms")
+            project("${project.path}:benchmarks") {
+                pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+//                configure<KotlinJvmProjectExtension> {
+//                    // ...
+//                }
+                }
+                pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                    @Suppress("UNUSED_VARIABLE")
+                    configure<KotlinMultiplatformExtension> {
+                        sourceSets {
+                            val commonMain by getting {
+                                dependencies {
+                                    implementation(project(algorithmsSubproject.path))
+                                }
+                            }
+                        }
                     }
                 }
             }

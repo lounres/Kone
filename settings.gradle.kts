@@ -29,7 +29,11 @@ stal {
         "libs" {
             "main" {
                 "core"("libs main")
-                subdirs("libs main", "uses libs main core")
+                subdirs("libs main", "libs non-core main", "uses libs main core") {
+                    "algorithms"("libs main algorithms")
+                    "benchmarks"("libs main benchmarks")
+                    "examples"("libs main examples")
+                }
             }
             "misc" {
                 subdirs("libs misc", "uses libs main core")
@@ -43,15 +47,18 @@ stal {
 
     tag {
         // Grouping tags
+        "libs main extra" since { hasAnyOf("libs main algorithms", "libs main benchmarks", "libs main examples") }
         "libs public" since { hasAnyOf("libs main", "libs misc") }
         "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
+        // Extra structure
+        "examples" since { has("libs main examples") }
+        "algorithms" since { has("libs main algorithms") }
+        "benchmarks" since { has("libs main benchmarks") }
         // Kotlin set up
-        "kotlin multiplatform" since { hasAnyOf("libs") }
+        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { has("libs") }
+        "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
         // Extra
-        "examples" since { has("libs public") }
-        "benchmark" since { has("libs public") }
 //        "kotest" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
 //        "dokka" since { has("libs") }

@@ -27,7 +27,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
     override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E> {
+) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -39,19 +39,19 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
         }
     }
     private fun reinitializeBounds(newSize: UInt) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBounds",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "newSize" to newSize,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBounds",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "newSize" to newSize,
+//                )
+//            }
+//        ) { "started" }
 
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneResizableLinkedArrayList implementation can not allocate array of size more than 2^31")
         when {
@@ -71,103 +71,111 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             }
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBounds",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBounds",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                )
+//            }
+//        ) { "finished" }
     }
     private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeData",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "oldSize" to oldSize,
-                    "newDataSize" to newDataSize,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeData",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "oldSize" to oldSize,
+//                    "newDataSize" to newDataSize,
+//                )
+//            }
+//        ) { "started" }
+
         val oldData = data
         data = KoneMutableArray(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
         nextCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
         previousCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
         start = 0u
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeData",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeData",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBoundsAndData",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "newSize" to newSize,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBoundsAndData",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "newSize" to newSize,
+//                )
+//            }
+//        ) { "started" }
+
         reinitializeBounds(newSize)
         reinitializeData(generator = generator)
         size = newSize
         end = (if (size > 0u) size - 1u else sizeUpperBound - 1u)
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBoundsAndData",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.reinitializeBoundsAndData",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
+    }
+
+    override fun dispose() {
+        data.dispose(size)
     }
 
     private fun actualIndex(index: UInt): UInt =
@@ -182,31 +190,31 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             }
             else -> {
                 var currentIndex = end
-                for (i in index ..< end) {
+                for (i in index ..< size-1u) {
                     currentIndex = previousCellIndex[currentIndex]
                 }
                 currentIndex
             }
         }
     private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(UInt, (UInt) -> E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "newElementsNumber" to newElementsNumber,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(UInt, (UInt) -> E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "newElementsNumber" to newElementsNumber,
+//                )
+//            }
+//        ) { "started" }
 
         for (index in 0u ..< newElementsNumber) {
             end = nextCellIndex[end]
@@ -214,85 +222,85 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
         }
         size += newElementsNumber
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(UInt, (UInt) -> E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(UInt, (UInt) -> E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
     private fun justAddAfterTheEnd(element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         justAddAfterTheEnd(1u) { element }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
     private fun justAddBefore(actualIndex: UInt, element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddBefore",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "actualIndex" to actualIndex,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddBefore",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "actualIndex" to actualIndex,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         val freeIndex = nextCellIndex[end]
         val indexAfterTheFreeIndex = nextCellIndex[freeIndex]
@@ -311,43 +319,43 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
 
         size++
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddBefore",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddBefore",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
     }
     private fun justRemoveAt(actualIndex: UInt) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justRemoveAt",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "actualIndex" to actualIndex,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justRemoveAt",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "actualIndex" to actualIndex,
+//                )
+//            }
+//        ) { "started" }
 
         data[actualIndex] = null
         val prev = previousCellIndex[actualIndex]
@@ -365,260 +373,260 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
         previousCellIndex[actualIndex] = end
         if (size == 0u) start = actualIndex
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justRemoveAt",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justRemoveAt",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun get(index: UInt): E {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.get(UInt)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.get(UInt)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                )
+//            }
+//        ) { "started" }
 
         if (index >= size) indexException(index, size)
         val result = data[actualIndex(index)] as E
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.get(UInt)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                    "result" to result,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.get(UInt)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                    "result" to result,
+//                )
+//            }
+//        ) { "finished" }
         return result
     }
 
     override fun getFirst(): E {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getFirst",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getFirst",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         if (isEmpty()) indexException(0u, size) // TODO: Maybe replace with another error
         val result = data[start] as E
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getFirst",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "result" to result,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getFirst",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "result" to result,
+//                )
+//            }
+//        ) { "finished" }
         return result
     }
 
     override fun getLast(): E {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getLast",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getLast",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         if (isEmpty()) indexException(size, size) // TODO: Maybe replace with another error
         val result = data[end] as E
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getLast",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "result" to result,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.getLast",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "result" to result,
+//                )
+//            }
+//        ) { "finished" }
         return result
     }
 
     override fun set(index: UInt, element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.set(UInt, E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.set(UInt, E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         if (index >= size) indexException(index, size)
         data[actualIndex(index)] = element
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.set(UInt, E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.set(UInt, E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun removeAll() {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAll()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAll()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         reinitializeBoundsAndData(0u) { null }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAll()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAll()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun add(element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.add(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.add(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         if (size == sizeUpperBound) {
             var actualIndex = start
@@ -633,44 +641,44 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justAddAfterTheEnd(element)
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.add(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.add(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun addFirst(element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addFirst(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addFirst(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         if (size == sizeUpperBound) {
             var actualIndex = start
@@ -683,45 +691,45 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             }
         } else justAddBefore(start, element)
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addFirst(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addFirst(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun addLast(element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addLast(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addLast(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         if (size == sizeUpperBound) {
             var actualIndex = start
@@ -734,46 +742,46 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             }
         } else justAddAfterTheEnd(element)
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addLast(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addLast(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun addAt(index: UInt, element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAt(UInt, E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAt(UInt, E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         if (index > size) indexException(index, size)
         when {
@@ -792,45 +800,101 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             else -> justAddBefore(actualIndex(index), element)
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAt(UInt, E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAt(UInt, E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
-    override fun addAll(elements: KoneIterableCollection<E>) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "elements" to elements,
-                )
+
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addSeveral(UInt, (UInt) -> E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "started" }
+
+        val newSize = size + number
+        if (newSize > sizeUpperBound) {
+            var actualIndex = start
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    localIndex < number -> builder(localIndex++)
+                    else -> null
+                }
             }
-        ) { "started" }
+        } else {
+            var localIndex = 0u
+            justAddAfterTheEnd(number) { builder(localIndex++) }
+        }
+
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "finished" }
+    }
+    override fun addAllFrom(elements: KoneIterableCollection<E>) {
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "started" }
 
         val newSize = size + elements.size
         if (newSize > sizeUpperBound) {
@@ -848,45 +912,127 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "elements" to elements,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "finished" }
     }
 
-    override fun addAllAt(index: UInt, elements: KoneIterableCollection<E>) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "elements" to elements,
-                )
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "started" }
+
+        if (index > size) indexException(index, size)
+        if (number == 0u) return
+        val newSize = size + number
+        when {
+            newSize > sizeUpperBound -> {
+                var actualIndex = start
+                var localIndex = 0u
+                reinitializeBoundsAndData(newSize) {
+                    when {
+                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        localIndex < number -> builder(localIndex++)
+                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        else -> null
+                    }
+                }
             }
-        ) { "started" }
+            index == size -> {
+                var localIndex = 0u
+                justAddAfterTheEnd(number) { builder(localIndex++) }
+            }
+            else -> {
+                val actualRightPartIndex = actualIndex(index)
+                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
+                val actualInnerPartLeftEndIndex = nextCellIndex[end]
+                val actualInnerPartRightEndIndex: UInt
+                scope {
+                    var currentActualIndex = end
+                    for (localIndex in 0u ..< number) {
+                        currentActualIndex = nextCellIndex[currentActualIndex]
+                        data[currentActualIndex] = builder(localIndex)
+                    }
+                    actualInnerPartRightEndIndex = currentActualIndex
+                }
+
+                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
+                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
+                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
+                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
+                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+            }
+        }
+
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "finished" }
+    }
+    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "started" }
 
         if (index > size) indexException(index, size)
         if (elements.size == 0u) return
@@ -932,44 +1078,44 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             }
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "elements" to elements,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "elements" to elements,
+//                )
+//            }
+//        ) { "finished" }
     }
     override fun remove(element: E) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "started" }
 
         val targetIndex: UInt
         val actualTargetIndex: UInt
@@ -1012,44 +1158,44 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justRemoveAt(actualTargetIndex)
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "element" to element,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "element" to element,
+//                )
+//            }
+//        ) { "finished" }
     }
     override fun removeAt(index: UInt) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAt(UInt)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAt(UInt)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                )
+//            }
+//        ) { "started" }
 
         if (index >= size) indexException(index, size)
         val newSize = size - 1u
@@ -1069,44 +1215,44 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justRemoveAt(actualIndex(index))
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAt(UInt)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                    "index" to index,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAt(UInt)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                    "index" to index,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun removeFirst() {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         if (size == 0u) indexException(0u, size) // TODO: Maybe replace with another error
         val newSize = size - 1u
@@ -1122,43 +1268,43 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justRemoveAt(start)
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun removeLast() {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         if (size == 0u) indexException(size, size) // TODO: Maybe replace with another error
         val newSize = size - 1u
@@ -1174,43 +1320,43 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             justRemoveAt(end)
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeFirst()",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAllThatIndexed((UInt, E) -> Boolean)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "started" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAllThatIndexed((UInt, E) -> Boolean)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "started" }
 
         val newSize: UInt
         val firstCellToClear: UInt
@@ -1248,23 +1394,23 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             size = newSize
         }
 
-        koneLogger.debug(
-            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAllThatIndexed((UInt, E) -> Boolean)",
-            items = {
-                mapOf(
-                    "this" to this,
-                    "size" to size,
-                    "dataSizeNumber" to dataSizeNumber,
-                    "sizeLowerBound" to sizeLowerBound,
-                    "sizeUpperBound" to sizeUpperBound,
-                    "data" to data,
-                    "nextCellIndex" to nextCellIndex,
-                    "previousCellIndex" to previousCellIndex,
-                    "start" to start,
-                    "end" to end,
-                )
-            }
-        ) { "finished" }
+//        koneLogger.debug(
+//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.removeAllThatIndexed((UInt, E) -> Boolean)",
+//            items = {
+//                mapOf(
+//                    "this" to this,
+//                    "size" to size,
+//                    "dataSizeNumber" to dataSizeNumber,
+//                    "sizeLowerBound" to sizeLowerBound,
+//                    "sizeUpperBound" to sizeUpperBound,
+//                    "data" to data,
+//                    "nextCellIndex" to nextCellIndex,
+//                    "previousCellIndex" to previousCellIndex,
+//                    "start" to start,
+//                    "end" to end,
+//                )
+//            }
+//        ) { "finished" }
     }
 
     override fun iterator(): KoneMutableLinearIterator<E> = Iterator()

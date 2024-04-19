@@ -81,14 +81,14 @@ internal class MutableAbstractPolytopicConstructionImpl<N>(
             _facesOf[it] = faces
             _verticesOf[it] = vertices
         }
-    override fun removePolytope(polytope: AbstractPolytope) {
-        val dim = _dimensionOf[polytope]
-        _polytopes[dim].remove(polytope)
-        _dimensionOf.remove(polytope)
-        _facesOf.remove(polytope)
-        _verticesOf.remove(polytope)
-        if (polytope is AbstractVertex) _coordinatesOf.remove(polytope)
-    }
+//    override fun removePolytope(polytope: AbstractPolytope) {
+//        val dim = _dimensionOf[polytope]
+//        _polytopes[dim].remove(polytope)
+//        _dimensionOf.remove(polytope)
+//        _facesOf.remove(polytope)
+//        _verticesOf.remove(polytope)
+//        if (polytope is AbstractVertex) _coordinatesOf.remove(polytope)
+//    }
 //    override operator fun AbstractPolytope.set(dim: UInt, faces: Set<AbstractPolytope>)
 
     override fun addVertex(coordinates: Point<N>): AbstractVertex =
