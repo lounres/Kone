@@ -41,7 +41,7 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
             }
             val startPoint = (flag[0u] as AbstractVertex).coordinates
             val basis = KoneSettableIterableList(simplex.dimension + 1u, elementContext = vectorEquality(this@A)) { dim -> flag[dim+1u].vertices.first { it !in flag[dim].vertices }.coordinates - startPoint }
-            val ortogonalizedBasis = basis.gramSchmidtOrtogonalization()
+            val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
             val lastBasisVector = ortogonalizedBasis.last()
             !((lastBasisVector dot basis.last()).isPositive() xor lastBasisVector.coordinates[theDimension-1u].isPositive())
         }

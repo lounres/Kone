@@ -43,7 +43,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmi
 }
 
 context(A, EuclideanSpace<N>)
-internal fun <N, A> KoneIterableList<Vector<N>>.gramSchmidtOrtogonalization(): KoneIterableList<Vector<N>> where A: Ring<N>, A: Order<N> {
+internal fun <N, A> KoneIterableList<Vector<N>>.gramSchmidtOrthogonalization(): KoneIterableList<Vector<N>> where A: Ring<N>, A: Order<N> {
     val result = GramSchmidtOrtogonalizationIntermediateState<N, A>(
         orthogonalizedBasis = KoneFixedCapacityArrayList(size),
         product = one,
