@@ -14,14 +14,14 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 
 
-internal data class GramSchmidtOrtogonalizationIntermediateState<N, NE: Equality<N>>(
+internal data class GramSchmidtOrtogonalizationIntermediateState<N>(
     val orthogonalizedBasis: KoneMutableIterableList<Vector<N>>,
     var product: N,
     val exclusiveProducts: KoneMutableIterableList<N>,
 )
 
 context(MutablePolytopicConstruction<N, *, *>)
-internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.clone(): GramSchmidtOrtogonalizationIntermediateState<N, A> where A: Ring<N>, A: Order<N> =
+internal fun <N> GramSchmidtOrtogonalizationIntermediateState<N>.clone(): GramSchmidtOrtogonalizationIntermediateState<N> =
     GramSchmidtOrtogonalizationIntermediateState(
         orthogonalizedBasis = KoneFixedCapacityArrayList(orthogonalizedBasis.size, spaceDimension) { orthogonalizedBasis[it] },
         product = product,
@@ -29,7 +29,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.clone(): 
     )
 
 context(A, EuclideanSpace<N>)
-internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) where A: Ring<N>, A: Order<N> {
+internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) where A: Ring<N>, A: Order<N> {
     val newIndex = orthogonalizedBasis.size
     val newOrthogonalizedVector = (0u..<newIndex).fold(newVector * product) { acc, index ->
         val previousOrthogonalizedVector = orthogonalizedBasis[index]
@@ -44,7 +44,7 @@ internal fun <N, A> GramSchmidtOrtogonalizationIntermediateState<N, A>.gramSchmi
 
 context(A, EuclideanSpace<N>)
 internal fun <N, A> KoneIterableList<Vector<N>>.gramSchmidtOrthogonalization(): KoneIterableList<Vector<N>> where A: Ring<N>, A: Order<N> {
-    val result = GramSchmidtOrtogonalizationIntermediateState<N, A>(
+    val result = GramSchmidtOrtogonalizationIntermediateState<N>(
         orthogonalizedBasis = KoneFixedCapacityArrayList(size),
         product = one,
         exclusiveProducts = KoneFixedCapacityArrayList(size),

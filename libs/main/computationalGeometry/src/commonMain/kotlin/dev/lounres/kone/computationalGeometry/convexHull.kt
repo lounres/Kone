@@ -123,9 +123,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
 
             allVertices.removeAllThat { it in newVertices && it !in newFacet.vertices }
 
-            for (dim in 0u .. subspaceDimension-2u) {
-                convexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
-            }
+            for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
             convexHullFaces[subspaceDimension-1u].add(newFacet)
 
             facetsToProcess.add(newFacet)
@@ -141,17 +139,17 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
     return addPolytope(convexHullVertices, convexHullFaces)
 }
 
-internal data class WrappingResult<N, NE: Equality<N>, P>(
+internal data class WrappingResult<N, P>(
     var polytope: P,
     val startPoint: Point<N>,
     val basis: KoneMutableIterableList<Vector<N>>,
-    val orthogonalizationState: GramSchmidtOrtogonalizationIntermediateState<N, NE>,
+    val orthogonalizationState: GramSchmidtOrtogonalizationIntermediateState<N>,
 )
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrappingExtension(
     subspaceDimension: UInt,
-    wrappingResult: WrappingResult<N, A, P>,
+    wrappingResult: WrappingResult<N, P>,
     normalVector: Vector<N>,
     otherPoints: KoneIterableCollection<V>
 ) where A: Ring<N>, A: Order<N> {
@@ -233,7 +231,7 @@ context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrapping(
     subspaceDimension: UInt,
     points: KoneIterableCollection<V>,
-): WrappingResult<N, A, P> where A: Ring<N>, A: Order<N> {
+): WrappingResult<N, P> where A: Ring<N>, A: Order<N> {
     require(points.isNotEmpty()) { TODO("Error message is not specified") }
     if (subspaceDimension == 0u) {
         val theOnlyVertex = points.single()
@@ -263,7 +261,8 @@ internal fun <N, A, P, V: P> giftWrapping(
 }
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
-public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
+public fun <N, A, P, V: P> KoneIterableCollection<V>.
+        constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
     giftWrapping(spaceDimension, this).polytope
 
 context(A, EuclideanSpace<N>)
