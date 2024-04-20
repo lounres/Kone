@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.misc.scope
@@ -261,8 +260,7 @@ internal fun <N, A, P, V: P> giftWrapping(
 }
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
-public fun <N, A, P, V: P> KoneIterableCollection<V>.
-        constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
+public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
     giftWrapping(spaceDimension, this).polytope
 
 context(A, EuclideanSpace<N>)
