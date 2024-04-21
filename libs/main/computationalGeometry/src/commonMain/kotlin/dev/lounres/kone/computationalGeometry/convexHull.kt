@@ -141,7 +141,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
 internal data class WrappingResult<N, P>(
     var polytope: P,
     val startPoint: Point<N>,
-    val orthogonalizationState: GramSchmidtOrtogonalizationIntermediateState<N>,
+    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<N>,
 )
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
@@ -234,7 +234,7 @@ internal fun <N, A, P, V: P> giftWrappingFull(
         return WrappingResult(
             polytope = theOnlyVertex,
             startPoint = theOnlyVertex.coordinates,
-            orthogonalizationState = GramSchmidtOrtogonalizationIntermediateState(
+            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
                 orthogonalizedBasis = KoneFixedCapacityArrayList(spaceDimension),
                 product = one,
                 exclusiveProducts = KoneFixedCapacityArrayList(spaceDimension)
