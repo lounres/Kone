@@ -141,7 +141,6 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
 internal data class WrappingResult<N, P>(
     var polytope: P,
     val startPoint: Point<N>,
-    val basis: KoneMutableIterableList<Vector<N>>,
     val orthogonalizationState: GramSchmidtOrtogonalizationIntermediateState<N>,
 )
 
@@ -159,7 +158,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
     var currentNormalVector = normalVector
 
     while (otherPoints.isNotEmpty()) {
-        if (wrappingResult.basis.size == subspaceDimension - 1u) {
+        if (wrappingResult.orthogonalizationState.orthogonalizedBasis.size == subspaceDimension - 1u) {
             val resultingPolytope = giftWrappingIncrement(
                 subspaceDimension = subspaceDimension,
                 startFacet = wrappingResult.polytope,
@@ -167,7 +166,6 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
             )
             wrappingResult.polytope = resultingPolytope
             val newVector = otherPoints.first().coordinates - wrappingResult.startPoint
-            wrappingResult.basis.add(newVector)
             wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
             return
         }
@@ -193,13 +191,12 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
             }
         }) { it.coordinates.coefficients.any { it.isNotZero() } } ?: scope {
             val resultingPolytope = giftWrappingIncrement(
-                subspaceDimension = wrappingResult.basis.size + 1u,
+                subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
                 startFacet = wrappingResult.polytope,
                 otherPoints = otherPoints
             )
             wrappingResult.polytope = resultingPolytope
             val newVector = otherPoints.first().coordinates - wrappingResult.startPoint
-            wrappingResult.basis.add(newVector)
             wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
             return
         }
@@ -227,7 +224,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
 }
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
-internal fun <N, A, P, V: P> giftWrapping(
+internal fun <N, A, P, V: P> giftWrappingFull(
     subspaceDimension: UInt,
     points: KoneIterableCollection<V>,
 ): WrappingResult<N, P> where A: Ring<N>, A: Order<N> {
@@ -237,7 +234,6 @@ internal fun <N, A, P, V: P> giftWrapping(
         return WrappingResult(
             polytope = theOnlyVertex,
             startPoint = theOnlyVertex.coordinates,
-            basis = KoneFixedCapacityArrayList(spaceDimension),
             orthogonalizationState = GramSchmidtOrtogonalizationIntermediateState(
                 orthogonalizedBasis = KoneFixedCapacityArrayList(spaceDimension),
                 product = one,
@@ -247,7 +243,7 @@ internal fun <N, A, P, V: P> giftWrapping(
     }
 
     val startPoints = points.minListBy { it.coordinates.coordinates[subspaceDimension - 1u] }
-    val wrappingResult = giftWrapping(subspaceDimension - 1u, startPoints)
+    val wrappingResult = giftWrappingFull(subspaceDimension - 1u, startPoints)
 
     giftWrappingExtension(
         subspaceDimension = subspaceDimension,
@@ -261,11 +257,11 @@ internal fun <N, A, P, V: P> giftWrapping(
 
 context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
 public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWrapping2(): P where A: Ring<N>, A: Order<N> =
-    giftWrapping(spaceDimension, this).polytope
+    giftWrappingFull(spaceDimension, this).polytope
 
 context(A, EuclideanSpace<N>)
 public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWrapping3(construction: MutablePolytopicConstruction<N, P, V>): P where A: Ring<N>, A: Order<N> =
-    with(construction) { giftWrapping(spaceDimension, this@constructConvexHullByGiftWrapping3).polytope }
+    with(construction) { giftWrappingFull(spaceDimension, this@constructConvexHullByGiftWrapping3).polytope }
 
 //public fun <N, A, P, V: P, PE: Equality<P>> KoneIterableCollection<V, PE>.constructConvexHullByGiftWrapping4(euclideanSpace: EuclideanSpace<N, A>, construction: MutablePolytopicConstruction<N, A, P, V, PE>): P where A: Ring<N>, A: Order<N> =
 //    with(euclideanSpace) { with(construction) { this@constructConvexHullByGiftWrapping4.giftWrapping(spaceDimension).polytope } }
