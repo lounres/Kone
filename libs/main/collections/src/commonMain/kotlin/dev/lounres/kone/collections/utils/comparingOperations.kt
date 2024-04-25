@@ -1,5 +1,5 @@
 /*
- * Copyright � 2023 Gleb Minaev
+ * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  *
  * THE FILE IS AUTOMATICALLY GENERATED. DON'T CHANGE IT MANUALLY.
@@ -67,11 +67,11 @@ public fun <E : Comparable<E>> KoneIterable<E>.minList(elementContext: Equality<
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -89,11 +89,11 @@ public fun <E : Comparable<E>> KoneList<E>.minList(elementContext: Equality<E> =
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -111,11 +111,11 @@ public fun <E : Comparable<E>> KoneIterableList<E>.minList(elementContext: Equal
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -175,11 +175,11 @@ public fun <E : Comparable<E>> KoneIterable<E>.maxList(elementContext: Equality<
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -197,11 +197,11 @@ public fun <E : Comparable<E>> KoneList<E>.maxList(elementContext: Equality<E> =
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -219,11 +219,11 @@ public fun <E : Comparable<E>> KoneIterableList<E>.maxList(elementContext: Equal
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -287,11 +287,11 @@ public fun <E> KoneIterable<E>.minList(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -310,11 +310,11 @@ public fun <E> KoneList<E>.minList(elementContext: Equality<E> = defaultEquality
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -333,11 +333,11 @@ public fun <E> KoneIterableList<E>.minList(elementContext: Equality<E> = default
 
         val comparisonResult = minElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -401,11 +401,11 @@ public fun <E> KoneIterable<E>.maxList(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -424,11 +424,11 @@ public fun <E> KoneList<E>.maxList(elementContext: Equality<E> = defaultEquality
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -447,11 +447,11 @@ public fun <E> KoneIterableList<E>.maxList(elementContext: Equality<E> = default
 
         val comparisonResult = maxElement.compareTo(nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -511,11 +511,11 @@ public fun <E> KoneIterable<E>.minListWith(elementContext: Equality<E> = default
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -533,11 +533,11 @@ public fun <E> KoneList<E>.minListWith(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -555,11 +555,11 @@ public fun <E> KoneIterableList<E>.minListWith(elementContext: Equality<E> = def
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -619,11 +619,11 @@ public fun <E> KoneIterable<E>.maxListWith(elementContext: Equality<E> = default
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -641,11 +641,11 @@ public fun <E> KoneList<E>.maxListWith(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -663,11 +663,11 @@ public fun <E> KoneIterableList<E>.maxListWith(elementContext: Equality<E> = def
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -735,11 +735,11 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.minListOf(elementContext: Equa
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -759,11 +759,11 @@ public fun <E, R : Comparable<R>> KoneList<E>.minListOf(elementContext: Equality
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (index < size)
@@ -783,11 +783,11 @@ public fun <E, R : Comparable<R>> KoneIterableList<E>.minListOf(elementContext: 
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -855,11 +855,11 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.maxListOf(elementContext: Equa
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -879,11 +879,11 @@ public fun <E, R : Comparable<R>> KoneList<E>.maxListOf(elementContext: Equality
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (index < size)
@@ -903,11 +903,11 @@ public fun <E, R : Comparable<R>> KoneIterableList<E>.maxListOf(elementContext: 
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -979,11 +979,11 @@ public fun <E, R> KoneIterable<E>.minListOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1004,11 +1004,11 @@ public fun <E, R> KoneList<E>.minListOf(elementContext: Equality<R> = defaultEqu
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (index < size)
@@ -1029,11 +1029,11 @@ public fun <E, R> KoneIterableList<E>.minListOf(elementContext: Equality<R> = de
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1105,11 +1105,11 @@ public fun <E, R> KoneIterable<E>.maxListOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1130,11 +1130,11 @@ public fun <E, R> KoneList<E>.maxListOf(elementContext: Equality<R> = defaultEqu
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (index < size)
@@ -1155,11 +1155,11 @@ public fun <E, R> KoneIterableList<E>.maxListOf(elementContext: Equality<R> = de
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1227,11 +1227,11 @@ public fun <E, R> KoneIterable<E>.minListWithOf(elementContext: Equality<R> = de
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1251,11 +1251,11 @@ public fun <E, R> KoneList<E>.minListWithOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (index < size)
@@ -1275,11 +1275,11 @@ public fun <E, R> KoneIterableList<E>.minListWithOf(elementContext: Equality<R> 
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minValue)
+            comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minValue)
+                minList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1347,11 +1347,11 @@ public fun <E, R> KoneIterable<E>.maxListWithOf(elementContext: Equality<R> = de
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1371,11 +1371,11 @@ public fun <E, R> KoneList<E>.maxListWithOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (index < size)
@@ -1395,11 +1395,11 @@ public fun <E, R> KoneIterableList<E>.maxListWithOf(elementContext: Equality<R> 
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxValue)
+            comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxValue)
+                maxList.add(nextValue)
             }
         }
     } while (iterator.hasNext())
@@ -1470,12 +1470,12 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.minListBy(elementContext: Equa
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1495,12 +1495,12 @@ public fun <E, R : Comparable<R>> KoneList<E>.minListBy(elementContext: Equality
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -1520,12 +1520,12 @@ public fun <E, R : Comparable<R>> KoneIterableList<E>.minListBy(elementContext: 
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1596,12 +1596,12 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.maxListBy(elementContext: Equa
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1621,12 +1621,12 @@ public fun <E, R : Comparable<R>> KoneList<E>.maxListBy(elementContext: Equality
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -1646,12 +1646,12 @@ public fun <E, R : Comparable<R>> KoneIterableList<E>.maxListBy(elementContext: 
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1726,12 +1726,12 @@ public fun <E, R> KoneIterable<E>.minListBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1752,12 +1752,12 @@ public fun <E, R> KoneList<E>.minListBy(elementContext: Equality<E> = defaultEqu
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -1778,12 +1778,12 @@ public fun <E, R> KoneIterableList<E>.minListBy(elementContext: Equality<E> = de
 
         val comparisonResult = minValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1858,12 +1858,12 @@ public fun <E, R> KoneIterable<E>.maxListBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1884,12 +1884,12 @@ public fun <E, R> KoneList<E>.maxListBy(elementContext: Equality<E> = defaultEqu
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -1910,12 +1910,12 @@ public fun <E, R> KoneIterableList<E>.maxListBy(elementContext: Equality<E> = de
 
         val comparisonResult = maxValue.compareTo(nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -1986,12 +1986,12 @@ public fun <E, R> KoneIterable<E>.minListWithBy(elementContext: Equality<E> = de
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -2011,12 +2011,12 @@ public fun <E, R> KoneList<E>.minListWithBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (index < size)
@@ -2036,12 +2036,12 @@ public fun <E, R> KoneIterableList<E>.minListWithBy(elementContext: Equality<E> 
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(minElement)
+            comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
                 minValue = nextValue
                 minList.removeAll()
-                minList.add(minElement)
+                minList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -2112,12 +2112,12 @@ public fun <E, R> KoneIterable<E>.maxListWithBy(elementContext: Equality<E> = de
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
@@ -2137,12 +2137,12 @@ public fun <E, R> KoneList<E>.maxListWithBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (index < size)
@@ -2162,12 +2162,12 @@ public fun <E, R> KoneIterableList<E>.maxListWithBy(elementContext: Equality<E> 
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(maxElement)
+            comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
                 maxValue = nextValue
                 maxList.removeAll()
-                maxList.add(maxElement)
+                maxList.add(nextElement)
             }
         }
     } while (iterator.hasNext())
