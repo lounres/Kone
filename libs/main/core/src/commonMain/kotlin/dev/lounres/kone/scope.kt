@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.misc
+package dev.lounres.kone
 
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

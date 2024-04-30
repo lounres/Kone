@@ -28,7 +28,10 @@ stal {
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
         "libs" {
             "main" {
-                "core"("libs main")
+                "core"("libs main") {
+                    "benchmarks"("libs main benchmarks")
+                    "examples"("libs main examples")
+                }
                 subdirs("libs main", "libs non-core main", "uses libs main core") {
                     "algorithms"("libs main algorithms")
                     "benchmarks"("libs main benchmarks")

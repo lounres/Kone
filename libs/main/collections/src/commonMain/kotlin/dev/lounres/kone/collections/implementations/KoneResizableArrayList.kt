@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.KoneMutableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 import kotlin.math.max
 
 

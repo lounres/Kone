@@ -6,11 +6,9 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.MAX_CAPACITY
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 
 
 @Suppress("UNCHECKED_CAST")

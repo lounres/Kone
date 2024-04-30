@@ -8,7 +8,7 @@
 package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.util.mapOperations.*
 import space.kscience.kmath.expressions.Symbol

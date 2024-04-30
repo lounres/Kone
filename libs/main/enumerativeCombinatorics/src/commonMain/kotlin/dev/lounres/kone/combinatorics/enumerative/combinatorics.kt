@@ -8,7 +8,7 @@ package dev.lounres.kone.combinatorics.enumerative
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 
 
 public fun <E1, E2> cartesianProduct(

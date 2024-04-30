@@ -12,7 +12,7 @@ import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 
 
-public interface PolytopicConstruction<out N, P, V: P>: KoneContext {
+public interface PolytopicConstruction<out N, P, V: P> : KoneContext {
     public val polytopeContext: Equality<P>
 
     public val spaceDimension: UInt
@@ -29,27 +29,17 @@ public interface PolytopicConstruction<out N, P, V: P>: KoneContext {
     public fun P.cofacesOfDimension(dim: UInt): KoneIterableSet<P>
 
     public val vertices: KoneIterableSet<V>
-    public val V.coordinates: Point<N>
+    public val V.position: Point<N>
 }
 
-internal interface PolytopicConstructionWithContexts<N, P, V: P> : PolytopicConstruction<N, P, V> {
-    val numberContext: Equality<N>
-
-    override val P.cofaces: KoneIterableList<KoneIterableSet<P>>
-        get() =
-            polytopes
-                .drop(this.dimension + 1u)
-                .map(elementContext = koneIterableSetEquality(polytopeContext)) { polytopes ->
-                    polytopes.filterTo(koneMutableIterableSetOf(elementContext = polytopeContext)) { this in it.facesOfDimension(this.dimension) }
-                }
-    override fun P.cofacesOfDimension(dim: UInt): KoneIterableSet<P> =
-        polytopes[dim].filterTo(koneMutableIterableSetOf(elementContext = polytopeContext)) { this in it.facesOfDimension(this.dimension) }
+public interface PolytopicConstructionWithContexts<N, out NC: Equality<N>, P, V: P> : PolytopicConstruction<N, P, V> {
+    public val numberContext: NC
 }
 
 //public interface PolytopicConstruction2<N, P, V: P>: PolytopicConstruction<N, P, V> {
 //    override val spaceDimension: UInt get() = 2u
 //
-//    override val V.coordinates: Point2<N>
+//    override val V.position: Point2<N>
 //}
 
 public interface MutablePolytopicConstruction<N, P, V: P>: PolytopicConstruction<N, P, V> {
@@ -57,7 +47,7 @@ public interface MutablePolytopicConstruction<N, P, V: P>: PolytopicConstruction
 //    public fun removePolytope(polytope: P)
 //    public operator fun P.set(dim: UInt, faces: Set<P>)
 
-    public fun addVertex(coordinates: Point<N>): V
+    public fun addVertex(position: Point<N>): V
 }
 
 //public interface MutablePolytopicConstruction2<N, P, V: P>: PolytopicConstruction2<N, P, V> {
@@ -65,25 +55,22 @@ public interface MutablePolytopicConstruction<N, P, V: P>: PolytopicConstruction
 //    public fun removePolytope(polytope: P)
 ////    public operator fun P.set(dim: UInt, faces: Set<P>)
 //
-//    public fun addVertex(coordinates: Point2<N>): V
+//    public fun addVertex(position: Point2<N>): V
 //}
 
 context(NE)
-public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruction<N, P1, V1>.eq(other: PolytopicConstruction<N, P2, V2>): Boolean {
+public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruction<N, P1, V1>.equalsTo(other: PolytopicConstruction<N, P2, V2>): Boolean {
     if (this.spaceDimension != other.spaceDimension) return false
     if ((0u..this.spaceDimension).any { this.polytopes[it].size != other.polytopes[it].size }) return false
 
-    val thisToOtherPolytopesMapping = KoneIterableList(this.spaceDimension + 1u, elementContext = koneMapEquality(keyEquality = this.polytopeContext, valueEquality = other.polytopeContext)) { koneMutableMapOf<P1, P2>(keyContext = this.polytopeContext, valueContext = other.polytopeContext) }
+    val thisToOtherPolytopesMapping = KoneIterableList(this.spaceDimension + 1u, elementContext = koneMapEquality(keyContext = this.polytopeContext, valueContext = other.polytopeContext)) { koneMutableMapOf(keyContext = this.polytopeContext, valueContext = other.polytopeContext) }
     @Suppress("UNCHECKED_CAST")
     val thisToOtherVertexMapping = thisToOtherPolytopesMapping[0u] as KoneMutableMap<V1, V2>
 
-    val thisPointToVertexMapping = this.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = this.polytopeContext) { it.coordinates }
-    val otherPointToVertexMapping = other.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = other.polytopeContext) { other { it.coordinates } }
+    val thisPointToVertexMapping = this.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = this.polytopeContext) { it.position }
+    val otherPointToVertexMapping = other.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = other.polytopeContext) { other { it.position } }
     if (koneIterableSetEquality(pointEquality(this@NE)).invoke { thisPointToVertexMapping.keys neq otherPointToVertexMapping.keys }) return false
-    for ((point, thisVertex) in thisPointToVertexMapping) {
-        thisToOtherVertexMapping[thisVertex] =
-            otherPointToVertexMapping[point]
-    }
+    for ((point, thisVertex) in thisPointToVertexMapping) thisToOtherVertexMapping[thisVertex] = otherPointToVertexMapping[point]
 
     for (dim in 1u..this.spaceDimension) {
         val dimMapping = thisToOtherPolytopesMapping[dim]
@@ -99,3 +86,12 @@ public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruct
 
     return true
 }
+context(NE)
+public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruction<N, P1, V1>.notEqualsTo(other: PolytopicConstruction<N, P2, V2>): Boolean =
+    !(this equalsTo other)
+context(NE)
+public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruction<N, P1, V1>.eq(other: PolytopicConstruction<N, P2, V2>): Boolean =
+    this equalsTo other
+context(NE)
+public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruction<N, P1, V1>.neq(other: PolytopicConstruction<N, P2, V2>): Boolean =
+    !(this eq other)

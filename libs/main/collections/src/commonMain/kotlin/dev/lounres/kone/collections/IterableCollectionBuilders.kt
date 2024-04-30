@@ -130,29 +130,28 @@ public fun <E> koneIterableSetOf(elementContext: Equality<E> = defaultEquality()
 
 // TODO: Add single-element implementations
 
-public fun <E> koneIterableSetOf(vararg elements: E, elementContext: Equality<E> = defaultEquality()): KoneIterableSet<E> {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
-
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (element in elements) if (element !in backingList) backingList.add(element)
-    return KoneListBackedSet(elementContext, backingList)
-}
+public fun <E> koneIterableSetOf(vararg elements: E, elementContext: Equality<E> = defaultEquality()): KoneIterableSet<E> =
+    if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext).apply { addAll(*elements) }
+    else {
+        val backingList = KoneGrowableArrayList(elementContext = elementContext)
+        for (element in elements) if (element !in backingList) backingList.add(element)
+        KoneListBackedSet(elementContext, backingList)
+    }
 
 public fun <E> koneMutableIterableSetOf(elementContext: Equality<E>): KoneMutableIterableSet<E> =
-    if (elementContext is Hashing<E>) KoneMutableListBackedSet(elementContext = elementContext) // TODO: Replace with hashing implementation
+    if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext)
     else KoneMutableListBackedSet(elementContext = elementContext)
 
-public fun <E> koneMutableIterableSetOf(vararg elements: E, elementContext: Equality<E>): KoneMutableIterableSet<E> {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
-
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (element in elements) if (element !in backingList) backingList.add(element)
-    return KoneMutableListBackedSet(elementContext, backingList)
-}
+public fun <E> koneMutableIterableSetOf(vararg elements: E, elementContext: Equality<E>): KoneMutableIterableSet<E> =
+    if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext).apply { addAll(*elements) }
+    else {
+        val backingList = KoneResizableLinkedArrayList(elementContext = elementContext)
+        for (element in elements) if (element !in backingList) backingList.add(element)
+        KoneMutableListBackedSet(elementContext, backingList)
+    }
 
 public fun <E> KoneIterable<E>.toKoneMutableIterableSet(elementContext: Equality<E>): KoneMutableIterableSet<E> {
     if (this is KoneIterableCollection<E>) return this.toKoneMutableIterableSet(elementContext = elementContext)
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
 
     val result = koneMutableIterableSetOf<E>(elementContext = elementContext)
     for (element in this) result.add(element)
@@ -161,48 +160,58 @@ public fun <E> KoneIterable<E>.toKoneMutableIterableSet(elementContext: Equality
 
 public fun <E> Iterable<E>.toKoneMutableIterableSet(elementContext: Equality<E>): KoneMutableIterableSet<E> {
     if (this is Collection<E>) return this.toKoneMutableIterableSet(elementContext = elementContext)
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
 
     val result = koneMutableIterableSetOf<E>(elementContext = elementContext)
     for (element in this) result.add(element)
     return result
 }
 
-public fun <E> KoneIterableCollection<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
-
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (element in this) if (element !in backingList) backingList.add(element)
-    return KoneMutableListBackedSet(elementContext, backingList)
-}
-
-public fun <E> Collection<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
-
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (element in this) if (element !in backingList) backingList.add(element)
-    return KoneMutableListBackedSet(elementContext, backingList)
-}
-
-public fun <E> KoneList<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E>  {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
-
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (index in indices) {
-        val element = this[index]
-        if (element !in backingList) backingList.add(element)
+public fun <E> KoneIterableCollection<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
+    if (elementContext is Hashing<E>)
+        KoneResizableHashSet(elementContext = elementContext).apply { addAllFrom(this@toKoneMutableIterableSet) }
+    else {
+        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        for (element in this) if (element !in backingList) backingList.add(element)
+        KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList(elementContext).apply { addAllFrom(backingList) })
     }
-    return KoneMutableListBackedSet(elementContext, backingList)
-}
 
-public fun <E> KoneIterableList<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E>  {
-    if (elementContext is Hashing<E>) {} // TODO: Replace with hashing implementation
+public fun <E> Collection<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
+    if (elementContext is Hashing<E>)
+        KoneResizableHashSet(elementContext = elementContext).apply {
+            for (element in this@toKoneMutableIterableSet) add(element)
+        }
+    else {
+        val backingList = KoneGrowableArrayList(initialCapacity = size.toUInt(), elementContext = elementContext)
+        for (element in this) if (element !in backingList) backingList.add(element)
+        KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList(elementContext).apply { addAllFrom(backingList) })
+    }
 
-    val backingList = KoneGrowableArrayList(elementContext = elementContext)
-    for (element in this) if (element !in backingList) backingList.add(element)
-    return KoneMutableListBackedSet(elementContext, backingList)
-}
+public fun <E> KoneList<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
+    if (elementContext is Hashing<E>)
+        KoneResizableHashSet(elementContext = elementContext).apply {
+            for (index in 0u ..< this@toKoneMutableIterableSet.size) this.add(this@toKoneMutableIterableSet[index])
+        }
+    else {
+        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        for (index in indices) {
+            val element = this[index]
+            if (element !in backingList) backingList.add(element)
+        }
+        KoneMutableListBackedSet(elementContext, backingList)
+    }
 
+public fun <E> KoneIterableList<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
+    if (elementContext is Hashing<E>)
+        KoneResizableHashSet(elementContext = elementContext).apply { addAllFrom(this@toKoneMutableIterableSet) }
+    else {
+        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        for (element in this) if (element !in backingList) backingList.add(element)
+        KoneMutableListBackedSet(elementContext, backingList)
+    }
+
+// TODO: Replace inner implementation of `toKoneIterableSet`
+//  via KoneGrowableArrayList and KoneResizableHashSet
+//  with KoneFixedCapacityList and fixed capacity analogue of KoneResizableHashSet
 public fun <E> KoneIterable<E>.toKoneIterableSet(elementContext: Equality<E>): KoneIterableSet<E> =
     if (this is KoneIterableCollection<E>) this.toKoneIterableSet(elementContext = elementContext)
     else this.toKoneMutableIterableSet(elementContext = elementContext)
@@ -230,17 +239,22 @@ public fun <E> KoneIterableList<E>.toKoneIterableSet(elementContext: Equality<E>
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <E> buildKoneIterableSet(elementContext: Equality<E>, @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneMutableListBackedSet(
-        elementContext = elementContext,
-        backingList = KoneGrowableArrayList(
-            elementContext = elementContext
+    // TODO: Insert growable hash set implementation for hashing element context
+    val result =
+        if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext)
+        else KoneMutableListBackedSet(
+            elementContext = elementContext,
+            backingList = KoneGrowableArrayList(
+                elementContext = elementContext
+            )
         )
-    ).apply(builderAction)
+    return result.apply(builderAction)
 }
 
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <E> buildKoneIterableSet(elementContext: Equality<E>, initialCapacity: UInt, @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
+    // TODO: Insert growable hash set implementation for hashing element context
     return KoneMutableListBackedSet(
         elementContext = elementContext,
         backingList = KoneGrowableArrayList(

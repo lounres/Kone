@@ -6,6 +6,8 @@ import kotlinx.benchmark.gradle.BenchmarksPlugin
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.JsBenchmarkTarget
 import kotlinx.benchmark.gradle.NativeBenchmarkTarget
+import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.accessors.dm.RootProjectAccessor
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
@@ -84,6 +86,8 @@ allprojects {
 val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
+val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
+val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
@@ -133,26 +137,26 @@ tasks.dokkaHtmlMultiModule {
 stal {
     action {
         "uses libs main core" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val main by getting {
                             dependencies {
-                                api(rootProject.projects.libs.main.core)
+                                api(projects.libs.main.core)
                             }
                         }
                     }
                 }
             }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
 //                apply<KotestMultiplatformCompilerGradlePlugin>()
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                api(rootProject.projects.libs.main.core)
+                                api(projects.libs.main.core)
                             }
                         }
                     }
@@ -225,7 +229,7 @@ stal {
             }
         }
         "kotlin common settings" {
-            pluginManager.withPlugins(rootProject.libs.plugins.kotlin.jvm, rootProject.libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugins(libs.plugins.kotlin.jvm, libs.plugins.kotlin.multiplatform) {
                 configure<KotlinProjectExtension> {
                     sourceSets {
                         all {
@@ -257,13 +261,13 @@ stal {
             }
         }
 //        "kotest" {
-//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+//            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
 //                configure<KotlinJvmProjectExtension> {
 //                    @Suppress("UNUSED_VARIABLE")
 //                    sourceSets {
 //                        val test by getting {
 //                            dependencies {
-//                                with(rootProject.libs.kotest) {
+//                                with(libs.kotest) {
 //                                    implementation(framework.engine)
 //                                    implementation(framework.datatest)
 //                                    implementation(assertions.core)
@@ -275,14 +279,14 @@ stal {
 //                    }
 //                }
 //            }
-//            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+//            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
 //                apply<KotestMultiplatformCompilerGradlePlugin>()
 //                configure<KotlinMultiplatformExtension> {
 //                    @Suppress("UNUSED_VARIABLE")
 //                    sourceSets {
 //                        val commonTest by getting {
 //                            dependencies {
-//                                with(rootProject.libs.kotest) {
+//                                with(libs.kotest) {
 //                                    implementation(framework.engine)
 //                                    implementation(framework.datatest)
 //                                    implementation(assertions.core)
@@ -292,7 +296,7 @@ stal {
 //                        }
 //                        val jvmTest by getting {
 //                            dependencies {
-//                                implementation(rootProject.libs.kotest.runner.junit5)
+//                                implementation(libs.kotest.runner.junit5)
 //                            }
 //                        }
 //                    }
@@ -300,19 +304,21 @@ stal {
 //            }
 //        }
         "examples" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
 
                 }
             }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                implementation(project(project.parent!!.path))
                                 // TODO: Investigate why it creates tasks cycle.
-//                                implementation(rootProject.projects.libs.util.examples)
+//                                implementation(projects.libs.util.examples)
+
+                                val parentProject = project.parent
+                                if (parentProject != null) implementation(project(parentProject.path))
                             }
                         }
                     }
@@ -320,19 +326,20 @@ stal {
             }
         }
         "algorithms" {
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
             }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
                         val commonMain by getting {
                             dependencies {
-                                api(project(project.parent!!.path))
+                                val parentProject = project.parent
+                                if (parentProject != null) implementation(project(parentProject.path))
                             }
                         }
                     }
@@ -344,20 +351,28 @@ stal {
             apply<AllOpenGradleSubplugin>()
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 logger.error("kotlinx.benchmark plugging in and setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
             }
-            pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
                     val commonMain by sourceSets.getting {
                         dependencies {
-                            implementation(rootProject.libs.kotlinx.benchmark.runtime)
-                            implementation(project(project.parent!!.path))
+                            implementation(libs.kotlinx.benchmark.runtime)
+
+                            val parentProject = project.parent
+                            if (parentProject != null) {
+                                implementation(project(parentProject.path))
+                                val algorithmsSimbling = parentProject.childProjects["algorithms"]
+                                if (algorithmsSimbling != null) {
+                                    implementation(project(algorithmsSimbling.path))
+                                }
+                            }
                         }
                     }
                     targets.filter { it.platformType != KotlinPlatformType.common }.withEach {
@@ -381,6 +396,8 @@ stal {
                                     compilation = main as KotlinJvmCompilation
                                 )
                                 benchmarksExtension.targets.add(benchmarkTarget)
+
+                                benchmarkTarget.jmhVersion = libs.versions.jmh.get()
 
                                 // Fix kotlinx-benchmarks bug
                                 afterEvaluate {
@@ -425,12 +442,14 @@ stal {
                 configurations {
                     // TODO: Create my own configurations
                     val main by getting {
+                        mode = "AverageTime"
                         warmups = 20
                         iterations = 10
                         iterationTime = 3
                         iterationTimeUnit = "s"
                     }
                     val smoke by creating {
+                        mode = "AverageTime"
                         warmups = 5
                         iterations = 3
                         iterationTime = 500
@@ -442,12 +461,12 @@ stal {
         "libs non-core main" {
             val algorithmsSubproject = project("${project.path}:algorithms")
             project("${project.path}:benchmarks") {
-                pluginManager.withPlugin(rootProject.libs.plugins.kotlin.jvm) {
+                pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
                 }
-                pluginManager.withPlugin(rootProject.libs.plugins.kotlin.multiplatform) {
+                pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
                     @Suppress("UNUSED_VARIABLE")
                     configure<KotlinMultiplatformExtension> {
                         sourceSets {
@@ -464,7 +483,7 @@ stal {
         "dokka" {
             apply<DokkaPlugin>()
             dependencies {
-                dokkaPlugin(rootProject.libs.dokka.mathjax)
+                dokkaPlugin(libs.dokka.mathjax)
             }
 
             task<Jar>("dokkaJar") {

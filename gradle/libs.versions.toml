@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.0-RC1"
+kotlin = "2.0.0-RC2"
 
 kmath = "0.3.1"
 
@@ -12,8 +12,10 @@ kotlinx-benchmark = "0.4.10"
 kotlinx-binary-compatibility-validator = "0.14.0"
 kotlinx-knit = "0.4.0"
 
+kaml = "0.59.0"
 logkube = "0.1.0"
 kotest = "5.8.0"
+jmh = "1.37"
 dokka = "1.9.20"
 
 [plugins]
@@ -67,3 +69,6 @@ kmath-core = { module = "space.kscience:kmath-core", version.ref = "kmath" }
 
 # LogKube
 logkube-core = { module = "dev.lounres:logKube.core", version.ref = "logkube" }
+
+# Kaml
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }

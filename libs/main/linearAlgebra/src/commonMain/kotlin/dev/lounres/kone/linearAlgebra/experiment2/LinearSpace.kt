@@ -58,14 +58,30 @@ public interface LinearSpace<N, F, V: F, M: F, out A: Ring<N>, out MDS: MDSpace<
     public operator fun M.times(other: V): V {
         require(this.columnNumber == other.size) { "Matrix dot operation dimension mismatch: ($rowNumber, $columnNumber) ⨯ (${other.size})" }
         return vector(rowNumber) { row ->
-            (0u ..< columnNumber).fold(zero) { acc, index -> acc + this[row, index] * other[index] }
+            // FIXME: KT-67840
+//            (0u ..< columnNumber).fold(zero) { acc, index -> acc + this[row, index] * other[index] }
+            var result = zero
+            var index = 0u
+            while (index < columnNumber) {
+                result += this[row, index] * other[index]
+                index++
+            }
+            result
         }
     }
     @JvmName("Matrix-times-Matrix")
     public operator fun M.times(other: M): M {
         require(this.columnNumber == other.rowNumber) { "Matrix dot operation dimension mismatch: ($rowNumber, $columnNumber) ⨯ (${other.rowNumber}, ${other.columnNumber})" }
         return matrix(rowNumber, other.columnNumber) { row, column ->
-            (0u ..< columnNumber).fold(zero) { acc, index -> acc + this[row, index] * other[index, column] }
+            // FIXME: KT-67840
+//            (0u ..< columnNumber).fold(zero) { acc, index -> acc + this[row, index] * other[index, column] }
+            var result = zero
+            var index = 0u
+            while (index < columnNumber) {
+                result += this[row, index] * other[index, column]
+                index++
+            }
+            result
         }
     }
 

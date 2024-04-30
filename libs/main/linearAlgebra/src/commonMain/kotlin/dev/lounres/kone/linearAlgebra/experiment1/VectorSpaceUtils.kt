@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.toKoneIterableList
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.collections.utils.hasDuplicates
 import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 

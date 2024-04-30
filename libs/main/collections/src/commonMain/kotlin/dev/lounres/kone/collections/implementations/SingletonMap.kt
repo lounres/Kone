@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.None
@@ -13,6 +14,7 @@ import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 
 
+// TODO: Apply the class
 internal class SingletonMap<K, KC: Equality<K>, V, VC: Equality<V>>(
     val singleKey: K,
     val singleValue: V,
@@ -47,4 +49,16 @@ internal class SingletonMap<K, KC: Equality<K>, V, VC: Equality<V>>(
     override fun getMaybe(key: K): Option<V> =
         if (keyContext { singleKey eq key }) Some(singleValue)
         else None
+
+    override fun toString(): String = "{$singleKey=$singleValue}"
+    override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneMap<*, *>) return false
+        if (other.size != 1u) return false
+
+        val (otherKey, otherValue) = other.entries.first()
+
+        return singleKey == otherKey && singleValue == otherValue
+    }
 }

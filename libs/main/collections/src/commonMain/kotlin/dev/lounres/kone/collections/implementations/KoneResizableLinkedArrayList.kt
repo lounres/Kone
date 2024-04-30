@@ -10,8 +10,7 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.logging.koneLogger
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 import kotlin.math.max
 
 
@@ -315,7 +314,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
 
         if (actualIndex == start) start = freeIndex
 
-        data[actualIndex] = element
+        data[freeIndex] = element
 
         size++
 
@@ -637,9 +636,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
                     else -> null
                 }
             }
-        } else {
-            justAddAfterTheEnd(element)
-        }
+        } else justAddAfterTheEnd(element)
 
 //        koneLogger.debug(
 //            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.add(E)",
@@ -1487,15 +1484,48 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
         override fun setNext(element: E) {
             if (!hasNext()) noElementException(currentIndex, size)
-            data[currentIndex] = element
+            data[actualCurrentIndex] = element
         }
         override fun addNext(element: E) {
-            if (currentIndex == size) justAddAfterTheEnd(element)
-            else justAddBefore(nextCellIndex[actualCurrentIndex], element)
+            when {
+                size == sizeUpperBound -> {
+                    var actualIndex = start
+                    reinitializeBoundsAndData(size + 1u) {
+                        when {
+                            it < currentIndex -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            it == currentIndex -> element
+                            it <= size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            else -> null
+                        }
+                    }
+                    actualCurrentIndex = currentIndex
+                }
+                currentIndex == size -> justAddAfterTheEnd(element)
+                else -> {
+                    justAddBefore(actualCurrentIndex, element)
+                    actualCurrentIndex = previousCellIndex[actualCurrentIndex]
+                }
+            }
         }
         override fun removeNext() {
             if (!hasNext()) noElementException(currentIndex, size)
-            justRemoveAt(actualCurrentIndex.also { actualCurrentIndex = nextCellIndex[actualCurrentIndex] })
+            val newSize = size - 1u
+            if (newSize < sizeLowerBound) {
+                var actualIndex = start
+                reinitializeBoundsAndData(newSize) {
+                    when {
+                        it < currentIndex -> get(actualIndex).also { _ ->
+                            actualIndex = nextCellIndex[actualIndex]
+                            if (it == currentIndex - 1u) actualIndex = nextCellIndex[actualIndex] // TODO: Possible bug for `index = 0u`
+                        }
+                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        else -> null
+                    }
+                }
+                actualCurrentIndex = currentIndex
+            } else {
+                justRemoveAt(actualCurrentIndex)
+            }
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u

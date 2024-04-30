@@ -27,20 +27,20 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
         val simplicesMapping = koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality(), valueContext = outerPolytopeContext)
 
         val newPoints = this@constructDelaunayTriangulation.map(elementContext = defaultEquality()) { oldVertex ->
-            val newVertex = addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.coordinates.coordinates[it] else oldVertex.coordinates.coordinates.coefficients.sumOf { c -> c * c } }))
+            val newVertex = addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.position.coordinates[it] else oldVertex.position.coordinates.coefficients.sumOf { c -> c * c } }))
             simplicesMapping[newVertex] = oldVertex
             newVertex
         }
 
-        val convexHull: AbstractPolytope = defaultHashing<AbstractPolytope>().run { newPoints.constructConvexHullByGiftWrapping2() }
+        val convexHull: AbstractPolytope = defaultHashing<AbstractPolytope>().run { newPoints.constructConvexHullByGiftWrapping() }
         val necessarySimplices = convexHull.facesOfDimension(convexHull.dimension - 1u).filter { simplex ->
             val flag = KoneSettableIterableList(simplex.dimension + 2u) { simplex }
             flag[simplex.dimension + 1u] = convexHull
             for (dim in simplex.dimension-1u downTo 0u) {
                 flag[dim] = flag[dim+1u].facesOfDimension(dim).first()
             }
-            val startPoint = (flag[0u] as AbstractVertex).coordinates
-            val basis = KoneSettableIterableList(simplex.dimension + 1u, elementContext = vectorEquality(this@A)) { dim -> flag[dim+1u].vertices.first { it !in flag[dim].vertices }.coordinates - startPoint }
+            val startPoint = (flag[0u] as AbstractVertex).position
+            val basis = KoneSettableIterableList(simplex.dimension + 1u, elementContext = vectorEquality(this@A)) { dim -> flag[dim+1u].vertices.first { it !in flag[dim].vertices }.position - startPoint }
             val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
             val lastBasisVector = ortogonalizedBasis.last()
             !((lastBasisVector dot basis.last()).isPositive() xor lastBasisVector.coordinates[theDimension-1u].isPositive())

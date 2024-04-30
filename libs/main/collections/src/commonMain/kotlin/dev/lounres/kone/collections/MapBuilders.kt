@@ -7,8 +7,8 @@ package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.implementations.EmptyKoneMap
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
+import dev.lounres.kone.collections.implementations.KoneResizableHashMap
 import dev.lounres.kone.collections.utils.indices
-import dev.lounres.kone.collections.wrappers.asKone
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -17,30 +17,29 @@ import dev.lounres.kone.comparison.defaultEquality
 @Suppress("UNCHECKED_CAST")
 public fun <K, V> emptyKoneMap(): KoneMap<K, V> = EmptyKoneMap as KoneMap<K, V>
 
-@Suppress("UNUSED_PARAMETER")
+@Suppress("unused")
 public fun <K, V> koneMapOf(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMap<K, V> =
     emptyKoneMap()
 
-// TODO: Optimize conversions `.asIterable().asKone()`
 public fun <K, V> koneMapOf(vararg entries: KoneMapEntry<K, V>, keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMap<K, V> =
     when {
         entries.isEmpty() -> emptyKoneMap()
-        keyContext is Hashing -> KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { // TODO: Replace with hashing map
-            setAllFrom(entries.asIterable().asKone()) // TODO: Optimize
+        keyContext is Hashing -> KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext).apply {
+            setAllFrom(KoneArray(entries))
         }
         else -> KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply {
-            setAllFrom(entries.asIterable().asKone()) // TODO: Optimize
+            setAllFrom(KoneArray(entries))
         }
     }
 
 
 public fun <K, V> koneMutableMapOf(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMutableMap<K, V> =
-    if (keyContext is Hashing<K>) KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext) // TODO: Replace with hashing map
+    if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext)
     else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext)
 
 public fun <K, V> koneMutableMapOf(vararg entries: KoneMapEntry<K, V>, keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMutableMap<K, V> =
-    if (keyContext is Hashing<K>) KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(entries.asIterable().asKone()) } // TODO: Replace with hashing map
-    else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(entries.asIterable().asKone()) }
+    if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
+    else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
 
 public inline fun <E, K, V, D: KoneMutableMap<in K, in V>> KoneIterable<E>.associateTo(destination: D, transform: (E) -> KoneMapEntry<K, V>): D {
     for (element in this) destination.set(transform(element))

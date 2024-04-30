@@ -6,11 +6,9 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.MAX_CAPACITY
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 
 
 @Suppress("UNCHECKED_CAST")
@@ -413,7 +411,7 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
         if (this.size != other.size) return false
 
         when (other) {
-            is dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList<*, *> -> {
+            is KoneGrowableLinkedArrayList<*, *> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 for (i in 0u..<size) {

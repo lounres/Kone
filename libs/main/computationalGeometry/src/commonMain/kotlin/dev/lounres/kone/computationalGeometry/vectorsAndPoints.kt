@@ -5,20 +5,11 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.isPositive
-import dev.lounres.kone.algebraic.sign
-import dev.lounres.kone.collections.KoneArray
-import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.compareByOrdered
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.utils.fold
 
 
 // FIXME: KT-42977
@@ -72,39 +63,59 @@ public fun <N> Point(size: UInt, initializer: (coordinate: UInt) -> N): Point<N>
 //    return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)
 //}
 
-internal class PointEquality<N, NE: Equality<N>>(numberEquality: NE) : Equality<Point<N>> {
-    val columnVectorEquality = columnVectorEquality(numberEquality)
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorEquality.invoke { this.coordinates eq other.coordinates }
+internal class PointEquality<N>(val columnVectorContext: Equality<ColumnVector<N>>) : Equality<Point<N>> {
+    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
 }
 
-public fun <E, EE: Equality<E>> pointEquality(elementEquality: EE): Equality<Point<E>> =
-    PointEquality(elementEquality)
+@JvmName("pointEqualityForColumnVector")
+public fun <N> pointEquality(columnVectorContext: Equality<ColumnVector<N>>): Equality<Point<N>> =
+    if (columnVectorContext is Hashing<ColumnVector<N>>) PointHashing(columnVectorContext)
+    else PointEquality(columnVectorContext)
 
-internal class PointHashing<N, NE: Hashing<N>>(numberHashing: NE) : Hashing<Point<N>> {
-    val columnVectorHashing = columnVectorHashing(numberHashing)
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorHashing.invoke { this.coordinates eq other.coordinates }
-    override fun Point<N>.hash(): Int = columnVectorHashing.invoke { this.coordinates.hash() }
+@JvmName("pointEqualityForNumber")
+public fun <N> pointEquality(numberContext: Equality<N>): Equality<Point<N>> =
+    if (numberContext is Hashing<N>) PointHashing(columnVectorHashing(numberContext))
+    else PointEquality(columnVectorEquality(numberContext))
+
+internal class PointHashing<N>(val columnVectorContext: Hashing<ColumnVector<N>>) : Hashing<Point<N>> {
+    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
+    override fun Point<N>.hash(): Int = columnVectorContext { this.coordinates.hash() }
 }
 
-public fun <E, EE: Hashing<E>> pointHashing(elementHashing: EE): Hashing<Point<E>> =
-    PointHashing(elementHashing)
+@JvmName("pointHashingForColumnVector")
+public fun <N> pointHashing(columnVectorContext: Hashing<ColumnVector<N>>): Hashing<Point<N>> =
+    PointHashing(columnVectorContext)
 
-internal class VectorEquality<N, NE: Equality<N>>(numberEquality: NE) : Equality<Vector<N>> {
-    val columnVectorEquality = columnVectorEquality(numberEquality)
-    override fun Vector<N>.equalsTo(other: Vector<N>): Boolean = columnVectorEquality.invoke { this.coordinates eq other.coordinates }
+@JvmName("pointHashingForNumber")
+public fun <N> pointHashing(numberContext: Hashing<N>): Hashing<Point<N>> =
+    PointHashing(columnVectorHashing(numberContext))
+
+internal class VectorEquality<N>(val columnVectorContext: Equality<ColumnVector<N>>) : Equality<Vector<N>> {
+    override fun Vector<N>.equalsTo(other: Vector<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
 }
 
-public fun <E, EE: Equality<E>> vectorEquality(elementEquality: EE): Equality<Vector<E>> =
-    VectorEquality(elementEquality)
+@JvmName("vectorEqualityForColumnVector")
+public fun <N> vectorEquality(columnVectorContext: Equality<ColumnVector<N>>): Equality<Vector<N>> =
+    if (columnVectorContext is Hashing<ColumnVector<N>>) VectorHashing(columnVectorContext)
+    else VectorEquality(columnVectorContext)
 
-internal class VectorHashing<N, NE: Hashing<N>>(numberHashing: NE) : Hashing<Vector<N>> {
-    val columnVectorHashing = columnVectorHashing(numberHashing)
-    override fun Vector<N>.equalsTo(other: Vector<N>): Boolean = columnVectorHashing.invoke { this.coordinates eq other.coordinates }
-    override fun Vector<N>.hash(): Int = columnVectorHashing.invoke { this.coordinates.hash() }
+@JvmName("vectorEqualityForNumber")
+public fun <N> vectorEquality(numberContext: Equality<N>): Equality<Vector<N>> =
+    if (numberContext is Hashing<N>) VectorHashing(columnVectorHashing(numberContext))
+    else VectorEquality(columnVectorEquality(numberContext))
+
+internal class VectorHashing<N>(val columnVectorContext: Hashing<ColumnVector<N>>) : Hashing<Vector<N>> {
+    override fun Vector<N>.equalsTo(other: Vector<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
+    override fun Vector<N>.hash(): Int = columnVectorContext { this.coordinates.hash() }
 }
 
-public fun <E, EE: Hashing<E>> vectorHashing(elementHashing: EE): Hashing<Vector<E>> =
-    VectorHashing(elementHashing)
+@JvmName("vectorHashingForColumnVector")
+public fun <N> vectorHashing(columnVectorContext: Hashing<ColumnVector<N>>): Hashing<Vector<N>> =
+    VectorHashing(columnVectorContext)
+
+@JvmName("vectorHashingForNumber")
+public fun <N> vectorHashing(numberContext: Hashing<N>): Hashing<Vector<N>> =
+    VectorHashing(columnVectorHashing(numberContext))
 
 //context(EuclideanSpace<N, A>)
 //internal val <N, A> lexicographic2DComparator: Comparator<Point2<N>> where A: Ring<N>, A: Order<N>

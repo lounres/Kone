@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneMutableIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.comparison.Order
 
 
 internal data class GramSchmidtOrthogonalizationIntermediateState<N>(
@@ -28,12 +27,25 @@ internal fun <N> GramSchmidtOrthogonalizationIntermediateState<N>.clone(): GramS
     )
 
 context(A, EuclideanSpace<N>)
-internal fun <N, A> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) where A: Ring<N>, A: Order<N> {
-    val newIndex = orthogonalizedBasis.size
-    val newOrthogonalizedVector = (0u..<newIndex).fold(newVector * product) { acc, index ->
+internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationUsage(newVector: Vector<N>): Vector<N> {
+    // FIXME: KT-67840
+//    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
+//        val previousOrthogonalizedVector = orthogonalizedBasis[index]
+//        acc - previousOrthogonalizedVector * (previousOrthogonalizedVector dot newVector) * exclusiveProducts[index]
+//    }
+    var result = newVector * product
+    var index = 0u
+    while (index < orthogonalizedBasis.size) {
         val previousOrthogonalizedVector = orthogonalizedBasis[index]
-        acc - previousOrthogonalizedVector * (previousOrthogonalizedVector dot newVector) * exclusiveProducts[index]
+        result -= previousOrthogonalizedVector * (previousOrthogonalizedVector dot newVector) * exclusiveProducts[index]
+        index++
     }
+    return result
+}
+
+context(A, EuclideanSpace<N>)
+internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector<N>) {
+    val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
     for (j in 0u..<newIndex) exclusiveProducts[j] *= currentNorm
@@ -42,7 +54,12 @@ internal fun <N, A> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidt
 }
 
 context(A, EuclideanSpace<N>)
-internal fun <N, A> KoneIterableList<Vector<N>>.gramSchmidtOrthogonalization(): KoneIterableList<Vector<N>> where A: Ring<N>, A: Order<N> {
+internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) {
+    gramSchmidtOrthogonalizationExtension(gramSchmidtOrthogonalizationUsage(newVector))
+}
+
+context(A, EuclideanSpace<N>)
+internal fun <N, A: Ring<N>> KoneIterableList<Vector<N>>.gramSchmidtOrthogonalization(): KoneIterableList<Vector<N>> {
     val result = GramSchmidtOrthogonalizationIntermediateState<N>(
         orthogonalizedBasis = KoneFixedCapacityArrayList(size),
         product = one,

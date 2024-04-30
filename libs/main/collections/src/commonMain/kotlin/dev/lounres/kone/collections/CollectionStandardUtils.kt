@@ -30,6 +30,10 @@ public fun <E> KoneRemovableCollection<E>.retainAllFrom(elements: KoneCollection
     retainAllThat { it in elements }
 }
 
+public fun <E> KoneExtendableCollection<E>.addAll(vararg elements: E) {
+    addAllFrom(KoneArray(elements))
+}
+
 public fun <E> KoneDequeue<out E>.getFirstOrNull(): E? = if (size > 0u) getFirst() else null
 
 public fun <E> KoneDequeue<out E>.getLastOrNull(): E? = if (size > 0u) getLast() else null

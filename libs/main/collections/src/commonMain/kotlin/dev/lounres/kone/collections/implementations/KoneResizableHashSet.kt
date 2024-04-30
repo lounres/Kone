@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.scope
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -27,7 +28,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
     private var data: KoneArray<KoneResizableLinkedArrayList<E, Equality<E>>> =
         KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
     override val elementContext: EC,
-    ) : KoneMutableIterableSet<E>, KoneMutableSetWithContext<E, EC>, Disposable {
+) : KoneMutableIterableSet<E>, KoneMutableSetWithContext<E, EC>, Disposable {
     override var size: UInt = size
         private set
 
@@ -35,7 +36,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         val contextHash = elementContext { hash() }
         return contextHash xor (contextHash ushr 16)
     }
-    private fun E.dataIndex(): UInt = localHash().toUInt() xor (capacityUpperBound - 1u)
+    private fun E.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
     private fun KoneArray<KoneResizableLinkedArrayList<E, Equality<E>>>.dispose() {
         // FIXME: KT-67409
@@ -97,12 +98,14 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
                 iterator.setNext(element)
                 return
             }
+            iterator.moveNext()
         }
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u)
             data[element.dataIndex()].add(element)
         } else {
             iterator.addNext(element)
+            size++
         }
     }
 
@@ -120,6 +123,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         var newSize = 0u
         for (linkedList in data) linkedList.removeAllThat { element -> predicate(element).also { if (!it) newSize += 1u } }
         if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
+        else size = newSize
     }
 
     override fun remove(element: E) {
@@ -128,12 +132,55 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
             if (elementContext { iterator.getNext() eq element }) {
                 iterator.removeNext()
                 if (size == sizeLowerBound) reinitializeBoundsAndData(size - 1u)
+                else size--
                 return
             }
         }
     }
 
     override fun iterator(): KoneRemovableIterator<E> = Iterator()
+
+    override fun toString(): String = buildString {
+        append('[')
+        scope {
+            var dataInnerIndex = 0u
+            while (data[dataInnerIndex].isEmpty()) if (++dataInnerIndex == data.size) return@scope
+            var iterator = data[dataInnerIndex].iterator()
+            append(iterator.getAndMoveNext())
+            while (true) when {
+                iterator.hasNext() -> {
+                    append(", ")
+                    append(iterator.getAndMoveNext())
+                }
+                ++dataInnerIndex == data.size -> return@scope
+                else -> iterator = data[dataInnerIndex].iterator()
+            }
+        }
+        append(']')
+    }
+    override fun hashCode(): Int {
+        var hashCode = 0
+        var dataInnerIndex = 0u
+        var iterator = data[dataInnerIndex].iterator()
+        while (true) when {
+            iterator.hasNext() -> {
+                hashCode = hashCode + iterator.getAndMoveNext().hashCode()
+            }
+            ++dataInnerIndex == data.size -> break
+            else -> iterator = data[dataInnerIndex].iterator()
+        }
+        return hashCode
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneSet<*>) return false
+        if (this.size != other.size) return false
+        if (this.hashCode() != other.hashCode()) return false
+
+        for (element in this) if (element !in other) return false
+
+        return true
+    }
 
     internal inner class Iterator : KoneRemovableIterator<E> {
         private var currentBucket: UInt = 0u

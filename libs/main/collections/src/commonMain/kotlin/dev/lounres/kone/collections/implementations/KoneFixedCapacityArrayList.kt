@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.misc.scope
+import dev.lounres.kone.scope
 
 
 @Suppress("UNCHECKED_CAST")

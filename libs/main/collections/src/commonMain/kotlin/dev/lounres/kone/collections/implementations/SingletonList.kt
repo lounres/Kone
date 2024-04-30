@@ -31,4 +31,14 @@ internal class SingletonList<E, out EC: Equality<E>>(
         else UInt.MAX_VALUE
 
     override fun iterator(): KoneLinearIterator<E> = SingletonIterator(singleElement = singleElement)
+
+    override fun toString(): String = "[$singleElement]"
+    override fun hashCode(): Int = 31 + singleElement.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (other.size != 1u) return false
+
+        return singleElement == other[0u]
+    }
 }

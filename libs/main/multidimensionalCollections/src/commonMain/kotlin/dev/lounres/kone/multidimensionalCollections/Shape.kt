@@ -6,7 +6,10 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.implementations.KoneResizableHashMap
 import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.context.KoneContext
 
 
@@ -95,10 +98,28 @@ public fun ColumnShapeStrides(shape: Shape): ShapeStrides = ShapeStrides(shape, 
 @Suppress("FunctionName")
 public fun RowShapeStrides(shape: Shape): ShapeStrides = ShapeStrides(shape, order = KoneUIntArray(shape.size) { shape.size - 1u - it })
 
-//@ThreadLocal
-private val defaultStridesCache = HashMap<Shape, ShapeStrides>()
+private object ShapeHashing: Hashing<Shape> {
+    override fun Shape.equalsTo(other: Shape): Boolean {
+        if (this.size != other.size) return false
 
-public fun ShapeStrides(shape: Shape): ShapeStrides = defaultStridesCache.getOrPut(shape) { ColumnShapeStrides(shape) }
+        for (index in 0u ..< this.size) if (this[index] != other[index]) return false
+
+        return true
+    }
+
+    override fun Shape.hash(): Int {
+        var hashCode = 1
+        for (i in 0u..<size) {
+            hashCode = 31 * hashCode + this[i].toInt()
+        }
+        return hashCode
+    }
+}
+
+//@ThreadLocal
+private val defaultStridesCache = KoneResizableHashMap<Shape, _, ShapeStrides, _>(keyContext = ShapeHashing, valueContext = defaultEquality())
+
+public fun ShapeStrides(shape: Shape): ShapeStrides = defaultStridesCache.getOrSet(shape) { ColumnShapeStrides(shape) }
 
 public class ShapeMismatchException(public val left: Shape, public val right: Shape) :
     RuntimeException("Shapes $left and $right mismatch.")

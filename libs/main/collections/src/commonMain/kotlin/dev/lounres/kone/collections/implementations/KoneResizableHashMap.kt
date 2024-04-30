@@ -14,6 +14,7 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.scope
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -39,7 +40,7 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
         val contextHash = keyContext { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
-    private fun K.dataIndex(): UInt = localHash().toUInt() xor (capacityUpperBound - 1u)
+    private fun K.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
     private fun KoneArray<KoneResizableLinkedArrayList<KoneMapEntry<K, V>, Equality<KoneMapEntry<K, V>>>>.dispose() {
         // FIXME: KT-67409
@@ -116,12 +117,14 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
                 iterator.setNext(KoneMapEntry(key, value))
                 return
             }
+            iterator.moveNext()
         }
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u)
             data[key.dataIndex()].add(KoneMapEntry(key, value))
         } else {
             iterator.addNext(KoneMapEntry(key, value))
+            size++
         }
     }
 
@@ -138,6 +141,7 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
             data[entry.key.dataIndex()].add(entry)
         } else {
             iterator.addNext(entry)
+            size++
         }
     }
 
@@ -155,6 +159,7 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
         var newSize = 0u
         for (linkedList in data) linkedList.removeAllThat { entry -> predicate(entry.key, entry.value).also { if (!it) newSize += 1u } }
         if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
+        else size = newSize
     }
 
     override fun remove(key: K) {
@@ -163,9 +168,50 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
             if (keyContext { iterator.getNext().key eq key }) {
                 iterator.removeNext()
                 if (size == sizeLowerBound) reinitializeBoundsAndData(size - 1u)
+                else size--
                 return
             }
         }
+    }
+
+    override fun toString(): String = buildString {
+        append('{')
+        scope {
+            var dataInnerIndex = 0u
+            while (data[dataInnerIndex].isEmpty()) if (++dataInnerIndex == data.size) return@scope
+            var iterator = data[dataInnerIndex].iterator()
+            append(iterator.getAndMoveNext())
+            while (true) when {
+                iterator.hasNext() -> {
+                    append(", ")
+                    append(iterator.getAndMoveNext())
+                }
+                ++dataInnerIndex == data.size -> return@scope
+                else -> iterator = data[dataInnerIndex].iterator()
+            }
+        }
+        append('}')
+    }
+    override fun hashCode(): Int {
+        var hashCode = 0
+        var dataInnerIndex = 0u
+        var iterator = data[dataInnerIndex].iterator()
+        while (true) when {
+            iterator.hasNext() -> {
+                hashCode = hashCode + iterator.getAndMoveNext().hashCode()
+            }
+            ++dataInnerIndex == data.size -> break
+            else -> iterator = data[dataInnerIndex].iterator()
+        }
+        return hashCode
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneMap<*, *>) return false
+        if (this.size != other.size) return false
+        if (this.hashCode() != other.hashCode()) return false
+
+        return this.entries == other.entries
     }
 
     override val keys: KoneIterableSet<K> get() = KeysSet()

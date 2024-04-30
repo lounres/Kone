@@ -53,11 +53,14 @@ internal class EuclideanSpaceWithNumberRingAndVectorSpace<N>(
     override fun Vector<N>.dot(other: Vector<N>): N {
         requireShapeEquality(this.coordinates, other.coordinates)
         val size = this.coordinates.size
-        return (0u..<size).fold(numberRing.zero) { acc, index -> numberRing { acc + this.coordinates[index] * other.coordinates[index] } }
+        // FIXME: KT-67840
+//        return (0u..<size).fold(numberRing.zero) { acc, index -> numberRing { acc + this.coordinates[index] * other.coordinates[index] } }
+        var result = numberRing.zero
+        var index = 0u
+        while (index < size) {
+            result = numberRing { result + this.coordinates[index] * other.coordinates[index] }
+            index++
+        }
+        return result
     }
 }
-
-public class EuclideanSpaceImpl<N, A>(
-    public val numberRing: A,
-    public val vectorSpace: VectorSpace<N>
-) where A: Ring<N>, A: Order<N>
