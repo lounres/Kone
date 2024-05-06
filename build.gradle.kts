@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 
@@ -203,6 +204,13 @@ stal {
 //                js(IR) {
 //                    browser()
 //                    nodejs()
+//                }
+//
+//                @OptIn(ExperimentalWasmDsl::class)
+//                wasmJs {
+//                    browser()
+//                    nodejs()
+//                    d8()
 //                }
 
 //                linuxX64()
