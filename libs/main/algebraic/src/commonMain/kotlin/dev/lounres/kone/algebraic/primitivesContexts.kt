@@ -11,7 +11,7 @@ import kotlin.math.pow as kpow
 
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public data object ByteField: Ring<Byte>, Order<Byte>, Hashing<Byte> {
+public data object ByteRing: Ring<Byte>, Order<Byte>, Hashing<Byte> {
     // region Order
     override fun Byte.compareTo(other: Byte): Int = this.compareTo(other)
     // endregion
@@ -58,10 +58,10 @@ public data object ByteField: Ring<Byte>, Order<Byte>, Hashing<Byte> {
     // endregion
 }
 
-public val Byte.Companion.field: ByteField get() = ByteField
+public val Byte.Companion.ring: ByteRing get() = ByteRing
 
 @Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE", "EXTENSION_SHADOWED_BY_MEMBER")
-public data object ShortField: Ring<Short>, Order<Short>, Hashing<Short> {
+public data object ShortRing: Ring<Short>, Order<Short>, Hashing<Short> {
     // region Order
     override fun Short.compareTo(other: Short): Int = this.compareTo(other)
     // endregion
@@ -108,7 +108,7 @@ public data object ShortField: Ring<Short>, Order<Short>, Hashing<Short> {
     // endregion
 }
 
-public val Short.Companion.field: ShortField get() = ShortField
+public val Short.Companion.ring: ShortRing get() = ShortRing
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
 public data object IntRing: Ring<Int>, Order<Int>, Hashing<Int> {

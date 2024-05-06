@@ -12,9 +12,9 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.computationalGeometry.utils.sumOf
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
-import dev.lounres.kone.multidimensionalCollections.experiment1.utils.sumOf
 
 
 // TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
@@ -27,7 +27,7 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
         val simplicesMapping = koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality(), valueContext = outerPolytopeContext)
 
         val newPoints = this@constructDelaunayTriangulation.map(elementContext = defaultEquality()) { oldVertex ->
-            val newVertex = addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.position.coordinates[it] else oldVertex.position.coordinates.coefficients.sumOf { c -> c * c } }))
+            val newVertex = addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.position.coordinates[it] else oldVertex.position.sumOf { c -> c * c } }))
             simplicesMapping[newVertex] = oldVertex
             newVertex
         }

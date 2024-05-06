@@ -6,11 +6,10 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.computationalGeometry.utils.fold
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.VectorSpace
 import dev.lounres.kone.linearAlgebra.experiment1.requireShapeEquality
-import dev.lounres.kone.multidimensionalCollections.experiment1.utils.fold
 
 
 public interface EuclideanSpace<N> {
@@ -48,7 +47,7 @@ internal class EuclideanSpaceWithNumberRingAndVectorSpace<N>(
     override fun Vector<N>.plus(other: Point<N>): Point<N> = Point(vectorSpace { this.coordinates + other.coordinates })
     override fun Point<N>.minus(other: Point<N>): Vector<N> = Vector(vectorSpace { this.coordinates - other.coordinates })
 
-    override val Vector<N>.length: N get() = coordinates.coefficients.fold(numberRing.zero) { acc, n -> numberRing { acc + n * n } }
+    override val Vector<N>.length: N get() = fold(numberRing.zero) { acc, n -> numberRing { acc + n * n } }
 
     override fun Vector<N>.dot(other: Vector<N>): N {
         requireShapeEquality(this.coordinates, other.coordinates)

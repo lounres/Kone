@@ -11,9 +11,9 @@ import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.scope
-import dev.lounres.kone.multidimensionalCollections.experiment1.utils.any
 import dev.lounres.kone.option.Some
 
 
@@ -189,7 +189,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
 
         val tangentVector = otherPoints.firstOfOrNull({
             extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
-        }) { it.coordinates.coefficients.any { it.isNotZero() } } ?: scope {
+        }) { it.any { it.isNotZero() } } ?: scope {
             val resultingPolytope = giftWrappingIncrement(
                 subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
                 startFacet = wrappingResult.polytope,

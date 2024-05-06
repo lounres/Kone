@@ -13,18 +13,30 @@ import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.*
 
 
-public class ArrayMDList<E>(
+public inline fun <E> ArrayMDList(
+    shape: Shape,
+    offsetting: ShapeOffsetting = ShapeStrides(shape),
+    initializer: (KoneUIntArray) -> E,
+): ArrayMDList<E> {
+    val data = KoneMutableArray<Any?>(offsetting.linearSize) { null }
+
+    var offset = 0u
+    for (index in offsetting) data[offset++] = initializer(index)
+
+    return ArrayMDList(
+        shape = shape,
+        offsetting = offsetting,
+        data = data,
+    )
+}
+
+public class ArrayMDList<E>
+@PublishedApi internal constructor(
     override val shape: Shape,
     internal val offsetting: ShapeOffsetting = ShapeStrides(shape),
-    initializer: (KoneUIntArray) -> E,
+    internal val data: KoneMutableArray<Any?>
 ) : SettableMDList<E> {
     override val size: UInt get() = offsetting.linearSize
-    internal val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(offsetting.linearSize) { null }
-
-    init {
-        var offset = 0u
-        for (index in offsetting) data[offset++] = initializer(index)
-    }
 
     @Suppress("UNCHECKED_CAST")
     override fun get(index: KoneUIntArray): E {
@@ -47,15 +59,25 @@ public class ArrayMDList<E>(
         }
 }
 
-public class ArrayMDList1<E>(
-    override val size: UInt,
+public inline fun <E> ArrayMDList1(
+    size: UInt,
     initializer: (index: UInt) -> E,
-) : SettableMDList1<E> {
-    internal val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(size) { null }
+): ArrayMDList1<E> {
+    val data = KoneMutableArray<Any?>(size) { null }
 
-    init {
-        for (index in indices) data[index] = initializer(index)
-    }
+    for (index in  0u ..< size) data[index] = initializer(index)
+
+    return ArrayMDList1(
+        size = size,
+        data = data,
+    )
+}
+
+public class ArrayMDList1<E>
+@PublishedApi internal constructor(
+    override val size: UInt,
+    internal val data: KoneMutableArray<Any?>
+) : SettableMDList1<E> {
 
     @Suppress("UNCHECKED_CAST")
     override fun get(index: UInt): E {
@@ -80,33 +102,44 @@ public class ArrayMDList1<E>(
     }
 }
 
+public inline fun <E> ArrayMDList2(
+    rowNumber: UInt,
+    columnNumber: UInt,
+    initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
+): ArrayMDList2<E> {
+    val data = KoneMutableArray<Any?>(rowNumber * columnNumber) { null }
+
+    var row = 0u
+    var column = 0u
+    var index = 0u
+    while (true) {
+        data[index] = initializer(row, column)
+        when {
+            column < columnNumber - 1u -> {
+                column++
+                index++
+            }
+            row < rowNumber - 1u -> {
+                column = 0u
+                row++
+                index++
+            }
+            else -> break
+        }
+    }
+
+    return ArrayMDList2(
+        rowNumber = rowNumber,
+        columnNumber = columnNumber,
+        data = data,
+    )
+}
+
 public class ArrayMDList2<E>(
     override val rowNumber: UInt,
     override val columnNumber: UInt,
-    initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
+    internal val data: KoneMutableArray<Any?>
 ) : SettableMDList2<E> {
-    internal val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(rowNumber * columnNumber) { null }
-
-    init {
-        var row = 0u
-        var column = 0u
-        var index = 0u
-        while (true) {
-            data[index] = initializer(row, column)
-            when {
-                column < columnNumber - 1u -> {
-                    column++
-                    index++
-                }
-                row < rowNumber - 1u -> {
-                    column = 0u
-                    row++
-                    index++
-                }
-                else -> break
-            }
-        }
-    }
 
     @Suppress("UNCHECKED_CAST")
     override fun get(rowIndex: UInt, columnIndex: UInt): E {

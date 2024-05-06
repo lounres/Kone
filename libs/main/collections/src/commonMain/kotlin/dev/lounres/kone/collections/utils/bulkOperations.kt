@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
@@ -384,16 +385,20 @@ public inline fun <E, R, D: KoneExtendableCollection<in R>> KoneIterableList<E>.
 public inline fun <E, R> KoneIterable<E>.map(elementContext: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
     mapTo(koneMutableIterableListOf(elementContext = elementContext), transform)
 public inline fun <E, R> KoneList<E>.map(elementContext: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
-    mapTo(koneMutableIterableListOf(elementContext = elementContext), transform)
-public inline fun <E, R> KoneIterableList<E>.map(elementContext: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> =
-    mapTo(koneMutableIterableListOf(elementContext = elementContext), transform)
+    KoneSettableIterableList(size = size, elementContext = elementContext) { transform(get(it)) }
+public inline fun <E, R> KoneIterableList<E>.map(elementContext: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> {
+    val iterator = iterator()
+    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(iterator.next()) }
+}
 
 public inline fun <E, R> KoneIterable<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
     mapIndexedTo(koneMutableIterableListOf(elementContext = elementContext), transform)
 public inline fun <E, R> KoneList<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
-    mapIndexedTo(koneMutableIterableListOf(elementContext = elementContext), transform)
-public inline fun <E, R> KoneIterableList<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
-    mapIndexedTo(koneMutableIterableListOf(elementContext = elementContext), transform)
+    KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, get(it)) }
+public inline fun <E, R> KoneIterableList<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> {
+    val iterator = iterator()
+    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, iterator.next()) }
+}
 
 public inline fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)

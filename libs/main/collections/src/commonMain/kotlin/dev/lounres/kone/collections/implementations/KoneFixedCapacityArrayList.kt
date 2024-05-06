@@ -15,7 +15,8 @@ import dev.lounres.kone.scope
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneFixedCapacityArrayList<E, EC: Equality<E>> internal constructor(
+public class KoneFixedCapacityArrayList<E, EC: Equality<E>>
+internal constructor(
     size: UInt,
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },

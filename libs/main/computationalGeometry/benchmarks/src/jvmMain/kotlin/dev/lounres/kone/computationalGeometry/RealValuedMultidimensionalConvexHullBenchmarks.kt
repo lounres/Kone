@@ -18,260 +18,269 @@ import kotlinx.serialization.decodeFromString
 import org.openjdk.jmh.annotations.Level
 
 
-val numberContext = Double.field
-val euclideanSpaceScope = numberContext.euclideanSpaceScope
+class DoubleBenchmarks {
+    companion object {
+        val numberContext = Double.field
+        val euclideanSpaceScope = numberContext.euclideanSpaceScope
+    }
 
-@OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
-@State(Scope.Benchmark)
-class RealValuedMultidimensionalConvexHullBenchmarksMock {
-    @Param(
-        "test"
-    )
-    var testId: String = ""
-
-    var spaceDimension: UInt = 0u
-
-    var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
-
-    val mockPolytopicConstruction by lazy {
-        MockAbstractPolytopicConstruction(
-            spaceDimension = spaceDimension,
-            numberContext = numberContext,
+    @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
+    @State(Scope.Benchmark)
+    class MultidimensionalConvexHullBenchmarksMock {
+        @Param(
+            "test"
         )
-    }
-    var listOfMockVertices: KoneIterableList<AbstractVertex> = emptyKoneIterableList()
+        var testId: String = ""
 
-    @Setup
-    fun setup() {
-        val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
-        val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
-        spaceDimension = parsedInput.dim
-        input = parsedInput.points
-        mockPolytopicConstruction {
-            listOfMockVertices = input.map { addVertex(it) }
-        }
-    }
+        var spaceDimension: UInt = 0u
 
-    @Benchmark
-    fun empty(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val view = mockPolytopicConstruction.view()
-            view {
-                blackhole.consume(listOfMockVertices)
-            }
-            blackhole.consume(view)
-        }
-    }
+        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
 
-    @Benchmark
-    fun giftWrapping(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val view = mockPolytopicConstruction.view()
-            view {
-                blackhole.consume(listOfMockVertices.constructConvexHullByGiftWrapping())
-            }
-            blackhole.consume(view)
-        }
-    }
-}
-
-@OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
-@State(Scope.Benchmark)
-@OptIn(DelicatePolytopicConstructionAPI::class)
-class RealValuedMultidimensionalConvexHullBenchmarksUnsafe {
-    @Param(
-        "test"
-    )
-    var testId: String = ""
-
-    var spaceDimension: UInt = 0u
-
-    var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
-
-    @Setup
-    fun setup() {
-        val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
-        val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
-        spaceDimension = parsedInput.dim
-        input = parsedInput.points
-    }
-
-    @Benchmark
-    fun empty(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val polytopicConstruction = buildUnsafeAbstractPolytopicConstruction(
+        val mockPolytopicConstruction by lazy {
+            MockAbstractPolytopicConstruction(
                 spaceDimension = spaceDimension,
                 numberContext = numberContext,
-            ) {
-                blackhole.consume(input.map { addVertex(it) })
-            }
-            blackhole.consume(polytopicConstruction)
+            )
         }
-    }
-
-    @Benchmark
-    fun giftWrapping(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val polytopicConstruction = buildUnsafeAbstractPolytopicConstruction(
+        val mockPolytopicConstruction2 =
+            MockAbstractPolytopicConstruction(
                 spaceDimension = spaceDimension,
                 numberContext = numberContext,
-            ) {
-                blackhole.consume(input.map { addVertex(it) }.constructConvexHullByGiftWrapping())
+            )
+        var listOfMockVertices: KoneIterableList<AbstractVertex> = emptyKoneIterableList()
+
+        @Setup
+        fun setup() {
+            val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
+            val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
+            spaceDimension = parsedInput.dim
+            input = parsedInput.points
+            mockPolytopicConstruction {
+                listOfMockVertices = input.map { addVertex(it) }
             }
-            blackhole.consume(polytopicConstruction)
+        }
+
+        @Benchmark
+        fun empty(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val view = mockPolytopicConstruction.view()
+                view {
+                    blackhole.consume(listOfMockVertices)
+                }
+                blackhole.consume(view)
+            }
+        }
+
+        @Benchmark
+        fun giftWrapping(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val view = mockPolytopicConstruction.view()
+                view {
+                    blackhole.consume(listOfMockVertices.constructConvexHullByGiftWrapping())
+                }
+                blackhole.consume(view)
+            }
         }
     }
-}
 
-@OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
-@State(Scope.Benchmark)
-class RealValuedMultidimensionalConvexHullBenchmarksFair {
-    @Param(
-        "test"
-    )
-    var testId: String = ""
+    @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
+    @State(Scope.Benchmark)
+    @OptIn(DelicatePolytopicConstructionAPI::class)
+    class MultidimensionalConvexHullBenchmarksUnsafe {
+        @Param(
+            "test"
+        )
+        var testId: String = ""
 
-    var spaceDimension: UInt = 0u
+        var spaceDimension: UInt = 0u
 
-    var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
 
-    @Setup
-    fun setup() {
-        val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
-        val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
-        spaceDimension = parsedInput.dim
-        input = parsedInput.points
+        @Setup
+        fun setup() {
+            val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
+            val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
+            spaceDimension = parsedInput.dim
+            input = parsedInput.points
+        }
+
+        @Benchmark
+        fun empty(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val polytopicConstruction = buildUnsafeAbstractPolytopicConstruction(
+                    spaceDimension = spaceDimension,
+                    numberContext = numberContext,
+                ) {
+                    blackhole.consume(input.map { addVertex(it) })
+                }
+                blackhole.consume(polytopicConstruction)
+            }
+        }
+
+        @Benchmark
+        fun giftWrapping(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val polytopicConstruction = buildUnsafeAbstractPolytopicConstruction(
+                    spaceDimension = spaceDimension,
+                    numberContext = numberContext,
+                ) {
+                    blackhole.consume(input.map { addVertex(it) }.constructConvexHullByGiftWrapping())
+                }
+                blackhole.consume(polytopicConstruction)
+            }
+        }
     }
 
-    @Benchmark
-    fun empty(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val polytopicConstruction = buildAbstractPolytopicConstruction(
+    @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
+    @State(Scope.Benchmark)
+    class MultidimensionalConvexHullBenchmarksFair {
+        @Param(
+            "test"
+        )
+        var testId: String = ""
+
+        var spaceDimension: UInt = 0u
+
+        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+
+        @Setup
+        fun setup() {
+            val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
+            val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
+            spaceDimension = parsedInput.dim
+            input = parsedInput.points
+        }
+
+        @Benchmark
+        fun empty(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val polytopicConstruction = buildAbstractPolytopicConstruction(
+                    spaceDimension = spaceDimension,
+                    numberContext = numberContext,
+                ) {
+                    blackhole.consume(input.map { addVertex(it) })
+                }
+                blackhole.consume(polytopicConstruction)
+            }
+        }
+
+        @Benchmark
+        fun giftWrapping(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                val polytopicConstruction = buildAbstractPolytopicConstruction(
+                    spaceDimension = spaceDimension,
+                    numberContext = numberContext,
+                ) {
+                    blackhole.consume(input.map { addVertex(it) }.constructConvexHullByGiftWrapping())
+                }
+                blackhole.consume(polytopicConstruction)
+            }
+        }
+    }
+
+    @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
+    @State(Scope.Benchmark)
+    @OptIn(DelicatePolytopicConstructionAPI::class)
+    class MultidimensionalConvexHullBenchmarksUnsafeDangerous {
+        @Param(
+            "test"
+        )
+        var testId: String = ""
+
+        var spaceDimension: UInt = 0u
+
+        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+
+        var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
+
+        var inputVertices: KoneIterableList<AbstractVertex>? = null
+
+        @Setup
+        fun setup() {
+            val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
+            val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
+            spaceDimension = parsedInput.dim
+            input = parsedInput.points
+        }
+
+        @Setup(Level.Invocation)
+        fun init() {
+            polytopicConstruction = UnsafeMutableAbstractPolytopicConstruction(
                 spaceDimension = spaceDimension,
                 numberContext = numberContext,
-            ) {
-                blackhole.consume(input.map { addVertex(it) })
+            ).apply {
+                inputVertices = input.map { addVertex(it) }
             }
-            blackhole.consume(polytopicConstruction)
+        }
+
+        @Benchmark
+        fun empty(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                polytopicConstruction!! {
+                    blackhole.consume(inputVertices!!)
+                }
+            }
+        }
+
+        @Benchmark
+        fun giftWrapping(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                polytopicConstruction!! {
+                    blackhole.consume(inputVertices!!.constructConvexHullByGiftWrapping())
+                }
+            }
         }
     }
 
-    @Benchmark
-    fun giftWrapping(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            val polytopicConstruction = buildAbstractPolytopicConstruction(
+    @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
+    @State(Scope.Benchmark)
+    class MultidimensionalConvexHullBenchmarksFairDangerous {
+        @Param(
+            "test"
+        )
+        var testId: String = ""
+
+        var spaceDimension: UInt = 0u
+
+        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+
+        var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
+
+        var inputVertices: KoneIterableList<AbstractVertex>? = null
+
+        @Setup
+        fun setup() {
+            val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
+            val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
+            spaceDimension = parsedInput.dim
+            input = parsedInput.points
+        }
+
+        @Setup(Level.Invocation)
+        fun init() {
+            polytopicConstruction = MutableAbstractPolytopicConstruction(
                 spaceDimension = spaceDimension,
                 numberContext = numberContext,
-            ) {
-                blackhole.consume(input.map { addVertex(it) }.constructConvexHullByGiftWrapping())
-            }
-            blackhole.consume(polytopicConstruction)
-        }
-    }
-}
-
-@OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
-@State(Scope.Benchmark)
-@OptIn(DelicatePolytopicConstructionAPI::class)
-class RealValuedMultidimensionalConvexHullBenchmarksUnsafeDangerous {
-    @Param(
-        "test"
-    )
-    var testId: String = ""
-
-    var spaceDimension: UInt = 0u
-
-    var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
-
-    var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
-
-    var inputVertices: KoneIterableList<AbstractVertex>? = null
-
-    @Setup
-    fun setup() {
-        val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
-        val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
-        spaceDimension = parsedInput.dim
-        input = parsedInput.points
-    }
-
-    @Setup(Level.Invocation)
-    fun init() {
-        polytopicConstruction = UnsafeMutableAbstractPolytopicConstruction(
-            spaceDimension = spaceDimension,
-            numberContext = numberContext,
-        ).apply {
-            inputVertices = input.map { addVertex(it) }
-        }
-    }
-
-    @Benchmark
-    fun empty(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            polytopicConstruction!! {
-                blackhole.consume(inputVertices!!)
+            ).apply {
+                inputVertices = input.map { addVertex(it) }
             }
         }
-    }
 
-    @Benchmark
-    fun giftWrapping(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            polytopicConstruction!! {
-                blackhole.consume(inputVertices!!.constructConvexHullByGiftWrapping())
+        @Benchmark
+        fun empty(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                polytopicConstruction!! {
+                    blackhole.consume(inputVertices!!)
+                }
             }
         }
-    }
-}
 
-@OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
-@State(Scope.Benchmark)
-class RealValuedMultidimensionalConvexHullBenchmarksFairDangerous {
-    @Param(
-        "test"
-    )
-    var testId: String = ""
-
-    var spaceDimension: UInt = 0u
-
-    var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
-
-    var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
-
-    var inputVertices: KoneIterableList<AbstractVertex>? = null
-
-    @Setup
-    fun setup() {
-        val resource = this.javaClass.getResource("/RealValuedMultidimensionalConvexHullBenchmarks/$testId.yaml")!!
-        val parsedInput: PointSetDescription<Double> = Yaml.default.decodeFromString(resource.readText())
-        spaceDimension = parsedInput.dim
-        input = parsedInput.points
-    }
-
-    @Setup(Level.Invocation)
-    fun init() {
-        polytopicConstruction = MutableAbstractPolytopicConstruction(
-            spaceDimension = spaceDimension,
-            numberContext = numberContext,
-        ).apply {
-            inputVertices = input.map { addVertex(it) }
-        }
-    }
-
-    @Benchmark
-    fun empty(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            polytopicConstruction!! {
-                blackhole.consume(inputVertices!!)
-            }
-        }
-    }
-
-    @Benchmark
-    fun giftWrapping(blackhole: Blackhole) {
-        euclideanSpaceScope {
-            polytopicConstruction!! {
-                blackhole.consume(inputVertices!!.constructConvexHullByGiftWrapping())
+        @Benchmark
+        fun giftWrapping(blackhole: Blackhole) {
+            euclideanSpaceScope {
+                polytopicConstruction!! {
+                    blackhole.consume(inputVertices!!.constructConvexHullByGiftWrapping())
+                }
             }
         }
     }
