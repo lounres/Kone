@@ -2,16 +2,13 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import kotlinx.benchmark.gradle.BenchmarksExtension
-import kotlinx.benchmark.gradle.BenchmarksPlugin
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.JsBenchmarkTarget
 import kotlinx.benchmark.gradle.NativeBenchmarkTarget
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.RootProjectAccessor
-import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
-import org.jetbrains.kotlin.allopen.gradle.AllOpenGradleSubplugin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
@@ -89,6 +86,8 @@ val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "tr
 
 val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
 val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
+fun PluginAware.apply(pluginDependency: PluginDependency) = apply(plugin = pluginDependency.pluginId)
+fun PluginAware.apply(pluginDependency: Provider<PluginDependency>) = apply(plugin = pluginDependency.get().pluginId)
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
@@ -151,7 +150,7 @@ stal {
                 }
             }
             pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-//                apply<KotestMultiplatformCompilerGradlePlugin>()
+//                apply(libs.plugins.kotest.multiplatform)
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -165,12 +164,15 @@ stal {
             }
         }
         "kotlin jvm" {
-            apply<KotlinPluginWrapper>()
+            apply(libs.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 target {
                     compilerOptions {
                         jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
-                        freeCompilerArgs = freeCompilerArgs.get() + listOf("-Xlambdas=indy")
+                        freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                            "-Xlambdas=indy",
+                            "-Xexpect-actual-classes"
+                        )
                     }
                 }
 
@@ -185,14 +187,17 @@ stal {
             }
         }
         "kotlin multiplatform" {
-            apply<KotlinMultiplatformPluginWrapper>()
+            apply(libs.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
 
                 jvm {
                     compilerOptions {
                         jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
-                        freeCompilerArgs = freeCompilerArgs.get() + listOf("-Xlambdas=indy")
+                        freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                            "-Xlambdas=indy",
+                            "-Xexpect-actual-classes"
+                        )
                     }
                     testRuns.all {
                         executionTask {
@@ -205,13 +210,13 @@ stal {
 //                    browser()
 //                    nodejs()
 //                }
-//
-//                @OptIn(ExperimentalWasmDsl::class)
-//                wasmJs {
-//                    browser()
-//                    nodejs()
-//                    d8()
-//                }
+
+                @OptIn(ExperimentalWasmDsl::class)
+                wasmJs {
+                    browser()
+                    nodejs()
+                    d8()
+                }
 
 //                linuxX64()
 //                mingwX64()
@@ -288,7 +293,7 @@ stal {
 //                }
 //            }
 //            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-//                apply<KotestMultiplatformCompilerGradlePlugin>()
+//                apply(libs.plugins.kotest.multiplatform)
 //                configure<KotlinMultiplatformExtension> {
 //                    @Suppress("UNUSED_VARIABLE")
 //                    sourceSets {
@@ -355,8 +360,8 @@ stal {
             }
         }
         "benchmarks" {
-            apply<BenchmarksPlugin>()
-            apply<AllOpenGradleSubplugin>()
+            apply(libs.plugins.kotlinx.benchmark)
+            apply(libs.plugins.allopen)
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
             pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
@@ -489,7 +494,7 @@ stal {
             }
         }
         "dokka" {
-            apply<DokkaPlugin>()
+            apply(libs.plugins.dokka)
             dependencies {
                 dokkaPlugin(libs.dokka.mathjax)
             }
@@ -513,7 +518,7 @@ stal {
             }
         }
         "publishing" {
-            apply<MavenPublishPlugin>()
+            apply(plugin = "org.gradle.maven-publish")
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {

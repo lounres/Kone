@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
 
 public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal constructor(
@@ -40,9 +41,9 @@ public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal
         append('[')
         val iterator = backingList.iterator()
         if (iterator.hasNext()) append(iterator.getAndMoveNext())
-        while (iterator.hasNext()) {
+        for (element in iterator) {
             append(", ")
-            append(iterator.getAndMoveNext())
+            append(element)
         }
         append(']')
     }

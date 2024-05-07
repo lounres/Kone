@@ -507,14 +507,11 @@ public inline fun <K, V, R> Map<out K, V>.fold(initial: R, operation: (acc: R, M
  * @param transform function which transforms each key-value pair to a new element which will be processed with given [operation].
  * @param operation function that takes current accumulator value and transformed into a new element entry of the map and calculates the next accumulator value.
  */
-@Suppress("UNREACHABLE_CODE")
 public inline fun <K, V, T: R, R> Map<out K, V>.mapReduce(transform: (Map.Entry<K, V>) -> T, operation: (acc: R, T) -> R): R {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
     var accumulator: R = transform(iterator.next())
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, transform(iterator.next()))
-    }
+    for (element in iterator) accumulator = operation(accumulator, transform(element))
     return accumulator
 }
 
@@ -535,9 +532,7 @@ public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
     var accumulator: R = transform(iterator.next())
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, transform(iterator.next()))
-    }
+    for (element in iterator) accumulator = operation(accumulator, transform(element))
     return accumulator
 }
 

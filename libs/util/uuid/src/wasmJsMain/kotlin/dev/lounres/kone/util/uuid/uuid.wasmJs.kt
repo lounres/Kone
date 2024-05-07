@@ -5,11 +5,12 @@
 
 package dev.lounres.kone.util.uuid
 
-import java.util.UUID as UUIDJvm
 
-
-public actual class UUID(public val uuid: UUIDJvm) {
+public actual class UUID {
+    init {
+        TODO("UUID class for wasmJs is not yet implemented")
+    }
     public actual companion object {
-        public actual fun random(): UUID = UUID(UUIDJvm.randomUUID())
+        public actual fun random(): UUID = TODO("UUID class for wasmJs is not yet implemented")
     }
 }

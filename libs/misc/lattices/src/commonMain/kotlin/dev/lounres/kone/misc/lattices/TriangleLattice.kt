@@ -5,6 +5,10 @@
 
 package dev.lounres.kone.misc.lattices
 
+import dev.lounres.kone.collections.KoneIterableCollection
+import dev.lounres.kone.collections.koneMutableIterableSetOf
+import dev.lounres.kone.collections.utils.first
+
 
 public enum class TriangleKind {
     Up, Down
@@ -50,11 +54,11 @@ public object TriangleLattice: LatticeWithConnectivity<Pair<Int, Int>, TriangleK
             { it.xySymmetry().rotate60().rotate60().rotate60().rotate60().rotate60() },
         )
 
-    override fun Collection<Position<Pair<Int, Int>, TriangleKind>>.isConnected(): Boolean {
+    override fun KoneIterableCollection<Position<Pair<Int, Int>, TriangleKind>>.isConnected(): Boolean {
         val startPosition = this.first()
         val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, TriangleKind>>()
         positionsToTest.add(startPosition)
-        val testedPositions = mutableSetOf<Position<Pair<Int, Int>, TriangleKind>>()
+        val testedPositions = koneMutableIterableSetOf<Position<Pair<Int, Int>, TriangleKind>>()
         while (positionsToTest.isNotEmpty()) {
             val nextPosition = positionsToTest.removeFirst()
             testedPositions.add(nextPosition)

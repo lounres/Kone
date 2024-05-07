@@ -5,6 +5,10 @@
 
 package dev.lounres.kone.misc.lattices
 
+import dev.lounres.kone.collections.KoneIterableCollection
+import dev.lounres.kone.collections.koneMutableIterableSetOf
+import dev.lounres.kone.collections.utils.first
+
 
 public data object SquareKind
 
@@ -29,11 +33,11 @@ public object SquareLattice: LatticeWithConnectivity<Pair<Int, Int>, SquareKind,
             { Position(Pair(-it.coordinates.second, -it.coordinates.first), it.kind) },
         )
 
-    override fun Collection<Position<Pair<Int, Int>, SquareKind>>.isConnected(): Boolean {
+    override fun KoneIterableCollection<Position<Pair<Int, Int>, SquareKind>>.isConnected(): Boolean {
         val startPosition = this.first()
         val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, SquareKind>>()
         positionsToTest.add(startPosition)
-        val testedPositions = mutableSetOf<Position<Pair<Int, Int>, SquareKind>>()
+        val testedPositions = koneMutableIterableSetOf<Position<Pair<Int, Int>, SquareKind>>()
         while (positionsToTest.isNotEmpty()) {
             val nextPosition = positionsToTest.removeFirst()
             testedPositions.add(nextPosition)

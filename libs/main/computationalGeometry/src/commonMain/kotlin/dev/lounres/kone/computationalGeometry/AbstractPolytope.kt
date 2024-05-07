@@ -12,7 +12,7 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.invoke
-import java.util.UUID
+import dev.lounres.kone.util.uuid.UUID
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
@@ -20,7 +20,7 @@ import kotlin.experimental.ExperimentalTypeInference
 
 public open class AbstractPolytope
 @DelicatePolytopicConstructionAPI constructor() {
-    internal val id: UUID = UUID.randomUUID()
+    internal val id: UUID = UUID.random()
     override fun equals(other: Any?): Boolean = other is AbstractPolytope && this.id == other.id
     override fun hashCode(): Int = id.hashCode()
     override fun toString(): String = "AbstractPolytope($id)"

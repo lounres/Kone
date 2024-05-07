@@ -4,7 +4,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        commonMain {
+        jvmMain {
             dependencies {
                 implementation(libs.kaml)
             }

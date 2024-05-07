@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.utils.iterator
+
 
 public interface KoneIterableCollection<out E> : KoneCollection<E>, KoneIterable<E>
 
@@ -36,8 +38,8 @@ public interface KoneIterableList<out E> : KoneList<E>, KoneIterableCollection<E
     public override fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
         var i = 0u
         val iterator = iterator()
-        while (iterator.hasNext()) {
-            if (predicate(i, iterator.getAndMoveNext())) break
+        for (element in iterator) {
+            if (predicate(i, element)) break
             i++
         }
         return i

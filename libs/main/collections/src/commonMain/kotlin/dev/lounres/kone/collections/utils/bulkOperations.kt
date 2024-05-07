@@ -7,7 +7,6 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
@@ -572,9 +571,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduce(operation: (acc: R, E) -> R):
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 public inline fun <E: R, R> KoneList<E>.reduce(operation: (acc: R, E) -> R): R {
@@ -589,9 +586,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduce(operation: (acc: R, E) ->
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 
@@ -599,9 +594,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduceOrNull(operation: (acc: R, E) 
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 public inline fun <E: R, R> KoneList<E>.reduceOrNull(operation: (acc: R, E) -> R): R? {
@@ -616,9 +609,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceOrNull(operation: (acc: R,
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 
@@ -626,9 +617,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
 public inline fun <E: R, R> KoneList<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> {
@@ -643,9 +632,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceMaybe(operation: (acc: R, 
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
     var accumulator: R = iterator.next()
-    while (iterator.hasNext()) {
-        accumulator = operation(accumulator, iterator.next())
-    }
+    for (element in iterator) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
 
@@ -654,10 +641,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduceIndexed(operation: (index: UIn
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 public inline fun <E: R, R> KoneList<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
@@ -673,10 +657,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceIndexed(operation: (index:
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -685,10 +666,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduceIndexedOrNull(operation: (inde
     if (!iterator.hasNext()) return null
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 public inline fun <E: R, R> KoneList<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? {
@@ -704,10 +682,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceIndexedOrNull(operation: (
     if (!iterator.hasNext()) return null
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
@@ -716,10 +691,7 @@ public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index
     if (!iterator.hasNext()) return None
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
 }
 public inline fun <E: R, R> KoneList<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> {
@@ -735,10 +707,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceIndexedMaybe(operation: (i
     if (!iterator.hasNext()) return None
     var accumulator: R = iterator.next()
     var index = 1u
-    while (iterator.hasNext()) {
-        accumulator = operation(index, accumulator, iterator.next())
-        index++
-    }
+    for (element in iterator) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
 }
 
@@ -787,3 +756,69 @@ context(Ring<A>)
 public inline fun <E, A> KoneList<E>.productOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
 context(Ring<A>)
 public inline fun <E, A> KoneIterableList<E>.productOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
+
+public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableIterableList<E>>> KoneIterable<E>.groupByTo(destination: D, elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): D {
+    for (element in this) {
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = elementContext) }
+        accumulator.add(element)
+    }
+    return destination
+}
+public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableIterableList<E>>> KoneList<E>.groupByTo(destination: D, elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): D {
+    for (index in indices) {
+        val element = get(index)
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = elementContext) }
+        accumulator.add(element)
+    }
+    return destination
+}
+public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableIterableList<E>>> KoneIterableList<E>.groupByTo(destination: D, elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): D {
+    for (element in this) {
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = elementContext) }
+        accumulator.add(element)
+    }
+    return destination
+}
+
+public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableIterableList<V>>> KoneIterable<E>.groupByTo(destination: D, valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): D {
+    for (element in this) {
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = valueContext) }
+        accumulator.add(valueTransform(element))
+    }
+    return destination
+}
+public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableIterableList<V>>> KoneList<E>.groupByTo(destination: D, valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): D {
+    for (index in indices) {
+        val element = get(index)
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = valueContext) }
+        accumulator.add(valueTransform(element))
+    }
+    return destination
+}
+public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableIterableList<V>>> KoneIterableList<E>.groupByTo(destination: D, valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): D {
+    for (element in this) {
+        val key = keySelector(element)
+        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList(elementContext = valueContext) }
+        accumulator.add(valueTransform(element))
+    }
+    return destination
+}
+
+public inline fun <E, K> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneIterableList<E>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(elementContext)), elementContext = elementContext, keySelector = keySelector)
+public inline fun <E, K> KoneList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneIterableList<E>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(elementContext)), elementContext = elementContext, keySelector = keySelector)
+public inline fun <E, K> KoneIterableList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneIterableList<E>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(elementContext)), elementContext = elementContext, keySelector = keySelector)
+
+public inline fun <E, K, V> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
+public inline fun <E, K, V> KoneList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
+public inline fun <E, K, V> KoneIterableList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)

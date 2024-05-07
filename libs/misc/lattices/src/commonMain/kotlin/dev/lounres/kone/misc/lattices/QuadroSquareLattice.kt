@@ -5,6 +5,10 @@
 
 package dev.lounres.kone.misc.lattices
 
+import dev.lounres.kone.collections.KoneIterableCollection
+import dev.lounres.kone.collections.koneMutableIterableSetOf
+import dev.lounres.kone.collections.utils.first
+
 
 public enum class QuadroSquareKind {
     Up, Down, Left, Right,
@@ -52,11 +56,11 @@ public object QuadroSquareLattice: LatticeWithConnectivity<Pair<Int, Int>, Quadr
             { it.xSymmetry().rotate90().rotate90().rotate90() },
         )
 
-    override fun Collection<Position<Pair<Int, Int>, QuadroSquareKind>>.isConnected(): Boolean {
+    override fun KoneIterableCollection<Position<Pair<Int, Int>, QuadroSquareKind>>.isConnected(): Boolean {
         val startPosition = this.first()
         val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, QuadroSquareKind>>()
         positionsToTest.add(startPosition)
-        val testedPositions = mutableSetOf<Position<Pair<Int, Int>, QuadroSquareKind>>()
+        val testedPositions = koneMutableIterableSetOf<Position<Pair<Int, Int>, QuadroSquareKind>>()
         while (positionsToTest.isNotEmpty()) {
             val nextPosition = positionsToTest.removeFirst()
             testedPositions.add(nextPosition)

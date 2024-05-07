@@ -8,6 +8,7 @@ package dev.lounres.kone.collections
 
 public fun <E> KoneIterator<E>.getAndMoveNext(): E = getNext().also { moveNext() }
 
-public operator fun <E> KoneIterator<E>.next(): E = getAndMoveNext()
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun <E> KoneIterator<E>.next(): E = getAndMoveNext()
 
 public fun <E> KoneReversibleIterator<E>.getAndMovePrevious(): E = getPrevious().also { movePrevious() }

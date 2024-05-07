@@ -138,11 +138,11 @@ public fun <E> koneIterableSetOf(vararg elements: E, elementContext: Equality<E>
         KoneListBackedSet(elementContext, backingList)
     }
 
-public fun <E> koneMutableIterableSetOf(elementContext: Equality<E>): KoneMutableIterableSet<E> =
+public fun <E> koneMutableIterableSetOf(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
     if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext)
     else KoneMutableListBackedSet(elementContext = elementContext)
 
-public fun <E> koneMutableIterableSetOf(vararg elements: E, elementContext: Equality<E>): KoneMutableIterableSet<E> =
+public fun <E> koneMutableIterableSetOf(vararg elements: E, elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
     if (elementContext is Hashing<E>) KoneResizableHashSet(elementContext = elementContext).apply { addAll(*elements) }
     else {
         val backingList = KoneResizableLinkedArrayList(elementContext = elementContext)
@@ -150,7 +150,7 @@ public fun <E> koneMutableIterableSetOf(vararg elements: E, elementContext: Equa
         KoneMutableListBackedSet(elementContext, backingList)
     }
 
-public fun <E> KoneIterable<E>.toKoneMutableIterableSet(elementContext: Equality<E>): KoneMutableIterableSet<E> {
+public fun <E> KoneIterable<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> {
     if (this is KoneIterableCollection<E>) return this.toKoneMutableIterableSet(elementContext = elementContext)
 
     val result = koneMutableIterableSetOf<E>(elementContext = elementContext)
@@ -158,7 +158,7 @@ public fun <E> KoneIterable<E>.toKoneMutableIterableSet(elementContext: Equality
     return result
 }
 
-public fun <E> Iterable<E>.toKoneMutableIterableSet(elementContext: Equality<E>): KoneMutableIterableSet<E> {
+public fun <E> Iterable<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> {
     if (this is Collection<E>) return this.toKoneMutableIterableSet(elementContext = elementContext)
 
     val result = koneMutableIterableSetOf<E>(elementContext = elementContext)
@@ -212,11 +212,11 @@ public fun <E> KoneIterableList<E>.toKoneMutableIterableSet(elementContext: Equa
 // TODO: Replace inner implementation of `toKoneIterableSet`
 //  via KoneGrowableArrayList and KoneResizableHashSet
 //  with KoneFixedCapacityList and fixed capacity analogue of KoneResizableHashSet
-public fun <E> KoneIterable<E>.toKoneIterableSet(elementContext: Equality<E>): KoneIterableSet<E> =
+public fun <E> KoneIterable<E>.toKoneIterableSet(elementContext: Equality<E> = defaultEquality()): KoneIterableSet<E> =
     if (this is KoneIterableCollection<E>) this.toKoneIterableSet(elementContext = elementContext)
     else this.toKoneMutableIterableSet(elementContext = elementContext)
 
-public fun <E> Iterable<E>.toKoneIterableSet(elementContext: Equality<E>): KoneIterableSet<E> =
+public fun <E> Iterable<E>.toKoneIterableSet(elementContext: Equality<E> = defaultEquality()): KoneIterableSet<E> =
     if (this is Collection<E>) this.toKoneIterableSet(elementContext = elementContext)
     else this.toKoneMutableIterableSet(elementContext = elementContext)
 
@@ -237,7 +237,7 @@ public fun <E> KoneIterableList<E>.toKoneIterableSet(elementContext: Equality<E>
     else this.toKoneMutableIterableSet(elementContext = elementContext)
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <E> buildKoneIterableSet(elementContext: Equality<E>, @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
+public inline fun <E> buildKoneIterableSet(elementContext: Equality<E> = defaultEquality(), @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
     val result =
@@ -252,7 +252,7 @@ public inline fun <E> buildKoneIterableSet(elementContext: Equality<E>, @Builder
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <E> buildKoneIterableSet(elementContext: Equality<E>, initialCapacity: UInt, @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
+public inline fun <E> buildKoneIterableSet(elementContext: Equality<E> = defaultEquality(), initialCapacity: UInt, @BuilderInference builderAction: KoneMutableIterableSet<E>.() -> Unit): KoneIterableSet<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
     return KoneMutableListBackedSet(

@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstMaybe
+import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.Option
@@ -43,9 +44,9 @@ public class KoneListBackedMap<K, KC: Equality<K>, V, VC: Equality<V>> @Publishe
         append('{')
         val iterator = backingList.iterator()
         if (iterator.hasNext()) append(iterator.getAndMoveNext())
-        while (iterator.hasNext()) {
+        for (element in iterator) {
             append(", ")
-            append(iterator.getAndMoveNext())
+            append(element)
         }
         append('}')
     }

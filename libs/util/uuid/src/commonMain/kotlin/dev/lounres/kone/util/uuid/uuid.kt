@@ -6,4 +6,8 @@
 package dev.lounres.kone.util.uuid
 
 
-public expect fun randomUUID(): String
+public expect class UUID {
+    public companion object {
+        public fun random(): UUID
+    }
+}

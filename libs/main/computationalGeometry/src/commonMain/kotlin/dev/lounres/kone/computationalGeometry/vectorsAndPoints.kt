@@ -10,6 +10,7 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
+import kotlin.jvm.JvmName
 
 
 // FIXME: KT-42977
