@@ -9,6 +9,8 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneResizableHashSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.combinations
+import dev.lounres.kone.computations.ChannelComputation
+import dev.lounres.kone.computations.ComputationScope
 import dev.lounres.kone.context.KoneContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -48,17 +50,15 @@ public operator fun <C, K, A, V> Cell<C, K, A>.minus(other: Cell<C, K, A>): V {
     return this.position.coordinates - other.position.coordinates
 }
 
-context(Lattice<C, K, *>)
-public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cell: Cell<C, K, A>): Cell<C, K, A> =
-    Cell(this(cell.position), cell.attributes)
+// FIXME: Uncomment when KT-5837 will be fixed.
+//context(Lattice<C, K, *>)
+//public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cell: Cell<C, K, A>): Cell<C, K, A> =
+//    Cell(this(cell.position), cell.attributes)
 
-context(Lattice<C, K, *>)
-public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cells: KoneIterableSet<Cell<C, K, A>>): KoneIterableSet<Cell<C, K, A>> =
-    cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { this(it) }
-
-
-
-internal data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneIterableSet<Cell<C, K, A>>)
+// FIXME: Uncomment when KT-5837 will be fixed.
+//context(Lattice<C, K, *>)
+//public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cells: KoneIterableSet<Cell<C, K, A>>): KoneIterableSet<Cell<C, K, A>> =
+//    cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { this(it) }
 
 context(CoroutineScope, Lattice<C, K, V>)
 public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): Sequence<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> = sequence {
@@ -83,7 +83,16 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfPar
             addAllFrom(allCells)
             removeAllFrom(firstPart)
         }
-        val forms = rotations.map { Form(it(firstCell), it(firstPart)) }
+
+        data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneIterableSet<Cell<C, K, A>>)
+        val forms = rotations.map {
+            Form(
+                Cell(it(firstCell.position), firstCell.attributes),
+                firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { cell ->
+                    Cell(it(cell.position), cell.attributes)
+                }
+            )
+        }
 
         val allPossibleParts = buildKoneIterableSet {
             for (form in forms) for (otherFirstCell in restCells) {
@@ -102,3 +111,9 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfPar
         }
     }
 }
+
+// TODO: Architect and implement sets with built-in partition. Maybe.
+
+context(ComputationScope, Lattice<C, K, V>)
+public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> =
+    TODO("Not yet implemented")

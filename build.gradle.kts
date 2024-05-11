@@ -20,6 +20,17 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    val kotlinxAtomicfuVersion: String by properties
+    dependencies {
+        classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:$kotlinxAtomicfuVersion")
+    }
+}
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     with(libs.plugins) {
@@ -316,28 +327,6 @@ stal {
 //                }
 //            }
 //        }
-        "examples" {
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-
-                }
-            }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-                configure<KotlinMultiplatformExtension> {
-                    sourceSets {
-                        val commonMain by getting {
-                            dependencies {
-                                // TODO: Investigate why it creates tasks cycle.
-//                                implementation(projects.libs.util.examples)
-
-                                val parentProject = project.parent
-                                if (parentProject != null) implementation(project(parentProject.path))
-                            }
-                        }
-                    }
-                }
-            }
-        }
         "algorithms" {
             pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
@@ -467,6 +456,28 @@ stal {
                         iterations = 3
                         iterationTime = 500
                         iterationTimeUnit = "ms"
+                    }
+                }
+            }
+        }
+        "examples" {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+
+                }
+            }
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        val commonMain by getting {
+                            dependencies {
+                                // TODO: Investigate why it creates tasks cycle.
+//                                implementation(projects.libs.util.examples)
+
+                                val parentProject = project.parent
+                                if (parentProject != null) implementation(project(parentProject.path))
+                            }
+                        }
                     }
                 }
             }

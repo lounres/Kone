@@ -34,7 +34,7 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
         return false
     }
 
-    private fun KoneMutableArray<Any?>.dispose(size: UInt) {
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         var currentActualIndexToClear = start
         for (i in 0u ..< size) {
             this[currentActualIndexToClear] = null

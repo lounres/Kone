@@ -2,9 +2,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.collections)
-                implementation(projects.libs.main.enumerativeCombinatorics)
+                api(projects.libs.main.collections)
+                api(projects.libs.main.computations)
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(projects.libs.main.enumerativeCombinatorics)
             }
         }
     }

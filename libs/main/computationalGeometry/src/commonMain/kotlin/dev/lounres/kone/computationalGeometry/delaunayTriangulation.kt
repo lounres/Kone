@@ -53,7 +53,10 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
                         koneMutableIterableSetOf<V>(
                             elementContext = outerPolytopeContext
                         )
-                    ) { simplicesMapping[it] as V },
+                    ) {
+                        @Suppress("UNCHECKED_CAST")
+                        simplicesMapping[it] as V
+                    },
                     face.faces.mapTo(koneMutableIterableListOf(elementContext = koneIterableSetEquality(outerPolytopeContext))) { dimFaces ->
                         dimFaces.mapTo<AbstractPolytope, P, _>(
                             koneMutableIterableSetOf<P>(
@@ -68,7 +71,10 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
                     koneMutableIterableSetOf<V>(
                         elementContext = outerPolytopeContext
                     )
-                ) { simplicesMapping[it] as V },
+                ) {
+                    @Suppress("UNCHECKED_CAST")
+                    simplicesMapping[it] as V
+                },
                 koneIterableSetEquality(outerPolytopeContext).invoke {
                     simplex.faces.mapTo(koneMutableIterableListOf(elementContext = koneIterableSetEquality(outerPolytopeContext))) { dimFaces ->
                         dimFaces.mapTo<AbstractPolytope, P, _>(

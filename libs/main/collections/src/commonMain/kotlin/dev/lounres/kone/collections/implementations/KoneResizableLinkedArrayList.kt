@@ -30,7 +30,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
     override var size: UInt = size
         private set
 
-    private fun KoneMutableArray<Any?>.dispose(size: UInt) {
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         var currentActualIndexToClear = start
         for (i in 0u ..< size) {
             this[currentActualIndexToClear] = null
@@ -259,7 +259,9 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
 //            }
 //        ) { "started" }
 
-        justAddAfterTheEnd(1u) { element }
+        end = nextCellIndex[end]
+        data[end] = element
+        size += 1u
 
 //        koneLogger.debug(
 //            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.justAddAfterTheEnd(E)",
@@ -1200,11 +1202,10 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < index -> get(actualIndex).also { _ ->
-                        actualIndex = nextCellIndex[actualIndex]
-                        if (it == index - 1u) actualIndex = nextCellIndex[actualIndex] // TODO: Possible bug for `index = 0u`
+                    it < newSize -> {
+                        if (it == index) actualIndex = nextCellIndex[actualIndex]
+                        get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                     }
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -1514,11 +1515,10 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> internal construct
                 var actualIndex = start
                 reinitializeBoundsAndData(newSize) {
                     when {
-                        it < currentIndex -> get(actualIndex).also { _ ->
-                            actualIndex = nextCellIndex[actualIndex]
-                            if (it == currentIndex - 1u) actualIndex = nextCellIndex[actualIndex] // TODO: Possible bug for `index = 0u`
+                        it < newSize -> {
+                            if (it == currentIndex) actualIndex = nextCellIndex[actualIndex]
+                            get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                         }
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                         else -> null
                     }
                 }

@@ -230,6 +230,40 @@ public inline fun <E> KoneIterableList<E>.noneIndexed(block: (index: UInt, value
     return true
 }
 
+public inline fun <E> KoneIterable<E>.count(block: (value: E) -> Boolean): UInt {
+    var count = 0u
+    for (element in this) if (block(element)) count++
+    return count
+}
+public inline fun <E> KoneList<E>.count(block: (value: E) -> Boolean): UInt {
+    var count = 0u
+    for (index in 0u ..< size) if (block(get(index))) count++
+    return count
+}
+public inline fun <E> KoneIterableList<E>.count(block: (value: E) -> Boolean): UInt {
+    var count = 0u
+    for (element in this) if (block(element)) count++
+    return count
+}
+
+public inline fun <E> KoneIterable<E>.countIndexed(block: (index: UInt, value: E) -> Boolean): UInt {
+    var count = 0u
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) count++
+    return count
+}
+public inline fun <E> KoneList<E>.countIndexed(block: (index: UInt, value: E) -> Boolean): UInt {
+    var count = 0u
+    for (index in 0u ..< size) if (block(index, get(index))) count++
+    return count
+}
+public inline fun <E> KoneIterableList<E>.countIndexed(block: (index: UInt, value: E) -> Boolean): UInt {
+    var count = 0u
+    var currentIndex = 0u
+    for (element in this) if (block(currentIndex++, element)) count++
+    return count
+}
+
 public inline fun <E> KoneIterable<E>.first(predicate: (E) -> Boolean): E {
     for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Collection contains no element matching the predicate.")

@@ -54,9 +54,9 @@ stal {
         "libs public" since { hasAnyOf("libs main", "libs misc") }
         "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
         // Extra structure
-        "examples" since { has("libs main examples") }
         "algorithms" since { has("libs main algorithms") }
         "benchmarks" since { has("libs main benchmarks") }
+        "examples" since { has("libs main examples") }
         // Kotlin set up
         "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }

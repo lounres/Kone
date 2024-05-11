@@ -25,7 +25,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> internal constructor(
     override var size: UInt = size
         private set
 
-    private fun KoneMutableArray<Any?>.dispose(size: UInt) {
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
     }
     override fun dispose() {

@@ -26,7 +26,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
         return false
     }
 
-    private fun KoneMutableArray<Any?>.dispose(size: UInt) {
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         for (i in 0u ..< size) this[i] = null
     }
     override fun dispose() {

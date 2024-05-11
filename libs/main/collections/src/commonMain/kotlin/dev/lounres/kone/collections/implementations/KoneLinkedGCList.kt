@@ -11,7 +11,6 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
 
 
-@Suppress("UNCHECKED_CAST")
 public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
     override val elementContext: EC,
 ) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, Disposable {
@@ -43,6 +42,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             _previousNode = null
         }
     }
+    @Suppress("UNCHECKED_CAST")
     internal class Node<E> : Start<E>, End<E> {
         private var _nextNode: End<E>? = null
         override var nextNode: End<E>
@@ -56,16 +56,16 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             set(value) {
                 _previousNode = value
             }
-        private var _value: E? = null
-        var value: E
-            get() = _value as E
-            set(value) {
-                _value = value
+        private var _element: E? = null
+        var element: E
+            get() = _element as E
+            set(element) {
+                _element = element
             }
         override fun dispose() {
             _nextNode = null
             _previousNode = null
-            _value = null
+            _element = null
         }
     }
 
@@ -116,7 +116,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
     private fun justAddBefore(endNode: End<E>, element: E) {
         val previousNode = endNode.previousNode
         val newNode = Node<E>()
-        newNode.value = element
+        newNode.element = element
         newNode.previousNode = previousNode
         newNode.nextNode = end
         previousNode.nextNode = newNode
@@ -130,12 +130,12 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)
-        return (endNodeByIndex(index) as Node<E>).value
+        return (endNodeByIndex(index) as Node<E>).element
     }
 
     override fun set(index: UInt, element: E) {
         if (index >= size) indexException(index, size)
-        (endNodeByIndex(index) as Node<E>).value = element
+        (endNodeByIndex(index) as Node<E>).element = element
     }
 
     override fun removeAll() {
@@ -175,7 +175,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             currentNode = newNode
             newNode.previousNode = previousNode
             previousNode.nextNode = newNode
-            newNode.value = builder(localIndex)
+            newNode.element = builder(localIndex)
         }
         end.previousNode = currentNode
         currentNode.nextNode = end
@@ -190,7 +190,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             currentNode = newNode
             newNode.previousNode = previousNode
             previousNode.nextNode = newNode
-            newNode.value = element
+            newNode.element = element
         }
         end.previousNode = currentNode
         currentNode.nextNode = end
@@ -208,7 +208,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             currentNode = newNode
             newNode.previousNode = previousNode
             previousNode.nextNode = newNode
-            newNode.value = builder(localIndex)
+            newNode.element = builder(localIndex)
         }
         endNode.previousNode = currentNode
         currentNode.nextNode = endNode
@@ -225,7 +225,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             currentNode = newNode
             newNode.previousNode = previousNode
             previousNode.nextNode = newNode
-            newNode.value = element
+            newNode.element = element
         }
         endNode.previousNode = currentNode
         currentNode.nextNode = endNode
@@ -239,7 +239,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                     is EndStub -> return
                     is Node -> {
                         // FIXME: KT-32313; wait until `.invoke` will get lambda contract
-                        if (elementContext { currentNode.value eq element }) {
+                        if (elementContext { currentNode.element eq element }) {
                             targetNode = currentNode
                             break
                         }
@@ -264,7 +264,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                 is Node -> {
                     val node = currentNode
                     currentNode = node.nextNode
-                    if (predicate(index, node.value)) node.remove()
+                    if (predicate(index, node.element)) node.remove()
                     index++
                 }
             }
@@ -279,7 +279,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         var currentNode = start.nextNode
         if (size > 0u) {
             val node = (currentNode as Node<E>)
-            append(node.value)
+            append(node.element)
             currentNode = node.nextNode
         }
         while (true) {
@@ -287,7 +287,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                 is EndStub -> break
                 is Node -> {
                     append(", ")
-                    append(currentNode.value)
+                    append(currentNode.element)
                     currentNode = currentNode.nextNode
                 }
             }
@@ -301,7 +301,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             when (currentNode) {
                 is EndStub -> break
                 is Node -> {
-                    hashCode = 31 * hashCode + currentNode.value.hashCode()
+                    hashCode = 31 * hashCode + currentNode.element.hashCode()
                     currentNode = currentNode.nextNode
                 }
             }
@@ -319,8 +319,8 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                 var otherCurrentNode = other.start.nextNode
                 for (i in 0u..<size) {
                     thisCurrentNode as Node<E>
-                    otherCurrentNode as Node<E>
-                    if (thisCurrentNode.value != otherCurrentNode.value) return false
+                    otherCurrentNode as Node<*>
+                    if (thisCurrentNode.element != otherCurrentNode.element) return false
                     thisCurrentNode = thisCurrentNode.nextNode
                     otherCurrentNode = otherCurrentNode.nextNode
                 }
@@ -330,7 +330,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                 val otherIterator = other.iterator()
                 for (i in 0u..<size) {
                     thisCurrentNode as Node<E>
-                    if (thisCurrentNode.value != otherIterator.getAndMoveNext()) return false
+                    if (thisCurrentNode.element != otherIterator.getAndMoveNext()) return false
                     thisCurrentNode = thisCurrentNode.nextNode
                 }
             }
@@ -338,7 +338,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                 var thisCurrentNode = this.start.nextNode
                 for (i in 0u..<size) {
                     thisCurrentNode as Node<E>
-                    if (thisCurrentNode.value != other[i]) return false
+                    if (thisCurrentNode.element != other[i]) return false
                     thisCurrentNode = thisCurrentNode.nextNode
                 }
             }
@@ -355,7 +355,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
             if (!hasNext()) noElementException(currentIndex, size)
-            return (currentNode as Node<E>).value
+            return (currentNode as Node<E>).element
         }
         override fun moveNext() {
             if (!hasNext()) noElementException(currentIndex, size)
@@ -365,7 +365,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
         override fun setNext(element: E) {
             if (!hasNext()) noElementException(currentIndex, size)
-            (currentNode as Node<E>).value = element
+            (currentNode as Node<E>).element = element
         }
         override fun addNext(element: E) {
             justAddBefore(currentNode, element)
@@ -383,7 +383,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
             if (!hasPrevious()) noElementException(currentIndex, size)
-            return (currentNode.previousNode as Node<E>).value
+            return (currentNode.previousNode as Node<E>).element
         }
         override fun movePrevious() {
             if (!hasPrevious()) noElementException(currentIndex, size)
@@ -393,7 +393,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
         override fun setPrevious(element: E) {
             if (!hasPrevious()) noElementException(currentIndex, size)
-            (currentNode.previousNode as Node<E>).value = element
+            (currentNode.previousNode as Node<E>).element = element
         }
         override fun addPrevious(element: E) {
             justAddBefore(currentNode, element)
