@@ -19,9 +19,22 @@ public interface Computation: CoroutineContext.Element {
     public val isPaused: Boolean
     public val isCancelled: Boolean
 
-    public suspend fun resume()
-    public suspend fun pause()
+    public fun resume()
+    public fun pause()
     public fun cancel(cause: CancellationException? = null)
+
+    public suspend fun joinUntilResumed()
+    public suspend fun joinUntilPaused()
+
+    // TODO: Not sure that the operation should not be a part of `Computation` interface
+    //  because in implementation
+    //  ```
+    //  resume()
+    //  joinUntilResumed()
+    //  ```
+    //  between the operations several state changes could happen.
+    public suspend fun resumeJoining()
+    public suspend fun pauseJoining()
 
     public suspend fun join()
 
