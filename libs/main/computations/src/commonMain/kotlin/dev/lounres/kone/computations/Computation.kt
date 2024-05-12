@@ -49,6 +49,7 @@ public interface Computation: CoroutineContext.Element {
 //    public fun invokeOnCompletion(onCancelling: Boolean = false, invokeImmediately: Boolean = true, handler: ???): ???
 }
 
-public fun Computation(parent: Computation? = null): Computation {
+@Suppress("FunctionName")
+public fun Computation(parent: Computation? = null): CompletableComputation {
     TODO("Not yet implemented")
 }

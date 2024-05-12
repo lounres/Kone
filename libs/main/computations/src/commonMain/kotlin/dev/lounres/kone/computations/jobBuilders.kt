@@ -18,6 +18,8 @@ public interface ComputationJob: Job {
 public fun CoroutineScope.launchComputation(
     context: CoroutineContext = EmptyCoroutineContext,
     start: ComputationStart = ComputationStart.ACTIVE,
+    onResume: suspend ComputationScope.() -> Unit = {},
+    onPause: suspend ComputationScope.() -> Unit = {},
     block: suspend ComputationScope.() -> Unit,
 ): ComputationJob {
     TODO("Not yet implemented")
