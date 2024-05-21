@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.0-RC3"
+kotlin = "2.0.0"
 
 kmath = "0.3.1"
 

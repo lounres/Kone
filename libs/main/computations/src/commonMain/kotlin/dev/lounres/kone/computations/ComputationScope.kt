@@ -13,9 +13,8 @@ public interface ComputationScope {
 }
 
 public fun ComputationScope(context: CoroutineContext): ComputationScope =
-    object : ComputationScope {
-        override val coroutineContext: CoroutineContext =
-            if (context[Computation] != null) context
-            else context + Computation()
-        override fun toString(): String = "ComputationScope(coroutineContext=${this.coroutineContext})"
-    }
+    ComputationScopeImpl(if (context[Computation] != null) context else context + CompletableComputation())
+
+internal class ComputationScopeImpl(override val coroutineContext: CoroutineContext) : ComputationScope {
+    override fun toString(): String = "ComputationScope(coroutineContext=${coroutineContext})"
+}

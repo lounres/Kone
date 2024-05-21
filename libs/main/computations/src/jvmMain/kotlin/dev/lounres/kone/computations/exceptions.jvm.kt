@@ -7,6 +7,7 @@ package dev.lounres.kone.computations
 
 
 // TODO: Think about cancellation and maybe implement in the same way as in kotlinx.coroutines
-public expect open class CancellationException(message: String?) : IllegalStateException
+public actual typealias CancellationException = java.util.concurrent.CancellationException
 
-public expect fun CancellationException(message: String?, cause: Throwable?) : CancellationException
+public actual fun CancellationException(message: String?, cause: Throwable?) : CancellationException =
+    CancellationException(message).apply { initCause(cause) }
