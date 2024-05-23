@@ -86,6 +86,7 @@ public fun <E> KoneLockingMutableCollectionWrapper(backingImplementation: KoneMu
 
 public interface KoneLockingListWrapper<out E>: KoneLockingCollectionWrapper<E>, KoneList<E> {
     override val backingImplementation: KoneList<E>
+    override fun contains(element: @UnsafeVariance E): Boolean = synchronized { backingImplementation.contains(element) } // TODO: Compiler needs the line for some reason. Investigate
     override fun get(index: UInt): E = synchronized { backingImplementation.get(index) }
     override fun getMaybe(index: UInt): Option<E> = synchronized { backingImplementation.getMaybe(index) }
     override fun indexOf(element: @UnsafeVariance E): UInt = synchronized { backingImplementation.indexOf(element) }
@@ -134,6 +135,9 @@ public fun <E> KoneLockingExtendableListWrapper(backingImplementation: KoneExten
 
 public interface KoneLockingRemovableListWrapper<E>: KoneLockingListWrapper<E>, KoneLockingRemovableCollectionWrapper<E>, KoneRemovableList<E> {
     override val backingImplementation: KoneRemovableList<E>
+    override fun removeAllThat(predicate: (element: E) -> Boolean) { // TODO: Compiler needs the line for some reason. Investigate
+        synchronized { backingImplementation.removeAllThat(predicate) }
+    }
     override fun removeAt(index: UInt) {
         synchronized { backingImplementation.removeAt(index) }
     }
