@@ -1,40 +1,30 @@
 @file:Suppress("SuspiciousCollectionReassignment")
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.JsBenchmarkTarget
 import kotlinx.benchmark.gradle.NativeBenchmarkTarget
+import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.RootProjectAccessor
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    val kotlinxAtomicfuVersion: String by properties
-    dependencies {
-        classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:$kotlinxAtomicfuVersion")
-    }
-}
-
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     with(libs.plugins) {
         alias(kotlin.multiplatform) apply false
+        alias(kotlinx.atomicfu) apply false
         alias(allopen) apply false
         alias(kotlinx.benchmark) apply false
 //        alias(kotest.multiplatform) apply false
@@ -370,9 +360,9 @@ stal {
                             val parentProject = project.parent
                             if (parentProject != null) {
                                 implementation(project(parentProject.path))
-                                val algorithmsSimbling = parentProject.childProjects["algorithms"]
-                                if (algorithmsSimbling != null) {
-                                    implementation(project(algorithmsSimbling.path))
+                                val algorithmsSibling = parentProject.childProjects["algorithms"]
+                                if (algorithmsSibling != null) {
+                                    implementation(project(algorithmsSibling.path))
                                 }
                             }
                         }

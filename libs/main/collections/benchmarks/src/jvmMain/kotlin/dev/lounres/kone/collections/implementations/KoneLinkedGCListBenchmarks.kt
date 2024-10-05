@@ -9,7 +9,6 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.comparison.Equality
 import kotlinx.benchmark.*
-import org.openjdk.jmh.annotations.Level
 
 
 @BenchmarkMode(Mode.AverageTime)
@@ -47,7 +46,7 @@ class KoneLinkedGCListBenchmarks_RemoveFirst {
 
     lateinit var list: KoneLinkedGCList<UInt, Equality<UInt>>
 
-    @Setup(Level.Invocation)
+    @Setup()
     fun setup() {
         list = KoneLinkedGCList(listSize) { 0u }
     }

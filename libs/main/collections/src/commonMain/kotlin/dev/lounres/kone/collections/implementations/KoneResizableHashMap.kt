@@ -294,18 +294,21 @@ public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> interna
         override val size: UInt = this@KoneResizableHashMap.size
         override fun contains(element: K): Boolean = data[element.dataIndex()].let { it.indexThat { _, entry -> keyContext { entry.key eq element } } != it.size }
         override fun iterator(): KoneIterator<K> = KeyIterator()
+        // TODO: Override `toString`.
     }
 
     internal inner class ValueCollection : KoneIterableCollection<V> {
         override val size: UInt = this@KoneResizableHashMap.size
         override fun contains(element: V): Boolean = data.indexThat { _, linkedList -> linkedList.indexThat { _, entry -> valueContext { entry.value eq element } } != linkedList.size } != data.size
         override fun iterator(): KoneIterator<V> = ValueIterator()
+        // TODO: Override `toString`.
     }
 
     internal inner class EntriesSet : KoneIterableSet<KoneMapEntry<K, V>> {
         override val size: UInt = this@KoneResizableHashMap.size
         override fun contains(element: KoneMapEntry<K, V>): Boolean = data[element.key.dataIndex()].let { it.indexThat { _, entry -> (koneMapEntryEquality(keyContext, valueContext)) { entry eq element } } != it.size }
         override fun iterator(): KoneIterator<KoneMapEntry<K, V>> = EntryIterator()
+        // TODO: Override `toString`.
     }
 
     public companion object {

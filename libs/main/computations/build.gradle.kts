@@ -1,11 +1,8 @@
 plugins {
-    id("kotlinx-atomicfu")
+    alias(libs.plugins.kotlinx.atomicfu)
 }
 
-val kotlinxAtomicfuVersion: String by properties
-
 atomicfu {
-    dependenciesVersion = kotlinxAtomicfuVersion
     transformJvm = true
     jvmVariant = "VH"
     transformJs = true

@@ -17,6 +17,7 @@ import kotlinx.benchmark.State
 class LoggingBenchmarks {
     @Benchmark
     fun simple() {
-        koneLogger.debug("dev.lounres.kone.logging.LoggingBenchmarks.simple") { "Simple message" }
+        // TODO
+//        koneLogger.debug("dev.lounres.kone.logging.LoggingBenchmarks.simple") { "Simple message" }
     }
 }

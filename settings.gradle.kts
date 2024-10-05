@@ -21,11 +21,12 @@ pluginManagement {
 
 plugins {
     id("dev.lounres.gradle.stal") version "0.3.1"
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
 }
 
 stal {
     structure {
-        defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() ?: false }
+        defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
         "libs" {
             "main" {
                 "core"("libs main") {
@@ -46,6 +47,7 @@ stal {
                 subdirs("libs util")
             }
         }
+        "test"("kotlin multiplatform")
     }
 
     tag {

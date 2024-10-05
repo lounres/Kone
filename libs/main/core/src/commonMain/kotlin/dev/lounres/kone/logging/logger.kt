@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.logging
 
-import dev.lounres.logKube.core.Logger
+import dev.lounres.logKube.core.CurrentPlatformLogger
 
 
-public val koneLogger: Logger = Logger(name = "Kone core logger")
+public val koneLogger: CurrentPlatformLogger = CurrentPlatformLogger(name = "Kone core logger")
