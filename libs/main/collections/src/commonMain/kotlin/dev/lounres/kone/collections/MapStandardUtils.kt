@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.option.isSome
 import dev.lounres.kone.option.orDefault
 import dev.lounres.kone.option.orElse
@@ -44,4 +45,11 @@ public inline fun <K> KoneMutableMap<in K, *>.definitelyRemoveThrowing(key: K, e
     getMaybeAndRemove(key).orThrow(error)
 }
 
-public operator fun <K, V> KoneMap<out K, out V>.iterator(): KoneIterator<KoneMapEntry<K, V>> = entries.iterator()
+public val <K> KoneMapWithContext<K, Equality<K>, *, *>.keys: KoneIterableSet<K>
+    get() = keysView.toKoneMutableIterableSet(keyContext)
+public val <V> KoneMapWithContext<*, *, V, Equality<V>>.values: KoneIterableCollection<V>
+    get() = valuesView.toKoneMutableIterableList(valueContext)
+public val <K, V> KoneMapWithContext<K, Equality<K>, V, Equality<V>>.entries: KoneIterableSet<KoneMapEntry<K, V>>
+    get() = entriesView.toKoneMutableIterableSet(koneMapEntryEquality(keyContext, valueContext))
+
+public operator fun <K, V> KoneMap<out K, V>.iterator(): KoneIterator<KoneMapEntry<K, V>> = entriesView.iterator()

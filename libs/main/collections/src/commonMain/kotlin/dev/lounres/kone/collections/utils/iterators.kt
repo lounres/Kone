@@ -131,3 +131,27 @@ internal value class KoneReversedMutableLinearIteratorImpl<E>(override val itera
 internal interface KoneReversedMutableLinearIterator<E> : KoneReversedMutableIterator<E>, KoneReversedSettableLinearIterator<E>, KoneReversedExtendableLinearIterator<E>, KoneReversedRemovableLinearIterator<E>, KoneMutableLinearIterator<E> {
     override val iterator: KoneMutableLinearIterator<E>
 }
+
+public data class KoneIndexedValue<out E>(public val index: UInt, public val value: E)
+
+public fun <E> KoneIterator<E>.withIndex(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(this)
+
+internal class KoneIndexingIterator<out T>(private val iterator: KoneIterator<T>) : KoneIterator<KoneIndexedValue<T>> {
+    private var index = 0u
+    override fun hasNext(): Boolean = iterator.hasNext()
+    override fun getNext(): KoneIndexedValue<T> = KoneIndexedValue(index, iterator.getNext())
+    override fun moveNext() {
+        iterator.moveNext()
+        index++
+    }
+}
+
+// TODO: Add other kinds of indexing iterators
+
+public fun <E> KoneIterable<E>.withIndex(): KoneIterable<KoneIndexedValue<E>> = KoneIndexingIterable(this)
+
+internal class KoneIndexingIterable<out E>(private val iterable: KoneIterable<E>) : KoneIterable<KoneIndexedValue<E>> {
+    override fun iterator(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(iterable.iterator())
+}
+
+// TODO: Add indexing iterables

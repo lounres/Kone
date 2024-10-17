@@ -18,6 +18,15 @@ public fun <E> KoneCollection<E>.containsAll(elements: KoneIterableCollection<E>
     return true
 }
 
+public fun <E> KoneExtendableCollection<E>.addAllFrom(elements: KoneList<E>) {
+    addSeveral(elements.size) { elements[it] }
+}
+
+public fun <E> KoneExtendableCollection<E>.addAllFrom(elements: KoneIterableCollection<E>) {
+    val iterator = elements.iterator()
+    addSeveral(elements.size) { iterator.getAndMoveNext() }
+}
+
 public inline fun <E> KoneRemovableCollection<E>.retainAllThat(crossinline predicate: (E) -> Boolean) {
     removeAllThat { !predicate(it) }
 }

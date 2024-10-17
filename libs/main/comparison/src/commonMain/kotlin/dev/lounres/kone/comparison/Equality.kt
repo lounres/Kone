@@ -23,3 +23,4 @@ public inline fun <E> Equality(crossinline comparator: (left: E, right: E) -> Bo
     }
 
 public fun <E> defaultEquality(): Equality<E> = DefaultContext
+public fun <E> absoluteEquality(): Equality<E> = AbsoluteContext

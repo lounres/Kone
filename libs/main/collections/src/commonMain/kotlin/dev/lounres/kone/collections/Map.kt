@@ -18,9 +18,9 @@ public interface KoneMap<K, out V> {
     public operator fun get(key: K): V
     public fun getMaybe(key: K): Option<V>
 
-    public val keys: KoneIterableSet<K>
-    public val values: KoneIterableCollection<V>
-    public val entries: KoneIterableSet<KoneMapEntry<K, V>>
+    public val keysView: KoneIterableSet<K>
+    public val valuesView: KoneIterableCollection<V>
+    public val entriesView: KoneIterableSet<KoneMapEntry<K, V>>
 }
 
 public interface KoneMutableMap<K, V>: KoneMap<K, V> {

@@ -1,6 +1,7 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
+import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.JsBenchmarkTarget
@@ -8,6 +9,7 @@ import kotlinx.benchmark.gradle.NativeBenchmarkTarget
 import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.RootProjectAccessor
+import org.gradle.kotlin.dsl.libs
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -135,6 +137,16 @@ tasks.dokkaHtmlMultiModule {
 
 }
 
+allprojects {
+    pluginManager.withPlugin(libs.plugins.kotlinx.atomicfu) {
+        configure<AtomicFUPluginExtension> {
+            transformJvm = true
+            jvmVariant = "VH"
+            transformJs = true
+        }
+    }
+}
+
 stal {
     action {
         "uses libs main core" {
@@ -172,7 +184,8 @@ stal {
                         jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
                         freeCompilerArgs = freeCompilerArgs.get() + listOf(
                             "-Xlambdas=indy",
-                            "-Xexpect-actual-classes"
+                            "-Xexpect-actual-classes",
+                            "-Xconsistent-data-class-copy-visibility",
                         )
                     }
                 }
@@ -191,14 +204,18 @@ stal {
             apply(libs.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
+                
+                compilerOptions {
+                    freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                        "-Xlambdas=indy",
+                        "-Xexpect-actual-classes",
+                        "-Xconsistent-data-class-copy-visibility",
+                    )
+                }
 
                 jvm {
                     compilerOptions {
                         jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
-                        freeCompilerArgs = freeCompilerArgs.get() + listOf(
-                            "-Xlambdas=indy",
-                            "-Xexpect-actual-classes"
-                        )
                     }
                     testRuns.all {
                         executionTask {

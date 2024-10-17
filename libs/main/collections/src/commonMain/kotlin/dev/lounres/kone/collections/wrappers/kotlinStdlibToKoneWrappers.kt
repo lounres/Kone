@@ -474,9 +474,9 @@ internal class KoneWrapperMap<K, V>(private val map: Map<K, V>): KoneMapWithCont
         if (key in map) Some(map[key] as V)
         else None
 
-    override val keys: KoneIterableSet<K> get() = map.keys.asKone()
-    override val values: KoneIterableCollection<V> get() = map.values.asKone()
-    override val entries: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
+    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
+    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
+    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
 }
 
 public fun <K, V> MutableMap<K, V>.asKone(): KoneMutableMapWithContext<K, Hashing<K>, V, Hashing<V>> = KoneWrapperMutableMap(this)
@@ -517,9 +517,9 @@ internal class KoneWrapperMutableMap<K, V>(private val map: MutableMap<K, V>): K
         if (key in map) Some(map[key] as V)
         else None
 
-    override val keys: KoneIterableSet<K> get() = map.keys.asKone()
-    override val values: KoneIterableCollection<V> get() = map.values.asKone()
-    override val entries: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
+    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
+    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
+    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
 
     override operator fun set(key: K, value: V) {
         map[key] = value

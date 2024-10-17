@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.utils.first
 
 internal const val MAX_CAPACITY = 0b10000000000000000000000000000000u
 
+@PublishedApi
 internal /*const*/ val POWERS_OF_2: KoneUIntArray = KoneUIntArray(33u) { if (it == 0u) 0u else 1u shl (it.toInt() - 1) }
 
 @PublishedApi

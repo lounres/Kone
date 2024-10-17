@@ -88,3 +88,5 @@ public interface KoneExtendableSet<E> : KoneSet<E>, KoneExtendableCollection<E>
 public interface KoneRemovableSet<out E> : KoneSet<E>, KoneRemovableCollection<E>
 
 public interface KoneMutableSet<E> : KoneExtendableSet<E>, KoneRemovableSet<E>, KoneMutableCollection<E>
+
+public interface KoneListSet<out E> : KoneList<E>, KoneSet<E>

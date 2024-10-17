@@ -68,7 +68,7 @@ public operator fun <C, K, A, V> Cell<C, K, A>.minus(other: Cell<C, K, A>): V {
 context(CoroutineScope, Lattice<C, K, V>)
 public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): Sequence<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> = sequence {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
-    if (this@divideInParts.groupingBy { it.attributes }.eachCount().values.any { it % numberOfParts != 0u }) return@sequence
+    if (this@divideInParts.groupingBy { it.attributes }.eachCount().valuesView.any { it % numberOfParts != 0u }) return@sequence
     if (this@divideInParts.isEmpty()) {
         yield(emptyKoneIterableList())
         return@sequence
@@ -139,7 +139,7 @@ internal sealed interface State {
 context(CoroutineScope, Lattice<C, K, V>)
 public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
-    if (this@divideInParts2.groupingBy { it.attributes }.eachCount().values.any { it % numberOfParts != 0u })
+    if (this@divideInParts2.groupingBy { it.attributes }.eachCount().valuesView.any { it % numberOfParts != 0u })
         return object : ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
             override val key: CoroutineContext.Key<*> get() = Computation.Key
             

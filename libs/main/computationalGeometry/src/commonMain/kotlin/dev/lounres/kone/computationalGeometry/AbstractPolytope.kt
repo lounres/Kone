@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:OptIn(ExperimentalUuidApi::class)
+
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.collections.*
@@ -12,23 +14,23 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.util.uuid.UUID
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 public open class AbstractPolytope
 @DelicatePolytopicConstructionAPI constructor() {
-    internal val id: UUID = UUID.random()
+    internal val id: Uuid = Uuid.random()
     override fun equals(other: Any?): Boolean = other is AbstractPolytope && this.id == other.id
     override fun hashCode(): Int = id.hashCode()
-    override fun toString(): String = "AbstractPolytope($id)"
+    override fun toString(): String = "AbstractPolytope(${id.toHexString()})"
 }
-@OptIn(DelicatePolytopicConstructionAPI::class)
 public class AbstractVertex
 @DelicatePolytopicConstructionAPI constructor(): AbstractPolytope() {
-    override fun toString(): String = "AbstractVertex($id)"
+    override fun toString(): String = "AbstractVertex(${id.toHexString()})"
 }
 
 public typealias AbstractPolytopicConstruction<N> = PolytopicConstruction<N, AbstractPolytope, AbstractVertex>
@@ -75,7 +77,7 @@ internal class MutableAbstractPolytopicConstructionImpl<N, out NC: Equality<N>>(
     override val AbstractPolytope.cofaces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _cofacesOf[this]
     override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _cofacesOf[this][dim - this.dimension - 1u]
 
-    override val vertices: KoneIterableSet<AbstractVertex> get() = _positionOf.keys
+    override val vertices: KoneIterableSet<AbstractVertex> get() = _positionOf.keysView
     override val AbstractVertex.position: Point<N> get() = _positionOf[this]
 
     // TODO: Replace the dummy implementation with accurate, checking one
@@ -171,7 +173,7 @@ internal class UnsafeMutableAbstractPolytopicConstructionImpl<N, out NC: Equalit
     override val AbstractPolytope.cofaces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = _cofacesOf[this]
     override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _cofacesOf[this][dim - this.dimension - 1u]
 
-    override val vertices: KoneIterableSet<AbstractVertex> get() = _positionOf.keys
+    override val vertices: KoneIterableSet<AbstractVertex> get() = _positionOf.keysView
     override val AbstractVertex.position: Point<N> get() = _positionOf[this]
 
     override fun addPolytope(vertices: KoneIterableSet<AbstractVertex>, faces: KoneIterableList<KoneIterableSet<AbstractPolytope>>): AbstractPolytope =

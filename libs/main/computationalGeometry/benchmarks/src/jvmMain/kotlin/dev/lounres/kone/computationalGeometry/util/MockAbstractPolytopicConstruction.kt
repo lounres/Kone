@@ -56,7 +56,7 @@ class MockAbstractPolytopicConstruction<N, out NC: Hashing<N>>(
         val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneIterableSet<AbstractVertex>>(keyContext = polytopeContext, valueContext = koneIterableSetHashing(polytopeContext))
 
         init {
-            for (vertex in _positionOf.keys) _verticesOf[vertex] = koneIterableSetOf(vertex)
+            for (vertex in _positionOf.keysView) _verticesOf[vertex] = koneIterableSetOf(vertex)
         }
 
         override val polytopes: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'polytopes' value")

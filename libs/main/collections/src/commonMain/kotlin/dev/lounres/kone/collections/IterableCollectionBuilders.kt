@@ -7,9 +7,16 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.*
 import dev.lounres.kone.collections.implementations.EmptyKoneIterableList
 import dev.lounres.kone.collections.implementations.EmptyKoneIterableSet
+import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneListBackedSet
+import dev.lounres.kone.collections.implementations.KoneMutableListBackedSet
+import dev.lounres.kone.collections.implementations.KoneResizableArrayList
+import dev.lounres.kone.collections.implementations.KoneResizableHashSet
+import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneSettableArrayList
+import dev.lounres.kone.collections.implementations.SingletonList
 import dev.lounres.kone.collections.utils.indices
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -30,7 +37,7 @@ public inline fun <E> KoneSettableIterableList(size: UInt, elementContext: Equal
     KoneSettableArrayList(size, elementContext, initializer)
 
 public inline fun <E> KoneMutableIterableList(size: UInt, elementContext: Equality<E> = defaultEquality(), initializer: (index: UInt) -> E): KoneMutableIterableList<E> =
-    KoneGrowableArrayList(size, elementContext, initializer)
+    KoneResizableArrayList(size, elementContext, initializer)
 
 @Suppress("UNUSED_PARAMETER")
 public fun <E> koneIterableListOf(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> = emptyKoneIterableList()
@@ -44,15 +51,15 @@ public fun <E> koneSettableIterableListOf(vararg elements: E, elementContext: Eq
     KoneSettableArrayList(KoneMutableArray(elements as Array<Any?>), elementContext = elementContext)
 
 public fun <E> koneMutableIterableListOf(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> =
-    KoneGrowableArrayList(elementContext = elementContext)
+    KoneResizableArrayList(elementContext = elementContext)
 
 public fun <E> koneMutableIterableListOf(vararg elements: E, elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> =
-    KoneGrowableArrayList(elements.size.toUInt(), elementContext = elementContext) { elements[it.toInt()] }
+    KoneResizableArrayList(elements.size.toUInt(), elementContext = elementContext) { elements[it.toInt()] }
 
 public fun <E> KoneIterable<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     if (this is KoneIterableCollection<E>) return this.toKoneMutableIterableList()
 
-    val result = KoneGrowableArrayList(elementContext = elementContext)
+    val result = KoneResizableArrayList(elementContext = elementContext)
     for (element in this) result.add(element)
     return result
 }
@@ -60,27 +67,27 @@ public fun <E> KoneIterable<E>.toKoneMutableIterableList(elementContext: Equalit
 public fun <E> Iterable<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     if (this is Collection<E>) return this.toKoneMutableIterableList(elementContext = elementContext)
 
-    val result = KoneGrowableArrayList(elementContext = elementContext)
+    val result = KoneResizableArrayList(elementContext = elementContext)
     for (element in this) result.add(element)
     return result
 }
 
 public fun <E> KoneIterableCollection<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     val iterator = iterator()
-    return KoneGrowableArrayList(size, elementContext = elementContext) { iterator.next() }
+    return KoneResizableArrayList(size, elementContext = elementContext) { iterator.next() }
 }
 
 public fun <E> Collection<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     val iterator = iterator()
-    return KoneGrowableArrayList(size.toUInt(), elementContext = elementContext) { iterator.next() }
+    return KoneResizableArrayList(size.toUInt(), elementContext = elementContext) { iterator.next() }
 }
 
 public fun <E> KoneList<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> =
-    KoneGrowableArrayList(size, elementContext = elementContext) { this[it] }
+    KoneResizableArrayList(size, elementContext = elementContext) { this[it] }
 
 public fun <E> KoneIterableList<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     val iterator = iterator()
-    return KoneGrowableArrayList(size, elementContext = elementContext) { iterator.next() }
+    return KoneResizableArrayList(size, elementContext = elementContext) { iterator.next() }
 }
 
 public fun <E> KoneIterable<E>.toKoneIterableList(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
@@ -116,7 +123,7 @@ public inline fun <E> buildKoneIterableList(elementContext: Equality<E> = defaul
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <E> buildKoneIterableList(initialCapacity: UInt, elementContext: Equality<E> = defaultEquality(), @BuilderInference builderAction: KoneMutableIterableList<E>.() -> Unit): KoneIterableList<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneGrowableArrayList(initialCapacity, elementContext = elementContext).apply(builderAction)
+    return KoneResizableArrayList(initialCapacity, elementContext = elementContext).apply(builderAction)
 }
 
 // endregion
@@ -170,7 +177,7 @@ public fun <E> KoneIterableCollection<E>.toKoneMutableIterableSet(elementContext
     if (elementContext is Hashing<E>)
         KoneResizableHashSet(elementContext = elementContext).apply { addAllFrom(this@toKoneMutableIterableSet) }
     else {
-        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        val backingList = KoneResizableArrayList(elementContext = elementContext)
         for (element in this) if (element !in backingList) backingList.add(element)
         KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList(elementContext).apply { addAllFrom(backingList) })
     }
@@ -181,7 +188,7 @@ public fun <E> Collection<E>.toKoneMutableIterableSet(elementContext: Equality<E
             for (element in this@toKoneMutableIterableSet) add(element)
         }
     else {
-        val backingList = KoneGrowableArrayList(initialCapacity = size.toUInt(), elementContext = elementContext)
+        val backingList = KoneResizableArrayList(elementContext = elementContext)
         for (element in this) if (element !in backingList) backingList.add(element)
         KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList(elementContext).apply { addAllFrom(backingList) })
     }
@@ -192,7 +199,7 @@ public fun <E> KoneList<E>.toKoneMutableIterableSet(elementContext: Equality<E> 
             for (index in 0u ..< this@toKoneMutableIterableSet.size) this.add(this@toKoneMutableIterableSet[index])
         }
     else {
-        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        val backingList = KoneResizableArrayList(elementContext = elementContext)
         for (index in indices) {
             val element = this[index]
             if (element !in backingList) backingList.add(element)
@@ -204,7 +211,7 @@ public fun <E> KoneIterableList<E>.toKoneMutableIterableSet(elementContext: Equa
     if (elementContext is Hashing<E>)
         KoneResizableHashSet(elementContext = elementContext).apply { addAllFrom(this@toKoneMutableIterableSet) }
     else {
-        val backingList = KoneGrowableArrayList(initialCapacity = size, elementContext = elementContext)
+        val backingList = KoneResizableArrayList(elementContext = elementContext)
         for (element in this) if (element !in backingList) backingList.add(element)
         KoneMutableListBackedSet(elementContext, backingList)
     }

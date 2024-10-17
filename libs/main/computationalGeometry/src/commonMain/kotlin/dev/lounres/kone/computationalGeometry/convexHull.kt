@@ -45,13 +45,13 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
     subspaceDimension: UInt,
     startFacet: P,
     otherPoints: KoneIterableCollection<V>,
-    computedFacesRegister: KoneMutableMap<KoneIterableSet<V>, P>,
+    computedFacesRegistry: KoneMutableMap<KoneIterableSet<V>, P>,
 ): P where A: Ring<N>, A: Order<N> {
     require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
     val allVertices = otherPoints.toKoneMutableIterableSet(elementContext = polytopeContext).apply { addAllFrom(startFacet.vertices) }
 
     scope {
-        val registeredFaceMaybe = computedFacesRegister.getMaybe(allVertices)
+        val registeredFaceMaybe = computedFacesRegistry.getMaybe(allVertices)
         if (registeredFaceMaybe is Some<P>) return registeredFaceMaybe.value
     }
 
@@ -70,7 +70,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
                 elementContext = koneIterableSetEquality(polytopeContext)
             )
         ).also {
-            computedFacesRegister[vertices] = it
+            computedFacesRegistry[vertices] = it
         }
     }
 
@@ -127,7 +127,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
                 subspaceDimension = subspaceDimension - 1u,
                 startFacet = subfacet,
                 otherPoints = newVertices,
-                computedFacesRegister = computedFacesRegister,
+                computedFacesRegistry = computedFacesRegistry,
             )
 
             allVertices.removeAllThat { it in newVertices && it !in newFacet.vertices }
@@ -146,13 +146,14 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
 
     // TODO: Separate polytope creation and polytope finding
     return addPolytope(convexHullVertices, convexHullFaces).also {
-        computedFacesRegister[convexHullVertices] = it
+        println("Created $it")
+        computedFacesRegistry[convexHullVertices] = it
     }
 }
 
 internal data class WrappingResult<N, P, V: P>(
     var polytope: P,
-    val computedFacesRegister: KoneMutableMap<KoneIterableSet<V>, P>,
+    val computedFacesRegistry: KoneMutableMap<KoneIterableSet<V>, P>,
     val startPoint: Point<N>,
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<N>,
 )
@@ -176,7 +177,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
                 subspaceDimension = subspaceDimension,
                 startFacet = wrappingResult.polytope,
                 otherPoints = otherPoints,
-                computedFacesRegister = wrappingResult.computedFacesRegister,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
             )
             wrappingResult.polytope = resultingPolytope
             val newVector = otherPoints.first().position - wrappingResult.startPoint
@@ -194,7 +195,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
                 subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
                 startFacet = wrappingResult.polytope,
                 otherPoints = otherPoints,
-                computedFacesRegister = wrappingResult.computedFacesRegister,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
             )
             wrappingResult.polytope = resultingPolytope
             wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(otherPoints.first().position - wrappingResult.startPoint)
@@ -233,7 +234,7 @@ internal fun <N, A, P, V: P> giftWrappingFull(
         val theOnlyVertex = points.single()
         return WrappingResult(
             polytope = theOnlyVertex,
-            computedFacesRegister = koneMutableMapOf(
+            computedFacesRegistry = koneMutableMapOf(
                 keyContext = koneIterableSetEquality(polytopeContext),
                 valueContext = polytopeContext
             ),

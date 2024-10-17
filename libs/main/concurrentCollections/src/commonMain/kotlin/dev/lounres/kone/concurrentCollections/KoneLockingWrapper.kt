@@ -6,7 +6,7 @@
 package dev.lounres.kone.concurrentCollections
 
 
-public interface KoneLockingWrapper {
-    public val backingImplementation: Any
-    public fun <R> synchronized(block: () -> R): R
-}
+//public interface KoneLockingWrapper {
+//    public val backingImplementation: Any
+//    public fun <R> synchronized(block: () -> R): R
+//}

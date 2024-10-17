@@ -14,8 +14,11 @@ import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 import kotlin.math.min
+import kotlin.random.Random
+import kotlin.random.nextUInt
 
 
+// TODO: Add view collections producers
 // TODO: Add operations for array value classes
 
 public fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.copyTo(destination: D): D {
@@ -34,6 +37,22 @@ public fun <E, D: KoneExtendableCollection<in E>> KoneList<E>.copyTo(destination
 public fun <E, D: KoneExtendableCollection<in E>> KoneIterableList<E>.copyTo(destination: D): D {
     for (element in this) destination.add(element)
     return destination
+}
+
+public operator fun <E> KoneExtendableCollection<E>.plusAssign(elements: KoneIterableCollection<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneExtendableCollection<E>.plusAssign(elements: KoneList<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneExtendableCollection<E>.plusAssign(elements: KoneIterableList<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneExtendableCollection<E>.plusAssign(element: E) {
+    add(element)
 }
 
 public fun <E> KoneIterable<E>.take(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> {
@@ -380,6 +399,17 @@ public inline fun <E, R> KoneIterableList<E>.firstOfMaybe(transform: (E) -> R, p
     }
     return None
 }
+
+public fun <E> KoneIterableCollection<E>.random(random: Random): E {
+    val index = random.nextUInt(0u, size)
+    val iterator = iterator()
+    for (i in 0u..<index) iterator.moveNext()
+    return iterator.getNext()
+}
+
+public fun <E> KoneList<E>.random(random: Random): E = get(random.nextUInt(0u, size))
+
+public fun <E> KoneIterableList<E>.random(random: Random): E = get(random.nextUInt(0u, size))
 
 public inline fun <E, R, D: KoneExtendableCollection<in R>> KoneIterable<E>.mapTo(destination: D, transform: (E) -> R): D {
     for (element in this) destination.add(transform(element))
@@ -745,7 +775,7 @@ public inline fun <E: R, R> KoneIterableList<E>.reduceIndexedMaybe(operation: (i
     return Some(accumulator)
 }
 
-// TODO: Add `reduce`-like extensions.
+// TODO: Add `reduce`-like extensions. Like `runningReduce`.
 
 // TODO: Add summing and multiplying extensions for primitives. Maybe.
 
@@ -856,3 +886,6 @@ public inline fun <E, K, V> KoneList<E>.groupBy(keyContext: Equality<K> = defaul
     groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
 public inline fun <E, K, V> KoneIterableList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
     groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
+
+// TODO: Add sorting extensions
+// TODO: Add shuffling extensions

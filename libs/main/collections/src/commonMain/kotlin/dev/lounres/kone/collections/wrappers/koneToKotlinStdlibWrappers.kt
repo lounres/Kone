@@ -459,9 +459,9 @@ internal class KotlinStdlibWrapperKoneMapEntries<K, V>(private val entries: Kone
 public fun <K, V> KoneMap<K, V>.asKotlinStdlib(): Map<K, V> = KotlinStdlibWrapperKoneMap(this)
 internal open class KotlinStdlibWrapperKoneMap<K, V>(protected open val map: KoneMap<K, V>): Map<K, V> {
     override val size: Int get() = map.size.toInt()
-    override val keys: Set<K> get() = map.keys.asKotlinStdlib()
-    override val values: Collection<V> get() = map.values.asKotlinStdlib()
-    override val entries: Set<Map.Entry<K, V>> get() = KotlinStdlibWrapperKoneMapEntries(map.entries)
+    override val keys: Set<K> get() = map.keysView.asKotlinStdlib()
+    override val values: Collection<V> get() = map.valuesView.asKotlinStdlib()
+    override val entries: Set<Map.Entry<K, V>> get() = KotlinStdlibWrapperKoneMapEntries(map.entriesView)
 
     override fun isEmpty(): Boolean = map.isEmpty()
 
@@ -580,9 +580,9 @@ internal class KotlinStdlibFalselyMutableWrapperSet<E>(val set: Set<E>): Mutable
 public fun <K, V> KoneMutableMap<K, V>.asKotlinStdlib(): MutableMap<K, V> = KotlinStdlibWrapperKoneMutableMap(this)
 internal open class KotlinStdlibWrapperKoneMutableMap<K, V>(protected open val map: KoneMutableMap<K, V>): MutableMap<K, V> {
     override val size: Int get() = map.size.toInt()
-    override val keys: MutableSet<K> get() = KotlinStdlibFalselyMutableWrapperSet(map.keys.asKotlinStdlib())
-    override val values: MutableCollection<V> get() = KotlinStdlibFalselyMutableWrapperCollection(map.values.asKotlinStdlib())
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>> get() = KotlinStdlibFalselyMutableWrapperSet(KotlinStdlibWrapperKoneMutableMapMutableEntries(map.entries))
+    override val keys: MutableSet<K> get() = KotlinStdlibFalselyMutableWrapperSet(map.keysView.asKotlinStdlib())
+    override val values: MutableCollection<V> get() = KotlinStdlibFalselyMutableWrapperCollection(map.valuesView.asKotlinStdlib())
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>> get() = KotlinStdlibFalselyMutableWrapperSet(KotlinStdlibWrapperKoneMutableMapMutableEntries(map.entriesView))
 
     override fun isEmpty(): Boolean = map.isEmpty()
 

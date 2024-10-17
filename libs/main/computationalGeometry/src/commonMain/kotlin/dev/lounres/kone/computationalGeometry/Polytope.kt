@@ -69,7 +69,7 @@ public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruct
 
     val thisPointToVertexMapping = this.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = this.polytopeContext) { it.position }
     val otherPointToVertexMapping = other.vertices.associateBy(keyContext = pointEquality(this@NE), valueContext = other.polytopeContext) { other { it.position } }
-    if (koneIterableSetEquality(pointEquality(this@NE)).invoke { thisPointToVertexMapping.keys neq otherPointToVertexMapping.keys }) return false
+    if (koneIterableSetEquality(pointEquality(this@NE)).invoke { thisPointToVertexMapping.keysView neq otherPointToVertexMapping.keysView }) return false
     for ((point, thisVertex) in thisPointToVertexMapping) thisToOtherVertexMapping[thisVertex] = otherPointToVertexMapping[point]
 
     for (dim in 1u..this.spaceDimension) {
@@ -78,7 +78,7 @@ public infix fun <N, NE: Equality<N>, P1, V1: P1, P2, V2: P2> PolytopicConstruct
             this.polytopes[dim].associateBy(keyContext = koneIterableListEquality(koneIterableSetEquality(other.polytopeContext))) { polytope -> this { polytope.faces.mapIndexed { dim, dimPolytopes -> dimPolytopes.map { thisToOtherPolytopesMapping[dim][it] }.toKoneIterableSet(other.polytopeContext) } } }
         val otherFacesToPolytopeMapping =
             other.polytopes[dim].associateBy(keyContext = koneIterableListEquality(koneIterableSetEquality(other.polytopeContext))) { other { it.faces } }
-        if (koneIterableSetEquality(koneIterableListEquality(koneIterableSetEquality(other.polytopeContext))).invoke { thisFacesToPolytopeMapping.keys neq otherFacesToPolytopeMapping.keys }) return false
+        if (koneIterableSetEquality(koneIterableListEquality(koneIterableSetEquality(other.polytopeContext))).invoke { thisFacesToPolytopeMapping.keysView neq otherFacesToPolytopeMapping.keysView }) return false
         for ((faces, thisPolytope) in thisFacesToPolytopeMapping) {
             dimMapping[thisPolytope] = koneIterableListEquality(koneIterableSetEquality(other.polytopeContext)).invoke { otherFacesToPolytopeMapping[faces] }
         }

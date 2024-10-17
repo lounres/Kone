@@ -9,16 +9,16 @@ import dev.lounres.kone.collections.KoneMap
 import dev.lounres.kone.collections.KoneMutableMap
 import dev.lounres.kone.collections.getOrNull
 import dev.lounres.kone.collections.koneMutableMapOf
-import dev.lounres.kone.comparison.AbsoluteEqualityContext
+import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.option.Option
 import kotlin.jvm.JvmInline
 
 
 @Suppress("UNCHECKED_CAST")
 @JvmInline
-public value class AttributionBuilder<out AO> @PublishedApi internal constructor(
+public value class AttributionBuilder<@Suppress("unused") out AO> @PublishedApi internal constructor(
     @PublishedApi
-    internal val attributeStorage: KoneMutableMap<Attribute<*>, Any?> = koneMutableMapOf(keyContext = AbsoluteEqualityContext)
+    internal val attributeStorage: KoneMutableMap<Attribute<*>, Any?> = koneMutableMapOf(keyContext = absoluteEquality())
 )/*: Attribution*/ {
     public operator fun contains(attribute: Attribute<*>): Boolean = attributeStorage.containsKey(attribute)
     public operator fun <T> get(attribute: Attribute<out T>): T = attributeStorage[attribute] as T

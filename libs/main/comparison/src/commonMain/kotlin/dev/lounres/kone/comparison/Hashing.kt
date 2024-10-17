@@ -17,3 +17,4 @@ public inline fun <E> Hashing(crossinline comparator: (left: E, right: E) -> Boo
     }
 
 public fun <E> defaultHashing(): Hashing<E> = DefaultContext
+public fun <E> absoluteHashing(): Hashing<E> = AbsoluteContext

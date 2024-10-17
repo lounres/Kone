@@ -2,12 +2,6 @@ plugins {
     alias(libs.plugins.kotlinx.atomicfu)
 }
 
-atomicfu {
-    transformJvm = true
-    jvmVariant = "VH"
-    transformJs = true
-}
-
 kotlin {
     sourceSets {
         commonMain {
