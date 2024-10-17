@@ -21,7 +21,7 @@ import org.openjdk.jmh.annotations.Level
 class DoubleBenchmarks {
     companion object {
         val numberContext = Double.field
-        val euclideanSpaceScope = numberContext.euclideanSpaceScope
+        val euclideanSpaceScope = numberContext.euclideanKategoryScope
     }
 
     @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)

@@ -18,7 +18,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E> KoneLazyList(size: UInt, generator: (UInt) -> E): KoneLazyList<E, Equality<E>> =
+public fun <E> KoneLazyList(size: UInt, generator: (index: UInt) -> E): KoneLazyList<E, Equality<E>> =
     KoneLazyList(
         size = size,
         elementContext = defaultEquality(),

@@ -18,7 +18,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E> KoneVirtualList(size: UInt, generator: (UInt) -> E): KoneVirtualList<E, Equality<E>> =
+public fun <E> KoneVirtualList(size: UInt, generator: (index: UInt) -> E): KoneVirtualList<E, Equality<E>> =
     KoneVirtualList(size = size, elementContext = defaultEquality(), generator = generator)
 
 internal class KoneVirtualListDescriptor(elementDescriptor: SerialDescriptor):

@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.utils.iterator
+import dev.lounres.kone.collections.utils.reversed
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
@@ -41,6 +43,22 @@ public fun <E> KoneRemovableCollection<E>.retainAllFrom(elements: KoneCollection
 
 public fun <E> KoneExtendableCollection<E>.addAll(vararg elements: E) {
     addAllFrom(KoneArray(elements))
+}
+
+public fun <E> KoneDequeue<in E>.addLastAllFrom(elements: KoneList<E>) {
+    for (index in 0u..<elements.size) addLast(elements[index])
+}
+
+public fun <E> KoneDequeue<in E>.addLastAllFrom(elements: KoneIterableCollection<E>) {
+    for (element in elements) addLast(element)
+}
+
+public fun <E> KoneDequeue<in E>.addFirstAllFrom(elements: KoneList<E>) {
+    for (index in elements.size - 1u downTo 0u) addFirst(elements[index])
+}
+
+public fun <E> KoneDequeue<in E>.addFirstAllFrom(elements: KoneIterableCollection<E>) {
+    for (element in elements.toKoneIterableList().iterator().reversed()) addFirst(element)
 }
 
 public fun <E> KoneDequeue<out E>.getFirstOrNull(): E? = if (size > 0u) getFirst() else null

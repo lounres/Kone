@@ -11,7 +11,7 @@ import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 
 
-public interface VectorSpace<N> : KoneContext {
+public interface VectorKategory<N> : KoneContext {
     public val rowVectorEquality: Equality<RowVector<N>>
     public val columnVectorEquality: Equality<ColumnVector<N>>
     public val matrixEquality: Equality<Matrix<N>>
@@ -45,7 +45,7 @@ public interface VectorSpace<N> : KoneContext {
     public operator fun RowVector<N>.times(other: ColumnVector<N>): N
 }
 
-internal class VectorSpaceWithNumberRing<N, out A: Ring<N>>(val numberRing: A) : VectorSpace<N> {
+internal class VectorKategoryWithNumberRing<N, out A: Ring<N>>(val numberRing: A) : VectorKategory<N> {
     override val rowVectorEquality: Equality<RowVector<N>> get() = rowVectorEquality(numberRing)
     override val columnVectorEquality: Equality<ColumnVector<N>> get() = columnVectorEquality(numberRing)
     override val matrixEquality: Equality<Matrix<N>> get() = MatrixEquality(numberRing)

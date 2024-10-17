@@ -5,8 +5,11 @@
 
 package dev.lounres.kone.computationalGeometry
 
+import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
@@ -18,32 +21,32 @@ import kotlin.jvm.JvmName
 public open /*value*/ class Vector<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Vector(${coordinates.coefficients})"
 }
-////@JvmInline
-//public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
-//    init {
-//        require(coordinates.size == 2u) { "Cannot create a euclidean vector of dimension 2 from column vector of size ${coordinates.size}" }
-//    }
-//    public val x: N get() = coordinates[0u]
-//    public val y: N get() = coordinates[1u]
-//
-//    override fun toString(): String = "Vector2(${coordinates.coefficients})"
-//}
+//@JvmInline
+public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
+    init {
+        require(coordinates.size == 2u) { "Cannot create a euclidean vector of dimension 2 from column vector of size ${coordinates.size}" }
+    }
+    public val x: N get() = coordinates[0u]
+    public val y: N get() = coordinates[1u]
+
+    override fun toString(): String = "Vector2(${coordinates.coefficients})"
+}
 
 // FIXME: KT-42977
 //@JvmInline
 public open /*value*/ class Point<out N>(public open val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Point(${coordinates.coefficients})"
 }
-////@JvmInline
-//public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
-//    init {
-//        require(coordinates.size == 2u) { "Cannot create a euclidean point of dimension 2 from column vector of size ${coordinates.size}" }
-//    }
-//    public val x: N get() = coordinates[0u]
-//    public val y: N get() = coordinates[1u]
-//
-//    override fun toString(): String = "Point2(${coordinates.coefficients})"
-//}
+//@JvmInline
+public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
+    init {
+        require(coordinates.size == 2u) { "Cannot create a euclidean point of dimension 2 from column vector of size ${coordinates.size}" }
+    }
+    public val x: N get() = coordinates[0u]
+    public val y: N get() = coordinates[1u]
+
+    override fun toString(): String = "Point2(${coordinates.coefficients})"
+}
 
 public fun <N> Vector(coordinates: MDList1<N>): Vector<N> = Vector(ColumnVector(coordinates))
 public fun <N> Vector(vararg coordinates: N): Vector<N> = Vector(ColumnVector(*coordinates))
@@ -53,16 +56,37 @@ public fun <N> Point(coordinates: MDList1<N>): Point<N> = Point(ColumnVector(coo
 public fun <N> Point(vararg coordinates: N): Point<N> = Point(ColumnVector(*coordinates))
 public fun <N> Point(size: UInt, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, initializer))
 
-//context(EuclideanSpace<N, A>)
-//public infix fun <N, A> Vector2<N>.cross(other: Vector2<N>): N where A: Ring<N>, A: Order<N> = numberRing { this.x * other.y - this.y * other.x }
-//context(EuclideanSpace<N, A>)
-//@Suppress("LocalVariableName")
-//public fun <N, A> Point2<N>.inTriangle(P: Point2<N>, Q: Point2<N>, R: Point2<N>): Boolean where A: Ring<N>, A: Order<N> = numberRing {
-//    val a = ((this - P) cross (Q - P)).sign
-//    val b = ((this - Q) cross (R - Q)).sign
-//    val c = ((this - R) cross (P - R)).sign
-//    return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)
-//}
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.unaryPlus(): Vector2<N> = Vector2(((this as Vector<N>).unaryPlus()).coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.unaryMinus(): Vector2<N> = Vector2((this as Vector<N>).unaryMinus().coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.plus(other: Vector2<N>): Vector2<N> = Vector2((this as Vector<N>).plus(other as Vector<N>).coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.minus(other: Vector2<N>): Vector2<N> = Vector2((this as Vector<N>).minus(other as Vector<N>).coordinates)
+
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.times(other: N): Vector2<N> = Vector2((this as Vector<N>).times(other).coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> N.times(other: Vector2<N>): Vector2<N> = Vector2(this.times(other as Vector<N>).coordinates)
+
+context(EuclideanKategory<N>)
+public operator fun <N> Point2<N>.plus(other: Vector2<N>): Point2<N> = Point2((this as Point<N>).plus(other as Vector<N>).coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> Vector2<N>.plus(other: Point2<N>): Point2<N> = Point2((this as Vector<N>).plus(other as Point<N>).coordinates)
+context(EuclideanKategory<N>)
+public operator fun <N> Point2<N>.minus(other: Point2<N>): Vector2<N> = Vector2((this as Point<N>).minus(other as Point<N>).coordinates)
+
+context(A)
+public infix fun <N, A> Vector2<N>.cross(other: Vector2<N>): N where A: Ring<N> = this.x * other.y - this.y * other.x
+context(A, EuclideanKategory<N>)
+@Suppress("LocalVariableName")
+public fun <N, A> Point2<N>.inTriangle(P: Point2<N>, Q: Point2<N>, R: Point2<N>): Boolean where A: Ring<N>, A: Order<N> {
+    val a = ((this - P) cross (Q - P)).sign
+    val b = ((this - Q) cross (R - Q)).sign
+    val c = ((this - R) cross (P - R)).sign
+    return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0)
+}
 
 internal class PointEquality<N>(val columnVectorContext: Equality<ColumnVector<N>>) : Equality<Point<N>> {
     override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }

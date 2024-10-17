@@ -6,13 +6,13 @@
 package dev.lounres.kone.linearAlgebra.experiment2
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.multidimensionalCollections.experiment2.MDSpace
+import dev.lounres.kone.multidimensionalCollections.experiment2.MDKategory
 import dev.lounres.kone.multidimensionalCollections.requireShapeEquality
 import kotlin.jvm.JvmName
 
 context(A, MDS)
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface LinearSpace<N, F, V: F, M: F, out A: Ring<N>, out MDS: MDSpace<N, F>> {
+public interface LinearSpace<N, F, V: F, M: F, out A: Ring<N>, out MDS: MDKategory<N, F>> {
     public val V.size: UInt
     public operator fun V.get(index: UInt): N = get(uintArrayOf(index))
 

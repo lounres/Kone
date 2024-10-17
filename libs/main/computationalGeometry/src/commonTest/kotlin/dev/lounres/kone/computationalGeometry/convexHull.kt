@@ -13,7 +13,7 @@ import kotlin.test.Test
 
 class ConvexHullTest {
     @Test
-    fun `MD gift wrapping test 1`(): Unit = Long.ring.euclideanSpace {
+    fun `MD gift wrapping test 1`(): Unit = Long.ring.euclideanKategory {
         val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.ring) {
             val vertices = koneIterableListOf(
                 addVertex(Point(0, 0, 0L)),

@@ -24,7 +24,7 @@ import java.math.BigInteger
 class LongRingBenchmarks {
     companion object {
         val numberContext = Long.ring
-        val euclideanSpaceScope = numberContext.euclideanSpaceScope
+        val euclideanSpaceScope = numberContext.euclideanKategoryScope
     }
 
     @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)
@@ -287,7 +287,7 @@ class LongRingBenchmarks {
 class BigIntegerRingBenchmarks {
     companion object {
         val numberContext = BigIntegerRing
-        val euclideanSpaceScope = numberContext.euclideanSpaceScope
+        val euclideanSpaceScope = numberContext.euclideanKategoryScope
     }
 
     @OutputTimeUnit(BenchmarkTimeUnit.MICROSECONDS)

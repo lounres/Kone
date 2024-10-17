@@ -21,7 +21,7 @@ import kotlinx.serialization.Serializable
 public class KoneLazyList<E, EC: Equality<E>>(
     override val size: UInt,
     override val elementContext: EC,
-    private val generator: (UInt) -> E,
+    private val generator: (index: UInt) -> E,
 ) : KoneListWithContext<E, EC>, KoneSettableIterableList<E> {
     private val buffer: KoneMutableArray<Option<E>> = KoneMutableArray(size) { None }
 

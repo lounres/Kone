@@ -9,6 +9,7 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
+import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.computationalGeometry.utils.any
@@ -17,7 +18,7 @@ import dev.lounres.kone.scope
 import dev.lounres.kone.option.Some
 
 
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrappingAtom(
     startPoint: Point<N>,
     normalGiftWrappingVector: Vector<N>,
@@ -40,7 +41,7 @@ internal fun <N, A, P, V: P> giftWrappingAtom(
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrappingIncrement(
     subspaceDimension: UInt,
     startFacet: P,
@@ -83,15 +84,14 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
     for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
     convexHullFaces[subspaceDimension-1u].add(startFacet)
 
-    val facetsToProcess = koneMutableIterableSetOf<P>(elementContext = polytopeContext) // TODO: Replace with queue
+    val facetsToProcess: KoneDequeue<P> = KoneResizableLinkedArrayList(polytopeContext)
     val subfacetsToProcess = koneMutableIterableSetOf<P>(elementContext = polytopeContext)
 
-    facetsToProcess.add(startFacet)
+    facetsToProcess.addLast(startFacet)
     subfacetsToProcess.addAllFrom(startFacet.facesOfDimension(subspaceDimension - 2u))
 
     while (facetsToProcess.isNotEmpty()) {
-        val facet = facetsToProcess.first()
-        facetsToProcess.remove(facet)
+        val facet = facetsToProcess.popFirst()
         for (subfacet in facet.facesOfDimension(subspaceDimension - 2u)) if (subfacet in subfacetsToProcess) {
             val startPoint: Point<N>
             val normalGiftWrappingVector: Vector<N>
@@ -135,7 +135,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
             for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
             convexHullFaces[subspaceDimension-1u].add(newFacet)
 
-            facetsToProcess.add(newFacet)
+            facetsToProcess.addLast(newFacet)
             for (newSubfacet in newFacet.facesOfDimension(subspaceDimension - 2u))
                 if (newSubfacet in subfacetsToProcess) subfacetsToProcess.remove(newSubfacet)
                 else subfacetsToProcess.add(newSubfacet)
@@ -158,7 +158,7 @@ internal data class WrappingResult<N, P, V: P>(
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<N>,
 )
 
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrappingExtension(
     subspaceDimension: UInt,
     wrappingResult: WrappingResult<N, P, V>,
@@ -224,7 +224,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
     }
 }
 
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 internal fun <N, A, P, V: P> giftWrappingFull(
     subspaceDimension: UInt,
     points: KoneIterableCollection<V>,
@@ -260,7 +260,7 @@ internal fun <N, A, P, V: P> giftWrappingFull(
     return wrappingResult
 }
 
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWrapping(): P where A: Ring<N>, A: Order<N> {
     require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
     return giftWrappingFull(spaceDimension, this).polytope

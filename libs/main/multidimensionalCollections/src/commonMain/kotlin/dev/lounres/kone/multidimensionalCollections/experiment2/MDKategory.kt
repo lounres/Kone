@@ -10,7 +10,7 @@ import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.requireShapeEquality
 
 
-public interface MDSpace<E, F>: KoneContext {
+public interface MDKategory<E, F>: KoneContext {
     public val F.shape: Shape
     public val F.dimension: UInt get() = shape.size
     public operator fun F.get(index: UIntArray): E

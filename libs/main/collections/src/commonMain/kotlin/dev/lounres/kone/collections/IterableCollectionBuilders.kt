@@ -57,7 +57,7 @@ public fun <E> koneMutableIterableListOf(vararg elements: E, elementContext: Equ
     KoneResizableArrayList(elements.size.toUInt(), elementContext = elementContext) { elements[it.toInt()] }
 
 public fun <E> KoneIterable<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
-    if (this is KoneIterableCollection<E>) return this.toKoneMutableIterableList()
+    if (this is KoneIterableCollection<E>) return this.toKoneMutableIterableList(elementContext)
 
     val result = KoneResizableArrayList(elementContext = elementContext)
     for (element in this) result.add(element)
@@ -88,6 +88,40 @@ public fun <E> KoneList<E>.toKoneMutableIterableList(elementContext: Equality<E>
 public fun <E> KoneIterableList<E>.toKoneMutableIterableList(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableList<E> {
     val iterator = iterator()
     return KoneResizableArrayList(size, elementContext = elementContext) { iterator.next() }
+}
+
+public fun <E> KoneIterable<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> {
+    if (this is KoneIterableCollection<E>) return this.toKoneSettableIterableList(elementContext)
+    
+    val result = KoneResizableArrayList(elementContext = elementContext)
+    for (element in this) result.add(element)
+    return KoneSettableIterableList(result.size, elementContext) { result[it] }
+}
+
+public fun <E> Iterable<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> {
+    if (this is Collection<E>) return this.toKoneSettableIterableList(elementContext = elementContext)
+    
+    val result = KoneResizableArrayList(elementContext = elementContext)
+    for (element in this) result.add(element)
+    return KoneSettableIterableList(result.size, elementContext) { result[it] }
+}
+
+public fun <E> KoneIterableCollection<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> {
+    val iterator = iterator()
+    return KoneSettableIterableList(size, elementContext = elementContext) { iterator.next() }
+}
+
+public fun <E> Collection<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> {
+    val iterator = iterator()
+    return KoneSettableIterableList(size.toUInt(), elementContext = elementContext) { iterator.next() }
+}
+
+public fun <E> KoneList<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> =
+    KoneSettableIterableList(size, elementContext = elementContext) { this[it] }
+
+public fun <E> KoneIterableList<E>.toKoneSettableIterableList(elementContext: Equality<E> = defaultEquality()): KoneSettableIterableList<E> {
+    val iterator = iterator()
+    return KoneSettableIterableList(size, elementContext = elementContext) { iterator.next() }
 }
 
 public fun <E> KoneIterable<E>.toKoneIterableList(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =

@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
 public class KoneVirtualList<E, EC: Equality<E>>(
     override val size: UInt,
     override val elementContext: EC,
-    private val generator: (UInt) -> E
+    private val generator: (index: UInt) -> E
 ) : KoneListWithContext<E, EC>, KoneIterableList<E> {
     override fun get(index: UInt): E = generator(index)
 

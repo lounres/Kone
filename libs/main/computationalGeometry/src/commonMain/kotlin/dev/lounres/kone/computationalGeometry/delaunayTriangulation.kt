@@ -19,7 +19,7 @@ import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
 
 // TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
 //   and that there are at least 2 triangles in the triangulation
-context(A, EuclideanSpace<N>, MutablePolytopicConstruction<N, P, V>)
+context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
 public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulation(): KoneIterableList<P> where A: Ring<N>, A: Order<N> {
     val theDimension = spaceDimension + 1u
     val outerPolytopeContext = this@MutablePolytopicConstruction.polytopeContext

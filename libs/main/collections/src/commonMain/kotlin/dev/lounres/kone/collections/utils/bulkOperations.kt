@@ -8,7 +8,10 @@ package dev.lounres.kone.collections.utils
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneLazyList
+import dev.lounres.kone.collections.implementations.KoneVirtualList
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
@@ -18,7 +21,6 @@ import kotlin.random.Random
 import kotlin.random.nextUInt
 
 
-// TODO: Add view collections producers
 // TODO: Add operations for array value classes
 
 public fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.copyTo(destination: D): D {
@@ -83,6 +85,12 @@ public fun <E> KoneIterableList<E>.take(n: UInt, elementContext: Equality<E> = d
     return KoneIterableList(size, elementContext = elementContext) { iterator.getAndMoveNext() }
 }
 
+public fun <E> KoneList<E>.takeVirtually(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
+    KoneVirtualList(if (size >= n) n else size, elementContext) { this[it] }
+
+public fun <E> KoneList<E>.takeLazily(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
+    KoneLazyList(if (size >= n) n else size, elementContext) { this[it] }
+
 public fun <E> KoneIterable<E>.drop(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> {
     if (n == 0u) return toKoneIterableList(elementContext = elementContext)
     val list = KoneGrowableArrayList(elementContext = elementContext)
@@ -120,6 +128,12 @@ public fun <E> KoneIterableList<E>.drop(n: UInt, elementContext: Equality<E> = d
     }
     return list.optimizeReadOnlyList()
 }
+
+public fun <E> KoneList<E>.dropVirtually(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
+    KoneVirtualList(if (size >= n) size - n else 0u, elementContext) { this[it + n] }
+
+public fun <E> KoneList<E>.dropLazily(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
+    KoneLazyList(if (size >= n) size - n else 0u, elementContext) { this[it + n] }
 
 public inline fun <E> KoneIterable<E>.forEach(block: (value: E) -> Unit) {
     for (element in this) block(element)
@@ -454,6 +468,12 @@ public inline fun <E, R> KoneIterableList<E>.map(elementContext: Equality<R> = d
     return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(iterator.next()) }
 }
 
+public inline fun <E, R> KoneList<E>.mapVirtually(elementContext: Equality<R> = defaultEquality(), crossinline transform: (E) -> R): KoneIterableList<R> =
+    KoneVirtualList(size = size, elementContext = elementContext) { transform(get(it)) }
+
+public inline fun <E, R> KoneList<E>.mapLazily(elementContext: Equality<R> = defaultEquality(), crossinline transform: (E) -> R): KoneIterableList<R> =
+    KoneLazyList(size = size, elementContext = elementContext) { transform(get(it)) }
+
 public inline fun <E, R> KoneIterable<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
     mapIndexedTo(koneMutableIterableListOf(elementContext = elementContext), transform)
 public inline fun <E, R> KoneList<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> =
@@ -462,6 +482,12 @@ public inline fun <E, R> KoneIterableList<E>.mapIndexed(elementContext: Equality
     val iterator = iterator()
     return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, iterator.next()) }
 }
+
+public inline fun <E, R> KoneList<E>.mapIndexedVirtually(elementContext: Equality<R> = defaultEquality(), crossinline transform: (index: UInt, E) -> R): KoneIterableList<R> =
+    KoneVirtualList(size = size, elementContext = elementContext) { transform(it, get(it)) }
+
+public inline fun <E, R> KoneList<E>.mapIndexedLazily(elementContext: Equality<R> = defaultEquality(), crossinline transform: (index: UInt, E) -> R): KoneIterableList<R> =
+    KoneLazyList(size = size, elementContext = elementContext) { transform(it, get(it)) }
 
 public inline fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
@@ -786,19 +812,19 @@ public fun <E> KoneList<E>.sum(): E = fold(zero) { acc, e -> acc + e }
 context(Ring<E>)
 public fun <E> KoneIterableList<E>.sum(): E = fold(zero) { acc, e -> acc + e }
 
-context(Ring<A>)
-public fun <E, A> KoneIterable<E>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
-context(Ring<A>)
-public fun <E, A> KoneList<E>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
-context(Ring<A>)
-public fun <E, A> KoneIterableList<E>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneList<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneIterableList<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
 
-context(Ring<A>)
-public inline fun <E, A> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
-context(Ring<A>)
-public inline fun <E, A> KoneList<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
-context(Ring<A>)
-public inline fun <E, A> KoneIterableList<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneList<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneIterableList<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
 context(Ring<E>)
 public fun <E> KoneIterable<E>.product(): E = fold(one) { acc, e -> acc * e }
@@ -807,19 +833,19 @@ public fun <E> KoneList<E>.product(): E = fold(one) { acc, e -> acc * e }
 context(Ring<E>)
 public fun <E> KoneIterableList<E>.product(): E = fold(one) { acc, e -> acc * e }
 
-context(Ring<A>)
-public fun <E, A> KoneIterable<E>.productOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc * selector(e) }
-context(Ring<A>)
-public fun <E, A> KoneList<E>.productOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc * selector(e) }
-context(Ring<A>)
-public fun <E, A> KoneIterableList<E>.productOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc * selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc * selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneList<E>.productOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc * selector(e) }
+context(Ring<N>)
+public fun <E, N> KoneIterableList<E>.productOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc * selector(e) }
 
-context(Ring<A>)
-public inline fun <E, A> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
-context(Ring<A>)
-public inline fun <E, A> KoneList<E>.productOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
-context(Ring<A>)
-public inline fun <E, A> KoneIterableList<E>.productOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneList<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
+context(Ring<N>)
+public inline fun <E, N> KoneIterableList<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
 
 public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableIterableList<E>>> KoneIterable<E>.groupByTo(destination: D, elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): D {
     for (element in this) {
@@ -887,5 +913,121 @@ public inline fun <E, K, V> KoneList<E>.groupBy(keyContext: Equality<K> = defaul
 public inline fun <E, K, V> KoneIterableList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
     groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
 
-// TODO: Add sorting extensions
-// TODO: Add shuffling extensions
+public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (this[i] < valueInTheMiddle) i++
+            while (this[j] > valueInTheMiddle) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val middle = divide(from, to)
+        if (from < middle - 1u) quickSort(from, middle - 1u)
+        if (middle < to) quickSort(middle, to)
+    }
+    quickSort(0u, lastIndex)
+}
+context(Order<E>)
+public fun <E> KoneSettableList<E>.sort() {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (this[i] < valueInTheMiddle) i++
+            while (this[j] > valueInTheMiddle) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val middle = divide(from, to)
+        if (from < middle - 1u) quickSort(from, middle - 1u)
+        if (middle < to) quickSort(middle, to)
+    }
+    quickSort(0u, lastIndex)
+}
+public fun <E> KoneSettableList<E>.sortWith(comparator: Comparator<E>) {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (comparator.compare(this[i], valueInTheMiddle) < 0) i++
+            while (comparator.compare(this[j], valueInTheMiddle) > 0) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val middle = divide(from, to)
+        if (from < middle - 1u) quickSort(from, middle - 1u)
+        if (middle < to) quickSort(middle, to)
+    }
+    quickSort(0u, lastIndex)
+}
+
+public fun <E: Comparable<E>> KoneIterable<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+public fun <E: Comparable<E>> KoneIterableCollection<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+public fun <E: Comparable<E>> KoneList<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+public fun <E: Comparable<E>> KoneIterableList<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+
+context(Order<E>)
+public fun <E> KoneIterable<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+context(Order<E>)
+public fun <E> KoneIterableCollection<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+context(Order<E>)
+public fun <E> KoneList<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+context(Order<E>)
+public fun <E> KoneIterableList<E>.sorted(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sort() }
+
+public fun <E> KoneIterable<E>.sortedWith(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWith(comparator) }
+public fun <E> KoneIterableCollection<E>.sortedWith(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWith(comparator) }
+public fun <E> KoneList<E>.sortedWith(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWith(comparator) }
+public fun <E> KoneIterableList<E>.sorted(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWith(comparator) }
+
+// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
+public fun <E> KoneSettableList<E>.shuffle(random: Random = Random) {
+    for (i in 0u ..< size - 1u) {
+        val j = random.nextUInt(i, size)
+        this[i] = this[j].also { this[j] = this[i] }
+    }
+}
+
+public fun <E> KoneIterable<E>.shuffled(random: Random = Random): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { shuffle(random) }
+public fun <E> KoneIterableCollection<E>.shuffled(random: Random = Random): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { shuffle(random) }
+public fun <E> KoneList<E>.shuffled(random: Random = Random): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { shuffle(random) }
+public fun <E> KoneIterableList<E>.shuffled(random: Random = Random): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { shuffle(random) }

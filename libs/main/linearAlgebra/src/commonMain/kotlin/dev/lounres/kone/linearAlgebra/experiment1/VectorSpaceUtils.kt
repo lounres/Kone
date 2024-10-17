@@ -17,9 +17,9 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public data class VectorSpaceScope<N, A: Ring<N>, V: VectorSpace<N>>(val numberRing: A, val vectorSpace: V)
+public data class VectorKategoryScope<N, A: Ring<N>, V: VectorKategory<N>>(val numberRing: A, val vectorSpace: V)
 
-public inline operator fun <N, A: Ring<N>, V: VectorSpace<N>, R> VectorSpaceScope<N, A, V>.invoke(block: context(A, V) () -> R): R {
+public inline operator fun <N, A: Ring<N>, V: VectorKategory<N>, R> VectorKategoryScope<N, A, V>.invoke(block: context(A, V) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -27,19 +27,19 @@ public inline operator fun <N, A: Ring<N>, V: VectorSpace<N>, R> VectorSpaceScop
     return block(this.numberRing, this.vectorSpace)
 }
 
-public val <N> Ring<N>.vectorSpace: VectorSpace<N>
-    get() = VectorSpaceWithNumberRing(this)
+public val <N> Ring<N>.vectorKategory: VectorKategory<N>
+    get() = VectorKategoryWithNumberRing(this)
 
-public val <N, A: Ring<N>> A.vectorSpaceScope: VectorSpaceScope<N, A, VectorSpace<N>>
-    get() = VectorSpaceScope(this, vectorSpace)
+public val <N, A: Ring<N>> A.vectorKategoryScope: VectorKategoryScope<N, A, VectorKategory<N>>
+    get() = VectorKategoryScope(this, vectorKategory)
 
 public inline fun <N, A: Ring<N>, R> A.vectorSpaceScope(
-    block: context(A, VectorSpace<N>) () -> R
+    block: context(A, VectorKategory<N>) () -> R
 ): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return this.vectorSpaceScope.invoke(block)
+    return this.vectorKategoryScope.invoke(block)
 }
 
 context(Ring<N>)
@@ -65,11 +65,11 @@ public val <N> Matrix<N>.isAntisymmetric: Boolean
         return true
     }
 
-context(A, VectorSpace<N>)
+context(A, VectorKategory<N>)
 public val <N, A> Matrix<N>.transpose: Matrix<N> where A : Ring<N>
     get() = Matrix(this.columnNumber, this.rowNumber) { row, column -> this[column, row] }
 
-context(A, VectorSpace<N>)
+context(A, VectorKategory<N>)
 public val <N, A> Matrix<N>.det: N where A : Ring<N>
     get() = TODO("Not yet implemented")
 
@@ -77,7 +77,7 @@ public val <N, A> Matrix<N>.det: N where A : Ring<N>
 //public val <N, A> Matrix<N>.reciprocal: Matrix<N> where A : Ring<N>
 //    get() = (this.getFeature<_, InvertibleMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute reciprocal matrix")).inverseMatrix
 
-context(A, VectorSpace<N>)
+context(A, VectorKategory<N>)
 public val <N, A> Matrix<N>.adjugate: Matrix<N> where A : Ring<N>
     get() = TODO("Not yet implemented")
 
@@ -90,7 +90,7 @@ public data class MatrixMinorComputerFeature<N>(private val matrix: Matrix<N>, p
         )
 }
 
-context(A, VectorSpace<N>)
+context(A, VectorKategory<N>)
 public val <N, A: Ring<N>> Matrix<N>.minor: MatrixMinorComputerFeature<N>
     get() = MatrixMinorComputerFeature(this) { rowIndices, columnIndices ->
         require(rowIndices.size == columnIndices.size) { TODO("Error message is not specified") }
