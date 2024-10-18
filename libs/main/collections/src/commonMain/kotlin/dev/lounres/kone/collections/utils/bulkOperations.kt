@@ -8,8 +8,10 @@ package dev.lounres.kone.collections.utils
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneLazyList
 import dev.lounres.kone.collections.implementations.KoneVirtualList
+import dev.lounres.kone.collections.utils.divide
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
@@ -913,6 +915,9 @@ public inline fun <E, K, V> KoneList<E>.groupBy(keyContext: Equality<K> = defaul
 public inline fun <E, K, V> KoneIterableList<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneIterableList<V>> =
     groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneIterableListEquality(valueContext)), valueContext = valueContext, keySelector = keySelector, valueTransform = valueTransform)
 
+@PublishedApi
+internal data class RangeToSort(val from: UInt, val to: UInt)
+
 public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
     fun divide(from: UInt, to: UInt): UInt {
         var i = from
@@ -930,9 +935,14 @@ public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val middle = divide(from, to)
-        if (from < middle - 1u) quickSort(from, middle - 1u)
-        if (middle < to) quickSort(middle, to)
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
     }
     quickSort(0u, lastIndex)
 }
@@ -954,9 +964,14 @@ public fun <E> KoneSettableList<E>.sort() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val middle = divide(from, to)
-        if (from < middle - 1u) quickSort(from, middle - 1u)
-        if (middle < to) quickSort(middle, to)
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
     }
     quickSort(0u, lastIndex)
 }
@@ -977,11 +992,302 @@ public fun <E> KoneSettableList<E>.sortWith(comparator: Comparator<E>) {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val middle = divide(from, to)
-        if (from < middle - 1u) quickSort(from, middle - 1u)
-        if (middle < to) quickSort(middle, to)
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
     }
     quickSort(0u, lastIndex)
+}
+
+public fun <E: Comparable<E>> KoneSettableList<E>.sortDescending() {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (this[i] > valueInTheMiddle) i++
+            while (this[j] < valueInTheMiddle) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
+    }
+    quickSort(0u, lastIndex)
+}
+context(Order<E>)
+public fun <E> KoneSettableList<E>.sortDescending() {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (this[i] > valueInTheMiddle) i++
+            while (this[j] < valueInTheMiddle) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
+    }
+    quickSort(0u, lastIndex)
+}
+public fun <E> KoneSettableList<E>.sortWithDescending(comparator: Comparator<E>) {
+    fun divide(from: UInt, to: UInt): UInt {
+        var i = from
+        var j = to
+        val valueInTheMiddle = this[(from + to) / 2u]
+        while (true) {
+            while (comparator.compare(this[i], valueInTheMiddle) > 0) i++
+            while (comparator.compare(this[j], valueInTheMiddle) < 0) j--
+            if (i <= j) {
+                this[i] = this[j].also { this[j] = this[i] }
+                i++
+                j--
+            } else break
+        }
+        return i
+    }
+    fun quickSort(from: UInt, to: UInt) {
+        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        sortQueue.addLast(RangeToSort(from, to))
+        while (sortQueue.isNotEmpty()) {
+            val (from, to) = sortQueue.popFirst()
+            val middle = divide(from, to)
+            if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+            if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+        }
+    }
+    quickSort(0u, lastIndex)
+}
+
+// TODO: Move inside the following `sortBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.divide(from: UInt, to: UInt, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (selector(this[i]) < valueInTheMiddle) i++
+        while (selector(this[j]) > valueInTheMiddle) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.quickSort(from: UInt, to: UInt, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divide(from, to, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+public inline fun <E, R: Comparable<R>> KoneSettableList<E>.sortBy(selector: (E) -> R) {
+    quickSort(0u, lastIndex, selector)
+}
+// TODO: Move inside the following `sortBy` function when local inline functions will be ready
+context(Order<R>)
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (selector(this[i]) < valueInTheMiddle) i++
+        while (selector(this[j]) > valueInTheMiddle) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortBy` function when local inline functions will be ready
+context(Order<R>)
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divide(from, to, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+context(Order<R>)
+public inline fun <E, R> KoneSettableList<E>.sortBy(selector: (E) -> R) {
+    quickSort(0u, lastIndex, selector)
+}
+// TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (comparator.compare(selector(this[i]), valueInTheMiddle) < 0) i++
+        while (comparator.compare(selector(this[j]), valueInTheMiddle) > 0) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divide(from, to, comparator, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+public inline fun <E, R> KoneSettableList<E>.sortWithBy(comparator: Comparator<R>, selector: (E) -> R) {
+    quickSort(0u, lastIndex, comparator, selector)
+}
+
+// TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.divideDescending(from: UInt, to: UInt, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (selector(this[i]) > valueInTheMiddle) i++
+        while (selector(this[j]) < valueInTheMiddle) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divideDescending(from, to, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+public inline fun <E, R: Comparable<R>> KoneSettableList<E>.sortByDescending(selector: (E) -> R) {
+    quickSortDescending(0u, lastIndex, selector)
+}
+// TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
+context(Order<R>)
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: UInt, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (selector(this[i]) > valueInTheMiddle) i++
+        while (selector(this[j]) < valueInTheMiddle) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
+context(Order<R>)
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divideDescending(from, to, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+context(Order<R>)
+public inline fun <E, R> KoneSettableList<E>.sortByDescending(selector: (E) -> R) {
+    quickSortDescending(0u, lastIndex, selector)
+}
+// TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R): UInt {
+    var i = from
+    var j = to
+    val valueInTheMiddle = selector(this[(from + to) / 2u])
+    while (true) {
+        while (comparator.compare(selector(this[i]), valueInTheMiddle) > 0) i++
+        while (comparator.compare(selector(this[j]), valueInTheMiddle) < 0) j--
+        if (i <= j) {
+            this[i] = this[j].also { this[j] = this[i] }
+            i++
+            j--
+        } else break
+    }
+    return i
+}
+// TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
+@PublishedApi
+internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R) {
+    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    sortQueue.addLast(RangeToSort(from, to))
+    while (sortQueue.isNotEmpty()) {
+        val (from, to) = sortQueue.popFirst()
+        val middle = divideDescending(from, to, comparator, selector)
+        if (from < middle - 1u) sortQueue.addLast(RangeToSort(from, middle - 1u))
+        if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
+    }
+}
+public inline fun <E, R> KoneSettableList<E>.sortWithByDescending(comparator: Comparator<R>, selector: (E) -> R) {
+    quickSortDescending(0u, lastIndex, comparator, selector)
 }
 
 public fun <E: Comparable<E>> KoneIterable<E>.sorted(): KoneIterableList<E> =
@@ -1012,8 +1318,101 @@ public fun <E> KoneIterableCollection<E>.sortedWith(comparator: Comparator<E>): 
     toKoneSettableIterableList().apply { sortWith(comparator) }
 public fun <E> KoneList<E>.sortedWith(comparator: Comparator<E>): KoneIterableList<E> =
     toKoneSettableIterableList().apply { sortWith(comparator) }
-public fun <E> KoneIterableList<E>.sorted(comparator: Comparator<E>): KoneIterableList<E> =
+public fun <E> KoneIterableList<E>.sortedWith(comparator: Comparator<E>): KoneIterableList<E> =
     toKoneSettableIterableList().apply { sortWith(comparator) }
+
+public fun <E: Comparable<E>> KoneIterable<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+public fun <E: Comparable<E>> KoneIterableCollection<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+public fun <E: Comparable<E>> KoneList<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+public fun <E: Comparable<E>> KoneIterableList<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+
+context(Order<E>)
+public fun <E> KoneIterable<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+context(Order<E>)
+public fun <E> KoneIterableCollection<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+context(Order<E>)
+public fun <E> KoneList<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+context(Order<E>)
+public fun <E> KoneIterableList<E>.sortedDescending(): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortDescending() }
+
+public fun <E> KoneIterable<E>.sortedWithDescending(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithDescending(comparator) }
+public fun <E> KoneIterableCollection<E>.sortedWithDescending(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithDescending(comparator) }
+public fun <E> KoneList<E>.sortedWithDescending(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithDescending(comparator) }
+public fun <E> KoneIterableList<E>.sortedWithDescending(comparator: Comparator<E>): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithDescending(comparator) }
+
+public inline fun <E, R: Comparable<R>> KoneIterable<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+public inline fun <E, R: Comparable<R>> KoneIterableCollection<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+public inline fun <E, R: Comparable<R>> KoneList<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+public inline fun <E, R: Comparable<R>> KoneIterableList<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+
+context(Order<R>)
+public inline fun <E, R> KoneIterable<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneIterableCollection<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneList<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneIterableList<E>.sortedBy(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortBy(selector) }
+
+public inline fun <E, R> KoneIterable<E>.sortedWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithBy(comparator, selector) }
+public inline fun <E, R> KoneIterableCollection<E>.sortedWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithBy(comparator, selector) }
+public inline fun <E, R> KoneList<E>.sortedWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithBy(comparator, selector) }
+public inline fun <E, R> KoneIterableList<E>.sortedWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithBy(comparator, selector) }
+
+public inline fun <E, R: Comparable<R>> KoneIterable<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+public inline fun <E, R: Comparable<R>> KoneIterableCollection<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+public inline fun <E, R: Comparable<R>> KoneList<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+public inline fun <E, R: Comparable<R>> KoneIterableList<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+
+context(Order<R>)
+public inline fun <E, R> KoneIterable<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneIterableCollection<E>.sortedBDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneList<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+context(Order<R>)
+public inline fun <E, R> KoneIterableList<E>.sortedByDescending(selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortByDescending(selector) }
+
+public inline fun <E, R> KoneIterable<E>.sortedWithByDescending(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithByDescending(comparator, selector) }
+public inline fun <E, R> KoneIterableCollection<E>.sortedWithByDescending(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithByDescending(comparator, selector) }
+public inline fun <E, R> KoneList<E>.sortedWithByDescending(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithByDescending(comparator, selector) }
+public inline fun <E, R> KoneIterableList<E>.sortedWithByDescending(comparator: Comparator<R>, selector: (E) -> R): KoneIterableList<E> =
+    toKoneSettableIterableList().apply { sortWithByDescending(comparator, selector) }
 
 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
 public fun <E> KoneSettableList<E>.shuffle(random: Random = Random) {
