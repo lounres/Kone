@@ -551,7 +551,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
             }
         }
 
-        for(i in 0u..<k) {
+        for (i in 0u..<k) {
             val index = addStartMark()
             currentIndices[i] = index
             currentElements[i] = collection[index-1u]

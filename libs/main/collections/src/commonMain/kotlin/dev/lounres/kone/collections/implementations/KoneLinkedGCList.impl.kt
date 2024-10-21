@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
@@ -102,7 +103,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             index == size -> end
             index <= (size - 1u) / 2u -> {
                 var currentEndNode = start.nextNode
-                for (i in 0u..<index) {
+                repeat(index) {
                     currentEndNode = (currentEndNode as Node<E>).nextNode
                 }
                 currentEndNode
@@ -171,13 +172,13 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         if (number == 0u) return
 
         var currentNode = end.previousNode
-        for (localIndex in 0u ..< number) {
+        repeat(number) {
             val previousNode = currentNode
             val newNode = Node<E>()
             currentNode = newNode
             newNode.previousNode = previousNode
             previousNode.nextNode = newNode
-            newNode.element = builder(localIndex)
+            newNode.element = builder(it)
         }
         end.previousNode = currentNode
         currentNode.nextNode = end
@@ -319,7 +320,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             is KoneLinkedGCList<*, *> -> {
                 var thisCurrentNode = this.start.nextNode
                 var otherCurrentNode = other.start.nextNode
-                for (i in 0u..<size) {
+                repeat(size) {
                     thisCurrentNode as Node<E>
                     otherCurrentNode as Node<*>
                     if (thisCurrentNode.element != otherCurrentNode.element) return false
@@ -330,7 +331,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             is KoneIterableList<*> -> {
                 var thisCurrentNode = this.start.nextNode
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                repeat(size) {
                     thisCurrentNode as Node<E>
                     if (thisCurrentNode.element != otherIterator.getAndMoveNext()) return false
                     thisCurrentNode = thisCurrentNode.nextNode
@@ -338,9 +339,9 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             }
             else -> {
                 var thisCurrentNode = this.start.nextNode
-                for (i in 0u..<size) {
+                repeat(size) {
                     thisCurrentNode as Node<E>
-                    if (thisCurrentNode.element != other[i]) return false
+                    if (thisCurrentNode.element != other[it]) return false
                     thisCurrentNode = thisCurrentNode.nextNode
                 }
             }

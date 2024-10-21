@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
@@ -24,12 +25,12 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
         private set
 
     override fun contains(element: E): Boolean {
-        for (index in 0u ..< size) if (elementContext { (data[index] as E) eq element }) return true
+        repeat(size) { if (elementContext { (data[it] as E) eq element }) return true }
         return false
     }
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
-        for (i in 0u ..< size) this[i] = null
+        repeat(size) { this[it] = null }
     }
     override fun dispose() {
         data.dispose(size)
@@ -104,7 +105,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i+1u] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
             data[index] = element
             size++
         }
@@ -122,7 +123,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
             }
         } else {
             var index = size
-            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            repeat(number) { data[index++] = builder(it) }
             size = newSize
         }
     }
@@ -158,9 +159,9 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i + number] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
             var index = index
-            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            repeat(number) { data[index++] = builder(it) }
             size = newSize
         }
     }
@@ -179,7 +180,7 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
             var index = index
             val iter = elements.iterator()
             while (iter.hasNext()) data[index++] = iter.getAndMoveNext()
@@ -234,8 +235,8 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
     }
     override fun hashCode(): Int {
         var hashCode = 1
-        for (i in 0u..<size) {
-            hashCode = 31 * hashCode + data[i].hashCode()
+        repeat(size) {
+            hashCode = 31 * hashCode + data[it].hashCode()
         }
         return hashCode
     }
@@ -246,8 +247,8 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
 
         when (other) {
             is KoneGrowableArrayList<*, *> ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other.data[i]) return false
+                repeat(size) {
+                    if (this.data[it] != other.data[it]) return false
                 }
             is KoneIterableList<*> -> {
                 val otherIterator = other.iterator()
@@ -256,8 +257,8 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
                 }
             }
             else ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other[i]) return false
+                repeat(size) {
+                    if (this.data[it] != other[it]) return false
                 }
         }
 

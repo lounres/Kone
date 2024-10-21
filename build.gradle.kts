@@ -29,7 +29,8 @@ plugins {
         alias(kotlinx.atomicfu) apply false
         alias(allopen) apply false
         alias(kotlinx.benchmark) apply false
-//        alias(kotest.multiplatform) apply false
+        alias(kotest.multiplatform) apply false
+        alias(kotlinx.kover) apply false
         alias(dokka)
     }
     `version-catalog`
@@ -291,49 +292,51 @@ stal {
                 explicitApi = Warning
             }
         }
-//        "kotest" {
-//            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
-//                configure<KotlinJvmProjectExtension> {
-//                    @Suppress("UNUSED_VARIABLE")
-//                    sourceSets {
-//                        val test by getting {
-//                            dependencies {
-//                                with(libs.kotest) {
-//                                    implementation(framework.engine)
-//                                    implementation(framework.datatest)
-//                                    implementation(assertions.core)
-//                                    implementation(property)
-//                                    implementation(runner.junit5)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-//                apply(libs.plugins.kotest.multiplatform)
-//                configure<KotlinMultiplatformExtension> {
-//                    @Suppress("UNUSED_VARIABLE")
-//                    sourceSets {
-//                        val commonTest by getting {
-//                            dependencies {
-//                                with(libs.kotest) {
-//                                    implementation(framework.engine)
-//                                    implementation(framework.datatest)
-//                                    implementation(assertions.core)
-//                                    implementation(property)
-//                                }
-//                            }
-//                        }
-//                        val jvmTest by getting {
-//                            dependencies {
-//                                implementation(libs.kotest.runner.junit5)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        "kotest" {
+            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        val test by getting {
+                            dependencies {
+                                with(libs.kotest) {
+                                    implementation(framework.datatest)
+                                    implementation(assertions.core)
+                                    implementation(property)
+                                    implementation(runner.junit5)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+                apply(libs.plugins.kotest.multiplatform)
+                configure<KotlinMultiplatformExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        val commonTest by getting {
+                            dependencies {
+                                with(libs.kotest) {
+                                    implementation(framework.engine)
+                                    implementation(framework.datatest)
+                                    implementation(assertions.core)
+                                    implementation(property)
+                                }
+                            }
+                        }
+                        val jvmTest by getting {
+                            dependencies {
+                                implementation(libs.kotest.runner.junit5)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "kover" {
+            apply(libs.plugins.kotlinx.kover)
+        }
         "algorithms" {
             pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
@@ -470,7 +473,7 @@ stal {
         "examples" {
             pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
-
+                
                 }
             }
             pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {

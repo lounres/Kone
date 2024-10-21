@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.KoneMutableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 import kotlin.math.max
@@ -28,7 +29,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
         private set
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
-        for (i in 0u ..< size) this[i] = null
+        repeat(size) { this[it] = null }
     }
     override fun dispose() {
         data.dispose(size)
@@ -44,7 +45,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
                 }
             }
             newSize < sizeLowerBound -> {
-                while (newSize < sizeUpperBound && dataSizeNumber >= 2u) {
+                while (newSize < sizeLowerBound && dataSizeNumber >= 2u) {
                     dataSizeNumber--
                     sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
                     sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
@@ -106,7 +107,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i+1u] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
             data[index] = element
             size++
         }
@@ -165,7 +166,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
         } else {
             for (i in (size-1u) downTo index) data[i + number] = data[i]
             var index = index
-            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            repeat(number) { data[index++] = builder(it) }
             size = newSize
         }
     }

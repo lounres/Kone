@@ -15,3 +15,7 @@ public inline fun <R> scope(block: () -> R): R {
     }
     return block()
 }
+
+public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
+    for (index in 0u ..< times) action(index)
+}

@@ -8,6 +8,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.repeat
 
 
 public interface KoneCollection<out E> {
@@ -18,7 +19,7 @@ public interface KoneCollection<out E> {
 public interface KoneExtendableCollection<E> : KoneCollection<E> {
     public fun add(element: E)
     public fun addSeveral(number: UInt, builder: (index: UInt) -> E) {
-        for (index in 0u ..< number) add(builder(index))
+        repeat(number) { add(builder(it)) }
     }
     public fun addAllFrom(elements: KoneIterableCollection<E>) {
         val iterator = elements.iterator()

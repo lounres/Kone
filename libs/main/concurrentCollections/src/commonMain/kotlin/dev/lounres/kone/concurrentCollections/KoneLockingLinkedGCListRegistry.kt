@@ -127,7 +127,7 @@ import kotlinx.atomicfu.locks.synchronized
 //            index == size -> end
 //            index <= (size - 1u) / 2u -> {
 //                var currentEndNode = start.nextNode
-//                for (i in 0u..<index) {
+//                repeat(index) {
 //                    currentEndNode = (currentEndNode as KoneLockingLinkedGCListRegistry<E, EC>.Node).nextNode
 //                }
 //                currentEndNode

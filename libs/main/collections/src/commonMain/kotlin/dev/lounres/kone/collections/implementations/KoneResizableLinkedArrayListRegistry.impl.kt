@@ -17,6 +17,7 @@ import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.repeat
 import kotlin.math.max
 
 
@@ -37,7 +38,7 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         var currentActualIndexToClear = start
-        for (i in 0u ..< size) {
+        repeat(size) {
             this[currentActualIndexToClear] = null
             currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
         }
@@ -78,7 +79,7 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
 
     override fun dispose() {
         var currentActualIndexToClear = start
-        for (i in 0u ..< size) {
+        repeat(size) {
             val registration = data[currentActualIndexToClear]
             registration!!._element = null
             data[currentActualIndexToClear] = null
@@ -91,14 +92,14 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
             index == size -> nextCellIndex[end]
             index <= (size - 1u) / 2u -> {
                 var currentIndex = start
-                for (i in 0u..<index) {
+                repeat(index) {
                     currentIndex = nextCellIndex[currentIndex]
                 }
                 currentIndex
             }
             else -> {
                 var currentIndex = end
-                for (i in index ..< size-1u) {
+                repeat(size-1u) {
                     currentIndex = previousCellIndex[currentIndex]
                 }
                 currentIndex
@@ -159,7 +160,7 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
 //    override fun find(element: E): KoneIterableList<KoneMutableRegistration<E>> {
 //        val accumulator = KoneGrowableArrayList<KoneMutableRegistration<E>>()
 //        var currentActualIndex = start
-//        for (currentIndex in 0u ..< size) {
+//        repeat(size) {
 //            val registration = data[currentActualIndex]!!
 //            if (elementContext.invoke { registration.element eq element }) accumulator.add(registration)
 //            currentActualIndex = nextCellIndex[currentActualIndex]

@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.repeat
 
 
 public typealias Shape = KoneUIntArray
@@ -109,8 +110,8 @@ private object ShapeHashing: Hashing<Shape> {
 
     override fun Shape.hash(): Int {
         var hashCode = 1
-        for (i in 0u..<size) {
-            hashCode = 31 * hashCode + this[i].toInt()
+        repeat(size) {
+            hashCode = 31 * hashCode + this[it].toInt()
         }
         return hashCode
     }

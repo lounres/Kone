@@ -14,6 +14,7 @@ import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.option.orElse
+import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
@@ -31,7 +32,7 @@ public class KoneLazyList<E, EC: Equality<E>>(
     }
 
     override fun contains(element: E): Boolean {
-        for (index in 0u ..< size) if (elementContext { this[index] eq element }) return true
+        repeat(size) { if (elementContext { this[it] eq element }) return true }
         return false
     }
 
@@ -52,8 +53,8 @@ public class KoneLazyList<E, EC: Equality<E>>(
 
         when (other) {
             is KoneLazyList<*, *> ->
-                for (i in 0u..<size) {
-                    if (this[i] != other[i]) return false
+                repeat(size) {
+                    if (this[it] != other[it]) return false
                 }
             is KoneIterableList<*> -> {
                 val otherIterator = other.iterator()
@@ -62,8 +63,8 @@ public class KoneLazyList<E, EC: Equality<E>>(
                 }
             }
             else ->
-                for (i in 0u..<size) {
-                    if (this[i] != other[i]) return false
+                repeat(size) {
+                    if (this[it] != other[it]) return false
                 }
         }
 

@@ -27,7 +27,7 @@ public sealed interface SearchSegmentResult<out STN> {
 public interface SearchTree<E> {
     public val size: UInt
     public val nodesView: KoneIterableSet<SearchTreeNode<E>>
-    public val elementsView: KoneIterableSet<SearchTreeNode<E>>
+    public val elementsView: KoneIterableSet<E>
     
     public fun add(element: E): SearchTreeNode<E>
     public fun find(element: E): SearchTreeNode<E>?
@@ -38,7 +38,6 @@ public interface SearchTree<E> {
 
 public interface ConnectedSearchTree<E> : SearchTree<E> {
     override val nodesView: KoneIterableListSet<ConnectedSearchTreeNode<E>>
-    override val elementsView: KoneIterableListSet<ConnectedSearchTreeNode<E>>
     
     override fun add(element: E): ConnectedSearchTreeNode<E>
     override fun find(element: E): ConnectedSearchTreeNode<E>?

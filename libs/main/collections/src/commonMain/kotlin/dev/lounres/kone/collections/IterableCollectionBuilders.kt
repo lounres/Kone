@@ -21,6 +21,7 @@ import dev.lounres.kone.collections.utils.indices
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.repeat
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
@@ -151,13 +152,13 @@ public fun <E> KoneIterableList<E>.toKoneIterableList(elementContext: Equality<E
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <E> buildKoneIterableList(elementContext: Equality<E> = defaultEquality(), @BuilderInference builderAction: KoneMutableIterableList<E>.() -> Unit): KoneIterableList<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return koneMutableIterableListOf<E>(elementContext = elementContext).apply(builderAction)
+    return koneMutableIterableListOf(elementContext = elementContext).apply(builderAction)
 }
 
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <E> buildKoneIterableList(initialCapacity: UInt, elementContext: Equality<E> = defaultEquality(), @BuilderInference builderAction: KoneMutableIterableList<E>.() -> Unit): KoneIterableList<E> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneResizableArrayList(initialCapacity, elementContext = elementContext).apply(builderAction)
+    return KoneGrowableArrayList(initialCapacity, elementContext = elementContext).apply(builderAction)
 }
 
 // endregion
@@ -230,7 +231,7 @@ public fun <E> Collection<E>.toKoneMutableIterableSet(elementContext: Equality<E
 public fun <E> KoneList<E>.toKoneMutableIterableSet(elementContext: Equality<E> = defaultEquality()): KoneMutableIterableSet<E> =
     if (elementContext is Hashing<E>)
         KoneResizableHashSet(elementContext = elementContext).apply {
-            for (index in 0u ..< this@toKoneMutableIterableSet.size) this.add(this@toKoneMutableIterableSet[index])
+            repeat(this@toKoneMutableIterableSet.size) { this.add(this@toKoneMutableIterableSet[it]) }
         }
     else {
         val backingList = KoneResizableArrayList(elementContext = elementContext)

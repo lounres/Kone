@@ -17,6 +17,7 @@ import dev.lounres.kone.collections.serializers.DefaultKoneReversibleMutableIter
 import dev.lounres.kone.collections.serializers.DefaultKoneReversibleRemovableIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.DefaultKoneSettableIterableListSerializer
 import dev.lounres.kone.collections.utils.iterator
+import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
@@ -53,7 +54,7 @@ public interface KoneIterableList<out E> : KoneList<E>, KoneReversibleIterableCo
     public fun iteratorFrom(index: UInt): KoneLinearIterator<E> {
         require(index <= size)
         val iterator = iterator()
-        for (i in 0u until index) iterator.moveNext()
+        repeat(index) { iterator.moveNext() }
         return iterator
     }
     public override fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
@@ -81,7 +82,7 @@ public interface KoneSettableIterableList<E> : KoneIterableList<E>, KoneSettable
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<E> {
         require(index <= size)
         val iterator = iterator()
-        for (i in 0u until index) iterator.moveNext()
+        repeat(index) { iterator.moveNext() }
         return iterator
     }
 }
@@ -92,7 +93,7 @@ public interface KoneMutableIterableList<E> : KoneMutableList<E>, KoneSettableIt
     public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E> {
         require(index <= size)
         val iterator = iterator()
-        for (i in 0u until index) iterator.moveNext()
+        repeat(index) { iterator.moveNext() }
         return iterator
     }
 }

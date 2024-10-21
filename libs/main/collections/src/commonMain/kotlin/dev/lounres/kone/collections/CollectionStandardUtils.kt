@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.utils.reversed
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.repeat
 
 
 public fun KoneCollection<*>.isEmpty(): Boolean = size == 0u
@@ -46,7 +47,7 @@ public fun <E> KoneExtendableCollection<E>.addAll(vararg elements: E) {
 }
 
 public fun <E> KoneDequeue<in E>.addLastAllFrom(elements: KoneList<E>) {
-    for (index in 0u..<elements.size) addLast(elements[index])
+    repeat(elements.size) { addLast(elements[it]) }
 }
 
 public fun <E> KoneDequeue<in E>.addLastAllFrom(elements: KoneIterableCollection<E>) {

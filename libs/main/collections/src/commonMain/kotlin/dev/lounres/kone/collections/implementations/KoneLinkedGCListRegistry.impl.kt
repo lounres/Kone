@@ -15,6 +15,7 @@ import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.repeat
 
 
 public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
@@ -111,7 +112,7 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
             index == size -> end
             index <= (size - 1u) / 2u -> {
                 var currentEndNode = start.nextNode
-                for (i in 0u..<index) {
+                repeat(index) {
                     currentEndNode = (currentEndNode as Node<E>).nextNode
                 }
                 currentEndNode
@@ -271,7 +272,7 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         override fun get(index: UInt): Node<E> {
             if (index >= size) indexException(index, size)
             var currentNode: Node<E> = start.nextNode as Node<E>
-            for (i in 0u..<index) currentNode = currentNode.nextNode as Node<E>
+            repeat(index) { currentNode = currentNode.nextNode as Node<E> }
             return currentNode
         }
         override fun iterator(): KoneLinearIterator<Node<E>> = RegistrationsIterator()

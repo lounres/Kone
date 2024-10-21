@@ -11,6 +11,7 @@ import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.repeat
 
 
 // region Iterators
@@ -231,7 +232,7 @@ public class KoneWrapperList<E> internal constructor(private val list: List<E>):
             is KoneIterableList<*> -> {
                 val thisIterator = list.iterator()
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                repeat(size) {
                     if (thisIterator.next() != otherIterator.getAndMoveNext()) return false
                 }
             }
@@ -268,14 +269,14 @@ public class KoneWrapperMutableList<E> internal constructor(private val list: Mu
             is KoneIterableList<*> -> {
                 val thisIterator = list.iterator()
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                repeat(size) {
                     if (thisIterator.next() != otherIterator.getAndMoveNext()) return false
                 }
             }
             else -> {
                 val thisIterator = list.iterator()
-                for (i in 0u..<size) {
-                    if (thisIterator.next() != other[i]) return false
+                repeat(size) {
+                    if (thisIterator.next() != other[it]) return false
                 }
             }
         }

@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
@@ -28,7 +29,7 @@ internal constructor(
         private set
 
     override fun dispose() {
-        for (index in 0u ..< size) data[index] = null
+        repeat(size) { data[it] = null }
     }
 
     override fun contains(element: E): Boolean = data.any { elementContext { (it as E) eq element } }
@@ -44,7 +45,7 @@ internal constructor(
     }
 
     override fun removeAll() {
-        for (i in 0u..<size) data[i] = null
+        repeat(size) { data[it] = null }
         size = 0u
     }
     override fun add(element: E) {
@@ -55,7 +56,7 @@ internal constructor(
     override fun addAt(index: UInt, element: E) {
         if (index > size) indexException(index, size)
         if (size == capacity) capacityOverflowException(capacity)
-        for (i in (size-1u) downTo index) data[i+1u] = data[i]
+        if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
         data[index] = element
         size++
     }
@@ -63,7 +64,7 @@ internal constructor(
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
         var index = size
-        for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+        repeat(number) { data[index++] = builder(it) }
         size = newSize
     }
     override fun addAllFrom(elements: KoneIterableCollection<E>) {
@@ -81,9 +82,9 @@ internal constructor(
         if (index > size) indexException(index, size)
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
-        for (i in (size-1u) downTo index) data[i + number] = data[i]
+        if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
         var index = index
-        for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+        repeat(number) { data[index++] = builder(it) }
         size = newSize
     }
     override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
@@ -91,7 +92,7 @@ internal constructor(
         val elementsSize = elements.size
         val newSize = size + elementsSize
         if (newSize > capacity) capacityOverflowException(capacity)
-        for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
+        if (size >= 1u) for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
         var index = index
         val iter = elements.iterator()
         while (iter.hasNext()) {
@@ -148,8 +149,8 @@ internal constructor(
     }
     override fun hashCode(): Int {
         var hashCode = 1
-        for (i in 0u..<size) {
-            hashCode = 31 * hashCode + data[i].hashCode()
+        repeat(size) {
+            hashCode = 31 * hashCode + data[it].hashCode()
         }
         return hashCode
     }
@@ -160,8 +161,8 @@ internal constructor(
 
         when (other) {
             is KoneFixedCapacityArrayList<*, *> ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other.data[i]) return false
+                repeat(size) {
+                    if (this.data[it] != other.data[it]) return false
                 }
             is KoneIterableList<*> -> {
                 val otherIterator = other.iterator()
@@ -170,8 +171,8 @@ internal constructor(
                 }
             }
             else ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other[i]) return false
+                repeat(size) {
+                    if (this.data[it] != other[it]) return false
                 }
         }
 

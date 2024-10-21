@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.repeat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
@@ -23,7 +24,7 @@ public fun <E> KoneLinkedGCList(): KoneLinkedGCList<E, Equality<E>> =
 
 public fun <E, EC: Equality<E>> KoneLinkedGCList(size: UInt, elementContext: EC, initializer: (index: UInt) -> E): KoneLinkedGCList<E, EC> =
     KoneLinkedGCList(elementContext).apply {
-        for (index in 0u ..< size) add(initializer(index))
+        repeat(size) { add(initializer(it)) }
     }
 
 public fun <E> KoneLinkedGCList(size: UInt, initializer: (index: UInt) -> E): KoneLinkedGCList<E, Equality<E>> =

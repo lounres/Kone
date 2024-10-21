@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneMutableIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.next
+import dev.lounres.kone.repeat
 
 
 internal data class GramSchmidtOrthogonalizationIntermediateState<N>(
@@ -48,7 +49,7 @@ internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gr
     val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
-    for (j in 0u..<newIndex) exclusiveProducts[j] *= currentNorm
+    repeat(newIndex) { exclusiveProducts[it] *= currentNorm }
     exclusiveProducts.add(product)
     product *= currentNorm
 }

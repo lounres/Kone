@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 import kotlin.math.max
@@ -184,7 +185,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
             index == size -> nextCellIndex[end]
             index <= (size - 1u) / 2u -> {
                 var currentIndex = start
-                for (i in 0u..<index) {
+                repeat(index) {
                     currentIndex = nextCellIndex[currentIndex]
                 }
                 currentIndex
@@ -1387,7 +1388,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
             }
         } else {
             var currentActualIndexToClear = firstCellToClear
-            for (i in 0u ..< size - newSize) {
+            repeat(size - newSize) {
                 data[currentActualIndexToClear] = null
                 currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
             }
@@ -1443,7 +1444,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
             is KoneResizableLinkedArrayList<*, *> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
-                for (i in 0u..<size) {
+                repeat(size) {
                     if (this.data[thisCurrentIndex] != other.data[otherCurrentIndex]) return false
                     thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
                     otherCurrentIndex = other.nextCellIndex[otherCurrentIndex]
