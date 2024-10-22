@@ -32,6 +32,8 @@ public inline infix fun <E> E.lt(other: E): Boolean = this < other
 context(Order<E>)
 public inline infix fun <E> E.leq(other: E): Boolean = this <= other
 
+public fun <E: Comparable<E>> defaultOrder(): Order<E> = DefaultOrderOnComparables
+public inline fun <E: Comparable<E>> defaultComparator(): Comparator<E> = naturalOrder()
 public fun <E> Order<E>.asComparator(): Comparator<E> = Comparator { left, right -> left.compareTo(right) }
 context(Order<E>)
 public val <E> comparator: Comparator<E> get() = Comparator { left, right -> left.compareTo(right) }

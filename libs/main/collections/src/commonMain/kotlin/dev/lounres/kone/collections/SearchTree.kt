@@ -38,6 +38,7 @@ public interface SearchTree<E> {
 
 public interface ConnectedSearchTree<E> : SearchTree<E> {
     override val nodesView: KoneIterableListSet<ConnectedSearchTreeNode<E>>
+    override val elementsView: KoneIterableListSet<E>
     
     override fun add(element: E): ConnectedSearchTreeNode<E>
     override fun find(element: E): ConnectedSearchTreeNode<E>?

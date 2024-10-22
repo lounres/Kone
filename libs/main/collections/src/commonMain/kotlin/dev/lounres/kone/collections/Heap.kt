@@ -18,7 +18,7 @@ public interface MinimumHeap<E, P> {
     public val elementsView: KoneIterableList<E>
     
     public fun add(element: E, priority: P): HeapNode<E, P>
-//    public fun takeMinimum(): HeapNode<E, P>
+    public fun takeMinimum(): HeapNode<E, P>
     public fun popMinimum(): HeapNode<E, P>
 }
 
@@ -28,6 +28,6 @@ public interface MaximumHeap<E, P> {
     public val elementsView: KoneIterableList<E>
     
     public fun add(element: E, priority: P): HeapNode<E, P>
-    //    public fun takeMaximum(): HeapNode<E, P>
+    public fun takeMaximum(): HeapNode<E, P>
     public fun popMaximum(): HeapNode<E, P>
 }

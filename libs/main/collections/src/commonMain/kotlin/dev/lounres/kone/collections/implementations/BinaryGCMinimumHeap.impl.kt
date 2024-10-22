@@ -76,21 +76,21 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
 
     private fun siftTheNode(holder: NodeHolder) {
         siftTheNodeDownToTheRoot(holder)
-        siftTheNodeDownToTheRoot(holder)
+        siftTheNodeUpToTheLeaf(holder)
     }
 
-    private fun removeNode(node: NodeHolder) {
+    private fun removeNode(holder: NodeHolder) {
         val oldLastHolder = lastHolder!!
         val nodeToSift =
-            if (node !== oldLastHolder) {
-                swapNodeHoldersIdentities(node, oldLastHolder)
-                node
+            if (holder !== oldLastHolder) {
+                swapNodeHoldersIdentities(holder, oldLastHolder)
+                holder
             } else null
 
         val previous = oldLastHolder.previous
         check(oldLastHolder.next == null) { "Trying to internally remove not last node holder" }
+        check(oldLastHolder.firstChild == null && oldLastHolder.secondChild == null) { "For some reason non-leaf node is being removed" }
         
-        check(oldLastHolder.firstChild != null && oldLastHolder.secondChild != null) { "For some reason non-leaf node is being removed" }
         if (oldLastHolder === rootHolder) {
             rootHolder = null
             lastHolder = null
@@ -108,6 +108,7 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         
         oldLastHolder.dispose()
         lastHolder = previous
+        previous?.next = null
         size--
         if (size == 0u) rootHolder = null
         nodeToSift?.let { siftTheNode(it) }
@@ -130,12 +131,15 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
                     previous = null,
                     priority = priority,
                     element = element,
-                )
+                ).also {
+                    rootHolder = it
+                }
             } else {
                 val previous = lastHolder!!
-                val parent = previous.parent!!.let {
-                    if (previous.index % 2u == 1u) it
-                    else it.next!!
+                val parent = when {
+                    previous.index % 2u == 1u -> previous.parent
+                    previous.parent == null -> previous
+                    else -> previous.parent!!.next
                 }
                 NodeHolder(
                     index = previous.index + 1u,
@@ -143,18 +147,32 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
                     previous = previous,
                     priority = priority,
                     element = element,
-                )
+                ).also {
+                    previous.next = it
+                    if (parent != null) when {
+                        parent.firstChild == null -> parent.firstChild = it
+                        parent.secondChild == null -> parent.secondChild = it
+                        else -> throw IllegalStateException("Chose parent with both children present to insert a new child in it")
+                    }
+                }
             }
         
-        rootHolder = newHolder
         lastHolder = newHolder
         size++
+        
+        siftTheNodeDownToTheRoot(newHolder)
         
         return newHolder.node
     }
     
+    override fun takeMinimum(): HeapNode<E, P> {
+        if (size == 0u) throw NoSuchElementException("Heap is empty")
+        val root = rootHolder!!
+        return root.node
+    }
+    
     override fun popMinimum(): HeapNode<E, P> {
-        if (size == 0u) throw NoSuchElementException("Collection is empty")
+        if (size == 0u) throw NoSuchElementException("Heap is empty")
         val root = rootHolder!!
         return root.node.also { removeNode(root) }
     }

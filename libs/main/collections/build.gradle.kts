@@ -11,5 +11,10 @@ kotlin {
                 implementation(libs.kotlinx.serialization.core)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(projects.libs.main.enumerativeCombinatorics)
+            }
+        }
     }
 }

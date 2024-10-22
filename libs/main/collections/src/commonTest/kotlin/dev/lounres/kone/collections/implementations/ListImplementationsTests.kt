@@ -44,15 +44,15 @@ interface MutableIterableListBuilder : SettableIterableListBuilder {
     override fun <E, EC: Equality<E>> buildByGenerator(size: UInt, elementContext: EC, generator: (UInt) -> E): KoneMutableIterableList<E>
 }
 
-interface ImplementationDescription {
+interface ListImplementationDescription {
     val name: String
-    val listBuilder: IterableListBuilder
+    val builder: IterableListBuilder
 }
 
-val listImplementations = listOf<ImplementationDescription>(
-    object : ImplementationDescription {
+val listImplementations = listOf<ListImplementationDescription>(
+    object : ListImplementationDescription {
         override val name = "KoneFixedCapacityArrayList"
-        override val listBuilder: MutableFixedCapacityIterableListBuilder =
+        override val builder: MutableFixedCapacityIterableListBuilder =
             object : MutableFixedCapacityIterableListBuilder {
                 override fun <E, EC : Equality<E>> build(capacity: UInt, elementContext: EC): KoneMutableIterableList<E> =
                     KoneFixedCapacityArrayList(capacity, elementContext)
@@ -62,9 +62,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneFixedCapacityArrayList(size, capacity, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneFixedCapacityLinkedArrayList"
-        override val listBuilder: MutableFixedCapacityIterableListBuilder =
+        override val builder: MutableFixedCapacityIterableListBuilder =
             object : MutableFixedCapacityIterableListBuilder {
                 override fun <E, EC : Equality<E>> build(capacity: UInt, elementContext: EC): KoneMutableIterableList<E> =
                     KoneFixedCapacityLinkedArrayList(capacity, elementContext)
@@ -74,9 +74,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneFixedCapacityLinkedArrayList(size, capacity, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneGrowableArrayList"
-        override val listBuilder: MutableIterableListBuilder =
+        override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E, EC: Equality<E>> build(elementContext: EC): KoneMutableIterableList<E> =
                     KoneGrowableArrayList(elementContext)
@@ -84,9 +84,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneGrowableArrayList(size, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneGrowableLinkedArrayList"
-        override val listBuilder: MutableIterableListBuilder =
+        override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E, EC: Equality<E>> build(elementContext: EC): KoneMutableIterableList<E> =
                     KoneGrowableLinkedArrayList(elementContext)
@@ -94,9 +94,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneGrowableLinkedArrayList(size, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneLinkedGCList"
-        override val listBuilder: MutableIterableListBuilder =
+        override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E, EC: Equality<E>> build(elementContext: EC): KoneMutableIterableList<E> =
                     KoneLinkedGCList(elementContext)
@@ -104,9 +104,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneLinkedGCList(size, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneResizableArrayList"
-        override val listBuilder: MutableIterableListBuilder =
+        override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E, EC: Equality<E>> build(elementContext: EC): KoneMutableIterableList<E> =
                     KoneResizableArrayList(elementContext)
@@ -114,9 +114,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneResizableArrayList(size, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneResizableLinkedArrayList"
-        override val listBuilder: MutableIterableListBuilder =
+        override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E, EC: Equality<E>> build(elementContext: EC): KoneMutableIterableList<E> =
                     KoneResizableLinkedArrayList(elementContext)
@@ -124,9 +124,9 @@ val listImplementations = listOf<ImplementationDescription>(
                     KoneResizableLinkedArrayList(size, elementContext, generator)
             }
     },
-    object : ImplementationDescription {
+    object : ListImplementationDescription {
         override val name = "KoneSettableArrayList"
-        override val listBuilder: SettableIterableListBuilder =
+        override val builder: SettableIterableListBuilder =
             object : SettableIterableListBuilder {
                 override fun <E, EC: Equality<E>> buildByGenerator(size: UInt, elementContext: EC, generator: (UInt) -> E): KoneSettableIterableList<E> =
                     KoneSettableArrayList(size, elementContext, generator)
@@ -198,22 +198,22 @@ fun <E> arbMutableListOperationsWithResults(
 
 class ListImplementationsTests: FunSpec({
     for (impl in listImplementations) context(impl.name) {
-        val listBuilder = impl.listBuilder
+        val builder = impl.builder
         
         test("test generative construction") {
             checkAll(Exhaustive.ints(0 .. 20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = listBuilder.buildByGenerator(length.toUInt(), defaultEquality()) { input[it.toInt()] }
+                    val list = builder.buildByGenerator(length.toUInt(), defaultEquality()) { input[it.toInt()] }
                     testEqualityByIteration(list, input)
                     testEqualityByStringRepresentation(list, input)
                 }
             }
         }
         
-        if (listBuilder is MutableIterableListBuilder) test("test element-by-element extension") {
+        if (builder is MutableIterableListBuilder) test("test element-by-element extension") {
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = listBuilder.build(defaultEquality<UInt>())
+                    val list = builder.build(defaultEquality<UInt>())
                     testEqualityByIteration(list, emptyList())
                     testEqualityByStringRepresentation(list, emptyList())
                     for (index in 0 ..< length) {
@@ -225,10 +225,10 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (listBuilder is MutableFixedCapacityIterableListBuilder) test("test element-by-element extension") {
+        if (builder is MutableFixedCapacityIterableListBuilder) test("test element-by-element extension") {
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = listBuilder.build(30u, defaultEquality<UInt>())
+                    val list = builder.build(30u, defaultEquality<UInt>())
                     testEqualityByIteration(list, emptyList())
                     testEqualityByStringRepresentation(list, emptyList())
                     for (index in 0 ..< length) {
@@ -240,9 +240,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (listBuilder is MutableIterableListBuilder) test("test mutability operations") {
+        if (builder is MutableIterableListBuilder) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = listBuilder.buildByGenerator(arbData.initialList.size.toUInt(), defaultEquality()) { arbData.initialList[it.toInt()] }
+                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), defaultEquality()) { arbData.initialList[it.toInt()] }
                 repeat(arbData.numberOfOperations) {
                     val operation = arbData.operations[it.toInt()]
                     val expected = arbData.results[it.toInt()]
@@ -258,9 +258,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (listBuilder is MutableFixedCapacityIterableListBuilder) test("test mutability operations") {
+        if (builder is MutableFixedCapacityIterableListBuilder) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = listBuilder.buildByGenerator(arbData.initialList.size.toUInt(), 20u, defaultEquality()) { arbData.initialList[it.toInt()] }
+                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), 20u, defaultEquality()) { arbData.initialList[it.toInt()] }
                 repeat(arbData.numberOfOperations) {
                     val operation = arbData.operations[it.toInt()]
                     val expected = arbData.results[it.toInt()]
@@ -276,9 +276,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (listBuilder is MutableIterableListBuilder) test("test iterator mutability operations") {
+        if (builder is MutableIterableListBuilder) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = listBuilder.buildByGenerator(arbData.initialList.size.toUInt(), defaultEquality()) { arbData.initialList[it.toInt()] }
+                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), defaultEquality()) { arbData.initialList[it.toInt()] }
                 var nextIteratorIndex = 5u
                 val iterator = mutableList.iteratorFrom(nextIteratorIndex)
                 repeat(arbData.numberOfOperations) {
@@ -326,9 +326,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (listBuilder is MutableFixedCapacityIterableListBuilder) test("test iterator mutability operations") {
+        if (builder is MutableFixedCapacityIterableListBuilder) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = listBuilder.buildByGenerator(arbData.initialList.size.toUInt(), 20u, defaultEquality()) { arbData.initialList[it.toInt()] }
+                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), 20u, defaultEquality()) { arbData.initialList[it.toInt()] }
                 var nextIteratorIndex = 5u
                 val iterator = mutableList.iteratorFrom(nextIteratorIndex)
                 repeat(arbData.numberOfOperations) {
