@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.numberTheory
 
+import kotlin.jvm.JvmInline
 import kotlin.math.*
 
 
@@ -12,7 +13,8 @@ import kotlin.math.*
  * Container for [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor).
  */
-public data class BezoutCoefficientsWithGCD<T>(val first: T, val second: T, val gcd: T)
+@JvmInline
+public value class BezoutCoefficientsWithGCD<T>(public val first: T, public val second: T, public val gcd: T)
 
 // region Int
 

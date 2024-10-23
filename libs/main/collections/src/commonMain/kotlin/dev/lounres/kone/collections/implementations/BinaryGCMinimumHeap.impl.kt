@@ -156,13 +156,13 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
                     }
                 }
             }
-        
+        val result = newHolder.node
         lastHolder = newHolder
         size++
         
         siftTheNodeDownToTheRoot(newHolder)
         
-        return newHolder.node
+        return result
     }
     
     override fun takeMinimum(): HeapNode<E, P> {

@@ -11,6 +11,7 @@ import dev.lounres.kone.algebraic.ring
 import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.emptyKoneIterableList
 import dev.lounres.kone.collections.utils.map
+import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
 import dev.lounres.kone.computationalGeometry.util.MockAbstractPolytopicConstruction
 import dev.lounres.kone.computationalGeometry.util.PointSetDescription
 import dev.lounres.kone.computationalGeometry.utils.map

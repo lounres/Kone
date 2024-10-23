@@ -19,7 +19,7 @@ import kotlin.jvm.JvmName
 // FIXME: KT-42977
 //@JvmInline
 public open /*value*/ class Vector<out N>(public val coordinates: ColumnVector<N>) {
-    override fun toString(): String = "Vector(${coordinates.coefficients})"
+    override fun toString(): String = "Vector${coordinates.coefficients}"
 }
 //@JvmInline
 public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
@@ -29,13 +29,13 @@ public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(c
     public val x: N get() = coordinates[0u]
     public val y: N get() = coordinates[1u]
 
-    override fun toString(): String = "Vector2(${coordinates.coefficients})"
+    override fun toString(): String = "Vector2${coordinates.coefficients}"
 }
 
 // FIXME: KT-42977
 //@JvmInline
 public open /*value*/ class Point<out N>(public open val coordinates: ColumnVector<N>) {
-    override fun toString(): String = "Point(${coordinates.coefficients})"
+    override fun toString(): String = "Point${coordinates.coefficients}"
 }
 //@JvmInline
 public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
@@ -45,16 +45,22 @@ public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coo
     public val x: N get() = coordinates[0u]
     public val y: N get() = coordinates[1u]
 
-    override fun toString(): String = "Point2(${coordinates.coefficients})"
+    override fun toString(): String = "Point2${coordinates.coefficients}"
 }
 
 public fun <N> Vector(coordinates: MDList1<N>): Vector<N> = Vector(ColumnVector(coordinates))
 public fun <N> Vector(vararg coordinates: N): Vector<N> = Vector(ColumnVector(*coordinates))
 public fun <N> Vector(size: UInt, initializer: (coordinate: UInt) -> N): Vector<N> = Vector(ColumnVector(size, initializer))
 
+public fun <N> Vector2(coordinates: MDList1<N>): Vector2<N> = Vector2(ColumnVector(coordinates))
+public fun <N> Vector2(x: N, y: N): Vector2<N> = Vector2(ColumnVector(x, y))
+
 public fun <N> Point(coordinates: MDList1<N>): Point<N> = Point(ColumnVector(coordinates))
 public fun <N> Point(vararg coordinates: N): Point<N> = Point(ColumnVector(*coordinates))
 public fun <N> Point(size: UInt, initializer: (coordinate: UInt) -> N): Point<N> = Point(ColumnVector(size, initializer))
+
+public fun <N> Point2(coordinates: MDList1<N>): Point2<N> = Point2(ColumnVector(coordinates))
+public fun <N> Point2(x: N, y: N): Point2<N> = Point2(ColumnVector(x, y))
 
 context(EuclideanKategory<N>)
 public operator fun <N> Vector2<N>.unaryPlus(): Vector2<N> = Vector2(((this as Vector<N>).unaryPlus()).coordinates)
@@ -77,8 +83,8 @@ public operator fun <N> Vector2<N>.plus(other: Point2<N>): Point2<N> = Point2((t
 context(EuclideanKategory<N>)
 public operator fun <N> Point2<N>.minus(other: Point2<N>): Vector2<N> = Vector2((this as Point<N>).minus(other as Point<N>).coordinates)
 
-context(A)
-public infix fun <N, A> Vector2<N>.cross(other: Vector2<N>): N where A: Ring<N> = this.x * other.y - this.y * other.x
+context(Ring<N>)
+public infix fun <N> Vector2<N>.cross(other: Vector2<N>): N = this.x * other.y - this.y * other.x
 context(A, EuclideanKategory<N>)
 @Suppress("LocalVariableName")
 public fun <N, A> Point2<N>.inTriangle(P: Point2<N>, Q: Point2<N>, R: Point2<N>): Boolean where A: Ring<N>, A: Order<N> {

@@ -3,13 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.computationalGeometry
+package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneMutableIterableList
 import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.next
+import dev.lounres.kone.computationalGeometry.EuclideanKategory
+import dev.lounres.kone.computationalGeometry.MutablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.Vector
 import dev.lounres.kone.repeat
 
 

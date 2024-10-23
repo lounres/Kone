@@ -52,7 +52,9 @@ class HeapImplementationsTests : FunSpec({
                 val heap = builder.build(defaultEquality<String>(), defaultOrder<UInt>())
                 
                 for ((index, item) in toAdd.withIndex()) {
-                    heap.add("$index", item)
+                    val node = heap.add("$index", item)
+                    node.element shouldBe "$index"
+                    node.priority shouldBe item
                     heap.size shouldBe index + 1u
                 }
                 

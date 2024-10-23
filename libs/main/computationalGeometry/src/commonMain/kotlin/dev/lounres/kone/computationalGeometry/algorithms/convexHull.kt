@@ -1,9 +1,9 @@
 /*
- * Copyright © 2023 Gleb Minaev
+ * Copyright © 2024 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.computationalGeometry
+package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
@@ -12,6 +12,10 @@ import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.computationalGeometry.EuclideanKategory
+import dev.lounres.kone.computationalGeometry.MutablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.Point
+import dev.lounres.kone.computationalGeometry.Vector
 import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.linearAlgebra.experiment1.ColumnVector
 import dev.lounres.kone.scope
@@ -253,7 +257,7 @@ internal fun <N, A, P, V: P> giftWrappingFull(
     giftWrappingExtension(
         subspaceDimension = subspaceDimension,
         wrappingResult = wrappingResult,
-        normalVector = Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
+        normalVector = dev.lounres.kone.computationalGeometry.Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
         otherPoints = points.toKoneMutableIterableSet(elementContext = polytopeContext).apply { removeAllFrom(startPoints) }
     )
 

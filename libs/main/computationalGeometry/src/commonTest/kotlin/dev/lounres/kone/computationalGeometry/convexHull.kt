@@ -8,7 +8,9 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.ring
 import dev.lounres.kone.collections.koneIterableListOf
 import dev.lounres.kone.collections.koneIterableSetOf
+import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 
 class ConvexHullTest {
@@ -132,7 +134,7 @@ class ConvexHullTest {
                 )
             }
         }
-
-        assert(actualPolytopeConstruction eq expectedPolytopeConstruction)
+        
+        assertTrue(actualPolytopeConstruction eq expectedPolytopeConstruction)
     }
 }
