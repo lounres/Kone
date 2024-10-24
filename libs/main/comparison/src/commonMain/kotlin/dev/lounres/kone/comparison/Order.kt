@@ -7,13 +7,14 @@
 
 package dev.lounres.kone.comparison
 
+import dev.lounres.kone.context.invoke
 import kotlin.jvm.JvmInline
 
 
 /**
  * Context of [linear (total) order](https://en.wikipedia.org/wiki/Total_order).
  */
-public fun interface Order<in E> : Equality<E> {
+public interface Order<in E> : Equality<E> {
     public infix operator fun E.compareTo(other: E): Int
 }
 
@@ -49,28 +50,49 @@ public fun <E> max(vararg elements: E): E {
     return elements.reduce { a, b -> max(a, b) }
 }
 
+public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolean, crossinline comparator: (left: E, right: E) -> Int): Order<E> =
+    object : Order<E> {
+        override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
+        override fun E.compareTo(other: E): Int = comparator(this, other)
+    }
+
+public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolean, comparator: Comparator<E>): Order<E> =
+    object : Order<E> {
+        override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
+        override fun E.compareTo(other: E): Int = comparator.compare(this, other)
+    }
+
+public inline fun <E> Order(equalizer: Equality<E>, crossinline comparator: (left: E, right: E) -> Int): Order<E> =
+    object : Order<E> {
+        override fun E.equalsTo(other: E): Boolean = equalizer { this eq other }
+        override fun E.compareTo(other: E): Int = comparator(this, other)
+    }
+
+public inline fun <E> Order(equalizer: Equality<E>, comparator: Comparator<E>): Order<E> =
+    object : Order<E> {
+        override fun E.equalsTo(other: E): Boolean = equalizer { this eq other }
+        override fun E.compareTo(other: E): Int = comparator.compare(this, other)
+    }
+
 public fun <E: Comparable<E>> defaultOrder(): Order<E> = DefaultOrderOnComparables
 public inline fun <E: Comparable<E>> defaultComparator(): Comparator<E> = naturalOrder()
 public fun <E> Order<E>.asComparator(): Comparator<E> = Comparator { left, right -> left.compareTo(right) }
 context(Order<E>)
 public val <E> comparator: Comparator<E> get() = Comparator { left, right -> left.compareTo(right) }
-public fun <E> Comparator<E>.asOrder(): Order<E> = Order { other -> compare(this, other) }
 context(Order<E>)
-public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> {
-    require(selectors.isNotEmpty())
-    return Comparator { a, b ->
-        for (s in selectors) {
-            val diff = s(a).compareTo(s(b))
-            if (diff != 0) return@Comparator diff
-        }
-        0
+public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> = Comparator { a, b ->
+    for (s in selectors) {
+        val diff = s(a).compareTo(s(b))
+        if (diff != 0) return@Comparator diff
     }
+    return@Comparator 0
 }
 
-@JvmInline
-public value class ClosedRange<out E>(public val start: E, public val endInclusive: E)
-@JvmInline
-public value class OpenEndedRange<out E>(public val start: E, public val endExclusive: E)
+// TODO: Replace with multifield value classes when KT-72538 will be fixed
+//@JvmInline
+public data class ClosedRange<out E>(public val start: E, public val endInclusive: E)
+//@JvmInline
+public data class OpenEndedRange<out E>(public val start: E, public val endExclusive: E)
 
 public operator fun <E> E.rangeTo(other: E): ClosedRange<E> = ClosedRange(this, other)
 public operator fun <E> E.rangeUntil(other: E): OpenEndedRange<E> = OpenEndedRange(this, other)

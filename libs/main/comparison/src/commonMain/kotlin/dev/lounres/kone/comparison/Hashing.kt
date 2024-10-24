@@ -10,9 +10,9 @@ public interface Hashing<in E> : Equality<E> {
     public fun E.hash(): Int = this.hashCode()
 }
 
-public inline fun <E> Hashing(crossinline comparator: (left: E, right: E) -> Boolean, crossinline hasher: (E) -> Int): Hashing<E> =
+public inline fun <E> Hashing(crossinline equalizer: (left: E, right: E) -> Boolean, crossinline hasher: (E) -> Int): Hashing<E> =
     object : Hashing<E> {
-        override fun E.equalsTo(other: E): Boolean = comparator(this, other)
+        override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
         override fun E.hash(): Int = hasher(this)
     }
 

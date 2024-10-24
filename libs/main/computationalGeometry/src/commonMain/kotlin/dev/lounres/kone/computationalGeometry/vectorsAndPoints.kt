@@ -10,6 +10,7 @@ import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.compareByOrdered
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.*
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
@@ -148,13 +149,20 @@ public fun <N> vectorHashing(columnVectorContext: Hashing<ColumnVector<N>>): Has
 public fun <N> vectorHashing(numberContext: Hashing<N>): Hashing<Vector<N>> =
     VectorHashing(columnVectorHashing(numberContext))
 
-//context(EuclideanSpace<N, A>)
-//internal val <N, A> lexicographic2DComparator: Comparator<Point2<N>> where A: Ring<N>, A: Order<N>
-//    get() = numberRing { compareByOrdered({ it.x }, { it.y }) }
-//context(EuclideanSpace<N, A>)
-//internal fun <N, A> lexicographicMDComparator(dim: UInt): Comparator<Point<N>> where A: Ring<N>, A: Order<N> =
-//    numberRing { compareByOrdered(*Array(dim.toInt()) { { p -> p.coordinates[it.toUInt()] } }) }
-//
+context(A)
+internal val <N, A> lexicographic2DComparator: Comparator<Point2<N>> where A: Order<N>
+    get() = compareByOrdered({ it.x }, { it.y })
+context(A)
+internal fun <N, A> lexicographicMDComparator(dim: UInt): Comparator<Point<N>> where A: Order<N> =
+    compareByOrdered(*Array(dim.toInt()) { { p -> p.coordinates[it.toUInt()] } })
+
+context(A)
+internal val <N, A> lexicographic2DOrder: Order<Point2<N>> where A: Order<N>
+    get() = Order(pointEquality(this@A), lexicographic2DComparator)
+context(A)
+internal fun <N, A> lexicographicMDOrder(dim: UInt): Order<Point<N>> where A: Order<N> =
+    Order(pointEquality(this@A), lexicographicMDComparator(dim))
+
 //context(EuclideanSpace<N, A>)
 //internal fun <N, A> perpendicularTo(dimension: UInt, vectors: KoneArray<Vector<N>>, positiveDirection: Vector<N>): Vector<N> where A: Ring<N>, A: Order<N> {
 //    require(dimension >= 1u && vectors.size + 1u == dimension && vectors.all { it.coordinates.size == dimension } && positiveDirection.coordinates.size == dimension)

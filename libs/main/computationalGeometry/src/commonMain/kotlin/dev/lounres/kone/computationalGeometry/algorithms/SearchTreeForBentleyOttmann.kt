@@ -8,6 +8,10 @@ package dev.lounres.kone.computationalGeometry.algorithms
 import dev.lounres.kone.collections.implementations.Disposable
 
 
+internal fun interface RelativeSignForBentleyOttmann<E> {
+    fun sign(element: E): Int
+}
+
 internal interface SearchTreeNodeForBentleyOttmann<E> {
     var element: E
     fun remove()
@@ -16,7 +20,7 @@ internal interface SearchTreeNodeForBentleyOttmann<E> {
 }
 
 internal interface ConnectedSearchTreeForBentleyOttmann<E> {
-    fun add(element: E, comparator: Comparator<E>): SearchTreeNodeForBentleyOttmann<E>
+    fun add(element: E, sign: RelativeSignForBentleyOttmann<E>): SearchTreeNodeForBentleyOttmann<E>
 }
 
 internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOttmann<E> {
@@ -418,8 +422,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
     }
     
     private inline fun <R> findSegmentForAndDo(
-        element: E,
-        comparator: Comparator<E>,
+        sign: RelativeSignForBentleyOttmann<E>,
         onEmpty: () -> R,
         onCoincidence: (value: Node<E>) -> R,
         onBetween: (lowerBound: Node<E>, upperBound: Node<E>) -> R,
@@ -438,36 +441,42 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                     else -> onEmpty()
                 }
             when (subtree) {
-                is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder ->
+                is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                    val subtreeElementSign = sign.sign(subtree.element.element)
                     when {
-                        comparator.compare(element, subtree.element.element) < 0 -> {
+                        subtreeElementSign > 0 -> {
                             upperBound = subtree.element
                             subtree = subtree.firstChild
                         }
-                        comparator.compare(element, subtree.element.element) == 0 -> return onCoincidence(subtree.element)
+                        
+                        subtreeElementSign == 0 -> return onCoincidence(subtree.element)
                         else -> {
                             lowerBound = subtree.element
                             subtree = subtree.secondChild
                         }
                     }
-                is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+                }
+                is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                    val subtreeFirstElementSign = sign.sign(subtree.firstElement.element)
+                    val subtreeSecondElementSign = sign.sign(subtree.secondElement.element)
                     when {
-                        comparator.compare(element, subtree.firstElement.element) < 0 -> {
+                        subtreeFirstElementSign > 0 -> {
                             upperBound = subtree.firstElement
                             subtree = subtree.firstChild
                         }
-                        comparator.compare(element, subtree.firstElement.element) == 0 -> return onCoincidence(subtree.firstElement)
-                        comparator.compare(element, subtree.secondElement.element) < 0 -> {
+                        subtreeFirstElementSign == 0 -> return onCoincidence(subtree.firstElement)
+                        subtreeSecondElementSign > 0 -> {
                             lowerBound = subtree.firstElement
                             upperBound = subtree.secondElement
                             subtree = subtree.secondChild
                         }
-                        comparator.compare(element, subtree.secondElement.element) == 0 -> return onCoincidence(subtree.secondElement)
+                        subtreeSecondElementSign == 0 -> return onCoincidence(subtree.secondElement)
                         else -> {
                             lowerBound = subtree.secondElement
                             subtree = subtree.thirdChild
                         }
                     }
+                }
             }
         }
     }
@@ -557,10 +566,9 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         }
     }
     
-    override fun add(element: E, comparator: Comparator<E>): SearchTreeNodeForBentleyOttmann<E> =
+    override fun add(element: E, sign: RelativeSignForBentleyOttmann<E>): SearchTreeNodeForBentleyOttmann<E> =
         findSegmentForAndDo(
-            element = element,
-            comparator = comparator,
+            sign = sign,
             onEmpty = {
                 val newNode = Node(element)
                 val newHolder = twoNodeHolder(

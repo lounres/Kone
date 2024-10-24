@@ -121,7 +121,6 @@ public fun <N, A> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment
         }
         is Line2WithLine2IntersectionInSteps.TheLinesAreInGeneralPosition<N> ->
             Segment2WithSegment2Intersection.TheLinesAreInGeneralPosition(
-//                if (resultInSteps.step1 in zero..one && resultInSteps.step2 in zero..one) this.start + this.direction * resultInSteps.step1 else null
-                if (resultInSteps.step1.let { it >= zero && it <= one } && resultInSteps.step2.let { it >= zero && it <= one }) this.start + this.direction * resultInSteps.step1 else null
+                if (resultInSteps.step1 in zero..one && resultInSteps.step2 in zero..one) this.start + this.direction * resultInSteps.step1 else null
             )
     }
