@@ -15,12 +15,16 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Option
 
 
-public data class EdgeEnds<V>(val start: V, val end: V) {
-    context(Equality<V>)
-    public operator fun contains(vertex: V): Boolean = vertex eq start || vertex eq end
-//    context(Graph<V, *>)
-//    public operator fun contains(vertex: V): Boolean = vertexContext { vertex eq start || vertex eq end }
-}
+public data class EdgeEnds<V>(val start: V, val end: V)
+
+context(Equality<V>)
+public operator fun <V> EdgeEnds<V>.contains(vertex: V): Boolean = vertex eq start || vertex eq end
+context(GraphWithContext<V, *, *, *>)
+public operator fun <V> EdgeEnds<V>.contains(vertex: V): Boolean = vertexContext { vertex eq start || vertex eq end }
+context(Equality<V>)
+public operator fun <V> EdgeEnds<V>.minus(vertex: V): V = if (vertex eq start) end else start
+context(GraphWithContext<V, *, *, *>)
+public operator fun <V> EdgeEnds<V>.minus(vertex: V): V = vertexContext { if (vertex eq start) end else start }
 
 public interface Graph<V, E> : KoneContext {
     public val vertices: KoneIterableSet<V>
@@ -42,7 +46,7 @@ public interface Graph<V, E> : KoneContext {
 //        }
 }
 
-public interface GraphWithContext<V, VC: Equality<V>, E, EC: Equality<E>>: Graph<V, E> {
+public interface GraphWithContext<V, out VC: Equality<V>, E, out EC: Equality<E>>: Graph<V, E> {
     public val vertexContext: VC
     public val edgeContext: EC
 }

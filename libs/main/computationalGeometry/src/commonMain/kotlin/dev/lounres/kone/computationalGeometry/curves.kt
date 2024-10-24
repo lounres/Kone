@@ -67,3 +67,5 @@ context(EuclideanKategory<N>)
 public fun <N> Line(start: Point<N>, end: Point<N>): Line<N> = Line(start = start, direction = end - start)
 context(EuclideanKategory<N>)
 public fun <N> Line2(start: Point2<N>, end: Point2<N>): Line2<N> = Line2(start = start, direction = end - start)
+
+// TODO: Add Circle and Arc
