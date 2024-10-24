@@ -32,6 +32,9 @@ public value class Path<E, W>(public val edges: KoneIterableList<E>, public val 
     public operator fun component2(): W = weight
 }
 
+/**
+ * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+ */
 context(G, WA)
 public fun <V, E, W, G, WA> shortestPathsMapByDijkstra(from: V): KoneMap<V, Path<E, W>>
 where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W>, WA: Order<W> {
@@ -71,4 +74,53 @@ where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W
     }
     
     return paths
+}
+
+/**
+ * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+ */
+context(G, WA)
+public fun <V, E, W, G, WA> shortestPathByDijkstra(from: V, to: V): Path<E, W>?
+where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W>, WA: Order<W> {
+    val pathsEquality = koneIterableListEquality(edgeContext)
+    
+    val verticesToCheck = BinaryGCMinimumHeap(defaultEquality<V>(), this@WA)
+    val queueNodes = koneMutableMapOf(vertexContext, defaultEquality<HeapNode<V, W>>())
+    val paths = koneMutableMapOf(
+        vertexContext,
+        Equality<Path<E, W>> { left, right ->
+            pathsEquality.invoke { left.edges eq right.edges } && left.weight eq right.weight
+        }
+    )
+    var optimalPathToTarget: Path<E, W>? = null
+    
+    queueNodes[from] = verticesToCheck.add(from, zero)
+    paths[from] = Path(emptyKoneIterableList(), zero)
+    
+    while (verticesToCheck.size != 0u) {
+        if (optimalPathToTarget != null && verticesToCheck.takeMinimum().priority >= optimalPathToTarget.weight) break
+        
+        val currentVertex = verticesToCheck.popMinimum().element
+        val (currentPath, currentWeight) = paths[currentVertex]
+        for (edge in currentVertex.incidentEdges) {
+            val neighbor = edge.ends - currentVertex
+            val currentPathToNeighbor = paths.getMaybe(neighbor)
+            val alternativePath = KoneIterableList(currentPath.size + 1u, edgeContext) { if (it < currentPath.size) currentPath[it] else edge }
+            val alternativeWeight = currentWeight + edge.weight
+            when(currentPathToNeighbor) {
+                None -> {
+                    paths[neighbor] = Path(alternativePath, alternativeWeight)
+                    if (vertexContext { neighbor eq to }) optimalPathToTarget = Path(alternativePath, alternativeWeight)
+                    queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
+                }
+                is Some<Path<E, W>> -> if (alternativeWeight < currentPathToNeighbor.value.weight) {
+                    paths[neighbor] = Path(alternativePath, alternativeWeight)
+                    if (vertexContext { neighbor eq to }) optimalPathToTarget = Path(alternativePath, alternativeWeight)
+                    queueNodes[neighbor].priority = alternativeWeight
+                }
+            }
+        }
+    }
+    
+    return optimalPathToTarget
 }

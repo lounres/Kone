@@ -62,16 +62,16 @@ public interface Digraph<V, E> {
     public fun edge(tail: V, head: V): E
     public fun edgeOrNull(tail: V, head: V): E?
     public fun edgeMaybe(tail: V, head: V): Option<E>
-    public val V.outgoingEdges: Set<E>
-    public val V.incomingEdges: Set<E>
-//    public val V.adjacentOutgoingVertices: Set<V>
-//    public val V.adjacentIncomingVertices: Set<V>
+    public val V.outgoingEdges: KoneIterableSet<E>
+    public val V.incomingEdges: KoneIterableSet<E>
+    public val V.adjacentOutgoingVertices: KoneIterableSet<V>
+    public val V.adjacentIncomingVertices: KoneIterableSet<V>
     public val V.outdegree: UInt
     public val V.indegree: UInt
     
     public val E.ends: EdgeEnds<V>
-    public val E.head: V
-    public val E.tail: V
+    public val E.head: V // from
+    public val E.tail: V // to
 }
 
 public interface DigraphWithContext<V, VC: Equality<V>, E, EC: Equality<E>>: Digraph<V, E> {
