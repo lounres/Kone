@@ -1,8 +1,6 @@
 /*
  * Copyright © 2023 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
- *
- * THE FILE IS AUTOMATICALLY GENERATED. DON'T CHANGE IT MANUALLY.
  */
 
 @file:Suppress("DuplicatedCode")
@@ -10,9 +8,7 @@
 package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.*
 
 public fun <E : Comparable<E>> KoneIterable<E>.min(): E {
     val iterator = iterator()
@@ -465,7 +461,7 @@ public fun <E> KoneIterable<E>.minWith(comparator: Comparator<E>): E {
     if (!iterator.hasNext()) return minElement
     do {
         val nextElement = iterator.getAndMoveNext()
-        if (comparator.compare(minElement, nextElement) > 0) {
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
         }
     } while (iterator.hasNext())
@@ -479,7 +475,7 @@ public fun <E> KoneList<E>.minWith(comparator: Comparator<E>): E {
     var index = 1u
     do {
         val nextElement = get(index++)
-        if (comparator.compare(minElement, nextElement) > 0) {
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
         }
     } while (index < size)
@@ -493,7 +489,7 @@ public fun <E> KoneIterableList<E>.minWith(comparator: Comparator<E>): E {
     if (!iterator.hasNext()) return minElement
     do {
         val nextElement = iterator.getAndMoveNext()
-        if (comparator.compare(minElement, nextElement) > 0) {
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
         }
     } while (iterator.hasNext())
@@ -511,8 +507,8 @@ public fun <E> KoneIterable<E>.minListWith(elementContext: Equality<E> = default
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minElement = nextElement
                 minList.removeAll()
                 minList.add(nextElement)
@@ -533,8 +529,8 @@ public fun <E> KoneList<E>.minListWith(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minElement = nextElement
                 minList.removeAll()
                 minList.add(nextElement)
@@ -555,8 +551,8 @@ public fun <E> KoneIterableList<E>.minListWith(elementContext: Equality<E> = def
 
         val comparisonResult = comparator.compare(minElement, nextElement)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minElement = nextElement
                 minList.removeAll()
                 minList.add(nextElement)
@@ -573,7 +569,7 @@ public fun <E> KoneIterable<E>.maxWith(comparator: Comparator<E>): E {
     if (!iterator.hasNext()) return maxElement
     do {
         val nextElement = iterator.getAndMoveNext()
-        if (comparator.compare(maxElement, nextElement) < 0) {
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
         }
     } while (iterator.hasNext())
@@ -587,7 +583,7 @@ public fun <E> KoneList<E>.maxWith(comparator: Comparator<E>): E {
     var index = 1u
     do {
         val nextElement = get(index++)
-        if (comparator.compare(maxElement, nextElement) < 0) {
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
         }
     } while (index < size)
@@ -601,7 +597,7 @@ public fun <E> KoneIterableList<E>.maxWith(comparator: Comparator<E>): E {
     if (!iterator.hasNext()) return maxElement
     do {
         val nextElement = iterator.getAndMoveNext()
-        if (comparator.compare(maxElement, nextElement) < 0) {
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
         }
     } while (iterator.hasNext())
@@ -619,8 +615,8 @@ public fun <E> KoneIterable<E>.maxListWith(elementContext: Equality<E> = default
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxElement = nextElement
                 maxList.removeAll()
                 maxList.add(nextElement)
@@ -641,8 +637,8 @@ public fun <E> KoneList<E>.maxListWith(elementContext: Equality<E> = defaultEqua
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxElement = nextElement
                 maxList.removeAll()
                 maxList.add(nextElement)
@@ -663,8 +659,8 @@ public fun <E> KoneIterableList<E>.maxListWith(elementContext: Equality<E> = def
 
         val comparisonResult = comparator.compare(maxElement, nextElement)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxElement = nextElement
                 maxList.removeAll()
                 maxList.add(nextElement)
@@ -1175,7 +1171,7 @@ public fun <E, R> KoneIterable<E>.minWithOf(comparator: Comparator<R>, selector:
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minValue = nextValue
         }
     } while (iterator.hasNext())
@@ -1191,7 +1187,7 @@ public fun <E, R> KoneList<E>.minWithOf(comparator: Comparator<R>, selector: (E)
     do {
         val nextElement = get(index++)
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minValue = nextValue
         }
     } while (index < size)
@@ -1207,7 +1203,7 @@ public fun <E, R> KoneIterableList<E>.minWithOf(comparator: Comparator<R>, selec
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minValue = nextValue
         }
     } while (iterator.hasNext())
@@ -1227,8 +1223,8 @@ public fun <E, R> KoneIterable<E>.minListWithOf(elementContext: Equality<R> = de
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextValue)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextValue)
@@ -1251,8 +1247,8 @@ public fun <E, R> KoneList<E>.minListWithOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextValue)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextValue)
@@ -1275,8 +1271,8 @@ public fun <E, R> KoneIterableList<E>.minListWithOf(elementContext: Equality<R> 
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextValue)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextValue)
@@ -1295,7 +1291,7 @@ public fun <E, R> KoneIterable<E>.maxWithOf(comparator: Comparator<R>, selector:
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxValue = nextValue
         }
     } while (iterator.hasNext())
@@ -1311,7 +1307,7 @@ public fun <E, R> KoneList<E>.maxWithOf(comparator: Comparator<R>, selector: (E)
     do {
         val nextElement = get(index++)
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxValue = nextValue
         }
     } while (index < size)
@@ -1327,7 +1323,7 @@ public fun <E, R> KoneIterableList<E>.maxWithOf(comparator: Comparator<R>, selec
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxValue = nextValue
         }
     } while (iterator.hasNext())
@@ -1347,8 +1343,8 @@ public fun <E, R> KoneIterable<E>.maxListWithOf(elementContext: Equality<R> = de
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextValue)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextValue)
@@ -1371,8 +1367,8 @@ public fun <E, R> KoneList<E>.maxListWithOf(elementContext: Equality<R> = defaul
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextValue)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextValue)
@@ -1395,8 +1391,8 @@ public fun <E, R> KoneIterableList<E>.maxListWithOf(elementContext: Equality<R> 
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextValue)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextValue)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextValue)
@@ -1919,7 +1915,7 @@ public fun <E, R> KoneIterable<E>.minWithBy(comparator: Comparator<R>, selector:
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
             minValue = nextValue
         }
@@ -1936,7 +1932,7 @@ public fun <E, R> KoneList<E>.minWithBy(comparator: Comparator<R>, selector: (E)
     do {
         val nextElement = get(index++)
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
             minValue = nextValue
         }
@@ -1953,7 +1949,7 @@ public fun <E, R> KoneIterableList<E>.minWithBy(comparator: Comparator<R>, selec
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(minValue, nextValue) > 0) {
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
             minElement = nextElement
             minValue = nextValue
         }
@@ -1974,8 +1970,8 @@ public fun <E, R> KoneIterable<E>.minListWithBy(elementContext: Equality<E> = de
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextElement)
@@ -1998,8 +1994,8 @@ public fun <E, R> KoneList<E>.minListWithBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextElement)
@@ -2022,8 +2018,8 @@ public fun <E, R> KoneIterableList<E>.minListWithBy(elementContext: Equality<E> 
 
         val comparisonResult = comparator.compare(minValue, nextValue)
         when {
-            comparisonResult == 0 -> minList.add(nextElement)
-            comparisonResult > 0 -> {
+            comparisonResult == ComparisonResult.Equal -> minList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
                 minList.removeAll()
                 minList.add(nextElement)
@@ -2042,7 +2038,7 @@ public fun <E, R> KoneIterable<E>.maxWithBy(comparator: Comparator<R>, selector:
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
             maxValue = nextValue
         }
@@ -2059,7 +2055,7 @@ public fun <E, R> KoneList<E>.maxWithBy(comparator: Comparator<R>, selector: (E)
     do {
         val nextElement = get(index++)
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
             maxValue = nextValue
         }
@@ -2076,7 +2072,7 @@ public fun <E, R> KoneIterableList<E>.maxWithBy(comparator: Comparator<R>, selec
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
-        if (comparator.compare(maxValue, nextValue) < 0) {
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
             maxElement = nextElement
             maxValue = nextValue
         }
@@ -2097,8 +2093,8 @@ public fun <E, R> KoneIterable<E>.maxListWithBy(elementContext: Equality<E> = de
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextElement)
@@ -2121,8 +2117,8 @@ public fun <E, R> KoneList<E>.maxListWithBy(elementContext: Equality<E> = defaul
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextElement)
@@ -2145,8 +2141,8 @@ public fun <E, R> KoneIterableList<E>.maxListWithBy(elementContext: Equality<E> 
 
         val comparisonResult = comparator.compare(maxValue, nextValue)
         when {
-            comparisonResult == 0 -> maxList.add(nextElement)
-            comparisonResult < 0 -> {
+            comparisonResult == ComparisonResult.Equal -> maxList.add(nextElement)
+            comparisonResult == ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
                 maxList.removeAll()
                 maxList.add(nextElement)

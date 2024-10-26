@@ -32,18 +32,28 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
 
     // region Integer-to-Constant conversion
     public fun constantValueOf(value: Int): C = constantRing.run { valueOf(value) }
+    public fun constantValueOf(value: UInt): C = constantRing.run { valueOf(value) }
     public fun constantValueOf(value: Long): C = constantRing.run { valueOf(value) }
+    public fun constantValueOf(value: ULong): C = constantRing.run { valueOf(value) }
     public val Int.constantValue: C get() = constantRing.run { this@constantValue.value }
+    public val UInt.constantValue: C get() = constantRing.run { this@constantValue.value }
     public val Long.constantValue: C get() = constantRing.run { this@constantValue.value }
+    public val ULong.constantValue: C get() = constantRing.run { this@constantValue.value }
     // endregion
 
     // region Integer-to-Polynomial conversion
-    public override fun valueOf(value: Int): P = polynomialValueOf(constantValueOf(value))
-    public override fun valueOf(value: Long): P = polynomialValueOf(constantValueOf(value))
+    override fun valueOf(value: Int): P = polynomialValueOf(constantValueOf(value))
+    override fun valueOf(value: UInt): P = polynomialValueOf(constantValueOf(value))
+    override fun valueOf(value: Long): P = polynomialValueOf(constantValueOf(value))
+    override fun valueOf(value: ULong): P = polynomialValueOf(constantValueOf(value))
     public fun polynomialValueOf(value: Int): P = valueOf(value)
+    public fun polynomialValueOf(value: UInt): P = valueOf(value)
     public fun polynomialValueOf(value: Long): P = valueOf(value)
+    public fun polynomialValueOf(value: ULong): P = valueOf(value)
     public val Int.polynomialValue: P get() = polynomialValueOf(this)
+    public val UInt.polynomialValue: P get() = polynomialValueOf(this)
     public val Long.polynomialValue: P get() = polynomialValueOf(this)
+    public val ULong.polynomialValue: P get() = polynomialValueOf(this)
     // endregion
 
     // region Constant-to-Polynomial conversion
@@ -66,11 +76,11 @@ public interface PolynomialSpace<C, P: Polynomial<C>, out A: Ring<C>> : Ring<P> 
     // endregion
 
     // region Polynomial-Polynomial operations
-    public override operator fun P.unaryPlus(): P = this
-    public override operator fun P.unaryMinus(): P
-    public override operator fun P.plus(other: P): P
-    public override operator fun P.minus(other: P): P
-    public override operator fun P.times(other: P): P
+    override operator fun P.unaryPlus(): P = this
+    override operator fun P.unaryMinus(): P
+    override operator fun P.plus(other: P): P
+    override operator fun P.minus(other: P): P
+    override operator fun P.times(other: P): P
     // endregion
 
     // region Polynomial properties
@@ -96,6 +106,15 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
     @JvmName("timesVariableInt")
     public operator fun V.times(other: Int): P
     // endregion
+    
+    // region Variable-UInt operations
+    @JvmName("plusVariableUInt")
+    public operator fun V.plus(other: UInt): P
+    @JvmName("minusVariableUInt")
+    public operator fun V.minus(other: UInt): P
+    @JvmName("timesVariableUInt")
+    public operator fun V.times(other: UInt): P
+    // endregion
 
     // region Variable-Long operations
     @JvmName("plusVariableLong")
@@ -104,6 +123,15 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
     public operator fun V.minus(other: Long): P
     @JvmName("timesVariableLong")
     public operator fun V.times(other: Long): P
+    // endregion
+    
+    // region Variable-ULong operations
+    @JvmName("plusVariableULong")
+    public operator fun V.plus(other: ULong): P
+    @JvmName("minusVariableULong")
+    public operator fun V.minus(other: ULong): P
+    @JvmName("timesVariableULong")
+    public operator fun V.times(other: ULong): P
     // endregion
 
     // region Int-Variable operations
@@ -114,6 +142,15 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
     @JvmName("timesIntVariable")
     public operator fun Int.times(other: V): P
     // endregion
+    
+    // region UInt-Variable operations
+    @JvmName("plusUIntVariable")
+    public operator fun UInt.plus(other: V): P
+    @JvmName("minusUIntVariable")
+    public operator fun UInt.minus(other: V): P
+    @JvmName("timesUIntVariable")
+    public operator fun UInt.times(other: V): P
+    // endregion
 
     // region Long-Variable operations
     @JvmName("plusLongVariable")
@@ -122,6 +159,15 @@ public interface MultivariatePolynomialSpace<C, V, P: Polynomial<C>, out A: Ring
     public operator fun Long.minus(other: V): P
     @JvmName("timesLongVariable")
     public operator fun Long.times(other: V): P
+    // endregion
+    
+    // region ULong-Variable operations
+    @JvmName("plusULongVariable")
+    public operator fun ULong.plus(other: V): P
+    @JvmName("minusULongVariable")
+    public operator fun ULong.minus(other: V): P
+    @JvmName("timesULongVariable")
+    public operator fun ULong.times(other: V): P
     // endregion
 
     // region Variable-Constant operations
@@ -190,11 +236,23 @@ public interface PolynomialSpaceOverField<C, P: Polynomial<C>, out A: Field<C>> 
     @JsName("divPolynomialInt")
     public operator fun P.div(other: Int): P = this / other.constantValue
     // endregion
+    
+    // region Constant-UInt operations
+    @JvmName("divPolynomialUInt")
+    @JsName("divPolynomialUInt")
+    public operator fun P.div(other: UInt): P = this / other.constantValue
+    // endregion
 
     // region Constant-Long operations
     @JvmName("divPolynomialLong")
     @JsName("divPolynomialLong")
     public operator fun P.div(other: Long): P = this / other.constantValue
+    // endregion
+    
+    // region Constant-ULong operations
+    @JvmName("divPolynomialULong")
+    @JsName("divPolynomialULong")
+    public operator fun P.div(other: ULong): P = this / other.constantValue
     // endregion
 
     // region Polynomial-Constant operations
@@ -211,10 +269,20 @@ public interface MultivariatePolynomialSpaceOverField<C, V, P: Polynomial<C>, ou
     @JvmName("divVariableInt")
     public operator fun V.div(other: Int): P = this * other.constantValue.reciprocal
     // endregion
+    
+    // region Variable-UInt operations
+    @JvmName("divVariableUInt")
+    public operator fun V.div(other: UInt): P = this * other.constantValue.reciprocal
+    // endregion
 
     // region Variable-Long operations
     @JvmName("divVariableLong")
     public operator fun V.div(other: Long): P = this * other.constantValue.reciprocal
+    // endregion
+    
+    // region Variable-ULong operations
+    @JvmName("divVariableULong")
+    public operator fun V.div(other: ULong): P = this * other.constantValue.reciprocal
     // endregion
 
     // region Variable-Constant operations

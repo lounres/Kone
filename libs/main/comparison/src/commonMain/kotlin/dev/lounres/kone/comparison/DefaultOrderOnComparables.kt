@@ -8,6 +8,11 @@ package dev.lounres.kone.comparison
 
 @Suppress("UNCHECKED_CAST")
 internal object DefaultOrderOnComparables: Order<Any?> {
-    override fun Any?.compareTo(other: Any?): Int =
-        (this as Comparable<Any?>).compareTo(other)
+    override fun Any?.compareWith(other: Any?): ComparisonResult =
+        (this as Comparable<Any?>).compareTo(other).asComparisonResult()
+}
+@Suppress("UNCHECKED_CAST")
+internal object DefaultComparatorOnComparables: Comparator<Any?> {
+    override fun compare(left: Any?, right: Any?): ComparisonResult =
+        (left as Comparable<Any?>).compareTo(right).asComparisonResult()
 }

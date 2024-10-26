@@ -8,8 +8,18 @@
 package dev.lounres.kone.comparison
 
 import dev.lounres.kone.context.invoke
-import kotlin.jvm.JvmInline
+import kotlin.Comparator as KotlinStdlibComparator
 
+
+// TODO: Declare my own `Comparator` interface
+/**
+ * Describes result of two elements comparison. See [Order] for the main application.
+ *
+ * Names of the enumerated elements say for themselves.
+ */
+public enum class ComparisonResult {
+    LeftIsGreaterThanRight, LeftIsLessThanRight, Equal;
+}
 
 /**
  * Describes a context that provides [linear (total) order](https://en.wikipedia.org/wiki/Total_order) as a [compareTo]
@@ -24,49 +34,92 @@ import kotlin.jvm.JvmInline
  *   leaving the entities the same.
  */
 public interface Order<in E> : Equality<E> {
-    public infix operator fun E.compareTo(other: E): Int
+    public infix fun E.compareWith(other: E): ComparisonResult
 }
+
+/**
+ * Provides comparison of two elements. Alternative of [KotlinStdlibComparator] but with result of type [ComparisonResult].
+ */
+public fun interface Comparator<in E> {
+    public fun compare(left: E, right: E): ComparisonResult
+}
+
+/**
+ * Shortcut to convert comparison result from [Comparable]'s and [KotlinStdlibComparator]'s terms to
+ * [Order]'s and Kone [Comparator]'s terms.
+ */
+public fun Int.asComparisonResult(): ComparisonResult =
+    when {
+        this > 0 -> ComparisonResult.LeftIsGreaterThanRight
+        this < 0 -> ComparisonResult.LeftIsLessThanRight
+        else -> ComparisonResult.Equal
+    }
+
+/**
+ * Shortcut to convert comparison result from [Comparable]'s and [KotlinStdlibComparator]'s terms to
+ * [Order]'s and Kone [Comparator]'s terms.
+ */
+public fun ComparisonResult.asKotlinComparisonResult(): Int =
+    when (this) {
+        ComparisonResult.LeftIsGreaterThanRight -> 1
+        ComparisonResult.LeftIsLessThanRight -> -1
+        ComparisonResult.Equal -> 0
+    }
+
+public fun <E> Comparator<E>.asKotlinStdlib(): KotlinStdlibComparator<E> =
+    KotlinStdlibComparator { left, right -> compare(left, right).asKotlinComparisonResult() }
+
+public fun <E> KotlinStdlibComparator<E>.asKotlinStdlib(): Comparator<E> =
+    Comparator { left, right -> compare(left, right).asComparisonResult() }
+
+/**
+ * Compares [this] and [other] elements but in terms of the built-in language `compareTo` operator.
+ *
+ * The only usage is to import to make `<`, `<=`, `>`, and `>=` work in [Order] context.
+ */
+context(Order<E>)
+public operator fun <E> E.compareTo(other: E): Int = this.compareWith(other).asKotlinComparisonResult()
 
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.greaterThan(other: E): Boolean = this > other
+public inline infix fun <E> E.greaterThan(other: E): Boolean = this.compareWith(other) == ComparisonResult.LeftIsGreaterThanRight
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.greaterThanOrEqual(other: E): Boolean = this >= other
+public inline infix fun <E> E.greaterThanOrEqual(other: E): Boolean = this.compareWith(other) != ComparisonResult.LeftIsLessThanRight
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.lessThen(other: E): Boolean = this < other
+public inline infix fun <E> E.lessThen(other: E): Boolean = this.compareWith(other) == ComparisonResult.LeftIsLessThanRight
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.lessThenOrEqual(other: E): Boolean = this <= other
+public inline infix fun <E> E.lessThenOrEqual(other: E): Boolean = this.compareWith(other) != ComparisonResult.LeftIsGreaterThanRight
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.gt(other: E): Boolean = this > other
+public inline infix fun <E> E.gt(other: E): Boolean = this greaterThan other
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.geq(other: E): Boolean = this >= other
+public inline infix fun <E> E.geq(other: E): Boolean = this greaterThanOrEqual other
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.lt(other: E): Boolean = this < other
+public inline infix fun <E> E.lt(other: E): Boolean = this lessThen other
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  */
 context(Order<E>)
-public inline infix fun <E> E.leq(other: E): Boolean = this <= other
+public inline infix fun <E> E.leq(other: E): Boolean = this lessThenOrEqual other
 
 /**
  * Returns the smaller of two values [a] and [b].
@@ -103,10 +156,10 @@ public fun <E> max(vararg elements: E): E {
  * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
  * that compares the `left` and `right` elements to each other.
  */
-public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolean, crossinline comparator: (left: E, right: E) -> Int): Order<E> =
+public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolean, crossinline comparator: (left: E, right: E) -> ComparisonResult): Order<E> =
     object : Order<E> {
         override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
-        override fun E.compareTo(other: E): Int = comparator(this, other)
+        override fun E.compareWith(other: E): ComparisonResult = comparator(this, other)
     }
 
 /**
@@ -116,17 +169,17 @@ public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolea
 public inline fun <E> Order(crossinline equalizer: (left: E, right: E) -> Boolean, comparator: Comparator<E>): Order<E> =
     object : Order<E> {
         override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
-        override fun E.compareTo(other: E): Int = comparator.compare(this, other)
+        override fun E.compareWith(other: E): ComparisonResult = comparator.compare(this, other)
     }
 
 /**
  * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
  * that compares the `left` and `right` elements to each other.
  */
-public inline fun <E> Order(equalizer: Equality<E>, crossinline comparator: (left: E, right: E) -> Int): Order<E> =
+public inline fun <E> Order(equalizer: Equality<E>, crossinline comparator: (left: E, right: E) -> ComparisonResult): Order<E> =
     object : Order<E> {
         override fun E.equalsTo(other: E): Boolean = equalizer { this eq other }
-        override fun E.compareTo(other: E): Int = comparator(this, other)
+        override fun E.compareWith(other: E): ComparisonResult = comparator(this, other)
     }
 
 /**
@@ -136,7 +189,7 @@ public inline fun <E> Order(equalizer: Equality<E>, crossinline comparator: (lef
 public inline fun <E> Order(equalizer: Equality<E>, comparator: Comparator<E>): Order<E> =
     object : Order<E> {
         override fun E.equalsTo(other: E): Boolean = equalizer { this eq other }
-        override fun E.compareTo(other: E): Int = comparator.compare(this, other)
+        override fun E.compareWith(other: E): ComparisonResult = comparator.compare(this, other)
     }
 
 /**
@@ -147,18 +200,18 @@ public fun <E: Comparable<E>> defaultOrder(): Order<E> = DefaultOrderOnComparabl
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
-public inline fun <E: Comparable<E>> defaultComparator(): Comparator<E> = naturalOrder()
+public inline fun <E: Comparable<E>> defaultComparator(): Comparator<E> = DefaultComparatorOnComparables
 /**
  * Converts provided [Order] receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  */
-public fun <E> Order<E>.asComparator(): Comparator<E> = Comparator { left, right -> left.compareTo(right) }
+public fun <E> Order<E>.asComparator(): Comparator<E> = Comparator { left, right -> left.compareWith(right) }
 /**
  * Converts provided [Order] context receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  */
 context(Order<E>)
-public val <E> comparator: Comparator<E> get() = Comparator { left, right -> left.compareTo(right) }
+public val <E> comparator: Comparator<E> get() = Comparator { left, right -> left.compareWith(right) }
 /**
  * Creates a comparator using the sequence of functions to calculate a result of comparison.
  * The functions are called sequentially, receive the given values `a` and `b` and return objects comparable via
@@ -171,10 +224,10 @@ public val <E> comparator: Comparator<E> get() = Comparator { left, right -> lef
 context(Order<E>)
 public fun <T, E> compareByOrdered(vararg selectors: (T) -> E): Comparator<T> = Comparator { a, b ->
     for (s in selectors) {
-        val diff = s(a).compareTo(s(b))
-        if (diff != 0) return@Comparator diff
+        val comparisonResult = s(a).compareWith(s(b))
+        if (comparisonResult != ComparisonResult.Equal) return@Comparator comparisonResult
     }
-    return@Comparator 0
+    return@Comparator ComparisonResult.Equal
 }
 
 // TODO: Replace with multifield value classes when KT-72538 will be fixed

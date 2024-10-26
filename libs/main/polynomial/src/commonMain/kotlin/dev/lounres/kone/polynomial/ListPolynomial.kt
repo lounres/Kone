@@ -73,6 +73,41 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
                 coefficients.map { it * other }
             )
         }
+    
+    public override operator fun ListPolynomial<C>.plus(other: UInt): ListPolynomial<C> =
+        if (other == 0u) this
+        else
+            ListPolynomial(
+                coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = getOrElse(0) { constantZero } + other
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun ListPolynomial<C>.minus(other: UInt): ListPolynomial<C> =
+        if (other == 0u) this
+        else
+            ListPolynomial(
+                coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = getOrElse(0) { constantZero } - other
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun ListPolynomial<C>.times(other: UInt): ListPolynomial<C> =
+        when (other) {
+            0u -> zero
+            1u -> this
+            else -> ListPolynomial(
+                coefficients.map { it * other }
+            )
+        }
 
     public override operator fun ListPolynomial<C>.plus(other: Long): ListPolynomial<C> =
         if (other == 0L) this
@@ -104,6 +139,41 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
         when (other) {
             0L -> zero
             1L -> this
+            else -> ListPolynomial(
+                coefficients.map { it * other }
+            )
+        }
+    
+    public override operator fun ListPolynomial<C>.plus(other: ULong): ListPolynomial<C> =
+        if (other == 0uL) this
+        else
+            ListPolynomial(
+                coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = getOrElse(0) { constantZero } + other
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun ListPolynomial<C>.minus(other: ULong): ListPolynomial<C> =
+        if (other == 0uL) this
+        else
+            ListPolynomial(
+                coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = getOrElse(0) { constantZero } - other
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun ListPolynomial<C>.times(other: ULong): ListPolynomial<C> =
+        when (other) {
+            0uL -> zero
+            1uL -> this
             else -> ListPolynomial(
                 coefficients.map { it * other }
             )
@@ -147,6 +217,45 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
                 other.coefficients.map { this@times * it }
             )
         }
+    
+    public override operator fun UInt.plus(other: ListPolynomial<C>): ListPolynomial<C> =
+        if (this == 0u) other
+        else
+            ListPolynomial(
+                other.coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = this@plus + getOrElse(0) { constantZero }
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun UInt.minus(other: ListPolynomial<C>): ListPolynomial<C> =
+        ListPolynomial(
+            other.coefficients
+                .toMutableList()
+                .apply {
+                    if (this@minus == 0u) {
+                        indices.forEach { this[it] = -this[it] }
+                    } else {
+                        (1..lastIndex).forEach { this[it] = -this[it] }
+                        
+                        val result = this@minus - getOrElse(0) { constantZero }
+                        
+                        if (size == 0) add(result)
+                        else this[0] = result
+                    }
+                }
+        )
+    public override operator fun UInt.times(other: ListPolynomial<C>): ListPolynomial<C> =
+        when (this) {
+            0u -> zero
+            1u -> other
+            else -> ListPolynomial(
+                other.coefficients.map { this@times * it }
+            )
+        }
 
     public override operator fun Long.plus(other: ListPolynomial<C>): ListPolynomial<C> =
         if (this == 0L) other
@@ -182,6 +291,45 @@ public open class ListPolynomialSpace<C, out A : Ring<C>> : PolynomialSpace<C, L
         when (this) {
             0L -> zero
             1L -> other
+            else -> ListPolynomial(
+                other.coefficients.map { this@times * it }
+            )
+        }
+    
+    public override operator fun ULong.plus(other: ListPolynomial<C>): ListPolynomial<C> =
+        if (this == 0uL) other
+        else
+            ListPolynomial(
+                other.coefficients
+                    .toMutableList()
+                    .apply {
+                        val result = this@plus + getOrElse(0) { constantZero }
+                        
+                        if(size == 0) add(result)
+                        else this[0] = result
+                    }
+            )
+    public override operator fun ULong.minus(other: ListPolynomial<C>): ListPolynomial<C> =
+        ListPolynomial(
+            other.coefficients
+                .toMutableList()
+                .apply {
+                    if (this@minus == 0uL) {
+                        indices.forEach { this[it] = -this[it] }
+                    } else {
+                        (1..lastIndex).forEach { this[it] = -this[it] }
+                        
+                        val result = this@minus - getOrElse(0) { constantZero }
+                        
+                        if (size == 0) add(result)
+                        else this[0] = result
+                    }
+                }
+        )
+    public override operator fun ULong.times(other: ListPolynomial<C>): ListPolynomial<C> =
+        when (this) {
+            0uL -> zero
+            1uL -> other
             else -> ListPolynomial(
                 other.coefficients.map { this@times * it }
             )

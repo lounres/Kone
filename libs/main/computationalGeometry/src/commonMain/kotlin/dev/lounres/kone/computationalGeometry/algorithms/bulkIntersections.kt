@@ -17,8 +17,11 @@ import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.compareTo
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.gt
+import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
 import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.Segment2
@@ -69,7 +72,7 @@ private fun <N, A> addIntersectionFor(
         is Segment2WithSegment2Intersection.TheLinesAreCollinear<N> -> {} // TODO: Think about cases of collinear segments
         is Segment2WithSegment2Intersection.TheLinesAreInGeneralPosition<N> -> {
             val stIntersectionPoint = intersectionResult.intersection
-            if (stIntersectionPoint != null && stIntersectionPoint > currentPriority) {
+            if (stIntersectionPoint != null && stIntersectionPoint gt currentPriority) {
                 val event = EventForBentleyOttmann.SegmentsIntersection(
                     segmentIndex1 = sSegmentIndex,
                     segmentIndex2 = tSegmentIndex,
@@ -101,7 +104,7 @@ public fun <N, A> KoneIterableList<Segment2<N>>.allIntersectionByBentleyOttmann(
             val structuralEnd = segment.end
             val start: Point2<N>
             val end: Point2<N>
-            if (structuralStart < structuralEnd) {
+            if (structuralStart lt structuralEnd) {
                 start = structuralStart
                 end = structuralEnd
             } else {

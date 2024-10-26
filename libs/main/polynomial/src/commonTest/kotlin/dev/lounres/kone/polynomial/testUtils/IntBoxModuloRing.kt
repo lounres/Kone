@@ -12,9 +12,7 @@ import kotlin.jvm.JvmInline
 
 
 @JvmInline
-value class IntBox(
-    val value: Int
-)
+value class IntBox(val value: Int)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
 class IntBoxModuloRing(modulus: Int) : Ring<IntBox> {
@@ -29,7 +27,9 @@ class IntBoxModuloRing(modulus: Int) : Ring<IntBox> {
     override val one: IntBox = IntBox(1)
 
     override fun valueOf(arg: Int): IntBox = IntBox(arg % modulus)
+    override fun valueOf(arg: UInt): IntBox = IntBox(arg.toInt() % modulus)
     override fun valueOf(arg: Long): IntBox = IntBox((arg % modulus).toInt())
+    override fun valueOf(arg: ULong): IntBox = IntBox((arg.toLong() % modulus).toInt())
 
     // TODO: Upgrade operations. Fix cases of big numbers.
 
@@ -41,16 +41,32 @@ class IntBoxModuloRing(modulus: Int) : Ring<IntBox> {
     override operator fun IntBox.plus(other: Int): IntBox = IntBox(((value + other) % modulus))
     override operator fun IntBox.minus(other: Int): IntBox = IntBox(((value - other) % modulus))
     override operator fun IntBox.times(other: Int): IntBox = IntBox(((value * other) % modulus))
+    
+    override operator fun IntBox.plus(other: UInt): IntBox = IntBox(((value + other.toInt()) % modulus))
+    override operator fun IntBox.minus(other: UInt): IntBox = IntBox(((value - other.toInt()) % modulus))
+    override operator fun IntBox.times(other: UInt): IntBox = IntBox(((value * other.toInt()) % modulus))
 
     override operator fun IntBox.plus(other: Long): IntBox = IntBox(((value + other) % modulus).toInt())
     override operator fun IntBox.minus(other: Long): IntBox = IntBox(((value - other) % modulus).toInt())
     override operator fun IntBox.times(other: Long): IntBox = IntBox(((value * other) % modulus).toInt())
+    
+    override operator fun IntBox.plus(other: ULong): IntBox = IntBox(((value + other.toLong()) % modulus).toInt())
+    override operator fun IntBox.minus(other: ULong): IntBox = IntBox(((value - other.toLong()) % modulus).toInt())
+    override operator fun IntBox.times(other: ULong): IntBox = IntBox(((value * other.toLong()) % modulus).toInt())
 
     override operator fun Int.plus(other: IntBox): IntBox = IntBox(((this + other.value) % modulus))
     override operator fun Int.minus(other: IntBox): IntBox = IntBox(((this - other.value) % modulus))
     override operator fun Int.times(other: IntBox): IntBox = IntBox(((this * other.value) % modulus))
+    
+    override operator fun UInt.plus(other: IntBox): IntBox = IntBox(((this.toInt() + other.value) % modulus))
+    override operator fun UInt.minus(other: IntBox): IntBox = IntBox(((this.toInt() - other.value) % modulus))
+    override operator fun UInt.times(other: IntBox): IntBox = IntBox(((this.toInt() * other.value) % modulus))
 
     override operator fun Long.plus(other: IntBox): IntBox = IntBox(((this + other.value) % modulus).toInt())
     override operator fun Long.minus(other: IntBox): IntBox = IntBox(((this - other.value) % modulus).toInt())
     override operator fun Long.times(other: IntBox): IntBox = IntBox(((this * other.value) % modulus).toInt())
+    
+    override operator fun ULong.plus(other: IntBox): IntBox = IntBox(((this.toLong() + other.value) % modulus).toInt())
+    override operator fun ULong.minus(other: IntBox): IntBox = IntBox(((this.toLong() - other.value) % modulus).toInt())
+    override operator fun ULong.times(other: IntBox): IntBox = IntBox(((this.toLong() * other.value) % modulus).toInt())
 }

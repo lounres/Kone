@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.implementations.Disposable
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {
-    fun sign(element: E): Int
+    fun sign(element: E): Int // TODO: Replace with `ComparisonResult` from Kone
 }
 
 internal interface SearchTreeNodeForBentleyOttmann<E> {

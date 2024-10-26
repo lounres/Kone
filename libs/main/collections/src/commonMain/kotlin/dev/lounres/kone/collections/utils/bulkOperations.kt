@@ -11,10 +11,7 @@ import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneLazyList
 import dev.lounres.kone.collections.implementations.KoneVirtualList
-import dev.lounres.kone.collections.utils.divide
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.*
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
@@ -981,8 +978,8 @@ public fun <E> KoneSettableList<E>.sortWith(comparator: Comparator<E>) {
         var j = to
         val valueInTheMiddle = this[(from + to) / 2u]
         while (true) {
-            while (comparator.compare(this[i], valueInTheMiddle) < 0) i++
-            while (comparator.compare(this[j], valueInTheMiddle) > 0) j--
+            while (comparator.compare(this[i], valueInTheMiddle) == ComparisonResult.LeftIsLessThanRight) i++
+            while (comparator.compare(this[j], valueInTheMiddle) == ComparisonResult.LeftIsGreaterThanRight) j--
             if (i <= j) {
                 this[i] = this[j].also { this[j] = this[i] }
                 i++
@@ -1067,8 +1064,8 @@ public fun <E> KoneSettableList<E>.sortWithDescending(comparator: Comparator<E>)
         var j = to
         val valueInTheMiddle = this[(from + to) / 2u]
         while (true) {
-            while (comparator.compare(this[i], valueInTheMiddle) > 0) i++
-            while (comparator.compare(this[j], valueInTheMiddle) < 0) j--
+            while (comparator.compare(this[i], valueInTheMiddle) == ComparisonResult.LeftIsLessThanRight) i++
+            while (comparator.compare(this[j], valueInTheMiddle) == ComparisonResult.LeftIsGreaterThanRight) j--
             if (i <= j) {
                 this[i] = this[j].also { this[j] = this[i] }
                 i++
@@ -1164,8 +1161,8 @@ internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, comp
     var j = to
     val valueInTheMiddle = selector(this[(from + to) / 2u])
     while (true) {
-        while (comparator.compare(selector(this[i]), valueInTheMiddle) < 0) i++
-        while (comparator.compare(selector(this[j]), valueInTheMiddle) > 0) j--
+        while (comparator.compare(selector(this[i]), valueInTheMiddle) == ComparisonResult.LeftIsLessThanRight) i++
+        while (comparator.compare(selector(this[j]), valueInTheMiddle) == ComparisonResult.LeftIsGreaterThanRight) j--
         if (i <= j) {
             this[i] = this[j].also { this[j] = this[i] }
             i++
@@ -1264,8 +1261,8 @@ internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: 
     var j = to
     val valueInTheMiddle = selector(this[(from + to) / 2u])
     while (true) {
-        while (comparator.compare(selector(this[i]), valueInTheMiddle) > 0) i++
-        while (comparator.compare(selector(this[j]), valueInTheMiddle) < 0) j--
+        while (comparator.compare(selector(this[i]), valueInTheMiddle) == ComparisonResult.LeftIsGreaterThanRight) i++
+        while (comparator.compare(selector(this[j]), valueInTheMiddle) == ComparisonResult.LeftIsLessThanRight) j--
         if (i <= j) {
             this[i] = this[j].also { this[j] = this[i] }
             i++

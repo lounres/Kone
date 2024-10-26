@@ -42,7 +42,7 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
     
     private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder) {
         val parent = holder.parent ?: return
-        if (priorityContext { parent.priority > holder.priority }) {
+        if (priorityContext { parent.priority gt  holder.priority }) {
             swapNodeHoldersIdentities(holder, parent)
             siftTheNodeDownToTheRoot(parent)
         }

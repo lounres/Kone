@@ -32,7 +32,7 @@ internal fun <N, A, P, V: P> giftWrappingAtom(
     data class TangentFraction<N>(val numerator: N, val denominator: N)
     return otherPoints.minListWithBy(
         elementContext = polytopeContext,
-        { left, right -> (left.numerator * right.denominator) compareTo (right.numerator * left.denominator) }
+        { left, right -> (left.numerator * right.denominator) compareWith (right.numerator * left.denominator) }
     ) {
         val v = it.position - startPoint
         TangentFraction(v dot tangentGiftWrappingVector, v dot normalGiftWrappingVector)
@@ -414,7 +414,7 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructConvexHullByGiftWr
 //context(EuclideanSpace<N, A>)
 //internal fun <N, A> convexHullByQuickhullInternalLogic(leftPoint: Point2<N>, rightPoint: Point2<N>, points: Collection<Point2<N>>): List<Point2<N>> where A: Ring<N>, A: Order<N> {
 //    val v = rightPoint - leftPoint
-//    if (points.none { numberRing { v cross (it - rightPoint) > zero } }) return points.toList()
+//    if (points.none { numberRing { v cross (it - rightPoint) ge zero } }) return points.toList()
 //    val nextPoint = points.maxWith(numberRing { compareByOrdered({ v cross (it - rightPoint) }) })
 //    val newPoints = points - nextPoint
 //

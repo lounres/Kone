@@ -77,6 +77,8 @@ internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
     return if (gcd == 0L) QuotientsByGCD(0L, 0L) else QuotientsByGCD(first / gcd, second / gcd)
 }
 
+// TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
+
 public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rational> {
     // region Constants
     public override val zero: Rational = Rational(0L)
@@ -99,7 +101,9 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
 
     // region Integers conversion
     public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
+    public override fun valueOf(arg: UInt): Rational = Rational(arg.toLong())
     public override fun valueOf(arg: Long): Rational = Rational(arg)
+    public override fun valueOf(arg: ULong): Rational = Rational(arg.toLong())
     // endregion
     
     // region Rational-Int operations
@@ -127,6 +131,41 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
     }
     @Suppress("NAME_SHADOWING")
     public override operator fun Rational.div(other: Int): Rational {
+        val other = other.toLong()
+        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
+        return Rational(
+            reducedNumerator,
+            denominator * reducedOther,
+            toCheckInput = false
+        )
+    }
+    // endregion
+    
+    // region Rational-Int operations
+    public override operator fun Rational.plus(other: UInt): Rational =
+        Rational(
+            numerator + denominator * other.toLong(),
+            denominator,
+            toCheckInput = false
+        )
+    public override operator fun Rational.minus(other: UInt): Rational =
+        Rational(
+            numerator - denominator * other.toLong(),
+            denominator,
+            toCheckInput = false
+        )
+    @Suppress("NAME_SHADOWING")
+    public override operator fun Rational.times(other: UInt): Rational {
+        val other = other.toLong()
+        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
+        return Rational(
+            numerator * reducedOther,
+            reducedDenominator,
+            toCheckInput = false
+        )
+    }
+    @Suppress("NAME_SHADOWING")
+    public override operator fun Rational.div(other: UInt): Rational {
         val other = other.toLong()
         val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
         return Rational(
@@ -167,6 +206,37 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
         )
     }
     // endregion
+    
+    // region Rational-Long operations
+    public override operator fun Rational.plus(other: ULong): Rational =
+        Rational(
+            numerator + denominator * other.toLong(),
+            denominator,
+            toCheckInput = false
+        )
+    public override operator fun Rational.minus(other: ULong): Rational =
+        Rational(
+            numerator - denominator * other.toLong(),
+            denominator,
+            toCheckInput = false
+        )
+    public override operator fun Rational.times(other: ULong): Rational {
+        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other.toLong())
+        return Rational(
+            numerator * reducedOther,
+            reducedDenominator,
+            toCheckInput = false
+        )
+    }
+    public override operator fun Rational.div(other: ULong): Rational {
+        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other.toLong())
+        return Rational(
+            reducedNumerator,
+            denominator * reducedOther,
+            toCheckInput = false
+        )
+    }
+    // endregion
 
     // region Int-Rational operations
     public override operator fun Int.plus(other: Rational): Rational =
@@ -200,6 +270,39 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
         )
     }
     // endregion
+    
+    // region UInt-Rational operations
+    public override operator fun UInt.plus(other: Rational): Rational =
+        Rational(
+            other.denominator * this.toLong() + other.numerator,
+            other.denominator,
+            toCheckInput = false
+        )
+    public override operator fun UInt.minus(other: Rational): Rational =
+        Rational(
+            other.denominator * this.toLong() - other.numerator,
+            other.denominator,
+            toCheckInput = false
+        )
+    public override operator fun UInt.times(other: Rational): Rational {
+        val thiz = this.toLong()
+        val (reducedThis, reducedOtherDenominator) = divideByGCD(thiz, other.denominator)
+        return Rational(
+            other.numerator * reducedThis,
+            reducedOtherDenominator,
+            toCheckInput = false
+        )
+    }
+    public override operator fun UInt.div(other: Rational): Rational {
+        val thiz = this.toLong()
+        val (reducedThis, reducedOtherNumerator) = divideByGCD(thiz, other.numerator)
+        return Rational(
+            other.denominator * reducedThis,
+            reducedOtherNumerator,
+            toCheckInput = false
+        )
+    }
+    // endregion
 
     // region Long-Rational operations
     public override operator fun Long.plus(other: Rational): Rational =
@@ -224,6 +327,37 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
     }
     public override operator fun Long.div(other: Rational): Rational {
         val (reducedThis, reducedOtherNumerator) = divideByGCD(this, other.numerator)
+        return Rational(
+            other.denominator * reducedThis,
+            reducedOtherNumerator,
+            toCheckInput = false
+        )
+    }
+    // endregion
+    
+    // region ULong-Rational operations
+    public override operator fun ULong.plus(other: Rational): Rational =
+        Rational(
+            other.denominator * this.toLong() + other.numerator,
+            other.denominator,
+            toCheckInput = false
+        )
+    public override operator fun ULong.minus(other: Rational): Rational =
+        Rational(
+            other.denominator * this.toLong() - other.numerator,
+            other.denominator,
+            toCheckInput = false
+        )
+    public override operator fun ULong.times(other: Rational): Rational {
+        val (reducedThis, reducedOtherDenominator) = divideByGCD(this.toLong(), other.denominator)
+        return Rational(
+            other.numerator * reducedThis,
+            reducedOtherDenominator,
+            toCheckInput = false
+        )
+    }
+    public override operator fun ULong.div(other: Rational): Rational {
+        val (reducedThis, reducedOtherNumerator) = divideByGCD(this.toLong(), other.numerator)
         return Rational(
             other.denominator * reducedThis,
             reducedOtherNumerator,

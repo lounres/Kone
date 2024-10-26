@@ -28,7 +28,9 @@ public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
     // TODO: Replace `%` with `mod`
 
     public override fun valueOf(arg: Int): Int = arg % modulus
+    public override fun valueOf(arg: UInt): Int = arg.toInt() % modulus
     public override fun valueOf(arg: Long): Int = (arg % modulus).toInt()
+    public override fun valueOf(arg: ULong): Int = (arg.toLong() % modulus).toInt()
 
     // TODO: Upgrade operations. Fix cases of big numbers.
 
@@ -36,12 +38,28 @@ public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
     override inline operator fun Int.plus(other: Int): Int = (this + other) % modulus
     override inline operator fun Int.minus(other: Int): Int = (this - other) % modulus
     override inline operator fun Int.times(other: Int): Int = (this * other) % modulus
-
+    
+    override operator fun Int.plus(other: UInt): Int = ((this + other.toInt()) % modulus).toInt()
+    override operator fun Int.minus(other: UInt): Int = ((this - other.toInt()) % modulus).toInt()
+    override operator fun Int.times(other: UInt): Int = ((this * other.toInt()) % modulus).toInt()
+    
     override operator fun Int.plus(other: Long): Int = ((this + other) % modulus).toInt()
     override operator fun Int.minus(other: Long): Int = ((this - other) % modulus).toInt()
     override operator fun Int.times(other: Long): Int = ((this * other) % modulus).toInt()
 
+    override operator fun Int.plus(other: ULong): Int = ((this + other.toLong()) % modulus).toInt()
+    override operator fun Int.minus(other: ULong): Int = ((this - other.toLong()) % modulus).toInt()
+    override operator fun Int.times(other: ULong): Int = ((this * other.toLong()) % modulus).toInt()
+
+    override operator fun UInt.plus(other: Int): Int = ((this.toInt() + other) % modulus).toInt()
+    override operator fun UInt.minus(other: Int): Int = ((this.toInt() - other) % modulus).toInt()
+    override operator fun UInt.times(other: Int): Int = ((this.toInt() * other) % modulus).toInt()
+    
     override operator fun Long.plus(other: Int): Int = ((this + other) % modulus).toInt()
     override operator fun Long.minus(other: Int): Int = ((this - other) % modulus).toInt()
     override operator fun Long.times(other: Int): Int = ((this * other) % modulus).toInt()
+    
+    override operator fun ULong.plus(other: Int): Int = ((this.toLong() + other) % modulus).toInt()
+    override operator fun ULong.minus(other: Int): Int = ((this.toLong() - other) % modulus).toInt()
+    override operator fun ULong.times(other: Int): Int = ((this.toLong() * other) % modulus).toInt()
 }

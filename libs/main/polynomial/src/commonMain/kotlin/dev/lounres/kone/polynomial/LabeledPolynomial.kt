@@ -89,6 +89,28 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         else LabeledPolynomialAsIs(
             mapOf(this to 1U) to other.constantValue,
         )
+    
+    public override operator fun Symbol.plus(other: UInt): LabeledPolynomial<C> =
+        if (other == 0u) LabeledPolynomialAsIs(
+            mapOf(this@plus to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(this@plus to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to other.constantValue,
+        )
+    public override operator fun Symbol.minus(other: UInt): LabeledPolynomial<C> =
+        if (other == 0u) LabeledPolynomialAsIs(
+            mapOf(this@minus to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(this@minus to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to -other.constantValue,
+        )
+    public override operator fun Symbol.times(other: UInt): LabeledPolynomial<C> =
+        if (other == 0u) zero
+        else LabeledPolynomialAsIs(
+            mapOf(this to 1U) to other.constantValue,
+        )
 
     public override operator fun Symbol.plus(other: Long): LabeledPolynomial<C> =
         if (other == 0L) LabeledPolynomialAsIs(
@@ -108,6 +130,28 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         )
     public override operator fun Symbol.times(other: Long): LabeledPolynomial<C> =
         if (other == 0L) zero
+        else LabeledPolynomialAsIs(
+            mapOf(this to 1U) to other.constantValue,
+        )
+    
+    public override operator fun Symbol.plus(other: ULong): LabeledPolynomial<C> =
+        if (other == 0uL) LabeledPolynomialAsIs(
+            mapOf(this@plus to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(this@plus to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to other.constantValue,
+        )
+    public override operator fun Symbol.minus(other: ULong): LabeledPolynomial<C> =
+        if (other == 0uL) LabeledPolynomialAsIs(
+            mapOf(this@minus to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(this@minus to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to -other.constantValue,
+        )
+    public override operator fun Symbol.times(other: ULong): LabeledPolynomial<C> =
+        if (other == 0uL) zero
         else LabeledPolynomialAsIs(
             mapOf(this to 1U) to other.constantValue,
         )
@@ -133,6 +177,28 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         else LabeledPolynomialAsIs(
             mapOf(other to 1U) to this@times.constantValue,
         )
+    
+    public override operator fun UInt.plus(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0u) LabeledPolynomialAsIs(
+            mapOf(other to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to this@plus.constantValue,
+        )
+    public override operator fun UInt.minus(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0u) LabeledPolynomialAsIs(
+            mapOf(other to 1U) to -constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to -constantOne,
+            emptyMap<Symbol, UInt>() to constantOne * this@minus,
+        )
+    public override operator fun UInt.times(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0u) zero
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to this@times.constantValue,
+        )
 
     public override operator fun Long.plus(other: Symbol): LabeledPolynomial<C> =
         if (this == 0L) LabeledPolynomialAsIs(
@@ -152,6 +218,28 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         )
     public override operator fun Long.times(other: Symbol): LabeledPolynomial<C> =
         if (this == 0L) zero
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to this@times.constantValue,
+        )
+    
+    public override operator fun ULong.plus(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0uL) LabeledPolynomialAsIs(
+            mapOf(other to 1U) to constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to constantOne,
+            emptyMap<Symbol, UInt>() to this@plus.constantValue,
+        )
+    public override operator fun ULong.minus(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0uL) LabeledPolynomialAsIs(
+            mapOf(other to 1U) to -constantOne,
+        )
+        else LabeledPolynomialAsIs(
+            mapOf(other to 1U) to -constantOne,
+            emptyMap<Symbol, UInt>() to constantOne * this@minus,
+        )
+    public override operator fun ULong.times(other: Symbol): LabeledPolynomial<C> =
+        if (this == 0uL) zero
         else LabeledPolynomialAsIs(
             mapOf(other to 1U) to this@times.constantValue,
         )
@@ -180,6 +268,31 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
                 coefficients.mapValues { (_, value) -> value * other }
             )
         }
+    
+    public override operator fun LabeledPolynomial<C>.plus(other: UInt): LabeledPolynomial<C> =
+        when {
+            other == 0u -> this
+            coefficients.isEmpty() -> other.value
+            else -> LabeledPolynomialAsIs(
+                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
+            )
+        }
+    public override operator fun LabeledPolynomial<C>.minus(other: UInt): LabeledPolynomial<C> =
+        when {
+            other == 0u -> this
+            coefficients.isEmpty() -> other.value
+            else -> LabeledPolynomialAsIs(
+                coefficients.withPutOrChanged(emptyMap(), { -other.constantValue }) { it -> it - other }
+            )
+        }
+    public override operator fun LabeledPolynomial<C>.times(other: UInt): LabeledPolynomial<C> =
+        when(other) {
+            0u -> zero
+            1u -> this
+            else -> LabeledPolynomialAsIs(
+                coefficients.mapValues { (_, value) -> value * other }
+            )
+        }
 
     public override operator fun LabeledPolynomial<C>.plus(other: Long): LabeledPolynomial<C> =
         when {
@@ -201,6 +314,31 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         when(other) {
             0L -> zero
             1L -> this
+            else -> LabeledPolynomialAsIs(
+                coefficients.mapValues { (_, value) -> value * other }
+            )
+        }
+    
+    public override operator fun LabeledPolynomial<C>.plus(other: ULong): LabeledPolynomial<C> =
+        when {
+            other == 0uL -> this
+            coefficients.isEmpty() -> other.value
+            else -> LabeledPolynomialAsIs(
+                coefficients.withPutOrChanged(emptyMap(), { other.constantValue }) { it -> it + other }
+            )
+        }
+    public override operator fun LabeledPolynomial<C>.minus(other: ULong): LabeledPolynomial<C> =
+        when {
+            other == 0uL -> this
+            coefficients.isEmpty() -> other.value
+            else -> LabeledPolynomialAsIs(
+                coefficients.withPutOrChanged(emptyMap(), { -other.constantValue }) { it -> it - other }
+            )
+        }
+    public override operator fun LabeledPolynomial<C>.times(other: ULong): LabeledPolynomial<C> =
+        when(other) {
+            0uL -> zero
+            1uL -> this
             else -> LabeledPolynomialAsIs(
                 coefficients.mapValues { (_, value) -> value * other }
             )
@@ -233,6 +371,34 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
                 other.coefficients.mapValues { (_, value) -> this@times * value }
             )
         }
+    
+    public override operator fun UInt.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when {
+            this == 0u -> other
+            other.coefficients.isEmpty() -> this@plus.value
+            else -> LabeledPolynomialAsIs(
+                other.coefficients.withPutOrChanged(emptyMap(), { this@plus.constantValue }) { it -> this@plus + it }
+            )
+        }
+    public override operator fun UInt.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when {
+            this == 0u -> -other
+            other.coefficients.isEmpty() -> this@minus.value
+            else -> LabeledPolynomialAsIs(
+                buildMap(other.coefficients.size + 1) {
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), { this@minus.constantValue }) { it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
+                }
+            )
+        }
+    public override operator fun UInt.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when(this) {
+            0u -> zero
+            1u -> other
+            else -> LabeledPolynomialAsIs(
+                other.coefficients.mapValues { (_, value) -> this@times * value }
+            )
+        }
 
     public override operator fun Long.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         when {
@@ -257,6 +423,34 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
         when(this) {
             0L -> zero
             1L -> other
+            else -> LabeledPolynomialAsIs(
+                other.coefficients.mapValues { (_, value) -> this@times * value }
+            )
+        }
+    
+    public override operator fun ULong.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when {
+            this == 0uL -> other
+            other.coefficients.isEmpty() -> this@plus.value
+            else -> LabeledPolynomialAsIs(
+                other.coefficients.withPutOrChanged(emptyMap(), this@plus.constantValue) { _, it, _ -> this@plus + it }
+            )
+        }
+    public override operator fun ULong.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when {
+            this == 0uL -> -other
+            other.coefficients.isEmpty() -> this@minus.value
+            else -> LabeledPolynomialAsIs(
+                buildMap(other.coefficients.size + 1) {
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { _, it -> this@minus - it })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
+                }
+            )
+        }
+    public override operator fun ULong.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
+        when(this) {
+            0uL -> zero
+            1uL -> other
             else -> LabeledPolynomialAsIs(
                 other.coefficients.mapValues { (_, value) -> this@times * value }
             )
