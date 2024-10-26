@@ -8,7 +8,10 @@ package dev.lounres.kone
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-
+/**
+ * Simple function that is useful to create nested scopes.
+ * It is the same as the [run] function but without extension-function overload.
+ */
 public inline fun <R> scope(block: () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -16,6 +19,11 @@ public inline fun <R> scope(block: () -> R): R {
     return block()
 }
 
+/**
+ * Runs the [action] the [times] number of times providing arguments `0u`, `1u`, ..., `times-1u` consequently into it.
+ *
+ * It's a copy of [repeat] from Kotlin stdlib but for `UInt` argument.
+ */
 public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
     for (index in 0u ..< times) action(index)
 }

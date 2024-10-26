@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.contentEquals
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.Shape
 import dev.lounres.kone.multidimensionalCollections.ShapeStrides

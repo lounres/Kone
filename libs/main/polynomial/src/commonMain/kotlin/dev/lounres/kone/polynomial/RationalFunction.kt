@@ -33,7 +33,6 @@ public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction
 
     // region Equality
     public override infix fun RF.equalsTo(other: RF): Boolean = numerator * other.denominator equalsTo denominator * other.numerator
-    public override infix fun RF.eq(other: RF): Boolean = this equalsTo other
     public override fun RF.isZero(): Boolean = numerator equalsTo polynomialZero
     public override fun RF.isOne(): Boolean = numerator equalsTo denominator
     // endregion

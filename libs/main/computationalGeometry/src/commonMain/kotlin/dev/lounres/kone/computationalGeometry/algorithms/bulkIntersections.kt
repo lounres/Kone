@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
 import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.Segment2

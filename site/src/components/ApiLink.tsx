@@ -7,7 +7,7 @@ interface ApiLink {
     children: any
 }
 
-export default function ApiLink ({to, children}: ApiLink): JSX.Element {
+export default function ApiLink ({to, children}: ApiLink): Element {
     return (
         <Link href={`${koneUrl}${koneBaseUrl}api/${to}`}>
             {children}

@@ -2,10 +2,10 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const {koneUrl, koneBaseUrl} = require('./inputData')
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const math = require('remark-math');
-const katex = require('rehype-katex');
+const branch = "experiment"
+const {themes} = require('prism-react-renderer')
+const math = require('remark-math')
+const katex = require('rehype-katex')
 
 /** @type {import('@docusaurus/types').Config} */
 module.exports = {
@@ -46,8 +46,6 @@ module.exports = {
     },
   },
 
-
-
   presets: [
     [
       'classic',
@@ -56,7 +54,7 @@ module.exports = {
         docs: {
           path: "docs",
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/lounres/Kone/tree/master/docs/',
+          editUrl: `https://github.com/lounres/Kone/tree/${branch}/site/`,
           remarkPlugins: [math],
           rehypePlugins: [katex],
         },
@@ -104,7 +102,13 @@ module.exports = {
         items: [
           {
             type: 'doc',
-            docId: 'index',
+            docId: 'tutorials/index',
+            label: 'Tutorials',
+            position: 'left'
+          },
+          {
+            type: 'doc',
+            docId: 'docs/index',
             label: 'Docs',
             position: 'left',
           },
@@ -113,11 +117,6 @@ module.exports = {
             label: 'API',
             position: 'left',
           },
-          // { // TODO
-          //   to: '/tutorials',
-          //   label: 'Tutorials',
-          //   position: 'left'
-          // },
           {
             to: '/blog',
             label: 'Blog',
@@ -194,8 +193,8 @@ module.exports = {
       prism: {
         defaultLanguage: 'kotlin',
         additionalLanguages: ['kotlin', 'groovy', 'markup'],
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: themes.github,
+        darkTheme: themes.dracula,
       },
     }),
-};
+}

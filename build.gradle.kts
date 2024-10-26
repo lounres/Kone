@@ -10,7 +10,7 @@ import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.RootProjectAccessor
 import org.gradle.kotlin.dsl.libs
-import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -42,14 +42,11 @@ val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
 
-tasks.register<Copy>("docusaurusProcessResources") {
-    group = "documentation"
-    dependsOn("dokkaHtmlMultiModule")
-    from("build/dokka/htmlMultiModule")
-    into("docs/static/api")
-    outputs.files("docs/src/inputData.ts", "docs/inputData.js")
+tasks.register("docusaurusGenerateInputData") {
+    group = "site"
+    outputs.files("site/src/inputData.ts", "site/inputData.js")
     doLast {
-        rootDir.resolve("docs/src/inputData.ts").writer().use {
+        rootDir.resolve("site/src/inputData.ts").writer().use {
             it.write(
                 """
                     export const koneGroup = "$koneGroup"
@@ -59,7 +56,7 @@ tasks.register<Copy>("docusaurusProcessResources") {
                 """.trimIndent()
             )
         }
-        rootDir.resolve("docs/inputData.js").writer().use {
+        rootDir.resolve("site/inputData.js").writer().use {
             it.write(
                 """
                     module.exports = {
@@ -71,7 +68,35 @@ tasks.register<Copy>("docusaurusProcessResources") {
                 """.trimIndent()
             )
         }
+    }
+}
 
+tasks.register("docusaurusGenerateDevInputData") {
+    group = "site"
+    outputs.files("site/src/inputData.ts", "site/inputData.js")
+    doLast {
+        rootDir.resolve("site/src/inputData.ts").writer().use {
+            it.write(
+                """
+                    export const koneGroup = "$koneGroup"
+                    export const koneVersion = "$koneVersion"
+                    export const koneUrl = "http://localhost:3000"
+                    export const koneBaseUrl = "$koneBaseUrl"
+                """.trimIndent()
+            )
+        }
+        rootDir.resolve("site/inputData.js").writer().use {
+            it.write(
+                """
+                    module.exports = {
+                        koneGroup: "$koneGroup",
+                        koneVersion: "$koneVersion",
+                        koneUrl: "http://localhost:3000",
+                        koneBaseUrl: "$koneBaseUrl",
+                    }
+                """.trimIndent()
+            )
+        }
     }
 }
 
@@ -134,10 +159,6 @@ publishing {
     }
 }
 
-tasks.dokkaHtmlMultiModule {
-
-}
-
 allprojects {
     pluginManager.withPlugin(libs.plugins.kotlinx.atomicfu) {
         configure<AtomicFUPluginExtension> {
@@ -184,7 +205,6 @@ stal {
                     compilerOptions {
                         jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
                         freeCompilerArgs = freeCompilerArgs.get() + listOf(
-                            "-Xlambdas=indy",
                             "-Xexpect-actual-classes",
                             "-Xconsistent-data-class-copy-visibility",
                         )
@@ -208,7 +228,6 @@ stal {
                 
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
-                        "-Xlambdas=indy",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                     )
@@ -515,26 +534,33 @@ stal {
             }
         }
         "dokka" {
+            val thisProject = this
+            val docsProject = project(":docs")
+            
+            
             apply(libs.plugins.dokka)
             dependencies {
                 dokkaPlugin(libs.dokka.mathjax)
             }
+            
+            docsProject.afterEvaluate {
+                dependencies {
+                    if (thisProject.path != ":libs:main:collections") dokka(thisProject)
+                }
+            }
+            
+            configure<DokkaExtension> {
+                moduleName = "${project.extra["artifactPrefix"]}${project.name}"
+            }
 
             task<Jar>("dokkaJar") {
-                group = JavaBasePlugin.DOCUMENTATION_GROUP
+                group = "dokka"
                 description = "Assembles Kotlin docs with Dokka"
                 archiveClassifier = "javadoc"
                 afterEvaluate {
-                    val dokkaHtml by tasks.getting
-                    dependsOn(dokkaHtml)
-                    from(dokkaHtml)
-                }
-            }
-
-            afterEvaluate {
-                tasks.withType<AbstractDokkaLeafTask> {
-                    moduleName = "${project.extra["artifactPrefix"]}${project.name}"
-                    // TODO
+                    val dokkaGenerate by tasks.getting
+                    dependsOn(dokkaGenerate)
+                    from(dokkaGenerate)
                 }
             }
         }

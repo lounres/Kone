@@ -47,6 +47,7 @@ stal {
                 subdirs("libs util")
             }
         }
+        "docs"()
         "test"("kotlin multiplatform")
     }
 
@@ -67,7 +68,7 @@ stal {
         "kotest" since { has("libs public") }
         "kover" since { has("libs public") }
         "publishing" since { hasAnyOf("libs") }
-//        "dokka" since { has("libs") }
+        "dokka" since { has("libs") }
         "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
         "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
         "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }

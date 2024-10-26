@@ -17,6 +17,7 @@ import dev.lounres.kone.collections.next
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.graphs.EdgeWeightedGraph
 import dev.lounres.kone.graphs.GraphWithContext

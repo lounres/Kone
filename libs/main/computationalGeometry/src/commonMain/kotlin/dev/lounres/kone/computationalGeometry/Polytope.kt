@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 

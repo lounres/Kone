@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.KoneSettableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option

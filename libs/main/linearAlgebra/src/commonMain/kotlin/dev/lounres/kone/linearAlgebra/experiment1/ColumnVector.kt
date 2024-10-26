@@ -7,6 +7,7 @@ package dev.lounres.kone.linearAlgebra.experiment1
 
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.ShapeMismatchException
 import dev.lounres.kone.multidimensionalCollections.experiment1.*

@@ -7,6 +7,8 @@ package dev.lounres.kone.collections
 
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.orElse
 

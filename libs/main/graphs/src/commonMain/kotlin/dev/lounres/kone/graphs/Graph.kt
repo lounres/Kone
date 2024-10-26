@@ -5,11 +5,9 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.KoneIterableSet
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Option

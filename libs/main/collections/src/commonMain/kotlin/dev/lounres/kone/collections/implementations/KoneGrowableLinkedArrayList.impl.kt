@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope

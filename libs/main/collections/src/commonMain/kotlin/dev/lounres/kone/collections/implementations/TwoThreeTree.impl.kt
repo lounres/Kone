@@ -16,6 +16,7 @@ import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 

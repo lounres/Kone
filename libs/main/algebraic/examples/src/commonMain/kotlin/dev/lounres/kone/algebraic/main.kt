@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.invoke
 
 

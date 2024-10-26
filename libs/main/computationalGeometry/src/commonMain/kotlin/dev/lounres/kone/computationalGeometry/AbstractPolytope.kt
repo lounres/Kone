@@ -13,6 +13,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

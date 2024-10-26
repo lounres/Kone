@@ -1,6 +1,5 @@
 ---
 title: Algebraic
-sidebar_position: 2
 ---
 import DependencyTabs from '@site/src/components/DependencyTabs';
 
@@ -23,8 +22,8 @@ Do you remember what is [*ring in algebra*](https://en.wikipedia.org/wiki/Ring_(
 that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach, then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
 
 <!-- TODO: hyperlink to API -->
-So in Kone any ring is implemented as an object that holds all the operation of the ring, so it can be used as an algebraic context. For example, there `kone.numberTheory` provides class of Rational numbers and field context for them:
-```
+So in Kone any ring is implemented as an object that holds all the operations of the ring, so it can be used as an algebraic context. For example, there `kone.numberTheory` provides class of Rational numbers and field context for them:
+```kotlin
 // Simplified definition. See actual API in API reference
 data class Rational(val numerator: Long, val denumerator: Long)
 

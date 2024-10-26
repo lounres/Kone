@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable

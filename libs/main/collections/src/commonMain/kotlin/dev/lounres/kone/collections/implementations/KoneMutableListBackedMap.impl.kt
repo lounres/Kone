@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.utils.firstMaybe
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.computeOn

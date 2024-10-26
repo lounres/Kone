@@ -6,6 +6,10 @@
 package dev.lounres.kone.logging
 
 import dev.lounres.logKube.core.CurrentPlatformLogger
+import dev.lounres.logKube.core.LogAcceptor
 
 
+/**
+ * Kone-wide logger. It's a source of all Kone's logs. You can add your own [LogAcceptor] to accept its logs.
+ */
 public val koneLogger: CurrentPlatformLogger = CurrentPlatformLogger(name = "Kone core logger")

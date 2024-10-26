@@ -9,6 +9,7 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.koneIterableListOf
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.reflect.KProperty

@@ -6,6 +6,9 @@
 package dev.lounres.kone
 
 
+/**
+ * Marks parts of Kone API that have more or less certain shape but which final form is not yet finished.
+ */
 @MustBeDocumented
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
@@ -14,6 +17,10 @@ package dev.lounres.kone
 @Retention(AnnotationRetention.BINARY)
 public annotation class UnstableKoneAPI
 
+/**
+ * Marks parts of Kone API that are just sketches of possible API.
+ * Their main purpose is only to gather ideas of the API and check which parts of it should be rewritten from scratch.
+ */
 @MustBeDocumented
 @RequiresOptIn(
     level = RequiresOptIn.Level.ERROR,
