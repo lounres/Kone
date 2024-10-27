@@ -12,14 +12,81 @@ import kotlin.math.abs
 
 // region Int
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to multiply argument [arg] by integer [multiplier] if [multiplier] is positive, multiply `-arg` by [multiplier]
+ * if [multiplier] is negative, or return `lazyZero()` if [multiplier] is zero.
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0`, the result is `lazyZero()`.
+ * - If `multiplier == 1`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1`, the result is `additionOp(base, negationOp(arg))`.
+ * - If `multiplier == -2`, the result is `additionOp(base, additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -3`, the result is `additionOp(additionOp(base, negationOp(arg)), additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -4`, the result is `additionOp(base, additionOp(additionOp(negationOp(arg), negationOp(arg)), additionOp(negationOp(arg), negationOp(arg))))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toUInt(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toUInt(), lazyZero, additionOp)
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0`, the result is `base`.
+ * - If `multiplier == 1`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1`, the result is `additionOp(base, negationOp(arg))`.
+ * - If `multiplier == -2`, the result is `additionOp(base, additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -3`, the result is `additionOp(additionOp(base, negationOp(arg)), additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -4`, the result is `additionOp(base, additionOp(additionOp(negationOp(arg), negationOp(arg)), additionOp(negationOp(arg), negationOp(arg))))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toUInt(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toUInt(), additionOp)
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0`, the result is `base`.
+ * - If `multiplier == 1`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1`, the result is `rightSubtractionOp(base, arg)`.
+ * - If `multiplier == -2`, the result is `rightSubtractionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == -3`, the result is `rightSubtractionOp(rightSubtractionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == -4`, the result is `rightSubtractionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that both [additionOp] and [rightSubtractionOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, rightSubtractionOp)
@@ -28,6 +95,24 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
 
 // region UInt
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to multiply argument [arg] by integer [multiplier] or return result of [lazyZero] if [multiplier] is `0uL`.
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0u`, the result is `lazyZero()`.
+ * - If `multiplier == 1u`, the result is `additionOp(arg, arg)`.
+ * - If `multiplier == 2u`, the result is `additionOp(arg, additionOp(arg, arg))`.
+ * - If `multiplier == 3u`, the result is `additionOp(additionOp(arg, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4u`, the result is `additionOp(arg, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses two calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 @Suppress("NAME_SHADOWING")
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero: () -> N, additionOp: (N, N) -> N): N {
     // FIXME: KT-17579
@@ -55,9 +140,45 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero
     }
 }
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0u`, the result is `base`.
+ * - If `multiplier == 1u`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2u`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3u`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4u`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0u`, the result is `base`.
+ * - If `multiplier == 1u`, the result is `additionToBaseOp(base, arg)`.
+ * - If `multiplier == 2u`, the result is `additionToBaseOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3u`, the result is `additionToBaseOp(additionToBaseOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4u`, the result is `additionToBaseOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that both [additionOp] and [additionToBaseOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 @Suppress("NAME_SHADOWING")
 @PublishedApi
 internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N, additionToBaseOp: (N, N) -> N): N {
@@ -90,14 +211,81 @@ internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: 
 
 // region Long
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to multiply argument [arg] by integer [multiplier] if [multiplier] is positive, multiply `-arg` by [multiplier]
+ * if [multiplier] is negative, or return `lazyZero()` if [multiplier] is zero.
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0L`, the result is `lazyZero()`.
+ * - If `multiplier == 1L`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2L`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3L`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4L`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1L`, the result is `additionOp(base, negationOp(arg))`.
+ * - If `multiplier == -2L`, the result is `additionOp(base, additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -3L`, the result is `additionOp(additionOp(base, negationOp(arg)), additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -4L`, the result is `additionOp(base, additionOp(additionOp(negationOp(arg), negationOp(arg)), additionOp(negationOp(arg), negationOp(arg))))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toULong(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toULong(), lazyZero, additionOp)
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0L`, the result is `base`.
+ * - If `multiplier == 1L`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2L`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3L`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4L`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1L`, the result is `additionOp(base, negationOp(arg))`.
+ * - If `multiplier == -2L`, the result is `additionOp(base, additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -3L`, the result is `additionOp(additionOp(base, negationOp(arg)), additionOp(negationOp(arg), negationOp(arg)))`.
+ * - If `multiplier == -4L`, the result is `additionOp(base, additionOp(additionOp(negationOp(arg), negationOp(arg)), additionOp(negationOp(arg), negationOp(arg))))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toULong(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toULong(), additionOp)
 
+/**
+ * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
+ * to add argument [arg] multiplied by integer [multiplier] to the right of [base].
+ *
+ * For example here are resulting expressions for the following values of [multiplier]:
+ * - If `multiplier == 0L`, the result is `base`.
+ * - If `multiplier == 1L`, the result is `additionOp(base, arg)`.
+ * - If `multiplier == 2L`, the result is `additionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == 3L`, the result is `additionOp(additionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == 4L`, the result is `additionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - If `multiplier == -1L`, the result is `rightSubtractionOp(base, arg)`.
+ * - If `multiplier == -2L`, the result is `rightSubtractionOp(base, additionOp(arg, arg))`.
+ * - If `multiplier == -3L`, the result is `rightSubtractionOp(rightSubtractionOp(base, arg), additionOp(arg, arg))`.
+ * - If `multiplier == -4L`, the result is `rightSubtractionOp(base, additionOp(additionOp(arg, arg), additionOp(arg, arg)))`.
+ * - And so on...
+ *
+ * But actually such sub-expression like `additionOp(arg, arg)` are not calculated several times. Instead of
+ * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
+ * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
+ *
+ * So one can say that both [additionOp] and [rightSubtractionOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, rightSubtractionOp)
@@ -122,7 +310,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses two calls of `additionOp` instead of three.
  *
- * So one can say that [additionOp] is used `O(log(multiplier))` times.
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
  */
 @Suppress("NAME_SHADOWING")
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZero: () -> N, additionOp: (N, N) -> N): N {
@@ -167,7 +355,7 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZer
  * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
- * So one can say that [additionOp] is used `O(log(multiplier))` times.
+ * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
@@ -188,7 +376,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(additionOp(arg, arg), additionOp(arg, arg))` actual computation is equivalent to
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
- * So one can say that both [additionOp] and [additionToBaseOp] are used `O(log(multiplier))` times.
+ * So one can say that both [additionOp] and [additionToBaseOp] are used \(O(\log(\mathrm{multiplier}))\) times.
  */
 @Suppress("NAME_SHADOWING")
 @PublishedApi

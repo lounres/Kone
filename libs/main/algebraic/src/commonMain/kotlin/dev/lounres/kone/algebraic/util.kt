@@ -39,10 +39,9 @@ public fun <N, A> N.isNonNegative(): Boolean where A: Ring<N>, A: Order<N> = thi
  * `-1` if [this] number is negative, or `0` if [this] number is zero.
  */
 context(A)
-public val <N, A> N.sign: Int where A: Ring<N>, A: Order<N> get() {
-    return when(this.compareWith(zero)) {
+public val <N, A> N.sign: Int where A: Ring<N>, A: Order<N>
+    get() = when(this.compareWith(zero)) {
         ComparisonResult.LeftIsGreaterThanRight -> 1
         ComparisonResult.LeftIsLessThanRight ->  -1
         ComparisonResult.Equal -> 0
     }
-}
