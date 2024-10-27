@@ -45,3 +45,11 @@ public val <N, A> N.sign: Int where A: Ring<N>, A: Order<N>
         ComparisonResult.LeftIsLessThanRight ->  -1
         ComparisonResult.Equal -> 0
     }
+
+/**
+ * Returns absolute value of the [number].
+ * I.e. if the [number] is non-negative it is return, otherwise its negation is returned.
+ */
+context(A)
+public fun <N, A> abs(number: N): N where A: Ring<N>, A: Order<N> =
+    if (number.isNonNegative()) number else -number

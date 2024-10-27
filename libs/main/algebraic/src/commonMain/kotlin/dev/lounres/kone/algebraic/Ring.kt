@@ -5,8 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.algebraic.util.doublingMinus
-import dev.lounres.kone.algebraic.util.doublingPlus
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.comparison.Equality

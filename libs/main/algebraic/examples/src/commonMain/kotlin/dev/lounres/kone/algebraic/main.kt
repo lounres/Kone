@@ -8,14 +8,8 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.numberTheory.binomial
 
-
-fun binomial(n: Int, k: Int): Int {
-    val k = if (k <= n / 2) k else n-k
-    var acc = 1
-    for (i in 1..k) acc = acc * (n-i+1) / i
-    return acc
-}
 
 fun main() {
     Rational.field /* It's another reference to RationalField */ {

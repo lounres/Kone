@@ -19,7 +19,7 @@ import kotlin.math.pow as kpow
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ByteRing: Ring<Byte>, Order<Byte>, Hashing<Byte> {
+public data object ByteRing: EuclideanRing<Byte>, Order<Byte>, Hashing<Byte> {
     // region Order
     override fun Byte.compareWith(other: Byte): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -89,6 +89,10 @@ public data object ByteRing: Ring<Byte>, Order<Byte>, Hashing<Byte> {
     override operator fun Byte.plus(other: Byte): Byte = (this + other).toByte()
     override operator fun Byte.minus(other: Byte): Byte = (this - other).toByte()
     override operator fun Byte.times(other: Byte): Byte = (this * other).toByte()
+    override fun Byte.divrem(other: Byte): EuclideanDivisionResult<Byte> =
+        EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
+    override fun Byte.div(other: Byte): Byte = (this / other).toByte()
+    override fun Byte.rem(other: Byte): Byte = (this % other).toByte()
     // endregion
 }
 
@@ -104,7 +108,7 @@ public val Byte.Companion.ring: ByteRing get() = ByteRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ShortRing: Ring<Short>, Order<Short>, Hashing<Short> {
+public data object ShortRing: EuclideanRing<Short>, Order<Short>, Hashing<Short> {
     // region Order
     override fun Short.compareWith(other: Short): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -174,6 +178,10 @@ public data object ShortRing: Ring<Short>, Order<Short>, Hashing<Short> {
     override operator fun Short.plus(other: Short): Short = (this + other).toShort()
     override operator fun Short.minus(other: Short): Short = (this - other).toShort()
     override operator fun Short.times(other: Short): Short = (this * other).toShort()
+    override fun Short.divrem(other: Short): EuclideanDivisionResult<Short> =
+        EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
+    override fun Short.div(other: Short): Short = (this / other).toShort()
+    override fun Short.rem(other: Short): Short = (this % other).toShort()
     // endregion
 }
 
@@ -189,7 +197,7 @@ public val Short.Companion.ring: ShortRing get() = ShortRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object IntRing: Ring<Int>, Order<Int>, Hashing<Int> {
+public data object IntRing: EuclideanRing<Int>, Order<Int>, Hashing<Int> {
     // region Order
     override fun Int.compareWith(other: Int): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -211,6 +219,10 @@ public data object IntRing: Ring<Int>, Order<Int>, Hashing<Int> {
     override operator fun Int.plus(other: Int): Int = this + other
     override operator fun Int.minus(other: Int): Int = this - other
     override operator fun Int.times(other: Int): Int = this * other
+    override fun Int.divrem(other: Int): EuclideanDivisionResult<Int> =
+        EuclideanDivisionResult(quotient = this / other, remainder = this % other)
+    override fun Int.div(other: Int): Int = this / other
+    override fun Int.rem(other: Int): Int = this % other
     // endregion
     
     // region Int-UInt operations
@@ -262,7 +274,7 @@ public val Int.Companion.ring: IntRing get() = IntRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object LongRing: Ring<Long>, Order<Long>, Hashing<Long> {
+public data object LongRing: EuclideanRing<Long>, Order<Long>, Hashing<Long> {
     // region Order
     override fun Long.compareWith(other: Long): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -284,6 +296,10 @@ public data object LongRing: Ring<Long>, Order<Long>, Hashing<Long> {
     override operator fun Long.plus(other: Long): Long = this + other
     override operator fun Long.minus(other: Long): Long = this - other
     override operator fun Long.times(other: Long): Long = this * other
+    override fun Long.divrem(other: Long): EuclideanDivisionResult<Long> =
+        EuclideanDivisionResult(quotient = this / other, remainder = this % other)
+    override fun Long.div(other: Long): Long = this / other
+    override fun Long.rem(other: Long): Long = this % other
     // endregion
     
     // region Long-Int operations

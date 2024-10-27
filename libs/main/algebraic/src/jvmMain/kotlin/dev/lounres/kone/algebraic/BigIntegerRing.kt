@@ -5,13 +5,21 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.asComparisonResult
 import java.math.BigInteger
 
 
-public data object BigIntegerRing: Ring<BigInteger>, Order<BigInteger>, Hashing<BigInteger> {
-    override fun BigInteger.compareTo(other: BigInteger): Int = this.compareTo(other)
+/**
+ * Default ring for [BigInteger] type which values are seen as integers.
+ * It also implements [Order] and [Hashing] interfaces in the default understanding.
+ *
+ * Such ring is useless when used as is, but useful when used in generalized algorithms.
+ */
+public data object BigIntegerRing: EuclideanRing<BigInteger>, Order<BigInteger>, Hashing<BigInteger> {
+    override fun BigInteger.compareWith(other: BigInteger): ComparisonResult = this.compareTo(other).asComparisonResult()
 
     override val zero: BigInteger = BigInteger.ZERO
     override val one: BigInteger = BigInteger.ONE
@@ -57,4 +65,16 @@ public data object BigIntegerRing: Ring<BigInteger>, Order<BigInteger>, Hashing<
     override fun BigInteger.plus(other: BigInteger): BigInteger = this.add(other)
     override fun BigInteger.minus(other: BigInteger): BigInteger = this.subtract(other)
     override fun BigInteger.times(other: BigInteger): BigInteger = this.multiply(other)
+    override fun BigInteger.divrem(other: BigInteger): EuclideanDivisionResult<BigInteger> {
+        val (quotient, remainder) = this.divideAndRemainder(other)
+        return EuclideanDivisionResult(quotient = quotient, remainder = remainder)
+    }
+    override fun BigInteger.div(other: BigInteger): BigInteger = this.divide(other)
+    override fun BigInteger.rem(other: BigInteger): BigInteger = this.remainder(other)
 }
+
+// TODO: KT-11968
+///**
+// * Default ring of the [Byte] type. See [ByteRing] for more.
+// */
+//public val BigInteger.Companion.ring: BigIntegerRing get() = BigIntegerRing

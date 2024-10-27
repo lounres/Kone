@@ -34,6 +34,8 @@ import kotlin.math.abs
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toUInt(), lazyZero, additionOp)
@@ -60,6 +62,8 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero:
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toUInt(), additionOp)
@@ -86,6 +90,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that both [additionOp] and [rightSubtractionOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, additionOp)
@@ -112,6 +118,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses two calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero: () -> N, additionOp: (N, N) -> N): N {
@@ -157,6 +165,8 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
@@ -178,6 +188,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that both [additionOp] and [additionToBaseOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
 @PublishedApi
@@ -233,6 +245,8 @@ internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toULong(), lazyZero, additionOp)
@@ -259,6 +273,8 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toULong(), additionOp)
@@ -285,6 +301,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that both [additionOp] and [rightSubtractionOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, additionOp)
@@ -311,6 +329,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses two calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
 public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZero: () -> N, additionOp: (N, N) -> N): N {
@@ -356,6 +376,8 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZer
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that [additionOp] is used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N): N =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
@@ -377,6 +399,8 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * `additionOp(arg, arg).let { additionOp(it, it) }` that uses 2 calls of `additionOp` instead of three.
  *
  * So one can say that both [additionOp] and [additionToBaseOp] are used \(O(\log(\mathrm{multiplier}))\) times.
+ *
+ * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
 @PublishedApi

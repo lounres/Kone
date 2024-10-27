@@ -32,6 +32,8 @@ import kotlin.jvm.JvmName
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingPlus(other: Int): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
@@ -56,6 +58,8 @@ public infix fun <N> N.doublingPlus(other: Int): N = rightAddMultipliedByDoublin
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingMinus(other: Int): N = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
@@ -81,6 +85,8 @@ public infix fun <N> N.doublingMinus(other: Int): N = rightAddMultipliedByDoubli
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingTimes(other: Int): N = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
@@ -104,6 +110,8 @@ public infix fun <N> N.doublingTimes(other: Int): N = rightMultiplyByDoubling(th
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingPlus(other: UInt): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
@@ -124,6 +132,8 @@ public infix fun <N> N.doublingPlus(other: UInt): N = rightAddMultipliedByDoubli
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingMinus(other: UInt): N = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
@@ -144,6 +154,8 @@ public infix fun <N> N.doublingMinus(other: UInt): N = rightAddMultipliedByDoubl
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingTimes(other: UInt): N = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
@@ -172,6 +184,8 @@ public infix fun <N> N.doublingTimes(other: UInt): N = rightMultiplyByDoubling(t
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingPlus(other: Long): N = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
@@ -196,6 +210,8 @@ public infix fun <N> N.doublingPlus(other: Long): N = rightAddMultipliedByDoubli
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingMinus(other: Long): N = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
@@ -221,6 +237,8 @@ public infix fun <N> N.doublingMinus(other: Long): N = rightAddMultipliedByDoubl
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingTimes(other: Long): N = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
@@ -244,6 +262,8 @@ public infix fun <N> N.doublingTimes(other: Long): N = rightMultiplyByDoubling(t
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingPlus(other: ULong): N = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
@@ -264,6 +284,8 @@ public infix fun <N> N.doublingPlus(other: ULong): N = rightAddMultipliedByDoubl
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingMinus(other: ULong): N = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
@@ -284,6 +306,8 @@ public infix fun <N> N.doublingMinus(other: ULong): N = rightAddMultipliedByDoub
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> N.doublingTimes(other: ULong): N = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
@@ -311,6 +335,8 @@ public infix fun <N> N.doublingTimes(other: ULong): N = rightMultiplyByDoubling(
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Int.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -335,6 +361,8 @@ public infix fun <N> Int.doublingPlus(other: N): N = rightAddMultipliedByDoublin
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Int.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -360,6 +388,8 @@ public infix fun <N> Int.doublingMinus(other: N): N = rightAddMultipliedByDoubli
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Int.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
@@ -383,6 +413,8 @@ public infix fun <N> Int.doublingTimes(other: N): N = rightMultiplyByDoubling(ot
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> UInt.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
@@ -403,6 +435,8 @@ public infix fun <N> UInt.doublingPlus(other: N): N = rightAddMultipliedByDoubli
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> UInt.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
@@ -423,6 +457,8 @@ public infix fun <N> UInt.doublingMinus(other: N): N = rightAddMultipliedByDoubl
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> UInt.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
@@ -450,6 +486,8 @@ public infix fun <N> UInt.doublingTimes(other: N): N = rightMultiplyByDoubling(o
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Long.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -474,6 +512,8 @@ public infix fun <N> Long.doublingPlus(other: N): N = rightAddMultipliedByDoubli
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Long.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
@@ -499,6 +539,8 @@ public infix fun <N> Long.doublingMinus(other: N): N = rightAddMultipliedByDoubl
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> Long.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
@@ -522,6 +564,8 @@ public infix fun <N> Long.doublingTimes(other: N): N = rightMultiplyByDoubling(o
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> ULong.doublingPlus(other: N): N = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
@@ -542,6 +586,8 @@ public infix fun <N> ULong.doublingPlus(other: N): N = rightAddMultipliedByDoubl
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> ULong.doublingMinus(other: N): N = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
@@ -562,6 +608,8 @@ public infix fun <N> ULong.doublingMinus(other: N): N = rightAddMultipliedByDoub
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 public infix fun <N> ULong.doublingTimes(other: N): N = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
@@ -590,6 +638,8 @@ public infix fun <N> ULong.doublingTimes(other: N): N = rightMultiplyByDoubling(
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @usesMathJax
  */
 context(Field<N>)
 @JvmName("squaringPowerReceiver")
@@ -611,6 +661,8 @@ public infix fun <N> N.squaringPower(exponent: Int): N = rightMultiplyByDoubling
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
@@ -637,6 +689,8 @@ public infix fun <N> N.squaringPower(exponent: UInt): N = rightMultiplyByDoublin
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @usesMathJax
  */
 context(Field<N>)
 @JvmName("squaringPowerReceiver")
@@ -658,6 +712,8 @@ public infix fun <N> N.squaringPower(exponent: Long): N = rightMultiplyByDoublin
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @usesMathJax
  */
 context(Ring<N>)
 @JvmName("squaringPowerUReceiver")
