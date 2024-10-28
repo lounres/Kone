@@ -18,6 +18,8 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.geq
+import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.graphs.EdgeWeightedGraph
 import dev.lounres.kone.graphs.GraphWithContext
@@ -66,7 +68,7 @@ where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W
                     paths[neighbor] = Path(alternativePath, alternativeWeight)
                     queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
                 }
-                is Some<Path<E, W>> -> if (alternativeWeight < currentPathToNeighbor.value.weight) {
+                is Some<Path<E, W>> -> if (alternativeWeight lt currentPathToNeighbor.value.weight) {
                     paths[neighbor] = Path(alternativePath, alternativeWeight)
                     queueNodes[neighbor].priority = alternativeWeight
                 }
@@ -99,7 +101,7 @@ where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W
     paths[from] = Path(emptyKoneIterableList(), zero)
     
     while (verticesToCheck.size != 0u) {
-        if (optimalPathToTarget != null && verticesToCheck.takeMinimum().priority >= optimalPathToTarget.weight) break
+        if (optimalPathToTarget != null && verticesToCheck.takeMinimum().priority geq optimalPathToTarget.weight) break
         
         val currentVertex = verticesToCheck.popMinimum().element
         val (currentPath, currentWeight) = paths[currentVertex]
@@ -114,7 +116,7 @@ where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W
                     if (vertexContext { neighbor eq to }) optimalPathToTarget = Path(alternativePath, alternativeWeight)
                     queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
                 }
-                is Some<Path<E, W>> -> if (alternativeWeight < currentPathToNeighbor.value.weight) {
+                is Some<Path<E, W>> -> if (alternativeWeight lt currentPathToNeighbor.value.weight) {
                     paths[neighbor] = Path(alternativePath, alternativeWeight)
                     if (vertexContext { neighbor eq to }) optimalPathToTarget = Path(alternativePath, alternativeWeight)
                     queueNodes[neighbor].priority = alternativeWeight

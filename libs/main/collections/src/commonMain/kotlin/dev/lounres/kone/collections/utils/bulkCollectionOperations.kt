@@ -15,6 +15,7 @@ import dev.lounres.kone.comparison.*
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.repeat
 import kotlin.math.min
 import kotlin.random.Random
 import kotlin.random.nextUInt
@@ -22,6 +23,7 @@ import kotlin.random.nextUInt
 
 // TODO: Add operations for array value classes
 // TODO: Add operations for iterators
+// TODO: Add slicing operations (like `.count(from = 5u, to = 7u) { ... }`)
 
 public fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.copyTo(destination: D): D {
     for (element in this) destination.add(element)
@@ -297,6 +299,10 @@ public inline fun <E> KoneIterableList<E>.countIndexed(block: (index: UInt, valu
     return count
 }
 
+// TODO: Think about moving `KoneIterableList<E>.first*` extensions inside `KoneIterableList` interface
+//  like it is done for `indexThat`.
+// TODO: Think about `last*` functions implementations.
+
 public inline fun <E> KoneIterable<E>.first(predicate: (E) -> Boolean): E {
     for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Collection contains no element matching the predicate.")
@@ -310,6 +316,24 @@ public inline fun <E> KoneList<E>.first(predicate: (E) -> Boolean): E {
 }
 public inline fun <E> KoneIterableList<E>.first(predicate: (E) -> Boolean): E {
     for (element in this) if (predicate(element)) return element
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public inline fun <E> KoneIterable<E>.firstIndexed(predicate: (index: UInt, E) -> Boolean): E {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return element
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+public inline fun <E> KoneList<E>.firstIndexed(predicate: (index: UInt, E) -> Boolean): E {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        if (predicate(index, element)) return element
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+public inline fun <E> KoneIterableList<E>.firstIndexed(predicate: (index: UInt, E) -> Boolean): E {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return element
     throw NoSuchElementException("Collection contains no element matching the predicate.")
 }
 
@@ -329,6 +353,24 @@ public inline fun <E> KoneIterableList<E>.firstOrNull(predicate: (E) -> Boolean)
     return null
 }
 
+public inline fun <E> KoneIterable<E>.firstIndexedOrNull(predicate: (index: UInt, E) -> Boolean): E? {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return element
+    return null
+}
+public inline fun <E> KoneList<E>.firstIndexedOrNull(predicate: (index: UInt, E) -> Boolean): E? {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        if (predicate(index, element)) return element
+    }
+    return null
+}
+public inline fun <E> KoneIterableList<E>.firstIndexedOrNull(predicate: (index: UInt, E) -> Boolean): E? {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return element
+    return null
+}
+
 public inline fun <E> KoneIterable<E>.firstMaybe(predicate: (E) -> Boolean): Option<E> {
     for (element in this) if (predicate(element)) return Some(element)
     return None
@@ -342,6 +384,24 @@ public inline fun <E> KoneList<E>.firstMaybe(predicate: (E) -> Boolean): Option<
 }
 public inline fun <E> KoneIterableList<E>.firstMaybe(predicate: (E) -> Boolean): Option<E> {
     for (element in this) if (predicate(element)) return Some(element)
+    return None
+}
+
+public inline fun <E> KoneIterable<E>.firstIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return Some(element)
+    return None
+}
+public inline fun <E> KoneList<E>.firstIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        if (predicate(index, element)) return Some(element)
+    }
+    return None
+}
+public inline fun <E> KoneIterableList<E>.firstIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+    var index = 0u
+    for (element in this) if (predicate(index++, element)) return Some(element)
     return None
 }
 
@@ -363,6 +423,31 @@ public inline fun <E, R> KoneList<E>.firstOf(transform: (E) -> R, predicate: (R)
 public inline fun <E, R> KoneIterableList<E>.firstOf(transform: (E) -> R, predicate: (R) -> Boolean): R {
     for (element in this) {
         val result = transform(element)
+        if (predicate(result)) return result
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public inline fun <E, R> KoneIterable<E>.firstOfIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
+        if (predicate(result)) return result
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+public inline fun <E, R> KoneList<E>.firstOfIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        val result = transform(index, element)
+        if (predicate(result)) return result
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+public inline fun <E, R> KoneIterableList<E>.firstOfIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
         if (predicate(result)) return result
     }
     throw NoSuchElementException("Collection contains no element matching the predicate.")
@@ -391,6 +476,31 @@ public inline fun <E, R> KoneIterableList<E>.firstOfOrNull(transform: (E) -> R, 
     return null
 }
 
+public inline fun <E, R> KoneIterable<E>.firstOfIndexedOrNull(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R? {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
+        if (predicate(result)) return result
+    }
+    return null
+}
+public inline fun <E, R> KoneList<E>.firstOfIndexedOrNull(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R? {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        val result = transform(index, element)
+        if (predicate(result)) return result
+    }
+    return null
+}
+public inline fun <E, R> KoneIterableList<E>.firstOfIndexedOrNull(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R? {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
+        if (predicate(result)) return result
+    }
+    return null
+}
+
 public inline fun <E, R> KoneIterable<E>.firstOfMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Option<R> {
     for (element in this) {
         val result = transform(element)
@@ -414,10 +524,35 @@ public inline fun <E, R> KoneIterableList<E>.firstOfMaybe(transform: (E) -> R, p
     return None
 }
 
+public inline fun <E, R> KoneIterable<E>.firstOfIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
+        if (predicate(result)) return Some(result)
+    }
+    return None
+}
+public inline fun <E, R> KoneList<E>.firstOfIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+    for (index in 0u ..< size) {
+        val element = get(index)
+        val result = transform(index, element)
+        if (predicate(result)) return Some(result)
+    }
+    return None
+}
+public inline fun <E, R> KoneIterableList<E>.firstOfIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+    var index = 0u
+    for (element in this) {
+        val result = transform(index++, element)
+        if (predicate(result)) return Some(result)
+    }
+    return None
+}
+
 public fun <E> KoneIterableCollection<E>.random(random: Random): E {
     val index = random.nextUInt(0u, size)
     val iterator = iterator()
-    for (i in 0u..<index) iterator.moveNext()
+    repeat(index) { iterator.moveNext() }
     return iterator.getNext()
 }
 

@@ -90,10 +90,6 @@ public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettab
         array[index.toInt()] = element
     }
 
-    override fun indexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
-        return super<KoneSettableIterableList>.indexThat(predicate)
-    }
-
     public override operator fun iterator(): KoneSettableLinearIterator<E> = Iterator(array)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<E> {
         require(index <= size)

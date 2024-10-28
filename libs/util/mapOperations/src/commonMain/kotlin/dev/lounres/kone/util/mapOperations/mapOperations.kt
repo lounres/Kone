@@ -42,22 +42,6 @@ public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () 
 }
 
 /**
- * Computes the given lambda [compute] on value corresponding to the provided [key] or computes the given lambda
- * [defaultResult] if the key is not present.
- *
- * @param key key which corresponding value will be used if it's present.
- * @param compute lambda that is computed on the value corresponding to the [key].
- * @param defaultResult default result that is returned in case of the [key]'s absence.
- * @return result of [compute] lambda if the [key] is present or [defaultResult] otherwise.
- */
-public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: R, compute: (key: K, value: V) -> R): R {
-    contract {
-        callsInPlace(compute, AT_MOST_ONCE)
-    }
-    return computeOnOrElse(key, { defaultResult }, { it -> compute(key, it) })
-}
-
-/**
  * Applies the [transformation][transform] to the value corresponding to the given [key] or null instead if it's not
  * present.
  *
@@ -88,23 +72,6 @@ public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> 
         callsInPlace(transformOnChange, AT_MOST_ONCE)
     }
     return computeOnOrElse(key, valueOnPut, transformOnChange).also { this[key] = it }
-}
-
-/**
- * Depending on presence of value corresponding to the given [key] either puts new value [valueOnPut] or
- * changes the present value with [transformOnChange].
- *
- * @param key key to check.
- * @param valueOnPut value to put in case of absence of the [key].
- * @param transformOnChange transform to apply to current value corresponding to the [key] in case of its presence. Uses
- * the [key], current value, and new value as parameters.
- * @return result value corresponding to the [key].
- */
-public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: V, transformOnChange: (key: K, currentValue: V, newValue: V) -> V): V {
-    contract {
-        callsInPlace(transformOnChange, AT_MOST_ONCE)
-    }
-    return putOrChange<K, V>(key, { valueOnPut }, { transformOnChange(key, it, valueOnPut) })
 }
 
 /**
@@ -147,30 +114,13 @@ public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -
 }
 
 /**
- * Creates copy of [the map][this] and depending on presence of value corresponding to the given [key] either puts new
- * value [valueOnPut] or changes the present value with [transformOnChange].
- *
- * @param key key to check.
- * @param valueOnPut value to put in case of absence of the [key].
- * @param transformOnChange transform to apply to current value corresponding to the [key] in case of its presence. Uses
- * the [key], current value, and new value as parameters.
- * @return the copy of [the map][this].
- */
-public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: V, transformOnChange: (key: K, currentValue: V, newValue: V) -> V): Map<K, V> {
-    contract {
-        callsInPlace(transformOnChange, AT_MOST_ONCE)
-    }
-    return withPutOrChanged<K, V>(key, { valueOnPut }, { transformOnChange(key, it, valueOnPut) })
-}
-
-/**
  * Copies entries of [this map][this] to the [destination] map overriding present ones if needed.
  *
  * @receiver map to be copied.
  * @param destination map to receive copies.
  * @return the [destination].
  */
-public fun <K, V, D: MutableMap<K, V>> Map<out K, V>.copyTo(destination: D): D {
+public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D): D {
     for ((key, value) in this) {
         destination[key] = value
     }
@@ -187,9 +137,9 @@ public fun <K, V, D: MutableMap<K, V>> Map<out K, V>.copyTo(destination: D): D {
  * a new one and returns value to associate to the key.
  * @return the [destination].
  */
-public inline fun <K, V: W, W, D: MutableMap<K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
+public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for ((key, value) in this) {
-        destination.putOrChange(key, value) { _, it, _ -> resolve(key, it, value) }
+        destination.putOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination
 }
@@ -232,7 +182,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
         val (key, value) = entry
-        destination.putOrChange(key, transform(entry)) { _, it, _ -> resolve(key, it, value) }
+        destination.putOrChange(key, { transform(entry) }, { resolve(key, it, value) })
     }
     return destination
 }
@@ -283,7 +233,7 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
     }
     for ((key, value) in map2) {
         @Suppress("UNCHECKED_CAST")
-        destination.putOrChange(key, value) { _, it, _ -> resolve(key, it as V1, value) }
+        destination.putOrChange(key, { value }, { resolve(key, it as V1, value) })
     }
     return destination
 }
@@ -335,7 +285,7 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<o
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
         val (key, value) = transform(element)
-        destination.putOrChange(key, value, resolve)
+        destination.putOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination
 }
@@ -358,7 +308,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(dest
     for (element in this) {
         val key = keySelector(element)
         val value = valueTransform(element)
-        destination.putOrChange(key, value, resolve)
+        destination.putOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination
 }
@@ -379,7 +329,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(dest
 public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, resolve: (key: K, currentValue: T, newValue: T) -> T): D {
     for (element in this) {
         val key = keySelector(element)
-        destination.putOrChange(key, element, resolve)
+        destination.putOrChange(key, { element }, { resolve(key, it, element) })
     }
     return destination
 }

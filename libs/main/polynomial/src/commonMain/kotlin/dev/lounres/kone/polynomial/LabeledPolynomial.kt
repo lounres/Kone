@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package dev.lounres.kone.polynomial
 
@@ -414,7 +414,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { _, it -> this@minus - it })
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), { this@minus.constantValue }, { this@minus - it }))
                     other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )
@@ -442,7 +442,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildMap(other.coefficients.size + 1) {
-                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), this@minus.constantValue) { _, it -> this@minus - it })
+                    put(emptyMap(), other.coefficients.computeOnOrElse(emptyMap(), { this@minus.constantValue }, { this@minus - it }) )
                     other.coefficients.copyMapToBy(this, { (_, c) -> -c }) { _, currentC, _ -> currentC }
                 }
             )

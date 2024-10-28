@@ -3,8 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:OptIn(ExperimentalKoneAPI::class)
+
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order

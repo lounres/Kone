@@ -17,6 +17,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 
@@ -444,7 +445,7 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
             when (subtree) {
                 is TwoThreeTree<E, EC>.TwoNodeHolder ->
                     when {
-                        elementContext { element < subtree.element.element } -> {
+                        elementContext { element lt subtree.element.element } -> {
                             upperBound = subtree.element
                             subtree = subtree.firstChild
                         }
@@ -456,12 +457,12 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
                     }
                 is TwoThreeTree<E, EC>.ThreeNodeHolder ->
                     when {
-                        elementContext { element < subtree.firstElement.element } -> {
+                        elementContext { element lt subtree.firstElement.element } -> {
                             upperBound = subtree.firstElement
                             subtree = subtree.firstChild
                         }
                         elementContext { element eq subtree.firstElement.element } -> return onCoincidence(subtree.firstElement)
-                        elementContext { element < subtree.secondElement.element } -> {
+                        elementContext { element lt subtree.secondElement.element } -> {
                             lowerBound = subtree.firstElement
                             upperBound = subtree.secondElement
                             subtree = subtree.secondChild

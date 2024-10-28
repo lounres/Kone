@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.contains
+import dev.lounres.kone.comparison.leq
 import dev.lounres.kone.comparison.max
 import dev.lounres.kone.comparison.min
 import dev.lounres.kone.comparison.rangeTo
@@ -115,7 +116,7 @@ public fun <N, A> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment
             val intersectionEnd = min(endMoment, one)
             
             Segment2WithSegment2Intersection.TheLinesAreCollinear(
-                if (intersectionStart <= intersectionEnd) Segment2(this.start + this.direction * intersectionStart, this.direction * (intersectionEnd - intersectionStart))
+                if (intersectionStart leq intersectionEnd) Segment2(this.start + this.direction * intersectionStart, this.direction * (intersectionEnd - intersectionStart))
                 else null
             )
         }

@@ -3,15 +3,21 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:OptIn(ExperimentalTypeInference::class)
+
 package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.implementations.EmptyKoneMap
+import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
 import dev.lounres.kone.collections.implementations.KoneResizableHashMap
+import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 import dev.lounres.kone.collections.utils.indices
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
+import kotlin.contracts.InvocationKind
+import kotlin.experimental.ExperimentalTypeInference
 
 
 @Suppress("UNCHECKED_CAST")
@@ -40,6 +46,29 @@ public fun <K, V> koneMutableMapOf(keyContext: Equality<K> = defaultEquality(), 
 public fun <K, V> koneMutableMapOf(vararg entries: KoneMapEntry<K, V>, keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMutableMap<K, V> =
     if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
     else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
+
+public inline fun <K, V> buildKoneMap(
+    keyContext: Equality<K> = defaultEquality(),
+    valueContext: Equality<V> = defaultEquality(),
+    @BuilderInference builderAction: KoneMutableMap<K, V>.() -> Unit
+): KoneMap<K, V> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
+    val mapBuilder =
+        if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext)
+        else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext) { KoneResizableLinkedArrayList(elementContext = it) }
+    return mapBuilder.apply(builderAction)
+}
+
+public inline fun <K, V> buildKoneMap(
+    initialCapacity: UInt,
+    keyContext: Equality<K> = defaultEquality(),
+    valueContext: Equality<V> = defaultEquality(),
+    @BuilderInference builderAction: KoneMutableMap<K, V>.() -> Unit
+): KoneMap<K, V> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
+    val mapBuilder =
+        if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext) // TODO: Replace with growable hash map
+        else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext) { KoneGrowableLinkedArrayList(initialCapacity = initialCapacity, elementContext = it) }
+    return mapBuilder.apply(builderAction)
+}
 
 public inline fun <E, K, V, D: KoneMutableMap<in K, in V>> KoneIterable<E>.associateTo(destination: D, transform: (E) -> KoneMapEntry<K, V>): D {
     for (element in this) destination.set(transform(element))

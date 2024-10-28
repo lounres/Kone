@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
@@ -18,6 +19,7 @@ import java.math.BigInteger
  *
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
+@OptIn(ExperimentalKoneAPI::class)
 public data object BigIntegerRing: EuclideanRing<BigInteger>, Order<BigInteger>, Hashing<BigInteger> {
     override fun BigInteger.compareWith(other: BigInteger): ComparisonResult = this.compareTo(other).asComparisonResult()
 

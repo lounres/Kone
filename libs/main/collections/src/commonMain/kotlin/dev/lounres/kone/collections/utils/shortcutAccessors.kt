@@ -16,6 +16,16 @@ public operator fun <E> KoneList<E>.component2(): E = get(1u)
 public operator fun <E> KoneList<E>.component3(): E = get(2u)
 public operator fun <E> KoneList<E>.component4(): E = get(3u)
 public operator fun <E> KoneList<E>.component5(): E = get(4u)
+public operator fun <E> KoneList<E>.component6(): E = get(5u)
+public operator fun <E> KoneList<E>.component7(): E = get(6u)
+public operator fun <E> KoneList<E>.component8(): E = get(7u)
+public operator fun <E> KoneList<E>.component9(): E = get(8u)
+public operator fun <E> KoneList<E>.component10(): E = get(9u)
+public operator fun <E> KoneList<E>.component11(): E = get(10u)
+public operator fun <E> KoneList<E>.component12(): E = get(11u)
+public operator fun <E> KoneList<E>.component13(): E = get(12u)
+public operator fun <E> KoneList<E>.component14(): E = get(13u)
+public operator fun <E> KoneList<E>.component15(): E = get(14u)
 
 public val KoneList<*>.indices: UIntRange
     get() = 0u ..< size

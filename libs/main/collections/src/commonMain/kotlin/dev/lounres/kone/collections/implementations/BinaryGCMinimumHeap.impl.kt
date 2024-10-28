@@ -17,6 +17,8 @@ import dev.lounres.kone.collections.utils.lastIndex
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.comparison.gt
+import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
 
@@ -42,7 +44,7 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
     
     private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder) {
         val parent = holder.parent ?: return
-        if (priorityContext { parent.priority gt  holder.priority }) {
+        if (priorityContext { parent.priority gt holder.priority }) {
             swapNodeHoldersIdentities(holder, parent)
             siftTheNodeDownToTheRoot(parent)
         }
@@ -54,20 +56,20 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         when {
             firstChild != null && secondChild != null ->
                 when {
-                    priorityContext { firstChild.priority < holder.priority && firstChild.priority < secondChild.priority } -> {
+                    priorityContext { firstChild.priority lt holder.priority && firstChild.priority lt secondChild.priority } -> {
                         swapNodeHoldersIdentities(firstChild, holder)
                         siftTheNodeUpToTheLeaf(firstChild)
                     }
-                    priorityContext { secondChild.priority < holder.priority } -> {
+                    priorityContext { secondChild.priority lt holder.priority } -> {
                         swapNodeHoldersIdentities(secondChild, holder)
                         siftTheNodeUpToTheLeaf(secondChild)
                     }
                 }
-            firstChild != null && priorityContext { firstChild.priority < holder.priority } -> {
+            firstChild != null && priorityContext { firstChild.priority lt holder.priority } -> {
                 swapNodeHoldersIdentities(firstChild, holder)
                 siftTheNodeUpToTheLeaf(firstChild)
             }
-            secondChild != null && priorityContext { secondChild.priority < holder.priority } -> {
+            secondChild != null && priorityContext { secondChild.priority lt holder.priority } -> {
                 swapNodeHoldersIdentities(secondChild, holder)
                 siftTheNodeUpToTheLeaf(secondChild)
             }

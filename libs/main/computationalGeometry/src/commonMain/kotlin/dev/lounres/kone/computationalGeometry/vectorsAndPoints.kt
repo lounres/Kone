@@ -7,6 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.sign
+import dev.lounres.kone.comparison.Comparator
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
