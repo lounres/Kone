@@ -3,19 +3,19 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
-
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.algebraic.LongRing.compareTo
+import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.numberTheory.gcd
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
 
 
-@Suppress("NAME_SHADOWING")
+@ExperimentalKoneAPI
 public class Rational {
     @JvmField
     public val numerator: Long
@@ -79,6 +79,7 @@ internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
 
 // TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
 
+@ExperimentalKoneAPI
 public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rational> {
     // region Constants
     public override val zero: Rational = Rational(0L)
@@ -90,11 +91,11 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
     public override fun Rational.isZero(): Boolean = numerator == 0L
     public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1L
 
-    public override fun Rational.compareTo(other: Rational): Int {
+    public override fun Rational.compareWith(other: Rational): ComparisonResult {
         val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
         val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
 
-        return (thisReducedNumerator * otherReducedDenominator) compareTo (otherReducedNumerator * thisReducedDenominator)
+        return Long.ring { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
     }
     public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
     // endregion

@@ -73,3 +73,5 @@ public fun Long.isPrime(): Boolean {
 public fun Long.isNotPrime(): Boolean = !isPrime()
 
 // endregion
+
+// TODO: Add primality test for BigInteger

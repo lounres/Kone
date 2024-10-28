@@ -5,12 +5,14 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.numberTheory.binomial
 
 
+@OptIn(ExperimentalKoneAPI::class)
 fun main() {
     Rational.field /* It's another reference to RationalField */ {
         val a = Rational(1, 2)

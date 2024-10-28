@@ -7,9 +7,11 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.Hashing
 
 
+@ExperimentalKoneAPI
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
 public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
 

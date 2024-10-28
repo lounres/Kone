@@ -5,7 +5,13 @@
 
 package dev.lounres.kone.numberTheory
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
+import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.isNotEmpty
+import dev.lounres.kone.collections.utils.reduce
 import kotlin.jvm.JvmInline
 import kotlin.math.*
 
@@ -36,7 +42,15 @@ public fun gcd(vararg values: Int): Int = with(values) { abs(if (isEmpty()) 0 el
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-public fun gcd(values: Iterable<Int> /* TODO: Replace with KoneIterable */): Int = abs(values.reduceOrNull(::gcd) ?: 0)
+public fun gcd(values: KoneIterable<Int>): Int = values.iterator().let { if (it.hasNext()) it.reduce(::gcd) else 0 }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: KoneList<Int>): Int = values.let { if (it.isNotEmpty()) it.reduce(::gcd) else 0 }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: KoneIterableList<Int>): Int = values.iterator().let { if (it.hasNext()) it.reduce(::gcd) else 0 }
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
@@ -85,7 +99,15 @@ public fun gcd(vararg values: Long): Long = with(values) { abs(if (isEmpty()) 0 
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-public fun gcd(values: Iterable<Long> /* TODO: Replace with KoneIterable */): Long = abs(values.reduceOrNull(::gcd) ?: 0)
+public fun gcd(values: KoneIterable<Long>): Long = values.iterator().let { if (it.hasNext()) it.reduce(::gcd) else 0L }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: KoneList<Long>): Long = values.let { if (it.isNotEmpty()) it.reduce(::gcd) else 0L }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+public fun gcd(values: KoneIterableList<Long>): Long = values.iterator().let { if (it.hasNext()) it.reduce(::gcd) else 0L }
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
@@ -126,31 +148,40 @@ internal tailrec fun bezoutIdentityWithGCDInternalLogic(a: Long, b: Long, m1: Lo
  * @usesMathJax
  */
 context(EuclideanRing<N>)
+@ExperimentalKoneAPI
 public tailrec fun <N> gcd(a: N, b: N): N = if (a.isZero()) b else gcd(b % a, a)
 
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
 context(EuclideanRing<N>)
+@ExperimentalKoneAPI
 public fun <N> gcd(vararg values: N): N = if (values.isEmpty()) zero else values.reduce { a, b -> gcd(a, b) }
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
 context(EuclideanRing<N>)
-public fun <N> gcd(values: Iterable<N> /* TODO: Replace with KoneIterable */): N {
-    // TODO: Replace with `Iterator<E>.isEmpty()` and `Iterator<E>.reduce()`
-    val iterator = values.iterator()
-    if (!iterator.hasNext()) return zero
-    var current = iterator.next()
-    while (iterator.hasNext()) current = gcd(current, iterator.next())
-    return current
-}
+@ExperimentalKoneAPI
+public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else zero }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+context(EuclideanRing<N>)
+@ExperimentalKoneAPI
+public fun <N> gcd(values: KoneList<N>): N = values.let { if (it.isNotEmpty()) it.reduce { a, b -> gcd(a, b) } else zero }
+/**
+ * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
+ */
+context(EuclideanRing<N>)
+@ExperimentalKoneAPI
+public fun <N> gcd(values: KoneIterableList<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else zero }
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor) of [a] and [b].
  */
 context(EuclideanRing<N>)
+@ExperimentalKoneAPI
 public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
     bezoutIdentityWithGCDInternalLogic(a, b, one, zero, zero, one)
 
@@ -161,6 +192,7 @@ public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
  * Also assumes that [a] and [b] are non-negative. TODO: Docs
  */
 context(EuclideanRing<N>)
+@ExperimentalKoneAPI
 internal tailrec fun <N> bezoutIdentityWithGCDInternalLogic(a: N, b: N, m1: N, m2: N, m3: N, m4: N): BezoutCoefficientsWithGCD<N> =
     if (b == 0L) BezoutCoefficientsWithGCD(m1, m3, a)
     else {

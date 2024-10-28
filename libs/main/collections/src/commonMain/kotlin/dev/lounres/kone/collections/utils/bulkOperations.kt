@@ -21,6 +21,7 @@ import kotlin.random.nextUInt
 
 
 // TODO: Add operations for array value classes
+// TODO: Add operations for iterators
 
 public fun <E, D: KoneExtendableCollection<in E>> KoneIterable<E>.copyTo(destination: D): D {
     for (element in this) destination.add(element)
@@ -464,7 +465,7 @@ public inline fun <E, R> KoneList<E>.map(elementContext: Equality<R> = defaultEq
     KoneSettableIterableList(size = size, elementContext = elementContext) { transform(get(it)) }
 public inline fun <E, R> KoneIterableList<E>.map(elementContext: Equality<R> = defaultEquality(), transform: (E) -> R): KoneIterableList<R> {
     val iterator = iterator()
-    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(iterator.next()) }
+    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(iterator.getAndMoveNext()) }
 }
 
 public inline fun <E, R> KoneList<E>.mapVirtually(elementContext: Equality<R> = defaultEquality(), crossinline transform: (E) -> R): KoneIterableList<R> =
@@ -479,7 +480,7 @@ public inline fun <E, R> KoneList<E>.mapIndexed(elementContext: Equality<R> = de
     KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, get(it)) }
 public inline fun <E, R> KoneIterableList<E>.mapIndexed(elementContext: Equality<R> = defaultEquality(), transform: (index: UInt, E) -> R): KoneIterableList<R> {
     val iterator = iterator()
-    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, iterator.next()) }
+    return KoneSettableIterableList(size = size, elementContext = elementContext) { transform(it, iterator.getAndMoveNext()) }
 }
 
 public inline fun <E, R> KoneList<E>.mapIndexedVirtually(elementContext: Equality<R> = defaultEquality(), crossinline transform: (index: UInt, E) -> R): KoneIterableList<R> =
@@ -656,10 +657,16 @@ public inline fun <E, R> KoneIterableList<E>.runningFoldIndexed(initial: R, elem
 
 // TODO: Add `runningFoldRight` and `runningFoldRightIndexed`
 
+public inline fun <E: R, R> KoneIterator<E>.reduce(operation: (acc: R, E) -> R): R {
+    if (!this.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
+    var accumulator: R = this.getAndMoveNext()
+    for (element in this) accumulator = operation(accumulator, element)
+    return accumulator
+}
 public inline fun <E: R, R> KoneIterable<E>.reduce(operation: (acc: R, E) -> R): R {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
@@ -674,15 +681,21 @@ public inline fun <E: R, R> KoneList<E>.reduce(operation: (acc: R, E) -> R): R {
 public inline fun <E: R, R> KoneIterableList<E>.reduce(operation: (acc: R, E) -> R): R {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 
+public inline fun <E: R, R> KoneIterator<E>.reduceOrNull(operation: (acc: R, E) -> R): R? {
+    if (!this.hasNext()) return null
+    var accumulator: R = this.getAndMoveNext()
+    for (element in this) accumulator = operation(accumulator, element)
+    return accumulator
+}
 public inline fun <E: R, R> KoneIterable<E>.reduceOrNull(operation: (acc: R, E) -> R): R? {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
@@ -697,15 +710,21 @@ public inline fun <E: R, R> KoneList<E>.reduceOrNull(operation: (acc: R, E) -> R
 public inline fun <E: R, R> KoneIterableList<E>.reduceOrNull(operation: (acc: R, E) -> R): R? {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return accumulator
 }
 
+public inline fun <E: R, R> KoneIterator<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> {
+    if (!this.hasNext()) return None
+    var accumulator: R = this.getAndMoveNext()
+    for (element in this) accumulator = operation(accumulator, element)
+    return Some(accumulator)
+}
 public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
@@ -720,15 +739,22 @@ public inline fun <E: R, R> KoneList<E>.reduceMaybe(operation: (acc: R, E) -> R)
 public inline fun <E: R, R> KoneIterableList<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     for (element in iterator) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
 
+public inline fun <E: R, R> KoneIterator<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
+    if (!this.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
+    var accumulator: R = this.getAndMoveNext()
+    var index = 1u
+    for (element in this) accumulator = operation(index++, accumulator, element)
+    return accumulator
+}
 public inline fun <E: R, R> KoneIterable<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
@@ -744,16 +770,23 @@ public inline fun <E: R, R> KoneList<E>.reduceIndexed(operation: (index: UInt, a
 public inline fun <E: R, R> KoneIterableList<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
+public inline fun <E: R, R> KoneIterator<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? {
+    if (!this.hasNext()) return null
+    var accumulator: R = this.getAndMoveNext()
+    var index = 1u
+    for (element in this) accumulator = operation(index++, accumulator, element)
+    return accumulator
+}
 public inline fun <E: R, R> KoneIterable<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
@@ -769,16 +802,23 @@ public inline fun <E: R, R> KoneList<E>.reduceIndexedOrNull(operation: (index: U
 public inline fun <E: R, R> KoneIterableList<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return null
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
 
+public inline fun <E: R, R> KoneIterator<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> {
+    if (!this.hasNext()) return None
+    var accumulator: R = this.getAndMoveNext()
+    var index = 1u
+    for (element in this) accumulator = operation(index++, accumulator, element)
+    return Some(accumulator)
+}
 public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
@@ -794,7 +834,7 @@ public inline fun <E: R, R> KoneList<E>.reduceIndexedMaybe(operation: (index: UI
 public inline fun <E: R, R> KoneIterableList<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> {
     val iterator = this.iterator()
     if (!iterator.hasNext()) return None
-    var accumulator: R = iterator.next()
+    var accumulator: R = iterator.getAndMoveNext()
     var index = 1u
     for (element in iterator) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
