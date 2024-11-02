@@ -15,7 +15,6 @@ import dev.lounres.kone.collections.KoneMutableRegistration
 import dev.lounres.kone.collections.implementations.Disposable
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
 import kotlinx.atomicfu.locks.SynchronizedObject
@@ -180,27 +179,27 @@ import kotlinx.atomicfu.locks.synchronized
 //        var currentNode = endNodeByIndex(currentIndex)
 //        override fun hasNext(): Boolean = currentIndex < size
 //        override fun getNext(): E {
-//            if (!hasNext()) noElementException(currentIndex, size)
+//            if (!hasNext()) indexException(currentIndex, size)
 //            return (currentNode as KoneLockingLinkedGCListRegistry<E, EC>.Node).element
 //        }
 //        override fun moveNext() {
-//            if (!hasNext()) noElementException(currentIndex, size)
+//            if (!hasNext()) indexException(currentIndex, size)
 //            currentIndex++
 //            currentNode = (currentNode as KoneLockingLinkedGCListRegistry<E, EC>.Node).nextNode
 //        }
-//        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+//        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
 //
 //        override fun hasPrevious(): Boolean = currentIndex > 0u
 //        override fun getPrevious(): E {
-//            if (!hasPrevious()) noElementException(currentIndex, size)
+//            if (!hasPrevious()) indexException(currentIndex, size)
 //            return (currentNode.previousNode as KoneLockingLinkedGCListRegistry<E, EC>.Node).element
 //        }
 //        override fun movePrevious() {
-//            if (!hasPrevious()) noElementException(currentIndex, size)
+//            if (!hasPrevious()) indexException(currentIndex, size)
 //            currentIndex--
 //            currentNode = (currentNode.previousNode as KoneLockingLinkedGCListRegistry<E, EC>.Node)
 //        }
-//        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+//        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
 //    }
 //
 //    internal inner class Elements : KoneIterableList<E>, KoneListWithContext<E, EC> {
@@ -251,11 +250,11 @@ import kotlinx.atomicfu.locks.synchronized
 //        var currentNode: End<E> = start.nextNode
 //        override fun hasNext(): Boolean = currentIndex < size
 //        override fun getNext(): KoneMutableRegistration<E> {
-//            if (!hasNext()) noElementException(currentIndex, size)
+//            if (!hasNext()) indexException(currentIndex, size)
 //            return currentNode as KoneLockingLinkedGCListRegistry<E, EC>.Node
 //        }
 //        override fun moveNext() {
-//            if (!hasNext()) noElementException(currentIndex, size)
+//            if (!hasNext()) indexException(currentIndex, size)
 //            currentIndex++
 //            currentNode = (currentNode as KoneLockingLinkedGCListRegistry<E, EC>.Node).nextNode
 //        }

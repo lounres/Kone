@@ -295,38 +295,38 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
         }
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return data[currentIndex] as E
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
         override fun setNext(element: E) {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             data[currentIndex] = element
         }
         override fun addNext(element: E) {
             addAt(currentIndex, element)
         }
         override fun removeNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             removeAt(currentIndex)
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             return data[currentIndex - 1u] as E
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             data[currentIndex - 1u] = element
         }
         override fun addPrevious(element: E) {
@@ -334,7 +334,7 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
             currentIndex++
         }
         override fun removePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             removeAt(--currentIndex)
         }
     }

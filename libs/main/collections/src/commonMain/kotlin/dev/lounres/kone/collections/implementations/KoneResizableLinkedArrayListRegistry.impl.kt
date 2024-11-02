@@ -14,7 +14,7 @@ import dev.lounres.kone.collections.KoneMutableIterableListRegistry
 import dev.lounres.kone.collections.KoneMutableRegistration
 import dev.lounres.kone.collections.KoneMutableUIntArray
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
+import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.repeat
@@ -221,27 +221,27 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
         var actualCurrentIndex: UInt = actualIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return data[actualCurrentIndex]!!.element
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             return data[previousCellIndex[actualCurrentIndex]]!!.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
             actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
     }
 
     internal inner class Elements : KoneIterableList<E>, KoneListWithContext<E, EC> {
@@ -283,30 +283,30 @@ public class KoneResizableLinkedArrayListRegistry<E, EC: Equality<E>> internal c
         
         override fun hasNext(): Boolean = currentIndex < size
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return currentIndex
         }
         override fun getNext(): Registration {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return data[actualCurrentIndex]!!
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
         
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             return currentIndex - 1u
         }
         override fun getPrevious(): Registration {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             return data[previousCellIndex[actualCurrentIndex]]!!
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
     }

@@ -16,50 +16,52 @@ import dev.lounres.kone.option.Some
 
 
 // TODO: Apply the class
-internal class SingletonMap<K, KC: Equality<K>, V, VC: Equality<V>>(
-    val singleKey: K,
-    val singleValue: V,
-    override val keyContext: KC,
-    override val valueContext: VC,
-) : KoneMapWithContext<K, KC, V, VC> {
-    override val size: UInt = 1u
-    override val keysView: KoneIterableSet<K> =
-        SingletonSet(
-            singleElement = singleKey,
-            elementContext = keyContext
-        )
-    override val valuesView: KoneIterableCollection<V> =
-        SingletonList(
-            singleElement = singleValue,
-            elementContext = valueContext
-        )
-    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> =
-        SingletonSet(
-            singleElement = KoneMapEntry(singleKey, singleValue),
-            elementContext = KoneMapEntryEquality(keyContext, valueContext)
-        )
-
-    override fun containsKey(key: K): Boolean = keyContext { singleKey eq key }
-
-    override fun containsValue(value: V): Boolean = valueContext { singleValue eq value }
-
-    override fun get(key: K): V =
-        if (keyContext { singleKey eq key }) singleValue
-        else noMatchingKeyException(key)
-
-    override fun getMaybe(key: K): Option<V> =
-        if (keyContext { singleKey eq key }) Some(singleValue)
-        else None
-
-    override fun toString(): String = "{$singleKey=$singleValue}"
-    override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KoneMap<*, *>) return false
-        if (other.size != 1u) return false
-
-        val (otherKey, otherValue) = other.entriesView.first()
-
-        return singleKey == otherKey && singleValue == otherValue
-    }
-}
+//internal class SingletonMap<K, KC: Equality<K>, V, VC: Equality<V>>(
+//    val singleKey: K,
+//    val singleValue: V,
+//    override val keyContext: KC,
+//    override val valueContext: VC,
+//) : KoneMapWithContext<K, KC, V, VC> {
+//    override val size: UInt get() = 1u
+//    override val nodesView: KoneIterableSet<KoneMapNode<K, V>> =
+//        Sing
+//    override val keysView: KoneIterableSet<K> =
+//        SingletonSet(
+//            singleElement = singleKey,
+//            elementContext = keyContext
+//        )
+//    override val valuesView: KoneIterableCollection<V> =
+//        SingletonList(
+//            singleElement = singleValue,
+//            elementContext = valueContext
+//        )
+//    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> =
+//        SingletonSet(
+//            singleElement = KoneMapEntry(singleKey, singleValue),
+//            elementContext = KoneMapEntryEquality(keyContext, valueContext)
+//        )
+//
+//    override fun containsKey(key: K): Boolean = keyContext { singleKey eq key }
+//
+//    override fun containsValue(value: V): Boolean = valueContext { singleValue eq value }
+//
+//    override fun get(key: K): V =
+//        if (keyContext { singleKey eq key }) singleValue
+//        else noMatchingKeyException(key)
+//
+//    override fun getMaybe(key: K): Option<V> =
+//        if (keyContext { singleKey eq key }) Some(singleValue)
+//        else None
+//
+//    override fun toString(): String = "{$singleKey=$singleValue}"
+//    override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is KoneMap<*, *>) return false
+//        if (other.size != 1u) return false
+//
+//        val (otherKey, otherValue) = other.entriesView.first()
+//
+//        return singleKey == otherKey && singleValue == otherValue
+//    }
+//}

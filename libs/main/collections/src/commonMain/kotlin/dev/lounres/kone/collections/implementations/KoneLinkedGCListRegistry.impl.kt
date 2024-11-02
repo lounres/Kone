@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.KoneListWithContext
 import dev.lounres.kone.collections.KoneMutableIterableListRegistry
 import dev.lounres.kone.collections.KoneMutableRegistration
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
+import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.repeat
@@ -165,27 +165,27 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         var currentNode = endNodeByIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return (currentNode as Node<E>).element
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             currentNode = (currentNode as Node<E>).nextNode
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             return (currentNode.previousNode as Node<E>).element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
             currentNode = (currentNode.previousNode as Node<E>)
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
     }
 
     internal inner class Elements : KoneIterableList<E>, KoneListWithContext<E, EC> {
@@ -237,30 +237,30 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         
         override fun hasNext(): Boolean = currentIndex < size
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return currentIndex
         }
         override fun getNext(): Node<E> {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return currentNode as Node<E>
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             currentNode = (currentNode as Node<E>).nextNode
         }
         
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             return currentIndex - 1u
         }
         override fun getPrevious(): Node<E> {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             return currentNode.previousNode as Node<E>
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexException(currentIndex - 1u, size)
             currentIndex--
             currentNode = currentNode.previousNode as Node<E>
         }

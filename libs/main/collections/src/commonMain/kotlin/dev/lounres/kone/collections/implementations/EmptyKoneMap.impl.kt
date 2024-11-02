@@ -17,17 +17,13 @@ internal open class EmptyKoneMapTemplate<K, V> : KoneMapWithContext<K, Equality<
     override val valueContext: Equality<V> get() = defaultHashing()
 
     override val size: UInt = 0u
-    override fun containsKey(key: K): Boolean = false
-    override fun containsValue(value: V): Boolean = false
-
-    override fun get(key: K): Nothing {
-        noMatchingKeyException(key)
-    }
-    override fun getMaybe(key: K): Option<Nothing> = None
-
-    override val keysView: KoneIterableSet<K> = EmptyKoneIterableSet
-    override val valuesView: KoneIterableCollection<V> = EmptyKoneIterableList
-    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> = EmptyKoneIterableSet
+    
+    override fun getNodeOrNull(key: K): KoneMapNode<K, V>? = null
+    
+    override val nodesView: KoneIterableSet<KoneMapNode<K, V>> get() = EmptyKoneIterableSet
+    override val keysView: KoneIterableSet<K> get() = EmptyKoneIterableSet
+    override val valuesView: KoneIterableCollection<V> get() = EmptyKoneIterableList
+    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = EmptyKoneIterableSet
 
     override fun toString(): String = "{}"
     override fun hashCode(): Int = 0

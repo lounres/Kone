@@ -83,31 +83,31 @@ public /*value*/ class KoneSettableArrayList<E, out EC: Equality<E>> @PublishedA
         }
         override fun hasNext(): Boolean = currentIndex < data.size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, data.size)
+            if (!hasNext()) indexException(currentIndex, data.size)
             return data[currentIndex] as E
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, data.size)
+            if (!hasNext()) indexException(currentIndex, data.size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, data.size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, data.size)
         override fun setNext(element: E) {
-            if (!hasNext()) noElementException(currentIndex, data.size)
+            if (!hasNext()) indexException(currentIndex, data.size)
             data[currentIndex] = element
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, data.size)
+            if (!hasPrevious()) indexException(currentIndex, data.size)
             return data[currentIndex - 1u] as E
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, data.size)
+            if (!hasPrevious()) indexException(currentIndex, data.size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, data.size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, data.size)
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) noElementException(currentIndex, data.size)
+            if (!hasPrevious()) indexException(currentIndex, data.size)
             data[currentIndex - 1u] = element
         }
     }

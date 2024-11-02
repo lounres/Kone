@@ -9,5 +9,5 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 
 
-public fun <K, KC: Hashing<K>, V, VC: Equality<V>> KoneResizableHashMap(keyContext: KC, valueContext: VC): KoneResizableHashMap<K, KC, V, VC> =
-    KoneResizableHashMap(size = 0u, keyContext = keyContext, valueContext = valueContext)
+//public fun <K, KC: Hashing<K>, V, VC: Equality<V>> KoneResizableHashMap(keyContext: KC, valueContext: VC): KoneResizableHashMap<K, KC, V, VC> =
+//    KoneResizableHashMap(size = 0u, keyContext = keyContext, valueContext = valueContext)

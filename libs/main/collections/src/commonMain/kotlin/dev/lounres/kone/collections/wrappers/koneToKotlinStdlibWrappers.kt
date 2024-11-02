@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.wrappers
 
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.any
+import dev.lounres.kone.collections.utils.forEach
 
 
 // region Iterators
@@ -593,10 +594,10 @@ internal open class KotlinStdlibWrapperKoneMutableMap<K, V>(protected open val m
 
     override fun put(key: K, value: V): V? = map.getOrNull(key).also { map.set(key, value) }
     override fun putAll(from: Map<out K, V>) {
-        map.setAllFrom(from.asKone())
+        for ((key, value) in from) set(key, value)
     }
 
-    override fun remove(key: K): V? = map.getOrNull(key).also { map.remove(key) }
+    override fun remove(key: K): V? = map.getNodeOrNull(key)?.let { node -> node.value.also { node.remove() } }
 
     override fun clear() {
         map.removeAll()

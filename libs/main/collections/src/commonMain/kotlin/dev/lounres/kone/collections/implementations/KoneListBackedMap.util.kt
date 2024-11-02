@@ -11,9 +11,9 @@ import dev.lounres.kone.collections.koneMapEntryEquality
 import dev.lounres.kone.comparison.Equality
 
 
-public inline fun <K, KC: Equality<K>, V, VC: Equality<V>> KoneListBackedMap(
-    keyContext: KC,
-    valueContext: VC,
-    backingListFabric: (Equality<KoneMapEntry<K, V>>) -> KoneIterableList<KoneMapEntry<K, V>>
-): KoneListBackedMap<K, KC, V, VC> =
-    KoneListBackedMap(keyContext = keyContext, valueContext = valueContext, backingListFabric(koneMapEntryEquality(keyContext, valueContext)))
+//public inline fun <K, KC: Equality<K>, V, VC: Equality<V>> KoneListBackedMap(
+//    keyContext: KC,
+//    valueContext: VC,
+//    backingListFabric: (Equality<KoneMapEntry<K, V>>) -> KoneIterableList<KoneMapEntry<K, V>>
+//): KoneListBackedMap<K, KC, V, VC> =
+//    KoneListBackedMap(keyContext = keyContext, valueContext = valueContext, backingListFabric(koneMapEntryEquality(keyContext, valueContext)))

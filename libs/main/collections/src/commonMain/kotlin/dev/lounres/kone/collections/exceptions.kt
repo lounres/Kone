@@ -6,11 +6,13 @@
 package dev.lounres.kone.collections
 
 
+// TODO: Check that exceptions are used correctly
+
 public fun indexException(index: UInt, size: UInt): Nothing =
     throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
 
-public fun noElementException(index: UInt, size: UInt): Nothing =
-    throw NoSuchElementException("Index $index out of bounds for length $size")
+public fun noSuchElementException(): Nothing =
+    throw NoSuchElementException("Collection contains no element matching the predicate")
 
 public class CapacityOverflowException(message: String = "Overflow of collection with fixed capacity") : RuntimeException(message)
 

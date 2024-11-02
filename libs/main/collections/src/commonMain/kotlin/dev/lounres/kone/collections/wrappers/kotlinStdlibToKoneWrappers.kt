@@ -8,9 +8,6 @@ package dev.lounres.kone.collections.wrappers
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultHashing
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
-import dev.lounres.kone.option.Some
 import dev.lounres.kone.repeat
 
 
@@ -376,24 +373,24 @@ internal class KoneMappingMapIterator<K, V>(private val iterator: Iterator<Map.E
     override fun toString(): String = "KoneMappingMapIterator($iterator)"
 
     var holder: @UnsafeVariance KoneMapEntry<K, V>? = null
-    var doesHolderConatinAnything = false
-    override fun hasNext(): Boolean = doesHolderConatinAnything || iterator.hasNext()
+    var doesHolderContainsAnything = false
+    override fun hasNext(): Boolean = doesHolderContainsAnything || iterator.hasNext()
     override fun getNext(): KoneMapEntry<K, V> = when {
-        doesHolderConatinAnything -> holder as KoneMapEntry<K, V>
+        doesHolderContainsAnything -> holder as KoneMapEntry<K, V>
         iterator.hasNext() -> {
             iterator.next()
                 .let { KoneMapEntry(it.key, it.value) }
                 .also {
                     holder = it
-                    doesHolderConatinAnything = true
+                    doesHolderContainsAnything = true
                 }
         }
         else -> throw NoSuchElementException()
     }
     override fun moveNext() {
-        if (doesHolderConatinAnything) {
+        if (doesHolderContainsAnything) {
             holder = null
-            doesHolderConatinAnything = false
+            doesHolderContainsAnything = false
         } else {
             iterator.next()
         }
@@ -438,115 +435,109 @@ internal class KotlinStdlibWrapperKoneMapEntriesKoneIterable<K, V>(private val i
     override fun iterator(): Iterator<Pair<K, V>> = KotlinStdlibWrapperKoneMapEntriesKoneIteratorAsPairsIterator(iterable.iterator())
 }
 
-public fun <K, V> Map<K, V>.asKone(): KoneMapWithContext<K, Hashing<K>, V, Hashing<V>> = KoneWrapperMap(this)
-@Suppress("UNCHECKED_CAST")
-internal class KoneWrapperMap<K, V>(private val map: Map<K, V>): KoneMapWithContext<K, Hashing<K>, V, Hashing<V>> {
-    override val keyContext: Hashing<K> get() = defaultHashing()
-    override val valueContext: Hashing<V> get() = defaultHashing()
-    override fun toString(): String = "KoneWrapperMap($map)"
-    override fun hashCode(): Int = map.hashCode()
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KoneMap<*, *>) return false
-        if (this.size != other.size) return false
+//public fun <K, V> Map<K, V>.asKone(): KoneMapWithContext<K, Hashing<K>, V, Hashing<V>> = KoneWrapperMap(this)
+//@Suppress("UNCHECKED_CAST")
+//internal class KoneWrapperMap<K, V>(private val map: Map<K, V>): KoneMapWithContext<K, Hashing<K>, V, Hashing<V>> {
+//    override val keyContext: Hashing<K> get() = defaultHashing()
+//    override val valueContext: Hashing<V> get() = defaultHashing()
+//    override fun toString(): String = "KoneWrapperMap($map)"
+//    override fun hashCode(): Int = map.hashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is KoneMap<*, *>) return false
+//        if (this.size != other.size) return false
+//
+//        if (other is KoneWrapperMap<*, *>) return this.map == other.map
+//
+//        other as KoneMap<K, V>
+//
+//        for ((key, value) in this) {
+//            when (val otherValue = other.getMaybe(key)) {
+//                None -> return false
+//                is Some -> if (value != otherValue.value) return false
+//            }
+//        }
+//
+//        return true
+//    }
+//
+//    override val size: UInt get() = map.size.toUInt()
+//    override fun getNodeOrNull(key: K): KoneMapNode<K, V>? {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
+//    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
+//    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
+//}
 
-        if (other is KoneWrapperMap<*, *>) return this.map == other.map
-
-        other as KoneMap<K, V>
-
-        for ((key, value) in this) {
-            when (val otherValue = other.getMaybe(key)) {
-                None -> return false
-                is Some -> if (value != otherValue.value) return false
-            }
-        }
-
-        return true
-    }
-
-    override val size: UInt get() = map.size.toUInt()
-    override fun containsValue(value: V): Boolean = map.containsValue(value)
-    override fun containsKey(key: K): Boolean = map.containsKey(key)
-
-    override fun get(key: K): V =
-        if (key in map) map[key] as V
-        else noMatchingKeyException(key)
-    override fun getMaybe(key: K): Option<V> =
-        if (key in map) Some(map[key] as V)
-        else None
-
-    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
-    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
-    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
-}
-
-public fun <K, V> MutableMap<K, V>.asKone(): KoneMutableMapWithContext<K, Hashing<K>, V, Hashing<V>> = KoneWrapperMutableMap(this)
-@Suppress("UNCHECKED_CAST")
-internal class KoneWrapperMutableMap<K, V>(private val map: MutableMap<K, V>): KoneMutableMapWithContext<K, Hashing<K>, V, Hashing<V>> {
-    override val keyContext: Hashing<K> get() = defaultHashing()
-    override val valueContext: Hashing<V> get() = defaultHashing()
-    override fun toString(): String = "KoneWrapperMutableMap($map)"
-    override fun hashCode(): Int = map.hashCode()
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KoneMap<*, *>) return false
-        if (this.size != other.size) return false
-
-        if (other is KoneWrapperMutableMap<*, *>) return this.map == other.map
-
-        other as KoneMap<K, V>
-
-        for ((key, value) in this) {
-            when (val otherValue = other.getMaybe(key)) {
-                None -> return false
-                is Some -> if (value != otherValue.value) return false
-            }
-        }
-
-        return true
-    }
-
-    override val size: UInt get() = map.size.toUInt()
-    override fun containsValue(value: V): Boolean = map.containsValue(value)
-    override fun containsKey(key: K): Boolean = map.containsKey(key)
-
-    override fun get(key: K): V =
-        if (key in map) map[key] as V
-        else noMatchingKeyException(key)
-
-    override fun getMaybe(key: K): Option<V> =
-        if (key in map) Some(map[key] as V)
-        else None
-
-    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
-    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
-    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
-
-    override operator fun set(key: K, value: V) {
-        map[key] = value
-    }
-
-    override fun set(entry: KoneMapEntry<K, V>) {
-        map[entry.key] = entry.value
-    }
-
-    override fun remove(key: K) {
-        map.remove(key)
-    }
-
-    override fun removeAllThat(predicate: (key: K, value: V) -> Boolean) {
-        for ((key, value ) in map)
-            if (predicate(key, value)) map.remove(key)
-    }
-
-    override fun setAllFrom(from: KoneMap<out K, V>) {
-        map.putAll(from.asKotlinStdlib())
-    }
-    override fun setAllFrom(from: KoneIterable<KoneMapEntry<K, V>>) {
-        map.putAll(KotlinStdlibWrapperKoneMapEntriesKoneIterable(from))
-    }
-    override fun removeAll() {
-        map.clear()
-    }
-}
+//public fun <K, V> MutableMap<K, V>.asKone(): KoneMutableMapWithContext<K, Hashing<K>, V, Hashing<V>> = KoneWrapperMutableMap(this)
+//@Suppress("UNCHECKED_CAST")
+//internal class KoneWrapperMutableMap<K, V>(private val map: MutableMap<K, V>): KoneMutableMapWithContext<K, Hashing<K>, V, Hashing<V>> {
+//    override val keyContext: Hashing<K> get() = defaultHashing()
+//    override val valueContext: Hashing<V> get() = defaultHashing()
+//    override fun toString(): String = "KoneWrapperMutableMap($map)"
+//    override fun hashCode(): Int = map.hashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is KoneMap<*, *>) return false
+//        if (this.size != other.size) return false
+//
+//        if (other is KoneWrapperMutableMap<*, *>) return this.map == other.map
+//
+//        other as KoneMap<K, V>
+//
+//        for ((key, value) in this) {
+//            when (val otherValue = other.getMaybe(key)) {
+//                None -> return false
+//                is Some -> if (value != otherValue.value) return false
+//            }
+//        }
+//
+//        return true
+//    }
+//
+//    override val size: UInt get() = map.size.toUInt()
+//    override fun containsValue(value: V): Boolean = map.containsValue(value)
+//    override fun containsKey(key: K): Boolean = map.containsKey(key)
+//
+//    override fun get(key: K): V =
+//        if (key in map) map[key] as V
+//        else noMatchingKeyException(key)
+//
+//    override fun getMaybe(key: K): Option<V> =
+//        if (key in map) Some(map[key] as V)
+//        else None
+//
+//    override val keysView: KoneIterableSet<K> get() = map.keys.asKone()
+//    override val valuesView: KoneIterableCollection<V> get() = map.values.asKone()
+//    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = KoneWrapperMapEntries(map.entries)
+//
+//    override operator fun set(key: K, value: V) {
+//        map[key] = value
+//    }
+//
+//    override fun set(entry: KoneMapEntry<K, V>) {
+//        map[entry.key] = entry.value
+//    }
+//
+//    override fun remove(key: K) {
+//        map.remove(key)
+//    }
+//
+//    override fun removeAllThat(predicate: (key: K, value: V) -> Boolean) {
+//        for ((key, value ) in map)
+//            if (predicate(key, value)) map.remove(key)
+//    }
+//
+//    override fun setAllFrom(from: KoneMap<out K, V>) {
+//        map.putAll(from.asKotlinStdlib())
+//    }
+//    override fun setAllFrom(from: KoneIterable<KoneMapEntry<K, V>>) {
+//        map.putAll(KotlinStdlibWrapperKoneMapEntriesKoneIterable(from))
+//    }
+//    override fun removeAll() {
+//        map.clear()
+//    }
+//}
 //endregion

@@ -358,17 +358,17 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         var currentNode = endNodeByIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return (currentNode as Node<E>).element
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             currentNode = (currentNode as Node<E>).nextNode
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
         override fun setNext(element: E) {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             (currentNode as Node<E>).element = element
         }
         override fun addNext(element: E) {
@@ -377,7 +377,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             currentNode = (currentNode.previousNode as Node<E>)
         }
         override fun removeNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             val node = currentNode as Node<E>
             currentNode = node.nextNode
             node.remove()
@@ -386,17 +386,17 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             return (currentNode.previousNode as Node<E>).element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
             currentNode = (currentNode.previousNode as Node<E>)
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             (currentNode.previousNode as Node<E>).element = element
         }
         override fun addPrevious(element: E) {
@@ -404,7 +404,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
             size++
         }
         override fun removePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             (currentNode.previousNode as Node<E>).remove()
             size--
         }

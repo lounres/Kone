@@ -21,7 +21,7 @@ public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableL
     }
     public override operator fun get(index: UInt): E =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: E): UInt {
         var i = 0u
         while (i < size) {
@@ -55,17 +55,17 @@ public value class KoneArray<E>(internal val array: Array<out E>): KoneIterableL
 
     internal open class Iterator<E>(open val array: Array<out E>, protected var index: Int = 0): KoneLinearIterator<E> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): E = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): E = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
 
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): E = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): E = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -84,9 +84,9 @@ public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettab
     }
     public override operator fun get(index: UInt): E =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: E) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
 
@@ -107,11 +107,11 @@ public value class KoneMutableArray<E>(internal val array: Array<E>): KoneSettab
 
     internal class Iterator<E>(override val array: Array<E>, index: Int = 0): KoneArray.Iterator<E>(array, index), KoneSettableLinearIterator<E> {
         override fun setNext(element: E) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -130,7 +130,7 @@ public value class KoneByteArray(internal val array: ByteArray): KoneIterableLis
     }
     public override operator fun get(index: UInt): Byte =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Byte): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Byte): UInt =
@@ -152,17 +152,17 @@ public value class KoneByteArray(internal val array: ByteArray): KoneIterableLis
     
     internal open class Iterator(val array: ByteArray, protected var index: Int = 0): KoneLinearIterator<Byte> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Byte = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Byte = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Byte = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Byte = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -181,9 +181,9 @@ public value class KoneMutableByteArray(internal val array: ByteArray): KoneSett
     }
     public override operator fun get(index: UInt): Byte =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Byte) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Byte): UInt =
@@ -207,11 +207,11 @@ public value class KoneMutableByteArray(internal val array: ByteArray): KoneSett
     
     internal class Iterator(array: ByteArray, index: Int = 0): KoneByteArray.Iterator(array, index), KoneSettableLinearIterator<Byte> {
         override fun setNext(element: Byte) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Byte) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -230,7 +230,7 @@ public value class KoneShortArray(internal val array: ShortArray): KoneIterableL
     }
     public override operator fun get(index: UInt): Short =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Short): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Short): UInt =
@@ -252,17 +252,17 @@ public value class KoneShortArray(internal val array: ShortArray): KoneIterableL
 
     internal open class Iterator(val array: ShortArray, protected var index: Int = 0): KoneLinearIterator<Short> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Short = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Short = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
 
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Short = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Short = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -281,9 +281,9 @@ public value class KoneMutableShortArray(internal val array: ShortArray): KoneSe
     }
     public override operator fun get(index: UInt): Short =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Short) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Short): UInt =
@@ -307,11 +307,11 @@ public value class KoneMutableShortArray(internal val array: ShortArray): KoneSe
 
     internal class Iterator(array: ShortArray, index: Int = 0): KoneShortArray.Iterator(array, index), KoneSettableLinearIterator<Short> {
         override fun setNext(element: Short) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Short) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -330,7 +330,7 @@ public value class KoneIntArray(internal val array: IntArray): KoneIterableList<
     }
     public override operator fun get(index: UInt): Int =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Int): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Int): UInt =
@@ -352,17 +352,17 @@ public value class KoneIntArray(internal val array: IntArray): KoneIterableList<
     
     internal open class Iterator(val array: IntArray, protected var index: Int = 0): KoneLinearIterator<Int> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Int = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Int = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Int = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Int = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -381,9 +381,9 @@ public value class KoneMutableIntArray(internal val array: IntArray): KoneSettab
     }
     public override operator fun get(index: UInt): Int =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Int) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Int): UInt =
@@ -407,11 +407,11 @@ public value class KoneMutableIntArray(internal val array: IntArray): KoneSettab
     
     internal class Iterator(array: IntArray, index: Int = 0): KoneIntArray.Iterator(array, index), KoneSettableLinearIterator<Int> {
         override fun setNext(element: Int) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Int) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -430,7 +430,7 @@ public value class KoneLongArray(internal val array: LongArray): KoneIterableLis
     }
     public override operator fun get(index: UInt): Long =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Long): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Long): UInt =
@@ -452,17 +452,17 @@ public value class KoneLongArray(internal val array: LongArray): KoneIterableLis
     
     internal open class Iterator(val array: LongArray, protected var index: Int = 0): KoneLinearIterator<Long> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Long = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Long = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Long = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Long = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -481,9 +481,9 @@ public value class KoneMutableLongArray(internal val array: LongArray): KoneSett
     }
     public override operator fun get(index: UInt): Long =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Long) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Long): UInt =
@@ -507,11 +507,11 @@ public value class KoneMutableLongArray(internal val array: LongArray): KoneSett
     
     internal class Iterator(array: LongArray, index: Int = 0): KoneLongArray.Iterator(array, index), KoneSettableLinearIterator<Long> {
         override fun setNext(element: Long) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Long) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -530,7 +530,7 @@ public value class KoneFloatArray(internal val array: FloatArray): KoneIterableL
     }
     public override operator fun get(index: UInt): Float =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Float): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Float): UInt =
@@ -552,17 +552,17 @@ public value class KoneFloatArray(internal val array: FloatArray): KoneIterableL
     
     internal open class Iterator(val array: FloatArray, protected var index: Int = 0): KoneLinearIterator<Float> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Float = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Float = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Float = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Float = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -581,9 +581,9 @@ public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSe
     }
     public override operator fun get(index: UInt): Float =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Float) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Float): UInt =
@@ -607,11 +607,11 @@ public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSe
     
     internal class Iterator(array: FloatArray, index: Int = 0): KoneFloatArray.Iterator(array, index), KoneSettableLinearIterator<Float> {
         override fun setNext(element: Float) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Float) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -630,7 +630,7 @@ public value class KoneDoubleArray(internal val array: DoubleArray): KoneIterabl
     }
     public override operator fun get(index: UInt): Double =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: Double): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: Double): UInt =
@@ -652,17 +652,17 @@ public value class KoneDoubleArray(internal val array: DoubleArray): KoneIterabl
     
     internal open class Iterator(val array: DoubleArray, protected var index: Int = 0): KoneLinearIterator<Double> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): Double = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): Double = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): Double = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): Double = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -681,9 +681,9 @@ public value class KoneMutableDoubleArray(internal val array: DoubleArray): Kone
     }
     public override operator fun get(index: UInt): Double =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: Double) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: Double): UInt =
@@ -707,11 +707,11 @@ public value class KoneMutableDoubleArray(internal val array: DoubleArray): Kone
     
     internal class Iterator(array: DoubleArray, index: Int = 0): KoneDoubleArray.Iterator(array, index), KoneSettableLinearIterator<Double> {
         override fun setNext(element: Double) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: Double) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -730,7 +730,7 @@ public value class KoneUByteArray(internal val array: UByteArray): KoneIterableL
     }
     public override operator fun get(index: UInt): UByte =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: UByte): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: UByte): UInt =
@@ -752,17 +752,17 @@ public value class KoneUByteArray(internal val array: UByteArray): KoneIterableL
     
     internal open class Iterator(val array: UByteArray, protected var index: Int = 0): KoneLinearIterator<UByte> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): UByte = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): UByte = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): UByte = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): UByte = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -781,9 +781,9 @@ public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSe
     }
     public override operator fun get(index: UInt): UByte =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: UByte) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: UByte): UInt =
@@ -807,11 +807,11 @@ public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSe
     
     internal class Iterator(array: UByteArray, index: Int = 0): KoneUByteArray.Iterator(array, index), KoneSettableLinearIterator<UByte> {
         override fun setNext(element: UByte) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: UByte) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -830,7 +830,7 @@ public value class KoneUShortArray(internal val array: UShortArray): KoneIterabl
     }
     public override operator fun get(index: UInt): UShort =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: UShort): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: UShort): UInt =
@@ -852,17 +852,17 @@ public value class KoneUShortArray(internal val array: UShortArray): KoneIterabl
     
     internal open class Iterator(val array: UShortArray, protected var index: Int = 0): KoneLinearIterator<UShort> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): UShort = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): UShort = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): UShort = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): UShort = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -881,9 +881,9 @@ public value class KoneMutableUShortArray(internal val array: UShortArray): Kone
     }
     public override operator fun get(index: UInt): UShort =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: UShort) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: UShort): UInt =
@@ -907,11 +907,11 @@ public value class KoneMutableUShortArray(internal val array: UShortArray): Kone
     
     internal class Iterator(array: UShortArray, index: Int = 0): KoneUShortArray.Iterator(array, index), KoneSettableLinearIterator<UShort> {
         override fun setNext(element: UShort) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: UShort) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -930,7 +930,7 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneIterableLis
     }
     public override operator fun get(index: UInt): UInt =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: UInt): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: UInt): UInt =
@@ -952,17 +952,17 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneIterableLis
     
     internal open class Iterator(val array: UIntArray, protected var index: Int = 0): KoneLinearIterator<UInt> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): UInt = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): UInt = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): UInt = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): UInt = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -981,9 +981,9 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
     }
     public override operator fun get(index: UInt): UInt =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: UInt) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: UInt): UInt =
@@ -1015,11 +1015,11 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
     
     internal class Iterator(array: UIntArray, index: Int = 0): KoneUIntArray.Iterator(array, index), KoneSettableLinearIterator<UInt> {
         override fun setNext(element: UInt) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: UInt) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }
@@ -1038,7 +1038,7 @@ public value class KoneULongArray(internal val array: ULongArray): KoneIterableL
     }
     public override operator fun get(index: UInt): ULong =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     override fun indexOf(element: ULong): UInt =
         indexThat { _, currentElement -> currentElement == element }
     override fun lastIndexOf(element: ULong): UInt =
@@ -1060,17 +1060,17 @@ public value class KoneULongArray(internal val array: ULongArray): KoneIterableL
     
     internal open class Iterator(val array: ULongArray, protected var index: Int = 0): KoneLinearIterator<ULong> {
         override fun hasNext(): Boolean = index < array.size
-        override fun getNext(): ULong = if (hasNext()) array[index] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getNext(): ULong = if (hasNext()) array[index] else indexException(index.toUInt(), array.size.toUInt())
         override fun moveNext() {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             index++
         }
-        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else noElementException(index.toUInt(), array.size.toUInt())
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexException(index.toUInt(), array.size.toUInt())
         
         override fun hasPrevious(): Boolean = index > 0
-        override fun getPrevious(): ULong = if (hasPrevious()) array[index - 1] else noElementException(index.toUInt(), array.size.toUInt())
+        override fun getPrevious(): ULong = if (hasPrevious()) array[index - 1] else indexException(index.toUInt(), array.size.toUInt())
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
@@ -1089,9 +1089,9 @@ public value class KoneMutableULongArray(internal val array: ULongArray): KoneSe
     }
     public override operator fun get(index: UInt): ULong =
         if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
-        else noElementException(index, array.size.toUInt())
+        else indexException(index, array.size.toUInt())
     public override operator fun set(index: UInt, element: ULong) {
-        if (index !in 0u ..< array.size.toUInt()) noElementException(index, array.size.toUInt())
+        if (index !in 0u ..< array.size.toUInt()) indexException(index, array.size.toUInt())
         array[index.toInt()] = element
     }
     override fun indexOf(element: ULong): UInt =
@@ -1115,11 +1115,11 @@ public value class KoneMutableULongArray(internal val array: ULongArray): KoneSe
     
     internal class Iterator(array: ULongArray, index: Int = 0): KoneULongArray.Iterator(array, index), KoneSettableLinearIterator<ULong> {
         override fun setNext(element: ULong) {
-            if (!hasNext()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasNext()) indexException(index.toUInt(), array.size.toUInt())
             array[index] = element
         }
         override fun setPrevious(element: ULong) {
-            if (!hasPrevious()) noElementException(index.toUInt(), array.size.toUInt())
+            if (!hasPrevious()) indexException(index.toUInt(), array.size.toUInt())
             array[index - 1] = element
         }
     }

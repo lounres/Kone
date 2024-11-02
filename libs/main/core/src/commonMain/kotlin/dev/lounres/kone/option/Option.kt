@@ -97,6 +97,10 @@ public inline fun <E, R> Option<E>.computeOnOrElse(default: () -> R, compute: (E
         is Some -> compute(value)
     }
 
+public fun <E: Any> E?.notNullMaybe(): Option<E> = if (this == null) None else Some(this)
+
+public fun <E: Any, R> E?.transformNotNullMaybe(transform: (E) -> R): Option<R> = if (this == null) None else Some(transform(this))
+
 /**
  * Returns the wrapped in [Some] instance of type `Option<E>` if it is present or `None` otherwise.
  *

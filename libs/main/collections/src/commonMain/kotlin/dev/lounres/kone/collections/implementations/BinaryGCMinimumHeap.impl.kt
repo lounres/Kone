@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneListWithContext
 import dev.lounres.kone.collections.MinimumHeap
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
 import dev.lounres.kone.collections.utils.lastIndex
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
@@ -253,15 +252,15 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         
         override fun hasNext(): Boolean = nextHolder != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): HeapNode<E, P> {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextHolder!!.node
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             nextIndex++
             previousHolder = nextHolder
             nextHolder = nextHolder!!.next
@@ -269,15 +268,15 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         
         override fun hasPrevious(): Boolean = previousHolder != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): HeapNode<E, P> {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousHolder!!.node
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             nextIndex++
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
@@ -317,15 +316,15 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         
         override fun hasNext(): Boolean = nextHolder != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): E {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextHolder!!.node.element
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             nextIndex++
             previousHolder = nextHolder
             nextHolder = nextHolder!!.next
@@ -333,15 +332,15 @@ public class BinaryGCMinimumHeap<E, out EC: Equality<E>, P, out PC: Order<P>> /*
         
         override fun hasPrevious(): Boolean = previousHolder != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousHolder!!.node.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             nextIndex++
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous

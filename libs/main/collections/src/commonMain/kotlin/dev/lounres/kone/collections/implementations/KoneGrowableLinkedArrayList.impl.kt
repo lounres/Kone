@@ -473,17 +473,17 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
         var actualCurrentIndex = if (sizeUpperBound == 0u) 0u else actualIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             return data[actualCurrentIndex] as E
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
             actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noElementException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
         override fun setNext(element: E) {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             data[currentIndex] = element
         }
         override fun addNext(element: E) {
@@ -491,30 +491,30 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
             else justAddBefore(nextCellIndex[actualCurrentIndex], element)
         }
         override fun removeNext() {
-            if (!hasNext()) noElementException(currentIndex, size)
+            if (!hasNext()) indexException(currentIndex, size)
             justRemoveAt(actualCurrentIndex.also { actualCurrentIndex = nextCellIndex[actualCurrentIndex] })
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             return data[previousCellIndex[actualCurrentIndex]] as E
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
             actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noElementException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             data[previousCellIndex[actualCurrentIndex]] = element
         }
         override fun addPrevious(element: E) {
             justAddBefore(actualCurrentIndex, element)
         }
         override fun removePrevious() {
-            if (!hasPrevious()) noElementException(currentIndex, size)
+            if (!hasPrevious()) indexException(currentIndex, size)
             justRemoveAt(previousCellIndex[actualCurrentIndex])
         }
     }

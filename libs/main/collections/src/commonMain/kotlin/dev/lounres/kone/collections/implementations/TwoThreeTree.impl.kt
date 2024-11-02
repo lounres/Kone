@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneListWithContext
 import dev.lounres.kone.collections.SearchSegmentResult
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.noElementException
+import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
@@ -957,15 +957,15 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         
         override fun hasNext(): Boolean = nextNode != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): Node<E> {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextNode!!
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             nextIndex++
             previousNode = nextNode
             nextNode = nextNode!!.nextNode
@@ -973,15 +973,15 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         
         override fun hasPrevious(): Boolean = previousNode != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): Node<E> {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousNode!!
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             nextIndex++
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
@@ -1015,15 +1015,15 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         
         override fun hasNext(): Boolean = nextNode != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): E {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             return nextNode!!.element
         }
         override fun moveNext() {
-            if (!hasNext()) noElementException(nextIndex, size)
+            if (!hasNext()) indexException(nextIndex, size)
             nextIndex++
             previousNode = nextNode
             nextNode = nextNode!!.nextNode
@@ -1031,15 +1031,15 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         
         override fun hasPrevious(): Boolean = previousNode != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): E {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousNode!!.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noElementException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexException(nextIndex - 1u, size)
             nextIndex++
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
