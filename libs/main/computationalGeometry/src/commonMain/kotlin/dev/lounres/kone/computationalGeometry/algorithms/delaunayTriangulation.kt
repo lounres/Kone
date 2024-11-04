@@ -21,7 +21,6 @@ import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.buildAbstractPolytopicConstruction
 import dev.lounres.kone.computationalGeometry.utils.sumOf
 import dev.lounres.kone.computationalGeometry.vectorEquality
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
 
 
@@ -54,7 +53,7 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
             val basis = KoneSettableIterableList(
                 simplex.dimension + 1u,
                 elementContext = vectorEquality(this@A)
-            ) { dim -> flag[dim + 1u].vertices.first { it !in flag[dim].vertices }.position - startPoint }
+            ) { dim -> flag[dim + 1u].vertices.firstThat { it !in flag[dim].vertices }.position - startPoint }
             val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
             val lastBasisVector = ortogonalizedBasis.last()
             !((lastBasisVector dot basis.last()).isPositive() xor lastBasisVector.coordinates[theDimension - 1u].isPositive())

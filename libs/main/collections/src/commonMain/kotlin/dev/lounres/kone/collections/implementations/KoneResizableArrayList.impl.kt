@@ -16,15 +16,14 @@ import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneResizableArrayListWithContextSerializer::class)
-public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
+//@Serializable(with = KoneResizableArrayListWithContextSerializer::class)
+public class KoneResizableArrayList<E> @PublishedApi internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, Disposable {
+) : KoneMutableList<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -129,27 +128,6 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
             size = newSize
         }
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-        val newSize = size + elements.size
-        if (newSize > sizeUpperBound) {
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < size -> get(it)
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    else -> null
-                }
-            }
-        } else {
-            var index = size
-            val iter = elements.iterator()
-            while (iter.hasNext()) {
-                data[index] = iter.getAndMoveNext()
-                index++
-            }
-            size = newSize
-        }
-    }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
         if (index > size) indexException(index, size)
         val newSize = size + number
@@ -169,36 +147,6 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
             repeat(number) { data[index++] = builder(it) }
             size = newSize
         }
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-        if (index > size) indexException(index, size)
-        val newSize = size + elements.size
-        val elementsSize = elements.size
-        if (newSize > sizeUpperBound) {
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < index -> get(it)
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    it < newSize -> get(it-elementsSize)
-                    else -> null
-                }
-            }
-        } else {
-            for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
-            var index = index
-            val iter = elements.iterator()
-            while (iter.hasNext()) {
-                data[index] = iter.getAndMoveNext()
-                index++
-            }
-            size = newSize
-        }
-    }
-    override fun remove(element: E) {
-        val index = this.indexOf(element)
-        if (index == size) return
-        removeAt(index)
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
@@ -270,20 +218,16 @@ public class KoneResizableArrayList<E, EC: Equality<E>> @PublishedApi internal c
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneResizableArrayList<*, *> ->
+            is KoneResizableArrayList<*> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this.data[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other[i]) return false
-                }
         }
 
         return true

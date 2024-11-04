@@ -6,7 +6,6 @@
 package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.isEmpty
 
@@ -36,9 +35,6 @@ public val KoneList<*>.lastIndex: UInt
 public fun <E> KoneIterable<E>.first(): E =
     iterator().let { if (!it.hasNext()) throw NoSuchElementException() else it.getNext() }
 public fun <E> KoneList<E>.first(): E =
-    if (isEmpty()) throw NoSuchElementException("List is empty.")
-    else this[0u]
-public fun <E> KoneIterableList<E>.first(): E =
     if (isEmpty()) throw NoSuchElementException("List is empty.")
     else this[0u]
 

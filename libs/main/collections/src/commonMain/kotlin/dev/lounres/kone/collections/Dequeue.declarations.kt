@@ -6,11 +6,9 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneCollectionWithGrowableCapacity<E>: KoneCollection<E> {
-    public fun ensureCapacity(minimalCapacity: UInt)
-}
-
-public interface KoneDequeue<E>: KoneCollection<E> {
+public interface KoneDequeue<E> {
+    public val size: UInt
+    
     public fun getFirst(): E
     public fun getLast(): E
     public fun addFirst(element: E)

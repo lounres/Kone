@@ -8,18 +8,18 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.context.invoke
 import kotlinx.serialization.Serializable
 
 
 @Serializable(with = KoneListBackedSetWithContextSerializer::class)
 public class KoneListBackedSet<E, EC: Equality<E>> @PublishedApi internal constructor(
     override val elementContext: EC,
-    internal val backingList: KoneIterableList<E>,
-) : KoneIterableSet<E>, KoneSetWithContext<E, EC> {
-    override val size: UInt
-        get() = backingList.size
+    internal val backingList: KoneList<E>,
+) : KoneSetWithContext<E, EC> {
+    override val size: UInt get() = backingList.size
 
-    override fun contains(element: E): Boolean = element in backingList
+    override fun contains(element: E): Boolean = elementContext { element in backingList }
 
     override fun iterator(): KoneIterator<E> = backingList.iterator()
 

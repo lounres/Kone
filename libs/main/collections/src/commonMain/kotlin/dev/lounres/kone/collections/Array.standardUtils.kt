@@ -87,12 +87,3 @@ public fun KoneUIntArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneMutableUIntArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneULongArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneMutableULongArray.isNotEmpty(): Boolean = !isEmpty()
-
-public fun <E> KoneArray<E>.containsAll(elements: KoneIterableCollection<E>): Boolean {
-    for (e in elements) if (e !in this) return false
-    return true
-}
-public fun <E> KoneMutableArray<E>.containsAll(elements: KoneIterableCollection<E>): Boolean {
-    for (e in elements) if (e !in this) return false
-    return true
-}

@@ -14,8 +14,8 @@ public interface HeapNode<E, P> {
 
 public interface MinimumHeap<E, P> {
     public val size: UInt
-    public val nodesView: KoneIterableListSet<HeapNode<E, P>>
-    public val elementsView: KoneIterableList<E>
+    public val nodesView: KoneSet<HeapNode<E, P>>
+    public val elementsView: KoneList<E>
     
     public fun add(element: E, priority: P): HeapNode<E, P>
     public fun takeMinimum(): HeapNode<E, P>
@@ -24,8 +24,8 @@ public interface MinimumHeap<E, P> {
 
 public interface MaximumHeap<E, P> {
     public val size: UInt
-    public val nodesView: KoneIterableListSet<HeapNode<E, P>>
-    public val elementsView: KoneIterableList<E>
+    public val nodesView: KoneSet<HeapNode<E, P>>
+    public val elementsView: KoneList<E>
     
     public fun add(element: E, priority: P): HeapNode<E, P>
     public fun takeMaximum(): HeapNode<E, P>

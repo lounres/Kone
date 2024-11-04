@@ -10,7 +10,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
-internal open class EmptyKoneIterableSetTemplate<E> : KoneIterableSet<E>, KoneSetWithContext<E, Equality<E>> {
+internal open class EmptyKoneSetTemplate<E> : KoneSet<E>, KoneSetWithContext<E, Equality<E>> {
     override val elementContext: Equality<E> = defaultEquality()
 
     override val size: UInt = 0u
@@ -24,4 +24,4 @@ internal open class EmptyKoneIterableSetTemplate<E> : KoneIterableSet<E>, KoneSe
     override fun equals(other: Any?): Boolean = other is KoneSet<*> && other.isEmpty()
 }
 
-internal object EmptyKoneIterableSet : EmptyKoneIterableSetTemplate<Nothing>()
+internal object EmptyKoneSet : EmptyKoneSetTemplate<Nothing>()

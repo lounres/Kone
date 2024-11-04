@@ -13,8 +13,8 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.orElse
 
 
-internal class KoneIterableListEquality<E>(val elementContext: Equality<E>) : Equality<KoneIterableList<E>> {
-    override fun KoneIterableList<E>.equalsTo(other: KoneIterableList<E>): Boolean {
+internal class KoneListEquality<E>(val elementContext: Equality<E>) : Equality<KoneList<E>> {
+    override fun KoneList<E>.equalsTo(other: KoneList<E>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
 
@@ -28,12 +28,12 @@ internal class KoneIterableListEquality<E>(val elementContext: Equality<E>) : Eq
     }
 }
 
-public fun <E> koneIterableListEquality(elementContext: Equality<E>): Equality<KoneIterableList<E>> =
-    if (elementContext is Hashing<E>) KoneIterableListHashing(elementContext)
-    else KoneIterableListEquality(elementContext)
+public fun <E> koneListEquality(elementContext: Equality<E>): Equality<KoneList<E>> =
+    if (elementContext is Hashing<E>) KoneListHashing(elementContext)
+    else KoneListEquality(elementContext)
 
-internal class KoneIterableSetEquality<E>(val elementContext: Equality<E>) : Equality<KoneIterableSet<E>> {
-    override fun KoneIterableSet<E>.equalsTo(other: KoneIterableSet<E>): Boolean {
+internal class KoneSetEquality<E>(val elementContext: Equality<E>) : Equality<KoneSet<E>> {
+    override fun KoneSet<E>.equalsTo(other: KoneSet<E>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
 
@@ -46,9 +46,9 @@ internal class KoneIterableSetEquality<E>(val elementContext: Equality<E>) : Equ
     }
 }
 
-public fun <E> koneIterableSetEquality(elementContext: Equality<E>): Equality<KoneIterableSet<E>> =
-    if (elementContext is Hashing<E>) KoneIterableSetHashing(elementContext)
-    else KoneIterableSetEquality(elementContext)
+public fun <E> koneSetEquality(elementContext: Equality<E>): Equality<KoneSet<E>> =
+    if (elementContext is Hashing<E>) KoneSetHashing(elementContext)
+    else KoneSetEquality(elementContext)
 
 internal open class KoneMapEntryEquality<K, V>(val keyContext: Equality<K>, var valueContext: Equality<V>) : Equality<KoneMapEntry<K, V>> {
     override fun KoneMapEntry<K, V>.equalsTo(other: KoneMapEntry<K, V>): Boolean =

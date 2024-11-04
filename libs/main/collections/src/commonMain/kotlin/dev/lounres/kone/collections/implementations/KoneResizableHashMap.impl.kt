@@ -5,21 +5,6 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.utils.anyIndexed
-import dev.lounres.kone.collections.utils.first
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
-import dev.lounres.kone.option.Some
-import dev.lounres.kone.scope
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.max
-
 
 //public class KoneResizableHashMap<K, KC: Hashing<K>, V, VC: Equality<V>> internal constructor(
 //    size: UInt = 0u,

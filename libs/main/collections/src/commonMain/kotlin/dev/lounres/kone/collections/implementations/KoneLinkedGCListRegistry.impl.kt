@@ -5,22 +5,19 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneIterableListSet
+import dev.lounres.kone.collections.KoneIterable
 import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneListWithContext
-import dev.lounres.kone.collections.KoneMutableIterableListRegistry
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.KoneMutableListRegistry
 import dev.lounres.kone.collections.KoneMutableRegistration
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.repeat
 
 
 public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
     public val elementContext: EC,
-) : KoneMutableIterableListRegistry<E>, Disposable {
+) : KoneMutableListRegistry<E>, Disposable {
     internal sealed interface Start<E> : Disposable {
         var nextNode: End<E>
     }
@@ -135,8 +132,8 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         end.previousNode = newNode
     }
 
-    override val elementsView: KoneIterableList<E> = Elements()
-    override val registrationsView: KoneIterableListSet<KoneMutableRegistration<E>> = Registrations()
+    override val elementsView: KoneList<E> = Elements()
+    override val registrationsView: KoneIterable<KoneMutableRegistration<E>> = Registrations()
 
     override fun register(element: E): KoneMutableRegistration<E> {
         justAddBefore(end, element)
@@ -188,39 +185,8 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
     }
 
-    internal inner class Elements : KoneIterableList<E>, KoneListWithContext<E, EC> {
+    internal inner class Elements : KoneList<E> {
         override val size: UInt get() = this@KoneLinkedGCListRegistry.size
-        override val elementContext: EC get() = this@KoneLinkedGCListRegistry.elementContext
-        override fun indexThat(predicate: (UInt, E) -> Boolean): UInt {
-            var node = start.nextNode
-            var index = 0u
-            while (true) {
-                when(node) {
-                    is EndStub -> break
-                    is Node<E> -> {
-                        if (predicate(index, node.element)) break
-                        node = node.nextNode
-                        index++
-                    }
-                }
-            }
-            return index
-        }
-        override fun lastIndexThat(predicate: (UInt, E) -> Boolean): UInt {
-            var node = end.previousNode
-            var index = this@KoneLinkedGCListRegistry.size - 1u
-            while (true) {
-                when(node) {
-                    is StartStub -> break
-                    is Node -> {
-                        if (predicate(index, node.element)) break
-                        node = node.previousNode
-                        index--
-                    }
-                }
-            }
-            return index
-        }
 
         override fun get(index: UInt): E {
             if (index >= size) indexException(index, size)
@@ -266,15 +232,7 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         }
     }
 
-    internal inner class Registrations: KoneIterableListSet<Node<E>>, KoneListWithContext<Node<E>, Equality<Node<E>>> {
-        override val elementContext: Equality<Node<E>> get() = absoluteEquality()
-        override val size: UInt get() = this@KoneLinkedGCListRegistry.size
-        override fun get(index: UInt): Node<E> {
-            if (index >= size) indexException(index, size)
-            var currentNode: Node<E> = start.nextNode as Node<E>
-            repeat(index) { currentNode = currentNode.nextNode as Node<E> }
-            return currentNode
-        }
+    internal inner class Registrations: KoneIterable<Node<E>> {
         override fun iterator(): KoneLinearIterator<Node<E>> = RegistrationsIterator()
     }
 }

@@ -129,7 +129,7 @@ val listImplementations = listOf<ListImplementationDescription>(
         override val builder: SettableIterableListBuilder =
             object : SettableIterableListBuilder {
                 override fun <E, EC: Equality<E>> buildByGenerator(size: UInt, elementContext: EC, generator: (UInt) -> E): KoneSettableIterableList<E> =
-                    KoneSettableArrayList(size, elementContext, generator)
+                    KoneSettableArrayList(size, generator)
             }
     },
 )

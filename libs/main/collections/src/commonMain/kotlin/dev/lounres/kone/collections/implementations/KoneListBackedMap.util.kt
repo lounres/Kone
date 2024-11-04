@@ -5,15 +5,24 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneMapEntry
-import dev.lounres.kone.collections.koneMapEntryEquality
+import dev.lounres.kone.collections.producers.KoneListProducer
 import dev.lounres.kone.comparison.Equality
 
 
-//public inline fun <K, KC: Equality<K>, V, VC: Equality<V>> KoneListBackedMap(
-//    keyContext: KC,
-//    valueContext: VC,
-//    backingListFabric: (Equality<KoneMapEntry<K, V>>) -> KoneIterableList<KoneMapEntry<K, V>>
-//): KoneListBackedMap<K, KC, V, VC> =
-//    KoneListBackedMap(keyContext = keyContext, valueContext = valueContext, backingListFabric(koneMapEntryEquality(keyContext, valueContext)))
+public fun <K, KC: Equality<K>, V> KoneListBackedMap(
+    keyContext: KC,
+    listProducer: KoneListProducer = KoneSettableArrayListProducer
+): KoneListBackedMap<K, KC, V> =
+    KoneListBackedMap(keyContext = keyContext, listProducer.produce())
+
+public fun <K, KC: Equality<K>, V> KoneListBackedMap(
+    keyContext: KC,
+    size: UInt,
+    listProducer: KoneListProducer = KoneSettableArrayListProducer,
+    elementBuilder: (UInt) -> KoneMapEntry<K, V>
+): KoneListBackedMap<K, KC, V> =
+    KoneListBackedMap(
+        keyContext = keyContext,
+        backingList = listProducer.produceBy(size) { elementBuilder(it).let { KoneListBackedMap.Node(key = it.key, value = it.value) } }
+    )

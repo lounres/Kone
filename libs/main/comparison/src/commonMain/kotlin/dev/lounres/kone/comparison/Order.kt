@@ -11,7 +11,6 @@ import dev.lounres.kone.context.invoke
 import kotlin.Comparator as KotlinStdlibComparator
 
 
-// TODO: Declare my own `Comparator` interface
 /**
  * Describes result of two elements comparison. See [Order] for the main application.
  *

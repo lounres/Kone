@@ -19,22 +19,16 @@ import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
-@Serializable(with = KoneLazyListWithContextSerializer::class)
-public class KoneLazyList<E, EC: Equality<E>>(
+//@Serializable(with = KoneLazyListWithContextSerializer::class)
+public class KoneLazyList<E>(
     override val size: UInt,
-    override val elementContext: EC,
     private val generator: (index: UInt) -> E,
-) : KoneListWithContext<E, EC>, KoneSettableIterableList<E> {
+) : KoneSettableList<E> {
     private val buffer: KoneMutableArray<Option<E>> = KoneMutableArray(size) { None }
 
     override fun get(index: UInt): E = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
     override fun set(index: UInt, element: E) {
         buffer[index] = Some(element)
-    }
-
-    override fun contains(element: E): Boolean {
-        repeat(size) { if (elementContext { this[it] eq element }) return true }
-        return false
     }
 
     override fun iterator(): KoneSettableLinearIterator<E> = Iterator(size = size, buffer = buffer, generator = generator)
@@ -53,20 +47,16 @@ public class KoneLazyList<E, EC: Equality<E>>(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneLazyList<*, *> ->
+            is KoneLazyList<*> ->
                 repeat(size) {
                     if (this[it] != other[it]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                repeat(size) {
-                    if (this[it] != other[it]) return false
-                }
         }
 
         return true

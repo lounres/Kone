@@ -11,16 +11,16 @@ package dev.lounres.kone.collections
 public interface KoneMap<K, out V> {
     public val size: UInt
     
-    public val nodesView: KoneIterableSet<KoneMapNode<K, V>>
-    public val keysView: KoneIterableSet<K>
-    public val valuesView: KoneIterableCollection<V>
-    public val entriesView: KoneIterableSet<KoneMapEntry<K, V>>
+    public val nodesView: KoneSet<KoneMapNode<K, V>>
+    public val keysView: KoneSet<K>
+    public val valuesView: KoneIterable<V>
+    public val entriesView: KoneIterable<KoneMapEntry<K, V>>
 
     public fun getNodeOrNull(key: K): KoneMapNode<K, V>?
 }
 
 public interface KoneMutableMap<K, V>: KoneMap<K, V> {
-    override val nodesView: KoneIterableSet<KoneMutableMapNode<K, V>>
+    override val nodesView: KoneSet<KoneMutableMapNode<K, V>>
     
     override fun getNodeOrNull(key: K): KoneMutableMapNode<K, V>?
     

@@ -15,20 +15,14 @@ import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
-public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
+//@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
+public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneMutableIterableList<E>, KoneCollectionWithGrowableCapacity<E>, Disposable {
+) : KoneMutableList<E>, /*KoneCollectionWithGrowableCapacity<E>,*/ Disposable {
     override var size: UInt = size
         private set
-
-    override fun contains(element: E): Boolean {
-        repeat(size) { if (elementContext { (data[it] as E) eq element }) return true }
-        return false
-    }
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         repeat(size) { this[it] = null }
@@ -55,17 +49,18 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
         size = newSize
     }
 
-    override fun ensureCapacity(minimalCapacity: UInt) {
-        if (sizeUpperBound < minimalCapacity) {
-            reinitializeBounds(minimalCapacity)
-            reinitializeData {
-                when {
-                    it < size -> get(it)
-                    else -> null
-                }
-            }
-        }
-    }
+    // TODO: Apply corresponding interface and enable capacity growing
+//    override fun ensureCapacity(minimalCapacity: UInt) {
+//        if (sizeUpperBound < minimalCapacity) {
+//            reinitializeBounds(minimalCapacity)
+//            reinitializeData {
+//                when {
+//                    it < size -> get(it)
+//                    else -> null
+//                }
+//            }
+//        }
+//    }
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)
@@ -128,24 +123,6 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
             size = newSize
         }
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-        val newSize = size + elements.size
-        if (newSize > sizeUpperBound) {
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < size -> get(it)
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    else -> null
-                }
-            }
-        } else {
-            var index = size
-            val iter = elements.iterator()
-            while (iter.hasNext()) data[index++] = iter.getAndMoveNext()
-            size = newSize
-        }
-    }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
         if (index > size) indexException(index, size)
         val newSize = size + number
@@ -165,36 +142,6 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
             repeat(number) { data[index++] = builder(it) }
             size = newSize
         }
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-        if (index > size) indexException(index, size)
-        val elementsSize = elements.size
-        val newSize = size + elementsSize
-        if (newSize > sizeUpperBound) {
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < index -> get(it)
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    it < newSize -> get(it-elementsSize)
-                    else -> null
-                }
-            }
-        } else {
-            if (size >= 1u) for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
-            var index = index
-            val iter = elements.iterator()
-            while (iter.hasNext()) data[index++] = iter.getAndMoveNext()
-            size = newSize
-        }
-    }
-    override fun remove(element: E) {
-        val index = this.indexOf(element)
-        if (index == size) return
-        val newSize = size - 1u
-        for (i in index..<newSize) data[i] = data[i + 1u]
-        data[size - 1u] = null
-        size = newSize
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
@@ -247,20 +194,16 @@ public class KoneGrowableArrayList<E, EC: Equality<E>> @PublishedApi internal co
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableArrayList<*, *> ->
+            is KoneGrowableArrayList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this.data[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                repeat(size) {
-                    if (this.data[it] != other[it]) return false
-                }
         }
 
         return true

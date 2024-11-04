@@ -14,10 +14,8 @@ import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
 
-@Serializable(with = KoneLinkedGCListWithContextSerializer::class)
-public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
-    override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, Disposable {
+//@Serializable(with = KoneLinkedGCListWithContextSerializer::class)
+public class KoneLinkedGCList<E> internal constructor() : KoneMutableList<E>, Disposable {
     internal sealed interface Start<E> : Disposable {
         var nextNode: End<E>
     }
@@ -184,21 +182,6 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         end.previousNode = currentNode
         currentNode.nextNode = end
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-        if (elements.size == 0u) return
-
-        var currentNode = end.previousNode
-        for (element in elements) {
-            val previousNode = currentNode
-            val newNode = Node<E>()
-            currentNode = newNode
-            newNode.previousNode = previousNode
-            previousNode.nextNode = newNode
-            newNode.element = element
-        }
-        end.previousNode = currentNode
-        currentNode.nextNode = end
-    }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
         if (index > size) indexException(index, size)
@@ -216,43 +199,6 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         }
         endNode.previousNode = currentNode
         currentNode.nextNode = endNode
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-        if (index > size) indexException(index, size)
-        if (elements.size == 0u) return
-
-        val endNode = endNodeByIndex(index)
-        var currentNode = endNode.previousNode
-        for (element in elements) {
-            val previousNode = currentNode
-            val newNode = Node<E>()
-            currentNode = newNode
-            newNode.previousNode = previousNode
-            previousNode.nextNode = newNode
-            newNode.element = element
-        }
-        endNode.previousNode = currentNode
-        currentNode.nextNode = endNode
-    }
-    override fun remove(element: E) {
-        val targetNode: Node<E>
-        scope {
-            var currentNode = start.nextNode
-            while (true) {
-                when (currentNode) {
-                    is EndStub -> return
-                    is Node -> {
-                        // FIXME: KT-32313; wait until `.invoke` will get lambda contract
-                        if (elementContext { currentNode.element eq element }) {
-                            targetNode = currentNode
-                            break
-                        }
-                        currentNode = currentNode.nextNode
-                    }
-                }
-            }
-        }
-        targetNode.remove()
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
@@ -318,7 +264,7 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneLinkedGCList<*, *> -> {
+            is KoneLinkedGCList<*> -> {
                 var thisCurrentNode = this.start.nextNode
                 var otherCurrentNode = other.start.nextNode
                 repeat(size) {
@@ -329,20 +275,12 @@ public class KoneLinkedGCList<E, EC: Equality<E>> internal constructor(
                     otherCurrentNode = otherCurrentNode.nextNode
                 }
             }
-            is KoneIterableList<*> -> {
+            else -> {
                 var thisCurrentNode = this.start.nextNode
                 val otherIterator = other.iterator()
                 repeat(size) {
                     thisCurrentNode as Node<E>
                     if (thisCurrentNode.element != otherIterator.getAndMoveNext()) return false
-                    thisCurrentNode = thisCurrentNode.nextNode
-                }
-            }
-            else -> {
-                var thisCurrentNode = this.start.nextNode
-                repeat(size) {
-                    thisCurrentNode as Node<E>
-                    if (thisCurrentNode.element != other[it]) return false
                     thisCurrentNode = thisCurrentNode.nextNode
                 }
             }

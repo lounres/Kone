@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
+//@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
 public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
@@ -24,19 +24,9 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-    override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneCollectionWithGrowableCapacity<E>, KoneDequeue<E>, Disposable {
+) : KoneMutableList<E>, /*KoneCollectionWithGrowableCapacity<E>,*/ KoneDequeue<E>, Disposable {
     override var size: UInt = size
         private set
-
-    override fun contains(element: E): Boolean {
-        var currentIndex = start
-        repeat(size) {
-            if (elementContext { (data[currentIndex] as E) eq element }) return true
-            currentIndex = nextCellIndex[currentIndex]
-        }
-        return false
-    }
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         var currentActualIndexToClear = start
@@ -71,18 +61,18 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
         end = if (size > 0u) size - 1u else sizeUpperBound - 1u
     }
 
-    override fun ensureCapacity(minimalCapacity: UInt) {
-        if (sizeUpperBound < minimalCapacity) {
-            reinitializeBounds(minimalCapacity)
-            var actualIndex = start
-            reinitializeData {
-                when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        }
-    }
+//    override fun ensureCapacity(minimalCapacity: UInt) {
+//        if (sizeUpperBound < minimalCapacity) {
+//            reinitializeBounds(minimalCapacity)
+//            var actualIndex = start
+//            reinitializeData {
+//                when {
+//                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+//                    else -> null
+//                }
+//            }
+//        }
+//    }
 
     private fun actualIndex(index: UInt): UInt =
         when {
@@ -246,23 +236,6 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
             justAddAfterTheEnd(number) { builder(localIndex++) }
         }
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-        val newSize = size + elements.size
-        if (newSize > sizeUpperBound) {
-            var actualIndex = start
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    else -> null
-                }
-            }
-        } else {
-            val iter = elements.iterator()
-            justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
-        }
-    }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
         if (index > size) indexException(index, size)
@@ -307,66 +280,6 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
                 previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
             }
         }
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-        if (index > size) indexException(index, size)
-        if (elements.size == 0u) return
-        val newSize = size + elements.size
-        when {
-            newSize > sizeUpperBound -> {
-                var actualIndex = start
-                val iter = elements.iterator()
-                reinitializeBoundsAndData(newSize) {
-                    when {
-                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        iter.hasNext() -> iter.getAndMoveNext()
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        else -> null
-                    }
-                }
-            }
-            index == size -> {
-                val iter = elements.iterator()
-                justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
-            }
-            else -> {
-                val actualRightPartIndex = actualIndex(index)
-                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
-                val actualInnerPartLeftEndIndex = nextCellIndex[end]
-                val actualInnerPartRightEndIndex: UInt
-                scope {
-                    var currentActualIndex = end
-                    val iter = elements.iterator()
-                    while (iter.hasNext()) {
-                        currentActualIndex = nextCellIndex[currentActualIndex]
-                        data[currentActualIndex] = iter.getAndMoveNext()
-                    }
-                    actualInnerPartRightEndIndex = currentActualIndex
-                }
-
-                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
-                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
-                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
-                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
-            }
-        }
-    }
-    override fun remove(element: E) {
-        val actualTargetIndex: UInt
-        scope {
-            var actualCurrentIndex = start
-            repeat(size) {
-                if (elementContext { (data[actualCurrentIndex] as E) eq element }) {
-                    actualTargetIndex = actualCurrentIndex
-                    return@scope
-                }
-                actualCurrentIndex = nextCellIndex[actualCurrentIndex]
-            }
-            return
-        }
-        justRemoveAt(actualTargetIndex)
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
@@ -446,18 +359,11 @@ public class KoneGrowableLinkedArrayList<E, EC: Equality<E>> internal constructo
                     otherCurrentIndex = other.nextCellIndex[otherCurrentIndex]
                 }
             }
-            is KoneIterableList<*> -> {
+            else -> {
                 var thisCurrentIndex = this.start
                 val otherIterator = other.iterator()
                 repeat(size) {
                     if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
-                    thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
-                }
-            }
-            else -> {
-                var thisCurrentIndex = this.start
-                repeat(size) {
-                    if (this.data[thisCurrentIndex] != other[it]) return false
                     thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
                 }
             }

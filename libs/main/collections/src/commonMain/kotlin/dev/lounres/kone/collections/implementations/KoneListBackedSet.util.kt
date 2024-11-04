@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
 import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
 import dev.lounres.kone.collections.utils.indices
-import dev.lounres.kone.collections.utils.optimizeReadOnlyList
+import dev.lounres.kone.collections.utils.toOptimizedList
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 import kotlinx.serialization.DeserializationStrategy
@@ -46,7 +46,7 @@ internal class KoneListBackedSetSerializer<E, EC: Equality<E>>(
                         val element = initializer(it)
                         if (element !in this ) add(element)
                     }
-                }.optimizeReadOnlyList(elementContext)
+                }.toOptimizedList(elementContext)
         )
 }
 
@@ -68,6 +68,6 @@ internal class KoneListBackedSetWithContextSerializer<E, EC: Equality<E>>(
                         val element = elementList[it]
                         if (element !in this ) add(element)
                     }
-                }.optimizeReadOnlyList(elementContext)
+                }.toOptimizedList(elementContext)
         )
 }

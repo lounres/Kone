@@ -8,21 +8,26 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
-@Serializable(with = KoneMutableListBackedSetWithContextSerializer::class)
+//@Serializable(with = KoneMutableListBackedSetWithContextSerializer::class)
 public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal constructor(
     override val elementContext: EC,
-    internal val backingList: KoneMutableIterableList<E>,
-) : KoneMutableIterableSet<E>, KoneMutableSetWithContext<E, EC> {
+    internal val backingList: KoneMutableList<E>,
+) : KoneMutableSet<E>, KoneMutableSetWithContext<E, EC> {
     override val size: UInt
         get() = backingList.size
 
-    override fun contains(element: E): Boolean = element in backingList
+    override fun contains(element: E): Boolean = elementContext { element in backingList }
 
     override fun add(element: E) {
-        if (element !in backingList) backingList.add(element)
+        if (elementContext { element !in backingList }) backingList.add(element)
+    }
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        repeat(number) { add(builder(it)) }
     }
 
     override fun removeAll() {
@@ -30,7 +35,7 @@ public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal
     }
 
     override fun remove(element: E) {
-        backingList.remove(element)
+        backingList.removeAt(elementContext { backingList.firstIndexOf(element) })
     }
     override fun removeAllThat(predicate: (element: E) -> Boolean) {
         backingList.removeAllThat(predicate)

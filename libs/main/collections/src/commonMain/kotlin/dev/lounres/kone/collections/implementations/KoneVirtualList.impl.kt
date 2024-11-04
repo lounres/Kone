@@ -8,19 +8,14 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneListWithContext
-import dev.lounres.kone.comparison.Equality
 import kotlinx.serialization.Serializable
 
 
-@Serializable(with = KoneVirtualListWithContextSerializer::class)
-public class KoneVirtualList<E, EC: Equality<E>>(
+//@Serializable(with = KoneVirtualListWithContextSerializer::class)
+public class KoneVirtualList<E>(
     override val size: UInt,
-    override val elementContext: EC,
     private val generator: (index: UInt) -> E
-) : KoneListWithContext<E, EC>, KoneIterableList<E> {
+) : KoneList<E> {
     override fun get(index: UInt): E = generator(index)
 
     override fun iterator(): KoneLinearIterator<E> = Iterator(size = size, generator = generator)
@@ -39,20 +34,16 @@ public class KoneVirtualList<E, EC: Equality<E>>(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneVirtualList<*, *> ->
+            is KoneVirtualList<*> ->
                 for (i in 0u..<size) {
                     if (this[i] != other[i]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                for (i in 0u..<size) {
-                    if (this[i] != other[i]) return false
-                }
         }
 
         return true

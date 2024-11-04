@@ -109,8 +109,8 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
                 @Suppress("UNCHECKED_CAST")
                 startPoint = (facetFlag[0u] as V).position
                 val basis = KoneIterableList(subspaceDimension) { index ->
-                    if (index < subspaceDimension - 1u) facetFlag[index + 1u].vertices.first { it !in facetFlag[index].vertices }.position - startPoint
-                    else allVertices.first { it !in facet.vertices }.position - startPoint
+                    if (index < subspaceDimension - 1u) facetFlag[index + 1u].vertices.firstThat { it !in facetFlag[index].vertices }.position - startPoint
+                    else allVertices.firstThat { it !in facet.vertices }.position - startPoint
                 }
                 val orthogonalizedBasis = basis.gramSchmidtOrthogonalization()
                 tangentGiftWrappingVector = orthogonalizedBasis[subspaceDimension-2u]
@@ -192,7 +192,7 @@ internal fun <N, A, P, V: P> giftWrappingExtension(
         val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
         extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
 
-        val tangentVector = otherPoints.firstOfOrNull({
+        val tangentVector = otherPoints.firstOfThatOrNull({
             extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
         }) { it.any { it.isNotZero() } } ?: scope {
             val resultingPolytope = giftWrappingIncrement(

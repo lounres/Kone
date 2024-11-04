@@ -13,8 +13,8 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.orElse
 
 
-internal class KoneIterableListHashing<E>(val elementContext: Hashing<E>) : Hashing<KoneIterableList<E>> {
-    override fun KoneIterableList<E>.equalsTo(other: KoneIterableList<E>): Boolean {
+internal class KoneListHashing<E>(val elementContext: Hashing<E>) : Hashing<KoneList<E>> {
+    override fun KoneList<E>.equalsTo(other: KoneList<E>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
         if (this.hash() != other.hash()) return false
@@ -28,7 +28,7 @@ internal class KoneIterableListHashing<E>(val elementContext: Hashing<E>) : Hash
         return true
     }
 
-    override fun KoneIterableList<E>.hash(): Int {
+    override fun KoneList<E>.hash(): Int {
         val thisIterator = this.iterator()
         var hash = 1
         while (thisIterator.hasNext()) elementContext {
@@ -38,11 +38,11 @@ internal class KoneIterableListHashing<E>(val elementContext: Hashing<E>) : Hash
     }
 }
 
-public fun <E> koneIterableListHashing(elementContext: Hashing<E>): Hashing<KoneIterableList<E>> =
-    KoneIterableListHashing(elementContext)
+public fun <E> koneIterableListHashing(elementContext: Hashing<E>): Hashing<KoneList<E>> =
+    KoneListHashing(elementContext)
 
-internal class KoneIterableSetHashing<E, EH: Hashing<E>>(val elementContext: EH) : Hashing<KoneIterableSet<E>> {
-    override fun KoneIterableSet<E>.equalsTo(other: KoneIterableSet<E>): Boolean {
+internal class KoneSetHashing<E, EH: Hashing<E>>(val elementContext: EH) : Hashing<KoneSet<E>> {
+    override fun KoneSet<E>.equalsTo(other: KoneSet<E>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
         if (this.hash() != other.hash()) return false
@@ -55,7 +55,7 @@ internal class KoneIterableSetHashing<E, EH: Hashing<E>>(val elementContext: EH)
         return true
     }
 
-    override fun KoneIterableSet<E>.hash(): Int {
+    override fun KoneSet<E>.hash(): Int {
         val thisIterator = this.iterator()
         var hash = 0
         while (thisIterator.hasNext()) elementContext {
@@ -65,8 +65,8 @@ internal class KoneIterableSetHashing<E, EH: Hashing<E>>(val elementContext: EH)
     }
 }
 
-public fun <E> koneIterableSetHashing(elementContext: Hashing<E>): Hashing<KoneIterableSet<E>> =
-    KoneIterableSetHashing(elementContext)
+public fun <E> koneIterableSetHashing(elementContext: Hashing<E>): Hashing<KoneSet<E>> =
+    KoneSetHashing(elementContext)
 
 internal open class KoneMapEntryHashing<K, V>(val keyContext: Hashing<K>, var valueContext: Hashing<V>) : Hashing<KoneMapEntry<K, V>> {
     override fun KoneMapEntry<K, V>.equalsTo(other: KoneMapEntry<K, V>): Boolean =

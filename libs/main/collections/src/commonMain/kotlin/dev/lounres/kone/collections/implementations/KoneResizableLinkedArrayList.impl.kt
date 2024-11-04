@@ -18,7 +18,7 @@ import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneResizableLinkedArrayListWithContextSerializer::class)
+//@Serializable(with = KoneResizableLinkedArrayListWithContextSerializer::class)
 public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
@@ -29,8 +29,7 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-    override val elementContext: EC,
-) : KoneMutableIterableList<E>, KoneListWithContext<E, EC>, KoneDequeue<E>, Disposable {
+) : KoneMutableList<E>, KoneDequeue<E>, Disposable {
     override var size: UInt = size
         private set
 
@@ -879,61 +878,6 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
 //            }
 //        ) { "finished" }
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "elements" to elements,
-//                )
-//            }
-//        ) { "started" }
-
-        val newSize = size + elements.size
-        if (newSize > sizeUpperBound) {
-            var actualIndex = start
-            val iter = elements.iterator()
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    iter.hasNext() -> iter.getAndMoveNext()
-                    else -> null
-                }
-            }
-        } else {
-            val iter = elements.iterator()
-            justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
-        }
-
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAll(KoneIterableCollection<E>)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "elements" to elements,
-//                )
-//            }
-//        ) { "finished" }
-    }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
 //        koneLogger.debug(
@@ -1013,169 +957,6 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
 //                    "start" to start,
 //                    "end" to end,
 //                    "elements" to elements,
-//                )
-//            }
-//        ) { "finished" }
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "elements" to elements,
-//                )
-//            }
-//        ) { "started" }
-
-        if (index > size) indexException(index, size)
-        if (elements.size == 0u) return
-        val newSize = size + elements.size
-        when {
-            newSize > sizeUpperBound -> {
-                var actualIndex = start
-                val iter = elements.iterator()
-                reinitializeBoundsAndData(newSize) {
-                    when {
-                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        iter.hasNext() -> iter.getAndMoveNext()
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        else -> null
-                    }
-                }
-            }
-            index == size -> {
-                val iter = elements.iterator()
-                justAddAfterTheEnd(elements.size) { iter.getAndMoveNext() }
-            }
-            else -> {
-                val actualRightPartIndex = actualIndex(index)
-                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
-                val actualInnerPartLeftEndIndex = nextCellIndex[end]
-                val actualInnerPartRightEndIndex: UInt
-                scope {
-                    var currentActualIndex = end
-                    val iter = elements.iterator()
-                    while (iter.hasNext()) {
-                        currentActualIndex = nextCellIndex[currentActualIndex]
-                        data[currentActualIndex] = iter.getAndMoveNext()
-                    }
-                    actualInnerPartRightEndIndex = currentActualIndex
-                }
-
-                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
-                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
-                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
-                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
-            }
-        }
-
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.addAllAt(UInt, KoneIterableCollection<E>)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "elements" to elements,
-//                )
-//            }
-//        ) { "finished" }
-    }
-    override fun remove(element: E) {
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "element" to element,
-//                )
-//            }
-//        ) { "started" }
-
-        val targetIndex: UInt
-        val actualTargetIndex: UInt
-        scope {
-            var actualCurrentIndex = start
-            for (i in 0u ..< size) {
-                if (elementContext { (data[actualCurrentIndex] as E) eq element }) {
-                    targetIndex = i
-                    actualTargetIndex = actualCurrentIndex
-                    return@scope
-                }
-                actualCurrentIndex = nextCellIndex[actualCurrentIndex]
-            }
-            return
-        }
-        val newSize = size - 1u
-        if (newSize < sizeLowerBound) { // TODO: Maybe this block can be rewritten with only one `reinitializeBoundsAndData`
-            var actualIndex = start
-            if (targetIndex == 0u) {
-                actualIndex = nextCellIndex[actualIndex]
-                reinitializeBoundsAndData(newSize) {
-                    when {
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        else -> null
-                    }
-                }
-            } else {
-                reinitializeBoundsAndData(newSize) {
-                    when {
-                        it < targetIndex -> get(actualIndex).also { _ ->
-                            actualIndex = nextCellIndex[actualIndex]
-                            if (it == targetIndex - 1u) actualIndex = nextCellIndex[actualIndex]
-                        }
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        else -> null
-                    }
-                }
-            }
-        } else {
-            justRemoveAt(actualTargetIndex)
-        }
-
-//        koneLogger.debug(
-//            source = "dev.lounres.kone.collections.complex.implementations.KoneResizableLinkedArrayList.remove(E)",
-//            items = {
-//                mapOf(
-//                    "this" to this,
-//                    "size" to size,
-//                    "dataSizeNumber" to dataSizeNumber,
-//                    "sizeLowerBound" to sizeLowerBound,
-//                    "sizeUpperBound" to sizeUpperBound,
-//                    "data" to data,
-//                    "nextCellIndex" to nextCellIndex,
-//                    "previousCellIndex" to previousCellIndex,
-//                    "start" to start,
-//                    "end" to end,
-//                    "element" to element,
 //                )
 //            }
 //        ) { "finished" }
@@ -1451,18 +1232,11 @@ public class KoneResizableLinkedArrayList<E, EC: Equality<E>> @PublishedApi inte
                     otherCurrentIndex = other.nextCellIndex[otherCurrentIndex]
                 }
             }
-            is KoneIterableList<*> -> {
-                var thisCurrentIndex = this.start
-                val otherIterator = other.iterator()
-                for (i in 0u..<size) {
-                    if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
-                    thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
-                }
-            }
             else -> {
                 var thisCurrentIndex = this.start
-                for (i in 0u..<size) {
-                    if (this.data[thisCurrentIndex] != other[i]) return false
+                val otherIterator = other.iterator()
+                for (i in 0u ..< size) {
+                    if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
                     thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
                 }
             }

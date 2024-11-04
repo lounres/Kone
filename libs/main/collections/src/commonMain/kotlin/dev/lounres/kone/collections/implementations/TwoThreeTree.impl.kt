@@ -7,11 +7,9 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.ConnectedSearchTree
 import dev.lounres.kone.collections.ConnectedSearchTreeNode
-import dev.lounres.kone.collections.KoneIterableListSet
 import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneListWithContext
+import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.collections.SearchSegmentResult
-import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
@@ -562,8 +560,8 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    override val nodesView: KoneIterableListSet<ConnectedSearchTreeNode<E>> = Nodes()
-    override val elementsView: KoneIterableListSet<E> = Elements()
+    override val nodesView: KoneSet<ConnectedSearchTreeNode<E>> = Nodes()
+    override val elementsView: KoneSet<E> = Elements()
     
     override fun add(element: E): ConnectedSearchTreeNode<E> =
         findSegmentForAndDo(
@@ -988,18 +986,10 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    internal inner class Nodes : KoneIterableListSet<Node<E>>, KoneListWithContext<Node<E>, Equality<Node<E>>> {
+    internal inner class Nodes : KoneSet<Node<E>> {
         override val size: UInt get() = this@TwoThreeTree.size
-        override val elementContext: Equality<Node<E>> get() = absoluteEquality()
         
-        override fun get(index: UInt): Node<E> {
-            if (index >= size) indexException(index, size)
-            var currentNode = minimum!!
-            repeat(index) {
-                currentNode = currentNode.nextNode!!
-            }
-            return currentNode
-        }
+        override fun contains(element: Node<E>): Boolean = find(element.element) === element
         
         override fun iterator(): KoneLinearIterator<Node<E>> = NodesIterator(minimum, size)
         
@@ -1046,18 +1036,10 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    internal inner class Elements : KoneIterableListSet<E>, KoneListWithContext<E, EC> {
+    internal inner class Elements : KoneSet<E> {
         override val size: UInt get() = this@TwoThreeTree.size
-        override val elementContext: EC get() = this@TwoThreeTree.elementContext
         
-        override fun get(index: UInt): E {
-            if (index >= size) indexException(index, size)
-            var currentNode = minimum!!
-            repeat(index) {
-                currentNode = currentNode.nextNode!!
-            }
-            return currentNode.element
-        }
+        override fun contains(element: E): Boolean = find(element) != null
         
         override fun iterator(): KoneLinearIterator<E> = ElementsIterator(minimum, size)
         

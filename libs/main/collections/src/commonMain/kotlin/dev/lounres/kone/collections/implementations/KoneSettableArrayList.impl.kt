@@ -6,17 +6,14 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
-import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
+//@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
 /*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes and multifield value classes to make the class be value class
-public /*value*/ class KoneSettableArrayList<E, out EC: Equality<E>> @PublishedApi internal constructor(
+public /*value*/ class KoneSettableArrayList<E> @PublishedApi internal constructor(
     private val data: KoneMutableArray<Any?>,
-    override val elementContext: EC,
-) : KoneListWithContext<E, EC>, KoneSettableIterableList<E>, Disposable {
+) : KoneSettableList<E>, Disposable {
     override val size: UInt get() = data.size
 
     override fun dispose() {
@@ -58,20 +55,16 @@ public /*value*/ class KoneSettableArrayList<E, out EC: Equality<E>> @PublishedA
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneSettableArrayList<*, *> ->
+            is KoneSettableArrayList<*> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this.data[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                for (i in 0u..<size) {
-                    if (this.data[i] != other[i]) return false
-                }
         }
 
         return true

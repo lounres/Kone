@@ -18,22 +18,19 @@ import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
-public class KoneFixedCapacityArrayList<E, EC: Equality<E>>
+//@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
+public class KoneFixedCapacityArrayList<E>
 internal constructor(
     size: UInt,
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
-    override val elementContext: EC,
-): KoneMutableListWithContext<E, EC>, KoneMutableIterableList<E>, Disposable {
+): KoneMutableList<E>, Disposable {
     override var size: UInt = size
         private set
 
     override fun dispose() {
         repeat(size) { data[it] = null }
     }
-
-    override fun contains(element: E): Boolean = data.any { elementContext { (it as E) eq element } }
 
     override fun get(index: UInt): E {
         if (index >= size) indexException(index, size)
@@ -68,17 +65,6 @@ internal constructor(
         repeat(number) { data[index++] = builder(it) }
         size = newSize
     }
-    override fun addAllFrom(elements: KoneIterableCollection<E>) {
-        val newSize = size + elements.size
-        if (newSize > capacity) capacityOverflowException(capacity)
-        var index = size
-        val iter = elements.iterator()
-        while (iter.hasNext()) {
-            data[index] = iter.getAndMoveNext()
-            index++
-        }
-        size = newSize
-    }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
         if (index > size) indexException(index, size)
         val newSize = size + number
@@ -86,28 +72,6 @@ internal constructor(
         if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
         var index = index
         repeat(number) { data[index++] = builder(it) }
-        size = newSize
-    }
-    override fun addAllFromAt(index: UInt, elements: KoneIterableCollection<E>) {
-        if (index > size) indexException(index, size)
-        val elementsSize = elements.size
-        val newSize = size + elementsSize
-        if (newSize > capacity) capacityOverflowException(capacity)
-        if (size >= 1u) for (i in (size-1u) downTo index) data[i + elementsSize] = data[i]
-        var index = index
-        val iter = elements.iterator()
-        while (iter.hasNext()) {
-            data[index] = iter.getAndMoveNext()
-            index++
-        }
-        size = newSize
-    }
-    override fun remove(element: E) {
-        val index = this.indexOf(element)
-        if (index == size) return
-        val newSize = size - 1u
-        for (i in index..<newSize) data[i] = data[i + 1u]
-        data[size - 1u] = null
         size = newSize
     }
     override fun removeAt(index: UInt) {
@@ -161,20 +125,16 @@ internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneFixedCapacityArrayList<*, *> ->
+            is KoneFixedCapacityArrayList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }
-            is KoneIterableList<*> -> {
+            else -> {
                 val otherIterator = other.iterator()
-                for (i in 0u..<size) {
+                for (i in 0u ..< size) {
                     if (this.data[i] != otherIterator.getAndMoveNext()) return false
                 }
             }
-            else ->
-                repeat(size) {
-                    if (this.data[it] != other[it]) return false
-                }
         }
 
         return true

@@ -5,9 +5,8 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.KoneIterableList
 import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.emptyKoneIterableList
+import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.implementations.KoneSettableArrayList
 import dev.lounres.kone.collections.implementations.SingletonList
@@ -16,18 +15,13 @@ import dev.lounres.kone.comparison.defaultEquality
 
 
 // TODO: Apply where it is necessary.
-internal fun <E> KoneIterableList<E>.optimizeReadOnlyList(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
+@PublishedApi
+internal fun <E> KoneList<E>.toOptimizedList(): KoneList<E> =
     when (size) {
-        0u -> emptyKoneIterableList()
-        1u -> SingletonList(this.first(), elementContext)
+        0u -> emptyKoneList()
+        1u -> SingletonList(this.first())
         else -> {
             val iterator = this.iterator()
-            KoneSettableArrayList(this.size, elementContext = elementContext) { iterator.getAndMoveNext() }
+            KoneSettableArrayList(this.size) { iterator.getAndMoveNext() }
         }
-    }
-internal fun <E> KoneList<E>.optimizeReadOnlyList(elementContext: Equality<E> = defaultEquality()): KoneIterableList<E> =
-    when (size) {
-        0u -> emptyKoneIterableList()
-        1u -> SingletonList(this.first(), elementContext)
-        else -> KoneSettableArrayList(this.size, elementContext = elementContext) { this[it] }
     }

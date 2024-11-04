@@ -17,7 +17,6 @@ public fun KoneMap<*, *>.isNotEmpty(): Boolean = !isEmpty()
 
 public operator fun <K> KoneMap<in K, *>.contains(key: K): Boolean = key in keysView
 public fun <K> KoneMap<in K, *>.containsKey(key: K): Boolean = key in keysView
-public fun <V> KoneMap<*, V>.containsValue(value: V): Boolean = value in valuesView
 
 public fun <K, V> KoneMap<K, V>.getNode(key: K): KoneMapNode<K, V> = getNodeOrNull(key) ?: noMatchingKeyException(key)
 public fun <K, V> KoneMutableMap<K, V>.getNode(key: K): KoneMutableMapNode<K, V> = getNodeOrNull(key) ?: noMatchingKeyException(key)
@@ -27,6 +26,8 @@ public fun <K, V> KoneMap<in K, V>.getMaybe(key: K): Option<V> = getNodeOrNull(k
 
 public fun <K, V> KoneMap<in K, V>.getOrDefault(key: K, default: V): V = getNodeOrNull(key).let { node -> if (node == null) default else node.value }
 public inline fun <K, V> KoneMap<in K, V>.getOrElse(key: K, default: () -> V): V = getNodeOrNull(key).let { node -> if (node == null) default() else node.value }
+public inline fun <K, V> KoneMutableMap<in K, V>.getOrSet(key: K, default: () -> V): V =
+    getNodeOrNull(key).let { node -> if (node == null) default().also { this[key] = it } else node.value }
 
 public fun <K, V> KoneMutableMap<K, V>.set(entry: KoneMapEntry<K, V>): KoneMutableMapNode<K, V> = set(entry.key, entry.value)
 public fun <K, V> KoneMutableMap<K, V>.set(node: KoneMapNode<K, V>): KoneMutableMapNode<K, V> = set(node.key, node.value)
@@ -34,15 +35,15 @@ public fun <K, V> KoneMutableMap<K, V>.set(node: KoneMapNode<K, V>): KoneMutable
 public fun <K> KoneMutableMap<in K, *>.remove(key: K) { getNode(key).remove() }
 public fun <K> KoneMutableMap<in K, *>.removeAll() { nodes.forEach { it.remove() } }
 
-public val <K, V> KoneMap<K, V>.nodes: KoneIterableSet<KoneMapNode<K, V>>
-    get() = nodesView.toKoneMutableIterableSet(absoluteEquality())
-public val <K, V> KoneMutableMap<K, V>.nodes: KoneIterableSet<KoneMutableMapNode<K, V>>
-    get() = nodesView.toKoneMutableIterableSet(absoluteEquality())
-public val <K> KoneMapWithContext<K, Equality<K>, *, *>.keys: KoneIterableSet<K>
-    get() = keysView.toKoneMutableIterableSet(keyContext)
-public val <V> KoneMapWithContext<*, *, V, Equality<V>>.values: KoneIterableCollection<V>
-    get() = valuesView.toKoneMutableIterableList(valueContext)
-public val <K, V> KoneMapWithContext<K, Equality<K>, V, Equality<V>>.entries: KoneIterableSet<KoneMapEntry<K, V>>
-    get() = entriesView.toKoneMutableIterableSet(koneMapEntryEquality(keyContext, valueContext))
+public val <K, V> KoneMap<K, V>.nodes: KoneSet<KoneMapNode<K, V>>
+    get() = nodesView.toKoneSet(absoluteEquality())
+public val <K, V> KoneMutableMap<K, V>.nodes: KoneSet<KoneMutableMapNode<K, V>>
+    get() = nodesView.toKoneSet(absoluteEquality())
+public val <K> KoneMapWithContext<K, Equality<K>, *>.keys: KoneSet<K>
+    get() = keysView.toKoneSet(keyContext)
+public val <V> KoneMapWithContext<*, *, V>.values: KoneIterable<V>
+    get() = valuesView.toKoneList()
+public val <K, V> KoneMapWithContext<K, Equality<K>, V>.entries: KoneIterable<KoneMapEntry<K, V>>
+    get() = entriesView.toKoneList()
 
 public operator fun <K, V> KoneMap<out K, V>.iterator(): KoneIterator<KoneMapEntry<K, V>> = entriesView.iterator()

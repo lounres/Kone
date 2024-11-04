@@ -14,7 +14,7 @@ import dev.lounres.kone.context.invoke
 internal class SingletonSet<E, EC: Equality<E>>(
     val singleElement: E,
     override val elementContext: EC,
-) : KoneIterableSet<E>, KoneSetWithContext<E, EC> {
+) : KoneSetWithContext<E, EC> {
     override val size: UInt = 1u
     override fun contains(element: E): Boolean = elementContext { singleElement eq element }
 

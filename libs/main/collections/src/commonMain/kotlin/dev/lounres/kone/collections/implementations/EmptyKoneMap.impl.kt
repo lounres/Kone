@@ -8,22 +8,19 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultHashing
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
 
 
-internal open class EmptyKoneMapTemplate<K, V> : KoneMapWithContext<K, Equality<K>, V, Equality<V>> {
+internal open class EmptyKoneMapTemplate<K, V> : KoneMapWithContext<K, Equality<K>, V> {
     override val keyContext: Equality<K> get() = defaultHashing()
-    override val valueContext: Equality<V> get() = defaultHashing()
 
     override val size: UInt = 0u
     
     override fun getNodeOrNull(key: K): KoneMapNode<K, V>? = null
     
-    override val nodesView: KoneIterableSet<KoneMapNode<K, V>> get() = EmptyKoneIterableSet
-    override val keysView: KoneIterableSet<K> get() = EmptyKoneIterableSet
-    override val valuesView: KoneIterableCollection<V> get() = EmptyKoneIterableList
-    override val entriesView: KoneIterableSet<KoneMapEntry<K, V>> get() = EmptyKoneIterableSet
+    override val nodesView: KoneSet<KoneMapNode<K, V>> get() = EmptyKoneSet
+    override val keysView: KoneSet<K> get() = EmptyKoneSet
+    override val valuesView: KoneIterable<V> get() = EmptyKoneList
+    override val entriesView: KoneIterable<KoneMapEntry<K, V>> get() = EmptyKoneList
 
     override fun toString(): String = "{}"
     override fun hashCode(): Int = 0
