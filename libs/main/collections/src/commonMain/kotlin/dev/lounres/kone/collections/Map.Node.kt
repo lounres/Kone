@@ -8,12 +8,12 @@ package dev.lounres.kone.collections
 
 // TODO: Describe contracts on equals and hashCode.
 
-public interface KoneMapNode<out K, out V> {
-    public val key: K
-    public val value: V
+public interface KoneMapNode<out Key, out Value> {
+    public val key: Key
+    public val value: Value
 }
 
-public interface KoneMutableMapNode<out K, V> : KoneMapNode<K, V> {
-    override var value: V
+public interface KoneMutableMapNode<out Key, Value> : KoneMapNode<Key, Value> {
+    override var value: Value
     public fun remove()
 }

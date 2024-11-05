@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections
 
 
+ // TODO: Remove the file eventually
 //public fun KoneCollection<*>.isEmpty(): Boolean = size == 0u
 //public fun KoneCollection<*>.isNotEmpty(): Boolean = !isEmpty()
 //

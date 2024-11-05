@@ -13,8 +13,8 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.orElse
 
 
-internal class KoneListEquality<E>(val elementContext: Equality<E>) : Equality<KoneList<E>> {
-    override fun KoneList<E>.equalsTo(other: KoneList<E>): Boolean {
+internal class KoneListEquality<Element>(val elementContext: Equality<Element>) : Equality<KoneList<Element>> {
+    override fun KoneList<Element>.equalsTo(other: KoneList<Element>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
 
@@ -28,12 +28,12 @@ internal class KoneListEquality<E>(val elementContext: Equality<E>) : Equality<K
     }
 }
 
-public fun <E> koneListEquality(elementContext: Equality<E>): Equality<KoneList<E>> =
-    if (elementContext is Hashing<E>) KoneListHashing(elementContext)
+public fun <Element> koneListEquality(elementContext: Equality<Element>): Equality<KoneList<Element>> =
+    if (elementContext is Hashing<Element>) KoneListHashing(elementContext)
     else KoneListEquality(elementContext)
 
-internal class KoneSetEquality<E>(val elementContext: Equality<E>) : Equality<KoneSet<E>> {
-    override fun KoneSet<E>.equalsTo(other: KoneSet<E>): Boolean {
+internal class KoneSetEquality<Element>(val elementContext: Equality<Element>) : Equality<KoneSet<Element>> {
+    override fun KoneSet<Element>.equalsTo(other: KoneSet<Element>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
 
@@ -46,21 +46,21 @@ internal class KoneSetEquality<E>(val elementContext: Equality<E>) : Equality<Ko
     }
 }
 
-public fun <E> koneSetEquality(elementContext: Equality<E>): Equality<KoneSet<E>> =
-    if (elementContext is Hashing<E>) KoneSetHashing(elementContext)
+public fun <Element> koneSetEquality(elementContext: Equality<Element>): Equality<KoneSet<Element>> =
+    if (elementContext is Hashing<Element>) KoneSetHashing(elementContext)
     else KoneSetEquality(elementContext)
 
-internal open class KoneMapEntryEquality<K, V>(val keyContext: Equality<K>, var valueContext: Equality<V>) : Equality<KoneMapEntry<K, V>> {
-    override fun KoneMapEntry<K, V>.equalsTo(other: KoneMapEntry<K, V>): Boolean =
+internal open class KoneMapEntryEquality<Key, Value>(val keyContext: Equality<Key>, var valueContext: Equality<Value>) : Equality<KoneMapEntry<Key, Value>> {
+    override fun KoneMapEntry<Key, Value>.equalsTo(other: KoneMapEntry<Key, Value>): Boolean =
         keyContext { this.key eq other.key } && valueContext { this.value eq other.value }
 }
 
-public fun <K, V> koneMapEntryEquality(keyContext: Equality<K>, valueContext: Equality<V>): Equality<KoneMapEntry<K, V>> =
-    if (keyContext is Hashing<K> && valueContext is Hashing<V>) KoneMapEntryHashing(keyContext, valueContext)
+public fun <Key, Value> koneMapEntryEquality(keyContext: Equality<Key>, valueContext: Equality<Value>): Equality<KoneMapEntry<Key, Value>> =
+    if (keyContext is Hashing<Key> && valueContext is Hashing<Value>) KoneMapEntryHashing(keyContext, valueContext)
     else KoneMapEntryEquality(keyContext, valueContext)
 
-internal class KoneMapEquality<K, V>(val keyContext: Equality<K>, val valueContext: Equality<V>) : Equality<KoneMap<K, V>> {
-    override fun KoneMap<K, V>.equalsTo(other: KoneMap<K, V>): Boolean {
+internal class KoneMapEquality<Key, Value>(val keyContext: Equality<Key>, val valueContext: Equality<Value>) : Equality<KoneMap<Key, Value>> {
+    override fun KoneMap<Key, Value>.equalsTo(other: KoneMap<Key, Value>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
 
@@ -75,6 +75,6 @@ internal class KoneMapEquality<K, V>(val keyContext: Equality<K>, val valueConte
     }
 }
 
-public fun <K, V> koneMapEquality(keyContext: Equality<K>, valueContext: Equality<V>): Equality<KoneMap<K, V>> =
-    if (keyContext is Hashing<K> && valueContext is Hashing<V>) KoneMapEquality(keyContext = keyContext, valueContext = valueContext)
+public fun <Key, Value> koneMapEquality(keyContext: Equality<Key>, valueContext: Equality<Value>): Equality<KoneMap<Key, Value>> =
+    if (keyContext is Hashing<Key> && valueContext is Hashing<Value>) KoneMapEquality(keyContext = keyContext, valueContext = valueContext)
     else KoneMapEquality(keyContext = keyContext, valueContext = valueContext)

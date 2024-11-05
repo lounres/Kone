@@ -6,51 +6,51 @@
 package dev.lounres.kone.collections
 
 
-public interface HeapNode<E, P> {
-    public var element: E
-    public var priority: P
+public interface HeapNode<Element, Priority> {
+    public var element: Element
+    public var priority: Priority
     public fun remove()
 }
 
-public interface MinimumHeap<E, P> {
+public interface MinimumHeap<Element, Priority> {
     public val size: UInt
-    public val nodesView: KoneSet<HeapNode<E, P>>
-    public val elementsView: KoneIterable<E>
+    public val nodesView: KoneSet<HeapNode<Element, Priority>>
+    public val elementsView: KoneIterable<Element>
     
-    public fun add(element: E, priority: P): HeapNode<E, P>
-    public fun takeMinimum(): HeapNode<E, P>
-    public fun popMinimum(): HeapNode<E, P>
+    public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
+    public fun takeMinimum(): HeapNode<Element, Priority>
+    public fun popMinimum(): HeapNode<Element, Priority>
 }
 
-public interface MaximumHeap<E, P> {
+public interface MaximumHeap<Element, Priority> {
     public val size: UInt
-    public val nodesView: KoneSet<HeapNode<E, P>>
-    public val elementsView: KoneIterable<E>
+    public val nodesView: KoneSet<HeapNode<Element, Priority>>
+    public val elementsView: KoneIterable<Element>
     
-    public fun add(element: E, priority: P): HeapNode<E, P>
-    public fun takeMaximum(): HeapNode<E, P>
-    public fun popMaximum(): HeapNode<E, P>
+    public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
+    public fun takeMaximum(): HeapNode<Element, Priority>
+    public fun popMaximum(): HeapNode<Element, Priority>
 }
 
-public interface LinkedHeapNode<E, P> : HeapNode<E, P> {
-    public val nextNode: LinkedHeapNode<E, P>?
-    public val previousNode: LinkedHeapNode<E, P>?
+public interface LinkedHeapNode<Element, Priority> : HeapNode<Element, Priority> {
+    public val nextNode: LinkedHeapNode<Element, Priority>?
+    public val previousNode: LinkedHeapNode<Element, Priority>?
 }
 
-public interface LinkedMinimumHeap<E, P> : MinimumHeap<E, P> {
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<E, P>>
-    override val elementsView: KoneList<E>
+public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Priority> {
+    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>>
+    override val elementsView: KoneList<Element>
     
-    override fun add(element: E, priority: P): LinkedHeapNode<E, P>
-    override fun takeMinimum(): LinkedHeapNode<E, P>
-    override fun popMinimum(): LinkedHeapNode<E, P>
+    override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
+    override fun takeMinimum(): LinkedHeapNode<Element, Priority>
+    override fun popMinimum(): LinkedHeapNode<Element, Priority>
 }
 
-public interface LinkedMaximumHeap<E, P> : MaximumHeap<E, P> {
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<E, P>>
-    override val elementsView: KoneList<E>
+public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Priority> {
+    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>>
+    override val elementsView: KoneList<Element>
     
-    override fun add(element: E, priority: P): LinkedHeapNode<E, P>
-    override fun takeMaximum(): LinkedHeapNode<E, P>
-    override fun popMaximum(): LinkedHeapNode<E, P>
+    override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
+    override fun takeMaximum(): LinkedHeapNode<Element, Priority>
+    override fun popMaximum(): LinkedHeapNode<Element, Priority>
 }

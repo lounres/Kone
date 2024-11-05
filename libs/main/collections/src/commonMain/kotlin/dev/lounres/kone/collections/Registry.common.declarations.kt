@@ -6,28 +6,28 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneRegistry<out E> {
+public interface KoneRegistry<out Element> {
     public val size: UInt
     
-    public val registrationsView: KoneIterable<KoneRegistration<E>>
-    public val elementsView: KoneIterable<E>
+    public val registrationsView: KoneIterable<KoneRegistration<Element>>
+    public val elementsView: KoneIterable<Element>
 }
 
-public interface KoneExtendableRegistry<E> : KoneRegistry<E> {
-    public fun register(element: E): KoneRegistration<E>
+public interface KoneExtendableRegistry<Element> : KoneRegistry<Element> {
+    public fun register(element: Element): KoneRegistration<Element>
     // TODO: Think about such possible analogues:
 //    public fun registerSeveral(number: UInt, builder: (index: UInt) -> E)
 //    public fun registerAllFrom(elements: KoneIterableCollection<E>)
 }
 
-public interface KoneRemovableRegistry<out E> : KoneRegistry<E> {
-    override val registrationsView: KoneIterable<KoneRemovableRegistration<E>>
+public interface KoneRemovableRegistry<out Element> : KoneRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneRemovableRegistration<Element>>
 }
 
-public interface KoneChangeableRegistry<E> : KoneRegistry<E> {
-    override val registrationsView: KoneIterable<KoneChangeableRegistration<E>>
+public interface KoneChangeableRegistry<Element> : KoneRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneChangeableRegistration<Element>>
 }
 
-public interface KoneMutableRegistry<E> : KoneExtendableRegistry<E>, KoneRemovableRegistry<E>, KoneChangeableRegistry<E> {
-    override val registrationsView: KoneIterable<KoneMutableRegistration<E>>
+public interface KoneMutableRegistry<Element> : KoneExtendableRegistry<Element>, KoneRemovableRegistry<Element>, KoneChangeableRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneMutableRegistration<Element>>
 }

@@ -8,12 +8,12 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.comparison.Equality
 
 
-public interface KoneSetWithContext<E, out EC: Equality<E>> : KoneSet<E> {
-    public val elementContext: EC
+public interface KoneSetWithContext<Element, out ElementContext: Equality<Element>> : KoneSet<Element> {
+    public val elementContext: ElementContext
 }
 
-public interface KoneMutableSetWithContext<E, out EC: Equality<E>> : KoneMutableSet<E>, KoneSetWithContext<E, EC>
+public interface KoneMutableSetWithContext<Element, out ElementContext: Equality<Element>> : KoneMutableSet<Element>, KoneSetWithContext<Element, ElementContext>
 
-public interface KoneNoddedSetWithContext<E, out EC: Equality<E>> : KoneSetWithContext<E, EC>, KoneNoddedSet<E>
+public interface KoneNoddedSetWithContext<Element, out ElementContext: Equality<Element>> : KoneSetWithContext<Element, ElementContext>, KoneNoddedSet<Element>
 
-public interface KoneNoddedMutableSetWithContext<E, out EC: Equality<E>> : KoneMutableSetWithContext<E, EC>, KoneNoddedSetWithContext<E, EC>, KoneNoddedMutableSet<E>
+public interface KoneNoddedMutableSetWithContext<Element, out ElementContext: Equality<Element>> : KoneMutableSetWithContext<Element, ElementContext>, KoneNoddedSetWithContext<Element, ElementContext>, KoneNoddedMutableSet<Element>

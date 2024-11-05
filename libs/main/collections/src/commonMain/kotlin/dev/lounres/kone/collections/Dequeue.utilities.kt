@@ -9,5 +9,5 @@ package dev.lounres.kone.collections
 public fun KoneDequeue<*>.isEmpty(): Boolean = size == 0u
 public fun KoneDequeue<*>.isNotEmpty(): Boolean = !isEmpty()
 
-public fun <E> KoneDequeue<out E>.popFirst(): E = getFirst().also { removeFirst() }
-public fun <E> KoneDequeue<out E>.popLast(): E = getLast().also { removeLast() }
+public fun <Element> KoneDequeue<out Element>.popFirst(): Element = getFirst().also { removeFirst() }
+public fun <Element> KoneDequeue<out Element>.popLast(): Element = getLast().also { removeLast() }

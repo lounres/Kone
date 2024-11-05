@@ -6,41 +6,41 @@
 package dev.lounres.kone.collections
 
 
-public interface SearchTreeNode<out E> {
-    public val element: E
+public interface SearchTreeNode<out Element> {
+    public val element: Element
     public fun remove()
 }
 
-public interface LinkedSearchTreeNode<out E> : SearchTreeNode<E> {
-    public val nextNode: LinkedSearchTreeNode<E>?
-    public val previousNode: LinkedSearchTreeNode<E>?
+public interface LinkedSearchTreeNode<out Element> : SearchTreeNode<Element> {
+    public val nextNode: LinkedSearchTreeNode<Element>?
+    public val previousNode: LinkedSearchTreeNode<Element>?
 }
 
-public sealed interface SearchSegmentResult<out STN> {
+public sealed interface SearchSegmentResult<out SearchTreeNode> {
     public data object Empty : SearchSegmentResult<Nothing>
-    public data class Coincidence<out STN>(val value: STN) : SearchSegmentResult<STN>
-    public data class Between<out STN>(val lowerBound: STN, val upperBound: STN) : SearchSegmentResult<STN>
-    public data class LessThanMinimum<out STN>(val minimum: STN) : SearchSegmentResult<STN>
-    public data class GreaterThanMaximum<out STN>(val maximum: STN) : SearchSegmentResult<STN>
+    public data class Coincidence<out SearchTreeNode>(val value: SearchTreeNode) : SearchSegmentResult<SearchTreeNode>
+    public data class Between<out SearchTreeNode>(val lowerBound: SearchTreeNode, val upperBound: SearchTreeNode) : SearchSegmentResult<SearchTreeNode>
+    public data class LessThanMinimum<out SearchTreeNode>(val minimum: SearchTreeNode) : SearchSegmentResult<SearchTreeNode>
+    public data class GreaterThanMaximum<out SearchTreeNode>(val maximum: SearchTreeNode) : SearchSegmentResult<SearchTreeNode>
 }
 
-public interface SearchTree<E> {
+public interface SearchTree<Element> {
     public val size: UInt
-    public val nodesView: KoneSet<SearchTreeNode<E>>
-    public val elementsView: KoneSet<E>
+    public val nodesView: KoneSet<SearchTreeNode<Element>>
+    public val elementsView: KoneSet<Element>
     
-    public fun add(element: E): SearchTreeNode<E>
-    public fun find(element: E): SearchTreeNode<E>?
+    public fun add(element: Element): SearchTreeNode<Element>
+    public fun find(element: Element): SearchTreeNode<Element>?
 //    public fun findSegmentFor(element: E): SearchSegmentResult<SearchTreeNode<E>>?
     
-    public operator fun contains(element: E): Boolean = find(element) != null
+    public operator fun contains(element: Element): Boolean = find(element) != null
 }
 
-public interface LinkedSearchTree<E> : SearchTree<E> {
-    override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<E>>
-    override val elementsView: KoneLinkedSet<E>
+public interface LinkedSearchTree<Element> : SearchTree<Element> {
+    override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<Element>>
+    override val elementsView: KoneLinkedSet<Element>
     
-    override fun add(element: E): LinkedSearchTreeNode<E>
-    override fun find(element: E): LinkedSearchTreeNode<E>?
-    public fun findSegmentFor(element: E): SearchSegmentResult<LinkedSearchTreeNode<E>>
+    override fun add(element: Element): LinkedSearchTreeNode<Element>
+    override fun find(element: Element): LinkedSearchTreeNode<Element>?
+    public fun findSegmentFor(element: Element): SearchSegmentResult<LinkedSearchTreeNode<Element>>
 }

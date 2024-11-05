@@ -44,7 +44,7 @@ public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): Labe
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
-                putOrChange(newDegs, newC) { _, left, right -> left + right }
+                putOrChange(newDegs, { newC }, { it + newC })
             }
         }
     )
@@ -64,7 +64,7 @@ public fun <C> LabeledPolynomial<C>.substitute(ring: Ring<C>, args: Map<Symbol, 
                     val deg = degs.getOrElse(variable) { 0u }
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
-                putOrChange(newDegs, newC) { _, left, right -> left + right }
+                putOrChange(newDegs, { newC }, { it + newC })
             }
         }
     )
@@ -252,7 +252,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = degs.withPutOrChanged(variable, 1u) { _, it, _ -> it + 1u }
+                    val newDegs = degs.withPutOrChanged(variable, { 1u }, { it + 1u })
                     put(
                         newDegs,
                         c / (one doublingTimes newDegs[variable]!!)
@@ -273,7 +273,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
         buildMap(coefficients.size) {
             coefficients
                 .forEach { (degs, c) ->
-                    val newDegs = degs.withPutOrChanged(variable, order) { _, it, _ -> it + order }
+                    val newDegs = degs.withPutOrChanged(variable, { order }, { it + order })
                     put(
                         newDegs,
                         newDegs[variable]!!.let { deg ->

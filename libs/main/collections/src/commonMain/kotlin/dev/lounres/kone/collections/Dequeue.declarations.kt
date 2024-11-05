@@ -6,13 +6,13 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneDequeue<E> {
+public interface KoneDequeue<Element> {
     public val size: UInt
     
-    public fun getFirst(): E
-    public fun getLast(): E
-    public fun addFirst(element: E)
-    public fun addLast(element: E)
+    public fun getFirst(): Element
+    public fun getLast(): Element
+    public fun addFirst(element: Element)
+    public fun addLast(element: Element)
     public fun removeFirst()
     public fun removeLast()
 }

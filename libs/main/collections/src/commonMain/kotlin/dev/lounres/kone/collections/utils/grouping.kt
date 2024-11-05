@@ -38,9 +38,8 @@ public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.aggre
 
 public inline fun <E, K, R> KoneGrouping<E, K>.aggregate(
     keyContext: Equality<K> = defaultEquality(),
-    resultContext: Equality<R> = defaultEquality(),
     operation: (key: K, accumulator: Option<R>, element: E, first: Boolean) -> R
-): KoneMap<K, R> = aggregateTo(koneMutableMapOf(keyContext = keyContext, valueContext = resultContext), operation)
+): KoneMap<K, R> = aggregateTo(koneMutableMapOf(keyContext = keyContext), operation)
 
 public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.foldTo(
     destination: D,
@@ -58,19 +57,17 @@ public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.foldT
 
 public inline fun <E, K, R> KoneGrouping<E, K>.fold(
     keyContext: Equality<K> = defaultEquality(),
-    resultContext: Equality<R> = defaultEquality(),
     initialValueSelector: (key: K, element: E) -> R,
     operation: (key: K, accumulator: R, element: E) -> R
 ): KoneMap<K, R> =
-    aggregate(keyContext = keyContext, resultContext = resultContext) { key, acc, e, first -> operation(key, if (first) initialValueSelector(key, e) else acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
+    aggregate(keyContext = keyContext) { key, acc, e, first -> operation(key, if (first) initialValueSelector(key, e) else acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
 
 public inline fun <E, K, R> KoneGrouping<E, K>.fold(
     keyContext: Equality<K> = defaultEquality(),
-    resultContext: Equality<R> = defaultEquality(),
     initialValue: R,
     operation: (accumulator: R, element: E) -> R
 ): KoneMap<K, R> =
-    aggregate(keyContext = keyContext, resultContext = resultContext) { _, acc, e, first -> operation(if (first) initialValue else acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
+    aggregate(keyContext = keyContext) { _, acc, e, first -> operation(if (first) initialValue else acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
 
 public inline fun <E: R, R, K, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.reduceTo(
     destination: D,
@@ -80,10 +77,9 @@ public inline fun <E: R, R, K, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.re
 
 public inline fun <E : R, R, K> KoneGrouping<E, K>.reduce(
     keyContext: Equality<K> = defaultEquality(),
-    resultContext: Equality<R> = defaultEquality(),
     operation: (key: K, accumulator: R, element: E) -> R
 ): KoneMap<K, R> =
-    aggregate(keyContext = keyContext, resultContext = resultContext) { key, acc, e, first -> if (first) e else operation(key, acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
+    aggregate(keyContext = keyContext) { key, acc, e, first -> if (first) e else operation(key, acc.orThrow { IllegalStateException("For some reason accumulator is empty") }, e) }
 
 public fun <E, K, D: KoneMutableMap<in K, UInt>> KoneGrouping<E, K>.eachCountTo(destination: D): D = foldTo(destination, 0u) { acc, _ -> acc + 1u }
 

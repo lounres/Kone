@@ -8,7 +8,7 @@ package dev.lounres.kone.collections
 
 // TODO: Think about what to add for Kone arrays
 
-public fun <E> KoneMutableArray<E>.toKoneArray(): KoneArray<E> = KoneArray(array)
+public fun <Element> KoneMutableArray<Element>.toKoneArray(): KoneArray<Element> = KoneArray(array)
 public fun KoneMutableByteArray.toKoneByteArray(): KoneByteArray = KoneByteArray(array)
 public fun KoneMutableShortArray.toKoneShortArray(): KoneShortArray = KoneShortArray(array)
 public fun KoneMutableIntArray.toKoneIntArray(): KoneIntArray = KoneIntArray(array)

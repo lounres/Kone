@@ -6,16 +6,16 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneRegistration<out E> {
-    public val element: E
+public interface KoneRegistration<out Element> {
+    public val element: Element
 }
 
-public interface KoneRemovableRegistration<out E>: KoneRegistration<E> {
+public interface KoneRemovableRegistration<out Element>: KoneRegistration<Element> {
     public fun remove()
 }
 
-public interface KoneChangeableRegistration<E>: KoneRegistration<E> {
-    override var element: E
+public interface KoneChangeableRegistration<Element>: KoneRegistration<Element> {
+    override var element: Element
 }
 
-public interface KoneMutableRegistration<E>: KoneRemovableRegistration<E>, KoneChangeableRegistration<E>
+public interface KoneMutableRegistration<Element>: KoneRemovableRegistration<Element>, KoneChangeableRegistration<Element>

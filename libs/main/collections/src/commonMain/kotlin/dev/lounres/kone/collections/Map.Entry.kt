@@ -8,8 +8,8 @@ package dev.lounres.kone.collections
 
 // TODO: Describe contracts on equals and hashCode.
 
-public data class KoneMapEntry<out K, out V>(public val key: K, public val value: V) {
+public data class KoneMapEntry<out Key, out Value>(public val key: Key, public val value: Value) {
     public override fun toString(): String = "$key=$value"
 }
 
-public infix fun <K, V> K.mapsTo(value: V): KoneMapEntry<K, V> = KoneMapEntry(this, value)
+public infix fun <Key, Value> Key.mapsTo(value: Value): KoneMapEntry<Key, Value> = KoneMapEntry(this, value)

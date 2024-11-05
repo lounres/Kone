@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections
 
 
+// TODO: Remove the file eventually
 //public interface KoneCollectionWithGrowableCapacity<E>: KoneCollection<E> {
 //    public fun ensureCapacity(minimalCapacity: UInt)
 //}

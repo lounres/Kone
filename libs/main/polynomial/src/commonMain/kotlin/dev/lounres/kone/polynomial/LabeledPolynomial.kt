@@ -405,7 +405,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             this == 0L -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withPutOrChanged(emptyMap(), this@plus.constantValue) { _, it, _ -> this@plus + it }
+                other.coefficients.withPutOrChanged(emptyMap(), { this@plus.constantValue }, { this@plus + it })
             )
         }
     public override operator fun Long.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
@@ -433,7 +433,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
             this == 0uL -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withPutOrChanged(emptyMap(), this@plus.constantValue) { _, it, _ -> this@plus + it }
+                other.coefficients.withPutOrChanged(emptyMap(), { this@plus.constantValue }, { this@plus + it })
             )
         }
     public override operator fun ULong.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
@@ -489,12 +489,12 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
     override operator fun LabeledPolynomial<C>.plus(other: C): LabeledPolynomial<C> =
         if (coefficients.isEmpty()) other.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), other) { _, it, _ -> it + other }
+            coefficients.withPutOrChanged(emptyMap(), { other }, { it + other })
         )
     override operator fun LabeledPolynomial<C>.minus(other: C): LabeledPolynomial<C> =
         if (coefficients.isEmpty()) other.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(emptyMap(), -other) { _, it, _ -> it - other }
+            coefficients.withPutOrChanged(emptyMap(), { -other }, { it - other })
         )
     override operator fun LabeledPolynomial<C>.times(other: C): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
@@ -504,7 +504,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
     override operator fun C.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         if (other.coefficients.isEmpty()) this@plus.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            other.coefficients.withPutOrChanged(emptyMap(), this@plus) { _, it, _ -> this@plus + it }
+            other.coefficients.withPutOrChanged(emptyMap(), { this@plus }, { this@plus + it })
         )
     override operator fun C.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         if (other.coefficients.isEmpty()) this@minus.polynomialValue
@@ -552,7 +552,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
     public override operator fun Symbol.plus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         if (other.coefficients.isEmpty()) this@plus.polynomialValue
         else LabeledPolynomialAsIs(
-            other.coefficients.withPutOrChanged(mapOf(this@plus to 1U), constantOne) { _, it, _ -> constantOne + it }
+            other.coefficients.withPutOrChanged(mapOf(this@plus to 1U), { constantOne }, { constantOne + it })
         )
     public override operator fun Symbol.minus(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         if (other.coefficients.isEmpty()) this@minus.polynomialValue
@@ -565,23 +565,23 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
     public override operator fun Symbol.times(other: LabeledPolynomial<C>): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             other.coefficients
-                .mapKeys { (degs, _) -> degs.withPutOrChanged(this, 1u) { _, it, _ -> it + 1u } }
+                .mapKeys { (degs, _) -> degs.withPutOrChanged(this, { 1u }, { it + 1u }) }
         )
 
     public override operator fun LabeledPolynomial<C>.plus(other: Symbol): LabeledPolynomial<C> =
         if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(mapOf(other to 1U), constantOne) { _, it, _ -> it + constantOne }
+            coefficients.withPutOrChanged(mapOf(other to 1U), { constantOne }, { it + constantOne })
         )
     public override operator fun LabeledPolynomial<C>.minus(other: Symbol): LabeledPolynomial<C> =
         if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
-            coefficients.withPutOrChanged(mapOf(other to 1U), -constantOne) { _, it, _ -> it - constantOne }
+            coefficients.withPutOrChanged(mapOf(other to 1U), { -constantOne }, { it - constantOne })
         )
     public override operator fun LabeledPolynomial<C>.times(other: Symbol): LabeledPolynomial<C> =
         LabeledPolynomialAsIs(
             coefficients
-                .mapKeys { (degs, _) -> degs.withPutOrChanged(other, 1u) { _, it, _ -> it + 1u } }
+                .mapKeys { (degs, _) -> degs.withPutOrChanged(other, { 1u }, { it + 1u }) }
         )
 
     override fun LabeledPolynomial<C>.unaryMinus(): LabeledPolynomial<C> =
@@ -605,7 +605,7 @@ public open class LabeledPolynomialSpace<C, out A : Ring<C>> : MultivariatePolyn
                 for ((degs1, c1) in coefficients) for ((degs2, c2) in other.coefficients) {
                     val degs = mergeBy(degs1, degs2) { _, deg1, deg2 -> deg1 + deg2 }
                     val c = c1 * c2
-                    this.putOrChange(degs, c) { _, it, _ -> it + c }
+                    this.putOrChange(degs, { c }, { it + c })
                 }
             }
         )

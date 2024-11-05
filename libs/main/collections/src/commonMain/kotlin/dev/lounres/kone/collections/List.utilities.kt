@@ -8,17 +8,17 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.collections.utils.forEach
 
 
-public fun <E> KoneList<E>.isEmpty(): Boolean = size == 0u
-public fun <E> KoneList<E>.isNotEmpty(): Boolean = !isEmpty()
+public fun <Element> KoneList<Element>.isEmpty(): Boolean = size == 0u
+public fun <Element> KoneList<Element>.isNotEmpty(): Boolean = !isEmpty()
 
-public fun <E> KoneMutableList<E>.addAllFrom(elements: KoneIterable<E>) {
+public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
     elements.forEach { add(it) }
 }
-public fun <E> KoneMutableList<E>.addAllFrom(elements: KoneList<E>) {
+public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneList<Element>) {
     val iterator = iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
-public fun <E> KoneMutableList<E>.addAllFrom(elements: KoneSet<E>) {
+public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneSet<Element>) {
     val iterator = iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }

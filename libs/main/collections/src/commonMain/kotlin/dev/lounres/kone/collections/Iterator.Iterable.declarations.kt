@@ -6,62 +6,62 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneIterable<out E> {
-    public operator fun iterator(): KoneIterator<E>
+public interface KoneIterable<out Element> {
+    public operator fun iterator(): KoneIterator<Element>
 }
 
-public interface KoneReversibleIterable<out E>: KoneIterable<E> {
-    public override operator fun iterator(): KoneReversibleIterator<E>
+public interface KoneReversibleIterable<out Element>: KoneIterable<Element> {
+    public override operator fun iterator(): KoneReversibleIterator<Element>
 }
 
-public interface KoneSettableIterable<E> : KoneIterable<E> {
-    public override operator fun iterator(): KoneSettableIterator<E>
+public interface KoneSettableIterable<Element> : KoneIterable<Element> {
+    public override operator fun iterator(): KoneSettableIterator<Element>
 }
 
-public interface KoneReversibleSettableIterable<E> : KoneReversibleIterable<E>, KoneSettableIterable<E> {
-    public override operator fun iterator(): KoneReversibleSettableIterator<E>
+public interface KoneReversibleSettableIterable<Element> : KoneReversibleIterable<Element>, KoneSettableIterable<Element> {
+    public override operator fun iterator(): KoneReversibleSettableIterator<Element>
 }
 
-public interface KoneExtendableIterable<E> : KoneIterable<E> {
-    public override operator fun iterator(): KoneExtendableIterator<E>
+public interface KoneExtendableIterable<Element> : KoneIterable<Element> {
+    public override operator fun iterator(): KoneExtendableIterator<Element>
 }
 
-public interface KoneReversibleExtendableIterable<E> : KoneReversibleIterable<E>, KoneExtendableIterable<E> {
-    public override operator fun iterator(): KoneReversibleExtendableIterator<E>
+public interface KoneReversibleExtendableIterable<Element> : KoneReversibleIterable<Element>, KoneExtendableIterable<Element> {
+    public override operator fun iterator(): KoneReversibleExtendableIterator<Element>
 }
 
-public interface KoneRemovableIterable<out E> : KoneIterable<E> {
-    public override operator fun iterator(): KoneRemovableIterator<E>
+public interface KoneRemovableIterable<out Element> : KoneIterable<Element> {
+    public override operator fun iterator(): KoneRemovableIterator<Element>
 }
 
-public interface KoneReversibleRemovableIterable<out E> : KoneReversibleIterable<E>, KoneRemovableIterable<E> {
-    public override operator fun iterator(): KoneReversibleRemovableIterator<E>
+public interface KoneReversibleRemovableIterable<out Element> : KoneReversibleIterable<Element>, KoneRemovableIterable<Element> {
+    public override operator fun iterator(): KoneReversibleRemovableIterator<Element>
 }
 
-public interface KoneMutableIterable<E> : KoneSettableIterable<E>, KoneExtendableIterable<E>, KoneRemovableIterable<E> {
-    public override operator fun iterator(): KoneMutableIterator<E>
+public interface KoneMutableIterable<Element> : KoneSettableIterable<Element>, KoneExtendableIterable<Element>, KoneRemovableIterable<Element> {
+    public override operator fun iterator(): KoneMutableIterator<Element>
 }
 
-public interface KoneReversibleMutableIterable<E> : KoneMutableIterable<E>, KoneReversibleSettableIterable<E>, KoneReversibleExtendableIterable<E>, KoneReversibleRemovableIterable<E> {
-    public override operator fun iterator(): KoneReversibleMutableIterator<E>
+public interface KoneReversibleMutableIterable<Element> : KoneMutableIterable<Element>, KoneReversibleSettableIterable<Element>, KoneReversibleExtendableIterable<Element>, KoneReversibleRemovableIterable<Element> {
+    public override operator fun iterator(): KoneReversibleMutableIterator<Element>
 }
 
-public interface KoneLinearIterable<out E> : KoneReversibleIterable<E> {
-    public override operator fun iterator(): KoneLinearIterator<E>
+public interface KoneLinearIterable<out Element> : KoneReversibleIterable<Element> {
+    public override operator fun iterator(): KoneLinearIterator<Element>
 }
 
-public interface KoneSettableLinearIterable<E> : KoneLinearIterable<E>, KoneReversibleSettableIterable<E> {
-    public override operator fun iterator(): KoneSettableLinearIterator<E>
+public interface KoneSettableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleSettableIterable<Element> {
+    public override operator fun iterator(): KoneSettableLinearIterator<Element>
 }
 
-public interface KoneExtendableLinearIterable<E> : KoneLinearIterable<E>, KoneReversibleExtendableIterable<E> {
-    public override operator fun iterator(): KoneExtendableLinearIterator<E>
+public interface KoneExtendableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleExtendableIterable<Element> {
+    public override operator fun iterator(): KoneExtendableLinearIterator<Element>
 }
 
-public interface KoneRemovableLinearIterable<out E> : KoneLinearIterable<E>, KoneReversibleRemovableIterable<E> {
-    public override operator fun iterator(): KoneRemovableLinearIterator<E>
+public interface KoneRemovableLinearIterable<out Element> : KoneLinearIterable<Element>, KoneReversibleRemovableIterable<Element> {
+    public override operator fun iterator(): KoneRemovableLinearIterator<Element>
 }
 
-public interface KoneMutableLinearIterable<E> : KoneSettableLinearIterable<E>, KoneExtendableLinearIterable<E>, KoneRemovableLinearIterable<E>, KoneReversibleMutableIterable<E> {
-    public override operator fun iterator(): KoneMutableLinearIterator<E>
+public interface KoneMutableLinearIterable<Element> : KoneSettableLinearIterable<Element>, KoneExtendableLinearIterable<Element>, KoneRemovableLinearIterable<Element>, KoneReversibleMutableIterable<Element> {
+    public override operator fun iterator(): KoneMutableLinearIterator<Element>
 }

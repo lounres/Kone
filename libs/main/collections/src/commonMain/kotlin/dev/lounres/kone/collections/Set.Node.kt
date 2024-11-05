@@ -6,11 +6,11 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneSetNode<out E> {
-    public val element: E
+public interface KoneSetNode<out Element> {
+    public val element: Element
 }
 
-public interface KoneMutableSetNode<E> : KoneSetNode<E> {
-    override var element: E
+public interface KoneMutableSetNode<Element> : KoneSetNode<Element> {
+    override var element: Element
     public fun remove()
 }

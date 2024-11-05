@@ -8,23 +8,27 @@ package dev.lounres.kone.collections
 
 // TODO: Describe contracts on equals and hashCode.
 
-public interface KoneMap<K, out V> {
+public interface KoneMap<Key, out Value> {
     public val size: UInt
     
-    public val nodesView: KoneSet<KoneMapNode<K, V>>
-    public val keysView: KoneSet<K>
-    public val valuesView: KoneIterable<V>
-    public val entriesView: KoneIterable<KoneMapEntry<K, V>>
+    public val nodesView: KoneSet<KoneMapNode<Key, Value>>
+    public val keysView: KoneSet<Key>
+    public val valuesView: KoneIterable<Value>
+    public val entriesView: KoneIterable<KoneMapEntry<Key, Value>>
 
-    public fun getNodeOrNull(key: K): KoneMapNode<K, V>?
+    public fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>?
 }
 
-public interface KoneMutableMap<K, V>: KoneMap<K, V> {
-    override val nodesView: KoneSet<KoneMutableMapNode<K, V>>
+public interface KoneMutableMap<Key, Value>: KoneMap<Key, Value> {
+    override val nodesView: KoneSet<KoneMutableMapNode<Key, Value>>
     
-    override fun getNodeOrNull(key: K): KoneMutableMapNode<K, V>?
+    override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>?
     
-    public operator fun set(key: K, value: V): KoneMutableMapNode<K, V>
+    public operator fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value>
+    
+    public fun remove(key: Key)
+    
+    public fun removeAll()
     
     // TODO: Think about bulk operations.
 //    public fun removeAllThat(predicate: (key: K, value: V) -> Boolean)
@@ -34,7 +38,10 @@ public interface KoneMutableMap<K, V>: KoneMap<K, V> {
 //    public fun setAllFrom(from: KoneIterable<KoneMapEntry<K, V>>) {
 //        for ((key, value) in from) set(key, value)
 //    }
-//    public fun removeAll() {
-//        for (node in nodes) node.remove()
+//    public fun setSeveral(number: UInt, builder: (UInt) -> KoneMapEntry<K, V>) {
+//        repeat(number) { set(builder(it)) }
+//    }
+//    public fun setSeveral(number: UInt, builder: (UInt) -> KoneMapNode<K, V>) {
+//        repeat(number) { set(builder(it)) }
 //    }
 }

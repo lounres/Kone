@@ -8,8 +8,8 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.comparison.Equality
 
 
-public interface KoneMapWithContext<K, out KC: Equality<K>, V> : KoneMap<K, V> {
-    public val keyContext: KC
+public interface KoneMapWithContext<Key, out KeyContext: Equality<Key>, Value> : KoneMap<Key, Value> {
+    public val keyContext: KeyContext
 }
 
-public interface KoneMutableMapWithContext<K, out KC: Equality<K>, V> : KoneMapWithContext<K, KC, V>, KoneMutableMap<K, V>
+public interface KoneMutableMapWithContext<Key, out KeyContext: Equality<Key>, Value> : KoneMapWithContext<Key, KeyContext, Value>, KoneMutableMap<Key, Value>

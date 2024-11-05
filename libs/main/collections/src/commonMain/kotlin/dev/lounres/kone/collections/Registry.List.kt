@@ -6,25 +6,25 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneListRegistry<out E> : KoneRegistry<E> {
-    override val registrationsView: KoneIterable<KoneRegistration<E>>
-    override val elementsView: KoneList<E>
+public interface KoneListRegistry<out Element> : KoneRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneRegistration<Element>>
+    override val elementsView: KoneList<Element>
 //    override fun find(element: @UnsafeVariance E): KoneList<KoneRegistration<E>>
 }
 
-public interface KoneExtendableListRegistry<E> : KoneListRegistry<E>, KoneExtendableRegistry<E>
+public interface KoneExtendableListRegistry<Element> : KoneListRegistry<Element>, KoneExtendableRegistry<Element>
 
-public interface KoneRemovableListRegistry<out E> : KoneListRegistry<E>, KoneRemovableRegistry<E> {
-    override val registrationsView: KoneIterable<KoneRemovableRegistration<E>>
+public interface KoneRemovableListRegistry<out Element> : KoneListRegistry<Element>, KoneRemovableRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneRemovableRegistration<Element>>
 //    override fun find(element: @UnsafeVariance E): KoneList<KoneRemovableRegistration<E>>
 }
 
-public interface KoneChangeableListRegistry<E> : KoneListRegistry<E>, KoneChangeableRegistry<E> {
-    override val registrationsView: KoneIterable<KoneChangeableRegistration<E>>
+public interface KoneChangeableListRegistry<Element> : KoneListRegistry<Element>, KoneChangeableRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneChangeableRegistration<Element>>
 //    override fun find(element: @UnsafeVariance E): KoneList<KoneChangeableRegistration<E>>
 }
 
-public interface KoneMutableListRegistry<E> : KoneExtendableListRegistry<E>, KoneRemovableListRegistry<E>, KoneChangeableListRegistry<E>, KoneMutableRegistry<E> {
-    override val registrationsView: KoneIterable<KoneMutableRegistration<E>>
+public interface KoneMutableListRegistry<Element> : KoneExtendableListRegistry<Element>, KoneRemovableListRegistry<Element>, KoneChangeableListRegistry<Element>, KoneMutableRegistry<Element> {
+    override val registrationsView: KoneIterable<KoneMutableRegistration<Element>>
 //    override fun find(element: @UnsafeVariance E): KoneList<KoneMutableRegistration<E>>
 }

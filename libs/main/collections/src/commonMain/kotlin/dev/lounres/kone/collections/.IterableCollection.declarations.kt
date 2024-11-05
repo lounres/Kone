@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections
 
 
+// TODO: Remove the file eventually
 //@Serializable(with = DefaultKoneIterableCollectionSerializer::class)
 //public interface KoneIterableCollection<out E> : KoneCollection<E>, KoneIterable<E>
 //

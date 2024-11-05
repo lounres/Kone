@@ -6,55 +6,55 @@
 package dev.lounres.kone.collections
 
 
-public interface KoneIterator<out E> {
+public interface KoneIterator<out Element> {
     public operator fun hasNext(): Boolean
-    public fun getNext(): E
+    public fun getNext(): Element
     public fun moveNext()
 }
 
-public interface KoneReversibleIterator<out E> : KoneIterator<E> {
+public interface KoneReversibleIterator<out Element> : KoneIterator<Element> {
     public fun hasPrevious(): Boolean
-    public fun getPrevious(): E
+    public fun getPrevious(): Element
     public fun movePrevious()
 }
 
-public interface KoneSettableIterator<E> : KoneIterator<E> {
-    public fun setNext(element: E)
+public interface KoneSettableIterator<Element> : KoneIterator<Element> {
+    public fun setNext(element: Element)
 }
 
-public interface KoneReversibleSettableIterator<E> : KoneReversibleIterator<E>, KoneSettableIterator<E> {
-    public fun setPrevious(element: E)
+public interface KoneReversibleSettableIterator<Element> : KoneReversibleIterator<Element>, KoneSettableIterator<Element> {
+    public fun setPrevious(element: Element)
 }
 
-public interface KoneExtendableIterator<E> : KoneIterator<E> {
-    public fun addNext(element: E)
+public interface KoneExtendableIterator<Element> : KoneIterator<Element> {
+    public fun addNext(element: Element)
 }
 
-public interface KoneReversibleExtendableIterator<E> : KoneReversibleIterator<E>, KoneExtendableIterator<E> {
-    public fun addPrevious(element: E)
+public interface KoneReversibleExtendableIterator<Element> : KoneReversibleIterator<Element>, KoneExtendableIterator<Element> {
+    public fun addPrevious(element: Element)
 }
 
-public interface KoneRemovableIterator<out E> : KoneIterator<E> {
+public interface KoneRemovableIterator<out Element> : KoneIterator<Element> {
     public fun removeNext()
 }
 
-public interface KoneReversibleRemovableIterator<out E> : KoneReversibleIterator<E>, KoneRemovableIterator<E> {
+public interface KoneReversibleRemovableIterator<out Element> : KoneReversibleIterator<Element>, KoneRemovableIterator<Element> {
     public fun removePrevious()
 }
 
-public interface KoneMutableIterator<E>: KoneSettableIterator<E>, KoneExtendableIterator<E>, KoneRemovableIterator<E>
+public interface KoneMutableIterator<Element>: KoneSettableIterator<Element>, KoneExtendableIterator<Element>, KoneRemovableIterator<Element>
 
-public interface KoneReversibleMutableIterator<E>: KoneMutableIterator<E>, KoneReversibleSettableIterator<E>, KoneReversibleExtendableIterator<E>, KoneReversibleRemovableIterator<E>
+public interface KoneReversibleMutableIterator<Element>: KoneMutableIterator<Element>, KoneReversibleSettableIterator<Element>, KoneReversibleExtendableIterator<Element>, KoneReversibleRemovableIterator<Element>
 
-public interface KoneLinearIterator<out E> : KoneReversibleIterator<E> {
+public interface KoneLinearIterator<out Element> : KoneReversibleIterator<Element> {
     public fun nextIndex(): UInt
     public fun previousIndex(): UInt
 }
 
-public interface KoneSettableLinearIterator<E>: KoneLinearIterator<E>, KoneReversibleSettableIterator<E>
+public interface KoneSettableLinearIterator<Element>: KoneLinearIterator<Element>, KoneReversibleSettableIterator<Element>
 
-public interface KoneExtendableLinearIterator<E>: KoneLinearIterator<E>, KoneReversibleExtendableIterator<E>
+public interface KoneExtendableLinearIterator<Element>: KoneLinearIterator<Element>, KoneReversibleExtendableIterator<Element>
 
-public interface KoneRemovableLinearIterator<out E>: KoneLinearIterator<E>, KoneReversibleRemovableIterator<E>
+public interface KoneRemovableLinearIterator<out Element>: KoneLinearIterator<Element>, KoneReversibleRemovableIterator<Element>
 
-public interface KoneMutableLinearIterator<E>: KoneReversibleMutableIterator<E>, KoneSettableLinearIterator<E>, KoneExtendableLinearIterator<E>, KoneRemovableLinearIterator<E>
+public interface KoneMutableLinearIterator<Element>: KoneReversibleMutableIterator<Element>, KoneSettableLinearIterator<Element>, KoneExtendableLinearIterator<Element>, KoneRemovableLinearIterator<Element>

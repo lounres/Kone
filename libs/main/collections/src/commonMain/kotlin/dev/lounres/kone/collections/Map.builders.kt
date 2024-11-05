@@ -9,8 +9,9 @@ package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.implementations.EmptyKoneMap
 import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
+import dev.lounres.kone.collections.implementations.KoneResizableHashMap
 import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
-import dev.lounres.kone.collections.utils.indices
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -19,132 +20,82 @@ import kotlin.experimental.ExperimentalTypeInference
 
 
 @Suppress("UNCHECKED_CAST")
-public fun <K, V> emptyKoneMap(): KoneMap<K, V> = EmptyKoneMap as KoneMap<K, V>
+public fun <Key, Value> emptyKoneMap(): KoneMap<Key, Value> = EmptyKoneMap as KoneMap<Key, Value>
 
 @Suppress("unused")
-public fun <K, V> koneMapOf(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMap<K, V> =
+public fun <Key, Value> koneMapOf(keyContext: Equality<Key> = defaultEquality(), valueContext: Equality<Value> = defaultEquality()): KoneMap<Key, Value> =
     emptyKoneMap()
 
-public fun <K, V> koneMapOf(vararg entries: KoneMapEntry<K, V>, keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMap<K, V> =
+public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
     when {
         entries.isEmpty() -> emptyKoneMap()
-        keyContext is Hashing -> KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext).apply {
+        keyContext is Hashing -> KoneResizableHashMap<Key, _, Value>(keyContext = keyContext).apply {
             setAllFrom(KoneArray(entries))
         }
-        else -> KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply {
-            setAllFrom(KoneArray(entries))
-        }
+//        else -> KoneMutableListBackedMap(keyContext = keyContext).apply {
+//            setAllFrom(KoneArray(entries))
+//        }
+        else -> TODO()
     }
 
 
-public fun <K, V> koneMutableMapOf(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMutableMap<K, V> =
-    if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext)
-    else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext)
+public fun <Key, Value> koneMutableMapOf(keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
+    if (keyContext is Hashing<Key>) KoneResizableHashMap(keyContext = keyContext)
+    else KoneMutableListBackedMap(keyContext = keyContext)
 
-public fun <K, V> koneMutableMapOf(vararg entries: KoneMapEntry<K, V>, keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality()): KoneMutableMap<K, V> =
-    if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
-    else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext).apply { setAllFrom(KoneArray(entries)) }
+public fun <Key, Value> koneMutableMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
+    if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
+    else KoneMutableListBackedMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
 
-public inline fun <K, V> buildKoneMap(
-    keyContext: Equality<K> = defaultEquality(),
-    valueContext: Equality<V> = defaultEquality(),
-    @BuilderInference builderAction: KoneMutableMap<K, V>.() -> Unit
-): KoneMap<K, V> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
+public inline fun <Key, Value> buildKoneMap(
+    keyContext: Equality<Key> = defaultEquality(),
+    @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
+): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext)
-        else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext) { KoneResizableLinkedArrayList(elementContext = it) }
+        if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext)
+        else KoneMutableListBackedMap(keyContext = keyContext) { KoneResizableLinkedArrayList() }
     return mapBuilder.apply(builderAction)
 }
 
-public inline fun <K, V> buildKoneMap(
+public inline fun <Key, Value> buildKoneMap(
     initialCapacity: UInt,
-    keyContext: Equality<K> = defaultEquality(),
-    valueContext: Equality<V> = defaultEquality(),
-    @BuilderInference builderAction: KoneMutableMap<K, V>.() -> Unit
-): KoneMap<K, V> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
+    keyContext: Equality<Key> = defaultEquality(),
+    @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
+): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<K>) KoneResizableHashMap(keyContext = keyContext, valueContext = valueContext) // TODO: Replace with growable hash map
-        else KoneMutableListBackedMap(keyContext = keyContext, valueContext = valueContext) { KoneGrowableLinkedArrayList(initialCapacity = initialCapacity, elementContext = it) }
+        if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
+        else KoneMutableListBackedMap(keyContext = keyContext) { KoneGrowableLinkedArrayList(initialCapacity = initialCapacity) }
     return mapBuilder.apply(builderAction)
 }
 
-public inline fun <E, K, V, D: KoneMutableMap<in K, in V>> KoneIterable<E>.associateTo(destination: D, transform: (E) -> KoneMapEntry<K, V>): D {
+public inline fun <Element, Key, Value, Destination: KoneMutableMap<in Key, in Value>> KoneIterable<Element>.associateTo(destination: Destination, transform: (Element) -> KoneMapEntry<Key, Value>): Destination {
     for (element in this) destination.set(transform(element))
     return destination
 }
 
-public inline fun <E, K, V, D: KoneMutableMap<in K, in V>> KoneList<E>.associateTo(destination: D, transform: (E) -> KoneMapEntry<K, V>): D {
-    for (index in indices) destination.set(transform(this[index]))
-    return destination
-}
-
-public inline fun <E, K, V, D: KoneMutableMap<in K, in V>> KoneIterableList<E>.associateTo(destination: D, transform: (E) -> KoneMapEntry<K, V>): D {
-    for (element in this) destination.set(transform(element))
-    return destination
-}
-
-public inline fun <E, K, D : KoneMutableMap<in K, in E>> KoneIterable<E>.associateByTo(destination: D, keySelector: (E) -> K): D {
+public inline fun <Element, Key, Destination : KoneMutableMap<in Key, in Element>> KoneIterable<Element>.associateByTo(destination: Destination, keySelector: (Element) -> Key): Destination {
     for (element in this) destination[keySelector(element)] = element
     return destination
 }
 
-public inline fun <E, K, D : KoneMutableMap<in K, in E>> KoneList<E>.associateByTo(destination: D, keySelector: (E) -> K): D {
-    for (index in indices) {
-        val element = this[index]
-        destination[keySelector(element)] = element
-    }
-    return destination
-}
-
-public inline fun <E, K, D : KoneMutableMap<in K, in E>> KoneIterableList<E>.associateByTo(destination: D, keySelector: (E) -> K): D {
-    for (element in this) destination[keySelector(element)] = element
-    return destination
-}
-
-public inline fun <E, K, V, D : KoneMutableMap<in K, in V>> KoneIterable<E>.associateByTo(destination: D, keySelector: (E) -> K, valueTransform: (E) -> V): D {
+public inline fun <Element, Key, Value, Destination : KoneMutableMap<in Key, in Value>> KoneIterable<Element>.associateByTo(destination: Destination, keySelector: (Element) -> Key, valueTransform: (Element) -> Value): Destination {
     for (element in this) destination[keySelector(element)] = valueTransform(element)
     return destination
 }
 
-public inline fun <E, K, V, D : KoneMutableMap<in K, in V>> KoneList<E>.associateByTo(destination: D, keySelector: (E) -> K, valueTransform: (E) -> V): D {
-    for (index in indices) {
-        val element = this[index]
-        destination[keySelector(element)] = valueTransform(element)
-    }
-    return destination
-}
-
-public inline fun <E, K, V, D : KoneMutableMap<in K, in V>> KoneIterableList<E>.associateByTo(destination: D, keySelector: (E) -> K, valueTransform: (E) -> V): D {
-    for (element in this) destination[keySelector(element)] = valueTransform(element)
-    return destination
-}
-
-public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneIterable<K>.associateWithTo(destination: D, valueSelector: (K) -> V): D {
+public inline fun <Key, Value, Destination : KoneMutableMap<in Key, in Value>> KoneIterable<Key>.associateWithTo(destination: Destination, valueSelector: (Key) -> Value): Destination {
     for (element in this) destination[element] = valueSelector(element)
     return destination
 }
 
-public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneList<K>.associateWithTo(destination: D, valueSelector: (K) -> V): D {
-    for (index in indices) {
-        val element = this[index]
-        destination[element] = valueSelector(element)
-    }
-    return destination
-}
+public inline fun <Element, Key, Value> KoneIterable<Element>.associate(keyContext: Equality<Key> = defaultEquality(), transform: (Element) -> KoneMapEntry<Key, Value>): KoneMap<Key, Value> =
+    associateTo(koneMutableMapOf(keyContext = keyContext), transform)
 
-public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneIterableList<K>.associateWithTo(destination: D, valueSelector: (K) -> V): D {
-    for (element in this) destination[element] = valueSelector(element)
-    return destination
-}
+public inline fun <Element, Key> KoneIterable<Element>.associateBy(keyContext: Equality<Key> = defaultEquality(), keySelector: (Element) -> Key): KoneMap<Key, Element> =
+    associateByTo(koneMutableMapOf(keyContext = keyContext), keySelector)
 
-public inline fun <E, K, V> KoneIterable<E>.associate(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), transform: (E) -> KoneMapEntry<K, V>): KoneMap<K, V> =
-    associateTo(koneMutableMapOf(keyContext = keyContext, valueContext = valueContext), transform)
+public inline fun <Element, Key, Value> KoneIterable<Element>.associateBy(keyContext: Equality<Key> = defaultEquality(), keySelector: (Element) -> Key, valueTransform: (Element) -> Value): KoneMap<Key, Value> =
+    associateByTo(koneMutableMapOf(keyContext = keyContext), keySelector, valueTransform)
 
-public inline fun <E, K> KoneIterable<E>.associateBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, E> =
-    associateByTo(koneMutableMapOf(keyContext = keyContext, valueContext = valueContext), keySelector)
-
-public inline fun <E, K, V> KoneIterable<E>.associateBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, V> =
-    associateByTo(koneMutableMapOf(keyContext = keyContext, valueContext = valueContext), keySelector, valueTransform)
-
-public inline fun <K, V> KoneIterable<K>.associateWith(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), valueSelector: (K) -> V): KoneMap<K, V> =
-    associateWithTo(koneMutableMapOf(keyContext = keyContext, valueContext = valueContext), valueSelector)
+public inline fun <Key, Value> KoneIterable<Key>.associateWith(keyContext: Equality<Key> = defaultEquality(), valueSelector: (Key) -> Value): KoneMap<Key, Value> =
+    associateWithTo(koneMutableMapOf(keyContext = keyContext), valueSelector)

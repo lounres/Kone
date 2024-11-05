@@ -10,7 +10,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.eq
 
 
-context(Equality<E>)
-public operator fun <E> KoneIterable<E>.contains(element: E): Boolean = any { it eq element }
-context(Equality<E>)
-public fun <E> KoneIterable<E>.containsAllFrom(elements: Iterable<E>): Boolean = elements.all { it in this }
+context(Equality<Element>)
+public operator fun <Element> KoneIterable<Element>.contains(element: Element): Boolean = any { it eq element }
+context(Equality<Element>)
+public fun <Element> KoneIterable<Element>.containsAllFrom(elements: Iterable<Element>): Boolean = elements.all { it in this }

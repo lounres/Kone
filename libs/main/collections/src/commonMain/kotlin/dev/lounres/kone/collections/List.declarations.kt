@@ -8,54 +8,54 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.repeat
 
 
-public interface KoneList<out E> : KoneLinearIterable<E> {
+public interface KoneList<out Element> : KoneLinearIterable<Element> {
     public val size: UInt
     
-    public operator fun get(index: UInt): E
+    public operator fun get(index: UInt): Element
     
-    public fun iteratorFrom(index: UInt): KoneLinearIterator<E>
-    override fun iterator(): KoneLinearIterator<E> = iteratorFrom(0u)
+    public fun iteratorFrom(index: UInt): KoneLinearIterator<Element>
+    override fun iterator(): KoneLinearIterator<Element> = iteratorFrom(0u)
 }
 
-public interface KoneSettableList<E> : KoneList<E> {
-    public operator fun set(index: UInt, element: E)
+public interface KoneSettableList<Element> : KoneList<Element> {
+    public operator fun set(index: UInt, element: Element)
 }
 
-public interface KoneMutableList<E> : KoneSettableList<E>, KoneMutableLinearIterable<E> {
-    public fun add(element: E) { addAt(size, element) }
-    public fun addAt(index: UInt, element: E)
-    public fun addSeveral(number: UInt, builder: (index: UInt) -> E) {
+public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutableLinearIterable<Element> {
+    public fun add(element: Element) { addAt(size, element) }
+    public fun addAt(index: UInt, element: Element)
+    public fun addSeveral(number: UInt, builder: (index: UInt) -> Element) {
         repeat(number) { add(builder(it)) }
     }
-    public fun addSeveralAt(index: UInt, number: UInt, builder: (index: UInt) -> E) {
+    public fun addSeveralAt(index: UInt, number: UInt, builder: (index: UInt) -> Element) {
         repeat(number) { addAt(index + it, builder(it)) }
     }
     
     public fun removeAt(index: UInt)
-    public fun removeAllThat(predicate: (element: E) -> Boolean) {
+    public fun removeAllThat(predicate: (element: Element) -> Boolean) {
         removeAllThatIndexed { _, element -> predicate(element) }
     }
-    public fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean)
+    public fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean)
     public fun removeAll()
     
-    override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E>
-    override fun iterator(): KoneMutableLinearIterator<E> = iteratorFrom(0u)
+    override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element>
+    override fun iterator(): KoneMutableLinearIterator<Element> = iteratorFrom(0u)
 }
 
-public interface KoneNoddedList<out E> : KoneList<E> {
-    public fun getNode(index: UInt): KoneListNode<E>
-    override fun get(index: UInt): E = getNode(index).element
+public interface KoneNoddedList<out Element> : KoneList<Element> {
+    public fun getNode(index: UInt): KoneListNode<Element>
+    override fun get(index: UInt): Element = getNode(index).element
 }
 
-public interface KoneNoddedSettableList<E> : KoneNoddedList<E>, KoneSettableList<E> {
-    override fun getNode(index: UInt): KoneSettableListNode<E>
+public interface KoneNoddedSettableList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
+    override fun getNode(index: UInt): KoneSettableListNode<Element>
 }
 
-public interface KoneNoddedMutableList<E> : KoneNoddedList<E>, KoneMutableList<E> {
-    public fun addNode(element: E): KoneMutableListNode<E>
-    override fun add(element: E) { addNode(element) }
-    public fun addNodeAt(index: UInt, element: E): KoneMutableListNode<E>
-    override fun addAt(index: UInt, element: E) { addNodeAt(index, element) }
+public interface KoneNoddedMutableList<Element> : KoneNoddedList<Element>, KoneMutableList<Element> {
+    public fun addNode(element: Element): KoneMutableListNode<Element>
+    override fun add(element: Element) { addNode(element) }
+    public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
+    override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
     
-    override fun getNode(index: UInt): KoneMutableListNode<E>
+    override fun getNode(index: UInt): KoneMutableListNode<Element>
 }

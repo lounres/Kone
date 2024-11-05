@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections
 
 
+// TODO: Remove the file eventually
 //public interface KoneCollection<out E> {
 //    public val size: UInt
 //    public operator fun contains(element: @UnsafeVariance E): Boolean

@@ -12,70 +12,70 @@ import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 
 // region General arrays
 
-public inline fun <reified E> KoneMutableArray(size: UInt, init: (UInt) -> E): KoneMutableArray<E> =
+public inline fun <reified Element> KoneMutableArray(size: UInt, init: (UInt) -> Element): KoneMutableArray<Element> =
     KoneMutableArray(Array(size.toInt()) { init(it.toUInt()) })
 
-public inline fun <reified E> KoneArray(size: UInt, init: (UInt) -> E): KoneArray<E> =
+public inline fun <reified Element> KoneArray(size: UInt, init: (UInt) -> Element): KoneArray<Element> =
     KoneArray(Array(size.toInt()) { init(it.toUInt()) })
 
-public inline fun <reified E> koneMutableArrayOf(vararg elements: E): KoneMutableArray<E> =
-    KoneMutableArray(elements as Array<E>)
+public inline fun <reified Element> koneMutableArrayOf(vararg elements: Element): KoneMutableArray<Element> =
+    KoneMutableArray(elements as Array<Element>)
 
-public inline fun <reified E> koneArrayOf(vararg elements: E): KoneArray<E> =
-    KoneArray(elements as Array<E>)
+public inline fun <reified Element> koneArrayOf(vararg elements: Element): KoneArray<Element> =
+    KoneArray(elements as Array<Element>)
 
-public inline fun <reified E> KoneIterable<E>.toKoneMutableArray(): KoneMutableArray<E> {
-    if (this is KoneList<E>) return this.toKoneMutableArray()
-    if (this is KoneSet<E>) return this.toKoneMutableArray()
+public inline fun <reified Element> KoneIterable<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
+    if (this is KoneList<Element>) return this.toKoneMutableArray()
+    if (this is KoneSet<Element>) return this.toKoneMutableArray()
 
-    val result = KoneGrowableArrayList<E>()
+    val result = KoneGrowableArrayList<Element>()
     for (element in this) result.add(element)
     return result.toKoneMutableArray()
 }
-public inline fun <reified E> Iterable<E>.toKoneMutableArray(): KoneMutableArray<E> {
-    if (this is Collection<E>) return this.toKoneMutableArray()
+public inline fun <reified Element> Iterable<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
+    if (this is Collection<Element>) return this.toKoneMutableArray()
 
-    val result = KoneGrowableArrayList<E>()
+    val result = KoneGrowableArrayList<Element>()
     for (element in this) result.add(element)
     return result.toKoneMutableArray()
 }
-public inline fun <reified E> Collection<E>.toKoneMutableArray(): KoneMutableArray<E> {
+public inline fun <reified Element> Collection<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
     val iterator = iterator()
     return KoneMutableArray(size.toUInt()) { iterator.next() }
 }
-public inline fun <reified E> KoneList<E>.toKoneMutableArray(): KoneMutableArray<E> {
+public inline fun <reified Element> KoneList<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
     val iterator = iterator()
     return KoneMutableArray(size) { iterator.next() }
 }
-public inline fun <reified E> KoneSet<E>.toKoneMutableArray(): KoneMutableArray<E> {
+public inline fun <reified Element> KoneSet<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
     val iterator = iterator()
     return KoneMutableArray(size) { iterator.next() }
 }
 
-public inline fun <reified E> KoneIterable<E>.toKoneArray(): KoneArray<E> {
-    if (this is KoneList<E>) return this.toKoneArray()
-    if (this is KoneSet<E>) return this.toKoneArray()
+public inline fun <reified Element> KoneIterable<Element>.toKoneArray(): KoneArray<Element> {
+    if (this is KoneList<Element>) return this.toKoneArray()
+    if (this is KoneSet<Element>) return this.toKoneArray()
 
-    val result = KoneGrowableArrayList<E>()
+    val result = KoneGrowableArrayList<Element>()
     for (element in this) result.add(element)
     return result.toKoneArray()
 }
-public inline fun <reified E> Iterable<E>.toKoneArray(): KoneArray<E> {
-    if (this is Collection<E>) return this.toKoneArray()
+public inline fun <reified Element> Iterable<Element>.toKoneArray(): KoneArray<Element> {
+    if (this is Collection<Element>) return this.toKoneArray()
 
-    val result = KoneGrowableArrayList<E>()
+    val result = KoneGrowableArrayList<Element>()
     for (element in this) result.add(element)
     return result.toKoneArray()
 }
-public inline fun <reified E> Collection<E>.toKoneArray(): KoneArray<E> {
+public inline fun <reified Element> Collection<Element>.toKoneArray(): KoneArray<Element> {
     val iterator = iterator()
     return KoneArray(size.toUInt()) { iterator.next() }
 }
-public inline fun <reified E> KoneList<E>.toKoneArray(): KoneArray<E> {
+public inline fun <reified Element> KoneList<Element>.toKoneArray(): KoneArray<Element> {
     val iterator = iterator()
     return KoneArray(size) { iterator.next() }
 }
-public inline fun <reified E> KoneSet<E>.toKoneArray(): KoneArray<E> {
+public inline fun <reified Element> KoneSet<Element>.toKoneArray(): KoneArray<Element> {
     val iterator = iterator()
     return KoneArray(size) { iterator.next() }
 }

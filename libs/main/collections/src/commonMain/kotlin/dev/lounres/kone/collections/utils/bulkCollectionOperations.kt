@@ -537,11 +537,11 @@ public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableList<V>>> KoneIt
     return destination
 }
 
-public inline fun <E, K> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), elementContext: Equality<E> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneList<E>> =
-    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneListEquality(elementContext)), keySelector = keySelector)
+public inline fun <E, K> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneList<E>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext), keySelector = keySelector)
 
-public inline fun <E, K, V> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), valueContext: Equality<V> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneList<V>> =
-    groupByTo(destination = koneMutableMapOf(keyContext = keyContext, valueContext = koneListEquality(valueContext)), keySelector = keySelector, valueTransform = valueTransform)
+public inline fun <E, K, V> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneList<V>> =
+    groupByTo(destination = koneMutableMapOf(keyContext = keyContext), keySelector = keySelector, valueTransform = valueTransform)
 
 @PublishedApi
 @JvmInline
