@@ -31,37 +31,37 @@ import dev.lounres.kone.comparison.Equality
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Ring<N>: Equality<N> {
+public interface Ring<Number>: Equality<Number> {
     // region Constants
     /**
      * Represents zero element (a.k.a *neutral additive element*).
      */
-    public val zero: N
+    public val zero: Number
     /**
      * Represents unit element (a.k.a *neutral multiplicative element*).
      */
-    public val one: N
+    public val one: Number
     // endregion
 
     // region Equality
     /**
      * Checks that [this] number is a zero in the context of the [Ring].
      */
-    public fun N.isZero(): Boolean = this equalsTo zero
+    public fun Number.isZero(): Boolean = this equalsTo zero
     /**
      * Checks that [this] number is a one in the context of the [Ring].
      */
-    public fun N.isOne(): Boolean = this equalsTo one
+    public fun Number.isOne(): Boolean = this equalsTo one
     /**
      * Checks that [this] number is not a zero in the context of the [Ring].
      */
     // FIXME: KT-5351
-    public fun N.isNotZero(): Boolean = !isZero()
+    public fun Number.isNotZero(): Boolean = !isZero()
     /**
      * Checks that [this] number is not a one in the context of the [Ring].
      */
     // FIXME: KT-5351
-    public fun N.isNotOne(): Boolean = !isOne()
+    public fun Number.isNotOne(): Boolean = !isOne()
     // endregion
 
     // region Integers conversion
@@ -70,49 +70,49 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to sum of [arg] number of units.
      */
-    public fun valueOf(arg: Int): N = one doublingTimes arg
+    public fun valueOf(arg: Int): Number = one doublingTimes arg
     /**
      * Converts instance of [UInt] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [arg] number of units.
      */
-    public fun valueOf(arg: UInt): N = one doublingTimes arg
+    public fun valueOf(arg: UInt): Number = one doublingTimes arg
     /**
      * Converts instance of [Long] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [arg] number of units.
      */
-    public fun valueOf(arg: Long): N = one doublingTimes arg
+    public fun valueOf(arg: Long): Number = one doublingTimes arg
     /**
      * Converts instance of [ULong] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [arg] number of units.
      */
-    public fun valueOf(arg: ULong): N = one doublingTimes arg
+    public fun valueOf(arg: ULong): Number = one doublingTimes arg
     /**
      * Converts instance of [Int] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [this] number of units.
      */
-    public val Int.value: N get() = valueOf(this)
+    public val Int.value: Number get() = valueOf(this)
     /**
      * Converts instance of [UInt] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [this] number of units.
      */
-    public val UInt.value: N get() = valueOf(this)
+    public val UInt.value: Number get() = valueOf(this)
     /**
      * Converts instance of [Long] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [this] number of units.
      */
-    public val Long.value: N get() = valueOf(this)
+    public val Long.value: Number get() = valueOf(this)
     /**
      * Converts instance of [ULong] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [this] number of units.
      */
-    public val ULong.value: N get() = valueOf(this)
+    public val ULong.value: Number get() = valueOf(this)
     // endregion
 
     // region Number-Int operations
@@ -121,19 +121,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this + other.value`
      */
-    public operator fun N.plus(other: Int): N = this + other.value
+    public operator fun Number.plus(other: Int): Number = this + other.value
     /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
-    public operator fun N.minus(other: Int): N = this - other.value
+    public operator fun Number.minus(other: Int): Number = this - other.value
     /**
      * Multiplies [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this * other.value`
      */
-    public operator fun N.times(other: Int): N = this * other.value
+    public operator fun Number.times(other: Int): Number = this * other.value
     // endregion
 
     // region Number-UInt operations
@@ -142,19 +142,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this + other.value`
      */
-    public operator fun N.plus(other: UInt): N = this + other.value
+    public operator fun Number.plus(other: UInt): Number = this + other.value
     /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
-    public operator fun N.minus(other: UInt): N = this - other.value
+    public operator fun Number.minus(other: UInt): Number = this - other.value
     /**
      * Multiplies [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this * other.value`
      */
-    public operator fun N.times(other: UInt): N = this * other.value
+    public operator fun Number.times(other: UInt): Number = this * other.value
     // endregion
 
     // region Number-Long operations
@@ -163,19 +163,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this + other.value`
      */
-    public operator fun N.plus(other: Long): N = this + other.value
+    public operator fun Number.plus(other: Long): Number = this + other.value
     /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
-    public operator fun N.minus(other: Long): N = this - other.value
+    public operator fun Number.minus(other: Long): Number = this - other.value
     /**
      * Multiplies [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this * other.value`
      */
-    public operator fun N.times(other: Long): N = this * other.value
+    public operator fun Number.times(other: Long): Number = this * other.value
     // endregion
 
     // region Number-ULong operations
@@ -184,19 +184,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this + other.value`
      */
-    public operator fun N.plus(other: ULong): N = this + other.value
+    public operator fun Number.plus(other: ULong): Number = this + other.value
     /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
-    public operator fun N.minus(other: ULong): N = this - other.value
+    public operator fun Number.minus(other: ULong): Number = this - other.value
     /**
      * Multiplies [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this * other.value`
      */
-    public operator fun N.times(other: ULong): N = this * other.value
+    public operator fun Number.times(other: ULong): Number = this * other.value
     // endregion
 
     // region Int-Number operations
@@ -205,19 +205,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this.value + other`
      */
-    public operator fun Int.plus(other: N): N = this.value + other
+    public operator fun Int.plus(other: Number): Number = this.value + other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value - other`
      */
-    public operator fun Int.minus(other: N): N = this.value - other
+    public operator fun Int.minus(other: Number): Number = this.value - other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value * other`
      */
-    public operator fun Int.times(other: N): N = this.value * other
+    public operator fun Int.times(other: Number): Number = this.value * other
     // endregion
 
     // region UInt-Number operations
@@ -226,19 +226,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this.value + other`
      */
-    public operator fun UInt.plus(other: N): N = this.value + other
+    public operator fun UInt.plus(other: Number): Number = this.value + other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value - other`
      */
-    public operator fun UInt.minus(other: N): N = this.value - other
+    public operator fun UInt.minus(other: Number): Number = this.value - other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value * other`
      */
-    public operator fun UInt.times(other: N): N = this.value * other
+    public operator fun UInt.times(other: Number): Number = this.value * other
     // endregion
 
     // region Long-Number operations
@@ -247,19 +247,19 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this.value + other`
      */
-    public operator fun Long.plus(other: N): N = this.value + other
+    public operator fun Long.plus(other: Number): Number = this.value + other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value - other`
      */
-    public operator fun Long.minus(other: N): N = this.value - other
+    public operator fun Long.minus(other: Number): Number = this.value - other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value * other`
      */
-    public operator fun Long.times(other: N): N = this.value * other
+    public operator fun Long.times(other: Number): Number = this.value * other
     // endregion
 
     // region ULong-Number operations
@@ -268,65 +268,65 @@ public interface Ring<N>: Equality<N> {
      *
      * The result is equal to `this.value + other`
      */
-    public operator fun ULong.plus(other: N): N = this.value + other
+    public operator fun ULong.plus(other: Number): Number = this.value + other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value - other`
      */
-    public operator fun ULong.minus(other: N): N = this.value - other
+    public operator fun ULong.minus(other: Number): Number = this.value - other
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
      * The result is equal to `this.value * other`
      */
-    public operator fun ULong.times(other: N): N = this.value * other
+    public operator fun ULong.times(other: Number): Number = this.value * other
     // endregion
 
     // region Number-Number operations
     /**
      * Returns the same value.
      */
-    public operator fun N.unaryPlus(): N = this
+    public operator fun Number.unaryPlus(): Number = this
     /**
      * Inverses [this] value in terms of the [Ring].
      */
-    public operator fun N.unaryMinus(): N
+    public operator fun Number.unaryMinus(): Number
     /**
      * Sums [this] and the [other] numbers in terms of the [Ring].
      */
-    public operator fun N.plus(other: N): N
+    public operator fun Number.plus(other: Number): Number
     /**
      * Subtracts [this] and the [other] numbers in terms of the [Ring].
      */
-    public operator fun N.minus(other: N): N
+    public operator fun Number.minus(other: Number): Number
     /**
      * Multiplies [this] and the [other] numbers in terms of the [Ring].
      */
-    public operator fun N.times(other: N): N
+    public operator fun Number.times(other: Number): Number
     /**
      * Raises [base] number in the power of [exponent].
      *
      * The result is equal to product of [exponent] number of [base] copies.
      */
-    public fun power(base: N, exponent: UInt): N = base squaringPower exponent
+    public fun power(base: Number, exponent: UInt): Number = base squaringPower exponent
     /**
      * Raises [base] number in the power of [exponent].
      *
      * The result is equal to product of [exponent] number of [base] copies.
      */
-    public fun power(base: N, exponent: ULong): N = base squaringPower exponent
+    public fun power(base: Number, exponent: ULong): Number = base squaringPower exponent
     /**
      * Raises [this] number in the power of [exponent].
      *
      * The result is equal to product of [exponent] number of [this] copies.
      */
-    public infix fun N.pow(exponent: UInt): N = power(this, exponent)
+    public infix fun Number.pow(exponent: UInt): Number = power(this, exponent)
     /**
      * Raises [this] number in the power of [exponent].
      *
      * The result is equal to product of [exponent] number of [this] copies.
      */
-    public infix fun N.pow(exponent: ULong): N = power(this, exponent)
+    public infix fun Number.pow(exponent: ULong): Number = power(this, exponent)
     // endregion
 }

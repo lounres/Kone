@@ -12,7 +12,7 @@ import dev.lounres.kone.context.KoneContext
 
 /**
  * Describes a context that provides equality [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation)
- * on the set of elements of type [E]. The relation is described by [equalsTo] function.
+ * on the set of elements of type [Element]. The relation is described by [equalsTo] function.
  *
  * Such contexts are used instead of usual [equals] overloading for several reasons. Some of them are:
  * - Following structural pattern, any behaviour *between* elements should not be a part of the elements' logic
@@ -21,11 +21,11 @@ import dev.lounres.kone.context.KoneContext
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Equality<in E>: KoneContext {
+public interface Equality<in Element>: KoneContext {
     /**
      * Checks equality of [this] and [other] elements.
      */
-    public infix fun E.equalsTo(other: E): Boolean = this == other
+    public infix fun Element.equalsTo(other: Element): Boolean = this == other
 }
 
 /**
@@ -33,35 +33,35 @@ public interface Equality<in E>: KoneContext {
  * A shortcut for negation of [Equality.equalsTo].
  */
 // FIXME: KT-5351
-context(Equality<E>)
-public inline infix fun <E> E.notEqualsTo(other: E): Boolean = !(this equalsTo other)
+context(Equality<Element>)
+public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean = !(this equalsTo other)
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for [Equality.equalsTo].
  */
-context(Equality<E>)
-public inline infix fun <E> E.eq(other: E): Boolean = this equalsTo other
+context(Equality<Element>)
+public inline infix fun <Element> Element.eq(other: Element): Boolean = this equalsTo other
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for negation of [Equality.equalsTo].
  */
 // FIXME: KT-5351
-context(Equality<E>)
-public inline infix fun <E> E.neq(other: E): Boolean = !(this equalsTo other)
+context(Equality<Element>)
+public inline infix fun <Element> Element.neq(other: Element): Boolean = !(this equalsTo other)
 
 /**
  * [Equality] builder from a [equalizer] that checks equality of the `left` and `right` elements.
  */
-public inline fun <E> Equality(crossinline equalizer: (left: E, right: E) -> Boolean): Equality<E> =
-    object : Equality<E> {
-        override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
+public inline fun <Element> Equality(crossinline equalizer: (left: Element, right: Element) -> Boolean): Equality<Element> =
+    object : Equality<Element> {
+        override fun Element.equalsTo(other: Element): Boolean = equalizer(this, other)
     }
 
 /**
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value.
  */
-public fun <E> defaultEquality(): Equality<E> = DefaultContext
+public fun <Element> defaultEquality(): Equality<Element> = DefaultContext
 /**
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
-public fun <E> absoluteEquality(): Equality<E> = AbsoluteContext
+public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteContext

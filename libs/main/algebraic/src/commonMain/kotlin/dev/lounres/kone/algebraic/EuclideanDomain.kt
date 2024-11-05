@@ -14,9 +14,9 @@ import kotlin.jvm.JvmInline
  */
 @ExperimentalKoneAPI
 @JvmInline
-public value class EuclideanDivisionResult<N>(public val quotient: N, public val remainder: N) {
-    public operator fun component1(): N = quotient
-    public operator fun component2(): N = remainder
+public value class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
+    public operator fun component1(): Number = quotient
+    public operator fun component2(): Number = remainder
 }
 
 /**
@@ -28,17 +28,17 @@ public value class EuclideanDivisionResult<N>(public val quotient: N, public val
  * for a more thorough description of the Euclidean division and the Euclidean norm.
  */
 @ExperimentalKoneAPI
-public interface EuclideanRing<N> : Ring<N> {
+public interface EuclideanRing<Number> : Ring<Number> {
     /**
      * Returns result of Euclidean division (a.k.a. division with remainder), both quotient and remainder.
      */
-    public infix fun N.divrem(other: N): EuclideanDivisionResult<N>
+    public infix fun Number.divrem(other: Number): EuclideanDivisionResult<Number>
     /**
      * Returns quotient of Euclidean division (a.k.a. division with remainder).
      */
-    public operator fun N.div(other: N): N = (this divrem other).quotient
+    public operator fun Number.div(other: Number): Number = (this divrem other).quotient
     /**
      * Returns remainder of Euclidean division (a.k.a. division with remainder).
      */
-    public operator fun N.rem(other: N): N = (this divrem other).remainder
+    public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
 }

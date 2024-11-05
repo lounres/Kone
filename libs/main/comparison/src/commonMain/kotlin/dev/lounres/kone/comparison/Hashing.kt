@@ -19,37 +19,37 @@ import dev.lounres.kone.context.invoke
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Hashing<in E> : Equality<E> {
-    public fun E.hash(): Int = this.hashCode()
+public interface Hashing<in Element> : Equality<Element> {
+    public fun Element.hash(): Int = this.hashCode()
 }
 
 /**
  * [Hashing] builder from a [equalizer] that checks equality of the `left` and `right` elements and [hasher]
  * that computes hash of provided element.
  */
-public inline fun <E> Hashing(crossinline equalizer: (left: E, right: E) -> Boolean, crossinline hasher: (E) -> Int): Hashing<E> =
-    object : Hashing<E> {
-        override fun E.equalsTo(other: E): Boolean = equalizer(this, other)
-        override fun E.hash(): Int = hasher(this)
+public inline fun <Element> Hashing(crossinline equalizer: (left: Element, right: Element) -> Boolean, crossinline hasher: (Element) -> Int): Hashing<Element> =
+    object : Hashing<Element> {
+        override fun Element.equalsTo(other: Element): Boolean = equalizer(this, other)
+        override fun Element.hash(): Int = hasher(this)
     }
 
 /**
  * [Hashing] builder from a [equalizer] that checks equality of the `left` and `right` elements and [hasher]
  * that computes hash of provided element.
  */
-public inline fun <E> Hashing(equalizer: Equality<E>, crossinline hasher: (E) -> Int): Hashing<E> =
-    object : Hashing<E> {
-        override fun E.equalsTo(other: E): Boolean = equalizer { this eq other }
-        override fun E.hash(): Int = hasher(this)
+public inline fun <Element> Hashing(equalizer: Equality<Element>, crossinline hasher: (Element) -> Int): Hashing<Element> =
+    object : Hashing<Element> {
+        override fun Element.equalsTo(other: Element): Boolean = equalizer { this eq other }
+        override fun Element.hash(): Int = hasher(this)
     }
 
 /**
  * Returns [Hashing] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
-public fun <E> defaultHashing(): Hashing<E> = DefaultContext
+public fun <Element> defaultHashing(): Hashing<Element> = DefaultContext
 /**
  * Returns [Hashing] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
-public fun <E> absoluteHashing(): Hashing<E> = AbsoluteContext
+public fun <Element> absoluteHashing(): Hashing<Element> = AbsoluteContext

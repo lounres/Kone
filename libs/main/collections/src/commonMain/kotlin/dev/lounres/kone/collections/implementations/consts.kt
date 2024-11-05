@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneUIntArray
+import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThat
 
 
@@ -22,4 +23,4 @@ internal fun powerOf2GreaterOrEqualTo(size: UInt): UInt =
 @PublishedApi
 internal fun powerOf2IndexGreaterOrEqualTo(size: UInt): UInt =
     if (size > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
-    else POWERS_OF_2.indexThat { _, power -> power >= size }
+    else POWERS_OF_2.firstIndexThat { _, power -> power >= size }

@@ -22,6 +22,8 @@ import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
 
 
+// TODO: Add converters for `KoneLinkedSet`
+
 @Suppress("UNCHECKED_CAST")
 public fun <E> emptyKoneSet(): KoneSet<E> = EmptyKoneSet as KoneSet<E>
 

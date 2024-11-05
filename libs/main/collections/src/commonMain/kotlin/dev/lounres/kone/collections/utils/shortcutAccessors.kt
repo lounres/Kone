@@ -26,12 +26,6 @@ public operator fun <E> KoneList<E>.component13(): E = get(12u)
 public operator fun <E> KoneList<E>.component14(): E = get(13u)
 public operator fun <E> KoneList<E>.component15(): E = get(14u)
 
-public val KoneList<*>.indices: UIntRange
-    get() = 0u ..< size
-
-public val KoneList<*>.lastIndex: UInt
-    get() = size - 1u
-
 public fun <E> KoneIterable<E>.first(): E =
     iterator().let { if (!it.hasNext()) throw NoSuchElementException() else it.getNext() }
 public fun <E> KoneList<E>.first(): E =

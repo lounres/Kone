@@ -11,9 +11,9 @@ public interface SearchTreeNode<out E> {
     public fun remove()
 }
 
-public interface ConnectedSearchTreeNode<out E> : SearchTreeNode<E> {
-    public val nextNode: ConnectedSearchTreeNode<E>?
-    public val previousNode: ConnectedSearchTreeNode<E>?
+public interface LinkedSearchTreeNode<out E> : SearchTreeNode<E> {
+    public val nextNode: LinkedSearchTreeNode<E>?
+    public val previousNode: LinkedSearchTreeNode<E>?
 }
 
 public sealed interface SearchSegmentResult<out STN> {
@@ -36,11 +36,11 @@ public interface SearchTree<E> {
     public operator fun contains(element: E): Boolean = find(element) != null
 }
 
-public interface ConnectedSearchTree<E> : SearchTree<E> {
-    override val nodesView: KoneSet<ConnectedSearchTreeNode<E>>
-    override val elementsView: KoneSet<E>
+public interface LinkedSearchTree<E> : SearchTree<E> {
+    override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<E>>
+    override val elementsView: KoneLinkedSet<E>
     
-    override fun add(element: E): ConnectedSearchTreeNode<E>
-    override fun find(element: E): ConnectedSearchTreeNode<E>?
-    public fun findSegmentFor(element: E): SearchSegmentResult<ConnectedSearchTreeNode<E>>
+    override fun add(element: E): LinkedSearchTreeNode<E>
+    override fun find(element: E): LinkedSearchTreeNode<E>?
+    public fun findSegmentFor(element: E): SearchSegmentResult<LinkedSearchTreeNode<E>>
 }

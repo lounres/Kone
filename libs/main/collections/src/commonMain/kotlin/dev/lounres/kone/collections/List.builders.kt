@@ -16,6 +16,8 @@ import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
 
 
+// TODO: Add converters for `KoneLinkedSet`
+
 public fun <E> emptyKoneList(): KoneList<E> = EmptyKoneList
 
 public inline fun <E> KoneList(size: UInt, initializer: (index: UInt) -> E): KoneList<E> =

@@ -5,24 +5,22 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.ConnectedSearchTree
-import dev.lounres.kone.collections.ConnectedSearchTreeNode
+import dev.lounres.kone.collections.LinkedSearchTree
+import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.KoneLinearIterator
+import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.collections.SearchSegmentResult
 import dev.lounres.kone.collections.indexException
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.repeat
 
 
 public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
     public val elementContext: EC,
-) : ConnectedSearchTree<E> {
+) : LinkedSearchTree<E> {
     override var size: UInt = 0u
         private set
     
@@ -560,10 +558,10 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    override val nodesView: KoneSet<ConnectedSearchTreeNode<E>> = Nodes()
-    override val elementsView: KoneSet<E> = Elements()
+    override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<E>> = Nodes()
+    override val elementsView: KoneLinkedSet<E> = Elements()
     
-    override fun add(element: E): ConnectedSearchTreeNode<E> =
+    override fun add(element: E): LinkedSearchTreeNode<E> =
         findSegmentForAndDo(
             element = element,
             onEmpty = {
@@ -783,7 +781,7 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
             }
         )
     
-    override fun find(element: E): ConnectedSearchTreeNode<E>? =
+    override fun find(element: E): LinkedSearchTreeNode<E>? =
         findSegmentForAndDo(
             element = element,
             onEmpty = {
@@ -803,7 +801,7 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
             }
         )
     
-    override fun findSegmentFor(element: E): SearchSegmentResult<ConnectedSearchTreeNode<E>> =
+    override fun findSegmentFor(element: E): SearchSegmentResult<LinkedSearchTreeNode<E>> =
         findSegmentForAndDo(
             element = element,
             onEmpty = {
@@ -929,7 +927,7 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
     
     internal class Node<E>(
         override val element: E,
-    ) : ConnectedSearchTreeNode<E> {
+    ) : LinkedSearchTreeNode<E> {
         private var _holder: NodeHolder<E>? = null
         internal var holder: NodeHolder<E>
             get() = _holder!!
@@ -986,12 +984,19 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    internal inner class Nodes : KoneSet<Node<E>> {
+    internal inner class Nodes : KoneLinkedSet<Node<E>> {
         override val size: UInt get() = this@TwoThreeTree.size
+        
+        override fun get(index: UInt): Node<E> {
+            TODO("Not yet implemented")
+        }
         
         override fun contains(element: Node<E>): Boolean = find(element.element) === element
         
         override fun iterator(): KoneLinearIterator<Node<E>> = NodesIterator(minimum, size)
+        override fun iteratorFrom(index: UInt): KoneLinearIterator<Node<E>> {
+            TODO("Not yet implemented")
+        }
         
         // TODO: Add usual `toString` overload
     }
@@ -1036,12 +1041,19 @@ public class TwoThreeTree<E, out EC: Order<E>> /*internal*/ constructor(
         }
     }
     
-    internal inner class Elements : KoneSet<E> {
+    internal inner class Elements : KoneLinkedSet<E> {
         override val size: UInt get() = this@TwoThreeTree.size
+        
+        override fun get(index: UInt): E {
+            TODO("Not yet implemented")
+        }
         
         override fun contains(element: E): Boolean = find(element) != null
         
         override fun iterator(): KoneLinearIterator<E> = ElementsIterator(minimum, size)
+        override fun iteratorFrom(index: UInt): KoneLinearIterator<E> {
+            TODO("Not yet implemented")
+        }
         
         // TODO: Add usual `toString` overload
     }

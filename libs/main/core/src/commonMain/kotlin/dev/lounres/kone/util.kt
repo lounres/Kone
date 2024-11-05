@@ -12,7 +12,7 @@ import kotlin.contracts.contract
  * Simple function that is useful to create nested scopes.
  * It is the same as the [run] function but without extension-function overload.
  */
-public inline fun <R> scope(block: () -> R): R {
+public inline fun <Result> scope(block: () -> Result): Result {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

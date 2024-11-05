@@ -33,3 +33,5 @@ public interface KoneNoddedMutableSet<E> : KoneMutableSet<E>, KoneNoddedSet<E> {
     public fun addNode(element: E): KoneMutableSetNode<E>
     override fun add(element: E) { addNode(element) }
 }
+
+public interface KoneLinkedSet<out E> : KoneSet<E>, KoneList<E>

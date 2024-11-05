@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.ConnectedSearchTree
+import dev.lounres.kone.collections.LinkedSearchTree
 import dev.lounres.kone.collections.SearchTree
 import dev.lounres.kone.collections.SearchTreeNode
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.toKoneIterableList
+import dev.lounres.kone.collections.toKoneList
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultOrder
@@ -25,7 +25,7 @@ interface SearchTreeBuilder {
 }
 
 interface ConnectedSearchTreeBuilder: SearchTreeBuilder {
-    override fun <E> build(elementContext: Order<E>): ConnectedSearchTree<E>
+    override fun <E> build(elementContext: Order<E>): LinkedSearchTree<E>
 }
 
 interface SearchTreeImplementationDescription {
@@ -38,7 +38,7 @@ val searchTreeImplementations = listOf<SearchTreeImplementationDescription>(
         override val name: String = "TwoThreeTree"
         override val builder: ConnectedSearchTreeBuilder =
             object : ConnectedSearchTreeBuilder {
-                override fun <E> build(elementContext: Order<E>): ConnectedSearchTree<E> =
+                override fun <E> build(elementContext: Order<E>): LinkedSearchTree<E> =
                     TwoThreeTree(elementContext)
             }
     }
@@ -49,7 +49,7 @@ class SearchTreeImplementationsTests: FunSpec({
         val builder = impl.builder
         
         test("test mutability") {
-            val init = (0u .. 10u step 2).toKoneIterableList()
+            val init = (0u .. 10u step 2).toKoneList()
             val permutationsExhaustive = init.permutations().toList().exhaustive()
             checkAll(permutationsExhaustive, permutationsExhaustive) { toAdd, toRemove ->
                 val tree = builder.build(defaultOrder<UInt>())
@@ -78,7 +78,7 @@ class SearchTreeImplementationsTests: FunSpec({
         }
         
         if (builder is ConnectedSearchTreeBuilder) test("test elements and nodes views") {
-            val init = (0u .. 10u step 2).toKoneIterableList()
+            val init = (0u .. 10u step 2).toKoneList()
             val permutationsExhaustive = init.permutations().toList().exhaustive()
             checkAll(permutationsExhaustive) { toAdd ->
                 val tree = builder.build(defaultOrder<UInt>())
@@ -88,7 +88,7 @@ class SearchTreeImplementationsTests: FunSpec({
                     val node = tree.add(item)
                     nodesMap[item] = node
                     testEqualityByIteration(tree.elementsView, nodesMap.keys.sorted())
-                    testEqualityByIteration(tree.nodesView, nodesMap.entries.sortedBy { it.key }.map { it.value })
+                    testEqualityByIteration(tree.nodesView.toKoneList() /* TODO: Remove `.toKoneList()` */, nodesMap.entries.sortedBy { it.key }.map { it.value })
                 }
             }
         }

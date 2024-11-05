@@ -14,7 +14,8 @@ public interface KoneListNode<out E> {
     public val nextNode: KoneListNode<E>?
     public val previousNode: KoneListNode<E>?
     
-    public fun iteratorFromHere(): KoneLinearIterator<E>
+    public fun iteratorFromBeforeHere(): KoneLinearIterator<E>
+    public fun iteratorFromAfterHere(): KoneLinearIterator<E>
 }
 
 public interface KoneSettableListNode<E> : KoneListNode<E> {
@@ -23,7 +24,8 @@ public interface KoneSettableListNode<E> : KoneListNode<E> {
     override val nextNode: KoneSettableListNode<E>?
     override val previousNode: KoneSettableListNode<E>?
     
-    override fun iteratorFromHere(): KoneSettableLinearIterator<E>
+    override fun iteratorFromBeforeHere(): KoneSettableLinearIterator<E>
+    override fun iteratorFromAfterHere(): KoneSettableLinearIterator<E>
 }
 
 public interface KoneMutableListNode<E> : KoneSettableListNode<E> {
@@ -33,5 +35,6 @@ public interface KoneMutableListNode<E> : KoneSettableListNode<E> {
     override val nextNode: KoneMutableListNode<E>?
     override val previousNode: KoneMutableListNode<E>?
     
-    override fun iteratorFromHere(): KoneMutableLinearIterator<E>
+    override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<E>
+    override fun iteratorFromAfterHere(): KoneMutableLinearIterator<E>
 }

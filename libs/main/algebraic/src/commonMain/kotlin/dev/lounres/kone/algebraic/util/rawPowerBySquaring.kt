@@ -37,7 +37,7 @@ import kotlin.math.abs
  *
  * @usesMathJax
  */
-public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
+public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: Int, lazyZero: () -> Number, additionOp: (Number, Number) -> Number, negationOp: (Number) -> Number): Number =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toUInt(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toUInt(), lazyZero, additionOp)
 
@@ -65,7 +65,7 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Int, lazyZero:
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: Int, additionOp: (Number, Number) -> Number, negationOp: (Number) -> Number): Number =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toUInt(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toUInt(), additionOp)
 
@@ -93,7 +93,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Int, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: Int, additionOp: (Number, Number) -> Number, rightSubtractionOp: (Number, Number) -> Number): Number =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toUInt(), additionOp, rightSubtractionOp)
 
@@ -122,7 +122,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
-public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero: () -> N, additionOp: (N, N) -> N): N {
+public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: UInt, lazyZero: () -> Number, additionOp: (Number, Number) -> Number): Number {
     // FIXME: KT-17579
 //    tailrec fun theLogic(arg: N, multiplier: UInt): N =
 //        when {
@@ -168,7 +168,7 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: UInt, lazyZero
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: UInt, additionOp: (Number, Number) -> Number): Number =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
 
 /**
@@ -193,7 +193,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  */
 @Suppress("NAME_SHADOWING")
 @PublishedApi
-internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: N, multiplier: UInt, additionOp: (N, N) -> N, additionToBaseOp: (N, N) -> N): N {
+internal inline fun <Number> rightAddMultipliedByDoublingInternalLogic(base: Number, arg: Number, multiplier: UInt, additionOp: (Number, Number) -> Number, additionToBaseOp: (Number, Number) -> Number): Number {
     // FIXME: KT-17579
 //    tailrec fun theLogic(base: N, arg: N, multiplier: UInt): N =
 //        if (multiplier == 1u) additionToBaseOp(base, arg)
@@ -248,7 +248,7 @@ internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: 
  *
  * @usesMathJax
  */
-public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero: () -> N, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
+public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: Long, lazyZero: () -> Number, additionOp: (Number, Number) -> Number, negationOp: (Number) -> Number): Number =
     if (multiplier >= 0) rightMultiplyByDoubling(arg, multiplier.toULong(), lazyZero, additionOp)
     else rightMultiplyByDoubling(negationOp(arg), (-multiplier).toULong(), lazyZero, additionOp)
 
@@ -276,7 +276,7 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: Long, lazyZero
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, negationOp: (N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: Long, additionOp: (Number, Number) -> Number, negationOp: (Number) -> Number): Number =
     if (multiplier >= 0) rightAddMultipliedByDoubling(base, arg, multiplier.toULong(), additionOp)
     else rightAddMultipliedByDoubling(base, negationOp(arg), (-multiplier).toULong(), additionOp)
 
@@ -304,7 +304,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: Long, additionOp: (N, N) -> N, rightSubtractionOp: (N, N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: Long, additionOp: (Number, Number) -> Number, rightSubtractionOp: (Number, Number) -> Number): Number =
     if(multiplier >= 0) rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, additionOp)
     else rightAddMultipliedByDoublingInternalLogic(base, arg, abs(multiplier).toULong(), additionOp, rightSubtractionOp)
 
@@ -333,7 +333,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  * @usesMathJax
  */
 @Suppress("NAME_SHADOWING")
-public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZero: () -> N, additionOp: (N, N) -> N): N {
+public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: ULong, lazyZero: () -> Number, additionOp: (Number, Number) -> Number): Number {
     // FIXME: KT-17579
 //    tailrec fun theLogic(arg: N, multiplier: ULong): N =
 //        when {
@@ -379,7 +379,7 @@ public inline fun <N> rightMultiplyByDoubling(arg: N, multiplier: ULong, lazyZer
  *
  * @usesMathJax
  */
-public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N): N =
+public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Number, multiplier: ULong, additionOp: (Number, Number) -> Number): Number =
     rightAddMultipliedByDoublingInternalLogic(base, arg, multiplier, additionOp, additionOp)
 
 /**
@@ -404,7 +404,7 @@ public inline fun <N> rightAddMultipliedByDoubling(base: N, arg: N, multiplier: 
  */
 @Suppress("NAME_SHADOWING")
 @PublishedApi
-internal inline fun <N> rightAddMultipliedByDoublingInternalLogic(base: N, arg: N, multiplier: ULong, additionOp: (N, N) -> N, additionToBaseOp: (N, N) -> N): N {
+internal inline fun <Number> rightAddMultipliedByDoublingInternalLogic(base: Number, arg: Number, multiplier: ULong, additionOp: (Number, Number) -> Number, additionToBaseOp: (Number, Number) -> Number): Number {
     // FIXME: KT-17579
 //    tailrec fun theLogic(base: N, arg: N, multiplier: ULong): N =
 //        if (multiplier == 1uL) additionToBaseOp(base, arg)
