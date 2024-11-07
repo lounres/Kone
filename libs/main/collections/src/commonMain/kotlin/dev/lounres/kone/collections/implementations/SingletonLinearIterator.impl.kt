@@ -9,12 +9,12 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.indexException
 
 
-internal class SingletonIterator<E>(
-    val singleElement: E,
+internal class SingletonLinearIterator<Element>(
+    val singleElement: Element,
     var currentlyBeforeSingleElement: Boolean = true
-): KoneLinearIterator<E> {
+): KoneLinearIterator<Element> {
     override fun hasNext(): Boolean = currentlyBeforeSingleElement
-    override fun getNext(): E {
+    override fun getNext(): Element {
         if (!hasNext()) indexException(1u, 1u)
         return singleElement
     }
@@ -25,7 +25,7 @@ internal class SingletonIterator<E>(
     override fun nextIndex(): UInt = if (hasNext()) 1u else indexException(1u, 1u)
 
     override fun hasPrevious(): Boolean = !currentlyBeforeSingleElement
-    override fun getPrevious(): E {
+    override fun getPrevious(): Element {
         if (!hasPrevious()) indexException(UInt.MAX_VALUE, 1u)
         return singleElement
     }

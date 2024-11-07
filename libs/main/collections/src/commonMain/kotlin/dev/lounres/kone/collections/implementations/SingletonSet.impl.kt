@@ -11,14 +11,14 @@ import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 
 
-internal class SingletonSet<E, EC: Equality<E>>(
-    val singleElement: E,
-    override val elementContext: EC,
-) : KoneSetWithContext<E, EC> {
+internal class SingletonSet<Element, ElementContext: Equality<Element>>(
+    val singleElement: Element,
+    override val elementContext: ElementContext,
+) : KoneSetWithContext<Element, ElementContext> {
     override val size: UInt = 1u
-    override fun contains(element: E): Boolean = elementContext { singleElement eq element }
+    override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
 
-    override fun iterator(): KoneIterator<E> = SingletonIterator(singleElement = singleElement)
+    override fun iterator(): KoneIterator<Element> = SingletonLinearIterator(singleElement = singleElement)
 
     override fun toString(): String = "[$singleElement]"
     override fun hashCode(): Int = singleElement.hashCode()

@@ -36,7 +36,6 @@ public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(entries: KoneItera
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(nodes: KoneIterable<KoneMapNode<Key, Value>>) { nodes.forEach { set(it) } }
 
 public fun <Key> KoneMutableMap<in Key, *>.remove(key: Key) { getNode(key).remove() }
-public fun <Key> KoneMutableMap<in Key, *>.removeAll() { nodes.forEach { it.remove() } }
 
 public val <Key, Value> KoneMap<Key, Value>.nodes: KoneSet<KoneMapNode<Key, Value>>
     get() = nodesView.toKoneSet(absoluteEquality())

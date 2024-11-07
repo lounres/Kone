@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.EmptyKoneList
+import dev.lounres.kone.collections.implementations.EmptyKoneNoddedList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 import dev.lounres.kone.collections.implementations.KoneSettableArrayList
@@ -18,7 +18,7 @@ import kotlin.experimental.ExperimentalTypeInference
 
 // TODO: Add converters for `KoneLinkedSet`
 
-public fun <Element> emptyKoneList(): KoneList<Element> = EmptyKoneList
+public fun <Element> emptyKoneList(): KoneList<Element> = EmptyKoneNoddedList
 
 public inline fun <Element> KoneList(size: UInt, initializer: (index: UInt) -> Element): KoneList<Element> =
     KoneSettableArrayList(size, initializer)

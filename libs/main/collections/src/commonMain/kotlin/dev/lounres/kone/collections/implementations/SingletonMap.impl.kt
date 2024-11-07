@@ -19,28 +19,28 @@ import dev.lounres.kone.context.invoke
 
 
 // TODO: Apply the class
-internal class SingletonMap<K, KC: Equality<K>, V>(
-    val singleKey: K,
-    val singleValue: V,
-    override val keyContext: KC,
-) : KoneMapWithContext<K, KC, V> {
+internal class SingletonMap<Key, KeyContext: Equality<Key>, Value>(
+    val singleKey: Key,
+    val singleValue: Value,
+    override val keyContext: KeyContext,
+) : KoneMapWithContext<Key, KeyContext, Value> {
     private val singleNode = Node(singleKey, singleValue)
     
     override val size: UInt get() = 1u
-    override val nodesView: KoneSet<KoneMapNode<K, V>> =
+    override val nodesView: KoneSet<KoneMapNode<Key, Value>> =
         SingletonSet(
             singleElement = singleNode,
             elementContext = absoluteEquality(),
         )
-    override val keysView: KoneSet<K> =
+    override val keysView: KoneSet<Key> =
         SingletonSet(
             singleElement = singleKey,
             elementContext = keyContext
         )
-    override val valuesView: KoneIterable<V> = SingletonList(singleValue)
-    override val entriesView: KoneIterable<KoneMapEntry<K, V>> = SingletonList(KoneMapEntry(singleKey, singleValue))
+    override val valuesView: KoneIterable<Value> = SingletonList(singleValue)
+    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = SingletonList(KoneMapEntry(singleKey, singleValue))
     
-    override fun getNodeOrNull(key: K): KoneMapNode<K, V>? = if (keyContext { key eq singleKey }) singleNode else null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (keyContext { key eq singleKey }) singleNode else null
     
     override fun toString(): String = "{$singleKey=$singleValue}"
     override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
@@ -54,8 +54,8 @@ internal class SingletonMap<K, KC: Equality<K>, V>(
         return singleKey == otherKey && singleValue == otherValue
     }
     
-    private class Node<K, V>(
-        override val key: K,
-        override val value: V,
-    ) : KoneMapNode<K, V>
+    private class Node<Key, Value>(
+        override val key: Key,
+        override val value: Value,
+    ) : KoneMapNode<Key, Value>
 }

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.EmptyKoneSet
+import dev.lounres.kone.collections.implementations.EmptyKoneNoddedSet
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneListBackedSet
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedSet
@@ -25,7 +25,7 @@ import kotlin.experimental.ExperimentalTypeInference
 // TODO: Add converters for `KoneLinkedSet`
 
 @Suppress("UNCHECKED_CAST")
-public fun <Element> emptyKoneSet(): KoneSet<Element> = EmptyKoneSet as KoneSet<Element>
+public fun <Element> emptyKoneSet(): KoneSet<Element> = EmptyKoneNoddedSet as KoneSet<Element>
 
 @Suppress("UNUSED_PARAMETER")
 public fun <Element> koneSetOf(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> = emptyKoneSet()

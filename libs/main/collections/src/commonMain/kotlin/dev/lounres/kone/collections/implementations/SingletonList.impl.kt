@@ -8,21 +8,21 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
-internal class SingletonList<E>(
-    val singleElement: E,
-) : KoneList<E> {
+internal class SingletonList<Element>(
+    val singleElement: Element,
+) : KoneList<Element> {
     override val size: UInt = 1u
 
-    override fun get(index: UInt): E {
+    override fun get(index: UInt): Element {
         if (index >= 1u) indexException(index, size)
         return singleElement
     }
     
-    override fun iterator(): KoneLinearIterator<E> = SingletonIterator(singleElement = singleElement)
-    override fun iteratorFrom(index: UInt): KoneLinearIterator<E> =
+    override fun iterator(): KoneLinearIterator<Element> = SingletonLinearIterator(singleElement = singleElement)
+    override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> =
         when(index) {
-            0u -> SingletonIterator(singleElement = singleElement)
-            1u -> SingletonIterator(singleElement = singleElement).apply { moveNext() }
+            0u -> SingletonLinearIterator(singleElement = singleElement)
+            1u -> SingletonLinearIterator(singleElement = singleElement).apply { moveNext() }
             else -> indexException(index, size)
         }
 

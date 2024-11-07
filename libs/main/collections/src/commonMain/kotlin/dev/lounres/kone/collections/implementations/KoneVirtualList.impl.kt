@@ -8,18 +8,17 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
-import kotlinx.serialization.Serializable
 
 
 //@Serializable(with = KoneVirtualListWithContextSerializer::class)
-public class KoneVirtualList<E>(
+public class KoneVirtualList<Element>(
     override val size: UInt,
-    private val generator: (index: UInt) -> E
-) : KoneList<E> {
-    override fun get(index: UInt): E = generator(index)
+    private val generator: (index: UInt) -> Element
+) : KoneList<Element> {
+    override fun get(index: UInt): Element = generator(index)
 
-    override fun iterator(): KoneLinearIterator<E> = Iterator(size = size, generator = generator)
-    override fun iteratorFrom(index: UInt): KoneLinearIterator<E> = Iterator(size = size, currentIndex = index, generator = generator)
+    override fun iterator(): KoneLinearIterator<Element> = Iterator(size = size, generator = generator)
+    override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> = Iterator(size = size, currentIndex = index, generator = generator)
 
     override fun hashCode(): Int {
         var hashCode = 1

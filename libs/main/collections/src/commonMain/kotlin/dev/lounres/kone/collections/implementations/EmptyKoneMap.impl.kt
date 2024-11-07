@@ -10,17 +10,17 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultHashing
 
 
-internal open class EmptyKoneMapTemplate<K, V> : KoneMapWithContext<K, Equality<K>, V> {
-    override val keyContext: Equality<K> get() = defaultHashing()
+internal open class EmptyKoneMapTemplate<Key, Value> : KoneMapWithContext<Key, Equality<Key>, Value> {
+    override val keyContext: Equality<Key> get() = defaultHashing()
 
     override val size: UInt = 0u
     
-    override fun getNodeOrNull(key: K): KoneMapNode<K, V>? = null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = null
     
-    override val nodesView: KoneSet<KoneMapNode<K, V>> get() = EmptyKoneSet
-    override val keysView: KoneSet<K> get() = EmptyKoneSet
-    override val valuesView: KoneIterable<V> get() = EmptyKoneList
-    override val entriesView: KoneIterable<KoneMapEntry<K, V>> get() = EmptyKoneList
+    override val nodesView: KoneSet<KoneMapNode<Key, Value>> get() = EmptyKoneNoddedSet
+    override val keysView: KoneSet<Key> get() = EmptyKoneNoddedSet
+    override val valuesView: KoneIterable<Value> get() = EmptyKoneIterable
+    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> get() = EmptyKoneIterable
 
     override fun toString(): String = "{}"
     override fun hashCode(): Int = 0

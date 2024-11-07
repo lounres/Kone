@@ -11,27 +11,27 @@ import dev.lounres.kone.collections.*
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
 /*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes and multifield value classes to make the class be value class
-public /*value*/ class KoneSettableArrayList<E> @PublishedApi internal constructor(
+public /*value*/ class KoneSettableArrayList<Element> @PublishedApi internal constructor(
     private val data: KoneMutableArray<Any?>,
-) : KoneSettableList<E>, Disposable {
+) : KoneSettableList<Element>, Disposable {
     override val size: UInt get() = data.size
 
     override fun dispose() {
         for (index in 0u ..< size) data[index] = null
     }
 
-    override fun get(index: UInt): E {
+    override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[index] as E
+        return data[index] as Element
     }
 
-    override fun set(index: UInt, element: E) {
+    override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
         data[index] = element
     }
 
-    override fun iterator(): KoneSettableLinearIterator<E> = Iterator(data)
-    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<E> = Iterator(data, index)
+    override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(data)
+    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(data, index)
 
     override fun toString(): String = buildString {
         append('[')
@@ -70,36 +70,36 @@ public /*value*/ class KoneSettableArrayList<E> @PublishedApi internal construct
         return true
     }
 
-    internal class Iterator<E>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<E> {
+    internal class Iterator<Element>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<Element> {
         init {
             if (currentIndex > data.size) indexException(currentIndex, data.size)
         }
         override fun hasNext(): Boolean = currentIndex < data.size
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, data.size)
-            return data[currentIndex] as E
+            return data[currentIndex] as Element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, data.size)
             currentIndex++
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, data.size)
-        override fun setNext(element: E) {
+        override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, data.size)
             data[currentIndex] = element
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, data.size)
-            return data[currentIndex - 1u] as E
+            return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, data.size)
             currentIndex--
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, data.size)
-        override fun setPrevious(element: E) {
+        override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, data.size)
             data[currentIndex - 1u] = element
         }
