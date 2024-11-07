@@ -8,10 +8,12 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 import kotlin.math.ceil
@@ -19,7 +21,7 @@ import kotlin.math.floor
 import kotlin.math.max
 
 
-@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
+//@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
 public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
@@ -31,23 +33,22 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
     private var data: KoneArray<KoneResizableLinkedArrayList<E, Equality<E>>> =
         KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
     override val elementContext: EC,
-) : KoneMutableIterableSet<E>, KoneMutableSetWithContext<E, EC>, Disposable {
+) : KoneMutableSetWithContext<E, EC>, Disposable {
     override var size: UInt = size
         private set
 
     private fun E.localHash(): Int {
-        val contextHash = elementContext { hash() }
+        val contextHash = elementContext { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
     private fun E.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
-    private fun KoneArray<KoneResizableLinkedArrayList<E, Equality<E>>>.dispose() {
-        // FIXME: KT-67409
-//        @Suppress("UNCHECKED_CAST")
-//        val array = this.array as Array<Any?>
+    private fun KoneArray<KoneResizableLinkedArrayList<E>>.dispose() {
+        @Suppress("UNCHECKED_CAST")
+        val array = this.array as Array<Any?>
         for (i in 0u ..< size) {
             this[i].dispose()
-//            array[i.toInt()] = null
+            array[i.toInt()] = null
         }
     }
     override fun dispose() {
@@ -80,7 +81,10 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
     private fun reinitializeData(newDataSize: UInt = capacityUpperBound) {
         val oldData = data
         data = KoneArray(newDataSize) { KoneResizableLinkedArrayList() }
-        for (linkedList in oldData) for (element in linkedList) data[element.dataIndex()].add(element)
+        for (linkedList in oldData) {
+            for (element in linkedList) data[element.dataIndex()].add(element)
+            linkedList.dispose()
+        }
         oldData.dispose()
     }
     private fun reinitializeBoundsAndData(newSize: UInt) {
@@ -110,6 +114,10 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
             iterator.addNext(element)
             size++
         }
+    }
+    
+    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+        repeat(number) { add(builder(it)) }
     }
 
     override fun removeAll() {
@@ -195,7 +203,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
             if (!hasNext()) TODO("Exception is not yet implemented")
             return if (currentIterator.hasNext()) currentIterator.getNext()
             else {
-                val nextIndex = data.indexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
                 data[nextIndex].first()
             }
         }
@@ -203,7 +211,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
             if (!hasNext()) TODO("Exception is not yet implemented")
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
-                val nextIndex = data.indexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
                 currentBucket = nextIndex
                 currentIterator = data[nextIndex].iterator().also { it.moveNext() }
             }
@@ -212,7 +220,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
             if (!hasNext()) TODO("Exception is not yet implemented")
             if (currentIterator.hasNext()) currentIterator.removeNext()
             else {
-                val nextIndex = data.indexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
                 data[nextIndex].iterator().removeNext()
             }
         }

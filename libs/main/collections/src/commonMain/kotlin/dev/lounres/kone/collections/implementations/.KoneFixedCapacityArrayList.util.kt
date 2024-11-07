@@ -10,20 +10,20 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E> KoneFixedCapacityArrayList(capacity: UInt): KoneFixedCapacityArrayList<E> =
+public fun <Element> KoneFixedCapacityArrayList(capacity: UInt): KoneFixedCapacityArrayList<Element> =
     KoneFixedCapacityArrayList(
         size = 0u,
         capacity = capacity,
     )
 
-public fun <E> KoneFixedCapacityArrayList(size: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityArrayList<E> =
+public inline fun <Element> KoneFixedCapacityArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneFixedCapacityArrayList<Element> =
     KoneFixedCapacityArrayList(
         size = size,
         capacity = size,
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
-public fun <E> KoneFixedCapacityArrayList(size: UInt, capacity: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityArrayList<E> {
+public inline fun <Element> KoneFixedCapacityArrayList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneFixedCapacityArrayList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneFixedCapacityArrayList(
         size = size,

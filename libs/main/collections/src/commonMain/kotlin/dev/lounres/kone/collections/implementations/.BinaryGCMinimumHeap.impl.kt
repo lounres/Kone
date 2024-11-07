@@ -5,11 +5,9 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.HeapNode
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.collections.LinkedHeapNode
 import dev.lounres.kone.collections.LinkedMinimumHeap
 import dev.lounres.kone.collections.indexException
@@ -23,22 +21,22 @@ import dev.lounres.kone.scope
 
 // TODO: Think about linear creation: https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap
 @Suppress("UNCHECKED_CAST")
-public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
-    public val priorityContext: PC,
-    private var rootHolder: NodeHolder<E, P>?,
-    private var lastHolder: NodeHolder<E, P>?,
-): LinkedMinimumHeap<E, P> {
+public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<Priority>> internal constructor(
+    public val priorityContext: PriorityContext,
+    private var rootHolder: NodeHolder<Element, Priority>?,
+    private var lastHolder: NodeHolder<Element, Priority>?,
+): LinkedMinimumHeap<Element, Priority> {
     override var size: UInt = 0u
         private set
 
-    private fun swapNodeHoldersIdentities(holder1: NodeHolder<E, P>, holder2: NodeHolder<E, P>) {
+    private fun swapNodeHoldersIdentities(holder1: NodeHolder<Element, Priority>, holder2: NodeHolder<Element, Priority>) {
         holder1.priority = holder2.priority.also { holder2.priority = holder1.priority }
         holder1.node = holder2.node.also { holder2.node = holder1.node }
         holder1.node.holder = holder1
         holder2.node.holder = holder2
     }
     
-    private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder<E, P>) {
+    private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder<Element, Priority>) {
         val parent = holder.parent ?: return
         if (priorityContext { parent.priority gt holder.priority }) {
             swapNodeHoldersIdentities(holder, parent)
@@ -46,7 +44,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
     
-    private tailrec fun siftTheNodeUpToTheLeaf(holder: NodeHolder<E, P>) {
+    private tailrec fun siftTheNodeUpToTheLeaf(holder: NodeHolder<Element, Priority>) {
         val firstChild = holder.firstChild
         val secondChild = holder.secondChild
         when {
@@ -72,12 +70,12 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
 
-    private fun siftTheNode(holder: NodeHolder<E, P>) {
+    private fun siftTheNode(holder: NodeHolder<Element, Priority>) {
         siftTheNodeDownToTheRoot(holder)
         siftTheNodeUpToTheLeaf(holder)
     }
 
-    private fun removeNode(holder: NodeHolder<E, P>) {
+    private fun removeNode(holder: NodeHolder<Element, Priority>) {
         val oldLastHolder = lastHolder!!
         val nodeToSift =
             if (holder !== oldLastHolder) {
@@ -112,18 +110,18 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         nodeToSift?.let { siftTheNode(it) }
     }
     
-    private fun changePriority(holder: NodeHolder<E, P>, priority: P) {
+    private fun changePriority(holder: NodeHolder<Element, Priority>, priority: Priority) {
         holder.priority = priority
         siftTheNode(holder)
     }
     
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<E, P>> = Nodes()
-    override val elementsView: KoneList<E> = Elements()
+    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>> = Nodes()
+    override val elementsView: KoneList<Element> = Elements()
 
-    override fun add(element: E, priority: P): LinkedHeapNode<E, P> {
+    override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority> {
         val newHolder =
             if (size == 0u) {
-                NodeHolder<E, P>(
+                NodeHolder<Element, Priority>(
                     heap = this,
                     index = 0u,
                     parent = null,
@@ -140,7 +138,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
                     previous.parent == null -> previous
                     else -> previous.parent!!.next
                 }
-                NodeHolder<E, P>(
+                NodeHolder<Element, Priority>(
                     heap = this,
                     index = previous.index + 1u,
                     parent = parent,
@@ -165,43 +163,43 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         return result
     }
     
-    override fun takeMinimum(): LinkedHeapNode<E, P> {
+    override fun takeMinimum(): LinkedHeapNode<Element, Priority> {
         if (size == 0u) throw NoSuchElementException("Heap is empty")
         val root = rootHolder!!
         return root.node
     }
     
-    override fun popMinimum(): LinkedHeapNode<E, P> {
+    override fun popMinimum(): LinkedHeapNode<Element, Priority> {
         if (size == 0u) throw NoSuchElementException("Heap is empty")
         val root = rootHolder!!
         return root.node.also { removeNode(root) }
     }
     
-    internal class NodeHolder<E, P>(
-        heap: BinaryGCMinimumHeap<E, P, *>,
+    internal class NodeHolder<Element, Priority>(
+        heap: BinaryGCMinimumHeap<Element, Priority, *>,
         val index: UInt,
-        parent: NodeHolder<E, P>?,
-        previous: NodeHolder<E, P>?,
-        priority: P,
-        element: E,
+        parent: NodeHolder<Element, Priority>?,
+        previous: NodeHolder<Element, Priority>?,
+        priority: Priority,
+        element: Element,
     ) : Disposable {
-        var heap: BinaryGCMinimumHeap<E, P, *>? = heap
+        var heap: BinaryGCMinimumHeap<Element, Priority, *>? = heap
         
-        var parent: NodeHolder<E, P>? = parent
+        var parent: NodeHolder<Element, Priority>? = parent
             private set
-        var previous: NodeHolder<E, P>? = previous
+        var previous: NodeHolder<Element, Priority>? = previous
             private set
-        var next: NodeHolder<E, P>? = null
-        var firstChild: NodeHolder<E, P>? = null
-        var secondChild: NodeHolder<E, P>? = null
+        var next: NodeHolder<Element, Priority>? = null
+        var firstChild: NodeHolder<Element, Priority>? = null
+        var secondChild: NodeHolder<Element, Priority>? = null
         
-        private var _priority: P? = priority
-        var priority: P
-            get() = _priority as P
+        private var _priority: Priority? = priority
+        var priority: Priority
+            get() = _priority as Priority
             set(value) { _priority = value }
         
-        private var _node: Node<E, P>? = Node(element, this)
-        var node: Node<E, P>
+        private var _node: Node<Element, Priority>? = Node(element, this)
+        var node: Node<Element, Priority>
             get() = _node!!
             set(value) { _node = value }
         
@@ -216,7 +214,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
             _node = null
         }
         
-        fun changePriority(priority: P) {
+        fun changePriority(priority: Priority) {
             (heap ?: throw IllegalStateException("This node holder is disposed and cannot change its priority")).changePriority(this, priority)
         }
         
@@ -225,24 +223,24 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
 
-    internal class Node<E, P>(
-        override var element: E,
-        holder: NodeHolder<E, P>,
-    ): LinkedHeapNode<E, P> {
-        private var _holder: NodeHolder<E, P>? = holder
-        var holder: NodeHolder<E, P>
+    internal class Node<Element, Priority>(
+        override var element: Element,
+        holder: NodeHolder<Element, Priority>,
+    ): LinkedHeapNode<Element, Priority> {
+        private var _holder: NodeHolder<Element, Priority>? = holder
+        var holder: NodeHolder<Element, Priority>
             get() = _holder!!
             set(value) { _holder = value }
         
-        override var priority: P
+        override var priority: Priority
             get() = (_holder ?: throw IllegalStateException("The node has already been removed and therefore has no priority")).priority
             set(value) {
                 _holder!!.changePriority(value)
             }
         
-        val heap: BinaryGCMinimumHeap<E, P, *>? get() = _holder?.heap
-        override val nextNode: LinkedHeapNode<E, P>? get() = _holder?.next?.node
-        override val previousNode: LinkedHeapNode<E, P>? get() = _holder?.previous?.node
+        val heap: BinaryGCMinimumHeap<Element, Priority, *>? get() = _holder?.heap
+        override val nextNode: LinkedHeapNode<Element, Priority>? get() = _holder?.next?.node
+        override val previousNode: LinkedHeapNode<Element, Priority>? get() = _holder?.previous?.node
         
         override fun remove() {
             (_holder ?: throw IllegalStateException("The node has already been removed")).remove()
@@ -250,11 +248,11 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
     
-    internal class NodesIterator<E, P>(
-        private var nextHolder: NodeHolder<E, P>?,
+    internal class NodesIterator<Element, Priority>(
+        private var nextHolder: NodeHolder<Element, Priority>?,
         private val size: UInt,
-    ): KoneLinearIterator<LinkedHeapNode<E, P>> {
-        private var previousHolder: NodeHolder<E, P>? = null
+    ): KoneLinearIterator<LinkedHeapNode<Element, Priority>> {
+        private var previousHolder: NodeHolder<Element, Priority>? = null
         private var nextIndex: UInt = 0u
         
         override fun hasNext(): Boolean = nextHolder != null
@@ -262,7 +260,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
             if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
-        override fun getNext(): LinkedHeapNode<E, P> {
+        override fun getNext(): LinkedHeapNode<Element, Priority> {
             if (!hasNext()) indexException(nextIndex, size)
             return nextHolder!!.node
         }
@@ -278,7 +276,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
             if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
-        override fun getPrevious(): LinkedHeapNode<E, P> {
+        override fun getPrevious(): LinkedHeapNode<Element, Priority> {
             if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousHolder!!.node
         }
@@ -290,24 +288,24 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
     
-    internal inner class Nodes : KoneLinkedSet<LinkedHeapNode<E, P>> {
+    internal inner class Nodes : KoneLinkedSet<LinkedHeapNode<Element, Priority>> {
         override val size: UInt get() = this@BinaryGCMinimumHeap.size
-        override fun get(index: UInt): LinkedHeapNode<E, P> {
+        override fun get(index: UInt): LinkedHeapNode<Element, Priority> {
             TODO("Not yet implemented")
         }
-        override fun contains(element: LinkedHeapNode<E, P>): Boolean =
-            element is Node<E, P> && element.heap === this@BinaryGCMinimumHeap
-        override fun iterator(): KoneLinearIterator<LinkedHeapNode<E, P>> = NodesIterator(rootHolder, this@BinaryGCMinimumHeap.size)
-        override fun iteratorFrom(index: UInt): KoneLinearIterator<LinkedHeapNode<E, P>> {
+        override fun contains(element: LinkedHeapNode<Element, Priority>): Boolean =
+            element is Node<Element, Priority> && element.heap === this@BinaryGCMinimumHeap
+        override fun iterator(): KoneLinearIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(rootHolder, this@BinaryGCMinimumHeap.size)
+        override fun iteratorFrom(index: UInt): KoneLinearIterator<LinkedHeapNode<Element, Priority>> {
             TODO("Not yet implemented")
         }
     }
     
-    internal class ElementsIterator<E, P>(
-        private var nextHolder: NodeHolder<E, P>?,
+    internal class ElementsIterator<Element, Priority>(
+        private var nextHolder: NodeHolder<Element, Priority>?,
         private val size: UInt,
-    ): KoneLinearIterator<E> {
-        private var previousHolder: NodeHolder<E, P>? = null
+    ): KoneLinearIterator<Element> {
+        private var previousHolder: NodeHolder<Element, Priority>? = null
         private var nextIndex: UInt = 0u
         
         override fun hasNext(): Boolean = nextHolder != null
@@ -315,7 +313,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
             if (!hasNext()) indexException(nextIndex, size)
             return nextIndex
         }
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(nextIndex, size)
             return nextHolder!!.node.element
         }
@@ -331,7 +329,7 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
             if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(nextIndex - 1u, size)
             return previousHolder!!.node.element
         }
@@ -343,9 +341,9 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
         }
     }
     
-    internal inner class Elements : KoneList<E> {
+    internal inner class Elements : KoneList<Element> {
         override val size: UInt get() = this@BinaryGCMinimumHeap.size
-        override fun get(index: UInt): E {
+        override fun get(index: UInt): Element {
             if (index >= size) indexException(index, size)
             val digits = scope {
                 var rest = index + 1u
@@ -357,15 +355,15 @@ public class BinaryGCMinimumHeap<E, P, out PC: Order<P>> internal constructor(
                     }
                 }
             }
-            var currentHolder: NodeHolder<E, P> = rootHolder!!
+            var currentHolder: NodeHolder<Element, Priority> = rootHolder!!
             for (index in digits.lastIndex - 1u downTo 0u)
                 currentHolder =
                     if (digits[index] == 0u) currentHolder.firstChild!!
                     else currentHolder.secondChild!!
             return currentHolder.node.element
         }
-        override fun iterator(): KoneLinearIterator<E> = ElementsIterator(rootHolder, this@BinaryGCMinimumHeap.size)
-        override fun iteratorFrom(index: UInt): KoneLinearIterator<E> {
+        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(rootHolder, this@BinaryGCMinimumHeap.size)
+        override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> {
             TODO("Not yet implemented")
         }
     }

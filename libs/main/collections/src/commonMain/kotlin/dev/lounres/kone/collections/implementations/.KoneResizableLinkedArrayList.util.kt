@@ -8,23 +8,15 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.producers.KoneMutableListProducer
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
 
 
-public fun <E> KoneResizableLinkedArrayList(): KoneResizableLinkedArrayList<E, Equality<E>> =
+public fun <Element> KoneResizableLinkedArrayList(): KoneResizableLinkedArrayList<Element> =
     KoneResizableLinkedArrayList(size = 0u)
 
-public inline fun <E> KoneResizableLinkedArrayList(size: UInt, initializer: (index: UInt) -> E): KoneResizableLinkedArrayList<E, Equality<E>> {
+public inline fun <Element> KoneResizableLinkedArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneResizableLinkedArrayList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
     return KoneResizableLinkedArrayList(
@@ -36,8 +28,8 @@ public inline fun <E> KoneResizableLinkedArrayList(size: UInt, initializer: (ind
 }
 
 public object KoneResizableLinkedArrayListProducer : KoneMutableListProducer {
-    override fun <E> produce(): KoneMutableList<E> = KoneResizableLinkedArrayList()
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
+    override fun <Element> produce(): KoneMutableList<Element> = KoneResizableLinkedArrayList()
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
         KoneResizableLinkedArrayList(number, builder)
 }
 

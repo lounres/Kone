@@ -9,7 +9,6 @@ import dev.lounres.kone.collections.LinkedSearchTree
 import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneLinkedSet
-import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.collections.SearchSegmentResult
 import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.comparison.Order

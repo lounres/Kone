@@ -8,7 +8,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.producers.KoneListProducer
+import dev.lounres.kone.collections.producers.KoneSettableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -17,7 +17,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 public inline fun <Element> KoneSettableArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneSettableArrayList<Element> =
     KoneSettableArrayList(KoneMutableArray(size, initializer))
 
-public object KoneSettableArrayListProducer : KoneListProducer {
+public object KoneSettableArrayListProducer : KoneSettableListProducer {
     override fun <Element> produce(): KoneSettableArrayList<Element> = KoneSettableArrayList(0u) { error("For some reason throwing builder was called") }
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneSettableArrayList<Element> = KoneSettableArrayList(number, builder)
 }

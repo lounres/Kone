@@ -17,7 +17,7 @@ import dev.lounres.kone.context.invoke
 
 public class KoneMutableListBackedMap<K, KC: Equality<K>, V> @PublishedApi internal constructor(
     override val keyContext: KC,
-    internal val backingList: KoneNoddedMutableList<Node<K, V>>,
+    internal val backingList: KoneMutableNoddedList<Node<K, V>>,
 ) : KoneMutableMapWithContext<K, KC, V> {
     override val size: UInt
         get() = backingList.size

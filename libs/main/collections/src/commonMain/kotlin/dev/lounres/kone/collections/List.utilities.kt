@@ -6,10 +6,16 @@
 package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.utils.forEach
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Some
 
 
 public fun <Element> KoneList<Element>.isEmpty(): Boolean = size == 0u
 public fun <Element> KoneList<Element>.isNotEmpty(): Boolean = !isEmpty()
+
+public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (index < size) this[index] else null
+public fun <Element> KoneList<Element>.getMaybe(index: UInt): Option<Element> = if (index < size) Some(this[index]) else None
 
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
     elements.forEach { add(it) }

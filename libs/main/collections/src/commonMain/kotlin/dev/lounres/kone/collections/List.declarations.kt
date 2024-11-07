@@ -47,15 +47,15 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
     override fun get(index: UInt): Element = getNode(index).element
 }
 
-public interface KoneNoddedSettableList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
+public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
     override fun getNode(index: UInt): KoneSettableListNode<Element>
 }
 
-public interface KoneNoddedMutableList<Element> : KoneNoddedList<Element>, KoneMutableList<Element> {
+public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element>, KoneMutableList<Element> {
+    override fun getNode(index: UInt): KoneMutableListNode<Element>
+    
     public fun addNode(element: Element): KoneMutableListNode<Element>
     override fun add(element: Element) { addNode(element) }
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
     override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
-    
-    override fun getNode(index: UInt): KoneMutableListNode<Element>
 }
