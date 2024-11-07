@@ -14,15 +14,15 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public inline fun <Element> KoneSettableArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneSettableArrayList<Element> =
-    KoneSettableArrayList(KoneMutableArray(size, initializer))
+public inline fun <Element> KoneArraySettableList(size: UInt, initializer: (index: UInt) -> Element): KoneArraySettableList<Element> =
+    KoneArraySettableList(KoneMutableArray(size, initializer))
 
-public object KoneSettableArrayListProducer : KoneSettableListProducer {
-    override fun <Element> produce(): KoneSettableArrayList<Element> = KoneSettableArrayList(0u) { error("For some reason throwing builder was called") }
-    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneSettableArrayList<Element> = KoneSettableArrayList(number, builder)
+public object KoneArraySettableListProducer : KoneSettableListProducer {
+    override fun <Element> produce(): KoneArraySettableList<Element> = KoneArraySettableList(0u) { error("For some reason throwing builder was called") }
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableList<Element> = KoneArraySettableList(number, builder)
 }
 
-internal class KoneSettableArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArraySettableListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
         serialName = "dev.lounres.kone.collections.implementations.KoneSettableArrayList<data>",
         elementDescriptor = elementDescriptor,

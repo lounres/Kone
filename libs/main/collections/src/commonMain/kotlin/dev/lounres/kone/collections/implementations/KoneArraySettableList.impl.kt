@@ -5,52 +5,35 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneSettableLinearIterator
-import dev.lounres.kone.collections.KoneSettableListNode
-import dev.lounres.kone.collections.KoneSettableNoddedList
-import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
 /*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes and multifield value classes to make the class be value class
-public /*value*/ class KoneSettableArrayNoddedList<Element> @PublishedApi internal constructor(
+public /*value*/ class KoneArraySettableList<Element> @PublishedApi internal constructor(
     private val data: KoneMutableArray<Any?>,
-) : KoneSettableNoddedList<Element>, Disposable {
+) : KoneSettableList<Element>, Disposable {
     override val size: UInt get() = data.size
-    
-    private val nodes = KoneMutableArray<Node<Element>?>(data.size) { Node(this, it) }
-    
+
     override fun dispose() {
-        repeat(size) {
-            data[it] = null
-            nodes[it]!!.dispose()
-            nodes[it] = null
-        }
+        repeat(size) { data[it] = null }
     }
-    
+
     override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
         return data[index] as Element
     }
-    override fun getNode(index: UInt): KoneSettableListNode<Element> {
-        if (index >= size) indexException(index, size)
-        return nodes[index]!!
-    }
-    
+
     override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
         data[index] = element
     }
-    
+
     override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(data)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(data, index)
-    
+
     override fun toString(): String = buildString {
         append('[')
         if (size > 0u) append(data[0u])
@@ -71,9 +54,9 @@ public /*value*/ class KoneSettableArrayNoddedList<Element> @PublishedApi intern
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-        
+
         when (other) {
-            is KoneSettableArrayNoddedList<*> ->
+            is KoneArraySettableList<*> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }
@@ -84,34 +67,10 @@ public /*value*/ class KoneSettableArrayNoddedList<Element> @PublishedApi intern
                 }
             }
         }
-        
+
         return true
     }
-    
-    internal class Node<Element>(
-        list: KoneSettableArrayNoddedList<Element>,
-        override val index: UInt,
-    ) : KoneSettableListNode<Element>, Disposable {
-        private var _list: KoneSettableArrayNoddedList<Element>? = list
-        internal val list: KoneSettableArrayNoddedList<Element> get() = _list!!
-        
-        override var element: Element
-            get() = list.data[index] as Element
-            set(value) { list.data[index] = value }
-        
-        override val nextNode: KoneSettableListNode<Element>?
-            get() = list.nodes.getOrNull(index + 1u)
-        override val previousNode: KoneSettableListNode<Element>?
-            get() = list.nodes.getOrNull(index - 1u)
-        
-        override fun iteratorFromAfterHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index + 1u)
-        override fun iteratorFromBeforeHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index)
-        
-        override fun dispose() {
-            _list = null
-        }
-    }
-    
+
     internal class Iterator<Element>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<Element> {
         init {
             if (currentIndex > data.size) indexException(currentIndex, data.size)
@@ -130,7 +89,7 @@ public /*value*/ class KoneSettableArrayNoddedList<Element> @PublishedApi intern
             if (!hasNext()) indexException(currentIndex, data.size)
             data[currentIndex] = element
         }
-        
+
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, data.size)
