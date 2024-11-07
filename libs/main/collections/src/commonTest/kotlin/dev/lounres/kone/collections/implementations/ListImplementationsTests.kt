@@ -49,27 +49,27 @@ interface ListImplementationDescription {
 
 val listImplementations = listOf<ListImplementationDescription>(
     object : ListImplementationDescription {
-        override val name = "KoneFixedCapacityArrayList"
+        override val name = "KoneArrayFixedCapacityList"
         override val builder: MutableFixedCapacityIterableListBuilder =
             object : MutableFixedCapacityIterableListBuilder {
                 override fun <E> build(capacity: UInt): KoneMutableList<E> =
-                    KoneFixedCapacityArrayList(capacity)
+                    KoneArrayFixedCapacityList(capacity)
                 override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneFixedCapacityArrayList(size, generator)
+                    KoneArrayFixedCapacityList(size, generator)
                 override fun <E> buildByGenerator(size: UInt, capacity: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneFixedCapacityArrayList(size, capacity, generator)
+                    KoneArrayFixedCapacityList(size, capacity, generator)
             }
     },
     object : ListImplementationDescription {
-        override val name = "KoneFixedCapacityLinkedArrayList"
+        override val name = "KoneArrayFixedCapacityLinkedList"
         override val builder: MutableFixedCapacityIterableListBuilder =
             object : MutableFixedCapacityIterableListBuilder {
                 override fun <E> build(capacity: UInt): KoneMutableList<E> =
-                    KoneFixedCapacityLinkedArrayList(capacity)
+                    KoneArrayFixedCapacityLinkedList(capacity)
                 override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneFixedCapacityLinkedArrayList(size, generator)
+                    KoneArrayFixedCapacityLinkedList(size, generator)
                 override fun <E> buildByGenerator(size: UInt, capacity: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneFixedCapacityLinkedArrayList(size, capacity, generator)
+                    KoneArrayFixedCapacityLinkedList(size, capacity, generator)
             }
     },
     object : ListImplementationDescription {

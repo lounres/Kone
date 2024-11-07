@@ -6,43 +6,35 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E> KoneFixedCapacityLinkedArrayList(capacity: UInt): KoneFixedCapacityLinkedArrayList<E, Equality<E>> =
-    KoneFixedCapacityLinkedArrayList(
+public fun <E> KoneArrayFixedCapacityLinkedNoddedList(capacity: UInt): KoneArrayFixedCapacityLinkedNoddedList<E> =
+    KoneArrayFixedCapacityLinkedNoddedList(
         size = 0u,
         capacity = capacity,
     )
 
-public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, Equality<E>> =
-    KoneFixedCapacityLinkedArrayList(
+public fun <E> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, initializer: (index: UInt) -> E): KoneArrayFixedCapacityLinkedNoddedList<E> =
+    KoneArrayFixedCapacityLinkedNoddedList(
         size = size,
         capacity = size,
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
-public fun <E> KoneFixedCapacityLinkedArrayList(size: UInt, capacity: UInt, initializer: (index: UInt) -> E): KoneFixedCapacityLinkedArrayList<E, Equality<E>> {
+public fun <E> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> E): KoneArrayFixedCapacityLinkedNoddedList<E> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
-    return KoneFixedCapacityLinkedArrayList(
+    return KoneArrayFixedCapacityLinkedNoddedList(
         size = size,
         capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
     )
 }
 
-internal class KoneFixedCapacityLinkedArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayFixedCapacityLinkedNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneFixedCapacityLinkedArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityLinkedNoddedList<data>",
         elementDescriptor = elementDescriptor,
     )
 

@@ -6,25 +6,21 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityLinkedArrayListWithContextSerializer::class)
-public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal constructor(
+public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     size: UInt,
     private val capacity: UInt,
-    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
-    private var nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
-    private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
+    private val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
+    private val nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
+    private val previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableList<E>, KoneDequeue<E>, Disposable {
+) : KoneMutableList<Element>, KoneDequeue<Element>, Disposable {
     override var size: UInt = size
         private set
 
@@ -54,17 +50,17 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
                 currentIndex
             }
         }
-    private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> E) {
+    private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> Element) {
         repeat(newElementsNumber) {
             end = nextCellIndex[end]
             data[end] = generator(it)
         }
         size += newElementsNumber
     }
-    private fun justAddAfterTheEnd(element: E) {
+    private fun justAddAfterTheEnd(element: Element) {
         justAddAfterTheEnd(1u) { element }
     }
-    private fun justAddBefore(actualIndex: UInt, element: E) {
+    private fun justAddBefore(actualIndex: UInt, element: Element) {
         val freeIndex = nextCellIndex[end]
         val indexAfterTheFreeIndex = nextCellIndex[freeIndex]
         nextCellIndex[end] = indexAfterTheFreeIndex
@@ -100,16 +96,16 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         if (size == 0u) start = actualIndex
     }
 
-    override fun get(index: UInt): E {
+    override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[actualIndex(index)] as E
+        return data[actualIndex(index)] as Element
     }
 
-    override fun getFirst(): E = data[start] as E
+    override fun getFirst(): Element = data[start] as Element
 
-    override fun getLast(): E = data[end] as E
+    override fun getLast(): Element = data[end] as Element
 
-    override fun set(index: UInt, element: E) {
+    override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
         data[actualIndex(index)] = element
     }
@@ -124,22 +120,22 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         }
     }
 
-    override fun addFirst(element: E) {
+    override fun addFirst(element: Element) {
         if (size == capacity) capacityOverflowException(capacity)
         justAddBefore(start, element)
     }
 
-    override fun addLast(element: E) {
+    override fun addLast(element: Element) {
         if (size == capacity) capacityOverflowException(capacity)
         justAddAfterTheEnd(element)
     }
 
-    override fun add(element: E) {
+    override fun add(element: Element) {
         if (size == capacity) capacityOverflowException(capacity)
         justAddAfterTheEnd(element)
     }
 
-    override fun addAt(index: UInt, element: E) {
+    override fun addAt(index: UInt, element: Element) {
         if (index > size) indexException(index, size)
         when {
             size == capacity -> capacityOverflowException(capacity)
@@ -147,7 +143,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             else -> justAddBefore(actualIndex(index), element)
         }
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (number == 0u) return
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
@@ -155,7 +151,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         var localIndex = 0u
         justAddAfterTheEnd(number) { builder(localIndex++) }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
         if (index > size) indexException(index, size)
         if (number == 0u) return
         val newSize = size + number
@@ -199,7 +195,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         justRemoveAt(end)
     }
 
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
+    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         val newSize: UInt
         val firstCellToClear: UInt
         scope {
@@ -208,7 +204,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             var resultActualMark = 0u
             var resultSize = 0u
             while (checkingIndex < size) {
-                if (!predicate(checkingIndex, data[checkingActualMark] as E)) {
+                if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
                     data[resultActualMark] = data[checkingActualMark]
                     resultActualMark = nextCellIndex[resultActualMark]
                     resultSize++
@@ -226,8 +222,8 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         }
     }
 
-    override fun iterator(): KoneMutableLinearIterator<E> = Iterator()
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E> = Iterator(index)
+    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
 
     override fun toString(): String = buildString {
         append('[')
@@ -255,7 +251,7 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneFixedCapacityLinkedArrayList<*, *> -> {
+            is KoneArrayFixedCapacityLinkedList<*> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {
@@ -277,16 +273,16 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         return true
     }
 
-    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
+    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
         var actualCurrentIndex = if (capacity == 0u) 0u else actualIndex(currentIndex)
         
         override fun hasNext(): Boolean = currentIndex < size
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, size)
-            return data[actualCurrentIndex] as E
+            return data[actualCurrentIndex] as Element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
@@ -294,11 +290,11 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
-        override fun setNext(element: E) {
+        override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, size)
             data[currentIndex] = element
         }
-        override fun addNext(element: E) {
+        override fun addNext(element: Element) {
             if (size == capacity) capacityOverflowException(capacity)
             if (currentIndex == size) justAddAfterTheEnd(element)
             else justAddBefore(nextCellIndex[actualCurrentIndex], element)
@@ -309,9 +305,9 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, size)
-            return data[previousCellIndex[actualCurrentIndex]] as E
+            return data[previousCellIndex[actualCurrentIndex]] as Element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, size)
@@ -319,11 +315,11 @@ public class KoneFixedCapacityLinkedArrayList<E, EC: Equality<E>> internal const
             actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
-        override fun setPrevious(element: E) {
+        override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, size)
             data[previousCellIndex[actualCurrentIndex]] = element
         }
-        override fun addPrevious(element: E) {
+        override fun addPrevious(element: Element) {
             if (size == capacity) capacityOverflowException(capacity)
             justAddBefore(actualCurrentIndex, element)
         }
