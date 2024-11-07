@@ -52,7 +52,6 @@ public class KoneVirtualList<Element>(
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
-        // TODO: Move `hasX`, `moveX`, and `XIndex` methods to separate interface. They are the same as for KoneResizableArrayList.
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
             if (!hasNext()) indexException(currentIndex, size)
