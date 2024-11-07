@@ -14,7 +14,7 @@ import dev.lounres.kone.scope
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
-public class KoneFixedCapacityArrayList<Element> @PublishedApi internal constructor(
+public class KoneArrayFixedCapacityList<Element> @PublishedApi internal constructor(
     size: UInt,
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
@@ -119,7 +119,7 @@ public class KoneFixedCapacityArrayList<Element> @PublishedApi internal construc
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneFixedCapacityArrayList<*> ->
+            is KoneArrayFixedCapacityList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }

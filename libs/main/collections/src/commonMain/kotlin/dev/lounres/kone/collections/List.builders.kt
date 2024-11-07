@@ -8,7 +8,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableArrayList
-import dev.lounres.kone.collections.implementations.KoneSettableArrayList
+import dev.lounres.kone.collections.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
 import dev.lounres.kone.collections.utils.toOptimizedList
 import kotlin.contracts.InvocationKind
@@ -22,10 +22,10 @@ import kotlin.experimental.ExperimentalTypeInference
 public fun <Element> emptyKoneList(): KoneList<Element> = KoneEmptySettableNoddedList
 
 public inline fun <Element> KoneList(size: UInt, initializer: (index: UInt) -> Element): KoneList<Element> =
-    KoneSettableArrayList(size, initializer)
+    KoneArraySettableList(size, initializer)
 
 public inline fun <Element> KoneSettableList(size: UInt, initializer: (index: UInt) -> Element): KoneSettableList<Element> =
-    KoneSettableArrayList(size, initializer)
+    KoneArraySettableList(size, initializer)
 
 public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneResizableArrayList(size, initializer)
@@ -36,11 +36,11 @@ public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingl
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> koneListOf(vararg elements: Element): KoneList<Element> =
-    KoneSettableArrayList(KoneMutableArray(elements as Array<Any?>))
+    KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> koneSettableListOf(vararg elements: Element): KoneSettableList<Element> =
-    KoneSettableArrayList(KoneMutableArray(elements as Array<Any?>))
+    KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 public fun <Element> koneMutableListOf(): KoneMutableList<Element> =
     KoneResizableArrayList()

@@ -10,8 +10,6 @@ import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableLinearIterator
 import dev.lounres.kone.collections.KoneMutableListNode
 import dev.lounres.kone.collections.KoneMutableNoddedList
-import dev.lounres.kone.collections.KoneSettableLinearIterator
-import dev.lounres.kone.collections.KoneSettableListNode
 import dev.lounres.kone.collections.capacityOverflowException
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.getOrNull
@@ -22,7 +20,7 @@ import dev.lounres.kone.scope
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
-public class KoneFixedCapacityArrayNoddedList<Element> @PublishedApi internal constructor(
+public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
     private val capacity: UInt = size,
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
@@ -59,7 +57,12 @@ public class KoneFixedCapacityArrayNoddedList<Element> @PublishedApi internal co
         size++
     }
     override fun addNode(element: Element): KoneMutableListNode<Element> {
-        TODO("Not yet implemented")
+        if (size == capacity) capacityOverflowException(capacity)
+        data[size] = element
+        val newNode = Node(this, size)
+        nodes[size] = newNode
+        size++
+        return newNode
     }
     override fun addAt(index: UInt, element: Element) {
         if (index > size) indexException(index, size)
@@ -67,6 +70,19 @@ public class KoneFixedCapacityArrayNoddedList<Element> @PublishedApi internal co
         if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
         data[index] = element
         size++
+    }
+    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
+        if (index > size) indexException(index, size)
+        if (size == capacity) capacityOverflowException(capacity)
+        if (size >= 1u) for (i in (size-1u) downTo index) {
+            data[i + 1u] = data[i]
+            nodes[i + 1u] = nodes[i].also { it!!.index = i + 1u }
+        }
+        data[index] = element
+        val newNode = Node(this, index)
+        data[index] = newNode
+        size++
+        return newNode
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
@@ -140,7 +156,7 @@ public class KoneFixedCapacityArrayNoddedList<Element> @PublishedApi internal co
         if (this.size != other.size) return false
         
         when (other) {
-            is KoneFixedCapacityArrayNoddedList<*> ->
+            is KoneArrayFixedCapacityNoddedList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }
@@ -156,18 +172,18 @@ public class KoneFixedCapacityArrayNoddedList<Element> @PublishedApi internal co
     }
     
     internal class Node<Element>(
-        list: KoneFixedCapacityArrayNoddedList<Element>,
-        override val index: UInt,
+        list: KoneArrayFixedCapacityNoddedList<Element>,
+        override var index: UInt,
     ) : KoneMutableListNode<Element>, Disposable {
-        private var _list: KoneFixedCapacityArrayNoddedList<Element>? = list
-        internal val list: KoneFixedCapacityArrayNoddedList<Element> get() = _list!!
+        private var _list: KoneArrayFixedCapacityNoddedList<Element>? = list
+        internal val list: KoneArrayFixedCapacityNoddedList<Element> get() = _list!!
         
         override var element: Element
             get() = list.data[index] as Element
             set(value) { list.data[index] = value }
         
         override fun remove() {
-            TODO("Not yet implemented")
+            list.removeAt(index)
         }
         
         override val nextNode: KoneMutableListNode<Element>?

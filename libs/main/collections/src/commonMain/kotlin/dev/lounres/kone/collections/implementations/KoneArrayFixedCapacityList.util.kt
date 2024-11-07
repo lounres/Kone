@@ -10,31 +10,31 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <Element> KoneFixedCapacityArrayList(capacity: UInt): KoneFixedCapacityArrayList<Element> =
-    KoneFixedCapacityArrayList(
+public fun <Element> KoneArrayFixedCapacityList(capacity: UInt): KoneArrayFixedCapacityList<Element> =
+    KoneArrayFixedCapacityList(
         size = 0u,
         capacity = capacity,
     )
 
-public inline fun <Element> KoneFixedCapacityArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneFixedCapacityArrayList<Element> =
-    KoneFixedCapacityArrayList(
+public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> =
+    KoneArrayFixedCapacityList(
         size = size,
         capacity = size,
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
-public inline fun <Element> KoneFixedCapacityArrayList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneFixedCapacityArrayList<Element> {
+public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
-    return KoneFixedCapacityArrayList(
+    return KoneArrayFixedCapacityList(
         size = size,
         capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
     )
 }
 
-internal class KoneFixedCapacityArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayFixedCapacityListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList<data>",
         elementDescriptor = elementDescriptor,
     )
 

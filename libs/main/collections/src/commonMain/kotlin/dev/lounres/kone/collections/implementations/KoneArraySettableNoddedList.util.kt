@@ -21,6 +21,6 @@ public object KoneArraySettableNoddedListProducer : KoneSettableNoddedListProduc
 
 internal class KoneArraySettableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneSettableArrayNoddedList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArraySettableNoddedList<data>",
         elementDescriptor = elementDescriptor,
     )

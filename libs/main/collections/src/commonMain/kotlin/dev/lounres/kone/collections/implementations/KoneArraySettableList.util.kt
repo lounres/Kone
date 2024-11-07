@@ -24,7 +24,7 @@ public object KoneArraySettableListProducer : KoneSettableListProducer {
 
 internal class KoneArraySettableListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneSettableArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArraySettableList<data>",
         elementDescriptor = elementDescriptor,
     )
 
