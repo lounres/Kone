@@ -20,9 +20,9 @@ internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>
     
     private val singleNode = Node()
     
-    override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneSingletonLinearIterable(singleNode)
+    override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneSingletonSettableLinearIterable(singleNode)
     
-    override fun iterator(): KoneIterator<Element> = KoneSingletonLinearIterator(singleElement = singleElement)
+    override fun iterator(): KoneIterator<Element> = KoneSingletonSettableLinearIterator(singleElement = singleElement)
 
     override fun toString(): String = "[$singleElement]"
     override fun hashCode(): Int = singleElement.hashCode()

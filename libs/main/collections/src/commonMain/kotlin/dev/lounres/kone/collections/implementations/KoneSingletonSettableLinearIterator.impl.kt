@@ -5,14 +5,14 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneLinearIterator
+import dev.lounres.kone.collections.KoneSettableLinearIterator
 import dev.lounres.kone.collections.indexException
 
 
-internal class KoneSingletonLinearIterator<Element>(
-    val singleElement: Element,
+internal class KoneSingletonSettableLinearIterator<Element>(
+    var singleElement: Element,
     var currentlyBeforeSingleElement: Boolean = true
-): KoneLinearIterator<Element> {
+): KoneSettableLinearIterator<Element> {
     override fun hasNext(): Boolean = currentlyBeforeSingleElement
     override fun getNext(): Element {
         if (!hasNext()) indexException(1u, 1u)
@@ -23,6 +23,10 @@ internal class KoneSingletonLinearIterator<Element>(
         currentlyBeforeSingleElement = false
     }
     override fun nextIndex(): UInt = if (hasNext()) 1u else indexException(1u, 1u)
+    override fun setNext(element: Element) {
+        if (!hasNext()) indexException(1u, 1u)
+        singleElement = element
+    }
 
     override fun hasPrevious(): Boolean = !currentlyBeforeSingleElement
     override fun getPrevious(): Element {
@@ -34,4 +38,8 @@ internal class KoneSingletonLinearIterator<Element>(
         currentlyBeforeSingleElement = true
     }
     override fun previousIndex(): UInt = if (hasPrevious()) 0u else indexException(UInt.MAX_VALUE, 1u)
+    override fun setPrevious(element: Element) {
+        if (!hasPrevious()) indexException(UInt.MAX_VALUE, 1u)
+        singleElement = element
+    }
 }

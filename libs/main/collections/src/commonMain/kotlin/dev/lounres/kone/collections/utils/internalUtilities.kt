@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.implementations.KoneSettableArrayList
-import dev.lounres.kone.collections.implementations.KoneSingletonNoddedList
+import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
 
 
 // TODO: Apply where it is necessary.
@@ -17,7 +17,7 @@ import dev.lounres.kone.collections.implementations.KoneSingletonNoddedList
 internal fun <E> KoneList<E>.toOptimizedList(): KoneList<E> =
     when (size) {
         0u -> emptyKoneList()
-        1u -> KoneSingletonNoddedList(this.first())
+        1u -> KoneSingletonSettableNoddedList(this.first())
         else -> {
             val iterator = this.iterator()
             KoneSettableArrayList(this.size) { iterator.getAndMoveNext() }

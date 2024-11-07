@@ -5,17 +5,19 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneLinearIterator
+import dev.lounres.kone.collections.KoneSettableLinearIterator
 
 
-internal object KoneEmptyLinearIterator: KoneLinearIterator<Nothing> {
+internal object KoneEmptySettableLinearIterator: KoneSettableLinearIterator<Nothing> {
     override fun hasNext(): Boolean = false
     override fun getNext(): Nothing = throw NoSuchElementException("Empty iterator has no next element")
     override fun moveNext() = throw NoSuchElementException("Empty iterator has no next element")
     override fun nextIndex(): UInt = throw NoSuchElementException("Empty iterator has no next index")
+    override fun setNext(element: Nothing) = throw NoSuchElementException("Empty iterator has no next element")
 
     override fun hasPrevious(): Boolean = false
     override fun getPrevious(): Nothing = throw NoSuchElementException("Empty iterator has no previous element")
     override fun movePrevious() = throw NoSuchElementException("Empty iterator has no previous element")
     override fun previousIndex(): UInt = throw NoSuchElementException("Empty iterator has no previous index")
+    override fun setPrevious(element: Nothing) = throw NoSuchElementException("Empty iterator has no previous element")
 }

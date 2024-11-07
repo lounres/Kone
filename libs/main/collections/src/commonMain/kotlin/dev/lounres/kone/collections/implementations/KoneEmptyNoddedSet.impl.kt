@@ -15,11 +15,11 @@ internal open class KoneEmptyNoddedSetTemplate<Element> : KoneNoddedSet<Element>
 
     override val size: UInt = 0u
     
-    override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneEmptyLinearIterable
+    override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneEmptySettableLinearIterable
 
     override fun contains(element: @UnsafeVariance Element): Boolean = false
 
-    override fun iterator(): KoneIterator<Nothing> = KoneEmptyLinearIterator
+    override fun iterator(): KoneIterator<Nothing> = KoneEmptySettableLinearIterator
 
     override fun toString(): String = "[]"
     override fun hashCode(): Int = 0

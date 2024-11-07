@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.KoneEmptyNoddedList
+import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 import dev.lounres.kone.collections.implementations.KoneSettableArrayList
-import dev.lounres.kone.collections.implementations.KoneSingletonNoddedList
+import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
 import dev.lounres.kone.collections.utils.toOptimizedList
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -19,7 +19,7 @@ import kotlin.experimental.ExperimentalTypeInference
 // TODO: Add builders for nodded lists
 // TODO: Add converters for `KoneLinkedSet`
 
-public fun <Element> emptyKoneList(): KoneList<Element> = KoneEmptyNoddedList
+public fun <Element> emptyKoneList(): KoneList<Element> = KoneEmptySettableNoddedList
 
 public inline fun <Element> KoneList(size: UInt, initializer: (index: UInt) -> Element): KoneList<Element> =
     KoneSettableArrayList(size, initializer)
@@ -32,7 +32,7 @@ public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UIn
 
 public fun <Element> koneListOf(): KoneList<Element> = emptyKoneList()
 
-public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonNoddedList(element)
+public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonSettableNoddedList(element)
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> koneListOf(vararg elements: Element): KoneList<Element> =

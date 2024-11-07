@@ -9,6 +9,8 @@ import dev.lounres.kone.collections.KoneLinearIterable
 import dev.lounres.kone.collections.KoneLinearIterator
 
 
-internal class KoneSingletonLinearIterable<Element>(val singleElement: Element): KoneLinearIterable<Element> {
-    override fun iterator(): KoneLinearIterator<Element> = KoneSingletonLinearIterator(singleElement)
+internal open class KoneEmptySettableLinearIterableTemplate<out Element> : KoneLinearIterable<Element> {
+    override fun iterator(): KoneLinearIterator<Element> = KoneEmptySettableLinearIterator
 }
+
+internal object KoneEmptySettableLinearIterable: KoneEmptySettableLinearIterableTemplate<Nothing>()
