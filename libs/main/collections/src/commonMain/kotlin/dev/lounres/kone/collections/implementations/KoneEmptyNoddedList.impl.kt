@@ -13,20 +13,20 @@ import dev.lounres.kone.collections.indexException
 import dev.lounres.kone.collections.isEmpty
 
 
-internal open class EmptyKoneNoddedListTemplate<Element> : KoneNoddedList<Element> {
+internal open class KoneEmptyNoddedListTemplate<Element> : KoneNoddedList<Element> {
     override val size: UInt = 0u
     
     override fun getNode(index: UInt): KoneListNode<Element> = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
     override fun get(index: UInt): Element = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
 
-    override fun iterator(): KoneLinearIterator<Nothing> = EmptyKoneIterator
+    override fun iterator(): KoneLinearIterator<Nothing> = KoneEmptyLinearIterator
     override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> =
         if (index >= 0u) indexException(index, 0u)
-        else EmptyKoneIterator
+        else KoneEmptyLinearIterator
 
     override fun toString(): String = "[]"
     override fun hashCode(): Int = 1
     override fun equals(other: Any?): Boolean = other is KoneList<*> && other.isEmpty()
 }
 
-internal object EmptyKoneNoddedList : EmptyKoneNoddedListTemplate<Nothing>()
+internal object KoneEmptyNoddedList : KoneEmptyNoddedListTemplate<Nothing>()

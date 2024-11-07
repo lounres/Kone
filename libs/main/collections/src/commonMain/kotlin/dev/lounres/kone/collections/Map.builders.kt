@@ -7,11 +7,12 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.EmptyKoneMap
+import dev.lounres.kone.collections.implementations.KoneEmptyMap
 import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
 import dev.lounres.kone.collections.implementations.KoneResizableHashMap
 import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneSingletonMap
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -19,12 +20,21 @@ import kotlin.contracts.InvocationKind
 import kotlin.experimental.ExperimentalTypeInference
 
 
+// TODO: Add builders with vararg map nodes
+
 @Suppress("UNCHECKED_CAST")
-public fun <Key, Value> emptyKoneMap(): KoneMap<Key, Value> = EmptyKoneMap as KoneMap<Key, Value>
+public fun <Key, Value> emptyKoneMap(): KoneMap<Key, Value> = KoneEmptyMap as KoneMap<Key, Value>
 
 @Suppress("unused")
-public fun <Key, Value> koneMapOf(keyContext: Equality<Key> = defaultEquality(), valueContext: Equality<Value> = defaultEquality()): KoneMap<Key, Value> =
+public fun <Key, Value> koneMapOf(keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
     emptyKoneMap()
+
+public fun <Key, Value> koneMapOf(entry: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
+    KoneSingletonMap(
+        singleKey = entry.key,
+        singleValue = entry.value,
+        keyContext = keyContext,
+    )
 
 public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
     when {

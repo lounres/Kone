@@ -10,20 +10,20 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
-internal open class EmptyKoneNoddedSetTemplate<Element> : KoneNoddedSet<Element>, KoneSetWithContext<Element, Equality<Element>> {
+internal open class KoneEmptyNoddedSetTemplate<Element> : KoneNoddedSet<Element>, KoneSetWithContext<Element, Equality<Element>> {
     override val elementContext: Equality<Element> get() = defaultEquality()
 
     override val size: UInt = 0u
     
-    override val nodes: KoneIterable<KoneSetNode<Element>> get() = EmptyKoneIterable
+    override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneEmptyLinearIterable
 
     override fun contains(element: @UnsafeVariance Element): Boolean = false
 
-    override fun iterator(): KoneIterator<Nothing> = EmptyKoneIterator
+    override fun iterator(): KoneIterator<Nothing> = KoneEmptyLinearIterator
 
     override fun toString(): String = "[]"
     override fun hashCode(): Int = 0
     override fun equals(other: Any?): Boolean = other is KoneSet<*> && other.isEmpty()
 }
 
-internal object EmptyKoneNoddedSet : EmptyKoneNoddedSetTemplate<Nothing>()
+internal object KoneEmptyNoddedSet : KoneEmptyNoddedSetTemplate<Nothing>()

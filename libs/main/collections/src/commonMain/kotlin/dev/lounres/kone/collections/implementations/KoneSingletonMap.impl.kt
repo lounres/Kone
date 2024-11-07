@@ -19,7 +19,7 @@ import dev.lounres.kone.context.invoke
 
 
 // TODO: Apply the class
-internal class SingletonMap<Key, KeyContext: Equality<Key>, Value>(
+internal class KoneSingletonMap<Key, KeyContext: Equality<Key>, Value>(
     val singleKey: Key,
     val singleValue: Value,
     override val keyContext: KeyContext,
@@ -28,17 +28,17 @@ internal class SingletonMap<Key, KeyContext: Equality<Key>, Value>(
     
     override val size: UInt get() = 1u
     override val nodesView: KoneSet<KoneMapNode<Key, Value>> =
-        SingletonSet(
+        KoneSingletonNoddedSet(
             singleElement = singleNode,
             elementContext = absoluteEquality(),
         )
     override val keysView: KoneSet<Key> =
-        SingletonSet(
+        KoneSingletonNoddedSet(
             singleElement = singleKey,
             elementContext = keyContext
         )
-    override val valuesView: KoneIterable<Value> = SingletonList(singleValue)
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = SingletonList(KoneMapEntry(singleKey, singleValue))
+    override val valuesView: KoneIterable<Value> = KoneSingletonLinearIterable(singleValue)
+    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = KoneSingletonLinearIterable(KoneMapEntry(singleKey, singleValue))
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (keyContext { key eq singleKey }) singleNode else null
     

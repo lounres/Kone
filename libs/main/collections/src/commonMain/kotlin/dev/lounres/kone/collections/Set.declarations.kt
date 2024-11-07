@@ -25,6 +25,9 @@ public interface KoneMutableSet<Element> : KoneSet<Element> {
 
 public interface KoneNoddedSet<out Element> : KoneSet<Element> {
     public val nodes: KoneIterable<KoneSetNode<Element>>
+    // TODO: Maybe add the following methods
+//    public fun nodeOfOrNull(element: @UnsafeVariance Element): KoneSetNode<Element>?
+//    public fun nodeOf(element: @UnsafeVariance Element): KoneSetNode<Element> = nodeOfOrNull(element) ?: TODO()
 }
 
 public interface KoneNoddedMutableSet<Element> : KoneMutableSet<Element>, KoneNoddedSet<Element> {

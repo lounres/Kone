@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.indexException
 
 
-internal class SingletonLinearIterator<Element>(
+internal class KoneSingletonLinearIterator<Element>(
     val singleElement: Element,
     var currentlyBeforeSingleElement: Boolean = true
 ): KoneLinearIterator<Element> {

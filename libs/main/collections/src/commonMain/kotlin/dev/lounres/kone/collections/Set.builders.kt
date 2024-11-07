@@ -5,13 +5,14 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.EmptyKoneNoddedSet
+import dev.lounres.kone.collections.implementations.KoneEmptyNoddedSet
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneListBackedSet
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedSet
 import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableHashSet
 import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneSingletonNoddedSet
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -22,15 +23,18 @@ import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
 
 
+// TODO: Add builders fpr nodded sets and linked set
 // TODO: Add converters for `KoneLinkedSet`
 
 @Suppress("UNCHECKED_CAST")
-public fun <Element> emptyKoneSet(): KoneSet<Element> = EmptyKoneNoddedSet as KoneSet<Element>
+public fun <Element> emptyKoneSet(): KoneSet<Element> = KoneEmptyNoddedSet as KoneSet<Element>
 
 @Suppress("UNUSED_PARAMETER")
 public fun <Element> koneSetOf(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> = emptyKoneSet()
 
-// TODO: Add single-element implementations
+@Suppress("UNUSED_PARAMETER")
+public fun <Element> koneSetOf(element: Element, elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
+    KoneSingletonNoddedSet(element, elementContext)
 
 public fun <Element> koneSetOf(vararg elements: Element, elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
     if (elementContext is Hashing<Element>) KoneResizableHashSet(elementContext = elementContext)
