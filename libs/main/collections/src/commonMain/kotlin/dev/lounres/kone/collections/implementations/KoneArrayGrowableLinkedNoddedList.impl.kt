@@ -11,7 +11,7 @@ import dev.lounres.kone.scope
 
 
 ////@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
-//public class KoneGrowableLinkedArrayNoddedList<Element> internal constructor(
+//public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
 //    size: UInt,
 //    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
 //    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
@@ -19,7 +19,7 @@ import dev.lounres.kone.scope
 //    private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
 //    private var start: UInt = 0u,
 //    private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-//) : KoneMutableList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ KoneDequeue<Element>, Disposable {
+//) : KoneMutableNoddedList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ KoneDequeue<Element>, Disposable {
 //    override var size: UInt = size
 //        private set
 //
@@ -345,7 +345,7 @@ import dev.lounres.kone.scope
 //        if (this.size != other.size) return false
 //
 //        when (other) {
-//            is KoneGrowableLinkedArrayNoddedList<*> -> {
+//            is KoneArrayGrowableLinkedNoddedList<*> -> {
 //                var thisCurrentIndex = this.start
 //                var otherCurrentIndex = other.start
 //                repeat(size) {
@@ -368,10 +368,12 @@ import dev.lounres.kone.scope
 //    }
 //
 //    internal class Node<Element>(
-//        list: KoneGrowableLinkedArrayNoddedList<Element>,
+//        list: KoneArrayGrowableLinkedNoddedList<Element>,
 //        override var element: Element,
+//        var actualIndex: UInt,
+//    ) : KoneMutableListNode<Element> {
 //
-//    ) : KoneMutableListNode<Element>
+//    }
 //
 //    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
 //        init {

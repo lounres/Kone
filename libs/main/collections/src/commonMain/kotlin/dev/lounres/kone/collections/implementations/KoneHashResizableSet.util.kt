@@ -5,22 +5,16 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultHashing
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E, EC: Hashing<E>> KoneResizableHashSet(elementContext: EC): KoneResizableHashSet<E, EC> =
+public fun <Element, ElementContext: Hashing<Element>> KoneResizableHashSet(elementContext: ElementContext): KoneResizableHashSet<Element, ElementContext> =
     KoneResizableHashSet(size = 0u, elementContext = elementContext)
 
-public fun <E> KoneResizableHashSet(): KoneResizableHashSet<E, Hashing<E>> =
+public fun <Element> KoneResizableHashSet(): KoneResizableHashSet<Element, Hashing<Element>> =
     KoneResizableHashSet(size = 0u, elementContext = defaultHashing())
 
 internal class KoneResizableHashSetDescriptor(elementDescriptor: SerialDescriptor):

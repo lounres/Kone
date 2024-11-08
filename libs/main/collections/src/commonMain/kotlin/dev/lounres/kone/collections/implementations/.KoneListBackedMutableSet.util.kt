@@ -6,29 +6,22 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.producers.KoneMutableListProducer
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.collections.utils.indices
 import dev.lounres.kone.comparison.Equality
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E, EC: Equality<E>> KoneMutableListBackedSet(
-    elementContext: EC,
+public fun <Element, ElementContext: Equality<Element>> KoneMutableListBackedSet(
+    elementContext: ElementContext,
     listProducer: KoneMutableListProducer = KoneResizableLinkedArrayListProducer,
-): KoneMutableListBackedSet<E, EC> = KoneMutableListBackedSet(elementContext, listProducer.produce())
+): KoneMutableListBackedSet<Element, ElementContext> = KoneMutableListBackedSet(elementContext, listProducer.produce())
 
-public fun <E, EC: Equality<E>> KoneMutableListBackedSet(
-    elementContext: EC,
+public fun <Element, ElementContext: Equality<Element>> KoneMutableListBackedSet(
+    elementContext: ElementContext,
     size: UInt,
     listProducer: KoneMutableListProducer = KoneResizableLinkedArrayListProducer,
-    builder: (UInt) -> E
-): KoneMutableListBackedSet<E, EC> = KoneMutableListBackedSet(elementContext, listProducer.produceBy(size, builder))
+    builder: (UInt) -> Element
+): KoneMutableListBackedSet<Element, ElementContext> = KoneMutableListBackedSet(elementContext, listProducer.produceBy(size, builder))
 
 internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(

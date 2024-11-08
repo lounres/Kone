@@ -7,7 +7,7 @@ package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
-import dev.lounres.kone.collections.implementations.KoneResizableArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
 import dev.lounres.kone.collections.utils.toOptimizedList
@@ -28,7 +28,7 @@ public inline fun <Element> KoneSettableList(size: UInt, initializer: (index: UI
     KoneArraySettableList(size, initializer)
 
 public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
-    KoneResizableArrayList(size, initializer)
+    KoneArrayResizableList(size, initializer)
 
 public fun <Element> koneListOf(): KoneList<Element> = emptyKoneList()
 
@@ -43,15 +43,15 @@ public fun <Element> koneSettableListOf(vararg elements: Element): KoneSettableL
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 public fun <Element> koneMutableListOf(): KoneMutableList<Element> =
-    KoneResizableArrayList()
+    KoneArrayResizableList()
 
 public fun <Element> koneMutableListOf(vararg elements: Element): KoneMutableList<Element> =
-    KoneResizableArrayList(elements.size.toUInt()) { elements[it.toInt()] }
+    KoneArrayResizableList(elements.size.toUInt()) { elements[it.toInt()] }
 
 public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
     if (this is Collection<Element>) return this.toKoneMutableList()
     
-    val result = KoneResizableArrayList<Element>()
+    val result = KoneArrayResizableList<Element>()
     for (element in this) result.add(element)
     return result
 }
@@ -60,30 +60,35 @@ public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<
     if (this is KoneList<Element>) return this.toKoneMutableList()
     if (this is KoneSet<Element>) return this.toKoneMutableList()
 
-    val result = KoneResizableArrayList<Element>()
+    val result = KoneArrayResizableList<Element>()
     for (element in this) result.add(element)
     return result
 }
 
 public fun <Element> Collection<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
-    return KoneResizableArrayList(size.toUInt(), ) { iterator.next() }
+    return KoneArrayResizableList(size.toUInt(), ) { iterator.next() }
 }
 
 public fun <Element> KoneList<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
-    return KoneResizableArrayList(size) { iterator.getAndMoveNext() }
+    return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
 }
 
 public fun <Element> KoneSet<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
-    return KoneResizableArrayList(size) { iterator.getAndMoveNext() }
+    return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
+}
+
+public fun <Element> KoneLinkedSet<Element>.toKoneMutableList(): KoneMutableList<Element> {
+    val iterator = iterator()
+    return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
 }
 
 public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
     if (this is Collection<Element>) return this.toKoneSettableList()
     
-    val result = KoneResizableArrayList<Element>()
+    val result = KoneArrayResizableList<Element>()
     for (element in this) result.add(element)
     return KoneSettableList(result.size) { result[it] }
 }
@@ -92,7 +97,7 @@ public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableLis
     if (this is KoneList<Element>) return this.toKoneSettableList()
     if (this is KoneSet<Element>) return this.toKoneSettableList()
 
-    val result = KoneResizableArrayList<Element>()
+    val result = KoneArrayResizableList<Element>()
     for (element in this) result.add(element)
     return KoneSettableList(result.size) { result[it] }
 }
@@ -108,6 +113,11 @@ public fun <Element> KoneList<Element>.toKoneSettableList(): KoneSettableList<El
 }
 
 public fun <Element> KoneSet<Element>.toKoneSettableList(): KoneSettableList<Element> {
+    val iterator = iterator()
+    return KoneSettableList(size) { iterator.getAndMoveNext() }
+}
+
+public fun <Element> KoneLinkedSet<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
     return KoneSettableList(size) { iterator.getAndMoveNext() }
 }
@@ -132,6 +142,10 @@ public fun <Element> KoneList<Element>.toKoneList(): KoneList<Element> =
     else this.toKoneMutableList().toOptimizedList()
 
 public fun <Element> KoneSet<Element>.toKoneList(): KoneList<Element> =
+    if (size == 0u) emptyKoneList()
+    else this.toKoneMutableList().toOptimizedList()
+
+public fun <Element> KoneLinkedSet<Element>.toKoneList(): KoneList<Element> =
     if (size == 0u) emptyKoneList()
     else this.toKoneMutableList().toOptimizedList()
 

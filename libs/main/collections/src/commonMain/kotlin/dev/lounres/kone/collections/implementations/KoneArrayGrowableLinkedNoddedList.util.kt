@@ -6,31 +6,38 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.producers.KoneMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-//public fun <Element> KoneGrowableLinkedArrayNoddedList(): KoneGrowableLinkedArrayNoddedList<Element> =
-//    KoneGrowableLinkedArrayNoddedList(size = 0u)
+//public fun <Element> KoneArrayGrowableLinkedNoddedList(): KoneArrayGrowableLinkedNoddedList<Element> =
+//    KoneArrayGrowableLinkedNoddedList(size = 0u)
 //
-//public fun <Element> KoneGrowableLinkedArrayNoddedList(initialCapacity: UInt): KoneGrowableLinkedArrayNoddedList<Element> =
-//    KoneGrowableLinkedArrayNoddedList(
+//public fun <Element> KoneArrayGrowableLinkedNoddedList(initialCapacity: UInt): KoneArrayGrowableLinkedNoddedList<Element> =
+//    KoneArrayGrowableLinkedNoddedList(
 //        size = 0u,
 //        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
 //    )
 //
-//public fun <Element> KoneGrowableLinkedArrayNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneGrowableLinkedArrayNoddedList<Element> {
+//public fun <Element> KoneArrayGrowableLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> {
 //    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
-//    return KoneGrowableLinkedArrayNoddedList(
+//    return KoneArrayGrowableLinkedNoddedList(
 //        size = size,
 //        sizeUpperBound = sizeUpperBound,
 //        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
 //    )
 //}
+//
+//public object KoneArrayGrowableLinkedNoddedListProducer : KoneMutableNoddedListProducer {
+//    override fun <E> produce(): KoneArrayGrowableLinkedNoddedList<E> = KoneArrayGrowableLinkedNoddedList()
+//    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneArrayGrowableLinkedNoddedList<E> =
+//        KoneArrayGrowableLinkedNoddedList(number, builder)
+//}
 
-internal class KoneGrowableLinkedArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayGrowableLinkedNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayNoddedList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayGrowableLinkedNoddedList<data>",
         elementDescriptor = elementDescriptor,
     )
 

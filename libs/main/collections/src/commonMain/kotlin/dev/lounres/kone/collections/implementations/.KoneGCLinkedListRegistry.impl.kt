@@ -15,9 +15,9 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.repeat
 
 
-public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
+public class KoneLinkedGCListRegistry<Element, EC: Equality<Element>>(
     public val elementContext: EC,
-) : KoneMutableListRegistry<E>, Disposable {
+) : KoneMutableListRegistry<Element>, Disposable {
     internal sealed interface Start<E> : Disposable {
         var nextNode: End<E>
     }
@@ -80,8 +80,8 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
 
     override var size: UInt = 0u
         private set
-    private var start: StartStub<E> = StartStub()
-    private var end: EndStub<E> = EndStub()
+    private var start: StartStub<Element> = StartStub()
+    private var end: EndStub<Element> = EndStub()
 
     init {
         start.nextNode = end
@@ -104,27 +104,27 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         currentNode.dispose()
     }
 
-    private fun endNodeByIndex(index: UInt): End<E> =
+    private fun endNodeByIndex(index: UInt): End<Element> =
         when {
             index == size -> end
             index <= (size - 1u) / 2u -> {
                 var currentEndNode = start.nextNode
                 repeat(index) {
-                    currentEndNode = (currentEndNode as Node<E>).nextNode
+                    currentEndNode = (currentEndNode as Node<Element>).nextNode
                 }
                 currentEndNode
             }
             else -> {
                 var currentEndNode = end.previousNode
                 for (i in index ..< size-1u) {
-                    currentEndNode = (currentEndNode as Node<E>).previousNode
+                    currentEndNode = (currentEndNode as Node<Element>).previousNode
                 }
-                currentEndNode as Node<E>
+                currentEndNode as Node<Element>
             }
         }
-    private fun justAddBefore(endNode: End<E>, element: E) {
+    private fun justAddBefore(endNode: End<Element>, element: Element) {
         val previousNode = endNode.previousNode
-        val newNode = Node<E>()
+        val newNode = Node<Element>()
         newNode.element = element
         newNode.previousNode = previousNode
         newNode.nextNode = end
@@ -132,13 +132,13 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
         end.previousNode = newNode
     }
 
-    override val elementsView: KoneList<E> = Elements()
-    override val registrationsView: KoneIterable<KoneMutableRegistration<E>> = Registrations()
+    override val elementsView: KoneList<Element> = Elements()
+    override val registrationsView: KoneIterable<KoneMutableRegistration<Element>> = Registrations()
 
-    override fun register(element: E): KoneMutableRegistration<E> {
+    override fun register(element: Element): KoneMutableRegistration<Element> {
         justAddBefore(end, element)
         size++
-        return end.previousNode as Node<E>
+        return end.previousNode as Node<Element>
     }
 //    override fun find(element: E): KoneIterableList<KoneMutableRegistration<E>> {
 //        val accumulator = KoneGrowableArrayList<KoneMutableRegistration<E>>()
@@ -155,65 +155,65 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
 //        return accumulator
 //    }
 
-    internal inner class ElementsIterator(var currentIndex: UInt = 0u): KoneLinearIterator<E> {
+    internal inner class ElementsIterator(var currentIndex: UInt = 0u): KoneLinearIterator<Element> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
         var currentNode = endNodeByIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, size)
-            return (currentNode as Node<E>).element
+            return (currentNode as Node<Element>).element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
-            currentNode = (currentNode as Node<E>).nextNode
+            currentNode = (currentNode as Node<Element>).nextNode
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, size)
-            return (currentNode.previousNode as Node<E>).element
+            return (currentNode.previousNode as Node<Element>).element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
-            currentNode = (currentNode.previousNode as Node<E>)
+            currentNode = (currentNode.previousNode as Node<Element>)
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
     }
 
-    internal inner class Elements : KoneList<E> {
+    internal inner class Elements : KoneList<Element> {
         override val size: UInt get() = this@KoneLinkedGCListRegistry.size
 
-        override fun get(index: UInt): E {
+        override fun get(index: UInt): Element {
             if (index >= size) indexException(index, size)
-            return (endNodeByIndex(index) as Node<E>).element
+            return (endNodeByIndex(index) as Node<Element>).element
         }
 
-        override fun iterator(): KoneLinearIterator<E> = ElementsIterator()
-        override fun iteratorFrom(index: UInt): KoneLinearIterator<E> = ElementsIterator(index)
+        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator()
+        override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> = ElementsIterator(index)
     }
 
-    internal inner class RegistrationsIterator: KoneLinearIterator<Node<E>> {
+    internal inner class RegistrationsIterator: KoneLinearIterator<Node<Element>> {
         var currentIndex: UInt = 0u
-        var currentNode: End<E> = start.nextNode
+        var currentNode: End<Element> = start.nextNode
         
         override fun hasNext(): Boolean = currentIndex < size
         override fun nextIndex(): UInt {
             if (!hasNext()) indexException(currentIndex, size)
             return currentIndex
         }
-        override fun getNext(): Node<E> {
+        override fun getNext(): Node<Element> {
             if (!hasNext()) indexException(currentIndex, size)
-            return currentNode as Node<E>
+            return currentNode as Node<Element>
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
-            currentNode = (currentNode as Node<E>).nextNode
+            currentNode = (currentNode as Node<Element>).nextNode
         }
         
         override fun hasPrevious(): Boolean = currentIndex > 0u
@@ -221,18 +221,18 @@ public class KoneLinkedGCListRegistry<E, EC: Equality<E>>(
             if (!hasPrevious()) indexException(currentIndex - 1u, size)
             return currentIndex - 1u
         }
-        override fun getPrevious(): Node<E> {
+        override fun getPrevious(): Node<Element> {
             if (!hasPrevious()) indexException(currentIndex - 1u, size)
-            return currentNode.previousNode as Node<E>
+            return currentNode.previousNode as Node<Element>
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex - 1u, size)
             currentIndex--
-            currentNode = currentNode.previousNode as Node<E>
+            currentNode = currentNode.previousNode as Node<Element>
         }
     }
 
-    internal inner class Registrations: KoneIterable<Node<E>> {
-        override fun iterator(): KoneLinearIterator<Node<E>> = RegistrationsIterator()
+    internal inner class Registrations: KoneIterable<Node<Element>> {
+        override fun iterator(): KoneLinearIterator<Node<Element>> = RegistrationsIterator()
     }
 }

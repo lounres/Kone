@@ -7,11 +7,10 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedNoddedListProducer
 import dev.lounres.kone.collections.implementations.KoneEmptyMap
-import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
 import dev.lounres.kone.collections.implementations.KoneResizableHashMap
-import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneSingletonMap
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -63,7 +62,7 @@ public inline fun <Key, Value> buildKoneMap(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext)
-        else KoneMutableListBackedMap(keyContext = keyContext) { KoneResizableLinkedArrayList() }
+        else KoneMutableListBackedMap(keyContext = keyContext, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
@@ -74,7 +73,7 @@ public inline fun <Key, Value> buildKoneMap(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
-        else KoneMutableListBackedMap(keyContext = keyContext) { KoneGrowableLinkedArrayList(initialCapacity = initialCapacity) }
+        else KoneMutableListBackedMap(keyContext = keyContext/*, KoneArrayGrowableLinkedNoddedListProducer*/) // TODO: Enable producer and use `initialCapacity`
     return mapBuilder.apply(builderAction)
 }
 

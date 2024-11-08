@@ -15,23 +15,19 @@ import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 
 
-public class KoneListBackedMap<K, KC: Equality<K>, V> @PublishedApi internal constructor(
-    override val keyContext: KC,
-    internal val backingList: KoneList<Node<K, V>>,
-) : KoneMapWithContext<K, KC, V> {
+public class KoneListBackedMap<Key, KeyContext: Equality<Key>, Value> @PublishedApi internal constructor(
+    override val keyContext: KeyContext,
+    internal val backingList: KoneList<Node<Key, Value>>,
+) : KoneMapWithContext<Key, KeyContext, Value> {
     override val size: UInt
         get() = backingList.size
     
-    override val nodesView: KoneSet<KoneMapNode<K, V>>
-        get() = backingList.toKoneSet(absoluteEquality())
-    override val keysView: KoneSet<K>
-        get() = KoneListBackedSet(keyContext, backingList.map { it.key })
-    override val valuesView: KoneIterable<V>
-        get() = backingList.map { it.value }
-    override val entriesView: KoneIterable<KoneMapEntry<K, V>>
-        get() = backingList.map { KoneMapEntry(it.key, it.value) }
+    override val nodesView: KoneSet<KoneMapNode<Key, Value>> = backingList.toKoneSet(absoluteEquality())
+    override val keysView: KoneSet<Key> = KoneListBackedSet(keyContext, backingList.map { it.key })
+    override val valuesView: KoneIterable<Value> = backingList.map { it.value }
+    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = backingList.map { KoneMapEntry(it.key, it.value) }
     
-    override fun getNodeOrNull(key: K): KoneMapNode<K, V>? = backingList.firstThatOrNull { keyContext { it.key eq key } }
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { keyContext { it.key eq key } }
     
     // TODO: Override equals and `hashCode`
 
@@ -46,5 +42,6 @@ public class KoneListBackedMap<K, KC: Equality<K>, V> @PublishedApi internal con
         append('}')
     }
     
+    @PublishedApi
     internal data class Node<out K, out V>(override val key: K, override val value: V) : KoneMapNode<K, V>
 }

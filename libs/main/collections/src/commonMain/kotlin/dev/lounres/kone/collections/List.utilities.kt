@@ -29,5 +29,18 @@ public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneSet<Eleme
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
 
+public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
+    var currentIndex = index
+    elements.forEach { addAt(currentIndex++, it) }
+}
+public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneList<Element>) {
+    val iterator = iterator()
+    addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
+}
+public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneSet<Element>) {
+    val iterator = iterator()
+    addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
+}
+
 public val KoneList<*>.lastIndex: UInt get() = size - 1u
 public val KoneList<*>.indices: UIntRange get() = 0u ..< size

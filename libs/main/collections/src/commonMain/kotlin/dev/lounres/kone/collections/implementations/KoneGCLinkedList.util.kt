@@ -5,29 +5,17 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.repeat
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.descriptors.SerialDescriptor
 
-
-public fun <E> KoneLinkedGCList(size: UInt, initializer: (index: UInt) -> E): KoneLinkedGCList<E> =
-    KoneLinkedGCList<E>().apply {
-        for (index in 0u ..< size) add(initializer(index))
-    }
-
-internal class KoneLinkedGCListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneLinkedGCList<data>",
-        elementDescriptor = elementDescriptor,
-    )
+//public fun <Element> KoneLinkedGCList(size: UInt, initializer: (index: UInt) -> Element): KoneLinkedGCList<Element> =
+//    KoneLinkedGCList<Element>().apply {
+//        for (index in 0u ..< size) add(initializer(index))
+//    }
+//
+//internal class KoneLinkedGCListDescriptor(elementDescriptor: SerialDescriptor):
+//    KoneCollectionDescriptor(
+//        serialName = "dev.lounres.kone.collections.implementations.KoneLinkedGCList<data>",
+//        elementDescriptor = elementDescriptor,
+//    )
 
 //internal class KoneLinkedGCListSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,

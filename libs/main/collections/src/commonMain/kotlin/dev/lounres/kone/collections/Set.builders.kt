@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.implementations.KoneEmptyNoddedSet
 import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneListBackedSet
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedSet
-import dev.lounres.kone.collections.implementations.KoneResizableArrayList
 import dev.lounres.kone.collections.implementations.KoneResizableHashSet
 import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
 import dev.lounres.kone.collections.implementations.KoneSingletonNoddedSet
@@ -81,7 +81,7 @@ public fun <Element> Collection<Element>.toKoneMutableSet(elementContext: Equali
             for (element in this@toKoneMutableSet) add(element)
         }
     else {
-        val backingList = KoneResizableArrayList<Element>()
+        val backingList = KoneArrayResizableList<Element>()
         for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
         KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList<Element>().apply { addAllFrom(backingList) })
     }
@@ -92,7 +92,7 @@ public fun <Element> KoneList<Element>.toKoneMutableSet(elementContext: Equality
             repeat(this@toKoneMutableSet.size) { this.add(this@toKoneMutableSet[it]) }
         }
     else {
-        val backingList = KoneResizableArrayList<Element>()
+        val backingList = KoneArrayResizableList<Element>()
         for (index in indices) {
             val element = this[index]
             if (elementContext { element !in backingList }) backingList.add(element)
@@ -104,7 +104,7 @@ public fun <Element> KoneSet<Element>.toKoneMutableSet(elementContext: Equality<
     if (elementContext is Hashing<Element>)
         KoneResizableHashSet(elementContext = elementContext).apply { addAllFrom(this@toKoneMutableSet) }
     else {
-        val backingList = KoneResizableArrayList<Element>()
+        val backingList = KoneArrayResizableList<Element>()
         for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
         KoneMutableListBackedSet(elementContext, backingList)
     }

@@ -6,27 +6,27 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
-import kotlinx.serialization.Serializable
 
 
 //@Serializable(with = KoneMutableListBackedSetWithContextSerializer::class)
-public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal constructor(
-    override val elementContext: EC,
-    internal val backingList: KoneMutableList<E>,
-) : KoneMutableSet<E>, KoneMutableSetWithContext<E, EC> {
+public class KoneMutableListBackedSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
+    override val elementContext: ElementContext,
+    internal val backingList: KoneMutableList<Element>,
+) : KoneMutableSet<Element>, KoneMutableSetWithContext<Element, ElementContext> {
     override val size: UInt
         get() = backingList.size
 
-    override fun contains(element: E): Boolean = elementContext { element in backingList }
+    override fun contains(element: Element): Boolean = elementContext { element in backingList }
 
-    override fun add(element: E) {
+    override fun add(element: Element) {
         if (elementContext { element !in backingList }) backingList.add(element)
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         repeat(number) { add(builder(it)) }
     }
 
@@ -34,14 +34,14 @@ public class KoneMutableListBackedSet<E, EC: Equality<E>> @PublishedApi internal
         backingList.removeAll()
     }
 
-    override fun remove(element: E) {
+    override fun remove(element: Element) {
         backingList.removeAt(elementContext { backingList.firstIndexOf(element) })
     }
-    override fun removeAllThat(predicate: (element: E) -> Boolean) {
+    override fun removeAllThat(predicate: (element: Element) -> Boolean) {
         backingList.removeAllThat(predicate)
     }
 
-    override fun iterator(): KoneRemovableIterator<E> = backingList.iterator()
+    override fun iterator(): KoneRemovableIterator<Element> = backingList.iterator()
 
     // TODO: Override equals and `hashCode`
 

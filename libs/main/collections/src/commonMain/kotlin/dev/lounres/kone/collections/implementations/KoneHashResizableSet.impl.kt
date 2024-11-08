@@ -9,20 +9,18 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstIndexThat
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlinx.serialization.Serializable
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 
 
 //@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
-public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
+public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateCapacity(size, loadFactor), 2u)) - 1u,
@@ -30,20 +28,19 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateSize(capacityUpperBound, loadFactor),
-    private var data: KoneArray<KoneResizableLinkedArrayList<E, Equality<E>>> =
-        KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
-    override val elementContext: EC,
-) : KoneMutableSetWithContext<E, EC>, Disposable {
+    private var data: KoneArray<KoneResizableLinkedArrayList<Element>> = KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
+    override val elementContext: ElementContext,
+) : KoneMutableSetWithContext<Element, ElementContext>, Disposable {
     override var size: UInt = size
         private set
 
-    private fun E.localHash(): Int {
+    private fun Element.localHash(): Int {
         val contextHash = elementContext { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
-    private fun E.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
+    private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
-    private fun KoneArray<KoneResizableLinkedArrayList<E>>.dispose() {
+    private fun KoneArray<KoneResizableLinkedArrayList<Element>>.dispose() {
         @Suppress("UNCHECKED_CAST")
         val array = this.array as Array<Any?>
         for (i in 0u ..< size) {
@@ -93,12 +90,12 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         size = newSize
     }
 
-    override fun contains(element: E): Boolean {
+    override fun contains(element: Element): Boolean {
         for (currentElement in data[element.dataIndex()]) if (elementContext { currentElement eq element }) return true
         return false
     }
 
-    override fun add(element: E) {
+    override fun add(element: Element) {
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
             if (elementContext { iterator.getNext() eq element }) {
@@ -116,7 +113,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         }
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         repeat(number) { add(builder(it)) }
     }
 
@@ -130,14 +127,14 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         size = 0u
     }
 
-    override fun removeAllThat(predicate: (element: E) -> Boolean) {
+    override fun removeAllThat(predicate: (element: Element) -> Boolean) {
         var newSize = 0u
         for (linkedList in data) linkedList.removeAllThat { element -> predicate(element).also { if (!it) newSize += 1u } }
         if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
         else size = newSize
     }
 
-    override fun remove(element: E) {
+    override fun remove(element: Element) {
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
             if (elementContext { iterator.getNext() eq element }) {
@@ -150,7 +147,7 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         }
     }
 
-    override fun iterator(): KoneRemovableIterator<E> = Iterator()
+    override fun iterator(): KoneRemovableIterator<Element> = Iterator()
 
     override fun toString(): String = buildString {
         append('[')
@@ -194,12 +191,12 @@ public class KoneResizableHashSet<E, EC: Hashing<E>> internal constructor(
         return true
     }
 
-    internal inner class Iterator : KoneRemovableIterator<E> {
+    internal inner class Iterator : KoneRemovableIterator<Element> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneRemovableIterator<E> = data[currentBucket].iterator()
+        private var currentIterator: KoneRemovableIterator<Element> = data[currentBucket].iterator()
 
         override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) TODO("Exception is not yet implemented")
             return if (currentIterator.hasNext()) currentIterator.getNext()
             else {

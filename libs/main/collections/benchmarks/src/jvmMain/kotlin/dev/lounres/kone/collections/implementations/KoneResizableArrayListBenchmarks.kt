@@ -24,11 +24,11 @@ class KoneResizableArrayListBenchmarks_Initialization {
     )
     var listSize: UInt = 0u
 
-    lateinit var list: KoneResizableArrayList<UInt, Equality<UInt>>
+    lateinit var list: KoneArrayResizableList<UInt>
 
     @Benchmark
     fun benchmark(blackhole: Blackhole) {
-        list = KoneResizableArrayList<UInt>(listSize) { 0u }
+        list = KoneArrayResizableList<UInt>(listSize) { 0u }
         blackhole.consume(list)
     }
 }
@@ -45,11 +45,11 @@ class KoneResizableArrayListBenchmarks_RemoveFirst {
     )
     var listSize: UInt = 0u
 
-    lateinit var list: KoneResizableArrayList<UInt, Equality<UInt>>
+    lateinit var list: KoneArrayResizableList<UInt>
 
     @Setup(Level.Invocation)
     fun setup() {
-        list = KoneResizableArrayList<UInt>(listSize) { 0u }
+        list = KoneArrayResizableList<UInt>(listSize) { 0u }
     }
 
     @Benchmark

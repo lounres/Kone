@@ -5,39 +5,39 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.producers.KoneMutableListProducer
+import dev.lounres.kone.collections.producers.KoneMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
 
 
-//public fun <Element> KoneResizableLinkedArrayNoddedList(): KoneResizableLinkedArrayNoddedList<Element> =
-//    KoneResizableLinkedArrayNoddedList(size = 0u)
-//
-//public inline fun <Element> KoneResizableLinkedArrayNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneResizableLinkedArrayNoddedList<Element> {
-//    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
-//    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-//    return KoneResizableLinkedArrayNoddedList(
+public fun <Element> KoneArrayResizableLinkedNoddedList(): KoneArrayResizableLinkedNoddedList<Element> =
+    KoneArrayResizableLinkedNoddedList(size = 0u)
+
+public inline fun <Element> KoneArrayResizableLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableLinkedNoddedList<Element> {
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    TODO("Not yet implemented")
+//    return KoneArrayResizableLinkedNoddedList(
 //        size = size,
 //        dataSizeNumber = dataSizeNumber,
 //        sizeUpperBound = sizeUpperBound,
 //        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
 //    )
-//}
-//
-//public object KoneResizableLinkedArrayNoddedListProducer : KoneMutableListProducer {
-//    override fun <Element> produce(): KoneMutableList<Element> = KoneResizableLinkedArrayNoddedList()
-//    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
-//        KoneResizableLinkedArrayNoddedList(number, builder)
-//}
-//
-//internal class KoneResizableLinkedArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneCollectionDescriptor(
-//        serialName = "dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayNoddedList<data>",
-//        elementDescriptor = elementDescriptor,
-//    )
+}
+
+public object KoneArrayResizableLinkedNoddedListProducer : KoneMutableNoddedListProducer {
+    override fun <Element> produce(): KoneArrayResizableLinkedNoddedList<Element> = KoneArrayResizableLinkedNoddedList()
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArrayResizableLinkedNoddedList<Element> =
+        KoneArrayResizableLinkedNoddedList(number, builder)
+}
+
+internal class KoneArrayResizableLinkedNoddedListDescriptor(elementDescriptor: SerialDescriptor):
+    KoneCollectionDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedNoddedList<data>",
+        elementDescriptor = elementDescriptor,
+    )
 
 //internal class KoneResizableLinkedArrayListSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,

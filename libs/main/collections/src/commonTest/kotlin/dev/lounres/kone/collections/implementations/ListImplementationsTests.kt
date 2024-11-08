@@ -92,24 +92,24 @@ val listImplementations = listOf<ListImplementationDescription>(
                     KoneGrowableLinkedArrayList(size, generator)
             }
     },
+//    object : ListImplementationDescription {
+//        override val name = "KoneGCLinkedList"
+//        override val builder: MutableIterableListBuilder =
+//            object : MutableIterableListBuilder {
+//                override fun <E> build(): KoneMutableList<E> =
+//                    KoneGCLinkedList()
+//                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
+//                    KoneGCLinkedList(size, generator)
+//            }
+//    },
     object : ListImplementationDescription {
-        override val name = "KoneLinkedGCList"
+        override val name = "KoneArrayResizableList"
         override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E> build(): KoneMutableList<E> =
-                    KoneLinkedGCList()
+                    KoneArrayResizableList()
                 override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneLinkedGCList(size, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneResizableArrayList"
-        override val builder: MutableIterableListBuilder =
-            object : MutableIterableListBuilder {
-                override fun <E> build(): KoneMutableList<E> =
-                    KoneResizableArrayList()
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneResizableArrayList(size, generator)
+                    KoneArrayResizableList(size, generator)
             }
     },
     object : ListImplementationDescription {
