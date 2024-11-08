@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
 import dev.lounres.kone.collections.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
@@ -17,7 +17,6 @@ import kotlin.experimental.ExperimentalTypeInference
 
 
 // TODO: Add builders for nodded lists
-// TODO: Add converters for `KoneLinkedSet`
 
 public fun <Element> emptyKoneList(): KoneList<Element> = KoneEmptySettableNoddedList
 
@@ -56,31 +55,12 @@ public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Elem
     return result
 }
 
-public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
-    if (this is KoneList<Element>) return this.toKoneMutableList()
-    if (this is KoneSet<Element>) return this.toKoneMutableList()
-
-    val result = KoneArrayResizableList<Element>()
-    for (element in this) result.add(element)
-    return result
-}
-
 public fun <Element> Collection<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
     return KoneArrayResizableList(size.toUInt(), ) { iterator.next() }
 }
 
-public fun <Element> KoneList<Element>.toKoneMutableList(): KoneMutableList<Element> {
-    val iterator = iterator()
-    return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
-}
-
-public fun <Element> KoneSet<Element>.toKoneMutableList(): KoneMutableList<Element> {
-    val iterator = iterator()
-    return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
-}
-
-public fun <Element> KoneLinkedSet<Element>.toKoneMutableList(): KoneMutableList<Element> {
+public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
     return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
 }
@@ -93,31 +73,12 @@ public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<El
     return KoneSettableList(result.size) { result[it] }
 }
 
-public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
-    if (this is KoneList<Element>) return this.toKoneSettableList()
-    if (this is KoneSet<Element>) return this.toKoneSettableList()
-
-    val result = KoneArrayResizableList<Element>()
-    for (element in this) result.add(element)
-    return KoneSettableList(result.size) { result[it] }
-}
-
 public fun <Element> Collection<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
     return KoneSettableList(size.toUInt(), ) { iterator.next() }
 }
 
-public fun <Element> KoneList<Element>.toKoneSettableList(): KoneSettableList<Element> {
-    val iterator = iterator()
-    return KoneSettableList(size) { iterator.getAndMoveNext() }
-}
-
-public fun <Element> KoneSet<Element>.toKoneSettableList(): KoneSettableList<Element> {
-    val iterator = iterator()
-    return KoneSettableList(size) { iterator.getAndMoveNext() }
-}
-
-public fun <Element> KoneLinkedSet<Element>.toKoneSettableList(): KoneSettableList<Element> {
+public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
     return KoneSettableList(size) { iterator.getAndMoveNext() }
 }
@@ -126,26 +87,11 @@ public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =
     if(this is Collection<Element>) this.toKoneList()
     else this.toKoneMutableList()
 
-public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
-    when {
-        this is KoneList<Element> -> this.toKoneList()
-        this is KoneSet<Element> -> this.toKoneList()
-        else -> this.toKoneMutableList().toOptimizedList()
-    }
-
 public fun <Element> Collection<Element>.toKoneList(): KoneList<Element> =
     if (size == 0) emptyKoneList()
     else this.toKoneMutableList().toOptimizedList()
 
-public fun <Element> KoneList<Element>.toKoneList(): KoneList<Element> =
-    if (size == 0u) emptyKoneList()
-    else this.toKoneMutableList().toOptimizedList()
-
-public fun <Element> KoneSet<Element>.toKoneList(): KoneList<Element> =
-    if (size == 0u) emptyKoneList()
-    else this.toKoneMutableList().toOptimizedList()
-
-public fun <Element> KoneLinkedSet<Element>.toKoneList(): KoneList<Element> =
+public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
     if (size == 0u) emptyKoneList()
     else this.toKoneMutableList().toOptimizedList()
 
@@ -158,5 +104,5 @@ public inline fun <Element> buildKoneList(@BuilderInference builderAction: KoneM
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneList(initialCapacity: UInt, @BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneGrowableArrayList<Element>(initialCapacity).apply(builderAction)
+    return KoneArrayGrowableList<Element>(initialCapacity).apply(builderAction)
 }

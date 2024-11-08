@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.KoneLinearIterator
 
 
 internal open class KoneEmptySettableLinearIterableTemplate<out Element> : KoneLinearIterable<Element> {
+    override val size: UInt get() = 0u
     override fun iterator(): KoneLinearIterator<Element> = KoneEmptySettableLinearIterator
 }
 

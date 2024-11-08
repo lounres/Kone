@@ -27,19 +27,15 @@ public operator fun <E> KoneList<E>.component14(): E = get(13u)
 public operator fun <E> KoneList<E>.component15(): E = get(14u)
 
 public fun <E> KoneIterable<E>.first(): E =
-    iterator().let { if (!it.hasNext()) throw NoSuchElementException() else it.getNext() }
-public fun <E> KoneList<E>.first(): E =
-    if (isEmpty()) throw NoSuchElementException("List is empty.")
-    else this[0u]
+    iterator().let { if (!it.hasNext()) throw NoSuchElementException("Iterable is empty.") else it.getNext() }
 
 public fun <E> KoneList<E>.last(): E =
     if (isEmpty()) throw NoSuchElementException("List is empty.")
     else this[lastIndex]
 
-public fun <E> KoneIterable<E>.single(): E {
-    val iterator = iterator()
-    if (!iterator.hasNext()) throw IllegalArgumentException("Iterable is empty")
-    val value = iterator.next()
-    if (iterator.hasNext()) throw IllegalArgumentException("Iterable has more than one element")
-    return value
-}
+public fun <E> KoneIterable<E>.single(): E =
+    when {
+        size == 0u -> throw IllegalArgumentException("Iterable is empty")
+        size == 1u -> iterator().getNext()
+        else -> throw IllegalArgumentException("Iterable has more than one element")
+    }

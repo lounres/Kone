@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.*
 internal class KoneSingletonSettableNoddedList<Element>(
     var singleElement: Element,
 ) : KoneSettableNoddedList<Element> {
-    override val size: UInt = 1u
+    override val size: UInt get() = 1u
     
     private val singleNode = Node()
 

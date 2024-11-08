@@ -9,8 +9,6 @@ import dev.lounres.kone.repeat
 
 
 public interface KoneList<out Element> : KoneLinearIterable<Element> {
-    public val size: UInt
-    
     public operator fun get(index: UInt): Element
     
     public fun iteratorFrom(index: UInt): KoneLinearIterator<Element>

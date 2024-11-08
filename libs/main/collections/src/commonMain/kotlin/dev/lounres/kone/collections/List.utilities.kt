@@ -5,39 +5,20 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 
 
-public fun <Element> KoneList<Element>.isEmpty(): Boolean = size == 0u
-public fun <Element> KoneList<Element>.isNotEmpty(): Boolean = !isEmpty()
-
 public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (index < size) this[index] else null
 public fun <Element> KoneList<Element>.getMaybe(index: UInt): Option<Element> = if (index < size) Some(this[index]) else None
 
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
-    elements.forEach { add(it) }
-}
-public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneList<Element>) {
-    val iterator = iterator()
-    addSeveral(elements.size) { iterator.getAndMoveNext() }
-}
-public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneSet<Element>) {
     val iterator = iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
 
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
-    var currentIndex = index
-    elements.forEach { addAt(currentIndex++, it) }
-}
-public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneList<Element>) {
-    val iterator = iterator()
-    addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
-}
-public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneSet<Element>) {
     val iterator = iterator()
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
 }

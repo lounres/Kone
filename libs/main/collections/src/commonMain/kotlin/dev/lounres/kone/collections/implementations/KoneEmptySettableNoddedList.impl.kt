@@ -14,7 +14,7 @@ import dev.lounres.kone.collections.isEmpty
 
 
 internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableNoddedList<Element> {
-    override val size: UInt = 0u
+    override val size: UInt get() = 0u
     
     override fun getNode(index: UInt): KoneSettableListNode<Element> = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
     override fun get(index: UInt): Element = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")

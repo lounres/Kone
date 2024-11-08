@@ -151,6 +151,7 @@ internal class KoneIndexingIterator<out T>(private val iterator: KoneIterator<T>
 public fun <E> KoneIterable<E>.withIndex(): KoneIterable<KoneIndexedValue<E>> = KoneIndexingIterable(this)
 
 internal class KoneIndexingIterable<out E>(private val iterable: KoneIterable<E>) : KoneIterable<KoneIndexedValue<E>> {
+    override val size: UInt get() = iterable.size
     override fun iterator(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(iterable.iterator())
 }
 

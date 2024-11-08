@@ -13,7 +13,7 @@ import dev.lounres.kone.comparison.defaultEquality
 internal open class KoneEmptyNoddedSetTemplate<Element> : KoneNoddedSet<Element>, KoneSetWithContext<Element, Equality<Element>> {
     override val elementContext: Equality<Element> get() = defaultEquality()
 
-    override val size: UInt = 0u
+    override val size: UInt get() = 0u
     
     override val nodes: KoneIterable<KoneSetNode<Element>> get() = KoneEmptySettableLinearIterable
 

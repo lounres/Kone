@@ -7,7 +7,8 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
+import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
 import dev.lounres.kone.comparison.*
 import dev.lounres.kone.option.None
@@ -33,19 +34,11 @@ public fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.copyTo(destination: D): 
     return destination
 }
 
-public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneSet<E>) {
+public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneIterable<E>) {
     addAllFrom(elements)
 }
 
-public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneSet<E>) {
-    addAllFrom(elements)
-}
-
-public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneList<E>) {
-    addAllFrom(elements)
-}
-
-public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneList<E>) {
+public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneIterable<E>) {
     addAllFrom(elements)
 }
 
@@ -58,22 +51,6 @@ public operator fun <E> KoneMutableSet<E>.plusAssign(element: E) {
 }
 
 public fun <E> KoneIterable<E>.take(n: UInt): KoneList<E> {
-    var count = 0u
-    val list = KoneGrowableArrayList<E>()
-    for (item in this) {
-        list.add(item)
-        if (++count == n)
-            break
-    }
-    return list.toOptimizedList()
-}
-public fun <E> KoneList<E>.take(n: UInt): KoneList<E> {
-    val size = min(size, n)
-    if (size == 0u) return emptyKoneList()
-    val iterator = iterator()
-    return KoneList(size) { iterator.getAndMoveNext() }
-}
-public fun <E> KoneSet<E>.take(n: UInt): KoneList<E> {
     val size = min(size, n)
     if (size == 0u) return emptyKoneList()
     val iterator = iterator()
@@ -82,29 +59,9 @@ public fun <E> KoneSet<E>.take(n: UInt): KoneList<E> {
 
 public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> {
     if (n == 0u) return toKoneList()
-    val list = KoneGrowableArrayList<E>()
-    var count = 0u
-    for (item in this) {
-        if (count >= n) list.add(item) else ++count
-    }
-    return list.toOptimizedList()
-}
-public fun <E> KoneList<E>.drop(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneList<E> {
-    if (n == 0u) return toKoneList()
     if (n >= size) return emptyKoneList()
     val resultSize = size - n
-    val list = KoneGrowableArrayList<E>(resultSize)
-    var count = 0u
-    for (item in this) {
-        if (count >= n) list.add(item) else ++count
-    }
-    return list.toOptimizedList()
-}
-public fun <E> KoneSet<E>.drop(n: UInt, elementContext: Equality<E> = defaultEquality()): KoneList<E> {
-    if (n == 0u) return toKoneList()
-    if (n >= size) return emptyKoneList()
-    val resultSize = size - n
-    val list = KoneGrowableArrayList<E>(resultSize)
+    val list = KoneArrayFixedCapacityList<E>(resultSize)
     var count = 0u
     for (item in this) {
         if (count >= n) list.add(item) else ++count
@@ -294,8 +251,7 @@ public inline fun <E> KoneList<E>.lastIndexThat(predicate: (index: UInt, element
 context(Equality<E>)
 public fun <E> KoneList<E>.lastIndexOf(element: E): UInt = lastIndexThat { _, currentElement -> element eq currentElement }
 
-public fun <E> KoneList<E>.random(random: Random): E = get(random.nextUInt(0u, size))
-public fun <E> KoneSet<E>.random(random: Random): E {
+public fun <E> KoneIterable<E>.random(random: Random): E {
     val index = random.nextUInt(0u, size)
     val iterator = iterator()
     repeat(index) { iterator.moveNext() }
@@ -369,7 +325,7 @@ public inline fun <E, R> KoneList<E>.foldRightIndexed(initial: R, operation: (in
 }
 
 public inline fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
-    val result = KoneGrowableArrayList(1u) { initial }
+    val result = KoneArrayGrowableList(1u) { initial }
     var accumulator = initial
     for (element in this) {
         accumulator = operation(accumulator, element)
@@ -377,20 +333,7 @@ public inline fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc
     }
     return result.toOptimizedList()
 }
-public inline fun <E, R> KoneIterable<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> =
-    iterator().runningFold(initial, operation)
-public inline fun <E, R> KoneList<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
-    val result = KoneSettableList(size + 1u) { initial }
-    var accumulator = initial
-    var index = 0u
-    for (element in this) {
-        accumulator = operation(accumulator, element)
-        result[index + 1u] = accumulator
-        index++
-    }
-    return result
-}
-public inline fun <E, R> KoneSet<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
+public inline fun <E, R> KoneIterable<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
     val result = KoneSettableList(size + 1u) { initial }
     var accumulator = initial
     var index = 0u
@@ -403,7 +346,7 @@ public inline fun <E, R> KoneSet<E>.runningFold(initial: R, operation: (acc: R, 
 }
 
 public inline fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
-    val result = KoneGrowableArrayList(1u) { initial }
+    val result = KoneArrayGrowableList(1u) { initial }
     var accumulator = initial
     var index = 0u
     for (element in this) {
@@ -413,20 +356,7 @@ public inline fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operatio
     }
     return result
 }
-public inline fun <E, R> KoneIterable<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> =
-    iterator().runningFoldIndexed(initial, operation)
-public inline fun <E, R> KoneList<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
-    val result = KoneSettableList(size + 1u) { initial }
-    var accumulator = initial
-    var index = 0u
-    for (element in this) {
-        accumulator = operation(index, accumulator, element)
-        result[index + 1u] = accumulator
-        index++
-    }
-    return result
-}
-public inline fun <E, R> KoneSet<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
+public inline fun <E, R> KoneIterable<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
     val result = KoneSettableList(size + 1u) { initial }
     var accumulator = initial
     var index = 0u
@@ -522,7 +452,7 @@ public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt
 public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K): D {
     for (element in this) {
         val key = keySelector(element)
-        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList() }
+        val accumulator = destination.getOrSet(key) { KoneArrayGrowableList() }
         accumulator.add(element)
     }
     return destination
@@ -531,7 +461,7 @@ public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneItera
 public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableList<V>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K, valueTransform: (E) -> V): D {
     for (element in this) {
         val key = keySelector(element)
-        val accumulator = destination.getOrSet(key) { KoneGrowableArrayList() }
+        val accumulator = destination.getOrSet(key) { KoneArrayGrowableList() }
         accumulator.add(valueTransform(element))
     }
     return destination

@@ -7,8 +7,10 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneSettableLinearIterable
 import dev.lounres.kone.collections.KoneSettableLinearIterator
+import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
 
 
 internal class KoneSingletonSettableLinearIterable<Element>(val singleElement: Element): KoneSettableLinearIterable<Element> {
+    override val size: UInt get() = 1u
     override fun iterator(): KoneSettableLinearIterator<Element> = KoneSingletonSettableLinearIterator(singleElement)
 }

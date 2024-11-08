@@ -13,7 +13,7 @@ import dev.lounres.kone.comparison.defaultHashing
 internal open class KoneEmptyMapTemplate<Key, Value> : KoneMapWithContext<Key, Equality<Key>, Value> {
     override val keyContext: Equality<Key> get() = defaultHashing()
 
-    override val size: UInt = 0u
+    override val size: UInt get() = 0u
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = null
     

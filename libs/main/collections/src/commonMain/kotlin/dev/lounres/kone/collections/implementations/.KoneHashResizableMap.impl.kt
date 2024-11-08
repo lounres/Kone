@@ -275,11 +275,13 @@ public class KoneResizableHashMap<Key, KeyContext: Hashing<Key>, Value> internal
     }
 
     internal inner class ValueCollection : KoneIterable<Value> {
+        override val size: UInt get() = this@KoneResizableHashMap.size
         override fun iterator(): KoneIterator<Value> = ValueIterator()
         // TODO: Override `toString`.
     }
 
     internal inner class EntriesSet : KoneIterable<KoneMapEntry<Key, Value>> {
+        override val size: UInt get() = this@KoneResizableHashMap.size
         override fun iterator(): KoneIterator<KoneMapEntry<Key, Value>> = EntryIterator()
         // TODO: Override `toString`.
     }

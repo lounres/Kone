@@ -233,6 +233,7 @@ public class KoneLinkedGCListRegistry<Element, EC: Equality<Element>>(
     }
 
     internal inner class Registrations: KoneIterable<Node<Element>> {
+        override val size: UInt get() = this@KoneLinkedGCListRegistry.size
         override fun iterator(): KoneLinearIterator<Node<Element>> = RegistrationsIterator()
     }
 }

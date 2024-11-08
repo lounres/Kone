@@ -12,7 +12,7 @@ import dev.lounres.kone.scope
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
-public class KoneGrowableArrayList<Element> @PublishedApi internal constructor(
+public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
@@ -188,7 +188,7 @@ public class KoneGrowableArrayList<Element> @PublishedApi internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableArrayList<*> ->
+            is KoneArrayGrowableList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }

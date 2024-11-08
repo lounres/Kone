@@ -11,6 +11,9 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.eq
 
 
+public fun <Element> KoneIterable<Element>.isEmpty(): Boolean = size == 0u
+public fun <Element> KoneIterable<Element>.isNotEmpty(): Boolean = !isEmpty()
+
 context(Equality<Element>)
 public operator fun <Element> KoneIterable<Element>.contains(element: Element): Boolean = any { it eq element }
 context(Equality<Element>)

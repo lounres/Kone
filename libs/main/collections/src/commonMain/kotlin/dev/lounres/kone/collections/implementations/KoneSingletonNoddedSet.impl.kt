@@ -15,7 +15,7 @@ internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>
     val singleElement: Element,
     override val elementContext: ElementContext,
 ) : KoneNoddedSet<Element>, KoneSetWithContext<Element, ElementContext> {
-    override val size: UInt = 1u
+    override val size: UInt get() = 1u
     override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
     
     private val singleNode = Node()

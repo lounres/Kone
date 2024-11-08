@@ -7,6 +7,7 @@ package dev.lounres.kone.collections
 
 
 public interface KoneIterable<out Element> {
+    public val size: UInt
     public operator fun iterator(): KoneIterator<Element>
 }
 

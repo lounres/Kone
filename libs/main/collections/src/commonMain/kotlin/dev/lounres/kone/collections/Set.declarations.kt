@@ -9,8 +9,6 @@ package dev.lounres.kone.collections
 // TODO: KoneSet is marked as covariant, but element context can't check equality for element of supertype
 //  So there is need in checking that element context can work with arbitrary argument
 public interface KoneSet<out Element> : KoneIterable<Element> {
-    public val size: UInt
-    
     public operator fun contains(element: @UnsafeVariance Element): Boolean
 }
 

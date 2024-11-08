@@ -13,45 +13,45 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <Element> KoneGrowableArrayList(): KoneGrowableArrayList<Element> =
-    KoneGrowableArrayList(size = 0u)
+public fun <Element> KoneArrayGrowableList(): KoneArrayGrowableList<Element> =
+    KoneArrayGrowableList(size = 0u)
 
-public fun <Element> KoneGrowableArrayList(initialCapacity: UInt): KoneGrowableArrayList<Element> =
-    KoneGrowableArrayList(
+public fun <Element> KoneArrayGrowableList(initialCapacity: UInt): KoneArrayGrowableList<Element> =
+    KoneArrayGrowableList(
         size = 0u,
         sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
     )
 
-public inline fun <Element> KoneGrowableArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneGrowableArrayList<Element> {
+public inline fun <Element> KoneArrayGrowableList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
     val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
-    return KoneGrowableArrayList(
+    return KoneArrayGrowableList(
         size = size,
         sizeUpperBound = sizeUpperBound,
         data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
     )
 }
 
-internal class KoneGrowableArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayGrowableListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayGrowableList<data>",
         elementDescriptor = elementDescriptor,
     )
 
-//internal class KoneGrowableArrayListSerializer<E>(
+//internal class KoneArrayGrowableListSerializer<E>(
 //    override val elementSerializer: KSerializer<E>,
 //    public val elementContext: EC,
-//): KoneIterableCollectionSerializationStrategy<E, KoneGrowableArrayList<E, EC>>(), DeserializationStrategy<KoneGrowableArrayList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneGrowableArrayListDescriptor(elementSerializer.descriptor)
+//): KoneIterableCollectionSerializationStrategy<E, KoneArrayGrowableList<E, EC>>(), DeserializationStrategy<KoneArrayGrowableList<E, EC>> {
+//    override val descriptor: SerialDescriptor = KoneArrayGrowableListDescriptor(elementSerializer.descriptor)
 //
-//    override fun deserialize(decoder: Decoder): KoneGrowableArrayList<E, EC> =
+//    override fun deserialize(decoder: Decoder): KoneArrayGrowableList<E, EC> =
 //        decoder.decodeStructure(descriptor) {
 //            if (decodeSequentially()) {
 //                val size = decodeCollectionSize(descriptor)
-//                KoneGrowableArrayList(size.toUInt(), elementContext) {
+//                KoneArrayGrowableList(size.toUInt(), elementContext) {
 //                    decodeSerializableElement(descriptor, it.toInt(), elementSerializer)
 //                }
 //            } else {
-//                val builder = KoneGrowableArrayList<E, EC>(elementContext)
+//                val builder = KoneArrayGrowableList<E, EC>(elementContext)
 //                while (true) {
 //                    val index = decodeElementIndex(descriptor)
 //                    if (index == CompositeDecoder.DECODE_DONE) break
@@ -62,15 +62,15 @@ internal class KoneGrowableArrayListDescriptor(elementDescriptor: SerialDescript
 //        }
 //}
 //
-//internal class KoneGrowableArrayListWithContextSerializer<E>(
+//internal class KoneArrayGrowableListWithContextSerializer<E>(
 //    override val elementSerializer: KSerializer<E>,
 //    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneGrowableArrayList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneGrowableArrayList",
+//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneArrayGrowableList<E, EC>>(
+//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneArrayGrowableList",
 //    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneGrowableArrayList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneGrowableArrayList<E, EC>> =
+//), DeserializationStrategy<KoneArrayGrowableList<E, EC>> {
+//    override val elementCollectionSerializer: SerializationStrategy<KoneArrayGrowableList<E, EC>> =
 //        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneGrowableArrayList<E, EC> =
-//        KoneGrowableArrayList(elementList.size, elementContext) { elementList[it] }
+//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneArrayGrowableList<E, EC> =
+//        KoneArrayGrowableList(elementList.size, elementContext) { elementList[it] }
 //}

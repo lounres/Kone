@@ -118,6 +118,7 @@ public class KoneMutableListBackedMap<Key, KeyContext: Equality<Key>, Value> @Pu
     }
     
     internal inner class ValuesView : KoneIterable<Value> {
+        override val size: UInt get() = this@KoneMutableListBackedMap.size
         override fun iterator(): KoneIterator<Value> = ValuesIterator(backingList.iterator())
     }
     
@@ -130,6 +131,7 @@ public class KoneMutableListBackedMap<Key, KeyContext: Equality<Key>, Value> @Pu
     }
     
     internal inner class EntriesView : KoneIterable<KoneMapEntry<Key, Value>> {
+        override val size: UInt get() = this@KoneMutableListBackedMap.size
         override fun iterator(): KoneIterator<KoneMapEntry<Key, Value>> = EntriesIterator(backingList.iterator())
     }
 }
