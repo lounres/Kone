@@ -5,114 +5,153 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneMutableLinearIterator
-import dev.lounres.kone.collections.KoneMutableListNode
-import dev.lounres.kone.collections.KoneMutableNoddedList
-import dev.lounres.kone.collections.capacityOverflowException
-import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 
 
-//@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
-public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal constructor(
+@Suppress("UNCHECKED_CAST")
+//@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
+public class KoneGrowableArrayList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private val capacity: UInt = size,
-    private val data: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { null },
-): KoneMutableNoddedList<Element>, Disposable {
+    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+) : KoneMutableList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ Disposable {
     override var size: UInt = size
         private set
-    
-    override fun dispose() {
-        repeat(size) { data[it] = null }
+
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
+        repeat(size) { this[it] = null }
     }
-    
+    override fun dispose() {
+        data.dispose(size)
+    }
+    private fun reinitializeBounds(newSize: UInt) {
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
+        while (newSize > sizeUpperBound) {
+            sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
+        }
+    }
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        val oldData = data
+        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        oldData.dispose(oldSize)
+    }
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+        reinitializeBounds(newSize)
+        reinitializeData(generator = generator)
+        size = newSize
+    }
+
+    // TODO: Apply corresponding interface and enable capacity growing
+//    override fun ensureCapacity(minimalCapacity: UInt) {
+//        if (sizeUpperBound < minimalCapacity) {
+//            reinitializeBounds(minimalCapacity)
+//            reinitializeData {
+//                when {
+//                    it < size -> get(it)
+//                    else -> null
+//                }
+//            }
+//        }
+//    }
+
     override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[index]!!.element
+        return data[index] as Element
     }
-    override fun getNode(index: UInt): KoneMutableListNode<Element> {
-        if (index >= size) indexException(index, size)
-        return data[index]!!
-    }
-    
+
     override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
-        data[index]!!.element = element
+        data[index] = element
     }
-    
+
+    override fun removeAll() {
+        reinitializeBoundsAndData(0u) { null }
+    }
     override fun add(element: Element) {
-        if (size == capacity) capacityOverflowException(capacity)
-        data[size] = Node(this, element, size)
-        size++
-    }
-    override fun addNode(element: Element): KoneMutableListNode<Element> {
-        if (size == capacity) capacityOverflowException(capacity)
-        val newNode = Node(this, element, size)
-        data[size] = newNode
-        size++
-        return newNode
+        if (size == sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < size -> get(it)
+                    it == size -> element
+                    else -> null
+                }
+            }
+        } else {
+            data[size] = element
+            size++
+        }
     }
     override fun addAt(index: UInt, element: Element) {
         if (index > size) indexException(index, size)
-        if (size == capacity) capacityOverflowException(capacity)
-        if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
-        data[index] = Node(this, element, index)
-        size++
-    }
-    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
-        if (index > size) indexException(index, size)
-        if (size == capacity) capacityOverflowException(capacity)
-        if (size >= 1u) for (i in (size-1u) downTo index) {
-            data[i + 1u] = data[i].also { it!!.index = i + 1u }
+        if (size == sizeUpperBound) {
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < index -> get(it)
+                    it == index -> element
+                    it <= size -> get(it-1u)
+                    else -> null
+                }
+            }
+        } else {
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
+            data[index] = element
+            size++
         }
-        val newNode = Node(this, element, index)
-        data[index] = newNode
-        size++
-        return newNode
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-        var index = size
-        repeat(number) {
-            data[index] = Node(this, builder(it), index)
-            index++
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < size -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    else -> null
+                }
+            }
+        } else {
+            var index = size
+            repeat(number) { data[index++] = builder(it) }
+            size = newSize
         }
-        size = newSize
     }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
         if (index > size) indexException(index, size)
         val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-        if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
-        var index = index
-        repeat(number) {
-            data[index] = Node(this, builder(it), index)
-            index++
+        if (newSize > sizeUpperBound) {
+            var localIndex = 0u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < index -> get(it)
+                    localIndex < number -> builder(localIndex++)
+                    it < newSize -> get(it - number)
+                    else -> null
+                }
+            }
+        } else {
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
+            var index = index
+            repeat(number) { data[index++] = builder(it) }
+            size = newSize
         }
-        size = newSize
     }
     override fun removeAt(index: UInt) {
         if (index >= size) indexException(index, size)
-        data[index]!!.detach()
         val newSize = size - 1u
         for (i in index..<newSize) data[i] = data[i + 1u]
         data[size - 1u] = null
         size = newSize
     }
-    
+
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         val newSize: UInt
         scope {
             var checkingMark = 0u
             var resultMark = 0u
             while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark]!!.element)) {
+                if (!predicate(checkingMark, data[checkingMark] as Element)) {
                     data[resultMark] = data[checkingMark]
                     resultMark++
                 }
@@ -120,24 +159,13 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
             }
             newSize = resultMark
         }
-        for (i in newSize ..< size) {
-            data[i]!!.detach()
-            data[i] = null
-        }
+        for (i in newSize ..< size) data[i] = null
         size = newSize
     }
-    
-    override fun removeAll() {
-        repeat(size) {
-            data[it]!!.detach()
-            data[it] = null
-        }
-        size = 0u
-    }
-    
+
     override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
     public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
-    
+
     override fun toString(): String = buildString {
         append('[')
         if (size > 0u) append(data[0u])
@@ -158,9 +186,9 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-        
+
         when (other) {
-            is KoneArrayFixedCapacityNoddedList<*> ->
+            is KoneGrowableArrayList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }
@@ -171,35 +199,10 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
                 }
             }
         }
-        
+
         return true
     }
-    
-    internal class Node<Element>(
-        list: KoneArrayFixedCapacityNoddedList<Element>,
-        override var element: Element,
-        override var index: UInt,
-    ) : KoneMutableListNode<Element> {
-        private var _list: KoneArrayFixedCapacityNoddedList<Element>? = list
-        internal val list: KoneArrayFixedCapacityNoddedList<Element> get() = _list!!
-        
-        override fun remove() {
-            list.removeAt(index)
-        }
-        
-        override val nextNode: KoneMutableListNode<Element>?
-            get() = list.data.getOrNull(index + 1u)
-        override val previousNode: KoneMutableListNode<Element>?
-            get() = list.data.getOrNull(index - 1u)
-        
-        override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> = list.iteratorFrom(index + 1u)
-        override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> = list.iteratorFrom(index)
-        
-        internal fun detach() {
-            _list = null
-        }
-    }
-    
+
     internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
@@ -207,7 +210,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, size)
-            return data[currentIndex]!!.element
+            return data[currentIndex] as Element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
@@ -216,7 +219,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
         override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, size)
-            data[currentIndex]!!.element = element
+            data[currentIndex] = element
         }
         override fun addNext(element: Element) {
             addAt(currentIndex, element)
@@ -225,11 +228,11 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
             if (!hasNext()) indexException(currentIndex, size)
             removeAt(currentIndex)
         }
-        
+
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, size)
-            return data[currentIndex - 1u]!!.element
+            return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, size)
@@ -238,7 +241,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
         override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, size)
-            data[currentIndex - 1u]!!.element = element
+            data[currentIndex - 1u] = element
         }
         override fun addPrevious(element: Element) {
             addAt(currentIndex, element)

@@ -10,12 +10,11 @@ import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 
 
-@Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityLinkedArrayListWithContextSerializer::class)
 public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructor(
     size: UInt,
     private val capacity: UInt,
-    private val data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
+    private val data: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { null },
     private val nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
     private val previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     private var start: UInt = 0u,
@@ -23,15 +22,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
 ) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
     override var size: UInt = size
         private set
-    
-    private val nodes: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { if (it < size) Node(this, it) else null }
 
     override fun dispose() {
         var currentIndex = start
         repeat(size) {
+            data[currentIndex]!!.detach()
             data[currentIndex] = null
-            nodes[currentIndex]!!.dispose()
-            nodes[currentIndex] = null
             currentIndex = nextCellIndex[currentIndex]
         }
     }
@@ -66,8 +62,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> Element) {
         repeat(newElementsNumber) {
             end = nextCellIndex[end]
-            data[end] = generator(it)
-            nodes[end] = Node(this, end)
+            data[end] = Node(this, generator(it), end)
         }
         size += newElementsNumber
     }
@@ -88,14 +83,13 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
 
         if (actualIndex == start) start = freeIndex
 
-        data[freeIndex] = element
-        nodes[freeIndex] = Node(this, freeIndex)
+        data[freeIndex] = Node(this, element, freeIndex)
 
         size++
     }
     private fun justRemoveAt(actualIndex: UInt) {
+        data[actualIndex]!!.detach()
         data[actualIndex] = null
-        nodes[actualIndex] = null
         val prev = previousCellIndex[actualIndex]
         val next = nextCellIndex[actualIndex]
         nextCellIndex[prev] = next
@@ -114,27 +108,28 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
 
     override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[actualIndex(index)] as Element
+        return data[actualIndex(index)]!!.element
     }
     
     override fun getNode(index: UInt): KoneMutableListNode<Element> {
         if (index >= size) indexException(index, size)
-        return nodes[actualIndex(index)]!!
+        return data[actualIndex(index)]!!
     }
 
-    override fun getFirst(): Element = data[start] as Element
+    override fun getFirst(): Element = data[start]!!.element
 
-    override fun getLast(): Element = data[end] as Element
+    override fun getLast(): Element = data[end]!!.element
 
     override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
-        data[actualIndex(index)] = element
+        val actualIndex = actualIndex(index)
+        data[actualIndex] = Node(this, element, actualIndex)
     }
 
     override fun removeAll() {
         repeat(capacity) {
+            data[it]!!.detach()
             data[it] = null
-            nodes[it] = null
             nextCellIndex[it] = if (it == capacity - 1u) 0u else it + 1u
             previousCellIndex[it] = if (it == 0u) capacity - 1u else it - 1u
             start = 0u
@@ -202,8 +197,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                     var currentActualIndex = end
                     repeat(number) {
                         currentActualIndex = nextCellIndex[currentActualIndex]
-                        data[currentActualIndex] = builder(it)
-                        nodes[currentActualIndex] = Node(this, currentActualIndex)
+                        data[currentActualIndex] = Node(this, builder(it), currentActualIndex)
                     }
                     actualInnerPartRightEndIndex = currentActualIndex
                 }
@@ -240,9 +234,8 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             var resultActualMark = 0u
             var resultSize = 0u
             while (checkingIndex < size) {
-                if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
-                    data[resultActualMark] = data[checkingActualMark]
-                    nodes[resultActualMark] = nodes[checkingActualMark]
+                if (!predicate(checkingIndex, data[checkingActualMark]!!.element)) {
+                    data[resultActualMark] = data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
                     resultActualMark = nextCellIndex[resultActualMark]
                     resultSize++
                 }
@@ -254,8 +247,8 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         var currentActualIndexToClear = firstCellToClear
         repeat(size - newSize) {
+            data[currentActualIndexToClear]!!.detach()
             data[currentActualIndexToClear] = null
-            nodes[currentActualIndexToClear] = null
             currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
         }
     }
@@ -323,18 +316,15 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     
     internal class Node<Element>(
         list: KoneArrayFixedCapacityLinkedNoddedList<Element>,
+        override var element: Element,
         var actualIndex: UInt,
-    ): KoneMutableListNode<Element>, Disposable {
+    ): KoneMutableListNode<Element> {
         private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = list
         private val list: KoneArrayFixedCapacityLinkedNoddedList<Element> get() = _list!!
         
-        override fun dispose() {
+        fun detach() {
             _list = null
         }
-        
-        override var element: Element
-            get() = list.data[actualIndex] as Element
-            set(value) { list.data[actualIndex] = value }
         
         override val index: UInt get() = list.virtualIndex(actualIndex)
         
@@ -343,9 +333,9 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         
         override val nextNode: KoneMutableListNode<Element>?
-            get() = if (actualIndex != list.end) list.nodes[list.nextCellIndex[actualIndex]] else null
+            get() = if (actualIndex != list.end) list.data[list.nextCellIndex[actualIndex]] else null
         override val previousNode: KoneMutableListNode<Element>?
-            get() = if (actualIndex != list.start) list.nodes[list.previousCellIndex[actualIndex]] else null
+            get() = if (actualIndex != list.start) list.data[list.previousCellIndex[actualIndex]] else null
         
         override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> =
             Iterator(
@@ -384,7 +374,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, list.size)
         override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, list.size)
-            list.data[currentIndex] = element
+            list.data[currentIndex]!!.element = element
         }
         override fun addNext(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
@@ -409,7 +399,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, list.size)
         override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, list.size)
-            list.data[list.previousCellIndex[actualCurrentIndex]] = element
+            list.data[list.previousCellIndex[actualCurrentIndex]]!!.element = element
         }
         override fun addPrevious(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)

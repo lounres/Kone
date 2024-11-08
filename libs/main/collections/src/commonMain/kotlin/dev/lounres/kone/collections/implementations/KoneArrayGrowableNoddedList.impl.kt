@@ -6,21 +6,17 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
-public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
+public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
-    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-) : KoneMutableList<E>, /*KoneCollectionWithGrowableCapacity<E>,*/ Disposable {
+    private var data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
+) : KoneMutableList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ Disposable {
     override var size: UInt = size
         private set
 
@@ -32,18 +28,16 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
     }
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
-        if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
-            }
+        while (newSize > sizeUpperBound) {
+            sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
         }
     }
-    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
         val oldData = data
         data = KoneMutableArray(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
     }
-    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
         reinitializeBounds(newSize)
         reinitializeData(generator = generator)
         size = newSize
@@ -62,68 +56,71 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
 //        }
 //    }
 
-    override fun get(index: UInt): E {
+    override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[index] as E
+        return data[index] as Element
     }
 
-    override fun set(index: UInt, element: E) {
+    override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
-        data[index] = element
+        data[index]!!.element = element
     }
 
     override fun removeAll() {
         reinitializeBoundsAndData(0u) { null }
     }
-    override fun add(element: E) {
+    override fun add(element: Element) {
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < size -> get(it)
-                    it == size -> element
+                    it == size -> Node(this@KoneGrowableArrayNoddedList, element, it)
                     else -> null
                 }
             }
         } else {
-            data[size] = element
+            data[size] = Node(this, element, size)
             size++
         }
     }
-    override fun addAt(index: UInt, element: E) {
+    override fun addAt(index: UInt, element: Element) {
         if (index > size) indexException(index, size)
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
-                    it == index -> element
+                    it == index -> Node(this@KoneGrowableArrayNoddedList, element, it)
                     it <= size -> get(it-1u)
                     else -> null
                 }
             }
         } else {
             if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
-            data[index] = element
+            data[index] = Node(this, element, index)
             size++
         }
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
         if (newSize > sizeUpperBound) {
             var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < size -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    localIndex < number -> Node(this@KoneGrowableArrayNoddedList, builder(localIndex), localIndex + size).also { localIndex++ }
                     else -> null
                 }
             }
         } else {
             var index = size
-            repeat(number) { data[index++] = builder(it) }
+            repeat(number) {
+                data[index] = Node(this, builder(it), index)
+                index++
+            }
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
         if (index > size) indexException(index, size)
         val newSize = size + number
         if (newSize > sizeUpperBound) {
@@ -131,7 +128,7 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    localIndex < number -> Node(this@KoneGrowableArrayNoddedList, builder(localIndex), localIndex + index).also { localIndex++ }
                     it < newSize -> get(it - number)
                     else -> null
                 }
@@ -139,7 +136,10 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
         } else {
             if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
             var index = index
-            repeat(number) { data[index++] = builder(it) }
+            repeat(number) {
+                data[index] = Node(this, builder(it), index)
+                index++
+            }
             size = newSize
         }
     }
@@ -151,13 +151,13 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
         size = newSize
     }
 
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
+    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         val newSize: UInt
         scope {
             var checkingMark = 0u
             var resultMark = 0u
             while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark] as E)) {
+                if (!predicate(checkingMark, data[checkingMark] as Element)) {
                     data[resultMark] = data[checkingMark]
                     resultMark++
                 }
@@ -169,8 +169,8 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
         size = newSize
     }
 
-    override fun iterator(): KoneMutableLinearIterator<E> = Iterator()
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E> = Iterator(index)
+    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
 
     override fun toString(): String = buildString {
         append('[')
@@ -194,7 +194,7 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableArrayList<*> ->
+            is KoneGrowableArrayNoddedList<*> ->
                 repeat(size) {
                     if (this.data[it] != other.data[it]) return false
                 }
@@ -208,26 +208,51 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
 
         return true
     }
+    
+    internal class Node<Element>(
+        list: KoneGrowableArrayNoddedList<Element>,
+        override var element: Element,
+        override var index: UInt,
+    ) : KoneMutableListNode<Element>, Disposable {
+        private var _list: KoneGrowableArrayNoddedList<Element>? = list
+        val list: KoneGrowableArrayNoddedList<Element> get() = _list!!
+        
+        override fun dispose() {
+            _list = null
+        }
+        
+        override fun remove() {
+            list.removeAt(index)
+        }
+        
+        override val nextNode: KoneMutableListNode<Element>?
+            get() = if (index + 1u < list.size) list.data[index + 1u] else null
+        override val previousNode: KoneMutableListNode<Element>?
+            get() = if (index > 0u) list.data[index - 1u] else null
+        
+        override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> = list.iteratorFrom(index)
+        override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> = list.iteratorFrom(index + 1u)
+    }
 
-    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
+    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
         override fun hasNext(): Boolean = currentIndex < size
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, size)
-            return data[currentIndex] as E
+            return data[currentIndex] as Element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
-        override fun setNext(element: E) {
+        override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, size)
-            data[currentIndex] = element
+            data[currentIndex]!!.element = element
         }
-        override fun addNext(element: E) {
+        override fun addNext(element: Element) {
             addAt(currentIndex, element)
         }
         override fun removeNext() {
@@ -236,20 +261,20 @@ public class KoneGrowableArrayList<E> @PublishedApi internal constructor(
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, size)
-            return data[currentIndex - 1u] as E
+            return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
-        override fun setPrevious(element: E) {
+        override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, size)
-            data[currentIndex - 1u] = element
+            data[currentIndex - 1u]!!.element = element
         }
-        override fun addPrevious(element: E) {
+        override fun addPrevious(element: Element) {
             addAt(currentIndex, element)
             currentIndex++
         }
