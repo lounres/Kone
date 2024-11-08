@@ -31,9 +31,9 @@ public fun <Element> KoneGrowableArrayNoddedList(initialCapacity: UInt): KoneGro
 //    )
 //}
 
-internal class KoneGrowableArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneGrowableArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableArrayNoddedList<data>",
         elementDescriptor = elementDescriptor,
     )
 

@@ -10,27 +10,27 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(capacity: UInt): KoneArrayFixedCapacityLinkedNoddedList<Element> =
-    KoneArrayFixedCapacityLinkedNoddedList(
-        size = 0u,
-        capacity = capacity,
-    )
-
-public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedNoddedList<Element> =
-    KoneArrayFixedCapacityLinkedNoddedList(
-        size = size,
-        capacity = size,
-        data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
-    )
-
-public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedNoddedList<Element> {
-    require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
-    return KoneArrayFixedCapacityLinkedNoddedList(
-        size = size,
-        capacity = capacity,
-        data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
-    )
-}
+//public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(capacity: UInt): KoneArrayFixedCapacityLinkedNoddedList<Element> =
+//    KoneArrayFixedCapacityLinkedNoddedList(
+//        size = 0u,
+//        capacity = capacity,
+//    )
+//
+//public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedNoddedList<Element> =
+//    KoneArrayFixedCapacityLinkedNoddedList(
+//        size = size,
+//        capacity = size,
+//        data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
+//    )
+//
+//public fun <Element> KoneArrayFixedCapacityLinkedNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedNoddedList<Element> {
+//    require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
+//    return KoneArrayFixedCapacityLinkedNoddedList(
+//        size = size,
+//        capacity = capacity,
+//        data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
+//    )
+//}
 
 internal class KoneArrayFixedCapacityLinkedNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
