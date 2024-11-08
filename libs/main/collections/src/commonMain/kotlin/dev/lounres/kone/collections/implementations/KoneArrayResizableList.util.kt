@@ -8,27 +8,19 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
 
 
-public fun <E> KoneResizableArrayList(): KoneResizableArrayList<E> =
-    KoneResizableArrayList(size = 0u)
+public fun <Element> KoneArrayResizableList(): KoneArrayResizableList<Element> =
+    KoneArrayResizableList(size = 0u)
 
-public inline fun <E> KoneResizableArrayList(size: UInt, initializer: (index: UInt) -> E): KoneResizableArrayList<E> {
+public inline fun <Element> KoneArrayResizableList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-    return KoneResizableArrayList(
+    return KoneArrayResizableList(
         size = size,
         dataSizeNumber = dataSizeNumber,
         sizeUpperBound = sizeUpperBound,
@@ -36,9 +28,9 @@ public inline fun <E> KoneResizableArrayList(size: UInt, initializer: (index: UI
     )
 }
 
-internal class KoneResizableArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayResizableListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneResizableArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableList<data>",
         elementDescriptor = elementDescriptor,
     )
 

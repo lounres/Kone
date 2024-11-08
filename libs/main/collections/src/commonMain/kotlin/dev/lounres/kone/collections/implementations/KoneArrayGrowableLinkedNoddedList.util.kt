@@ -6,39 +6,31 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableCollectionSerializer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionSerializerTemplate
-import dev.lounres.kone.collections.serializers.KoneIterableCollectionWithContextSerializerTemplate
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultEquality
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <E> KoneGrowableLinkedArrayList(): KoneGrowableLinkedArrayList<E, Equality<E>> =
-    KoneGrowableLinkedArrayList(size = 0u)
+//public fun <Element> KoneGrowableLinkedArrayNoddedList(): KoneGrowableLinkedArrayNoddedList<Element> =
+//    KoneGrowableLinkedArrayNoddedList(size = 0u)
+//
+//public fun <Element> KoneGrowableLinkedArrayNoddedList(initialCapacity: UInt): KoneGrowableLinkedArrayNoddedList<Element> =
+//    KoneGrowableLinkedArrayNoddedList(
+//        size = 0u,
+//        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
+//    )
+//
+//public fun <Element> KoneGrowableLinkedArrayNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneGrowableLinkedArrayNoddedList<Element> {
+//    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
+//    return KoneGrowableLinkedArrayNoddedList(
+//        size = size,
+//        sizeUpperBound = sizeUpperBound,
+//        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+//    )
+//}
 
-public fun <E> KoneGrowableLinkedArrayList(initialCapacity: UInt): KoneGrowableLinkedArrayList<E, Equality<E>> =
-    KoneGrowableLinkedArrayList(
-        size = 0u,
-        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
-    )
-
-public fun <E> KoneGrowableLinkedArrayList(size: UInt, initializer: (index: UInt) -> E): KoneGrowableLinkedArrayList<E, Equality<E>> {
-    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
-    return KoneGrowableLinkedArrayList(
-        size = size,
-        sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
-    )
-}
-
-internal class KoneGrowableLinkedArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneGrowableLinkedArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayNoddedList<data>",
         elementDescriptor = elementDescriptor,
     )
 

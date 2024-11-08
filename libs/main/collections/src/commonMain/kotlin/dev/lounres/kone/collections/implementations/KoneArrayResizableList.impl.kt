@@ -8,22 +8,20 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneMutableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlinx.serialization.Serializable
 import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneResizableArrayListWithContextSerializer::class)
-public class KoneResizableArrayList<E> @PublishedApi internal constructor(
+public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-) : KoneMutableList<E>, Disposable {
+) : KoneMutableList<Element>, Disposable {
     override var size: UInt = size
         private set
 
@@ -63,12 +61,12 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         size = newSize
     }
 
-    override fun get(index: UInt): E {
+    override fun get(index: UInt): Element {
         if (index >= size) indexException(index, size)
-        return data[index] as E
+        return data[index] as Element
     }
 
-    override fun set(index: UInt, element: E) {
+    override fun set(index: UInt, element: Element) {
         if (index >= size) indexException(index, size)
         data[index] = element
     }
@@ -80,7 +78,7 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         reinitializeData { null }
         size = 0u
     }
-    override fun add(element: E) {
+    override fun add(element: Element) {
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
                 when {
@@ -94,7 +92,7 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
             size++
         }
     }
-    override fun addAt(index: UInt, element: E) {
+    override fun addAt(index: UInt, element: Element) {
         if (index > size) indexException(index, size)
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
@@ -111,7 +109,7 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
             size++
         }
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> E) {
+    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
         if (newSize > sizeUpperBound) {
             var localIndex = 0u
@@ -128,7 +126,7 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> E) {
+    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
         if (index > size) indexException(index, size)
         val newSize = size + number
         if (newSize > sizeUpperBound) {
@@ -166,13 +164,13 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         }
     }
 
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: E) -> Boolean) {
+    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         val newSize: UInt
         scope {
             var checkingMark = 0u
             var resultMark = 0u
             while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark] as E)) {
+                if (!predicate(checkingMark, data[checkingMark] as Element)) {
                     data[resultMark] = data[checkingMark]
                     resultMark++
                 }
@@ -193,8 +191,8 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         }
     }
 
-    override fun iterator(): KoneMutableLinearIterator<E> = Iterator()
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<E> = Iterator(index)
+    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
 
     override fun toString(): String = buildString {
         append('[')
@@ -218,7 +216,7 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneResizableArrayList<*> ->
+            is KoneArrayResizableList<*> ->
                 for (i in 0u..<size) {
                     if (this.data[i] != other.data[i]) return false
                 }
@@ -233,25 +231,25 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         return true
     }
 
-    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<E> {
+    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
             if (currentIndex > size) indexException(currentIndex, size)
         }
         override fun hasNext(): Boolean = currentIndex < size
-        override fun getNext(): E {
+        override fun getNext(): Element {
             if (!hasNext()) indexException(currentIndex, size)
-            return data[currentIndex] as E
+            return data[currentIndex] as Element
         }
         override fun moveNext() {
             if (!hasNext()) indexException(currentIndex, size)
             currentIndex++
         }
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
-        override fun setNext(element: E) {
+        override fun setNext(element: Element) {
             if (!hasNext()) indexException(currentIndex, size)
             data[currentIndex] = element
         }
-        override fun addNext(element: E) {
+        override fun addNext(element: Element) {
             addAt(currentIndex, element)
         }
         override fun removeNext() {
@@ -260,20 +258,20 @@ public class KoneResizableArrayList<E> @PublishedApi internal constructor(
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
+        override fun getPrevious(): Element {
             if (!hasPrevious()) indexException(currentIndex, size)
-            return data[currentIndex - 1u] as E
+            return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexException(currentIndex, size)
             currentIndex--
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
-        override fun setPrevious(element: E) {
+        override fun setPrevious(element: Element) {
             if (!hasPrevious()) indexException(currentIndex, size)
             data[currentIndex - 1u] = element
         }
-        override fun addPrevious(element: E) {
+        override fun addPrevious(element: Element) {
             addAt(currentIndex, element)
             currentIndex++
         }
