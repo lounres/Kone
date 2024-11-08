@@ -16,19 +16,19 @@ import dev.lounres.kone.repeat
 
 
 //@Serializable(with = KoneLazyListWithContextSerializer::class)
-public class KoneLazyList<E>(
+public class KoneLazyList<Element>(
     override val size: UInt,
-    private val generator: (index: UInt) -> E,
-) : KoneSettableList<E> {
-    private val buffer: KoneMutableArray<Option<E>> = KoneMutableArray(size) { None }
+    private val generator: (index: UInt) -> Element,
+) : KoneSettableList<Element> {
+    private val buffer: KoneMutableArray<Option<Element>> = KoneMutableArray(size) { None }
 
-    override fun get(index: UInt): E = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
-    override fun set(index: UInt, element: E) {
+    override fun get(index: UInt): Element = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
+    override fun set(index: UInt, element: Element) {
         buffer[index] = Some(element)
     }
 
-    override fun iterator(): KoneSettableLinearIterator<E> = Iterator(size = size, buffer = buffer, generator = generator)
-    override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<E> = Iterator(size = size, currentIndex = index, buffer = buffer, generator = generator)
+    override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(size = size, buffer = buffer, generator = generator)
+    override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(size = size, currentIndex = index, buffer = buffer, generator = generator)
 
     override fun hashCode(): Int {
         var hashCode = 1
