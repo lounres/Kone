@@ -6,8 +6,8 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.ring
-import dev.lounres.kone.collections.koneIterableListOf
-import dev.lounres.kone.collections.koneIterableSetOf
+import dev.lounres.kone.collections.koneListOf
+import dev.lounres.kone.collections.koneSetOf
 import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -17,7 +17,7 @@ class ConvexHullTest {
     @Test
     fun `MD gift wrapping test 1`(): Unit = Long.ring.euclideanKategory {
         val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.ring) {
-            val vertices = koneIterableListOf(
+            val vertices = koneListOf(
                 addVertex(Point(0, 0, 0L)),
                 addVertex(Point(0, 0, 1L)),
                 addVertex(Point(0, 0, 2L)),
@@ -78,44 +78,44 @@ class ConvexHullTest {
             val p221 = addVertex(Point(2, 2, 1L))
             val p222 = addVertex(Point(2, 2, 2L))
 
-            val ex0y0 = koneIterableSetOf(p000, p002).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex1y0 = koneIterableSetOf(p200, p202).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex0y1 = koneIterableSetOf(p020, p022).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex1y1 = koneIterableSetOf(p220, p222).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex0z0 = koneIterableSetOf(p000, p020).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex1z0 = koneIterableSetOf(p200, p220).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex0z1 = koneIterableSetOf(p002, p022).let { addPolytope(it, koneIterableListOf(it)) }
-            val ex1z1 = koneIterableSetOf(p202, p222).let { addPolytope(it, koneIterableListOf(it)) }
-            val ey0z0 = koneIterableSetOf(p000, p200).let { addPolytope(it, koneIterableListOf(it)) }
-            val ey0z1 = koneIterableSetOf(p002, p202).let { addPolytope(it, koneIterableListOf(it)) }
-            val ey1z0 = koneIterableSetOf(p020, p220).let { addPolytope(it, koneIterableListOf(it)) }
-            val ey1z1 = koneIterableSetOf(p022, p222).let { addPolytope(it, koneIterableListOf(it)) }
+            val ex0y0 = koneSetOf(p000, p002).let { addPolytope(it, koneListOf(it)) }
+            val ex1y0 = koneSetOf(p200, p202).let { addPolytope(it, koneListOf(it)) }
+            val ex0y1 = koneSetOf(p020, p022).let { addPolytope(it, koneListOf(it)) }
+            val ex1y1 = koneSetOf(p220, p222).let { addPolytope(it, koneListOf(it)) }
+            val ex0z0 = koneSetOf(p000, p020).let { addPolytope(it, koneListOf(it)) }
+            val ex1z0 = koneSetOf(p200, p220).let { addPolytope(it, koneListOf(it)) }
+            val ex0z1 = koneSetOf(p002, p022).let { addPolytope(it, koneListOf(it)) }
+            val ex1z1 = koneSetOf(p202, p222).let { addPolytope(it, koneListOf(it)) }
+            val ey0z0 = koneSetOf(p000, p200).let { addPolytope(it, koneListOf(it)) }
+            val ey0z1 = koneSetOf(p002, p202).let { addPolytope(it, koneListOf(it)) }
+            val ey1z0 = koneSetOf(p020, p220).let { addPolytope(it, koneListOf(it)) }
+            val ey1z1 = koneSetOf(p022, p222).let { addPolytope(it, koneListOf(it)) }
 
-            val fx0 = koneIterableSetOf(p000, p002, p020, p022).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex0y0, ex0y1, ex0z0, ex0z1)))
+            val fx0 = koneSetOf(p000, p002, p020, p022).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex0y0, ex0y1, ex0z0, ex0z1)))
             }
-            val fx1 = koneIterableSetOf(p200, p202, p220, p222).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex1y0, ex1y1, ex1z0, ex1z1)))
+            val fx1 = koneSetOf(p200, p202, p220, p222).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex1y0, ex1y1, ex1z0, ex1z1)))
             }
-            val fy0 = koneIterableSetOf(p000, p002, p200, p202).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex0y0, ex1y0, ey0z0, ey0z1)))
+            val fy0 = koneSetOf(p000, p002, p200, p202).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex0y0, ex1y0, ey0z0, ey0z1)))
             }
-            val fy1 = koneIterableSetOf(p020, p022, p220, p222).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex0y1, ex1y1, ey1z0, ey1z1)))
+            val fy1 = koneSetOf(p020, p022, p220, p222).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex0y1, ex1y1, ey1z0, ey1z1)))
             }
-            val fz0 = koneIterableSetOf(p000, p200, p020, p220).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex0z0, ex1z0, ey0z0, ey1z0)))
+            val fz0 = koneSetOf(p000, p200, p020, p220).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex0z0, ex1z0, ey0z0, ey1z0)))
             }
-            val fz1 = koneIterableSetOf(p002, p202, p022, p222).let {
-                addPolytope(it, koneIterableListOf(it, koneIterableSetOf(ex0z1, ex1z1, ey0z1, ey1z1)))
+            val fz1 = koneSetOf(p002, p202, p022, p222).let {
+                addPolytope(it, koneListOf(it, koneSetOf(ex0z1, ex1z1, ey0z1, ey1z1)))
             }
 
-            koneIterableSetOf(p000, p002, p020, p022, p200, p202, p220, p222).let {
+            koneSetOf(p000, p002, p020, p022, p200, p202, p220, p222).let {
                 addPolytope(
                     it,
-                    koneIterableListOf(
+                    koneListOf(
                         it,
-                        koneIterableSetOf(
+                        koneSetOf(
                             ex0y0,
                             ex1y0,
                             ex0y1,
@@ -129,7 +129,7 @@ class ConvexHullTest {
                             ey0z1,
                             ey1z1
                         ),
-                        koneIterableSetOf(fx0, fx1, fy0, fy1, fz0, fz1)
+                        koneSetOf(fx0, fx1, fy0, fy1, fz0, fz1)
                     )
                 )
             }

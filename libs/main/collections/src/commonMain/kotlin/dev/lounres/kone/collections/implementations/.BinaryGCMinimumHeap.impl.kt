@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.LinkedHeapNode
 import dev.lounres.kone.collections.LinkedMinimumHeap
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.lastIndex
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.gt
@@ -257,15 +257,15 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         
         override fun hasNext(): Boolean = nextHolder != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): LinkedHeapNode<Element, Priority> {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextHolder!!.node
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             nextIndex++
             previousHolder = nextHolder
             nextHolder = nextHolder!!.next
@@ -273,15 +273,15 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         
         override fun hasPrevious(): Boolean = previousHolder != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): LinkedHeapNode<Element, Priority> {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousHolder!!.node
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             nextIndex++
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
@@ -310,15 +310,15 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         
         override fun hasNext(): Boolean = nextHolder != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): Element {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextHolder!!.node.element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             nextIndex++
             previousHolder = nextHolder
             nextHolder = nextHolder!!.next
@@ -326,15 +326,15 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         
         override fun hasPrevious(): Boolean = previousHolder != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousHolder!!.node.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             nextIndex++
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
@@ -344,11 +344,11 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
     internal inner class Elements : KoneList<Element> {
         override val size: UInt get() = this@BinaryGCMinimumHeap.size
         override fun get(index: UInt): Element {
-            if (index >= size) indexException(index, size)
+            if (index >= size) indexOutOfBoundsException(index, size)
             val digits = scope {
                 var rest = index + 1u
                 // TODO: Replace with KoneFixedCapacityArrayList with capacity 32
-                KoneGrowableArrayList<UInt>().apply {
+                KoneArrayGrowableList<UInt>().apply {
                     while (rest > 0u) {
                         add(rest % 2u)
                         rest /= 2u

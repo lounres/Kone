@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.computations
 
-import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 
 public interface FlowComputation<out R>: Computation {
     public val resultsFlow: Flow<R>
-    public val resultsCollectionFlow: StateFlow<KoneIterableList<R>>
+    public val resultsCollectionFlow: StateFlow<KoneList<R>>
 }

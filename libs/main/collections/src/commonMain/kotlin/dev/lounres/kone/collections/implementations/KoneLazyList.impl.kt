@@ -60,37 +60,37 @@ public class KoneLazyList<Element>(
 
     internal class Iterator<E>(val size: UInt, var currentIndex: UInt = 0u, val buffer: KoneMutableArray<Option<E>>, val generator: (UInt) -> E): KoneSettableLinearIterator<E> {
         init {
-            if (currentIndex > size) indexException(currentIndex, size)
+            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         // TODO: Move `hasX`, `moveX`, and `XIndex` methods to separate interface. They are the same as for KoneResizableArrayList.
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return buffer[currentIndex].orElse { generator(currentIndex).also { buffer[currentIndex] = Some(it) } }
         }
         override fun setNext(element: E) {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             buffer[currentIndex] = Some(element)
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             return buffer[currentIndex - 1u].orElse { generator(currentIndex - 1u).also { buffer[currentIndex - 1u] = Some(it) } }
         }
         override fun setPrevious(element: E) {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             buffer[currentIndex] = Some(element)
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
     }
 }

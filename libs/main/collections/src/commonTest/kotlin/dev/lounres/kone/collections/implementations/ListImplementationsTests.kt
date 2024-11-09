@@ -73,13 +73,13 @@ val listImplementations = listOf<ListImplementationDescription>(
             }
     },
     object : ListImplementationDescription {
-        override val name = "KoneGrowableArrayList"
+        override val name = "KoneArrayGrowableList"
         override val builder: MutableIterableListBuilder =
             object : MutableIterableListBuilder {
                 override fun <E> build(): KoneMutableList<E> =
-                    KoneGrowableArrayList()
+                    KoneArrayGrowableList()
                 override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneGrowableArrayList(size, generator)
+                    KoneArrayGrowableList(size, generator)
             }
     },
     object : ListImplementationDescription {

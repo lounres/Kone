@@ -8,10 +8,44 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.repeat
 
 
+/**
+ * Represents a finite collection of elements with some order on them.
+ *
+ * This interface's inheritors must have some specific structure
+ * that provides optimised elements access or optimised elements iteration.
+ * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ *
+ * @usesMathJax
+ */
 public interface KoneList<out Element> : KoneLinearIterable<Element> {
+    /**
+     * Returns element that is placed at the provided [index].
+     *
+     * For each index from `0` to [size] exclusive there is exactly one corresponding element.
+     *
+     * If index is at least [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is not less than [size].
+     */
     public operator fun get(index: UInt): Element
     
+    /**
+     * Initiates an iterator over the collection's elements
+     * with pointer between elements with indices `index - 1` and `index` correspondingly.
+     *
+     * In the iterator elements are iterated in the order of their indices.
+     *
+     * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
+     */
     public fun iteratorFrom(index: UInt): KoneLinearIterator<Element>
+    /**
+     * Initiates an iterator over the collection's elements
+     * with pointer before the first element.
+     *
+     * In the iterator elements are iterated in the order of their indices.
+     *
+     * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
+     */
     override fun iterator(): KoneLinearIterator<Element> = iteratorFrom(0u)
 }
 

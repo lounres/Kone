@@ -8,7 +8,7 @@ package dev.lounres.kone.linearAlgebra.experiment1
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneUIntArray
-import dev.lounres.kone.collections.toKoneIterableList
+import dev.lounres.kone.collections.toKoneList
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.collections.utils.hasDuplicates
 import dev.lounres.kone.combinatorics.enumerative.permutations
@@ -98,7 +98,7 @@ public val <N, A: Ring<N>> Matrix<N>.minor: MatrixMinorComputerFeature<N>
         val minorSize = rowIndices.size
         if (rowIndices.hasDuplicates() || columnIndices.hasDuplicates()) return@MatrixMinorComputerFeature zero
 
-        (0u ..< minorSize).toKoneIterableList().permutations().fold(zero) { result, permutation ->
+        (0u ..< minorSize).toKoneList().permutations().fold(zero) { result, permutation ->
             val permutationIsEven = scope {
                 var permutationIsEven = true
                 val visited = KoneMutableArray(minorSize) { false } // TODO: Can be replaced with specialised array

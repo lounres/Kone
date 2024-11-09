@@ -41,11 +41,12 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
     private fun KoneArray<KoneResizableLinkedArrayList<Element>>.dispose() {
-        @Suppress("UNCHECKED_CAST")
-        val array = this.array as Array<Any?>
+        // KT-67409
+//        @Suppress("UNCHECKED_CAST")
+//        val array = this.array as Array<Any?>
         for (i in 0u ..< size) {
             this[i].dispose()
-            array[i.toInt()] = null
+//            array[i.toInt()] = null
         }
     }
     override fun dispose() {

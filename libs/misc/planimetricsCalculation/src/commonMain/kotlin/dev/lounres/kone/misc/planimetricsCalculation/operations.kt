@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.koneIterableListOf
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.koneListOf
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.linearAlgebra.experiment1.adjugate
@@ -492,9 +492,9 @@ context(PlanimetricsCalculationContext<E, *>)
 public fun <E> reflectionThrough(l: Line<E>): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneIterableListOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
-            koneIterableListOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
-            koneIterableListOf(zero, zero, -(l.x * l.x + l.y * l.y)),
+            koneListOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
+            koneListOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
+            koneListOf(zero, zero, -(l.x * l.x + l.y * l.y)),
         )
     )
 }
@@ -514,9 +514,9 @@ context(PlanimetricsCalculationContext<E, *>)
 public fun <E> reflectionThrough(P: Point<E>): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneIterableListOf(-P.z, zero, 2 * P.x),
-            koneIterableListOf(zero, -P.z, 2 * P.y),
-            koneIterableListOf(zero, zero, P.z),
+            koneListOf(-P.z, zero, 2 * P.x),
+            koneListOf(zero, -P.z, 2 * P.y),
+            koneListOf(zero, zero, P.z),
         )
     )
 }
@@ -526,9 +526,9 @@ context(PlanimetricsCalculationContext<E, *>)
 public fun <E> homothetyBy(P: Point<E>, k: E): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneIterableListOf(k * P.z, zero, (1 - k) * P.x),
-            koneIterableListOf(zero, k * P.z, (1 - k) * P.y),
-            koneIterableListOf(zero, zero, P.z),
+            koneListOf(k * P.z, zero, (1 - k) * P.x),
+            koneListOf(zero, k * P.z, (1 - k) * P.y),
+            koneListOf(zero, zero, P.z),
         )
     )
 }
@@ -597,10 +597,10 @@ public fun <E> circleByDiameter(A: Point<E>, B: Point<E>): Quadric<E> = calculat
 context(PlanimetricsCalculationContext<E, *>)
 public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
     Matrix(
-        koneIterableListOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
-        koneIterableListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
-        koneIterableListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
-        koneIterableListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
+        koneListOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
+        koneListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
+        koneListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
+        koneListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
     ).det
 }
 
@@ -771,12 +771,12 @@ context(PlanimetricsCalculationContext<E, *>)
 public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E>, T: Point<E>): Quadric<E> = calculate {
     with(
         Matrix(
-            KoneIterableList(6u) { zero },
-            koneIterableListOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
-            koneIterableListOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
-            koneIterableListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
-            koneIterableListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
-            koneIterableListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
+            KoneList(6u) { zero },
+            koneListOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
+            koneListOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
+            koneListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
+            koneListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
+            koneListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
         )
     ) {
         Quadric(

@@ -9,8 +9,8 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultHashing
 
 
-public fun <Key, KeyContext: Hashing<Key>, Value> KoneResizableHashMap(keyContext: KeyContext): KoneResizableHashMap<Key, KeyContext, Value> =
-    KoneResizableHashMap(size = 0u, keyContext = keyContext)
+public fun <Key, KeyContext: Hashing<Key>, Value> KoneHashResizableMap(keyContext: KeyContext): KoneHashResizableMap<Key, KeyContext, Value> =
+    KoneHashResizableMap(size = 0u, keyContext = keyContext)
 
-public fun <Key, Value> KoneResizableHashMap(): KoneResizableHashMap<Key, Hashing<Key>, Value> =
-    KoneResizableHashMap(size = 0u, keyContext = defaultHashing())
+public fun <Key, Value> KoneHashResizableMap(): KoneHashResizableMap<Key, Hashing<Key>, Value> =
+    KoneHashResizableMap(size = 0u, keyContext = defaultHashing())

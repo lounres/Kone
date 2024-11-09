@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.KoneSettableListNode
 import dev.lounres.kone.collections.KoneSettableNoddedList
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.getOrNull
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.repeat
 
 
@@ -35,16 +35,16 @@ public /*value*/ class KoneArraySettableNoddedList<Element> @PublishedApi intern
     }
     
     override fun get(index: UInt): Element {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         return data[index] as Element
     }
     override fun getNode(index: UInt): KoneSettableListNode<Element> {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         return nodes[index]!!
     }
     
     override fun set(index: UInt, element: Element) {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         data[index] = element
     }
     
@@ -114,35 +114,35 @@ public /*value*/ class KoneArraySettableNoddedList<Element> @PublishedApi intern
     
     internal class Iterator<Element>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<Element> {
         init {
-            if (currentIndex > data.size) indexException(currentIndex, data.size)
+            if (currentIndex > data.size) indexOutOfBoundsException(currentIndex, data.size)
         }
         override fun hasNext(): Boolean = currentIndex < data.size
         override fun getNext(): Element {
-            if (!hasNext()) indexException(currentIndex, data.size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
             return data[currentIndex] as Element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, data.size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, data.size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, data.size)
         override fun setNext(element: Element) {
-            if (!hasNext()) indexException(currentIndex, data.size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
             data[currentIndex] = element
         }
         
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexException(currentIndex, data.size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
             return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, data.size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, data.size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, data.size)
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexException(currentIndex, data.size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
             data[currentIndex - 1u] = element
         }
     }

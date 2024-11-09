@@ -5,6 +5,9 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.utils.firstIndexThat
+import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
@@ -21,6 +24,11 @@ public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
     val iterator = iterator()
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
+}
+
+context(Equality<Element>)
+public fun <Element> KoneMutableList<Element>.remove(element: Element) {
+    removeAt(firstIndexThat { _, currentElement -> currentElement eq element })
 }
 
 public val KoneList<*>.lastIndex: UInt get() = size - 1u

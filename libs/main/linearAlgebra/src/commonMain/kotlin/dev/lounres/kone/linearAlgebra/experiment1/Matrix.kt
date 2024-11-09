@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.linearAlgebra.experiment1
 
-import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.eq
@@ -33,7 +33,7 @@ public /*value*/ class SettableMatrix<N>(
     }
 }
 
-public fun <E> Matrix(vararg elements: KoneIterableList<E>): Matrix<E> {
+public fun <E> Matrix(vararg elements: KoneList<E>): Matrix<E> {
     require(elements.all { it.size == elements[0].size }) { "Cannot construct Matrix from list of list of different sizes" }
     return Matrix(MDList2(*elements))
 }

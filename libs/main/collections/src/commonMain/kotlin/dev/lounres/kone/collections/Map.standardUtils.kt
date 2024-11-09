@@ -10,6 +10,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.transformNotNullMaybe
+import kotlin.jvm.JvmName
 
 
 public fun KoneMap<*, *>.isEmpty(): Boolean = size == 0u
@@ -32,7 +33,9 @@ public inline fun <Key, Value> KoneMutableMap<in Key, Value>.getOrSet(key: Key, 
 public fun <Key, Value> KoneMutableMap<Key, Value>.set(entry: KoneMapEntry<Key, Value>): KoneMutableMapNode<Key, Value> = set(entry.key, entry.value)
 public fun <Key, Value> KoneMutableMap<Key, Value>.set(node: KoneMapNode<Key, Value>): KoneMutableMapNode<Key, Value> = set(node.key, node.value)
 
+@JvmName("setAllEntriesFrom")
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(entries: KoneIterable<KoneMapEntry<Key, Value>>) { entries.forEach { set(it) } }
+@JvmName("setAllNodesFrom")
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(nodes: KoneIterable<KoneMapNode<Key, Value>>) { nodes.forEach { set(it) } }
 
 public fun <Key> KoneMutableMap<in Key, *>.remove(key: Key) { getNode(key).remove() }

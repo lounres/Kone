@@ -5,9 +5,12 @@
 
 package dev.lounres.kone.misc.lattices
 
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.koneMutableIterableSetOf
+import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.contains
+import dev.lounres.kone.collections.koneMutableSetOf
 import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.context.invoke
 
 
 public enum class TriangleKind {
@@ -54,11 +57,11 @@ public object TriangleLattice: LatticeWithConnectivity<Pair<Int, Int>, TriangleK
             { it.xySymmetry().rotate60().rotate60().rotate60().rotate60().rotate60() },
         )
 
-    override fun KoneIterableCollection<Position<Pair<Int, Int>, TriangleKind>>.isConnected(): Boolean {
+    override fun KoneIterable<Position<Pair<Int, Int>, TriangleKind>>.isConnected(): Boolean {
         val startPosition = this.first()
         val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, TriangleKind>>()
         positionsToTest.add(startPosition)
-        val testedPositions = koneMutableIterableSetOf<Position<Pair<Int, Int>, TriangleKind>>()
+        val testedPositions = koneMutableSetOf<Position<Pair<Int, Int>, TriangleKind>>()
         while (positionsToTest.isNotEmpty()) {
             val nextPosition = positionsToTest.removeFirst()
             testedPositions.add(nextPosition)
@@ -75,7 +78,7 @@ public object TriangleLattice: LatticeWithConnectivity<Pair<Int, Int>, TriangleK
                 )
             }
 
-            for (position in adjacentPositions) if (position !in testedPositions && position in this) positionsToTest.add(position)
+            for (position in adjacentPositions) if (position !in testedPositions && (defaultEquality<Position<Pair<Int, Int>, TriangleKind>>()) { position in this }) positionsToTest.add(position)
         }
         return testedPositions.size == this.size
     }

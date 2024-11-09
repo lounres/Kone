@@ -21,20 +21,21 @@ import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.buildAbstractPolytopicConstruction
 import dev.lounres.kone.computationalGeometry.utils.sumOf
 import dev.lounres.kone.computationalGeometry.vectorEquality
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
 
 
 // TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
 //   and that there are at least 2 triangles in the triangulation
 context(A, EuclideanKategory<N>, MutablePolytopicConstruction<N, P, V>)
-public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulation(): KoneIterableList<P> where A: Ring<N>, A: Order<N> {
+public fun <N, A, P, V: P> KoneIterable<V>.constructDelaunayTriangulation(): KoneList<P> where A: Ring<N>, A: Order<N> {
     val theDimension = spaceDimension + 1u
     val outerPolytopeContext = this@MutablePolytopicConstruction.polytopeContext
     buildAbstractPolytopicConstruction<N>(theDimension, numberContext = this@A) {
         val simplicesMapping =
-            koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality(), valueContext = outerPolytopeContext)
+            koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality())
         
-        val newPoints = this@constructDelaunayTriangulation.map(elementContext = defaultEquality()) { oldVertex ->
+        val newPoints = this@constructDelaunayTriangulation.map { oldVertex ->
             val newVertex =
                 addVertex(Point(MDList1(theDimension) { if (it < theDimension - 1u) oldVertex.position.coordinates[it] else oldVertex.position.sumOf { c -> c * c } }))
             simplicesMapping[newVertex] = oldVertex
@@ -44,15 +45,14 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
         val convexHull: AbstractPolytope =
             defaultHashing<AbstractPolytope>().run { newPoints.constructConvexHullByGiftWrapping() }
         val necessarySimplices = convexHull.facesOfDimension(convexHull.dimension - 1u).filter { simplex ->
-            val flag = KoneSettableIterableList(simplex.dimension + 2u) { simplex }
+            val flag = KoneSettableList(simplex.dimension + 2u) { simplex }
             flag[simplex.dimension + 1u] = convexHull
             for (dim in simplex.dimension - 1u downTo 0u) {
                 flag[dim] = flag[dim + 1u].facesOfDimension(dim).first()
             }
             val startPoint = (flag[0u] as AbstractVertex).position
-            val basis = KoneSettableIterableList(
+            val basis = KoneSettableList(
                 simplex.dimension + 1u,
-                elementContext = vectorEquality(this@A)
             ) { dim -> flag[dim + 1u].vertices.firstThat { it !in flag[dim].vertices }.position - startPoint }
             val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
             val lastBasisVector = ortogonalizedBasis.last()
@@ -63,7 +63,7 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
             for (dim in 1u .. simplex.dimension - 1u) for (face in simplex.facesOfDimension(dim)) {
                 simplicesMapping[face] = this@MutablePolytopicConstruction.addPolytope(
                     face.vertices.mapTo<AbstractVertex, V, _>(
-                        koneMutableIterableSetOf<V>(
+                        koneMutableSetOf<V>(
                             elementContext = outerPolytopeContext
                         )
                     ) {
@@ -71,14 +71,10 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
                         simplicesMapping[it] as V
                     },
                     face.faces.mapTo(
-                        koneMutableIterableListOf(
-                            elementContext = koneIterableSetEquality(
-                                outerPolytopeContext
-                            )
-                        )
+                        koneMutableListOf()
                     ) { dimFaces ->
                         dimFaces.mapTo<AbstractPolytope, P, _>(
-                            koneMutableIterableSetOf<P>(
+                            koneMutableSetOf<P>(
                                 elementContext = outerPolytopeContext
                             )
                         ) { simplicesMapping[it] }
@@ -87,23 +83,19 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
             }
             simplicesMapping[simplex] = this@MutablePolytopicConstruction.addPolytope(
                 simplex.vertices.mapTo<AbstractVertex, V, _>(
-                    koneMutableIterableSetOf<V>(
+                    koneMutableSetOf<V>(
                         elementContext = outerPolytopeContext
                     )
                 ) {
                     @Suppress("UNCHECKED_CAST")
                     simplicesMapping[it] as V
                 },
-                koneIterableSetEquality(outerPolytopeContext).invoke {
+                koneSetEquality(outerPolytopeContext).invoke {
                     simplex.faces.mapTo(
-                        koneMutableIterableListOf(
-                            elementContext = koneIterableSetEquality(
-                                outerPolytopeContext
-                            )
-                        )
+                        koneMutableListOf()
                     ) { dimFaces ->
                         dimFaces.mapTo<AbstractPolytope, P, _>(
-                            koneMutableIterableSetOf<P>(
+                            koneMutableSetOf<P>(
                                 elementContext = outerPolytopeContext
                             )
                         ) { simplicesMapping[it] }
@@ -112,6 +104,6 @@ public fun <N, A, P, V: P> KoneIterableCollection<V>.constructDelaunayTriangulat
             )
         }
         
-        return necessarySimplices.map(elementContext = outerPolytopeContext) { simplicesMapping[it] }
+        return necessarySimplices.map { simplicesMapping[it] }
     }
 }

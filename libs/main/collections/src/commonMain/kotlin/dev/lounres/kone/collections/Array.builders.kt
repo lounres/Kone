@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 
 
 // region General arrays
@@ -28,14 +28,14 @@ public inline fun <reified Element> KoneIterable<Element>.toKoneMutableArray(): 
     if (this is KoneList<Element>) return this.toKoneMutableArray()
     if (this is KoneSet<Element>) return this.toKoneMutableArray()
 
-    val result = KoneGrowableArrayList<Element>()
+    val result = KoneArrayGrowableList<Element>()
     for (element in this) result.add(element)
     return result.toKoneMutableArray()
 }
 public inline fun <reified Element> Iterable<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
     if (this is Collection<Element>) return this.toKoneMutableArray()
 
-    val result = KoneGrowableArrayList<Element>()
+    val result = KoneArrayGrowableList<Element>()
     for (element in this) result.add(element)
     return result.toKoneMutableArray()
 }
@@ -56,14 +56,14 @@ public inline fun <reified Element> KoneIterable<Element>.toKoneArray(): KoneArr
     if (this is KoneList<Element>) return this.toKoneArray()
     if (this is KoneSet<Element>) return this.toKoneArray()
 
-    val result = KoneGrowableArrayList<Element>()
+    val result = KoneArrayGrowableList<Element>()
     for (element in this) result.add(element)
     return result.toKoneArray()
 }
 public inline fun <reified Element> Iterable<Element>.toKoneArray(): KoneArray<Element> {
     if (this is Collection<Element>) return this.toKoneArray()
 
-    val result = KoneGrowableArrayList<Element>()
+    val result = KoneArrayGrowableList<Element>()
     for (element in this) result.add(element)
     return result.toKoneArray()
 }
@@ -106,14 +106,14 @@ public fun KoneIterable<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
     if (this is KoneList<Byte>) return this.toKoneMutableByteArray()
     if (this is KoneSet<Byte>) return this.toKoneMutableByteArray()
     
-    val result = KoneGrowableArrayList<Byte>()
+    val result = KoneArrayGrowableList<Byte>()
     for (element in this) result.add(element)
     return result.toKoneMutableByteArray()
 }
 public fun Iterable<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
     if (this is Collection<Byte>) return this.toKoneMutableByteArray()
     
-    val result = KoneGrowableArrayList<Byte>()
+    val result = KoneArrayGrowableList<Byte>()
     for (element in this) result.add(element)
     return result.toKoneMutableByteArray()
 }
@@ -134,14 +134,14 @@ public fun KoneIterable<Byte>.toKoneByteArray(): KoneByteArray {
     if (this is KoneList<Byte>) return this.toKoneByteArray()
     if (this is KoneSet<Byte>) return this.toKoneByteArray()
     
-    val result = KoneGrowableArrayList<Byte>()
+    val result = KoneArrayGrowableList<Byte>()
     for (element in this) result.add(element)
     return result.toKoneByteArray()
 }
 public fun Iterable<Byte>.toKoneByteArray(): KoneByteArray {
     if (this is Collection<Byte>) return this.toKoneByteArray()
     
-    val result = KoneGrowableArrayList<Byte>()
+    val result = KoneArrayGrowableList<Byte>()
     for (element in this) result.add(element)
     return result.toKoneByteArray()
 }
@@ -184,14 +184,14 @@ public fun KoneIterable<Short>.toKoneMutableShortArray(): KoneMutableShortArray 
     if (this is KoneList<Short>) return this.toKoneMutableShortArray()
     if (this is KoneSet<Short>) return this.toKoneMutableShortArray()
     
-    val result = KoneGrowableArrayList<Short>()
+    val result = KoneArrayGrowableList<Short>()
     for (element in this) result.add(element)
     return result.toKoneMutableShortArray()
 }
 public fun Iterable<Short>.toKoneMutableShortArray(): KoneMutableShortArray {
     if (this is Collection<Short>) return this.toKoneMutableShortArray()
     
-    val result = KoneGrowableArrayList<Short>()
+    val result = KoneArrayGrowableList<Short>()
     for (element in this) result.add(element)
     return result.toKoneMutableShortArray()
 }
@@ -212,14 +212,14 @@ public fun KoneIterable<Short>.toKoneShortArray(): KoneShortArray {
     if (this is KoneList<Short>) return this.toKoneShortArray()
     if (this is KoneSet<Short>) return this.toKoneShortArray()
     
-    val result = KoneGrowableArrayList<Short>()
+    val result = KoneArrayGrowableList<Short>()
     for (element in this) result.add(element)
     return result.toKoneShortArray()
 }
 public fun Iterable<Short>.toKoneShortArray(): KoneShortArray {
     if (this is Collection<Short>) return this.toKoneShortArray()
     
-    val result = KoneGrowableArrayList<Short>()
+    val result = KoneArrayGrowableList<Short>()
     for (element in this) result.add(element)
     return result.toKoneShortArray()
 }
@@ -262,14 +262,14 @@ public fun KoneIterable<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
     if (this is KoneList<Int>) return this.toKoneMutableIntArray()
     if (this is KoneSet<Int>) return this.toKoneMutableIntArray()
     
-    val result = KoneGrowableArrayList<Int>()
+    val result = KoneArrayGrowableList<Int>()
     for (element in this) result.add(element)
     return result.toKoneMutableIntArray()
 }
 public fun Iterable<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
     if (this is Collection<Int>) return this.toKoneMutableIntArray()
     
-    val result = KoneGrowableArrayList<Int>()
+    val result = KoneArrayGrowableList<Int>()
     for (element in this) result.add(element)
     return result.toKoneMutableIntArray()
 }
@@ -290,14 +290,14 @@ public fun KoneIterable<Int>.toKoneIntArray(): KoneIntArray {
     if (this is KoneList<Int>) return this.toKoneIntArray()
     if (this is KoneSet<Int>) return this.toKoneIntArray()
     
-    val result = KoneGrowableArrayList<Int>()
+    val result = KoneArrayGrowableList<Int>()
     for (element in this) result.add(element)
     return result.toKoneIntArray()
 }
 public fun Iterable<Int>.toKoneIntArray(): KoneIntArray {
     if (this is Collection<Int>) return this.toKoneIntArray()
     
-    val result = KoneGrowableArrayList<Int>()
+    val result = KoneArrayGrowableList<Int>()
     for (element in this) result.add(element)
     return result.toKoneIntArray()
 }
@@ -340,14 +340,14 @@ public fun KoneIterable<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
     if (this is KoneList<Long>) return this.toKoneMutableLongArray()
     if (this is KoneSet<Long>) return this.toKoneMutableLongArray()
     
-    val result = KoneGrowableArrayList<Long>()
+    val result = KoneArrayGrowableList<Long>()
     for (element in this) result.add(element)
     return result.toKoneMutableLongArray()
 }
 public fun Iterable<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
     if (this is Collection<Long>) return this.toKoneMutableLongArray()
     
-    val result = KoneGrowableArrayList<Long>()
+    val result = KoneArrayGrowableList<Long>()
     for (element in this) result.add(element)
     return result.toKoneMutableLongArray()
 }
@@ -368,14 +368,14 @@ public fun KoneIterable<Long>.toKoneLongArray(): KoneLongArray {
     if (this is KoneList<Long>) return this.toKoneLongArray()
     if (this is KoneSet<Long>) return this.toKoneLongArray()
     
-    val result = KoneGrowableArrayList<Long>()
+    val result = KoneArrayGrowableList<Long>()
     for (element in this) result.add(element)
     return result.toKoneLongArray()
 }
 public fun Iterable<Long>.toKoneLongArray(): KoneLongArray {
     if (this is Collection<Long>) return this.toKoneLongArray()
     
-    val result = KoneGrowableArrayList<Long>()
+    val result = KoneArrayGrowableList<Long>()
     for (element in this) result.add(element)
     return result.toKoneLongArray()
 }
@@ -418,14 +418,14 @@ public fun KoneIterable<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray 
     if (this is KoneList<Float>) return this.toKoneMutableFloatArray()
     if (this is KoneSet<Float>) return this.toKoneMutableFloatArray()
     
-    val result = KoneGrowableArrayList<Float>()
+    val result = KoneArrayGrowableList<Float>()
     for (element in this) result.add(element)
     return result.toKoneMutableFloatArray()
 }
 public fun Iterable<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray {
     if (this is Collection<Float>) return this.toKoneMutableFloatArray()
     
-    val result = KoneGrowableArrayList<Float>()
+    val result = KoneArrayGrowableList<Float>()
     for (element in this) result.add(element)
     return result.toKoneMutableFloatArray()
 }
@@ -446,14 +446,14 @@ public fun KoneIterable<Float>.toKoneFloatArray(): KoneFloatArray {
     if (this is KoneList<Float>) return this.toKoneFloatArray()
     if (this is KoneSet<Float>) return this.toKoneFloatArray()
     
-    val result = KoneGrowableArrayList<Float>()
+    val result = KoneArrayGrowableList<Float>()
     for (element in this) result.add(element)
     return result.toKoneFloatArray()
 }
 public fun Iterable<Float>.toKoneFloatArray(): KoneFloatArray {
     if (this is Collection<Float>) return this.toKoneFloatArray()
     
-    val result = KoneGrowableArrayList<Float>()
+    val result = KoneArrayGrowableList<Float>()
     for (element in this) result.add(element)
     return result.toKoneFloatArray()
 }
@@ -496,14 +496,14 @@ public fun KoneIterable<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArr
     if (this is KoneList<Double>) return this.toKoneMutableDoubleArray()
     if (this is KoneSet<Double>) return this.toKoneMutableDoubleArray()
     
-    val result = KoneGrowableArrayList<Double>()
+    val result = KoneArrayGrowableList<Double>()
     for (element in this) result.add(element)
     return result.toKoneMutableDoubleArray()
 }
 public fun Iterable<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArray {
     if (this is Collection<Double>) return this.toKoneMutableDoubleArray()
     
-    val result = KoneGrowableArrayList<Double>()
+    val result = KoneArrayGrowableList<Double>()
     for (element in this) result.add(element)
     return result.toKoneMutableDoubleArray()
 }
@@ -524,14 +524,14 @@ public fun KoneIterable<Double>.toKoneDoubleArray(): KoneDoubleArray {
     if (this is KoneList<Double>) return this.toKoneDoubleArray()
     if (this is KoneSet<Double>) return this.toKoneDoubleArray()
     
-    val result = KoneGrowableArrayList<Double>()
+    val result = KoneArrayGrowableList<Double>()
     for (element in this) result.add(element)
     return result.toKoneDoubleArray()
 }
 public fun Iterable<Double>.toKoneDoubleArray(): KoneDoubleArray {
     if (this is Collection<Double>) return this.toKoneDoubleArray()
     
-    val result = KoneGrowableArrayList<Double>()
+    val result = KoneArrayGrowableList<Double>()
     for (element in this) result.add(element)
     return result.toKoneDoubleArray()
 }
@@ -574,14 +574,14 @@ public fun KoneIterable<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray 
     if (this is KoneList<UByte>) return this.toKoneMutableUByteArray()
     if (this is KoneSet<UByte>) return this.toKoneMutableUByteArray()
     
-    val result = KoneGrowableArrayList<UByte>()
+    val result = KoneArrayGrowableList<UByte>()
     for (element in this) result.add(element)
     return result.toKoneMutableUByteArray()
 }
 public fun Iterable<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray {
     if (this is Collection<UByte>) return this.toKoneMutableUByteArray()
     
-    val result = KoneGrowableArrayList<UByte>()
+    val result = KoneArrayGrowableList<UByte>()
     for (element in this) result.add(element)
     return result.toKoneMutableUByteArray()
 }
@@ -602,14 +602,14 @@ public fun KoneIterable<UByte>.toKoneUByteArray(): KoneUByteArray {
     if (this is KoneList<UByte>) return this.toKoneUByteArray()
     if (this is KoneSet<UByte>) return this.toKoneUByteArray()
     
-    val result = KoneGrowableArrayList<UByte>()
+    val result = KoneArrayGrowableList<UByte>()
     for (element in this) result.add(element)
     return result.toKoneUByteArray()
 }
 public fun Iterable<UByte>.toKoneUByteArray(): KoneUByteArray {
     if (this is Collection<UByte>) return this.toKoneUByteArray()
     
-    val result = KoneGrowableArrayList<UByte>()
+    val result = KoneArrayGrowableList<UByte>()
     for (element in this) result.add(element)
     return result.toKoneUByteArray()
 }
@@ -652,14 +652,14 @@ public fun KoneIterable<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArr
     if (this is KoneList<UShort>) return this.toKoneMutableUShortArray()
     if (this is KoneSet<UShort>) return this.toKoneMutableUShortArray()
     
-    val result = KoneGrowableArrayList<UShort>()
+    val result = KoneArrayGrowableList<UShort>()
     for (element in this) result.add(element)
     return result.toKoneMutableUShortArray()
 }
 public fun Iterable<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArray {
     if (this is Collection<UShort>) return this.toKoneMutableUShortArray()
     
-    val result = KoneGrowableArrayList<UShort>()
+    val result = KoneArrayGrowableList<UShort>()
     for (element in this) result.add(element)
     return result.toKoneMutableUShortArray()
 }
@@ -680,14 +680,14 @@ public fun KoneIterable<UShort>.toKoneUShortArray(): KoneUShortArray {
     if (this is KoneList<UShort>) return this.toKoneUShortArray()
     if (this is KoneSet<UShort>) return this.toKoneUShortArray()
     
-    val result = KoneGrowableArrayList<UShort>()
+    val result = KoneArrayGrowableList<UShort>()
     for (element in this) result.add(element)
     return result.toKoneUShortArray()
 }
 public fun Iterable<UShort>.toKoneUShortArray(): KoneUShortArray {
     if (this is Collection<UShort>) return this.toKoneUShortArray()
     
-    val result = KoneGrowableArrayList<UShort>()
+    val result = KoneArrayGrowableList<UShort>()
     for (element in this) result.add(element)
     return result.toKoneUShortArray()
 }
@@ -730,14 +730,14 @@ public fun KoneIterable<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
     if (this is KoneList<UInt>) return this.toKoneMutableUIntArray()
     if (this is KoneSet<UInt>) return this.toKoneMutableUIntArray()
 
-    val result = KoneGrowableArrayList<UInt>()
+    val result = KoneArrayGrowableList<UInt>()
     for (element in this) result.add(element)
     return result.toKoneMutableUIntArray()
 }
 public fun Iterable<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
     if (this is Collection<UInt>) return this.toKoneMutableUIntArray()
 
-    val result = KoneGrowableArrayList<UInt>()
+    val result = KoneArrayGrowableList<UInt>()
     for (element in this) result.add(element)
     return result.toKoneMutableUIntArray()
 }
@@ -758,14 +758,14 @@ public fun KoneIterable<UInt>.toKoneUIntArray(): KoneUIntArray {
     if (this is KoneList<UInt>) return this.toKoneUIntArray()
     if (this is KoneSet<UInt>) return this.toKoneUIntArray()
 
-    val result = KoneGrowableArrayList<UInt>()
+    val result = KoneArrayGrowableList<UInt>()
     for (element in this) result.add(element)
     return result.toKoneUIntArray()
 }
 public fun Iterable<UInt>.toKoneUIntArray(): KoneUIntArray {
     if (this is Collection<UInt>) return this.toKoneUIntArray()
 
-    val result = KoneGrowableArrayList<UInt>()
+    val result = KoneArrayGrowableList<UInt>()
     for (element in this) result.add(element)
     return result.toKoneUIntArray()
 }
@@ -808,14 +808,14 @@ public fun KoneIterable<ULong>.toKoneMutableULongArray(): KoneMutableULongArray 
     if (this is KoneList<ULong>) return this.toKoneMutableULongArray()
     if (this is KoneSet<ULong>) return this.toKoneMutableULongArray()
     
-    val result = KoneGrowableArrayList<ULong>()
+    val result = KoneArrayGrowableList<ULong>()
     for (element in this) result.add(element)
     return result.toKoneMutableULongArray()
 }
 public fun Iterable<ULong>.toKoneMutableULongArray(): KoneMutableULongArray {
     if (this is Collection<ULong>) return this.toKoneMutableULongArray()
     
-    val result = KoneGrowableArrayList<ULong>()
+    val result = KoneArrayGrowableList<ULong>()
     for (element in this) result.add(element)
     return result.toKoneMutableULongArray()
 }
@@ -836,14 +836,14 @@ public fun KoneIterable<ULong>.toKoneULongArray(): KoneULongArray {
     if (this is KoneList<ULong>) return this.toKoneULongArray()
     if (this is KoneSet<ULong>) return this.toKoneULongArray()
     
-    val result = KoneGrowableArrayList<ULong>()
+    val result = KoneArrayGrowableList<ULong>()
     for (element in this) result.add(element)
     return result.toKoneULongArray()
 }
 public fun Iterable<ULong>.toKoneULongArray(): KoneULongArray {
     if (this is Collection<ULong>) return this.toKoneULongArray()
     
-    val result = KoneGrowableArrayList<ULong>()
+    val result = KoneArrayGrowableList<ULong>()
     for (element in this) result.add(element)
     return result.toKoneULongArray()
 }

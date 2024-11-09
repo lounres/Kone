@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.SearchSegmentResult
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.lt
@@ -952,15 +952,15 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         
         override fun hasNext(): Boolean = nextNode != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): Node<E> {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextNode!!
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             nextIndex++
             previousNode = nextNode
             nextNode = nextNode!!.nextNode
@@ -968,15 +968,15 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         
         override fun hasPrevious(): Boolean = previousNode != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): Node<E> {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousNode!!
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             nextIndex++
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
@@ -1009,15 +1009,15 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         
         override fun hasNext(): Boolean = nextNode != null
         override fun nextIndex(): UInt {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextIndex
         }
         override fun getNext(): E {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextNode!!.element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(nextIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             nextIndex++
             previousNode = nextNode
             nextNode = nextNode!!.nextNode
@@ -1025,15 +1025,15 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         
         override fun hasPrevious(): Boolean = previousNode != null
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return nextIndex - 1u
         }
         override fun getPrevious(): E {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousNode!!.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(nextIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             nextIndex++
             nextNode = previousNode
             previousNode = previousNode!!.previousNode

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.collections.KoneIterableSet
+import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.KoneContext
@@ -25,11 +25,11 @@ context(GraphWithContext<V, *, *, *>)
 public operator fun <V> EdgeEnds<V>.minus(vertex: V): V = vertexContext { if (vertex eq start) end else start }
 
 public interface Graph<V, E> : KoneContext {
-    public val vertices: KoneIterableSet<V>
-    public val edges: KoneIterableSet<E>
+    public val vertices: KoneSet<V>
+    public val edges: KoneSet<E>
 
-    public val V.incidentEdges: KoneIterableSet<E>
-    public val V.adjacentVertices: KoneIterableSet<V>
+    public val V.incidentEdges: KoneSet<E>
+    public val V.adjacentVertices: KoneSet<V>
     public val V.degree: UInt
     public fun edge(tail: V, head: V): E
     public fun edgeOrNull(tail: V, head: V): E?
@@ -51,19 +51,19 @@ public interface GraphWithContext<V, out VC: Equality<V>, E, out EC: Equality<E>
 
 public interface Digraph<V, E> {
     
-    public val vertices: KoneIterableSet<V>
-    public val edges: KoneIterableSet<E>
+    public val vertices: KoneSet<V>
+    public val edges: KoneSet<E>
     
-    public val V.incidentEdges: KoneIterableSet<E>
-    public val V.adjacentVertices: KoneIterableSet<V>
+    public val V.incidentEdges: KoneSet<E>
+    public val V.adjacentVertices: KoneSet<V>
     public val V.degree: UInt
     public fun edge(tail: V, head: V): E
     public fun edgeOrNull(tail: V, head: V): E?
     public fun edgeMaybe(tail: V, head: V): Option<E>
-    public val V.outgoingEdges: KoneIterableSet<E>
-    public val V.incomingEdges: KoneIterableSet<E>
-    public val V.adjacentOutgoingVertices: KoneIterableSet<V>
-    public val V.adjacentIncomingVertices: KoneIterableSet<V>
+    public val V.outgoingEdges: KoneSet<E>
+    public val V.incomingEdges: KoneSet<E>
+    public val V.adjacentOutgoingVertices: KoneSet<V>
+    public val V.adjacentIncomingVertices: KoneSet<V>
     public val V.outdegree: UInt
     public val V.indegree: UInt
     

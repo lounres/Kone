@@ -5,9 +5,12 @@
 
 package dev.lounres.kone.misc.lattices
 
-import dev.lounres.kone.collections.KoneIterableCollection
-import dev.lounres.kone.collections.koneMutableIterableSetOf
+import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.contains
+import dev.lounres.kone.collections.koneMutableSetOf
 import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.context.invoke
 
 
 public data object SquareKind
@@ -33,11 +36,11 @@ public object SquareLattice: LatticeWithConnectivity<Pair<Int, Int>, SquareKind,
             { Position(Pair(-it.coordinates.second, -it.coordinates.first), it.kind) },
         )
 
-    override fun KoneIterableCollection<Position<Pair<Int, Int>, SquareKind>>.isConnected(): Boolean {
+    override fun KoneIterable<Position<Pair<Int, Int>, SquareKind>>.isConnected(): Boolean {
         val startPosition = this.first()
         val positionsToTest = ArrayDeque<Position<Pair<Int, Int>, SquareKind>>()
         positionsToTest.add(startPosition)
-        val testedPositions = koneMutableIterableSetOf<Position<Pair<Int, Int>, SquareKind>>()
+        val testedPositions = koneMutableSetOf<Position<Pair<Int, Int>, SquareKind>>()
         while (positionsToTest.isNotEmpty()) {
             val nextPosition = positionsToTest.removeFirst()
             testedPositions.add(nextPosition)
@@ -47,7 +50,7 @@ public object SquareLattice: LatticeWithConnectivity<Pair<Int, Int>, SquareKind,
                 Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second+1), nextPosition.kind),
                 Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second-1), nextPosition.kind),
             )
-            for (position in adjacentPositions) if (position !in testedPositions && position in this) positionsToTest.add(position)
+            for (position in adjacentPositions) if (position !in testedPositions && (defaultEquality<Position<Pair<Int, Int>, SquareKind>>()) { position in this }) positionsToTest.add(position)
         }
         return testedPositions.size == this.size
     }

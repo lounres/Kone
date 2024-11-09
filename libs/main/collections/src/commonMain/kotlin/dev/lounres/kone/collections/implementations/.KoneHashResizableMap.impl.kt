@@ -29,7 +29,7 @@ import kotlin.math.floor
 import kotlin.math.max
 
 
-public class KoneResizableHashMap<Key, KeyContext: Hashing<Key>, Value> internal constructor(
+public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateCapacity(size, loadFactor), 2u)) - 1u,
@@ -51,11 +51,12 @@ public class KoneResizableHashMap<Key, KeyContext: Hashing<Key>, Value> internal
     private fun Key.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
     private fun KoneArray<KoneResizableLinkedArrayList<KoneMapEntry<Key, Value>>>.dispose() {
-        @Suppress("UNCHECKED_CAST")
-        val array = this.array as Array<Any?>
+        // KT-67409
+//        @Suppress("UNCHECKED_CAST")
+//        val array = this.array as Array<Any?>
         for (i in 0u ..< size) {
             this[i].dispose()
-            array[i.toInt()] = null
+//            array[i.toInt()] = null
         }
     }
     override fun dispose() {
@@ -268,20 +269,20 @@ public class KoneResizableHashMap<Key, KeyContext: Hashing<Key>, Value> internal
     }
 
     internal inner class KeysSet : KoneSet<Key> {
-        override val size: UInt = this@KoneResizableHashMap.size
+        override val size: UInt = this@KoneHashResizableMap.size
         override fun contains(element: Key): Boolean = data[element.dataIndex()].let { it.firstIndexThat { _, entry -> keyContext { entry.key eq element } } != it.size }
         override fun iterator(): KoneIterator<Key> = KeyIterator()
         // TODO: Override `toString`.
     }
 
     internal inner class ValueCollection : KoneIterable<Value> {
-        override val size: UInt get() = this@KoneResizableHashMap.size
+        override val size: UInt get() = this@KoneHashResizableMap.size
         override fun iterator(): KoneIterator<Value> = ValueIterator()
         // TODO: Override `toString`.
     }
 
     internal inner class EntriesSet : KoneIterable<KoneMapEntry<Key, Value>> {
-        override val size: UInt get() = this@KoneResizableHashMap.size
+        override val size: UInt get() = this@KoneHashResizableMap.size
         override fun iterator(): KoneIterator<KoneMapEntry<Key, Value>> = EntryIterator()
         // TODO: Override `toString`.
     }

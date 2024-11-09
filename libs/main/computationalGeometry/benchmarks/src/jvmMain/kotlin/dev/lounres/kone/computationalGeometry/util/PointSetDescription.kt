@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry.util
 
-import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.computationalGeometry.Point
 import kotlinx.serialization.Serializable
 
@@ -15,7 +15,7 @@ data class PointSetDescription<N>(
     val dim: UInt,
     val coords: List<List<N>>
 ) {
-    val points: KoneIterableList<Point<N>> get() = KoneIterableList(coords.size.toUInt()) { pointIndex ->
+    val points: KoneList<Point<N>> get() = KoneList(coords.size.toUInt()) { pointIndex ->
         val coord = coords[pointIndex.toInt()]
         Point(coord.size.toUInt()) { coord[it.toInt()] }
     }

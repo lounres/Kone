@@ -31,7 +31,7 @@ class KoneResizableLinkedArrayListBenchmarks {
     )
     var listSize: UInt = 0u
 
-    lateinit var list: KoneResizableLinkedArrayList<UInt, Equality<UInt>>
+    lateinit var list: KoneResizableLinkedArrayList<UInt>
 
     @Setup(Level.Invocation)
     fun setupListContent() {

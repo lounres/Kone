@@ -6,7 +6,7 @@
 package dev.lounres.kone.combinatorics.enumerative
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneGrowableArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.scope
 
@@ -318,7 +318,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equali
         val groupStarts: KoneUIntArray
         scope {
             val references = KoneMutableUIntArray(size + 1u) { size + 1u }
-            val countsBuilder = KoneGrowableArrayList<UInt>()
+            val countsBuilder = KoneArrayGrowableList<UInt>()
             scope {
                 val countIndices = KoneMutableUIntArray(size)
                 var indexOfLastElement = 0u

@@ -27,12 +27,12 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
     }
 
     override fun get(index: UInt): Element {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         return data[index] as Element
     }
 
     override fun set(index: UInt, element: Element) {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         data[index] = element
     }
 
@@ -46,7 +46,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size++
     }
     override fun addAt(index: UInt, element: Element) {
-        if (index > size) indexException(index, size)
+        if (index > size) indexOutOfBoundsException(index, size)
         if (size == capacity) capacityOverflowException(capacity)
         if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
         data[index] = element
@@ -60,7 +60,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size = newSize
     }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
-        if (index > size) indexException(index, size)
+        if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
         if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
@@ -69,7 +69,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size = newSize
     }
     override fun removeAt(index: UInt) {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
         for (i in index..<newSize) data[i] = data[i + 1u]
         data[size - 1u] = null
@@ -136,42 +136,42 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
 
     internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
-            if (currentIndex > size) indexException(currentIndex, size)
+            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): Element {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return data[currentIndex] as Element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
         override fun setNext(element: Element) {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             data[currentIndex] = element
         }
         override fun addNext(element: Element) {
             addAt(currentIndex, element)
         }
         override fun removeNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             removeAt(currentIndex)
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             return data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             data[currentIndex - 1u] = element
         }
         override fun addPrevious(element: Element) {
@@ -179,7 +179,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
             currentIndex++
         }
         override fun removePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             removeAt(--currentIndex)
         }
     }

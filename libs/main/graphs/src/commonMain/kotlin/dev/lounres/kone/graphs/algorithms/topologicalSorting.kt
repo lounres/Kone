@@ -6,20 +6,21 @@
 package dev.lounres.kone.graphs.algorithms
 
 import dev.lounres.kone.collections.HeapNode
-import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.get
 import dev.lounres.kone.collections.implementations.BinaryGCMinimumHeap
-import dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.koneMutableMapOf
 import dev.lounres.kone.collections.next
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultOrder
 import dev.lounres.kone.graphs.DigraphWithContext
 
 
-public fun <V, E, G> G.sortVerticesTopologicallyByKahn(): KoneIterableList<V> where G: DigraphWithContext<V, *, E, *> {
-    val verticesToProcess = BinaryGCMinimumHeap(vertexContext, defaultOrder<UInt>())
-    val result = KoneFixedCapacityArrayList(vertices.size, vertexContext)
-    val verticesNodes = koneMutableMapOf(vertexContext, defaultEquality<HeapNode<V, UInt>>())
+public fun <V, E, G> G.sortVerticesTopologicallyByKahn(): KoneList<V> where G: DigraphWithContext<V, *, E, *> {
+    val verticesToProcess = BinaryGCMinimumHeap<V, UInt, Order<UInt>>(defaultOrder<UInt>())
+    val result = KoneArrayFixedCapacityList<V>(vertices.size)
+    val verticesNodes = koneMutableMapOf<V, HeapNode<V, UInt>>(vertexContext)
     
     for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, vertex.indegree)
     

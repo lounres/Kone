@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.misc.lattices
 
-import dev.lounres.kone.collections.KoneIterableCollection
+import dev.lounres.kone.collections.KoneIterable
 
 
 public interface LatticeWithConnectivity<C, K, V>: Lattice<C, K, V> {
-    public fun KoneIterableCollection<Position<C, K>>.isConnected(): Boolean
+    public fun KoneIterable<Position<C, K>>.isConnected(): Boolean
 }

@@ -50,28 +50,28 @@ public class KoneVirtualList<Element>(
 
     internal class Iterator<E>(val size: UInt, var currentIndex: UInt = 0u, val generator: (UInt) -> E): KoneLinearIterator<E> {
         init {
-            if (currentIndex > size) indexException(currentIndex, size)
+            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): E {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return generator(currentIndex)
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): E {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             return generator(currentIndex - 1u)
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
     }
 }

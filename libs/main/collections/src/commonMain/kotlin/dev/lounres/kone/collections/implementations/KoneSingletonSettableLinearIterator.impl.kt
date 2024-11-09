@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneSettableLinearIterator
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 
 
 internal class KoneSingletonSettableLinearIterator<Element>(
@@ -15,31 +15,31 @@ internal class KoneSingletonSettableLinearIterator<Element>(
 ): KoneSettableLinearIterator<Element> {
     override fun hasNext(): Boolean = currentlyBeforeSingleElement
     override fun getNext(): Element {
-        if (!hasNext()) indexException(1u, 1u)
+        if (!hasNext()) indexOutOfBoundsException(1u, 1u)
         return singleElement
     }
     override fun moveNext() {
-        if (!hasNext()) indexException(1u, 1u)
+        if (!hasNext()) indexOutOfBoundsException(1u, 1u)
         currentlyBeforeSingleElement = false
     }
-    override fun nextIndex(): UInt = if (hasNext()) 1u else indexException(1u, 1u)
+    override fun nextIndex(): UInt = if (hasNext()) 1u else indexOutOfBoundsException(1u, 1u)
     override fun setNext(element: Element) {
-        if (!hasNext()) indexException(1u, 1u)
+        if (!hasNext()) indexOutOfBoundsException(1u, 1u)
         singleElement = element
     }
 
     override fun hasPrevious(): Boolean = !currentlyBeforeSingleElement
     override fun getPrevious(): Element {
-        if (!hasPrevious()) indexException(UInt.MAX_VALUE, 1u)
+        if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
         return singleElement
     }
     override fun movePrevious() {
-        if (!hasPrevious()) indexException(UInt.MAX_VALUE, 1u)
+        if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
         currentlyBeforeSingleElement = true
     }
-    override fun previousIndex(): UInt = if (hasPrevious()) 0u else indexException(UInt.MAX_VALUE, 1u)
+    override fun previousIndex(): UInt = if (hasPrevious()) 0u else indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
     override fun setPrevious(element: Element) {
-        if (!hasPrevious()) indexException(UInt.MAX_VALUE, 1u)
+        if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
         singleElement = element
     }
 }

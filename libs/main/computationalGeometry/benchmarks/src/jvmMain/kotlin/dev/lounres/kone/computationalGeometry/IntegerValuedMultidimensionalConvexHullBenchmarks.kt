@@ -8,8 +8,8 @@ package dev.lounres.kone.computationalGeometry
 import com.charleskorn.kaml.Yaml
 import dev.lounres.kone.algebraic.BigIntegerRing
 import dev.lounres.kone.algebraic.ring
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.emptyKoneIterableList
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
 import dev.lounres.kone.computationalGeometry.util.MockAbstractPolytopicConstruction
@@ -38,7 +38,7 @@ class LongRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Long>> = emptyKoneIterableList()
+        var input: KoneList<Point<Long>> = emptyKoneList()
 
         val mockPolytopicConstruction by lazy {
             MockAbstractPolytopicConstruction(
@@ -46,7 +46,7 @@ class LongRingBenchmarks {
                 numberContext = numberContext,
             )
         }
-        var listOfMockVertices: KoneIterableList<AbstractVertex> = emptyKoneIterableList()
+        var listOfMockVertices: KoneList<AbstractVertex> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -93,7 +93,7 @@ class LongRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Long>> = emptyKoneIterableList()
+        var input: KoneList<Point<Long>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -140,7 +140,7 @@ class LongRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Long>> = emptyKoneIterableList()
+        var input: KoneList<Point<Long>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -188,11 +188,11 @@ class LongRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Long>> = emptyKoneIterableList()
+        var input: KoneList<Point<Long>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<Long>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {
@@ -241,11 +241,11 @@ class LongRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Long>> = emptyKoneIterableList()
+        var input: KoneList<Point<Long>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<Long>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {
@@ -301,7 +301,7 @@ class BigIntegerRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<BigInteger>> = emptyKoneIterableList()
+        var input: KoneList<Point<BigInteger>> = emptyKoneList()
 
         val mockPolytopicConstruction by lazy {
             MockAbstractPolytopicConstruction(
@@ -309,7 +309,7 @@ class BigIntegerRingBenchmarks {
                 numberContext = numberContext,
             )
         }
-        var listOfMockVertices: KoneIterableList<AbstractVertex> = emptyKoneIterableList()
+        var listOfMockVertices: KoneList<AbstractVertex> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -356,7 +356,7 @@ class BigIntegerRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<BigInteger>> = emptyKoneIterableList()
+        var input: KoneList<Point<BigInteger>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -403,7 +403,7 @@ class BigIntegerRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<BigInteger>> = emptyKoneIterableList()
+        var input: KoneList<Point<BigInteger>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -451,11 +451,11 @@ class BigIntegerRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<BigInteger>> = emptyKoneIterableList()
+        var input: KoneList<Point<BigInteger>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<BigInteger>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {
@@ -504,11 +504,11 @@ class BigIntegerRingBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<BigInteger>> = emptyKoneIterableList()
+        var input: KoneList<Point<BigInteger>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<BigInteger>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {

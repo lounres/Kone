@@ -16,13 +16,13 @@ internal class KoneSingletonSettableNoddedList<Element>(
     private val singleNode = Node()
 
     override fun get(index: UInt): Element {
-        if (index >= 1u) indexException(index, size)
+        if (index >= 1u) indexOutOfBoundsException(index, size)
         return singleElement
     }
     override fun getNode(index: UInt): KoneSettableListNode<Element> = singleNode
     
     override fun set(index: UInt, element: Element) {
-        if (index >= 1u) indexException(index, size)
+        if (index >= 1u) indexOutOfBoundsException(index, size)
         singleElement = element
     }
     
@@ -31,7 +31,7 @@ internal class KoneSingletonSettableNoddedList<Element>(
         when(index) {
             0u -> KoneSingletonSettableLinearIterator(singleElement = singleElement)
             1u -> KoneSingletonSettableLinearIterator(singleElement = singleElement, currentlyBeforeSingleElement = false)
-            else -> indexException(index, size)
+            else -> indexOutOfBoundsException(index, size)
         }
 
     override fun toString(): String = "[$singleElement]"

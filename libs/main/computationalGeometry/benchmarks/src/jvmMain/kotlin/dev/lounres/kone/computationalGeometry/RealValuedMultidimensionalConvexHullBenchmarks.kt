@@ -7,8 +7,8 @@ package dev.lounres.kone.computationalGeometry
 
 import com.charleskorn.kaml.Yaml
 import dev.lounres.kone.algebraic.field
-import dev.lounres.kone.collections.KoneIterableList
-import dev.lounres.kone.collections.emptyKoneIterableList
+import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
 import dev.lounres.kone.computationalGeometry.util.MockAbstractPolytopicConstruction
@@ -35,7 +35,7 @@ class DoubleBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneList<Point<Double>> = emptyKoneList()
 
         val mockPolytopicConstruction by lazy {
             MockAbstractPolytopicConstruction(
@@ -48,7 +48,7 @@ class DoubleBenchmarks {
                 spaceDimension = spaceDimension,
                 numberContext = numberContext,
             )
-        var listOfMockVertices: KoneIterableList<AbstractVertex> = emptyKoneIterableList()
+        var listOfMockVertices: KoneList<AbstractVertex> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -95,7 +95,7 @@ class DoubleBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneList<Point<Double>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -142,7 +142,7 @@ class DoubleBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneList<Point<Double>> = emptyKoneList()
 
         @Setup
         fun setup() {
@@ -190,11 +190,11 @@ class DoubleBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneList<Point<Double>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {
@@ -243,11 +243,11 @@ class DoubleBenchmarks {
 
         var spaceDimension: UInt = 0u
 
-        var input: KoneIterableList<Point<Double>> = emptyKoneIterableList()
+        var input: KoneList<Point<Double>> = emptyKoneList()
 
         var polytopicConstruction: MutableAbstractPolytopicConstruction<Double>? = null
 
-        var inputVertices: KoneIterableList<AbstractVertex>? = null
+        var inputVertices: KoneList<AbstractVertex>? = null
 
         @Setup
         fun setup() {

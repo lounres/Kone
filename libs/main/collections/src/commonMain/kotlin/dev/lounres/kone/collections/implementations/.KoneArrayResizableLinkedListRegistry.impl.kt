@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.KoneMutableListRegistry
 import dev.lounres.kone.collections.KoneMutableRegistration
 import dev.lounres.kone.collections.KoneMutableUIntArray
 import dev.lounres.kone.collections.KoneSet
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.repeat
 import kotlin.math.max
 

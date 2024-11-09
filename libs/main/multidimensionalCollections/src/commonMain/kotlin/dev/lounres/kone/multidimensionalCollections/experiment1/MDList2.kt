@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections.experiment1
 
-import dev.lounres.kone.collections.KoneIterableList
+import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneUIntArray
 import dev.lounres.kone.collections.implementations.KoneVirtualList
 import dev.lounres.kone.collections.koneUIntArrayOf
@@ -17,9 +17,9 @@ public interface MDList2<out E>: MDList<E> {
     public val rowNumber: UInt
     public val columnNumber: UInt
     override val shape: Shape get() = Shape(rowNumber, columnNumber)
-    public val rows: KoneIterableList<KoneIterableList<E>> // TODO: Rewrite using context
+    public val rows: KoneList<KoneList<E>> // TODO: Rewrite using context
         get() = KoneVirtualList(rowNumber) { row -> KoneVirtualList(columnNumber) { column -> get(row, column) } }
-    public val columns: KoneIterableList<KoneIterableList<E>> // TODO: Rewrite using context
+    public val columns: KoneList<KoneList<E>> // TODO: Rewrite using context
         get() = KoneVirtualList(columnNumber) { column -> KoneVirtualList(rowNumber) { row -> get(row, column) } }
 
     public operator fun get(rowIndex: UInt, columnIndex: UInt): E

@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableListRegistry
 import dev.lounres.kone.collections.KoneMutableRegistration
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.repeat
 
@@ -157,39 +157,39 @@ public class KoneLinkedGCListRegistry<Element, EC: Equality<Element>>(
 
     internal inner class ElementsIterator(var currentIndex: UInt = 0u): KoneLinearIterator<Element> {
         init {
-            if (currentIndex > size) indexException(currentIndex, size)
+            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         var currentNode = endNodeByIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): Element {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return (currentNode as Node<Element>).element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
             currentNode = (currentNode as Node<Element>).nextNode
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             return (currentNode.previousNode as Node<Element>).element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             currentIndex--
             currentNode = (currentNode.previousNode as Node<Element>)
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
     }
 
     internal inner class Elements : KoneList<Element> {
         override val size: UInt get() = this@KoneLinkedGCListRegistry.size
 
         override fun get(index: UInt): Element {
-            if (index >= size) indexException(index, size)
+            if (index >= size) indexOutOfBoundsException(index, size)
             return (endNodeByIndex(index) as Node<Element>).element
         }
 
@@ -203,30 +203,30 @@ public class KoneLinkedGCListRegistry<Element, EC: Equality<Element>>(
         
         override fun hasNext(): Boolean = currentIndex < size
         override fun nextIndex(): UInt {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return currentIndex
         }
         override fun getNext(): Node<Element> {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return currentNode as Node<Element>
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
             currentNode = (currentNode as Node<Element>).nextNode
         }
         
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex - 1u, size)
             return currentIndex - 1u
         }
         override fun getPrevious(): Node<Element> {
-            if (!hasPrevious()) indexException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex - 1u, size)
             return currentNode.previousNode as Node<Element>
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex - 1u, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex - 1u, size)
             currentIndex--
             currentNode = currentNode.previousNode as Node<Element>
         }

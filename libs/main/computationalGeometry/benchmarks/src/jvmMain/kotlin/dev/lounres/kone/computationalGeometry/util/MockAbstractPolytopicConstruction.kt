@@ -19,23 +19,23 @@ class MockAbstractPolytopicConstruction<N, out NC: Hashing<N>>(
 ) : MutableAbstractPolytopicConstruction<N>, PolytopicConstructionWithContexts<N, NC, AbstractPolytope, AbstractVertex> {
     override val polytopeContext: Hashing<AbstractPolytope> = defaultHashing()
 
-    private val _positionOf = koneMutableMapOf<AbstractVertex, Point<N>>(keyContext = polytopeContext, valueContext = pointEquality(numberContext))
+    private val _positionOf = koneMutableMapOf<AbstractVertex, Point<N>>(keyContext = polytopeContext)
 
-    override val polytopes: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'polytopes' value")
-    override fun polytopesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
-    override fun get(dim: UInt): KoneIterableSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
+    override val polytopes: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'polytopes' value")
+    override fun polytopesOfDimension(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
+    override fun get(dim: UInt): KoneSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
     override val AbstractPolytope.dimension: UInt get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.dimension' value")
-    override val AbstractPolytope.faces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.faces' value")
-    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.facesOfDimension' function with dim=$dim")
-    override operator fun AbstractPolytope.get(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.get' function with dim=$dim")
-    override val AbstractPolytope.vertices: KoneIterableSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.vertices' value")
-    override val AbstractPolytope.cofaces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.cofaces' value")
-    override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.cofacesOfDimension' function with dim=$dim")
+    override val AbstractPolytope.faces: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.faces' value")
+    override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.facesOfDimension' function with dim=$dim")
+    override operator fun AbstractPolytope.get(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.get' function with dim=$dim")
+    override val AbstractPolytope.vertices: KoneSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.vertices' value")
+    override val AbstractPolytope.cofaces: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.cofaces' value")
+    override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.cofacesOfDimension' function with dim=$dim")
 
-    override val vertices: KoneIterableSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'vertices' value")
+    override val vertices: KoneSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'vertices' value")
     override val AbstractVertex.position: Point<N> get() = _positionOf[this]
 
-    override fun addPolytope(vertices: KoneIterableSet<AbstractVertex>, faces: KoneIterableList<KoneIterableSet<AbstractPolytope>>): AbstractPolytope =
+    override fun addPolytope(vertices: KoneSet<AbstractVertex>, faces: KoneList<KoneSet<AbstractPolytope>>): AbstractPolytope =
         illegalCall("Convex hull algorithm tried calling 'addPolytope' function with vertices=$vertices, faces=$faces")
 
     override fun addVertex(position: Point<N>): AbstractVertex {
@@ -52,28 +52,28 @@ class MockAbstractPolytopicConstruction<N, out NC: Hashing<N>>(
         override val numberContext: NC = this@MockAbstractPolytopicConstruction.numberContext
         override val polytopeContext: Hashing<AbstractPolytope> = this@MockAbstractPolytopicConstruction.polytopeContext
 
-        private val _facesOf = koneMutableMapOf(keyContext = polytopeContext, valueContext = koneIterableListHashing(koneIterableSetHashing(polytopeContext)))
-        val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneIterableSet<AbstractVertex>>(keyContext = polytopeContext, valueContext = koneIterableSetHashing(polytopeContext))
+        private val _facesOf = koneMutableMapOf<AbstractPolytope, KoneList<KoneSet<AbstractPolytope>>>(keyContext = polytopeContext)
+        val _verticesOf = koneMutableMapOf<AbstractPolytope, KoneSet<AbstractVertex>>(keyContext = polytopeContext)
 
         init {
-            for (vertex in _positionOf.keysView) _verticesOf[vertex] = koneIterableSetOf(vertex)
+            for (vertex in _positionOf.keysView) _verticesOf[vertex] = koneSetOf(vertex)
         }
 
-        override val polytopes: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'polytopes' value")
-        override fun polytopesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
-        override fun get(dim: UInt): KoneIterableSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
+        override val polytopes: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'polytopes' value")
+        override fun polytopesOfDimension(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
+        override fun get(dim: UInt): KoneSet<AbstractPolytope> =  illegalCall("Convex hull algorithm tried calling 'polytopesOfDimension' function with dim=$dim")
         override val AbstractPolytope.dimension: UInt get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.dimension' value")
-        override val AbstractPolytope.faces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.faces' value")
-        override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = _facesOf[this][dim]
-        override operator fun AbstractPolytope.get(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.get' function with dim=$dim")
-        override val AbstractPolytope.vertices: KoneIterableSet<AbstractVertex> get() = _verticesOf[this]
-        override val AbstractPolytope.cofaces: KoneIterableList<KoneIterableSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.cofaces' value")
-        override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneIterableSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.cofacesOfDimension' function with dim=$dim")
+        override val AbstractPolytope.faces: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.faces' value")
+        override fun AbstractPolytope.facesOfDimension(dim: UInt): KoneSet<AbstractPolytope> = _facesOf[this][dim]
+        override operator fun AbstractPolytope.get(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.get' function with dim=$dim")
+        override val AbstractPolytope.vertices: KoneSet<AbstractVertex> get() = _verticesOf[this]
+        override val AbstractPolytope.cofaces: KoneList<KoneSet<AbstractPolytope>> get() = illegalCall("Convex hull algorithm tried accessing 'AbstractPolytope.cofaces' value")
+        override fun AbstractPolytope.cofacesOfDimension(dim: UInt): KoneSet<AbstractPolytope> = illegalCall("Convex hull algorithm tried calling 'AbstractPolytope.cofacesOfDimension' function with dim=$dim")
 
-        override val vertices: KoneIterableSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'vertices' value")
+        override val vertices: KoneSet<AbstractVertex> get() = illegalCall("Convex hull algorithm tried accessing 'vertices' value")
         override val AbstractVertex.position: Point<N> get() = _positionOf[this]
 
-        override fun addPolytope(vertices: KoneIterableSet<AbstractVertex>, faces: KoneIterableList<KoneIterableSet<AbstractPolytope>>): AbstractPolytope =
+        override fun addPolytope(vertices: KoneSet<AbstractVertex>, faces: KoneList<KoneSet<AbstractPolytope>>): AbstractPolytope =
             AbstractPolytope().also {
                 _facesOf[it] = faces
                 _verticesOf[it] = vertices
@@ -81,7 +81,7 @@ class MockAbstractPolytopicConstruction<N, out NC: Hashing<N>>(
 
         override fun addVertex(position: Point<N>): AbstractVertex =
             AbstractVertex().also {
-                _facesOf[it] = emptyKoneIterableList()
+                _facesOf[it] = emptyKoneList()
                 _positionOf[it] = position
             }
     }

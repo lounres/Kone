@@ -135,16 +135,16 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
     }
 
     override fun get(index: UInt): Element {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         return data[actualIndex(index)] as Element
     }
 
-    override fun getFirst(): Element = if (isEmpty()) indexException(0u, size) else data[start] as Element
+    override fun getFirst(): Element = if (isEmpty()) indexOutOfBoundsException(0u, size) else data[start] as Element
 
-    override fun getLast(): Element = if (isEmpty()) indexException(size, size) else data[end] as Element
+    override fun getLast(): Element = if (isEmpty()) indexOutOfBoundsException(size, size) else data[end] as Element
 
     override fun set(index: UInt, element: Element) {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         data[actualIndex(index)] = element
     }
 
@@ -168,7 +168,7 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
     }
 
     override fun addAt(index: UInt, element: Element) {
-        if (index > size) indexException(index, size)
+        if (index > size) indexOutOfBoundsException(index, size)
         when {
             size == sizeUpperBound -> {
                 var actualIndex = start
@@ -234,7 +234,7 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
     }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
-        if (index > size) indexException(index, size)
+        if (index > size) indexOutOfBoundsException(index, size)
         if (number == 0u) return
         val newSize = size + number
         when {
@@ -278,7 +278,7 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
         }
     }
     override fun removeAt(index: UInt) {
-        if (index >= size) indexException(index, size)
+        if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
     }
 
@@ -370,22 +370,22 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
 
     internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
         init {
-            if (currentIndex > size) indexException(currentIndex, size)
+            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         var actualCurrentIndex = if (sizeUpperBound == 0u) 0u else actualIndex(currentIndex)
         override fun hasNext(): Boolean = currentIndex < size
         override fun getNext(): Element {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             return data[actualCurrentIndex] as Element
         }
         override fun moveNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             currentIndex++
             actualCurrentIndex = nextCellIndex[actualCurrentIndex]
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
         override fun setNext(element: Element) {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             data[currentIndex] = element
         }
         override fun addNext(element: Element) {
@@ -393,30 +393,30 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
             else justAddBefore(nextCellIndex[actualCurrentIndex], element)
         }
         override fun removeNext() {
-            if (!hasNext()) indexException(currentIndex, size)
+            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
             justRemoveAt(actualCurrentIndex.also { actualCurrentIndex = nextCellIndex[actualCurrentIndex] })
         }
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             return data[previousCellIndex[actualCurrentIndex]] as Element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             currentIndex--
             actualCurrentIndex = previousCellIndex[actualCurrentIndex]
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             data[previousCellIndex[actualCurrentIndex]] = element
         }
         override fun addPrevious(element: Element) {
             justAddBefore(actualCurrentIndex, element)
         }
         override fun removePrevious() {
-            if (!hasPrevious()) indexException(currentIndex, size)
+            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
             justRemoveAt(previousCellIndex[actualCurrentIndex])
         }
     }

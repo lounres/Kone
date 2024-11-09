@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneSettableListNode
 import dev.lounres.kone.collections.KoneSettableNoddedList
-import dev.lounres.kone.collections.indexException
+import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.isEmpty
 
 
@@ -23,7 +23,7 @@ internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableN
 
     override fun iterator(): KoneLinearIterator<Nothing> = KoneEmptySettableLinearIterator
     override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> =
-        if (index >= 0u) indexException(index, 0u)
+        if (index >= 0u) indexOutOfBoundsException(index, 0u)
         else KoneEmptySettableLinearIterator
 
     override fun toString(): String = "[]"

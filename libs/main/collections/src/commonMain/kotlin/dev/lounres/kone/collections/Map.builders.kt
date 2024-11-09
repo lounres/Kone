@@ -10,7 +10,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedNoddedListProducer
 import dev.lounres.kone.collections.implementations.KoneEmptyMap
 import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
-import dev.lounres.kone.collections.implementations.KoneResizableHashMap
+import dev.lounres.kone.collections.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.implementations.KoneSingletonMap
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -38,7 +38,7 @@ public fun <Key, Value> koneMapOf(entry: KoneMapEntry<Key, Value>, keyContext: E
 public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
     when {
         entries.isEmpty() -> emptyKoneMap()
-        keyContext is Hashing -> KoneResizableHashMap<Key, _, Value>(keyContext = keyContext).apply {
+        keyContext is Hashing -> KoneHashResizableMap<Key, _, Value>(keyContext = keyContext).apply {
             setAllFrom(KoneArray(entries))
         }
 //        else -> KoneMutableListBackedMap(keyContext = keyContext).apply {
@@ -49,11 +49,11 @@ public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyC
 
 
 public fun <Key, Value> koneMutableMapOf(keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
-    if (keyContext is Hashing<Key>) KoneResizableHashMap(keyContext = keyContext)
+    if (keyContext is Hashing<Key>) KoneHashResizableMap(keyContext = keyContext)
     else KoneMutableListBackedMap(keyContext = keyContext)
 
 public fun <Key, Value> koneMutableMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
-    if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
+    if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
     else KoneMutableListBackedMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
 
 public inline fun <Key, Value> buildKoneMap(
@@ -61,7 +61,7 @@ public inline fun <Key, Value> buildKoneMap(
     @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext)
+        if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext)
         else KoneMutableListBackedMap(keyContext = keyContext, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
@@ -72,7 +72,7 @@ public inline fun <Key, Value> buildKoneMap(
     @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<Key>) KoneResizableHashMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
+        if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
         else KoneMutableListBackedMap(keyContext = keyContext/*, KoneArrayGrowableLinkedNoddedListProducer*/) // TODO: Enable producer and use `initialCapacity`
     return mapBuilder.apply(builderAction)
 }

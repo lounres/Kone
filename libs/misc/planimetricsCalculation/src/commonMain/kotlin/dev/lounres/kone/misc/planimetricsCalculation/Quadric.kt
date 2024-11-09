@@ -8,7 +8,7 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.koneIterableListOf
+import dev.lounres.kone.collections.koneListOf
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.linearAlgebra.experiment1.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
@@ -62,8 +62,8 @@ context(PlanimetricsCalculationContext<E, *>)
 public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
     get() = calculate {
         Matrix(
-            koneIterableListOf(2 * xx, xy, xz),
-            koneIterableListOf(xy, 2 * yy, yz),
-            koneIterableListOf(xz, yz, 2 * zz),
+            koneListOf(2 * xx, xy, xz),
+            koneListOf(xy, 2 * yy, yz),
+            koneListOf(xz, yz, 2 * zz),
         )
     }

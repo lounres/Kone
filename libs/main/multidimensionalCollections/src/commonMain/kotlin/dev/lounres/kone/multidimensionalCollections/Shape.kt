@@ -6,7 +6,7 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneResizableHashMap
+import dev.lounres.kone.collections.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultEquality
@@ -118,7 +118,7 @@ private object ShapeHashing: Hashing<Shape> {
 }
 
 //@ThreadLocal
-private val defaultStridesCache = KoneResizableHashMap<Shape, _, ShapeStrides, _>(keyContext = ShapeHashing, valueContext = defaultEquality())
+private val defaultStridesCache = KoneHashResizableMap<Shape, _, ShapeStrides>(keyContext = ShapeHashing)
 
 public fun ShapeStrides(shape: Shape): ShapeStrides = defaultStridesCache.getOrSet(shape) { ColumnShapeStrides(shape) }
 

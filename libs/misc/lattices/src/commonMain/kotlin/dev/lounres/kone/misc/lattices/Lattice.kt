@@ -9,9 +9,11 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneResizableHashSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.combinations
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.computations.*
 import dev.lounres.kone.computations.CancellationException
 import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.context.invoke
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
@@ -62,34 +64,34 @@ public operator fun <C, K, A, V> Cell<C, K, A>.minus(other: Cell<C, K, A>): V {
 
 // FIXME: Uncomment when KT-5837 will be fixed.
 //context(Lattice<C, K, *>)
-//public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cells: KoneIterableSet<Cell<C, K, A>>): KoneIterableSet<Cell<C, K, A>> =
+//public inline operator fun <C, K, A> ((Position<C, K>) -> Position<C, K>).invoke(cells: KoneSet<Cell<C, K, A>>): KoneSet<Cell<C, K, A>> =
 //    cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { this(it) }
 
 context(CoroutineScope, Lattice<C, K, V>)
-public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): Sequence<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> = sequence {
+public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt, takeFormIf: (KoneSet<Position<C, K>>) -> Boolean = { true }): Sequence<KoneList<KoneSet<Cell<C, K, A>>>> = sequence {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
     if (this@divideInParts.groupingBy { it.attributes }.eachCount().valuesView.any { it % numberOfParts != 0u }) return@sequence
     if (this@divideInParts.isEmpty()) {
-        yield(emptyKoneIterableList())
+        yield(emptyKoneList())
         return@sequence
     }
     val cellsPerPart = size / numberOfParts
     val allCells = this@divideInParts
 
     val firstCell = allCells.first()
-    for (otherCellsOfFirstPart in buildKoneIterableList { addAllFrom(allCells); remove(firstCell) }.combinations(cellsPerPart - 1u)) {
+    for (otherCellsOfFirstPart in buildKoneList { addAllFrom(allCells); (defaultEquality<Cell<C, K, A>>()) { remove(firstCell) } }.combinations(cellsPerPart - 1u)) {
         if(!isActive) return@sequence
-        val firstPart = buildKoneIterableSet(initialCapacity = otherCellsOfFirstPart.size + 1u) {
+        val firstPart = buildKoneSet(initialCapacity = otherCellsOfFirstPart.size + 1u) {
             addAllFrom(otherCellsOfFirstPart)
             add(firstCell)
         }
         if (!takeFormIf(firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
-        val restCells = buildKoneIterableSet {
+        val restCells = buildKoneSet {
             addAllFrom(allCells)
             removeAllFrom(firstPart)
         }
 
-        data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneIterableSet<Cell<C, K, A>>)
+        data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneSet<Cell<C, K, A>>)
         val forms = rotations.map {
             Form(
                 Cell(it(firstCell.position), firstCell.attributes),
@@ -99,7 +101,7 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfPar
             )
         }
 
-        val allPossibleParts = buildKoneIterableSet {
+        val allPossibleParts = buildKoneSet {
             for (form in forms) for (otherFirstCell in restCells) {
                 if(!isActive) return@sequence
                 if (otherFirstCell.position.kind != form.startCell.position.kind) continue
@@ -107,12 +109,12 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts(numberOfPar
                 val part = form.cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
                 if (part.all { it in allCells } && part.none { it in firstPart }) add(part)
             }
-        }.toKoneIterableList()
+        }.toKoneList()
 
         for (parts in allPossibleParts.combinations(numberOfParts - 1u)) {
             if(!isActive) return@sequence
             if (parts.combinations(2u).any { (part1, part2) -> part1.any { it in part2 } }) continue
-            yield(buildKoneIterableList { addAllFrom(parts); add(firstPart) })
+            yield(buildKoneList { addAllFrom(parts); add(firstPart) })
         }
     }
 }
@@ -137,10 +139,10 @@ internal sealed interface State {
 }
 
 context(CoroutineScope, Lattice<C, K, V>)
-public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UInt, takeFormIf: (KoneIterableSet<Position<C, K>>) -> Boolean = { true }): ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
+public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UInt, takeFormIf: (KoneSet<Position<C, K>>) -> Boolean = { true }): ChannelComputation<KoneList<KoneSet<Cell<C, K, A>>>> {
     // TODO: В идеале здесь нужна проверка на то, что никакие две клетки не равны одновременно в координатах и в типе
     if (this@divideInParts2.groupingBy { it.attributes }.eachCount().valuesView.any { it % numberOfParts != 0u })
-        return object : ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
+        return object : ChannelComputation<KoneList<KoneSet<Cell<C, K, A>>>> {
             override val key: CoroutineContext.Key<*> get() = Computation.Key
             
             override val parent: Computation? get() = null // TODO: Implement parent-child relations
@@ -157,8 +159,8 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
             override val isCancelled: Boolean
                 get() = _state.value.let { it === State.Cancelling || it === State.Cancelled }
             
-            override val resultsChannel: ReceiveChannel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> =
-                Channel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>>(1).apply { close() }
+            override val resultsChannel: ReceiveChannel<KoneList<KoneSet<Cell<C, K, A>>>> =
+                Channel<KoneList<KoneSet<Cell<C, K, A>>>>(1).apply { close() }
             
             override fun resume() {}
             override fun pause() {}
@@ -174,7 +176,7 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
             override suspend fun join() {}
         }
     if (this@divideInParts2.isEmpty())
-        return object : ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
+        return object : ChannelComputation<KoneList<KoneSet<Cell<C, K, A>>>> {
             override val key: CoroutineContext.Key<*> get() = Computation.Key
             
             override val parent: Computation? get() = null // TODO: Implement parent-child relations
@@ -191,8 +193,8 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
             override val isCancelled: Boolean
                 get() = _state.value.let { it === State.Cancelling || it === State.Cancelled }
             
-            override val resultsChannel: ReceiveChannel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> =
-                Channel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>>(1).apply { trySend(emptyKoneIterableList()); close() }
+            override val resultsChannel: ReceiveChannel<KoneList<KoneSet<Cell<C, K, A>>>> =
+                Channel<KoneList<KoneSet<Cell<C, K, A>>>>(1).apply { trySend(emptyKoneList()); close() }
             
             override fun resume() {}
             override fun pause() {}
@@ -213,21 +215,21 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
     
     val firstCell = allCells.first()
     
-    val otherCellsOfFirstPartIterator = buildKoneIterableList { addAllFrom(allCells); remove(firstCell) }.combinations(cellsPerPart - 1u).iterator()
+    val otherCellsOfFirstPartIterator = buildKoneList { addAllFrom(allCells); (defaultEquality<Cell<C, K, A>>()) { remove(firstCell) } }.combinations(cellsPerPart - 1u).iterator()
     
-    val logic: suspend CoroutineScope.(SendChannel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>>) -> Unit = logic@{
+    val logic: suspend CoroutineScope.(SendChannel<KoneList<KoneSet<Cell<C, K, A>>>>) -> Unit = logic@{
         for (otherCellsOfFirstPart in otherCellsOfFirstPartIterator) {
-            val firstPart = buildKoneIterableSet(initialCapacity = otherCellsOfFirstPart.size + 1u) {
+            val firstPart = buildKoneSet(initialCapacity = otherCellsOfFirstPart.size + 1u) {
                 addAllFrom(otherCellsOfFirstPart)
                 add(firstCell)
             }
             if (!takeFormIf(firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
-            val restCells = buildKoneIterableSet {
+            val restCells = buildKoneSet {
                 addAllFrom(allCells)
                 removeAllFrom(firstPart)
             }
             
-            data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneIterableSet<Cell<C, K, A>>)
+            data class Form<C, K, A>(val startCell: Cell<C, K ,A>, val cells: KoneSet<Cell<C, K, A>>)
             val forms = rotations.map {
                 Form(
                     Cell(it(firstCell.position), firstCell.attributes),
@@ -237,24 +239,24 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
                 )
             }
             
-            val allPossibleParts = buildKoneIterableSet {
+            val allPossibleParts = buildKoneSet {
                 for (form in forms) for (otherFirstCell in restCells) {
                     if (otherFirstCell.position.kind != form.startCell.position.kind) continue
                     val shift = otherFirstCell - form.startCell
                     val part = form.cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
                     if (part.all { it in allCells } && part.none { it in firstPart }) add(part)
                 }
-            }.toKoneIterableList()
+            }.toKoneList()
             
             for (parts in allPossibleParts.combinations(numberOfParts - 1u)) {
                 if (parts.combinations(2u).any { (part1, part2) -> part1.any { it in part2 } }) continue
-                it.send(buildKoneIterableList { addAllFrom(parts); add(firstPart) })
+                it.send(buildKoneList { addAllFrom(parts); add(firstPart) })
             }
             if(!isActive) return@logic
         }
     }
     
-    return object : ChannelComputation<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> {
+    return object : ChannelComputation<KoneList<KoneSet<Cell<C, K, A>>>> {
         override val key: CoroutineContext.Key<*> get() = Computation.Key
         
         override val parent: Computation? get() = null // TODO: Implement parent-child relations
@@ -272,9 +274,9 @@ public fun <C, K, A, V> KoneIterableSet<Cell<C, K, A>>.divideInParts2(numberOfPa
             get() = _state.value.let { it === State.Cancelling || it === State.Cancelled }
         
         private val lifecycleJob = Job(this@CoroutineScope.coroutineContext[Job])
-        private val _resultsChannel: Channel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> =
+        private val _resultsChannel: Channel<KoneList<KoneSet<Cell<C, K, A>>>> =
             Channel(Channel.UNLIMITED)
-        override val resultsChannel: ReceiveChannel<KoneIterableList<KoneIterableSet<Cell<C, K, A>>>> get() = _resultsChannel
+        override val resultsChannel: ReceiveChannel<KoneList<KoneSet<Cell<C, K, A>>>> get() = _resultsChannel
         
         override fun resume() {
             while (true) { // TODO: Include possible children
