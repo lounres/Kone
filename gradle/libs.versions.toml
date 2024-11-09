@@ -13,6 +13,7 @@ kotlinx-lincheck = "2.34"
 kotlinx-binary-compatibility-validator = "0.16.3"
 kotlinx-knit = "0.4.0"
 
+compose-multiplatform = "1.7.0"
 kaml = "0.59.0"
 logkube = "0.1.0"
 kotest = "5.9.1"
@@ -26,7 +27,8 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 # Kotlin side plugins
-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # kotlinx plugins
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
@@ -37,6 +39,7 @@ kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-co
 kotlinx-knit = { id = "org.jetbrains.kotlinx:kotlinx-knit", version.ref = "kotlinx-knit" }
 
 # Extra
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }

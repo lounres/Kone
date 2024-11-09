@@ -27,7 +27,7 @@ plugins {
     with(libs.plugins) {
         alias(kotlin.multiplatform) apply false
         alias(kotlinx.atomicfu) apply false
-        alias(allopen) apply false
+        alias(kotlin.allopen) apply false
         alias(kotlinx.benchmark) apply false
         alias(kotest.multiplatform) apply false
         alias(kotlinx.kover) apply false
@@ -102,9 +102,12 @@ tasks.register("docusaurusGenerateDevInputData") {
 
 allprojects {
     repositories {
+        google()
         mavenCentral()
         maven("https://repo.kotlin.link")
-//        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
         mavenLocal()
     }
 }
@@ -379,7 +382,7 @@ stal {
         }
         "benchmarks" {
             apply(libs.plugins.kotlinx.benchmark)
-            apply(libs.plugins.allopen)
+            apply(libs.plugins.kotlin.allopen)
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
             pluginManager.withPlugin(libs.plugins.kotlin.jvm) {

@@ -6,9 +6,18 @@
 package dev.lounres.kone.collections
 
 
+/**
+ * Gets the next element, moves forward, and returns the got element.
+ */
 public fun <Element> KoneIterator<Element>.getAndMoveNext(): Element = getNext().also { moveNext() }
 
+/**
+ * Gets the next element moves forward and returns the got element. It is an operator function to use in `for` cycles.
+ */
 @Suppress("NOTHING_TO_INLINE")
 public inline operator fun <Element> KoneIterator<Element>.next(): Element = getAndMoveNext()
 
+/**
+ * Gets the previous element, moves backward, and returns the got element.
+ */
 public fun <Element> KoneReversibleIterator<Element>.getAndMovePrevious(): Element = getPrevious().also { movePrevious() }

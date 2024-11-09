@@ -8,18 +8,58 @@ package dev.lounres.kone.collections
 
 // TODO: Check that exceptions are used correctly
 
-public fun indexException(index: UInt, size: UInt): Nothing =
+/**
+ * Throws [IndexOutOfBoundsException] with message including provided [index] and [size].
+ */
+public fun indexOutOfBoundsException(index: UInt, size: UInt): Nothing =
     throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
 
-public fun noSuchElementException(): Nothing =
-    throw NoSuchElementException("Collection contains no element matching the predicate")
+/**
+ * Represents exception that is thrown when user tries to get, set, remove, or bypass the next or the previous non-existent element.
+ */
+public class NoFollowingElementInIteratorException(message: String = "There is no following element in the iterator") : NoSuchElementException(message)
 
+/**
+ * Throws [NoFollowingElementInIteratorException] with the provided [message] describing that there is no next element.
+ */
+public fun noNextElementInIteratorException(message: String = "There is no next element in the iterator"): Nothing =
+    throw NoFollowingElementInIteratorException(message)
+
+/**
+ * Throws [NoFollowingElementInIteratorException] with the provided [message] describing that there is no previous element.
+ */
+public fun noPreviousElementInIteratorException(message: String = "There is no previous element in the iterator"): Nothing =
+    throw NoFollowingElementInIteratorException(message)
+
+/**
+ * Represents exception that is thrown when user tries to get element that matches the provided predicate but there is no such element.
+ */
+public class NoElementMatchingThePredicateException(message: String = "There is no element matching the predicate.") : NoSuchElementException(message)
+
+/**
+ * Throws [NoElementMatchingThePredicateException] with the provided [message] describing that there is no element matching the predicate.
+ */
+public fun noElementMatchingThePredicateException(message: String = "There is no element matching the predicate."): Nothing =
+    throw NoElementMatchingThePredicateException(message)
+
+/**
+ * Represents exception that is thrown when user tries to overflow a data structure with fixed capacity.
+ */
 public class CapacityOverflowException(message: String = "Overflow of collection with fixed capacity") : RuntimeException(message)
 
+/**
+ * Throws [CapacityOverflowException] with message including provided [capacity].
+ */
 public fun capacityOverflowException(capacity: UInt): Nothing =
     throw CapacityOverflowException("Overflow of collection with fixed capacity of $capacity")
 
+/**
+ * Represents exception that is thrown when user tries to get some data structure's element that matches the provided key but there is no such element.
+ */
 public class NoMatchingKeyException(message: String = "There is no value for requested key"): NoSuchElementException(message)
 
+/**
+ * Throws [NoMatchingKeyException] with message including provided [key].
+ */
 public fun noMatchingKeyException(key: Any?): Nothing =
     throw NoMatchingKeyException("There is no value for key $key")
