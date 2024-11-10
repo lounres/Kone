@@ -25,9 +25,9 @@ internal data class GramSchmidtOrthogonalizationIntermediateState<N>(
 context(MutablePolytopicConstruction<N, *, *>)
 internal fun <N> GramSchmidtOrthogonalizationIntermediateState<N>.clone(): GramSchmidtOrthogonalizationIntermediateState<N> =
     GramSchmidtOrthogonalizationIntermediateState(
-        orthogonalizedBasis = KoneArrayFixedCapacityList(orthogonalizedBasis.size, spaceDimension) { orthogonalizedBasis[it] },
+        orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
         product = product,
-        exclusiveProducts = KoneArrayFixedCapacityList(exclusiveProducts.size, spaceDimension) { exclusiveProducts[it] }
+        exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
     )
 
 context(A, EuclideanKategory<N>)

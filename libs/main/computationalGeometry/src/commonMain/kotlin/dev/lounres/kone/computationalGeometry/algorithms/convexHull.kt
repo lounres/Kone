@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
@@ -87,7 +87,7 @@ internal fun <N, A, P, V: P> giftWrappingIncrement(
     for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
     convexHullFaces[subspaceDimension-1u].add(startFacet)
 
-    val facetsToProcess: KoneDequeue<P> = KoneResizableLinkedArrayList()
+    val facetsToProcess: KoneDequeue<P> = KoneArrayResizableLinkedList()
     val subfacetsToProcess = koneMutableSetOf<P>(elementContext = polytopeContext)
 
     facetsToProcess.addLast(startFacet)
