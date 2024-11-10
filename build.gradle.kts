@@ -554,6 +554,8 @@ stal {
             
             configure<DokkaExtension> {
                 moduleName = "${project.extra["artifactPrefix"]}${project.name}"
+                // DOKKA-3885
+                dokkaGeneratorIsolation = ClassLoaderIsolation()
             }
 
             task<Jar>("dokkaJar") {

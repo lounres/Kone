@@ -7,4 +7,7 @@ dokka {
     dokkaPublications.html {
     
     }
+    
+    // DOKKA-3885
+    dokkaGeneratorIsolation = ClassLoaderIsolation()
 }
