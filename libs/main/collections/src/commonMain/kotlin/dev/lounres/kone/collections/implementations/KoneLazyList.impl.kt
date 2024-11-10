@@ -16,6 +16,7 @@ import dev.lounres.kone.repeat
 
 
 //@Serializable(with = KoneLazyListWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneLazyList<Element>(
     override val size: UInt,
     private val generator: (index: UInt) -> Element,

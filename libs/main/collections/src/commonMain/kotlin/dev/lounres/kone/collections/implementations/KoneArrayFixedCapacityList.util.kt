@@ -35,8 +35,8 @@ public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UIn
 }
 
 public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListProducer {
-    override fun <E> produce(capacity: UInt): KoneArrayFixedCapacityList<E> = KoneArrayFixedCapacityList(capacity)
-    override fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
+    override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityList<Element> = KoneArrayFixedCapacityList(capacity)
+    override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
         KoneArrayFixedCapacityList(initialCapacity, number, builder)
 }
 

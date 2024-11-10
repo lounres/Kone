@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.*
 
 
 //@Serializable(with = KoneVirtualListWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneVirtualList<Element>(
     override val size: UInt,
     private val generator: (index: UInt) -> Element

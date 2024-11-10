@@ -11,6 +11,7 @@ import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 
 
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>>(
     val singleElement: Element,
     override val elementContext: ElementContext,

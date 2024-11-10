@@ -12,7 +12,7 @@ package dev.lounres.kone.collections
  * Throws [IndexOutOfBoundsException] with message including provided [index] and [size].
  */
 public fun indexOutOfBoundsException(index: UInt, size: UInt): Nothing =
-    throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
+    throw IndexOutOfBoundsException("Index $index is out of bounds for length $size")
 
 /**
  * Represents exception that is thrown when user tries to get, set, remove, or bypass the next or the previous non-existent element.

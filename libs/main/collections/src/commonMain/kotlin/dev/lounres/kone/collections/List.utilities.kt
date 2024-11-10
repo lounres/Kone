@@ -31,5 +31,13 @@ public fun <Element> KoneMutableList<Element>.remove(element: Element) {
     removeAt(firstIndexThat { _, currentElement -> currentElement eq element })
 }
 
+public inline fun <Element> KoneMutableList<Element>.retainAllThatIndexed(crossinline predicate: (index: UInt, element: Element) -> Boolean) {
+    removeAllThatIndexed { index, element -> !predicate(index, element) }
+}
+
+public inline fun <Element> KoneMutableList<Element>.retainAllThat(crossinline predicate: (element: Element) -> Boolean) {
+    removeAllThat { element -> !predicate(element) }
+}
+
 public val KoneList<*>.lastIndex: UInt get() = size - 1u
 public val KoneList<*>.indices: UIntRange get() = 0u ..< size

@@ -10,6 +10,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 internal open class KoneEmptyNoddedSetTemplate<Element> : KoneNoddedSet<Element>, KoneSetWithContext<Element, Equality<Element>> {
     override val elementContext: Equality<Element> get() = defaultEquality()
 

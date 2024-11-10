@@ -16,53 +16,53 @@ import dev.lounres.kone.collections.KoneSettableNoddedList
 
 
 public interface KoneListProducer {
-    public fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneList<E>
+    public fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneList<Element>
 }
 
 public interface KoneSettableListProducer : KoneListProducer {
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneSettableList<E>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneSettableList<Element>
 }
 
 public interface KoneResizableMutableListProducer : KoneSettableListProducer {
-    public fun <E> produce(): KoneMutableList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneMutableList<E>
+    public fun <Element> produce(): KoneMutableList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element>
 }
 
 public interface KoneGrowableMutableListProducer : KoneSettableListProducer {
-    public fun <E> produce(): KoneGrowableMutableList<E> = produce(0u)
-    public fun <E> produce(initialCapacity: UInt): KoneGrowableMutableList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneGrowableMutableList<E> = produceBy(number, number, builder)
-    public fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneGrowableMutableList<E>
+    public fun <Element> produce(): KoneGrowableMutableList<Element> = produce(0u)
+    public fun <Element> produce(initialCapacity: UInt): KoneGrowableMutableList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneGrowableMutableList<Element> = produceBy(number, number, builder)
+    public fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneGrowableMutableList<Element>
 }
 
 public interface KoneFixedCapacityMutableListProducer : KoneSettableListProducer {
-    public fun <E> produce(capacity: UInt): KoneMutableList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneMutableList<E> = produceBy(number, number, builder)
-    public fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E>
+    public fun <Element> produce(capacity: UInt): KoneMutableList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> = produceBy(number, number, builder)
+    public fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element>
 }
 
 public interface KoneNoddedListProducer : KoneListProducer {
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneNoddedList<E>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneNoddedList<Element>
 }
 
 public interface KoneSettableNoddedListProducer : KoneNoddedListProducer, KoneSettableListProducer {
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneSettableNoddedList<E>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneSettableNoddedList<Element>
 }
 
 public interface KoneResizableMutableNoddedListProducer : KoneSettableNoddedListProducer, KoneResizableMutableListProducer {
-    override fun <E> produce(): KoneMutableNoddedList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneMutableNoddedList<E>
+    override fun <Element> produce(): KoneMutableNoddedList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element>
 }
 
 public interface KoneGrowableMutableNoddedListProducer : KoneSettableListProducer {
-    public fun <E> produce(): KoneGrowableMutableNoddedList<E> = produce(0u)
-    public fun <E> produce(initialCapacity: UInt): KoneGrowableMutableNoddedList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneGrowableMutableNoddedList<E> = produceBy(number, number, builder)
-    public fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneGrowableMutableNoddedList<E>
+    public fun <Element> produce(): KoneGrowableMutableNoddedList<Element> = produce(0u)
+    public fun <Element> produce(initialCapacity: UInt): KoneGrowableMutableNoddedList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneGrowableMutableNoddedList<Element> = produceBy(number, number, builder)
+    public fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneGrowableMutableNoddedList<Element>
 }
 
 public interface KoneFixedCapacityMutableNoddedListProducer : KoneSettableListProducer {
-    public fun <E> produce(capacity: UInt): KoneMutableNoddedList<E>
-    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneMutableNoddedList<E> = produceBy(number, number, builder)
-    public fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableNoddedList<E>
+    public fun <Element> produce(capacity: UInt): KoneMutableNoddedList<Element>
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = produceBy(number, number, builder)
+    public fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element>
 }

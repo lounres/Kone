@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 
 
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 internal class KoneSingletonSettableNoddedList<Element>(
     var singleElement: Element,
 ) : KoneSettableNoddedList<Element> {

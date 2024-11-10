@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneSettableListNode
@@ -13,6 +14,7 @@ import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.isEmpty
 
 
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableNoddedList<Element> {
     override val size: UInt get() = 0u
     
