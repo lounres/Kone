@@ -6,8 +6,6 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.KoneSettableList
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
@@ -34,37 +32,37 @@ data class ListImplementationDescription (
 
 val listImplementations = listOf<ListImplementationDescription>(
     ListImplementationDescription(
+        name = "KoneArrayFixedCapacityLinkedList",
+        producer = KoneArrayFixedCapacityLinkedListProducer,
+    ),
+    ListImplementationDescription(
         name = "KoneArrayFixedCapacityList",
         producer = KoneArrayFixedCapacityListProducer,
     ),
     ListImplementationDescription(
-        name = "KoneArrayFixedCapacityLinkedList",
-        producer = KoneArrayFixedCapacityLinkedListProducer,
+        name = "KoneArrayGrowableLinkedList",
+        producer = KoneArrayGrowableLinkedListProducer,
     ),
     ListImplementationDescription(
         name = "KoneArrayGrowableList",
         producer = KoneArrayGrowableListProducer,
     ),
     ListImplementationDescription(
-        name = "KoneArrayGrowableLinkedList",
-        producer = KoneArrayGrowableLinkedListProducer,
+        name = "KoneArrayResizableLinkedList",
+        producer = KoneArrayResizableLinkedListProducer,
     ),
-//    ListImplementationDescription(
-//        name = "KoneGCLinkedList",
-//        producer = KoneGCLinkedListProducer,
-//    ),
     ListImplementationDescription(
         name = "KoneArrayResizableList",
         producer = KoneArrayResizableListProducer,
     ),
     ListImplementationDescription(
-        name = "KoneArrayResizableLinkedList",
-        producer = KoneArrayResizableLinkedListProducer,
-    ),
-    ListImplementationDescription(
         name = "KoneArraySettableList",
         producer = KoneArraySettableListProducer,
     ),
+//    ListImplementationDescription(
+//        name = "KoneGCLinkedList",
+//        producer = KoneGCLinkedListProducer,
+//    ),
 )
 
 fun <E> testEqualityByIteration(list1: KoneList<E>, list2: List<E>) {

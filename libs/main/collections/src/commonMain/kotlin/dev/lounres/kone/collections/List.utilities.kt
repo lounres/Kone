@@ -5,39 +5,87 @@
 
 package dev.lounres.kone.collections
 
-import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
 import dev.lounres.kone.option.Some
 
 
+/**
+ * Returns the element at the provided [index] or `null` if [index] is out of bounds.
+ */
 public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (index < size) this[index] else null
+/**
+ * Returns the element at the provided [index] wrapped in [Some] or [None] if [index] is out of bounds.
+ */
 public fun <Element> KoneList<Element>.getMaybe(index: UInt): Option<Element> = if (index < size) Some(this[index]) else None
 
+/**
+ * Adds provided [elements] at the end of the ordered collection.
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation adds places with indices from `size` to `size + elements.size` exclusive and puts the values in it.
+ */
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
     val iterator = iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Adds provided [elements] before element with index [index].
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation:
+ * - for each place with index at least [index] increases its index by `elements.size`,
+ * - adds places with indices from [index] to `index + elements.size`,
+ * - and puts the values in the added places.
+ *
+ * When [index] is equal to [size][KoneMutableList.size] the element is added at the end.
+ *
+ * If [index] is greater than [size][KoneMutableList.size], [IndexOutOfBoundsException] is thrown.
+ *
+ * @throws IndexOutOfBoundsException when index is greater than [size][KoneMutableList.size].
+ */
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
     val iterator = iterator()
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Finds first element equal to the provided [element] with respect to context [Equality]
+ * and removes it.
+ *
+ * If there is no equal element, the list is not modified.
+ * If there are several equal elements, only the first one is found and removed.
+ */
 context(Equality<Element>)
 public fun <Element> KoneMutableList<Element>.remove(element: Element) {
-    removeAt(firstIndexThat { _, currentElement -> currentElement eq element })
+    val iterator = iterator()
+    while (iterator.hasNext() && iterator.getNext() neq element) iterator.moveNext()
+    if (iterator.hasNext()) iterator.removeNext()
 }
 
+/**
+ * Iterates over the collection and retains only the elements matching the [predicate].
+ */
 public inline fun <Element> KoneMutableList<Element>.retainAllThatIndexed(crossinline predicate: (index: UInt, element: Element) -> Boolean) {
     removeAllThatIndexed { index, element -> !predicate(index, element) }
 }
-
+/**
+ * Iterates over the collection and retains only the elements matching the [predicate].
+ */
 public inline fun <Element> KoneMutableList<Element>.retainAllThat(crossinline predicate: (element: Element) -> Boolean) {
     removeAllThat { element -> !predicate(element) }
 }
 
+/**
+ * Returns the last index of elements in the list.
+ *
+ * If there are no elements in the list, [UInt.MAX_VALUE] is returned.
+ */
 public val KoneList<*>.lastIndex: UInt get() = size - 1u
+/**
+ * Returns the list's indices range.
+ */
 public val KoneList<*>.indices: UIntRange get() = 0u ..< size

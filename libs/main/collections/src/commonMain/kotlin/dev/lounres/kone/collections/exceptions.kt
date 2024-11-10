@@ -63,3 +63,8 @@ public class NoMatchingKeyException(message: String = "There is no value for req
  */
 public fun noMatchingKeyException(key: Any?): Nothing =
     throw NoMatchingKeyException("There is no value for key $key")
+
+public class DetachedNodeException(message: String = "The node is already detached and the operation is undefined.") : IllegalStateException(message)
+
+public fun detachedNodeException(message: String = "The node is already detached and the operation is undefined."): Nothing =
+    throw DetachedNodeException(message)

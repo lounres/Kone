@@ -50,58 +50,268 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
     override fun iterator(): KoneLinearIterator<Element> = iteratorFrom(0u)
 }
 
+/**
+ * Represents a finite collection of elements with some order on them
+ * with possibility to replace element at the provided index.
+ *
+ * This interface's inheritors must have some specific structure
+ * that provides optimised elements access or optimised elements iteration.
+ * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ *
+ * @usesMathJax
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSettableList<Element> : KoneList<Element> {
+    /**
+     * Sets another value at the place with the provided [index] with respect to inner order of elements.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value
+     * which can be replaced via this operation.
+     *
+     * If index is at least [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is not less than [size].
+     */
     public operator fun set(index: UInt, element: Element)
 }
 
+/**
+ * Represents a finite collection of elements with some order on them
+ * with possibility to add, replace, and replace element at the provided index.
+ *
+ * This interface's inheritors must have some specific structure
+ * that provides optimised elements access or optimised elements iteration.
+ * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ *
+ * @usesMathJax
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutableLinearIterable<Element> {
+    /**
+     * Adds provided [element] at the end of the ordered collection.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation adds a place with index [size] and puts the value in it.
+     */
     public fun add(element: Element) { addAt(size, element) }
+    /**
+     * Adds provided [element] before element with index [index].
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - for each place with index at least [index] increases its index by one,
+     * - adds a place with index [index],
+     * - and puts the value in the added place.
+     *
+     * When [index] is equal to [size] the element is added at the end.
+     *
+     * If [index] is greater than [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is greater than [size].
+     */
     public fun addAt(index: UInt, element: Element)
+    /**
+     * Adds provided [number] of elements at the end of the ordered collection.
+     * `i`th new element is a result of `builder(i)`.
+     * The builder is consecutively called on indices from `0` to [number] exclusive.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - adds places with indices from [size] to `size + number` exclusive,
+     * - and puts result of `builder(i)` in a place with index `size + i`
+     *   for each `i` from `0` to [number] exclusive.
+     *
+     * All [builder] invocations are computed consecutively on values from `0` to [number] exclusive
+     * in their order starting with `0`.
+     */
     public fun addSeveral(number: UInt, builder: (index: UInt) -> Element) {
         repeat(number) { add(builder(it)) }
     }
+    /**
+     * Adds provided [number] of elements before element with index [index].
+     * `i`th new element is a result of `builder(i)`.
+     * The builder is consecutively called on indices from `0` to [number] exclusive.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - for each place with index at least [index] increases its index by [number],
+     * - adds places with indices from [index] to `index + number` exclusive,
+     * - and puts result of `builder(i)` in a place with index `index + i`
+     *   for each `i` from `0` to [number] exclusive.
+     *
+     * All [builder] invocations are computed consecutively on values from `0` to [number] exclusive
+     * in their order starting with `0`.
+     *
+     * When [index] is equal to [size] the elements are added at the end.
+     *
+     * If [index] is greater than [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is greater than [size].
+     */
     public fun addSeveralAt(index: UInt, number: UInt, builder: (index: UInt) -> Element) {
         repeat(number) { addAt(index + it, builder(it)) }
     }
     
+    /**
+     * Removes element with the provided [index].
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - removes element and place with index [index],
+     * - and for each place with index grater than [index] decreases its index by one.
+     *
+     * If [index] is at least [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is no less than [size].
+     */
     public fun removeAt(index: UInt)
+    /**
+     * Removes elements that satisfy the provided [predicate].
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And for each index `i` from `0` to [size] this operation
+     * if `predicate(element)` is false where `element` is the element with index `i`
+     * removes the element and its place.
+     * After that indices are reassigned to the rest places with in their corresponding order
+     * starting from `0`.
+     *
+     * The [predicate] is called consecutively on elements of the collection in their order
+     * starting with the first one (at index `0`).
+     */
     public fun removeAllThat(predicate: (element: Element) -> Boolean) {
         removeAllThatIndexed { _, element -> predicate(element) }
     }
+    /**
+     * Removes elements that satisfy the provided [predicate].
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And for each index `i` from `0` to [size] this operation
+     * if `predicate(i, element)` is false where `element` is the element with index `i`
+     * removes the element and its place.
+     * After that indices are reassigned to the rest places with in their corresponding order
+     * starting from `0`.
+     *
+     * The [predicate] is called consecutively on elements of the collection in their order
+     * starting with the first one (at index `0`).
+     */
     public fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean)
+    /**
+     * Removes all elements and their places from the collection.
+     */
     public fun removeAll()
     
+    /**
+     * Initiates a mutable iterator over the collection's elements
+     * with pointer between elements with indices `index - 1` and `index` correspondingly.
+     *
+     * In the iterator elements are iterated in the order of their indices.
+     *
+     * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
+     */
     override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element>
+    /**
+     * Initiates a mutable iterator over the collection's elements
+     * with pointer before the first element.
+     *
+     * In the iterator elements are iterated in the order of their indices.
+     *
+     * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
+     */
     override fun iterator(): KoneMutableLinearIterator<Element> = iteratorFrom(0u)
 }
 
+/**
+ * Represents a [KoneMutableList] which inner structure has a capacity that can be increased.
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneGrowableMutableList<Element> : KoneMutableList<Element> {
+    /**
+     * Increases inner structure's capacity so that it can hold [minimalCapacity] number of elements
+     * without reinitialization of the capacity.
+     */
     public fun ensureCapacity(minimalCapacity: UInt)
 }
 
+/**
+ * Represents a nodded version of [KoneList].
+ *
+ * It means that there is exactly one [KoneListNode] corresponding to each place
+ * that can effectively access the places element and index as well as
+ * other things that can be found in its documentation.
+ *
+ * @see KoneList
+ * @see KoneListNode
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneNoddedList<out Element> : KoneList<Element> {
+    /**
+     * Returns node that corresponds to the place with the provided [index].
+     */
     public fun getNode(index: UInt): KoneListNode<Element>
     override fun get(index: UInt): Element = getNode(index).element
 }
 
+/**
+ * Represents a nodded version of [KoneSettableList].
+ * See [KoneNoddedList] for more.
+ *
+ * @see KoneSettableList
+ * @see KoneSettableListNode
+ * @see KoneNoddedList
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
     override fun getNode(index: UInt): KoneSettableListNode<Element>
 }
 
+/**
+ * Represents a nodded version of [KoneMutableList].
+ * See [KoneNoddedList] for more.
+ *
+ * @see KoneMutableList
+ * @see KoneMutableListNode
+ * @see KoneNoddedList
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element>, KoneMutableList<Element> {
     override fun getNode(index: UInt): KoneMutableListNode<Element>
     
+    /**
+     * Adds provided [element] at the end of the ordered collection
+     * and returns its corresponding node.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation adds a place with index [size] and puts the value in it.
+     */
     public fun addNode(element: Element): KoneMutableListNode<Element>
     override fun add(element: Element) { addNode(element) }
+    /**
+     * Adds provided [element] before element with index [index]
+     * and returns its corresponding node.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - for each place with index at least [index] increases its index by one,
+     * - adds a place with index [index],
+     * - and puts the value in the added place.
+     *
+     * When [index] is equal to [size] the element is added at the end.
+     *
+     * If [index] is greater than [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * @throws IndexOutOfBoundsException when index is greater than [size].
+     */
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
     override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
 }
 
+/**
+ * Represents a nodded version of [KoneGrowableMutableList].
+ * See [KoneNoddedList] for more.
+ *
+ * @see KoneGrowableMutableList
+ * @see KoneMutableListNode
+ * @see KoneNoddedList
+ */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneGrowableMutableNoddedList<Element> : KoneMutableNoddedList<Element>, KoneGrowableMutableList<Element>
