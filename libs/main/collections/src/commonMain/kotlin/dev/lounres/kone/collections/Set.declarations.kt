@@ -8,10 +8,12 @@ package dev.lounres.kone.collections
 
 // TODO: KoneSet is marked as covariant, but element context can't check equality for element of supertype
 //  So there is need in checking that element context can work with arbitrary argument
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSet<out Element> : KoneIterable<Element> {
     public operator fun contains(element: @UnsafeVariance Element): Boolean
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableSet<Element> : KoneSet<Element> {
     public fun add(element: Element)
     public fun addSeveral(number: UInt, builder: (index: UInt) -> Element)
@@ -21,6 +23,7 @@ public interface KoneMutableSet<Element> : KoneSet<Element> {
     public fun removeAll()
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneNoddedSet<out Element> : KoneSet<Element> {
     public val nodes: KoneIterable<KoneSetNode<Element>>
     // TODO: Maybe add the following methods
@@ -28,6 +31,7 @@ public interface KoneNoddedSet<out Element> : KoneSet<Element> {
 //    public fun nodeOf(element: @UnsafeVariance Element): KoneSetNode<Element> = nodeOfOrNull(element) ?: TODO()
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneNoddedMutableSet<Element> : KoneMutableSet<Element>, KoneNoddedSet<Element> {
     override val nodes: KoneIterable<KoneMutableSetNode<Element>>
     
@@ -35,4 +39,5 @@ public interface KoneNoddedMutableSet<Element> : KoneMutableSet<Element>, KoneNo
     override fun add(element: Element) { addNode(element) }
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneLinkedSet<out Element> : KoneSet<Element>, KoneList<Element>

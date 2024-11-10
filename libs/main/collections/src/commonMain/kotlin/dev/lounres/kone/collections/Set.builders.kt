@@ -9,9 +9,9 @@ import dev.lounres.kone.collections.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.implementations.KoneEmptyNoddedSet
 import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.implementations.KoneListBackedSet
-import dev.lounres.kone.collections.implementations.KoneMutableListBackedSet
+import dev.lounres.kone.collections.implementations.KoneListBackedMutableSet
 import dev.lounres.kone.collections.implementations.KoneResizableHashSet
-import dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.implementations.KoneSingletonNoddedSet
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -45,15 +45,15 @@ public fun <Element> koneSetOf(vararg elements: Element, elementContext: Equalit
 
 public fun <Element> koneMutableSetOf(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> =
     if (elementContext is Hashing<Element>) KoneResizableHashSet(elementContext = elementContext)
-    else KoneMutableListBackedSet(elementContext = elementContext)
+    else KoneListBackedMutableSet(elementContext = elementContext)
 
 public fun <Element> koneMutableSetOf(vararg elements: Element, elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> =
     if (elementContext is Hashing<Element>) KoneResizableHashSet(elementContext = elementContext)
         .apply { addSeveral(elements.size.toUInt()) { elements[it.toInt()] } }
     else {
-        val backingList = KoneResizableLinkedArrayList<Element>()
+        val backingList = KoneArrayResizableLinkedList<Element>()
         for (element in elements) if (elementContext { element !in backingList }) backingList.add(element)
-        KoneMutableListBackedSet(elementContext, backingList)
+        KoneListBackedMutableSet(elementContext, backingList)
     }
 
 public fun <Element> Iterable<Element>.toKoneMutableSet(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> {
@@ -72,7 +72,7 @@ public fun <Element> Collection<Element>.toKoneMutableSet(elementContext: Equali
     else {
         val backingList = KoneArrayResizableList<Element>()
         for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
-        KoneMutableListBackedSet(elementContext, KoneResizableLinkedArrayList<Element>().apply { addAllFrom(backingList) })
+        KoneListBackedMutableSet(elementContext, KoneArrayResizableLinkedList<Element>().apply { addAllFrom(backingList) })
     }
 
 public fun <Element> KoneIterable<Element>.toKoneMutableSet(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> =
@@ -81,7 +81,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(elementContext: Equa
     else {
         val backingList = KoneArrayResizableList<Element>()
         for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
-        KoneMutableListBackedSet(elementContext, backingList)
+        KoneListBackedMutableSet(elementContext, backingList)
     }
 
 public fun <Element> Iterable<Element>.toKoneSet(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
@@ -105,7 +105,7 @@ public inline fun <Element> buildKoneSet(elementContext: Equality<Element> = def
     // TODO: Insert growable hash set implementation for hashing element context
     val result =
         if (elementContext is Hashing<Element>) KoneResizableHashSet(elementContext = elementContext)
-        else KoneMutableListBackedSet(elementContext = elementContext,backingList = KoneArrayGrowableList<Element>())
+        else KoneListBackedMutableSet(elementContext = elementContext, backingList = KoneArrayGrowableList<Element>())
     return result.apply(builderAction)
 }
 
@@ -115,6 +115,6 @@ public inline fun <Element> buildKoneSet(elementContext: Equality<Element> = def
     // TODO: Insert growable hash set implementation for hashing element context
     val result =
         if (elementContext is Hashing<Element>) KoneResizableHashSet(elementContext = elementContext)
-        else KoneMutableListBackedSet(elementContext = elementContext, backingList = KoneArrayGrowableList<Element>(initialCapacity = initialCapacity))
+        else KoneListBackedMutableSet(elementContext = elementContext, backingList = KoneArrayGrowableList<Element>(initialCapacity = initialCapacity))
     return result.apply(builderAction)
 }

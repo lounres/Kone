@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.KoneMutableList
+import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -23,13 +25,19 @@ public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: 
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
-public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> {
+public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityList(
         size = size,
         capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
     )
+}
+
+public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListProducer {
+    override fun <E> produce(capacity: UInt): KoneArrayFixedCapacityList<E> = KoneArrayFixedCapacityList(capacity)
+    override fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
+        KoneArrayFixedCapacityList(initialCapacity, number, builder)
 }
 
 internal class KoneArrayFixedCapacityListDescriptor(elementDescriptor: SerialDescriptor):

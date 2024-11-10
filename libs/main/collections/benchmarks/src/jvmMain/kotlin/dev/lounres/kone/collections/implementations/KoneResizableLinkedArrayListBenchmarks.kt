@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.comparison.Equality
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
 import kotlinx.benchmark.BenchmarkTimeUnit
@@ -31,11 +30,11 @@ class KoneResizableLinkedArrayListBenchmarks {
     )
     var listSize: UInt = 0u
 
-    lateinit var list: KoneResizableLinkedArrayList<UInt>
+    lateinit var list: KoneArrayResizableLinkedList<UInt>
 
     @Setup(Level.Invocation)
     fun setupListContent() {
-        list = KoneResizableLinkedArrayList<UInt>(listSize) { 0u }
+        list = KoneArrayResizableLinkedList<UInt>(listSize) { 0u }
     }
 
     @Benchmark

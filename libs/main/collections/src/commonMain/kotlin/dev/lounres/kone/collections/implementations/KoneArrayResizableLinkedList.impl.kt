@@ -15,7 +15,7 @@ import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneResizableLinkedArrayListWithContextSerializer::class)
-public class KoneResizableLinkedArrayList<Element> @PublishedApi internal constructor(
+public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
@@ -402,7 +402,7 @@ public class KoneResizableLinkedArrayList<Element> @PublishedApi internal constr
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneResizableLinkedArrayList<*> -> {
+            is KoneArrayResizableLinkedList<*> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {

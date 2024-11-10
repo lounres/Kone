@@ -18,7 +18,6 @@ public inline fun <Element> KoneArraySettableList(size: UInt, initializer: (inde
     KoneArraySettableList(KoneMutableArray(size, initializer))
 
 public object KoneArraySettableListProducer : KoneSettableListProducer {
-    override fun <Element> produce(): KoneArraySettableList<Element> = KoneArraySettableList(0u) { error("For some reason throwing builder was called") }
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableList<Element> = KoneArraySettableList(number, builder)
 }
 

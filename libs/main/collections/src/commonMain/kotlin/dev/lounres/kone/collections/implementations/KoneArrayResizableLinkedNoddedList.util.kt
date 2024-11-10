@@ -5,8 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.producers.KoneMutableNoddedListProducer
+import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
@@ -27,7 +26,7 @@ public inline fun <Element> KoneArrayResizableLinkedNoddedList(size: UInt, initi
 //    )
 }
 
-public object KoneArrayResizableLinkedNoddedListProducer : KoneMutableNoddedListProducer {
+public object KoneArrayResizableLinkedNoddedListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneArrayResizableLinkedNoddedList<Element> = KoneArrayResizableLinkedNoddedList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArrayResizableLinkedNoddedList<Element> =
         KoneArrayResizableLinkedNoddedList(number, builder)

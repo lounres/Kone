@@ -28,7 +28,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateSize(capacityUpperBound, loadFactor),
-    private var data: KoneArray<KoneResizableLinkedArrayList<Element>> = KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
+    private var data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
     override val elementContext: ElementContext,
 ) : KoneMutableSetWithContext<Element, ElementContext>, Disposable {
     override var size: UInt = size
@@ -40,7 +40,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
     private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
-    private fun KoneArray<KoneResizableLinkedArrayList<Element>>.dispose() {
+    private fun KoneArray<KoneArrayResizableLinkedList<Element>>.dispose() {
         // KT-67409
 //        @Suppress("UNCHECKED_CAST")
 //        val array = this.array as Array<Any?>
@@ -78,7 +78,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
     private fun reinitializeData(newDataSize: UInt = capacityUpperBound) {
         val oldData = data
-        data = KoneArray(newDataSize) { KoneResizableLinkedArrayList() }
+        data = KoneArray(newDataSize) { KoneArrayResizableLinkedList() }
         for (linkedList in oldData) {
             for (element in linkedList) data[element.dataIndex()].add(element)
             linkedList.dispose()
@@ -124,7 +124,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
         capacityUpperBound = 2u
         sizeLowerBound = 0u
         sizeUpperBound = calculateSize(capacityUpperBound, loadFactor)
-        data = KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() }
+        data = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() }
         size = 0u
     }
 

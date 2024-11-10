@@ -7,7 +7,9 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.KoneGrowableMutableList
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -29,6 +31,22 @@ public inline fun <Element> KoneArrayGrowableList(size: UInt, initializer: (inde
         sizeUpperBound = sizeUpperBound,
         data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
     )
+}
+
+public inline fun <Element> KoneArrayGrowableList(initialCapacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
+    require(size <= initialCapacity) { "Provided initial capacity must not be less than provided size" }
+    val sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity)
+    return KoneArrayGrowableList(
+        size = size,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+    )
+}
+
+public object KoneArrayGrowableListProducer : KoneGrowableMutableListProducer {
+    override fun <E> produce(initialCapacity: UInt): KoneArrayGrowableList<E> = KoneArrayGrowableList(initialCapacity)
+    override fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneGrowableMutableList<E> =
+        KoneArrayGrowableList(initialCapacity, number, builder)
 }
 
 internal class KoneArrayGrowableListDescriptor(elementDescriptor: SerialDescriptor):

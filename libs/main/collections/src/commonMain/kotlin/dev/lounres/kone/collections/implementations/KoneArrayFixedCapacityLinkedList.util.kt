@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.KoneMutableList
+import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -30,6 +32,12 @@ public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, capacity: UInt
         capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
     )
+}
+
+public object KoneArrayFixedCapacityLinkedListProducer : KoneFixedCapacityMutableListProducer {
+    override fun <E> produce(capacity: UInt): KoneArrayFixedCapacityLinkedList<E> = KoneArrayFixedCapacityLinkedList(capacity)
+    override fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
+        KoneArrayFixedCapacityLinkedList(initialCapacity, number, builder)
 }
 
 internal class KoneArrayFixedCapacityLinkedListDescriptor(elementDescriptor: SerialDescriptor):

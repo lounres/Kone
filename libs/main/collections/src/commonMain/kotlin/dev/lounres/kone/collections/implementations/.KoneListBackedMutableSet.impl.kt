@@ -13,8 +13,9 @@ import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 
 
-//@Serializable(with = KoneMutableListBackedSetWithContextSerializer::class)
-public class KoneMutableListBackedSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
+//@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+public class KoneListBackedMutableSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
     override val elementContext: ElementContext,
     internal val backingList: KoneMutableList<Element>,
 ) : KoneMutableSet<Element>, KoneMutableSetWithContext<Element, ElementContext> {

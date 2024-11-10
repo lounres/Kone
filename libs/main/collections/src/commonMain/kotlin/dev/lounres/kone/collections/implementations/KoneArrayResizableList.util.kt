@@ -8,6 +8,8 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.KoneMutableList
+import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -26,6 +28,12 @@ public inline fun <Element> KoneArrayResizableList(size: UInt, initializer: (ind
         sizeUpperBound = sizeUpperBound,
         data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
     )
+}
+
+public object KoneArrayResizableListProducer : KoneResizableMutableListProducer {
+    override fun <E> produce(): KoneArrayResizableList<E> = KoneArrayResizableList()
+    override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneArrayResizableList<E> =
+        KoneArrayResizableList(number, builder)
 }
 
 internal class KoneArrayResizableListDescriptor(elementDescriptor: SerialDescriptor):

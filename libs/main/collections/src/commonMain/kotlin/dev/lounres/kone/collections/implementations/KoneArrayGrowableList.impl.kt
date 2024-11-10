@@ -16,7 +16,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-) : KoneMutableList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ Disposable {
+) : KoneGrowableMutableList<Element>, Disposable {
     override var size: UInt = size
         private set
 
@@ -43,18 +43,17 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         size = newSize
     }
 
-    // TODO: Apply corresponding interface and enable capacity growing
-//    override fun ensureCapacity(minimalCapacity: UInt) {
-//        if (sizeUpperBound < minimalCapacity) {
-//            reinitializeBounds(minimalCapacity)
-//            reinitializeData {
-//                when {
-//                    it < size -> get(it)
-//                    else -> null
-//                }
-//            }
-//        }
-//    }
+    override fun ensureCapacity(minimalCapacity: UInt) {
+        if (sizeUpperBound < minimalCapacity) {
+            reinitializeBounds(minimalCapacity)
+            reinitializeData {
+                when {
+                    it < size -> get(it)
+                    else -> null
+                }
+            }
+        }
+    }
 
     override fun get(index: UInt): Element {
         if (index >= size) indexOutOfBoundsException(index, size)

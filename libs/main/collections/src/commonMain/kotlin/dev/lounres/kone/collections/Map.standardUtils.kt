@@ -13,6 +13,8 @@ import dev.lounres.kone.option.transformNotNullMaybe
 import kotlin.jvm.JvmName
 
 
+public fun <Key, Value> KoneMapNode<Key, Value>.toKoneMapEntry(): KoneMapEntry<Key, Value> = KoneMapEntry(key = key, value = value)
+
 public fun KoneMap<*, *>.isEmpty(): Boolean = size == 0u
 public fun KoneMap<*, *>.isNotEmpty(): Boolean = !isEmpty()
 

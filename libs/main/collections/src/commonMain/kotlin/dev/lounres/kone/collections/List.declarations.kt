@@ -17,6 +17,7 @@ import dev.lounres.kone.repeat
  *
  * @usesMathJax
  */
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneList<out Element> : KoneLinearIterable<Element> {
     /**
      * Returns element that is placed at the provided [index].
@@ -49,10 +50,12 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
     override fun iterator(): KoneLinearIterator<Element> = iteratorFrom(0u)
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSettableList<Element> : KoneList<Element> {
     public operator fun set(index: UInt, element: Element)
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutableLinearIterable<Element> {
     public fun add(element: Element) { addAt(size, element) }
     public fun addAt(index: UInt, element: Element)
@@ -74,15 +77,23 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
     override fun iterator(): KoneMutableLinearIterator<Element> = iteratorFrom(0u)
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneGrowableMutableList<Element> : KoneMutableList<Element> {
+    public fun ensureCapacity(minimalCapacity: UInt)
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneNoddedList<out Element> : KoneList<Element> {
     public fun getNode(index: UInt): KoneListNode<Element>
     override fun get(index: UInt): Element = getNode(index).element
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
     override fun getNode(index: UInt): KoneSettableListNode<Element>
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element>, KoneMutableList<Element> {
     override fun getNode(index: UInt): KoneMutableListNode<Element>
     
@@ -91,3 +102,6 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
     override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
 }
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneGrowableMutableNoddedList<Element> : KoneMutableNoddedList<Element>, KoneGrowableMutableList<Element>

@@ -5,23 +5,46 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.producers.KoneMutableListProducer
+import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import dev.lounres.kone.comparison.Equality
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <Element, ElementContext: Equality<Element>> KoneMutableListBackedSet(
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
     elementContext: ElementContext,
-    listProducer: KoneMutableListProducer = KoneResizableLinkedArrayListProducer,
-): KoneMutableListBackedSet<Element, ElementContext> = KoneMutableListBackedSet(elementContext, listProducer.produce())
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, KoneArrayResizableLinkedList())
 
-public fun <Element, ElementContext: Equality<Element>> KoneMutableListBackedSet(
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
+    elementContext: ElementContext,
+    listProducer: KoneResizableMutableListProducer,
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, listProducer.produce())
+
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
+    elementContext: ElementContext,
+    listProducer: KoneGrowableMutableListProducer,
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, listProducer.produce())
+
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
     elementContext: ElementContext,
     size: UInt,
-    listProducer: KoneMutableListProducer = KoneResizableLinkedArrayListProducer,
     builder: (UInt) -> Element
-): KoneMutableListBackedSet<Element, ElementContext> = KoneMutableListBackedSet(elementContext, listProducer.produceBy(size, builder))
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, KoneArrayResizableLinkedList(size, builder))
+
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
+    elementContext: ElementContext,
+    size: UInt,
+    listProducer: KoneResizableMutableListProducer,
+    builder: (UInt) -> Element
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, listProducer.produceBy(size, builder))
+
+public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet(
+    elementContext: ElementContext,
+    size: UInt,
+    listProducer: KoneGrowableMutableListProducer,
+    builder: (UInt) -> Element
+): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, listProducer.produceBy(size, builder))
 
 internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(

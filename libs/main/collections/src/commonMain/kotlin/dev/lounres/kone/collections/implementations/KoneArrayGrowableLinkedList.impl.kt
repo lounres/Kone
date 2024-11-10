@@ -12,7 +12,7 @@ import dev.lounres.kone.scope
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
-public class KoneGrowableLinkedArrayList<Element> internal constructor(
+public class KoneArrayGrowableLinkedList<Element> internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
@@ -20,7 +20,7 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
     private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-) : KoneMutableList<Element>, /*KoneCollectionWithGrowableCapacity<E>,*/ KoneDequeue<Element>, Disposable {
+) : KoneGrowableMutableList<Element>, KoneDequeue<Element>, Disposable {
     override var size: UInt = size
         private set
 
@@ -57,18 +57,18 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
         end = if (size > 0u) size - 1u else sizeUpperBound - 1u
     }
 
-//    override fun ensureCapacity(minimalCapacity: UInt) {
-//        if (sizeUpperBound < minimalCapacity) {
-//            reinitializeBounds(minimalCapacity)
-//            var actualIndex = start
-//            reinitializeData {
-//                when {
-//                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-//                    else -> null
-//                }
-//            }
-//        }
-//    }
+    override fun ensureCapacity(minimalCapacity: UInt) {
+        if (sizeUpperBound < minimalCapacity) {
+            reinitializeBounds(minimalCapacity)
+            var actualIndex = start
+            reinitializeData {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    else -> null
+                }
+            }
+        }
+    }
 
     private fun actualIndex(index: UInt): UInt =
         when {
@@ -346,7 +346,7 @@ public class KoneGrowableLinkedArrayList<Element> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableLinkedArrayList<*> -> {
+            is KoneArrayGrowableLinkedList<*> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {

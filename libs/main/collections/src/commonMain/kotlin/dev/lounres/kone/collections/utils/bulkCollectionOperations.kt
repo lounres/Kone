@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.implementations.KoneGrowableLinkedArrayList
+import dev.lounres.kone.collections.implementations.KoneArrayGrowableLinkedList
 import dev.lounres.kone.comparison.*
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Option
@@ -497,7 +497,7 @@ public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -526,7 +526,7 @@ public fun <E> KoneSettableList<E>.sort() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -554,7 +554,7 @@ public fun <E> KoneSettableList<E>.sortWith(comparator: Comparator<E>) {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -583,7 +583,7 @@ public fun <E: Comparable<E>> KoneSettableList<E>.sortDescending() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -612,7 +612,7 @@ public fun <E> KoneSettableList<E>.sortDescending() {
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -640,7 +640,7 @@ public fun <E> KoneSettableList<E>.sortWithDescending(comparator: Comparator<E>)
         return i
     }
     fun quickSort(from: UInt, to: UInt) {
-        val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+        val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
         sortQueue.addLast(RangeToSort(from, to))
         while (sortQueue.isNotEmpty()) {
             val (from, to) = sortQueue.popFirst()
@@ -672,7 +672,7 @@ internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.divide(from: UInt,
 // TODO: Move inside the following `sortBy` function when local inline functions will be ready
 @PublishedApi
 internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.quickSort(from: UInt, to: UInt, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()
@@ -706,7 +706,7 @@ internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, sele
 context(Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()
@@ -739,7 +739,7 @@ internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, comp
 // TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()
@@ -772,7 +772,7 @@ internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.divideDescending(f
 // TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
 @PublishedApi
 internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()
@@ -806,7 +806,7 @@ internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: 
 context(Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()
@@ -839,7 +839,7 @@ internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: 
 // TODO: Move inside the following `sortWithBy` function when local inline functions will be ready
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, comparator: Comparator<R>, selector: (E) -> R) {
-    val sortQueue: KoneDequeue<RangeToSort> = KoneGrowableLinkedArrayList()
+    val sortQueue: KoneDequeue<RangeToSort> = KoneArrayGrowableLinkedList()
     sortQueue.addLast(RangeToSort(from, to))
     while (sortQueue.isNotEmpty()) {
         val (from, to) = sortQueue.popFirst()

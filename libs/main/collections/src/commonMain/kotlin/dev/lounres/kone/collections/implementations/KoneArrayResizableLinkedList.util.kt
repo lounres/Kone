@@ -7,19 +7,19 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.producers.KoneMutableListProducer
+import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
 
 
-public fun <Element> KoneResizableLinkedArrayList(): KoneResizableLinkedArrayList<Element> =
-    KoneResizableLinkedArrayList(size = 0u)
+public fun <Element> KoneArrayResizableLinkedList(): KoneArrayResizableLinkedList<Element> =
+    KoneArrayResizableLinkedList(size = 0u)
 
-public inline fun <Element> KoneResizableLinkedArrayList(size: UInt, initializer: (index: UInt) -> Element): KoneResizableLinkedArrayList<Element> {
+public inline fun <Element> KoneArrayResizableLinkedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableLinkedList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-    return KoneResizableLinkedArrayList(
+    return KoneArrayResizableLinkedList(
         size = size,
         dataSizeNumber = dataSizeNumber,
         sizeUpperBound = sizeUpperBound,
@@ -27,15 +27,15 @@ public inline fun <Element> KoneResizableLinkedArrayList(size: UInt, initializer
     )
 }
 
-public object KoneResizableLinkedArrayListProducer : KoneMutableListProducer {
-    override fun <Element> produce(): KoneMutableList<Element> = KoneResizableLinkedArrayList()
+public object KoneArrayResizableLinkedListProducer : KoneResizableMutableListProducer {
+    override fun <Element> produce(): KoneMutableList<Element> = KoneArrayResizableLinkedList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
-        KoneResizableLinkedArrayList(number, builder)
+        KoneArrayResizableLinkedList(number, builder)
 }
 
-internal class KoneResizableLinkedArrayListDescriptor(elementDescriptor: SerialDescriptor):
+internal class KoneArrayResizableLinkedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneResizableLinkedArrayList<data>",
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedList<data>",
         elementDescriptor = elementDescriptor,
     )
 

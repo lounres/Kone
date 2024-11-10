@@ -9,6 +9,10 @@ import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.KoneSettableList
 import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.producers.KoneListProducer
+import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.repeat
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
@@ -23,113 +27,44 @@ import io.kotest.property.exhaustive.ints
 import kotlin.test.fail
 
 
-interface IterableListBuilder {
-    fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneList<E>
-}
-
-interface SettableIterableListBuilder : IterableListBuilder {
-    override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneSettableList<E>
-}
-
-interface MutableFixedCapacityIterableListBuilder : SettableIterableListBuilder {
-    fun <E> build(capacity: UInt): KoneMutableList<E>
-    override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E>
-    fun <E> buildByGenerator(size: UInt, capacity: UInt, generator: (UInt) -> E): KoneMutableList<E>
-}
-
-interface MutableIterableListBuilder : SettableIterableListBuilder {
-    fun <E> build(): KoneMutableList<E>
-    override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E>
-}
-
-interface ListImplementationDescription {
-    val name: String
-    val builder: IterableListBuilder
-}
+data class ListImplementationDescription (
+    val name: String,
+    val producer: KoneListProducer,
+)
 
 val listImplementations = listOf<ListImplementationDescription>(
-    object : ListImplementationDescription {
-        override val name = "KoneArrayFixedCapacityList"
-        override val builder: MutableFixedCapacityIterableListBuilder =
-            object : MutableFixedCapacityIterableListBuilder {
-                override fun <E> build(capacity: UInt): KoneMutableList<E> =
-                    KoneArrayFixedCapacityList(capacity)
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayFixedCapacityList(size, generator)
-                override fun <E> buildByGenerator(size: UInt, capacity: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayFixedCapacityList(size, capacity, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneArrayFixedCapacityLinkedList"
-        override val builder: MutableFixedCapacityIterableListBuilder =
-            object : MutableFixedCapacityIterableListBuilder {
-                override fun <E> build(capacity: UInt): KoneMutableList<E> =
-                    KoneArrayFixedCapacityLinkedList(capacity)
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayFixedCapacityLinkedList(size, generator)
-                override fun <E> buildByGenerator(size: UInt, capacity: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayFixedCapacityLinkedList(size, capacity, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneArrayGrowableList"
-        override val builder: MutableIterableListBuilder =
-            object : MutableIterableListBuilder {
-                override fun <E> build(): KoneMutableList<E> =
-                    KoneArrayGrowableList()
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayGrowableList(size, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneGrowableLinkedArrayList"
-        override val builder: MutableIterableListBuilder =
-            object : MutableIterableListBuilder {
-                override fun <E> build(): KoneMutableList<E> =
-                    KoneGrowableLinkedArrayList()
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneGrowableLinkedArrayList(size, generator)
-            }
-    },
-//    object : ListImplementationDescription {
-//        override val name = "KoneGCLinkedList"
-//        override val builder: MutableIterableListBuilder =
-//            object : MutableIterableListBuilder {
-//                override fun <E> build(): KoneMutableList<E> =
-//                    KoneGCLinkedList()
-//                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-//                    KoneGCLinkedList(size, generator)
-//            }
-//    },
-    object : ListImplementationDescription {
-        override val name = "KoneArrayResizableList"
-        override val builder: MutableIterableListBuilder =
-            object : MutableIterableListBuilder {
-                override fun <E> build(): KoneMutableList<E> =
-                    KoneArrayResizableList()
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneArrayResizableList(size, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneResizableLinkedArrayList"
-        override val builder: MutableIterableListBuilder =
-            object : MutableIterableListBuilder {
-                override fun <E> build(): KoneMutableList<E> =
-                    KoneResizableLinkedArrayList()
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneMutableList<E> =
-                    KoneResizableLinkedArrayList(size, generator)
-            }
-    },
-    object : ListImplementationDescription {
-        override val name = "KoneSettableArrayList"
-        override val builder: SettableIterableListBuilder =
-            object : SettableIterableListBuilder {
-                override fun <E> buildByGenerator(size: UInt, generator: (UInt) -> E): KoneSettableList<E> =
-                    KoneArraySettableList(size, generator)
-            }
-    },
+    ListImplementationDescription(
+        name = "KoneArrayFixedCapacityList",
+        producer = KoneArrayFixedCapacityListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayFixedCapacityLinkedList",
+        producer = KoneArrayFixedCapacityLinkedListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayGrowableList",
+        producer = KoneArrayGrowableListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayGrowableLinkedList",
+        producer = KoneArrayGrowableLinkedListProducer,
+    ),
+//    ListImplementationDescription(
+//        name = "KoneGCLinkedList",
+//        producer = KoneGCLinkedListProducer,
+//    ),
+    ListImplementationDescription(
+        name = "KoneArrayResizableList",
+        producer = KoneArrayResizableListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayResizableLinkedList",
+        producer = KoneArrayResizableLinkedListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArraySettableList",
+        producer = KoneArraySettableListProducer,
+    ),
 )
 
 fun <E> testEqualityByIteration(list1: KoneList<E>, list2: List<E>) {
@@ -196,22 +131,22 @@ fun <E> arbMutableListOperationsWithResults(
 
 class ListImplementationsTests: FunSpec({
     for (impl in listImplementations) context(impl.name) {
-        val builder = impl.builder
+        val producer = impl.producer
         
         test("test generative construction") {
             checkAll(Exhaustive.ints(0 .. 20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = builder.buildByGenerator(length.toUInt()) { input[it.toInt()] }
+                    val list = producer.produceBy(length.toUInt()) { input[it.toInt()] }
                     testEqualityByIteration(list, input)
                     testEqualityByStringRepresentation(list, input)
                 }
             }
         }
         
-        if (builder is MutableIterableListBuilder) test("test element-by-element extension") {
+        if (producer is KoneResizableMutableListProducer) test("test resizable element-by-element extension") {
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = builder.build<UInt>()
+                    val list = producer.produce<UInt>()
                     testEqualityByIteration(list, emptyList())
                     testEqualityByStringRepresentation(list, emptyList())
                     for (index in 0 ..< length) {
@@ -223,10 +158,41 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (builder is MutableFixedCapacityIterableListBuilder) test("test element-by-element extension") {
+        if (producer is KoneGrowableMutableListProducer) {
+            test("test element-by-element extension") {
+                checkAll(Exhaustive.ints(0..20)) { length ->
+                    checkAll(10, Arb.uInt().chunked(length, length)) { input ->
+                        val list = producer.produce<UInt>()
+                        testEqualityByIteration(list, emptyList())
+                        testEqualityByStringRepresentation(list, emptyList())
+                        for (index in 0 ..< length) {
+                            list.add(input[index.toInt()])
+                            testEqualityByIteration(list, input.subList(0, index + 1))
+                            testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                        }
+                    }
+                }
+            }
+            test("test element-by-element extension with ensured capacity") {
+                checkAll(Exhaustive.ints(0..20)) { length ->
+                    checkAll(10, Arb.uInt().chunked(length, length)) { input ->
+                        val list = producer.produce<UInt>(length.toUInt())
+                        testEqualityByIteration(list, emptyList())
+                        testEqualityByStringRepresentation(list, emptyList())
+                        for (index in 0 ..< length) {
+                            list.add(input[index.toInt()])
+                            testEqualityByIteration(list, input.subList(0, index + 1))
+                            testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (producer is KoneFixedCapacityMutableListProducer) test("test element-by-element extension") {
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
-                    val list = builder.build<UInt>(30u)
+                    val list = producer.produce<UInt>(30u)
                     testEqualityByIteration(list, emptyList())
                     testEqualityByStringRepresentation(list, emptyList())
                     for (index in 0 ..< length) {
@@ -238,9 +204,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (builder is MutableIterableListBuilder) test("test mutability operations") {
+        if (producer is KoneResizableMutableListProducer) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                val mutableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 repeat(arbData.numberOfOperations) {
                     val operation = arbData.operations[it.toInt()]
                     val expected = arbData.results[it.toInt()]
@@ -256,9 +222,46 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (builder is MutableFixedCapacityIterableListBuilder) test("test mutability operations") {
+        if (producer is KoneGrowableMutableListProducer) {
+            test("test mutability operations") {
+                checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+                    val mutableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                    repeat(arbData.numberOfOperations) {
+                        val operation = arbData.operations[it.toInt()]
+                        val expected = arbData.results[it.toInt()]
+                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                            when (operation) {
+                                is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
+                                is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                            }
+                            testEqualityByIteration(mutableList, expected)
+                            testEqualityByStringRepresentation(mutableList, expected)
+                        }
+                    }
+                }
+            }
+            test("test mutability operations with ensured capacity") {
+                checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+                    val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                    repeat(arbData.numberOfOperations) {
+                        val operation = arbData.operations[it.toInt()]
+                        val expected = arbData.results[it.toInt()]
+                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                            when (operation) {
+                                is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
+                                is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                            }
+                            testEqualityByIteration(mutableList, expected)
+                            testEqualityByStringRepresentation(mutableList, expected)
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (producer is KoneFixedCapacityMutableListProducer) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), 20u) { arbData.initialList[it.toInt()] }
+                val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 repeat(arbData.numberOfOperations) {
                     val operation = arbData.operations[it.toInt()]
                     val expected = arbData.results[it.toInt()]
@@ -274,9 +277,9 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (builder is MutableIterableListBuilder) test("test iterator mutability operations") {
+        if (producer is KoneResizableMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = builder.buildByGenerator<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 var nextIteratorIndex = 5u
                 val iterator = mutableList.iteratorFrom(nextIteratorIndex)
                 repeat(arbData.numberOfOperations) {
@@ -324,9 +327,110 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
-        if (builder is MutableFixedCapacityIterableListBuilder) test("test iterator mutability operations") {
+        if (producer is KoneGrowableMutableListProducer) {
+            test("test iterator mutability operations") {
+                checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+                    val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                    var nextIteratorIndex = 5u
+                    val iterator = mutableList.iteratorFrom(nextIteratorIndex)
+                    repeat(arbData.numberOfOperations) {
+                        val operation = arbData.operations[it.toInt()]
+                        val expected = arbData.results[it.toInt()]
+                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                            when (operation) {
+                                is MutableListOperation.AddAt<UInt> -> {
+                                    if (operation.index >= nextIteratorIndex) {
+                                        while (operation.index > nextIteratorIndex) {
+                                            nextIteratorIndex++
+                                            iterator.moveNext()
+                                        }
+                                        iterator.addNext(operation.element)
+                                    } else {
+                                        while (operation.index < nextIteratorIndex) {
+                                            nextIteratorIndex--
+                                            iterator.movePrevious()
+                                        }
+                                        iterator.addPrevious(operation.element)
+                                        nextIteratorIndex++
+                                    }
+                                }
+                                is MutableListOperation.RemoveAt -> {
+                                    if (operation.index >= nextIteratorIndex) {
+                                        while (operation.index > nextIteratorIndex) {
+                                            nextIteratorIndex++
+                                            iterator.moveNext()
+                                        }
+                                        iterator.removeNext()
+                                    } else {
+                                        while (operation.index < nextIteratorIndex - 1u) {
+                                            nextIteratorIndex--
+                                            iterator.movePrevious()
+                                        }
+                                        iterator.removePrevious()
+                                        nextIteratorIndex--
+                                    }
+                                }
+                            }
+                            testEqualityByIteration(mutableList, expected)
+                            testEqualityByStringRepresentation(mutableList, expected)
+                        }
+                    }
+                }
+            }
+            test("test iterator mutability operations with ensured capacity") {
+                checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+                    val mutableList = producer.produceBy<UInt>(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
+                    var nextIteratorIndex = 5u
+                    val iterator = mutableList.iteratorFrom(nextIteratorIndex)
+                    repeat(arbData.numberOfOperations) {
+                        val operation = arbData.operations[it.toInt()]
+                        val expected = arbData.results[it.toInt()]
+                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                            when (operation) {
+                                is MutableListOperation.AddAt<UInt> -> {
+                                    if (operation.index >= nextIteratorIndex) {
+                                        while (operation.index > nextIteratorIndex) {
+                                            nextIteratorIndex++
+                                            iterator.moveNext()
+                                        }
+                                        iterator.addNext(operation.element)
+                                    } else {
+                                        while (operation.index < nextIteratorIndex) {
+                                            nextIteratorIndex--
+                                            iterator.movePrevious()
+                                        }
+                                        iterator.addPrevious(operation.element)
+                                        nextIteratorIndex++
+                                    }
+                                }
+                                is MutableListOperation.RemoveAt -> {
+                                    if (operation.index >= nextIteratorIndex) {
+                                        while (operation.index > nextIteratorIndex) {
+                                            nextIteratorIndex++
+                                            iterator.moveNext()
+                                        }
+                                        iterator.removeNext()
+                                    } else {
+                                        while (operation.index < nextIteratorIndex - 1u) {
+                                            nextIteratorIndex--
+                                            iterator.movePrevious()
+                                        }
+                                        iterator.removePrevious()
+                                        nextIteratorIndex--
+                                    }
+                                }
+                            }
+                            testEqualityByIteration(mutableList, expected)
+                            testEqualityByStringRepresentation(mutableList, expected)
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (producer is KoneFixedCapacityMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
-                val mutableList = builder.buildByGenerator(arbData.initialList.size.toUInt(), 20u) { arbData.initialList[it.toInt()] }
+                val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 var nextIteratorIndex = 5u
                 val iterator = mutableList.iteratorFrom(nextIteratorIndex)
                 repeat(arbData.numberOfOperations) {

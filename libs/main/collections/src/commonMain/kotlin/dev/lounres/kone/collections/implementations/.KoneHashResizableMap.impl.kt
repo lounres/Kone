@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.KoneIterable
 import dev.lounres.kone.collections.KoneIterator
 import dev.lounres.kone.collections.KoneMap
 import dev.lounres.kone.collections.KoneMapEntry
+import dev.lounres.kone.collections.KoneMutableListNode
 import dev.lounres.kone.collections.KoneMutableMapNode
 import dev.lounres.kone.collections.KoneMutableMapWithContext
 import dev.lounres.kone.collections.KoneSet
@@ -17,9 +18,11 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.isEmpty
 import dev.lounres.kone.collections.isNotEmpty
 import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.toKoneMapEntry
 import dev.lounres.kone.collections.utils.anyIndexed
-import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstIndexThat
+import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
@@ -37,8 +40,8 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateSize(capacityUpperBound, loadFactor),
-    private var data: KoneArray<KoneResizableLinkedArrayList<KoneMapEntry<Key, Value>>> =
-        KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() },
+    private var data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> =
+        KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
     override val keyContext: KeyContext,
 ) : KoneMutableMapWithContext<Key, KeyContext, Value>, Disposable {
     override var size: UInt = size
@@ -50,7 +53,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
     }
     private fun Key.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
 
-    private fun KoneArray<KoneResizableLinkedArrayList<KoneMapEntry<Key, Value>>>.dispose() {
+    private fun KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>>.dispose() {
         // KT-67409
 //        @Suppress("UNCHECKED_CAST")
 //        val array = this.array as Array<Any?>
@@ -88,8 +91,11 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
     }
     private fun reinitializeData(newDataSize: UInt = capacityUpperBound) {
         val oldData = data
-        data = KoneArray(newDataSize) { KoneResizableLinkedArrayList() }
-        for (linkedList in oldData) for (entry in linkedList) data[entry.key.dataIndex()].add(entry)
+        data = KoneArray(newDataSize) { KoneArrayResizableLinkedNoddedList() }
+        for (linkedList in oldData) for (mapNode in linkedList) {
+            val listNode = data[mapNode.key.dataIndex()].addNode(mapNode)
+            mapNode
+        }
         oldData.dispose()
     }
     private fun reinitializeBoundsAndData(newSize: UInt) {
@@ -98,28 +104,30 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         size = newSize
     }
     
-    override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>? {
-        TODO("Not yet implemented")
-    }
+    override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>? =
+        data[key.dataIndex()].firstThatOrNull { keyContext { it.key eq key } }
 
     override fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value> {
         val iterator = data[key.dataIndex()].iterator()
         while (iterator.hasNext()) {
-            if (keyContext { iterator.getNext().key eq key }) {
-                iterator.setNext(KoneMapEntry(key, value))
-                return TODO()
+            val nextNode = iterator.getNext()
+            if (keyContext { nextNode.key eq key }) {
+                iterator.setNext(Node(key, value))
+                return nextNode
             }
             iterator.moveNext()
         }
+        val newNode = Node(key, value)
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u)
-            data[key.dataIndex()].add(KoneMapEntry(key, value))
-            return TODO()
+            val listNode = data[key.dataIndex()].addNode(newNode)
+            newNode.bucketListNode = listNode
         } else {
-            iterator.addNext(KoneMapEntry(key, value))
+            val listNode = data[key.dataIndex()].addNode(newNode)
+            newNode.bucketListNode = listNode
             size++
-            return TODO()
         }
+        return newNode
     }
 
     override fun removeAll() {
@@ -128,7 +136,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         capacityUpperBound = 2u
         sizeLowerBound = 0u
         sizeUpperBound = calculateSize(capacityUpperBound, loadFactor)
-        data = KoneArray(capacityUpperBound) { KoneResizableLinkedArrayList() }
+        data = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() }
         size = 0u
     }
 
@@ -148,6 +156,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
                 else size--
                 return
             }
+            iterator.moveNext()
         }
     }
 
@@ -191,26 +200,65 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         return this.entriesView == other.entriesView
     }
     
-    override val nodesView: KoneSet<KoneMutableMapNode<Key, Value>> get() = TODO("Not yet implemented")
+    override val nodesView: KoneSet<KoneMutableMapNode<Key, Value>> get() = NodesSet()
     override val keysView: KoneSet<Key> get() = KeysSet()
     override val valuesView: KoneIterable<Value> get() = ValueCollection()
     override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> get() = EntriesSet()
-
-    internal inner class KeyIterator : KoneIterator<Key> {
+    
+    internal class Node<Key, Value>(
+        override val key: Key,
+        override var value: Value,
+    ) : KoneMutableMapNode<Key, Value> {
+        var bucketListNode: KoneMutableListNode<Node<Key, Value>>? = null
+        override fun remove() {
+            bucketListNode!!.remove()
+            bucketListNode = null
+        }
+    }
+    
+    internal inner class NodeIterator : KoneIterator<Node<Key, Value>> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<KoneMapEntry<Key, Value>> = data[currentBucket].iterator()
-
+        private var currentIterator: KoneIterator<Node<Key, Value>> = data[currentBucket].iterator()
+        
         override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
-        override fun getNext(): Key {
-            if (!hasNext()) TODO("Exception is not yet implemented")
-            return if (currentIterator.hasNext()) currentIterator.getNext().key
+        override fun getNext(): Node<Key, Value> {
+            if (!hasNext()) noNextElementInIteratorException()
+            return if (currentIterator.hasNext()) currentIterator.getNext()
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                data[nextIndex].first().key
+                val nextIndex = data.firstIndexThat { index, list -> index > currentBucket && list.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = data[nextIndex].iterator()
+                currentIterator.getNext()
             }
         }
         override fun moveNext() {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
+            if (currentIterator.hasNext()) currentIterator.moveNext()
+            else {
+                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = data[nextIndex].iterator().also { it.moveNext() }
+            }
+        }
+    }
+
+    internal inner class KeyIterator : KoneIterator<Key> {
+        private var currentBucket: UInt = 0u
+        private var currentIterator: KoneIterator<Node<Key, Value>> = data[currentBucket].iterator()
+
+        override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
+        override fun getNext(): Key {
+            if (!hasNext()) noNextElementInIteratorException()
+            return if (currentIterator.hasNext()) currentIterator.getNext().key
+            else {
+                val nextIndex = data.firstIndexThat { index, list -> index > currentBucket && list.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = data[nextIndex].iterator()
+                currentIterator.getNext().key
+            }
+        }
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
@@ -222,19 +270,21 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
 
     internal inner class ValueIterator : KoneIterator<Value> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<KoneMapEntry<Key, Value>> = data[currentBucket].iterator()
+        private var currentIterator: KoneIterator<Node<Key, Value>> = data[currentBucket].iterator()
 
         override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
         override fun getNext(): Value {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             return if (currentIterator.hasNext()) currentIterator.getNext().value
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                data[nextIndex].first().value
+                val nextIndex = data.firstIndexThat { index, list -> index > currentBucket && list.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = data[nextIndex].iterator()
+                currentIterator.getNext().value
             }
         }
         override fun moveNext() {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
@@ -246,19 +296,21 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
 
     internal inner class EntryIterator : KoneIterator<KoneMapEntry<Key, Value>> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<KoneMapEntry<Key, Value>> = data[currentBucket].iterator()
+        private var currentIterator: KoneIterator<Node<Key, Value>> = data[currentBucket].iterator()
 
         override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
         override fun getNext(): KoneMapEntry<Key, Value> {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             return if (currentIterator.hasNext()) currentIterator.getNext()
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                data[nextIndex].first()
-            }
+                val nextIndex = data.firstIndexThat { index, list -> index > currentBucket && list.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = data[nextIndex].iterator()
+                currentIterator.getNext()
+            }.toKoneMapEntry()
         }
         override fun moveNext() {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
@@ -266,6 +318,13 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
                 currentIterator = data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+    }
+    
+    internal inner class NodesSet : KoneSet<Node<Key, Value>> {
+        override val size: UInt = this@KoneHashResizableMap.size
+        override fun contains(element: Node<Key, Value>): Boolean = data[element.key.dataIndex()].let { it.firstIndexThat { _, entry -> entry === element } != it.size }
+        override fun iterator(): KoneIterator<Node<Key, Value>> = NodeIterator()
+        // TODO: Override `toString`.
     }
 
     internal inner class KeysSet : KoneSet<Key> {

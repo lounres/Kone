@@ -294,7 +294,7 @@ stal {
                                 enableLanguageFeature("ContractSyntaxV2")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
-                                optIn("kotlin.ExperimentalUnsignedTypes")
+                                optIn("kotlin.ExperimentalSubclassOptIn")
                             }
                         }
                     }
@@ -548,7 +548,7 @@ stal {
             
             docsProject.afterEvaluate {
                 dependencies {
-                    if (thisProject.path != ":libs:main:collections") dokka(thisProject)
+                    dokka(thisProject)
                 }
             }
             
