@@ -13,7 +13,7 @@ import dev.lounres.kone.repeat
  *
  * This interface's inheritors must have some specific structure
  * that provides optimised elements access or optimised elements iteration.
- * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
  */
@@ -56,7 +56,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
  *
  * This interface's inheritors must have some specific structure
  * that provides optimised elements access or optimised elements iteration.
- * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
  */
@@ -81,7 +81,7 @@ public interface KoneSettableList<Element> : KoneList<Element> {
  *
  * This interface's inheritors must have some specific structure
  * that provides optimised elements access or optimised elements iteration.
- * Without both of them (or with bad asymptotic like \(O(n)\)) the interface should not be used.
+ * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
  */

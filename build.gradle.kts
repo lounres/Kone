@@ -295,6 +295,7 @@ stal {
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")
+                                optIn("kotlin.ExperimentalUnsignedTypes")
                             }
                         }
                     }

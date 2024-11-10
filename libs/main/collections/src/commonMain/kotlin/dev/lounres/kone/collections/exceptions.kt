@@ -64,7 +64,26 @@ public class NoMatchingKeyException(message: String = "There is no value for req
 public fun noMatchingKeyException(key: Any?): Nothing =
     throw NoMatchingKeyException("There is no value for key $key")
 
+/**
+ * Represents exception that is thrown when user tries to change detached node's properties.
+ */
 public class DetachedNodeException(message: String = "The node is already detached and the operation is undefined.") : IllegalStateException(message)
 
+/**
+ * Throws [DetachedNodeException] with the provided [message] describing
+ * that the node is already detached and doesn't support used operation.
+ */
 public fun detachedNodeException(message: String = "The node is already detached and the operation is undefined."): Nothing =
     throw DetachedNodeException(message)
+
+/**
+ * Represents exception that is thrown when user tries to use disposed object.
+ */
+public class DisposedInstanceException(message: String = "The object is already disposed and the operation is undefined.") : IllegalStateException(message)
+
+/**
+ * Throws [DisposedInstanceException] with the provided [message] describing
+ * that the object is already disposed and doesn't support used operation.
+ */
+public fun disposedInstanceException(message: String = "The object is already disposed and the operation is undefined."): Nothing =
+    throw DisposedInstanceException(message)
