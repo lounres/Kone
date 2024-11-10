@@ -5,17 +5,6 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneMutableListRegistry
-import dev.lounres.kone.collections.KoneMutableRegistration
-import dev.lounres.kone.collections.KoneMutableUIntArray
-import dev.lounres.kone.collections.KoneSet
-import dev.lounres.kone.collections.indexOutOfBoundsException
-import dev.lounres.kone.repeat
-import kotlin.math.max
-
 
 //public class KoneResizableLinkedArrayListRegistry<E> internal constructor(
 //    size: UInt,
