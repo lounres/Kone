@@ -14,9 +14,19 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
+/**
+ * Returns a [KoneArraySettableList] of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneArraySettableList(size: UInt, initializer: (index: UInt) -> Element): KoneArraySettableList<Element> =
     KoneArraySettableList(KoneMutableArray(size, initializer))
 
+/**
+ * Producer of [KoneArraySettableList].
+ */
 public object KoneArraySettableListProducer : KoneSettableListProducer {
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableList<Element> = KoneArraySettableList(number, builder)
 }

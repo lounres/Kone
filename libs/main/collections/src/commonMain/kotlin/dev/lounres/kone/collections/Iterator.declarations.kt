@@ -9,7 +9,9 @@ package dev.lounres.kone.collections
 /**
  * Represents an iterator over some elements (maybe even infinite number of elements) in some (maybe temporary) order.
  *
- * In each moment
+ * In each moment it has cursor pointing either between two elements, before the first one, or after the last one.
+ * If there are no elements in the collection the pointer just points nowhere.
+ * All operations are made either before or after the cursor with previous or next element correspondingly.
  */
 public interface KoneIterator<out Element> {
     /**
@@ -34,8 +36,7 @@ public interface KoneIterator<out Element> {
 }
 
 /**
- * Represents an iterator over some elements (maybe even infinite number of elements) in some (maybe temporary) order.
- * It can iterate over the elements in both directions, forward and backward.
+ * Represents an [KoneIterator] that can iterate over the elements in both directions, forward and backward.
  */
 public interface KoneReversibleIterator<out Element> : KoneIterator<Element> {
     /**
