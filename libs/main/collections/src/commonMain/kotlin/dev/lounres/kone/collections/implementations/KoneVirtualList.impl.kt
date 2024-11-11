@@ -10,16 +10,52 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 
 
+/**
+ * Represents an immutable list which elements are not stored anywhere
+ * but are generated with [generator] function instead on each access.
+ *
+ * # Implementation details
+ *
+ * This implementation holds only [size] value and [generator] function.
+ * Each time value with index `i` is accessed, [generator] is invoked on `i`
+ * and the result is returned. The result is not stored anywhere
+ *
+ * That's why it has perfect access time complexity
+ * while having bad mutability time complexity.
+ *
+ * ## Time complexity of operations
+ *
+ * Be aware that the formulas do not include [generator] time invocation!
+ *
+ * | Operation                                                  | Worst case    | Average       |
+ * |------------------------------------------------------------|---------------|---------------|
+ * | [size]                                                     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [get]                                                      | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator]                                                 | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iteratorFrom]                                             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.hasNext][KoneLinearIterator.hasNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.hasPrevious][KoneLinearIterator.hasPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.getNext][KoneLinearIterator.getNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.getPrevious][KoneLinearIterator.getPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.moveNext][KoneLinearIterator.moveNext]           | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.movePrevious][KoneLinearIterator.movePrevious]   | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.nextIndex][KoneLinearIterator.nextIndex]         | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.previousIndex][KoneLinearIterator.previousIndex] | \(\Theta(1)\) | \(\Theta(1)\) |
+ *
+ * @usesMathJax
+ */
 //@Serializable(with = KoneVirtualListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneVirtualList<Element>(
     override val size: UInt,
-    private val generator: (index: UInt) -> Element
+    private val generator: (index: UInt) -> Element,
 ) : KoneList<Element> {
     override fun get(index: UInt): Element = generator(index)
 
     override fun iterator(): KoneLinearIterator<Element> = Iterator(size = size, generator = generator)
-    override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> = Iterator(size = size, currentIndex = index, generator = generator)
+    override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> =
+        if (index > size) indexOutOfBoundsException(index, size)
+        else Iterator(size = size, currentIndex = index, generator = generator)
 
     override fun hashCode(): Int {
         var hashCode = 1
@@ -49,30 +85,30 @@ public class KoneVirtualList<Element>(
         return true
     }
 
-    internal class Iterator<E>(val size: UInt, var currentIndex: UInt = 0u, val generator: (UInt) -> E): KoneLinearIterator<E> {
+    internal class Iterator<Element>(val size: UInt, var currentIndex: UInt = 0u, val generator: (UInt) -> Element): KoneLinearIterator<Element> {
         init {
             if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
         }
         override fun hasNext(): Boolean = currentIndex < size
-        override fun getNext(): E {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInIteratorException()
             return generator(currentIndex)
         }
         override fun moveNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasNext()) noNextElementInIteratorException()
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
 
         override fun hasPrevious(): Boolean = currentIndex > 0u
-        override fun getPrevious(): E {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
+        override fun getPrevious(): Element {
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             return generator(currentIndex - 1u)
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
     }
 }

@@ -28,16 +28,16 @@ import kotlin.jvm.JvmInline
  * | [set]                                                              | \(\Theta(1)\) | \(\Theta(1)\) |
  * | [iterator]                                                         | \(\Theta(1)\) | \(\Theta(1)\) |
  * | [iteratorFrom]                                                     | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\) | \(\Theta(1)\) |
- * | iterator.[previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\) | \(\Theta(1)\) |
+ * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\) | \(\Theta(1)\) |
  *
  * @usesMathJax
  */
