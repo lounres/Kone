@@ -111,6 +111,16 @@ public interface KoneSettableListNode<Element> : KoneListNode<Element> {
     override fun iteratorFromAfterHere(): KoneSettableLinearIterator<Element>
 }
 
+/**
+ * Represents a node in the inner structure of a [KoneMutableNoddedList].
+ * See [KoneMutableNoddedList] and [KoneMutableList] for more.
+ *
+ * The node can be detached by removing corresponding place from the collection it was defined in.
+ * In that case only its element is preserved and other methods and properties throw [DetachedNodeException].
+ *
+ * @see KoneMutableNoddedList
+ * @see KoneMutableList
+ */
 public interface KoneMutableListNode<Element> : KoneSettableListNode<Element> {
     /**
      * Removes corresponding place from the list and detaches the node.

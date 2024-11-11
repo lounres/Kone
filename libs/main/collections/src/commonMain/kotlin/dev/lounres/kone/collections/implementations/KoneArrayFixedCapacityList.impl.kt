@@ -17,7 +17,7 @@ import dev.lounres.kone.scope
  *
  * # Implementation details
  *
- * This implementation holds a [KoneMutableArray] of provided capacity and
+ * This implementation holds a [KoneMutableArray] of provided capacity
  * and proxies all operations straight to its prefix of the provided [size].
  * Any getting or setting is operated on corresponding indices of the array.
  * Any addition or removal is operated on corresponding indices of the array
@@ -28,35 +28,35 @@ import dev.lounres.kone.scope
  *
  * ## Time complexity of operations
  *
- * | Operation                                                          | Worst case                                  | Average                                     |
- * |--------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
- * | [size]                                                             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [get]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [set]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [add]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [addAt]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [addSeveral]                                                       | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
- * | [addSeveralAt]                                                     | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
- * | [removeAt]                                                         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThat]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThatIndexed]                                             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAll]                                                        | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator]                                                         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iteratorFrom]                                                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addNext][KoneSettableLinearIterator.setNext]             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.addPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.removeNext][KoneSettableLinearIterator.setNext]          | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.removePrevious][KoneSettableLinearIterator.setPrevious]  | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | Operation                                                           | Worst case                                  | Average                                     |
+ * |---------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+ * | [size]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [get]                                                               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [set]                                                               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [add]                                                               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [addAt]                                                             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [addSeveral]                                                        | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
+ * | [addSeveralAt]                                                      | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
+ * | [removeAt]                                                          | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThat]                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThatIndexed]                                              | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAll]                                                         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator]                                                          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iteratorFrom]                                                      | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.hasNext][KoneMutableLinearIterator.hasNext]               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.hasPrevious][KoneMutableLinearIterator.hasPrevious]       | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getNext][KoneMutableLinearIterator.getNext]               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getPrevious][KoneMutableLinearIterator.getPrevious]       | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.moveNext][KoneMutableLinearIterator.moveNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.movePrevious][KoneMutableLinearIterator.movePrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setNext][KoneMutableLinearIterator.setNext]               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setPrevious][KoneMutableLinearIterator.setPrevious]       | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.addNext][KoneMutableLinearIterator.addNext]               | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator.addPrevious][KoneMutableLinearIterator.addPrevious]       | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator.removeNext][KoneMutableLinearIterator.removeNext]         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator.removePrevious][KoneMutableLinearIterator.removePrevious] | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator.nextIndex][KoneMutableLinearIterator.nextIndex]           | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.previousIndex][KoneMutableLinearIterator.previousIndex]   | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
  *
  * @usesMathJax
  */
@@ -65,7 +65,7 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityList<Element> @PublishedApi internal constructor(
     size: UInt,
-    capacity: UInt = size,
+    capacity: UInt = size, // TODO: Maybe it should be removed and fully controlled by false constructors
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
 ): KoneMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
