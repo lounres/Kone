@@ -18,10 +18,7 @@ import dev.lounres.kone.collections.*
  *
  * This implementation holds only [size] value and [generator] function.
  * Each time value with index `i` is accessed, [generator] is invoked on `i`
- * and the result is returned. The result is not stored anywhere
- *
- * That's why it has perfect access time complexity
- * while having bad mutability time complexity.
+ * and the result is returned. The result is not stored anywhere.
  *
  * ## Time complexity of operations
  *
@@ -57,33 +54,34 @@ public class KoneVirtualList<Element>(
         if (index > size) indexOutOfBoundsException(index, size)
         else Iterator(size = size, currentIndex = index, generator = generator)
 
-    override fun hashCode(): Int {
-        var hashCode = 1
-        for (i in 0u..<size) {
-            hashCode = 31 * hashCode + this[i].hashCode()
-        }
-        return hashCode
-    }
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KoneList<*>) return false
-        if (this.size != other.size) return false
-
-        when (other) {
-            is KoneVirtualList<*> ->
-                for (i in 0u..<size) {
-                    if (this[i] != other[i]) return false
-                }
-            else -> {
-                val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
-                    if (this[i] != otherIterator.getAndMoveNext()) return false
-                }
-            }
-        }
-
-        return true
-    }
+    // TODO: Don't know what is the best solution: access-less `hashCode` and `equals` or generating all values.
+//    override fun hashCode(): Int {
+//        var hashCode = 1
+//        for (i in 0u..<size) {
+//            hashCode = 31 * hashCode + this[i].hashCode()
+//        }
+//        return hashCode
+//    }
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is KoneList<*>) return false
+//        if (this.size != other.size) return false
+//
+//        when (other) {
+//            is KoneVirtualList<*> ->
+//                for (i in 0u..<size) {
+//                    if (this[i] != other[i]) return false
+//                }
+//            else -> {
+//                val otherIterator = other.iterator()
+//                for (i in 0u ..< size) {
+//                    if (this[i] != otherIterator.getAndMoveNext()) return false
+//                }
+//            }
+//        }
+//
+//        return true
+//    }
 
     internal class Iterator<Element>(val size: UInt, var currentIndex: UInt = 0u, val generator: (UInt) -> Element): KoneLinearIterator<Element> {
         init {
