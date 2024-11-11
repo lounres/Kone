@@ -12,12 +12,22 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
+/**
+ * Returns an empty [KoneArrayFixedCapacityLinkedList] of provided [capacity].
+ */
 public fun <Element> KoneArrayFixedCapacityLinkedList(capacity: UInt): KoneArrayFixedCapacityLinkedList<Element> =
     KoneArrayFixedCapacityLinkedList(
         size = 0u,
         capacity = capacity,
     )
 
+/**
+ * Returns a [KoneArrayFixedCapacityLinkedList] of provided [size] (and equal capacity) of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedList<Element> =
     KoneArrayFixedCapacityLinkedList(
         size = size,
@@ -25,6 +35,13 @@ public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, initializer: (
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
+/**
+ * Returns a [KoneArrayFixedCapacityLinkedList] of provided [size] and [capacity] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityLinkedList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityLinkedList(
@@ -34,10 +51,13 @@ public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, capacity: UInt
     )
 }
 
+/**
+ * Producer of [KoneArrayFixedCapacityLinkedList].
+ */
 public object KoneArrayFixedCapacityLinkedListProducer : KoneFixedCapacityMutableListProducer {
     override fun <E> produce(capacity: UInt): KoneArrayFixedCapacityLinkedList<E> = KoneArrayFixedCapacityLinkedList(capacity)
-    override fun <E> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
-        KoneArrayFixedCapacityLinkedList(initialCapacity, number, builder)
+    override fun <E> produceBy(capacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
+        KoneArrayFixedCapacityLinkedList(capacity, number, builder)
 }
 
 internal class KoneArrayFixedCapacityLinkedListDescriptor(elementDescriptor: SerialDescriptor):

@@ -35,7 +35,7 @@ import dev.lounres.kone.scope
  * | [set]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
  * | [add]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
  * | [addAt]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [addSeveral]                                                       | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [addSeveral]                                                       | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
  * | [addSeveralAt]                                                     | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
  * | [removeAt]                                                         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
  * | [removeAllThat]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
@@ -76,11 +76,10 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         get() = if (isDisposed) disposedInstanceException() else _data!!
     
     override fun dispose() {
-        if (!isDisposed) {
-            repeat(size) { data[it] = null }
-            _data = null
-            isDisposed = true
-        }
+        if (isDisposed) return
+        repeat(size) { data[it] = null }
+        _data = null
+        isDisposed = true
     }
     
     private val capacity: UInt get() = data.size
