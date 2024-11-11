@@ -12,37 +12,106 @@ import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 
 
+/**
+ * Represents a list that is laid out consecutively on a prefix of array of fixed capacity.
+ *
+ * # Implementation details
+ *
+ * This implementation holds a [KoneMutableArray] of provided capacity and
+ * and proxies all operations straight to its prefix of the provided [size].
+ * Any getting or setting is operated on corresponding indices of the array.
+ * Any addition or removal is operated on corresponding indices of the array
+ * moving values with greater indices.
+ *
+ * That's why it has perfect access time complexity
+ * while having bad mutability time complexity.
+ *
+ * ## Time complexity of operations
+ *
+ * | Operation                                                          | Worst case                                  | Average                                     |
+ * |--------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+ * | [size]                                                             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [get]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [set]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [add]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [addAt]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [addSeveral]                                                       | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [addSeveralAt]                                                     | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
+ * | [removeAt]                                                         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThat]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThatIndexed]                                             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAll]                                                        | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator]                                                         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iteratorFrom]                                                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[addNext][KoneSettableLinearIterator.setNext]             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | iterator.[addPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | iterator.[removeNext][KoneSettableLinearIterator.setNext]          | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | iterator.[removePrevious][KoneSettableLinearIterator.setPrevious]  | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | iterator.[nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | iterator.[previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ *
+ * @usesMathJax
+ */
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private val capacity: UInt = size,
-    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
+    capacity: UInt = size,
+    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
 ): KoneMutableList<Element>, Disposable {
+    override var isDisposed: Boolean = false
+        private set
+    
+    private var _data: KoneMutableArray<Any?>? = data
+    private val data: KoneMutableArray<Any?>
+        get() = if (isDisposed) disposedInstanceException() else _data!!
+    
+    override fun dispose() {
+        if (!isDisposed) {
+            repeat(size) { data[it] = null }
+            _data = null
+            isDisposed = true
+        }
+    }
+    
+    private val capacity: UInt get() = data.size
+    
     override var size: UInt = size
+        get() {
+            if (isDisposed) disposedInstanceException()
+            return field
+        }
         private set
 
-    override fun dispose() {
-        repeat(size) { data[it] = null }
-    }
-
     override fun get(index: UInt): Element {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         return data[index] as Element
     }
 
     override fun set(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         data[index] = element
     }
 
     override fun add(element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (size == capacity) capacityOverflowException(capacity)
         data[size] = element
         size++
     }
     override fun addAt(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (size == capacity) capacityOverflowException(capacity)
         if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
@@ -50,12 +119,14 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size++
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
         repeat(number) { data[size + it] = builder(it) }
         size = newSize
     }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
@@ -65,6 +136,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
     }
     
     override fun removeAt(index: UInt) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
         for (i in index..<newSize) data[i] = data[i + 1u]
@@ -72,6 +144,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size = newSize
     }
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+        if (isDisposed) disposedInstanceException()
         val newSize: UInt
         scope {
             var checkingMark = 0u
@@ -89,14 +162,22 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         size = newSize
     }
     override fun removeAll() {
+        if (isDisposed) disposedInstanceException()
         repeat(size) { data[it] = null }
         size = 0u
     }
     
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(this, index)
-    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator(this)
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            index > size -> indexOutOfBoundsException(index, size)
+            else -> Iterator(this, index)
+        }
+    override fun iterator(): KoneMutableLinearIterator<Element> =
+        if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
 
     override fun toString(): String = buildString {
+        if (isDisposed) disposedInstanceException()
         append('[')
         if (size > 0u) append(data[0u])
         for (i in 1u..<size) {
@@ -106,6 +187,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         append(']')
     }
     override fun hashCode(): Int {
+        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         repeat(size) {
             hashCode = 31 * hashCode + data[it].hashCode()
@@ -113,6 +195,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
+        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
@@ -135,12 +218,11 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
 
     internal class Iterator<Element>(
         val list: KoneArrayFixedCapacityList<Element>,
-        var currentIndex: UInt = 0u
+        var currentIndex: UInt
     ): KoneMutableLinearIterator<Element> {
-        init {
-            if (currentIndex > list.size) indexOutOfBoundsException(currentIndex, list.size)
-        }
-        override fun hasNext(): Boolean = currentIndex < list.size
+        override fun hasNext(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex < list.size
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
             return list.data[currentIndex] as Element
@@ -155,6 +237,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
             list.data[currentIndex] = element
         }
         override fun addNext(element: Element) {
+            if (list.isDisposed) disposedInstanceException()
             list.addAt(currentIndex, element)
         }
         override fun removeNext() {
@@ -162,7 +245,9 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
             list.removeAt(currentIndex)
         }
 
-        override fun hasPrevious(): Boolean = currentIndex > 0u
+        override fun hasPrevious(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex > 0u
         override fun getPrevious(): Element {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             return list.data[currentIndex - 1u] as Element
@@ -177,6 +262,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
             list.data[currentIndex - 1u] = element
         }
         override fun addPrevious(element: Element) {
+            if (list.isDisposed) disposedInstanceException()
             list.addAt(currentIndex, element)
             currentIndex++
         }

@@ -12,12 +12,22 @@ import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
+/**
+ * Returns an empty [KoneArrayFixedCapacityList] of provided [capacity].
+ */
 public fun <Element> KoneArrayFixedCapacityList(capacity: UInt): KoneArrayFixedCapacityList<Element> =
     KoneArrayFixedCapacityList(
         size = 0u,
         capacity = capacity,
     )
 
+/**
+ * Returns a [KoneArrayFixedCapacityList] of provided [size] (and equal capacity) of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> =
     KoneArrayFixedCapacityList(
         size = size,
@@ -25,6 +35,13 @@ public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: 
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
+/**
+ * Returns a [KoneArrayFixedCapacityList] of provided [size] and [capacity] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityList(
@@ -34,6 +51,9 @@ public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UIn
     )
 }
 
+/**
+ * Producer of [KoneArrayFixedCapacityList].
+ */
 public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListProducer {
     override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityList<Element> = KoneArrayFixedCapacityList(capacity)
     override fun <Element> produceBy(capacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =

@@ -6,6 +6,16 @@
 package dev.lounres.kone.collections.implementations
 
 
+/**
+ * Represents disposable structure that is optimised for GC when is disposed.
+ */
 public interface Disposable {
+    /**
+     * Flag of being disposed.
+     */
+    public val isDisposed: Boolean
+    /**
+     * Disposes the structure and its dependent ones.
+     */
     public fun dispose()
 }

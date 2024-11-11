@@ -19,7 +19,7 @@ import kotlin.jvm.JvmInline
  * The only difference between it and [KoneMutableArray] is that
  * the last one must have reified type parameter while the first one must not.
  *
- * Here are time complexities of the implementation's operations:
+ * ## Time complexity of operations
  *
  * | Operation                                                          | Worst case    | Average       |
  * |--------------------------------------------------------------------|---------------|---------------|

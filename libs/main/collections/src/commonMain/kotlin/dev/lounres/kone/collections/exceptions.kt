@@ -67,23 +67,23 @@ public fun noMatchingKeyException(key: Any?): Nothing =
 /**
  * Represents exception that is thrown when user tries to change detached node's properties.
  */
-public class DetachedNodeException(message: String = "The node is already detached and the operation is undefined.") : IllegalStateException(message)
+public class DetachedNodeException(message: String = "The node is already detached, so the operation is undefined in that case.") : IllegalStateException(message)
 
 /**
  * Throws [DetachedNodeException] with the provided [message] describing
  * that the node is already detached and doesn't support used operation.
  */
-public fun detachedNodeException(message: String = "The node is already detached and the operation is undefined."): Nothing =
+public fun detachedNodeException(message: String = "The node is already detached, so the operation is undefined in that case."): Nothing =
     throw DetachedNodeException(message)
 
 /**
  * Represents exception that is thrown when user tries to use disposed object.
  */
-public class DisposedInstanceException(message: String = "The object is already disposed and the operation is undefined.") : IllegalStateException(message)
+public class DisposedInstanceException(message: String = "The object is already disposed, so the operation is undefined in that case.") : IllegalStateException(message)
 
 /**
  * Throws [DisposedInstanceException] with the provided [message] describing
  * that the object is already disposed and doesn't support used operation.
  */
-public fun disposedInstanceException(message: String = "The object is already disposed and the operation is undefined."): Nothing =
+public fun disposedInstanceException(message: String = "The object is already disposed, so the operation is undefined in that case."): Nothing =
     throw DisposedInstanceException(message)
