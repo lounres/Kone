@@ -274,7 +274,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         override var element: Element,
         index: UInt,
     ) : KoneMutableListNode<Element> {
-        private var isDetached: Boolean = false
+        override var isDetached: Boolean = false
         
         private var _list: KoneArrayFixedCapacityNoddedList<Element>? = null
         internal var list: KoneArrayFixedCapacityNoddedList<Element>

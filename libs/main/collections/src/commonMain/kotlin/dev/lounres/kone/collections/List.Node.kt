@@ -18,6 +18,10 @@ package dev.lounres.kone.collections
  */
 public interface KoneListNode<out Element> {
     /**
+     * Indicates if the node is detached from structure it was a part of.
+     */
+    public val isDetached: Boolean
+    /**
      * Returns element corresponding to that node.
      *
      * When detached (that happens only when the corresponding place is removed)

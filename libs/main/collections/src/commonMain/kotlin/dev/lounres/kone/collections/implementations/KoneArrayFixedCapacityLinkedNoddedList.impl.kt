@@ -108,6 +108,14 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     override var isDisposed: Boolean = false
         private set
     
+    init {
+        var actualIndex = start
+        repeat(size) {
+            data[actualIndex]!!.list = this
+            actualIndex = nextNodeIndex[actualIndex]
+        }
+    }
+    
     private var _data: KoneMutableArray<Node<Element>?>? = data
     private val data: KoneMutableArray<Node<Element>?> get() = _data!!
     private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
@@ -460,8 +468,10 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         override var element: Element,
         internal var actualIndex: UInt,
     ): KoneMutableListNode<Element> {
-        private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = list
-        private var list: KoneArrayFixedCapacityLinkedNoddedList<Element>
+        override var isDetached: Boolean = false
+        
+        private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = null
+        internal var list: KoneArrayFixedCapacityLinkedNoddedList<Element>
             get() = _list!!
             set(value) { _list = value }
         
@@ -469,6 +479,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
 
         fun detach() {
             _list = null
+            isDetached = true
         }
         
         constructor(list: KoneArrayFixedCapacityLinkedNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
@@ -476,23 +487,34 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
 
         override fun remove() {
+            if (isDetached) detachedNodeException()
             list.justRemoveAt(actualIndex)
             detach()
         }
 
         override val nextNode: KoneMutableListNode<Element>?
-            get() = if (actualIndex != list.end) list.data[list.nextNodeIndex[actualIndex]] else null
+            get() = when {
+                isDetached -> detachedNodeException()
+                actualIndex != list.end -> list.data[list.nextNodeIndex[actualIndex]]
+                else -> null
+            }
         override val previousNode: KoneMutableListNode<Element>?
-            get() = if (actualIndex != list.start) list.data[list.previousNodeIndex[actualIndex]] else null
+            get() = when {
+                isDetached -> detachedNodeException()
+                actualIndex != list.start -> list.data[list.previousNodeIndex[actualIndex]]
+                else -> null
+            }
 
         override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> =
-            Iterator(
+            if (isDetached) detachedNodeException()
+            else Iterator(
                 list = list,
                 currentIndex = list.virtualIndex(actualIndex),
                 actualCurrentIndex = actualIndex,
             )
         override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> =
-            Iterator(
+            if (isDetached) detachedNodeException()
+            else Iterator(
                 list = list,
                 currentIndex = list.virtualIndex(actualIndex) + 1u,
                 actualCurrentIndex = list.nextNodeIndex[actualIndex],
