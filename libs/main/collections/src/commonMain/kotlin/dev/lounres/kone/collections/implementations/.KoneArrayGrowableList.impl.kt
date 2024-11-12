@@ -12,20 +12,37 @@ import dev.lounres.kone.scope
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
-    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
 ) : KoneGrowableMutableList<Element>, Disposable {
-    override var size: UInt = size
+    override var isDisposed: Boolean = false
         private set
-
+    
+    private var _data: KoneMutableArray<Any?>? = data
+    private var data: KoneMutableArray<Any?>
+        get() = if (isDisposed) disposedInstanceException() else _data!!
+        set(value) { _data = value }
+    
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         repeat(size) { this[it] = null }
     }
     override fun dispose() {
+        if (isDisposed) return
         data.dispose(size)
+        _data = null
+        isDisposed = true
     }
+    
+    override var size: UInt = size
+        get() {
+            if (isDisposed) disposedInstanceException()
+            return field
+        }
+        private set
+
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
         while (newSize > sizeUpperBound) {
@@ -56,19 +73,19 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     }
 
     override fun get(index: UInt): Element {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         return data[index] as Element
     }
 
     override fun set(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         data[index] = element
     }
 
-    override fun removeAll() {
-        reinitializeBoundsAndData(0u) { null }
-    }
     override fun add(element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
                 when {
@@ -83,6 +100,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         }
     }
     override fun addAt(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (size == sizeUpperBound) {
             reinitializeBoundsAndData(size + 1u) {
@@ -100,13 +118,13 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         }
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > sizeUpperBound) {
-            var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < size -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    it < size + number -> builder(it - size)
                     else -> null
                 }
             }
@@ -117,14 +135,14 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         }
     }
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > sizeUpperBound) {
-            var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    it < index + number -> builder(it - index)
                     it < newSize -> get(it - number)
                     else -> null
                 }
@@ -137,6 +155,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         }
     }
     override fun removeAt(index: UInt) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
         for (i in index..<newSize) data[i] = data[i + 1u]
@@ -145,6 +164,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+        if (isDisposed) disposedInstanceException()
         val newSize: UInt
         scope {
             var checkingMark = 0u
@@ -161,11 +181,24 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         for (i in newSize ..< size) data[i] = null
         size = newSize
     }
-
-    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
+    override fun removeAll() {
+        if (isDisposed) disposedInstanceException()
+        reinitializeBounds(0u)
+        data.dispose(size)
+        size = 0u
+    }
+    
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            index > size -> indexOutOfBoundsException(index, size)
+            else -> Iterator(this, index)
+        }
+    override fun iterator(): KoneMutableLinearIterator<Element> =
+        if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
 
     override fun toString(): String = buildString {
+        if (isDisposed) disposedInstanceException()
         append('[')
         if (size > 0u) append(data[0u])
         for (i in 1u..<size) {
@@ -175,6 +208,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         append(']')
     }
     override fun hashCode(): Int {
+        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         repeat(size) {
             hashCode = 31 * hashCode + data[it].hashCode()
@@ -182,6 +216,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
+        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
@@ -202,53 +237,57 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         return true
     }
 
-    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
-        init {
-            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
-        }
-        override fun hasNext(): Boolean = currentIndex < size
+    internal class Iterator<Element>(
+        val list: KoneArrayGrowableList<Element>,
+        var currentIndex: UInt,
+    ): KoneMutableLinearIterator<Element> {
+        override fun hasNext(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex < list.size
         override fun getNext(): Element {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            return data[currentIndex] as Element
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[currentIndex] as Element
         }
         override fun moveNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasNext()) noNextElementInIteratorException()
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            data[currentIndex] = element
+            if (!hasNext()) noNextElementInIteratorException()
+            list.data[currentIndex] = element
         }
         override fun addNext(element: Element) {
-            addAt(currentIndex, element)
+            list.addAt(currentIndex, element)
         }
         override fun removeNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            removeAt(currentIndex)
+            if (!hasNext()) noNextElementInIteratorException()
+            list.removeAt(currentIndex)
         }
 
-        override fun hasPrevious(): Boolean = currentIndex > 0u
+        override fun hasPrevious(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            return data[currentIndex - 1u] as Element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[currentIndex - 1u] as Element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            data[currentIndex - 1u] = element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            list.data[currentIndex - 1u] = element
         }
         override fun addPrevious(element: Element) {
-            addAt(currentIndex, element)
+            list.addAt(currentIndex, element)
             currentIndex++
         }
         override fun removePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            removeAt(--currentIndex)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            list.removeAt(--currentIndex)
         }
     }
 }
