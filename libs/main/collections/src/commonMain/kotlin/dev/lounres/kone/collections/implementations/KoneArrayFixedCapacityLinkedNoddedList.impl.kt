@@ -10,8 +10,9 @@ import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 
 
+// TODO: Create `NodeIterator` that does not compute virtual index and does not take O(size) time for initialization
 /**
- * Represents a doubly linked list that is laid out on three arrays of the same fixed capacity
+ * Represents a doubly linked nodded list that is laid out on three arrays of the same fixed capacity
  * instead of using object nodes.
  *
  * # Implementation details
@@ -40,7 +41,8 @@ import dev.lounres.kone.scope
  * Then all element-containing nodes are consequently numbered by "virtual" indices from `0` to [size] exclusive.
  * This virtual indices are exposed as the list's indices.
  *
- * Finally, the [data] array contains the `i`th node's element in its `i`th position.
+ * Finally, the [data] array contains the `i`th actual node in its `i`th position.
+ * Actual node is an object that is returned by [getNode] and [addNode].
  *
  * After each operation the structure is preserved in a state that meets the invariants above.
  *
@@ -50,67 +52,74 @@ import dev.lounres.kone.scope
  * takes \(\Theta(\mathrm{size})\) time (both in worst case and in average).
  * Thus, all operations that involve getting actual index
  * take (both in worst case and in average) at least \(\Theta(\mathrm{size})\) time.
- * Other operations that reuse already computed actual indices (including all iterator's operations)
+ * Other operations that reuse already computed actual indices (including all iterator's and node's operations)
  * take constant time.
  *
- * | Operation                                                          | Worst case                                  | Average                                     |
- * |--------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
- * | [size]                                                             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [get]                                                              | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [set]                                                              | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [add]                                                              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [addAt]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [addSeveral]                                                       | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
- * | [addSeveralAt]                                                     | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
- * | [removeAt]                                                         | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThat]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThatIndexed]                                             | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAll]                                                        | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator]                                                         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iteratorFrom]                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removeNext][KoneSettableLinearIterator.setNext]          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removePrevious][KoneSettableLinearIterator.setPrevious]  | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | Operation                                                                 | Worst case                                  | Average                                     |
+ * |---------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+ * | [size]                                                                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [get]                                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [set]                                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [add]                                                                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [addAt]                                                                   | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [addSeveral]                                                              | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
+ * | [addSeveralAt]                                                            | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
+ * | [removeAt]                                                                | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThat]                                                           | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAllThatIndexed]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [removeAll]                                                               | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator]                                                                | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iteratorFrom]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getNext][KoneSettableLinearIterator.getNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]                  | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setNext][KoneSettableLinearIterator.setNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.addNext][KoneSettableLinearIterator.setNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.addPrevious][KoneSettableLinearIterator.setPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.removeNext][KoneSettableLinearIterator.setNext]                 | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.removePrevious][KoneSettableLinearIterator.setPrevious]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]                | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex]        | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [node.element][KoneMutableListNode.element]                               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [node.index][KoneMutableListNode.index]                                   | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
+ * | [node.remove][KoneMutableListNode.remove]                                 | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [node.nextNode][KoneMutableListNode.nextNode]                             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [node.previousNode][KoneMutableListNode.previousNode]                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [node.iteratorFromBeforeHere][KoneMutableListNode.iteratorFromBeforeHere] | \(\Theta(\mathrm{size})\) (for now)         | \(\Theta(\mathrm{size})\) (for now)         |
+ * | [node.iteratorFromAfterHere][KoneMutableListNode.iteratorFromAfterHere]   | \(\Theta(\mathrm{size})\) (for now)         | \(\Theta(\mathrm{size})\) (for now)         |
  *
  * @usesMathJax
  */
-@Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneFixedCapacityLinkedArrayListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
+public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructor(
     size: UInt,
     private val capacity: UInt,
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
+    data: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { null },
     nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableList<Element>, KoneDequeue<Element>, Disposable {
+) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
-    private var _data: KoneMutableArray<Any?>? = data
-    private val data: KoneMutableArray<Any?> get() = _data!!
+    private var _data: KoneMutableArray<Node<Element>?>? = data
+    private val data: KoneMutableArray<Node<Element>?> get() = _data!!
     private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
     private val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
     private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
     private val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
-    
+
     override fun dispose() {
         if (isDisposed) return
         var currentIndex = start
         repeat(size) {
+            data[currentIndex]!!.detach()
             data[currentIndex] = null
             currentIndex = nextNodeIndex[currentIndex]
         }
@@ -145,17 +154,30 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
                 currentIndex
             }
         }
+    private fun virtualIndex(actualIndex: UInt): UInt {
+        var result = 0u
+        var currentActualIndex = actualIndex
+        while (currentActualIndex != start) {
+            result++
+            currentActualIndex = previousNodeIndex[currentActualIndex]
+        }
+        return result
+    }
     private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> Element) {
         repeat(newElementsNumber) {
             end = nextNodeIndex[end]
-            data[end] = generator(it)
+            data[end] = Node(this, generator(it), end)
         }
         size += newElementsNumber
     }
-    private fun justAddAfterTheEnd(element: Element) {
-        justAddAfterTheEnd(1u) { element }
+    private fun justAddAfterTheEnd(element: Element): Node<Element> {
+        end = nextNodeIndex[end]
+        val newNode = Node(this, element, end)
+        data[end] = newNode
+        size++
+        return newNode
     }
-    private fun justAddBefore(actualIndex: UInt, element: Element) {
+    private fun justAddBefore(actualIndex: UInt, element: Element): Node<Element> {
         val freeIndex = nextNodeIndex[end]
         val indexAfterTheFreeIndex = nextNodeIndex[freeIndex]
         nextNodeIndex[end] = indexAfterTheFreeIndex
@@ -169,11 +191,15 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
         if (actualIndex == start) start = freeIndex
 
-        data[freeIndex] = element
+        val newNode = Node(this, element, freeIndex)
+        data[freeIndex] = newNode
 
         size++
+        
+        return newNode
     }
     private fun justRemoveAt(actualIndex: UInt) {
+        data[actualIndex]!!.detach()
         data[actualIndex] = null
         val prev = previousNodeIndex[actualIndex]
         val next = nextNodeIndex[actualIndex]
@@ -194,27 +220,34 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     override fun get(index: UInt): Element {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        return data[actualIndex(index)] as Element
+        return data[actualIndex(index)]!!.element
+    }
+
+    override fun getNode(index: UInt): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        if (index >= size) indexOutOfBoundsException(index, size)
+        return data[actualIndex(index)]!!
     }
 
     override fun getFirst(): Element =
         if (isDisposed) disposedInstanceException()
-        else data[start] as Element
+        else data[start]!!.element
 
     override fun getLast(): Element =
         if (isDisposed) disposedInstanceException()
-        else data[end] as Element
+        else data[end]!!.element
 
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        data[actualIndex(index)] = element
+        data[actualIndex(index)]!!.element = element
     }
-
+    
     // TODO: Actually, it's not O(size) but O(capacity)
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
         repeat(capacity) {
+            data[it]!!.detach()
             data[it] = null
             nextNodeIndex[it] = if (it == capacity - 1u) 0u else it + 1u
             previousNodeIndex[it] = if (it == 0u) capacity - 1u else it - 1u
@@ -231,6 +264,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
     override fun addLast(element: Element) {
         if (isDisposed) disposedInstanceException()
+        if (isDisposed) disposedInstanceException()
         if (size == capacity) capacityOverflowException(capacity)
         justAddAfterTheEnd(element)
     }
@@ -241,6 +275,13 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         justAddAfterTheEnd(element)
     }
 
+    override fun addNode(element: Element): KoneMutableListNode<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            size == capacity -> capacityOverflowException(capacity)
+            else -> justAddAfterTheEnd(element)
+        }
+
     override fun addAt(index: UInt, element: Element) {
         when {
             isDisposed -> disposedInstanceException()
@@ -250,14 +291,25 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             else -> justAddBefore(actualIndex(index), element)
         }
     }
+
+    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            index > size -> indexOutOfBoundsException(index, size)
+            size == capacity -> capacityOverflowException(capacity)
+            index == size -> justAddAfterTheEnd(element)
+            else -> justAddBefore(actualIndex(index), element)
+        }
+
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (number == 0u) return
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
-
+        
         justAddAfterTheEnd(number) { builder(it) }
     }
+
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
@@ -275,11 +327,11 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
                     var currentActualIndex = end
                     repeat(number) {
                         currentActualIndex = nextNodeIndex[currentActualIndex]
-                        data[currentActualIndex] = builder(it)
+                        data[currentActualIndex] = Node(this, builder(it), currentActualIndex)
                     }
                     actualInnerPartRightEndIndex = currentActualIndex
                 }
-
+                
                 nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
@@ -289,15 +341,18 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             }
         }
     }
+
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
     }
+
     override fun removeFirst() {
         if (isDisposed) disposedInstanceException()
         justRemoveAt(start)
     }
+
     override fun removeLast() {
         if (isDisposed) disposedInstanceException()
         justRemoveAt(end)
@@ -313,8 +368,8 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             var resultActualMark = 0u
             var resultSize = 0u
             while (checkingIndex < size) {
-                if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
-                    data[resultActualMark] = data[checkingActualMark]
+                if (!predicate(checkingIndex, data[checkingActualMark]!!.element)) {
+                    data[resultActualMark] = data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
                     resultActualMark = nextNodeIndex[resultActualMark]
                     resultSize++
                 }
@@ -326,6 +381,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         }
         var currentActualIndexToClear = firstNodeToClear
         repeat(size - newSize) {
+            data[currentActualIndexToClear]!!.detach()
             data[currentActualIndexToClear] = null
             currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
         }
@@ -333,12 +389,20 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
     override fun iterator(): KoneMutableLinearIterator<Element> =
         if (isDisposed) disposedInstanceException()
-        else Iterator(this, 0u)
+        else Iterator(
+            list = this,
+            currentIndex = 0u,
+            actualCurrentIndex = start,
+        )
     public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
         when {
             isDisposed -> disposedInstanceException()
             index > size -> indexOutOfBoundsException(index, size)
-            else -> Iterator(this, index)
+            else -> Iterator(
+                list = this,
+                currentIndex = index,
+                actualCurrentIndex = if (capacity == 0u) 0u else actualIndex(index),
+            )
         }
 
     override fun toString(): String = buildString {
@@ -370,7 +434,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneArrayFixedCapacityLinkedList<*> -> {
+            is KoneArrayFixedCapacityLinkedNoddedList<*> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {
@@ -391,19 +455,62 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
         return true
     }
-    
-    internal class Iterator<Element>(
-        val list: KoneArrayFixedCapacityLinkedList<Element>,
-        var currentIndex: UInt,
-    ): KoneMutableLinearIterator<Element> {
-        var actualCurrentIndex = if (list.capacity == 0u) 0u else list.actualIndex(currentIndex)
+
+    internal class  Node<Element>(
+        override var element: Element,
+        internal var actualIndex: UInt,
+    ): KoneMutableListNode<Element> {
+        private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = list
+        private var list: KoneArrayFixedCapacityLinkedNoddedList<Element>
+            get() = _list!!
+            set(value) { _list = value }
         
+        override val index: UInt get() = list.virtualIndex(actualIndex)
+
+        fun detach() {
+            _list = null
+        }
+        
+        constructor(list: KoneArrayFixedCapacityLinkedNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
+            this.list = list
+        }
+
+        override fun remove() {
+            list.justRemoveAt(actualIndex)
+            detach()
+        }
+
+        override val nextNode: KoneMutableListNode<Element>?
+            get() = if (actualIndex != list.end) list.data[list.nextNodeIndex[actualIndex]] else null
+        override val previousNode: KoneMutableListNode<Element>?
+            get() = if (actualIndex != list.start) list.data[list.previousNodeIndex[actualIndex]] else null
+
+        override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> =
+            Iterator(
+                list = list,
+                currentIndex = list.virtualIndex(actualIndex),
+                actualCurrentIndex = actualIndex,
+            )
+        override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> =
+            Iterator(
+                list = list,
+                currentIndex = list.virtualIndex(actualIndex) + 1u,
+                actualCurrentIndex = list.nextNodeIndex[actualIndex],
+            )
+    }
+
+    internal class Iterator<Element>(
+        val list: KoneArrayFixedCapacityLinkedNoddedList<Element>,
+        var currentIndex: UInt,
+        var actualCurrentIndex: UInt,
+    ): KoneMutableLinearIterator<Element> {
         override fun hasNext(): Boolean =
             if (list.isDisposed) disposedInstanceException()
             else currentIndex < list.size
-        override fun getNext(): Element =
+        override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
-            else list.data[actualCurrentIndex] as Element
+            return list.data[actualCurrentIndex]!!.element
+        }
         override fun moveNext() {
             if (!hasNext()) noNextElementInIteratorException()
             currentIndex++
@@ -412,7 +519,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
             if (!hasNext()) noNextElementInIteratorException()
-            list.data[currentIndex] = element
+            list.data[currentIndex]!!.element = element
         }
         override fun addNext(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
@@ -427,9 +534,10 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun hasPrevious(): Boolean =
             if (list.isDisposed) disposedInstanceException()
             else currentIndex > 0u
-        override fun getPrevious(): Element =
+        override fun getPrevious(): Element {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            else list.data[list.previousNodeIndex[actualCurrentIndex]] as Element
+            return list.data[list.previousNodeIndex[actualCurrentIndex]]!!.element
+        }
         override fun movePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             currentIndex--
@@ -438,7 +546,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
         override fun setPrevious(element: Element) {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            list.data[list.previousNodeIndex[actualCurrentIndex]] = element
+            list.data[list.previousNodeIndex[actualCurrentIndex]]!!.element = element
         }
         override fun addPrevious(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)

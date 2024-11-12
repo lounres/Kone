@@ -276,7 +276,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
     ) : KoneMutableListNode<Element> {
         private var isDetached: Boolean = false
         
-        private var _list: KoneArrayFixedCapacityNoddedList<Element>? = list
+        private var _list: KoneArrayFixedCapacityNoddedList<Element>? = null
         internal var list: KoneArrayFixedCapacityNoddedList<Element>
             get() = _list!!
             set(value) { _list = value }
