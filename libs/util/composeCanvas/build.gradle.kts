@@ -8,6 +8,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(compose.foundation)
+                api(projects.libs.main.computationalGeometry)
             }
         }
     }
