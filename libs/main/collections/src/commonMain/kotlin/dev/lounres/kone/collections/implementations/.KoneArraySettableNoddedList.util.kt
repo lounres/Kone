@@ -12,10 +12,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public inline fun <Element> KoneArraySettableNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArraySettableNoddedList<Element> =
-    KoneArraySettableNoddedList(KoneMutableArray(size, initializer))
+    KoneArraySettableNoddedList(KoneMutableArray(size) { KoneArraySettableNoddedList.Node(initializer(it), it) })
 
 public object KoneArraySettableNoddedListProducer : KoneSettableNoddedListProducer {
-    override fun <Element> produce(): KoneArraySettableNoddedList<Element> = KoneArraySettableNoddedList(0u) { error("For some reason throwing builder was called") }
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableNoddedList<Element> = KoneArraySettableNoddedList(number, builder)
 }
 

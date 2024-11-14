@@ -5,69 +5,88 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneSettableLinearIterator
 import dev.lounres.kone.collections.KoneSettableListNode
 import dev.lounres.kone.collections.KoneSettableNoddedList
+import dev.lounres.kone.collections.detachedNodeException
+import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.getOrNull
 import dev.lounres.kone.collections.indexOutOfBoundsException
+import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.repeat
 
 
-@Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
-/*@JvmInline*/ // FIXME: Await support of `equals` and `hashCode` methods support in value classes and multifield value classes to make the class be value class
-public /*value*/ class KoneArraySettableNoddedList<Element> @PublishedApi internal constructor(
-    private val data: KoneMutableArray<Any?>,
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+public class KoneArraySettableNoddedList<Element> @PublishedApi internal constructor(
+    private val data: KoneMutableArray<Node<Element>?>,
 ) : KoneSettableNoddedList<Element>, Disposable {
+    override var isDisposed: Boolean = false
+        private set
+    
     override val size: UInt get() = data.size
     
-    private val nodes = KoneMutableArray<Node<Element>?>(data.size) { Node(this, it) }
-    
     override fun dispose() {
+        if (isDisposed) return
         repeat(size) {
+            data[it]!!.detach()
             data[it] = null
-            nodes[it]!!.dispose()
-            nodes[it] = null
         }
+        isDisposed = true
     }
     
     override fun get(index: UInt): Element {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        return data[index] as Element
+        return data[index]!!.element
     }
     override fun getNode(index: UInt): KoneSettableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        return nodes[index]!!
+        return data[index]!!
     }
     
     override fun set(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        data[index] = element
+        data[index]!!.element = element
     }
     
-    override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(data)
-    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(data, index)
+    override fun iterator(): KoneSettableLinearIterator<Element> =
+        if (isDisposed) disposedInstanceException()
+        else Iterator(this, 0u)
+    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            index > size -> indexOutOfBoundsException(index, size)
+            else -> Iterator(this, index)
+        }
+        
     
     override fun toString(): String = buildString {
+        if (isDisposed) disposedInstanceException()
         append('[')
-        if (size > 0u) append(data[0u])
+        if (size > 0u) append(data[0u]!!.element)
         for (i in 1u..<size) {
             append(", ")
-            append(data[i])
+            append(data[i]!!.element)
         }
         append(']')
     }
     override fun hashCode(): Int {
+        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         for (i in 0u..<size) {
-            hashCode = 31 * hashCode + this.data[i].hashCode()
+            hashCode = 31 * hashCode + this.data[i]!!.element.hashCode()
         }
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
+        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
@@ -75,12 +94,12 @@ public /*value*/ class KoneArraySettableNoddedList<Element> @PublishedApi intern
         when (other) {
             is KoneArraySettableNoddedList<*> ->
                 for (i in 0u..<size) {
-                    if (this.data[i] != other.data[i]) return false
+                    if (this.data[i]!!.element != other.data[i]!!.element) return false
                 }
             else -> {
                 val otherIterator = other.iterator()
                 for (i in 0u ..< size) {
-                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
+                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
                 }
             }
         }
@@ -88,62 +107,80 @@ public /*value*/ class KoneArraySettableNoddedList<Element> @PublishedApi intern
         return true
     }
     
+    @PublishedApi
     internal class Node<Element>(
-        list: KoneArraySettableNoddedList<Element>,
+        override var element: Element,
         override val index: UInt,
-    ) : KoneSettableListNode<Element>, Disposable {
-        private var _list: KoneArraySettableNoddedList<Element>? = list
+    ) : KoneSettableListNode<Element> {
+        override var isDetached: Boolean = false
+            private set
+        
+        private var _list: KoneArraySettableNoddedList<Element>? = null
         internal val list: KoneArraySettableNoddedList<Element> get() = _list!!
         
-        override var element: Element
-            get() = list.data[index] as Element
-            set(value) { list.data[index] = value }
+        internal constructor(
+            list: KoneArraySettableNoddedList<Element>,
+            element: Element,
+            index: UInt,
+        ) : this(element, index) {
+            _list = list
+        }
         
         override val nextNode: KoneSettableListNode<Element>?
-            get() = list.nodes.getOrNull(index + 1u)
+            get() = when {
+                isDetached -> detachedNodeException()
+                index + 1u < list.size -> list.data[index]!!
+                else -> null
+            }
         override val previousNode: KoneSettableListNode<Element>?
-            get() = list.nodes.getOrNull(index - 1u)
+            get() = when {
+                isDetached -> detachedNodeException()
+                index > 0u -> list.data[index - 1u]!!
+                else -> null
+            }
         
         override fun iteratorFromAfterHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index + 1u)
         override fun iteratorFromBeforeHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index)
         
-        override fun dispose() {
+        fun detach() {
+            if (isDetached) return
             _list = null
+            isDetached = true
         }
     }
     
-    internal class Iterator<Element>(val data: KoneMutableArray<Any?>, var currentIndex: UInt = 0u): KoneSettableLinearIterator<Element> {
-        init {
-            if (currentIndex > data.size) indexOutOfBoundsException(currentIndex, data.size)
-        }
-        override fun hasNext(): Boolean = currentIndex < data.size
+    internal class Iterator<Element>(
+        val list: KoneArraySettableNoddedList<Element>,
+        var currentIndex: UInt,
+    ): KoneSettableLinearIterator<Element> {
+        override fun hasNext(): Boolean = if (list.isDisposed) disposedInstanceException() else currentIndex < list.size
         override fun getNext(): Element {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
-            return data[currentIndex] as Element
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[currentIndex]!!.element
         }
         override fun moveNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
+            if (!hasNext()) noNextElementInIteratorException()
             currentIndex++
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, data.size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, data.size)
-            data[currentIndex] = element
+            if (!hasNext()) noNextElementInIteratorException()
+            list.data[currentIndex]!!.element = element
         }
         
-        override fun hasPrevious(): Boolean = currentIndex > 0u
+        override fun hasPrevious(): Boolean = if (list.isDisposed) disposedInstanceException() else currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
-            return data[currentIndex - 1u] as Element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[currentIndex - 1u]!!.element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             currentIndex--
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, data.size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, data.size)
-            data[currentIndex - 1u] = element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            list.data[currentIndex - 1u]!!.element = element
         }
     }
 }
