@@ -193,11 +193,12 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     override fun add(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    it == size -> element
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -211,12 +212,13 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         if (index > size) indexOutOfBoundsException(index, size)
         when {
             size == sizeUpperBound -> {
+                val oldSize = size
                 var actualIndex = start
                 reinitializeBoundsAndData(size + 1u) {
                     when {
                         it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         it == index -> element
-                        it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         else -> null
                     }
                 }
@@ -229,11 +231,12 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it == 0u -> element
-                    it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -245,11 +248,12 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     override fun addLast(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    it == size -> element
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -261,11 +265,12 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    it < size + number -> builder(it - size)
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < oldSize + number -> builder(it - size)
                     else -> null
                 }
             }

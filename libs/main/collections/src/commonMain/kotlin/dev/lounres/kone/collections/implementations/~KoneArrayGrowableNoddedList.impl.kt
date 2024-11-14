@@ -94,10 +94,11 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (isDisposed) disposedInstanceException()
         val newNode = Node(this, element, size)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(it)
-                    it == size -> newNode
+                    it < oldSize -> get(it)
+                    it == oldSize -> newNode
                     else -> null
                 }
             }
@@ -110,10 +111,11 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (isDisposed) disposedInstanceException()
         val newNode = Node(this, element, size)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(it)
-                    it == size -> newNode
+                    it < oldSize -> get(it)
+                    it == oldSize -> newNode
                     else -> null
                 }
             }
@@ -128,11 +130,12 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (index > size) indexOutOfBoundsException(index, size)
         val newNode = Node(this, element, index)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
                     it == index -> newNode
-                    it <= size -> get(it-1u).also { node -> node!!.index = it }
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
@@ -147,11 +150,12 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (index > size) indexOutOfBoundsException(index, size)
         val newNode = Node(this, element, index)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
                     it == index -> newNode
-                    it <= size -> get(it-1u).also { node -> node!!.index = it }
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
@@ -166,10 +170,11 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> get(it)
-                    it < size + number -> Node(this@KoneGrowableArrayNoddedList, builder(it - size), it)
+                    it < oldSize -> get(it)
+                    it < oldSize + number -> Node(this@KoneGrowableArrayNoddedList, builder(it - size), it)
                     else -> null
                 }
             }

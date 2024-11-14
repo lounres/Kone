@@ -88,10 +88,11 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     override fun add(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(it)
-                    it == size -> element
+                    it < oldSize -> get(it)
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -104,11 +105,12 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
                     it == index -> element
-                    it <= size -> get(it-1u)
+                    it <= oldSize -> get(it-1u)
                     else -> null
                 }
             }
@@ -122,10 +124,11 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> get(it)
-                    it < size + number -> builder(it - size)
+                    it < oldSize -> get(it)
+                    it < oldSize + number -> builder(it - size)
                     else -> null
                 }
             }

@@ -80,10 +80,11 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     }
     override fun add(element: Element) {
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(it)
-                    it == size -> element
+                    it < oldSize -> get(it)
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -95,11 +96,12 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     override fun addAt(index: UInt, element: Element) {
         if (index > size) indexOutOfBoundsException(index, size)
         if (size == sizeUpperBound) {
+            val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
                     it == index -> element
-                    it <= size -> get(it-1u)
+                    it <= oldSize -> get(it-1u)
                     else -> null
                 }
             }
@@ -112,17 +114,16 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
         if (newSize > sizeUpperBound) {
-            var localIndex = 0u
+            val oldSize = size
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    it < oldSize -> get(it)
+                    it < newSize -> builder(it - oldSize)
                     else -> null
                 }
             }
         } else {
-            var index = size
-            for (localIndex in 0u ..< number) data[index++] = builder(localIndex)
+            for (localIndex in 0u ..< number) data[localIndex + size] = builder(localIndex)
             size = newSize
         }
     }
@@ -130,19 +131,17 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > sizeUpperBound) {
-            var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    localIndex < number -> builder(localIndex++)
+                    it < index + number -> builder(it - index)
                     it < newSize -> get(it - number)
                     else -> null
                 }
             }
         } else {
             for (i in (size-1u) downTo index) data[i + number] = data[i]
-            var index = index
-            repeat(number) { data[index++] = builder(it) }
+            repeat(number) { data[index + it] = builder(it) }
             size = newSize
         }
     }

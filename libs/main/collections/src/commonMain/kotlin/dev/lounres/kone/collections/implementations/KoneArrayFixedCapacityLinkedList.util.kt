@@ -57,7 +57,7 @@ public fun <Element> KoneArrayFixedCapacityLinkedList(size: UInt, capacity: UInt
 public object KoneArrayFixedCapacityLinkedListProducer : KoneFixedCapacityMutableListProducer {
     override fun <E> produce(capacity: UInt): KoneArrayFixedCapacityLinkedList<E> = KoneArrayFixedCapacityLinkedList(capacity)
     override fun <E> produceBy(capacity: UInt, number: UInt, builder: (UInt) -> E): KoneMutableList<E> =
-        KoneArrayFixedCapacityLinkedList(capacity, number, builder)
+        KoneArrayFixedCapacityLinkedList(size =  number, capacity = capacity, initializer = builder)
 }
 
 internal class KoneArrayFixedCapacityLinkedListDescriptor(elementDescriptor: SerialDescriptor):

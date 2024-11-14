@@ -168,11 +168,12 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
 
     override fun add(element: Element) {
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    it == size -> element
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -181,11 +182,12 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
 
     override fun addFirst(element: Element) {
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it == 0u -> element
-                    it <= size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -194,11 +196,12 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
 
     override fun addLast(element: Element) {
         if (size == sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    it == size -> element
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it == oldSize -> element
                     else -> null
                 }
             }
@@ -209,12 +212,13 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         if (index > size) indexOutOfBoundsException(index, size)
         when {
             size == sizeUpperBound -> {
+                val oldSize = size
                 var actualIndex = start
                 reinitializeBoundsAndData(size + 1u) {
                     when {
                         it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                         it == index -> element
-                        it <= size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                         else -> null
                     }
                 }
@@ -227,18 +231,17 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         val newSize = size + number
         if (newSize > sizeUpperBound) {
+            val oldSize = size
             var actualIndex = start
-            var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                    localIndex < number -> builder(localIndex++)
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < oldSize + number -> builder(it - oldSize)
                     else -> null
                 }
             }
         } else {
-            var localIndex = 0u
-            justAddAfterTheEnd(number) { builder(localIndex++) }
+            justAddAfterTheEnd(number) { builder(it) }
         }
     }
 
@@ -249,19 +252,17 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         when {
             newSize > sizeUpperBound -> {
                 var actualIndex = start
-                var localIndex = 0u
                 reinitializeBoundsAndData(newSize) {
                     when {
                         it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
-                        localIndex < number -> builder(localIndex++)
+                        it < index + number -> builder(it - index)
                         it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                         else -> null
                     }
                 }
             }
             index == size -> {
-                var localIndex = 0u
-                justAddAfterTheEnd(number) { builder(localIndex++) }
+                justAddAfterTheEnd(number) { builder(it) }
             }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
@@ -447,12 +448,13 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         override fun addNext(element: Element) {
             when {
                 size == sizeUpperBound -> {
+                    val oldSize = size
                     var actualIndex = start
                     reinitializeBoundsAndData(size + 1u) {
                         when {
                             it < currentIndex -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                             it == currentIndex -> element
-                            it <= size -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
                             else -> null
                         }
                     }

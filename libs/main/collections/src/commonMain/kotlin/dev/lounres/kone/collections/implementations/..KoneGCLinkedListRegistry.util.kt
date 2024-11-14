@@ -9,5 +9,5 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 
 
-public fun <Element> KoneLinkedGCListRegistry(): KoneLinkedGCListRegistry<Element, Equality<Element>> =
-    KoneLinkedGCListRegistry(elementContext = defaultEquality())
+//public fun <Element> KoneLinkedGCListRegistry(): KoneLinkedGCListRegistry<Element, Equality<Element>> =
+//    KoneLinkedGCListRegistry(elementContext = defaultEquality())
