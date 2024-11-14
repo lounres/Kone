@@ -22,14 +22,14 @@ public fun <Element> KoneGrowableArrayNoddedList(initialCapacity: UInt): KoneGro
         sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
     )
 
-//public inline fun <Element> KoneGrowableArrayNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneGrowableArrayNoddedList<Element> {
-//    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
-//    return KoneGrowableArrayNoddedList(
-//        size = size,
-//        sizeUpperBound = sizeUpperBound,
-//        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
-//    )
-//}
+public inline fun <Element> KoneGrowableArrayNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneGrowableArrayNoddedList<Element> {
+    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
+    return KoneGrowableArrayNoddedList(
+        size = size,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneGrowableArrayNoddedList.Node(initializer(it), it) else null },
+    )
+}
 
 internal class KoneGrowableArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
