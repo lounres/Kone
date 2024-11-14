@@ -46,6 +46,8 @@ internal class KoneSingletonSettableNoddedList<Element>(
     }
     
     inner class Node: KoneSettableListNode<Element> {
+        override val isDetached: Boolean get() = false
+        
         override var element: Element
             get() = singleElement
             set(value) { singleElement = value }

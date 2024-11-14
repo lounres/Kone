@@ -65,8 +65,7 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityList<Element> @PublishedApi internal constructor(
     size: UInt,
-    capacity: UInt = size, // TODO: Maybe it should be removed and fully controlled by false constructors
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
+    data: KoneMutableArray<Any?>,
 ): KoneMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set

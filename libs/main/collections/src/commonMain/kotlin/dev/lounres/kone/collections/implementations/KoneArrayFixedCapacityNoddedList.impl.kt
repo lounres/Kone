@@ -82,7 +82,6 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
-    capacity: UInt = size, // TODO: Maybe it should be removed and fully controlled by false constructors
     data: KoneMutableArray<Node<Element>?>,
 ): KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
@@ -300,9 +299,17 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         }
 
         override val nextNode: KoneMutableListNode<Element>?
-            get() = if (isDetached) detachedNodeException() else list.data.getOrNull(index + 1u)
+            get() = when {
+                isDetached -> detachedNodeException()
+                index + 1u < list.size -> list.data[index + 1u]!!
+                else -> null
+            }
         override val previousNode: KoneMutableListNode<Element>?
-            get() = if (isDetached) detachedNodeException() else list.data.getOrNull(index - 1u)
+            get() = when {
+                isDetached -> detachedNodeException()
+                index > 0u -> list.data[index - 1u]!!
+                else -> null
+            }
 
         override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> =
             if (isDetached) detachedNodeException() else list.iteratorFrom(index + 1u)

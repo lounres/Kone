@@ -36,6 +36,8 @@ internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>
     }
     
     inner class Node: KoneSetNode<Element> {
+        override val isDetached: Boolean get() = false
+        
         override val element: Element get() = singleElement
     }
 }

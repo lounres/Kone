@@ -464,11 +464,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         return true
     }
 
-    internal class  Node<Element>(
+    internal class Node<Element>(
         override var element: Element,
         internal var actualIndex: UInt,
     ): KoneMutableListNode<Element> {
         override var isDetached: Boolean = false
+            private set
         
         private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = null
         internal var list: KoneArrayFixedCapacityLinkedNoddedList<Element>

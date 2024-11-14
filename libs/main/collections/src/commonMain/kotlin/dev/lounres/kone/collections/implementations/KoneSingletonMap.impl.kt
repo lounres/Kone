@@ -18,7 +18,6 @@ import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 
 
-// TODO: Apply the class
 internal class KoneSingletonMap<Key, KeyContext: Equality<Key>, Value>(
     val singleKey: Key,
     val singleValue: Value,
@@ -57,5 +56,7 @@ internal class KoneSingletonMap<Key, KeyContext: Equality<Key>, Value>(
     private class Node<Key, Value>(
         override val key: Key,
         override val value: Value,
-    ) : KoneMapNode<Key, Value>
+    ) : KoneMapNode<Key, Value> {
+        override val isDetached: Boolean get() = false
+    }
 }

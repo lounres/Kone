@@ -18,7 +18,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 public fun <Element> KoneArrayFixedCapacityList(capacity: UInt): KoneArrayFixedCapacityList<Element> =
     KoneArrayFixedCapacityList(
         size = 0u,
-        capacity = capacity,
+        data = KoneMutableArray(capacity) { null }
     )
 
 /**
@@ -31,7 +31,6 @@ public fun <Element> KoneArrayFixedCapacityList(capacity: UInt): KoneArrayFixedC
 public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> =
     KoneArrayFixedCapacityList(
         size = size,
-        capacity = size,
         data = KoneMutableArray(size) { if (it < size) initializer(it) else null },
     )
 
@@ -46,7 +45,6 @@ public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UIn
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityList(
         size = size,
-        capacity = capacity,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
     )
 }
