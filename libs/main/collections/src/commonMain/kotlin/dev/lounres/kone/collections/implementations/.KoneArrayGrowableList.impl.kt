@@ -130,8 +130,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
                 }
             }
         } else {
-            var index = size
-            repeat(number) { data[index++] = builder(it) }
+            repeat(number) { data[it + size] = builder(it) }
             size = newSize
         }
     }
@@ -150,8 +149,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             }
         } else {
             if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
-            var index = index
-            repeat(number) { data[index++] = builder(it) }
+            repeat(number) { data[it + index] = builder(it) }
             size = newSize
         }
     }

@@ -262,17 +262,15 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         val newSize = size + number
         if (newSize > sizeUpperBound) {
             var actualIndex = start
-            var localIndex = 0u
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    localIndex < number -> builder(localIndex++)
+                    it < size + number -> builder(it - size)
                     else -> null
                 }
             }
         } else {
-            var localIndex = 0u
-            justAddAfterTheEnd(number) { builder(localIndex++) }
+            justAddAfterTheEnd(number) { builder(it) }
         }
     }
 
@@ -284,19 +282,17 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         when {
             newSize > sizeUpperBound -> {
                 var actualIndex = start
-                var localIndex = 0u
                 reinitializeBoundsAndData(newSize) {
                     when {
                         it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                        localIndex < number -> builder(localIndex++)
+                        it < index + number -> builder(it - index)
                         it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         else -> null
                     }
                 }
             }
             index == size -> {
-                var localIndex = 0u
-                justAddAfterTheEnd(number) { builder(localIndex++) }
+                justAddAfterTheEnd(number) { builder(it) }
             }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
