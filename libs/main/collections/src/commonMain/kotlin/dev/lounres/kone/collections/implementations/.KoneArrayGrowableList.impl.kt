@@ -61,6 +61,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     }
 
     override fun ensureCapacity(minimalCapacity: UInt) {
+        if (isDisposed) disposedInstanceException()
         if (sizeUpperBound < minimalCapacity) {
             reinitializeBounds(minimalCapacity)
             reinitializeData {
