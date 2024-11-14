@@ -292,6 +292,7 @@ stal {
                                 enableLanguageFeature("ContextReceivers")
                                 enableLanguageFeature("ValueClasses")
                                 enableLanguageFeature("ContractSyntaxV2")
+                                enableLanguageFeature("ExplicitBackingFields")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")

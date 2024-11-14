@@ -135,16 +135,39 @@ public inline fun <E> KoneIterable<E>.countIndexed(predicate: (index: UInt, valu
 
 // TODO: Think about moving `KoneIterableList<E>.first*` extensions inside `KoneIterableList` interface
 //  like it is done for `indexThat`.
-// TODO: Think about `last*` functions implementations.
 
 public inline fun <E> KoneIterable<E>.firstThat(predicate: (E) -> Boolean): E {
     for (element in this) if (predicate(element)) return element
     throw NoSuchElementException("Collection contains no element matching the predicate.")
 }
 
+public inline fun <E> KoneList<E>.lastThat(predicate: (E) -> Boolean): E {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(element)) return element
+        backIterator.movePrevious()
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
 public inline fun <E> KoneList<E>.firstThatIndexed(predicate: (index: UInt, E) -> Boolean): E {
-    var index = 0u
-    for (element in this) if (predicate(index++, element)) return element
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        val element = iterator.getNext()
+        if (predicate(iterator.nextIndex(), element)) return element
+        iterator.moveNext()
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public inline fun <E> KoneList<E>.lastThatIndexed(predicate: (index: UInt, E) -> Boolean): E {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(backIterator.previousIndex(), element)) return element
+        backIterator.movePrevious()
+    }
     throw NoSuchElementException("Collection contains no element matching the predicate.")
 }
 
@@ -153,9 +176,33 @@ public inline fun <E> KoneIterable<E>.firstThatOrNull(predicate: (E) -> Boolean)
     return null
 }
 
+public inline fun <E> KoneList<E>.lastThatOrNull(predicate: (E) -> Boolean): E? {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(element)) return element
+        backIterator.movePrevious()
+    }
+    return null
+}
+
 public inline fun <E> KoneList<E>.firstThatIndexedOrNull(predicate: (index: UInt, E) -> Boolean): E? {
-    var index = 0u
-    for (element in this) if (predicate(index++, element)) return element
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        val element = iterator.getNext()
+        if (predicate(iterator.nextIndex(), element)) return element
+        iterator.moveNext()
+    }
+    return null
+}
+
+public inline fun <E> KoneList<E>.lastThatIndexedOrNull(predicate: (index: UInt, E) -> Boolean): E? {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(backIterator.previousIndex(), element)) return element
+        backIterator.movePrevious()
+    }
     return null
 }
 
@@ -164,9 +211,33 @@ public inline fun <E> KoneIterable<E>.firstThatMaybe(predicate: (E) -> Boolean):
     return None
 }
 
+public inline fun <E> KoneList<E>.lastThatMaybe(predicate: (E) -> Boolean): Option<E> {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(element)) return Some(element)
+        backIterator.movePrevious()
+    }
+    return None
+}
+
 public inline fun <E> KoneList<E>.firstThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
-    var index = 0u
-    for (element in this) if (predicate(index++, element)) return Some(element)
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        val element = iterator.getNext()
+        if (predicate(iterator.nextIndex(), element)) return Some(element)
+        iterator.moveNext()
+    }
+    return None
+}
+
+public inline fun <E> KoneList<E>.lastThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        if (predicate(backIterator.previousIndex(), element)) return Some(element)
+        backIterator.movePrevious()
+    }
     return None
 }
 
@@ -178,11 +249,35 @@ public inline fun <E, R> KoneIterable<E>.firstOfThat(transform: (E) -> R, predic
     throw NoSuchElementException("Collection contains no element matching the predicate.")
 }
 
-public inline fun <E, R> KoneList<E>.firstOfThatIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
-    var index = 0u
-    for (element in this) {
-        val result = transform(index++, element)
+public inline fun <E, R> KoneList<E>.lastOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(element)
         if (predicate(result)) return result
+        backIterator.movePrevious()
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public inline fun <E, R> KoneList<E>.firstOfThatIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return result
+        backIterator.movePrevious()
+    }
+    throw NoSuchElementException("Collection contains no element matching the predicate.")
+}
+
+public inline fun <E, R> KoneList<E>.lastOfThatIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return result
+        backIterator.movePrevious()
     }
     throw NoSuchElementException("Collection contains no element matching the predicate.")
 }
@@ -195,11 +290,35 @@ public inline fun <E, R> KoneIterable<E>.firstOfThatOrNull(transform: (E) -> R, 
     return null
 }
 
-public inline fun <E, R> KoneList<E>.firstOfThatIndexedOrNull(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R? {
-    var index = 0u
-    for (element in this) {
-        val result = transform(index++, element)
+public inline fun <E, R> KoneList<E>.lastOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(element)
         if (predicate(result)) return result
+        backIterator.movePrevious()
+    }
+    return null
+}
+
+public inline fun <E, R> KoneList<E>.firstOfThatIndexedOrNull(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R? {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return result
+        backIterator.movePrevious()
+    }
+    return null
+}
+
+public inline fun <E, R> KoneList<E>.lastOfThatIndexedOrNull(transform: (index:UInt, E) -> R, predicate: (R) -> Boolean): R? {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return result
+        backIterator.movePrevious()
     }
     return null
 }
@@ -212,11 +331,35 @@ public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, p
     return None
 }
 
-public inline fun <E, R> KoneList<E>.firstOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
-    var index = 0u
-    for (element in this) {
-        val result = transform(index++, element)
+public inline fun <E, R> KoneList<E>.lastOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Option<R> {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(element)
         if (predicate(result)) return Some(result)
+        backIterator.movePrevious()
+    }
+    return None
+}
+
+public inline fun <E, R> KoneList<E>.firstOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return Some(result)
+        backIterator.movePrevious()
+    }
+    return None
+}
+
+public inline fun <E, R> KoneList<E>.lastOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+    val backIterator = iteratorFrom(size)
+    while (backIterator.hasPrevious()) {
+        val element = backIterator.getPrevious()
+        val result = transform(backIterator.previousIndex(), element)
+        if (predicate(result)) return Some(result)
+        backIterator.movePrevious()
     }
     return None
 }
