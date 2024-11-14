@@ -7,6 +7,8 @@ package dev.lounres.kone.collections
 
 
 public interface HeapNode<Element, Priority> {
+    public val isDetached: Boolean
+    
     public var element: Element
     public var priority: Priority
     public fun remove()

@@ -7,6 +7,8 @@ package dev.lounres.kone.collections
 
 
 public interface SearchTreeNode<out Element> {
+    public val isDetached: Boolean
+    
     public val element: Element
     public fun remove()
 }

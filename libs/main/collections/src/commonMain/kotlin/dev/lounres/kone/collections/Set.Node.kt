@@ -7,6 +7,8 @@ package dev.lounres.kone.collections
 
 
 public interface KoneSetNode<out Element> {
+    public val isDetached: Boolean
+    
     public val element: Element
 }
 

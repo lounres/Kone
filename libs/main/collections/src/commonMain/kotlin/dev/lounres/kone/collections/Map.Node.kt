@@ -9,6 +9,8 @@ package dev.lounres.kone.collections
 // TODO: Describe contracts on equals and hashCode.
 
 public interface KoneMapNode<out Key, out Value> {
+    public val isDetached: Boolean
+    
     public val key: Key
     public val value: Value
 }
