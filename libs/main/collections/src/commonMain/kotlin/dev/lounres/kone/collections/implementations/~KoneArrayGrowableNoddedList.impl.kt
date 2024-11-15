@@ -12,13 +12,17 @@ import dev.lounres.kone.scope
 
 //@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constructor(
+public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
 ) : KoneGrowableMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
+    
+    init {
+        repeat(size) { data[it]!!.list = this }
+    }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
     private var data: KoneMutableArray<Node<Element>?>
@@ -174,7 +178,7 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < oldSize -> get(it)
-                    it < oldSize + number -> Node(this@KoneGrowableArrayNoddedList, builder(it - size), it)
+                    it < oldSize + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - size), it)
                     else -> null
                 }
             }
@@ -193,7 +197,7 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < index + number -> Node(this@KoneGrowableArrayNoddedList, builder(it - index), it)
+                    it < index + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - index), it)
                     it < newSize -> get(it - number).also { node -> node!!.index = it }
                     else -> null
                 }
@@ -245,17 +249,17 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
 
     override fun toString(): String = buildString {
         append('[')
-        if (size > 0u) append(data[0u])
+        if (size > 0u) append(data[0u]!!.element)
         for (i in 1u..<size) {
             append(", ")
-            append(data[i])
+            append(data[i]!!.element)
         }
         append(']')
     }
     override fun hashCode(): Int {
         var hashCode = 1
         repeat(size) {
-            hashCode = 31 * hashCode + data[it].hashCode()
+            hashCode = 31 * hashCode + data[it]!!.element.hashCode()
         }
         return hashCode
     }
@@ -265,14 +269,14 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneGrowableArrayNoddedList<*> ->
+            is KoneArrayGrowableNoddedList<*> ->
                 repeat(size) {
-                    if (this.data[it] != other.data[it]) return false
+                    if (this.data[it]!!.element != other.data[it]!!.element) return false
                 }
             else -> {
                 val otherIterator = other.iterator()
                 for (i in 0u ..< size) {
-                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
+                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
                 }
             }
         }
@@ -287,14 +291,12 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
     ) : KoneMutableListNode<Element> {
         override var isDetached: Boolean = false
         
-        private var _list: KoneGrowableArrayNoddedList<Element>? = list
-        val list: KoneGrowableArrayNoddedList<Element> get() = _list!!
+        private var _list: KoneArrayGrowableNoddedList<Element>? = null
+        var list: KoneArrayGrowableNoddedList<Element>
+            get() = _list!!
+            set(value) { _list = value }
         
-        constructor(
-            list: KoneGrowableArrayNoddedList<Element>,
-            element: Element,
-            index: UInt,
-        ) : this(element, index) {
+        constructor(list: KoneArrayGrowableNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
             _list = list
         }
         
@@ -329,7 +331,7 @@ public class KoneGrowableArrayNoddedList<Element> @PublishedApi internal constru
     }
 
     internal class Iterator<Element>(
-        val list: KoneGrowableArrayNoddedList<Element>,
+        val list: KoneArrayGrowableNoddedList<Element>,
         var currentIndex: UInt = 0u
     ): KoneMutableLinearIterator<Element> {
         override fun hasNext(): Boolean =

@@ -421,12 +421,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
         append('[')
-        if (size > 0u) append(data[start])
+        if (size > 0u) append(data[start]!!.element)
         var currentActualIndex = start
         for (i in 1u..<size) {
             currentActualIndex = nextNodeIndex[currentActualIndex]
             append(", ")
-            append(data[currentActualIndex])
+            append(data[currentActualIndex]!!.element)
         }
         append(']')
     }
@@ -435,7 +435,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         var hashCode = 1
         var currentActualIndex = start
         repeat(size) {
-            hashCode = 31 * hashCode + data[currentActualIndex].hashCode()
+            hashCode = 31 * hashCode + data[currentActualIndex]!!.element.hashCode()
             currentActualIndex = nextNodeIndex[currentActualIndex]
         }
         return hashCode
@@ -451,7 +451,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {
-                    if (this.data[thisCurrentIndex] != other.data[otherCurrentIndex]) return false
+                    if (this.data[thisCurrentIndex]!!.element != other.data[otherCurrentIndex]!!.element) return false
                     thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
                     otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
                 }
@@ -460,7 +460,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                 var thisCurrentIndex = this.start
                 val otherIterator = other.iterator()
                 repeat(size) {
-                    if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
+                    if (this.data[thisCurrentIndex]!!.element != otherIterator.getAndMoveNext()) return false
                     thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
                 }
             }
