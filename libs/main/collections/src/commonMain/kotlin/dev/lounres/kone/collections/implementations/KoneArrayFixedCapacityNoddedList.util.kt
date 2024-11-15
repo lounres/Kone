@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -45,6 +46,16 @@ public inline fun <Element> KoneArrayFixedCapacityNoddedList(size: UInt, capacit
         size = size,
         data = KoneMutableArray(capacity) { if (it < size) KoneArrayFixedCapacityNoddedList.Node(initializer(it), it) else null },
     )
+}
+
+/**
+ * Producer of [KoneArrayFixedCapacityNoddedList].
+ */
+public object KoneArrayFixedCapacityNoddedListProducer : KoneFixedCapacityMutableNoddedListProducer {
+    override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityNoddedList<Element> =
+        KoneArrayFixedCapacityNoddedList(capacity)
+    override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> =
+        KoneArrayFixedCapacityNoddedList(capacity = initialCapacity, size = number, initializer = builder)
 }
 
 internal class KoneArrayFixedCapacityNoddedListDescriptor(elementDescriptor: SerialDescriptor):

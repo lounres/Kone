@@ -118,11 +118,7 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
         private var _list: KoneArraySettableNoddedList<Element>? = null
         internal val list: KoneArraySettableNoddedList<Element> get() = _list!!
         
-        internal constructor(
-            list: KoneArraySettableNoddedList<Element>,
-            element: Element,
-            index: UInt,
-        ) : this(element, index) {
+        internal constructor(list: KoneArraySettableNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
             _list = list
         }
         
