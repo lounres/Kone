@@ -8,6 +8,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.repeat
 
 
+// TODO: Add contracts on `toString()`, `equals` and `hashCode`.
 /**
  * Represents a finite collection of elements with some order on them.
  *

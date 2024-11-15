@@ -28,7 +28,7 @@ public fun <Element> KoneList<Element>.getMaybe(index: UInt): Option<Element> = 
  * And this operation adds places with indices from `size` to `size + elements.size` exclusive and puts the values in it.
  */
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
-    val iterator = iterator()
+    val iterator = elements.iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
 
@@ -48,7 +48,7 @@ public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<
  * @throws IndexOutOfBoundsException when index is greater than [size][KoneMutableList.size].
  */
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
-    val iterator = iterator()
+    val iterator = elements.iterator()
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
 }
 

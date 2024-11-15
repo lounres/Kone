@@ -10,101 +10,17 @@ import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 
 
-// TODO: Create `NodeIterator` that does not compute virtual index and does not take O(size) time for initialization
-/**
- * Represents a doubly linked nodded list that is laid out on three arrays of the same fixed capacity
- * instead of using object nodes.
- *
- * # Implementation details
- *
- * Usual doubly linked list consists of nodes that store elements and references to the next and the previous nodes.
- * In case of this implementation the three jobs are spread between the three arrays [data], [nextNodeIndex], and [previousNodeIndex].
- *
- * Actually, there are two types of nodes, nodes with elements and nodes without them.
- * All the nodes have their own "actual" indices from `0` to [capacity] exclusive.
- * They are connected in a (oriented) cycle in a such way that element-containing and empty nodes
- * form two separate connected components.
- * (I.e. at first element-containing nodes are placed in the cycle and then empty nodes are placed in the cycle.)
- * For each node with actual index `i`, `i`th elements in [nextNodeIndex] and [previousNodeIndex]
- * are actual indices of the next and the previous nodes correspondingly.
- * As a corollary,
- * ```
- * nextNodeIndex[previousNodeIndex[i]] == i
- * previousNodeIndex[nextNodeIndex[i]] == i
- * ```
- *
- * There are also two references, [start] and [end]
- * that are pointing to the first and the last element-containing nodes.
- * But if all the nodes are empty, then [start] and [end] are pointing on any two consequent nodes,
- * where [end]'s node is going after [start]'s node.
- *
- * Then all element-containing nodes are consequently numbered by "virtual" indices from `0` to [size] exclusive.
- * This virtual indices are exposed as the list's indices.
- *
- * Finally, the [data] array contains the `i`th actual node in its `i`th position.
- * Actual node is an object that is returned by [getNode] and [addNode].
- *
- * After each operation the structure is preserved in a state that meets the invariants above.
- *
- * ## Time complexity of operations
- *
- * It's obvious that getting actual index corresponding to the list's index
- * takes \(\Theta(\mathrm{size})\) time (both in worst case and in average).
- * Thus, all operations that involve getting actual index
- * take (both in worst case and in average) at least \(\Theta(\mathrm{size})\) time.
- * Other operations that reuse already computed actual indices (including all iterator's and node's operations)
- * take constant time.
- *
- * | Operation                                                                 | Worst case                                  | Average                                     |
- * |---------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
- * | [size]                                                                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [get]                                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [set]                                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [add]                                                                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [addAt]                                                                   | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [addSeveral]                                                              | \(\Theta(\mathrm{number})\)                 | \(\Theta(\mathrm{number})\)                 |
- * | [addSeveralAt]                                                            | \(\Theta(\mathrm{size} + \mathrm{number})\) | \(\Theta(\mathrm{size} + \mathrm{number})\) |
- * | [removeAt]                                                                | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThat]                                                           | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAllThatIndexed]                                                    | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [removeAll]                                                               | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator]                                                                | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iteratorFrom]                                                            | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getNext][KoneSettableLinearIterator.getNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]                  | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setNext][KoneSettableLinearIterator.setNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addNext][KoneSettableLinearIterator.setNext]                    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addPrevious][KoneSettableLinearIterator.setPrevious]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removeNext][KoneSettableLinearIterator.setNext]                 | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removePrevious][KoneSettableLinearIterator.setPrevious]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]                | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex]        | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [node.element][KoneMutableListNode.element]                               | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [node.index][KoneMutableListNode.index]                                   | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [node.remove][KoneMutableListNode.remove]                                 | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [node.nextNode][KoneMutableListNode.nextNode]                             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [node.previousNode][KoneMutableListNode.previousNode]                     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [node.iteratorFromBeforeHere][KoneMutableListNode.iteratorFromBeforeHere] | \(\Theta(\mathrm{size})\) (for now)         | \(\Theta(\mathrm{size})\) (for now)         |
- * | [node.iteratorFromAfterHere][KoneMutableListNode.iteratorFromAfterHere]   | \(\Theta(\mathrm{size})\) (for now)         | \(\Theta(\mathrm{size})\) (for now)         |
- *
- * @usesMathJax
- */
-//@Serializable(with = KoneFixedCapacityLinkedArrayListWithContextSerializer::class)
+//@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructor(
+public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     size: UInt,
-    private val capacity: UInt,
-    data: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { null },
-    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
-    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
+    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
+    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
-    private var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
+    private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
+) : KoneGrowableMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -117,12 +33,25 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
-    private val data: KoneMutableArray<Node<Element>?> get() = _data!!
+    private var data: KoneMutableArray<Node<Element>?>
+        get() = _data!!
+        set(value) { _data = value }
     private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
-    private val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
+    private var nextNodeIndex: KoneMutableUIntArray
+        get() = _nextNodeIndex!!
+        set(value) { _nextNodeIndex = value }
     private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
-    private val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
-
+    private var previousNodeIndex: KoneMutableUIntArray
+        get() = _previousNodeIndex!!
+        set(value) { _previousNodeIndex = value }
+    
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
+        var currentActualIndexToClear = start
+        repeat(size) {
+            this[currentActualIndexToClear] = null
+            currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+        }
+    }
     override fun dispose() {
         if (isDisposed) return
         var currentIndex = start
@@ -143,7 +72,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             return field
         }
         private set
-
+    
     private fun actualIndex(index: UInt): UInt =
         when {
             index == size -> nextNodeIndex[end]
@@ -171,10 +100,46 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         return result
     }
+    private fun reinitializeBounds(newSize: UInt) {
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneGrowableArrayList implementation can not allocate array of size more than 2^31")
+        if (newSize > sizeUpperBound) {
+            while (newSize > sizeUpperBound) {
+                sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
+            }
+        }
+    }
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
+        val oldData = data
+        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        oldData.dispose(oldSize)
+        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
+        previousNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
+        start = 0u
+    }
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
+        reinitializeBounds(newSize)
+        reinitializeData(generator = generator)
+        size = newSize
+        end = if (size > 0u) size - 1u else sizeUpperBound - 1u
+    }
+
+    override fun ensureCapacity(minimalCapacity: UInt) {
+        if (sizeUpperBound < minimalCapacity) {
+            reinitializeBounds(minimalCapacity)
+            var actualIndex = start
+            reinitializeData {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    else -> null
+                }
+            }
+        }
+    }
+
     private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> Element) {
-        repeat(newElementsNumber) {
+        for (index in 0u ..< newElementsNumber) {
             end = nextNodeIndex[end]
-            data[end] = Node(this, generator(it), end)
+            data[end] = Node(this, generator(index), end)
         }
         size += newElementsNumber
     }
@@ -198,7 +163,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         previousNodeIndex[actualIndex] = freeIndex
 
         if (actualIndex == start) start = freeIndex
-
+        
         val newNode = Node(this, element, freeIndex)
         data[freeIndex] = newNode
 
@@ -207,7 +172,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         return newNode
     }
     private fun justRemoveAt(actualIndex: UInt) {
-        data[actualIndex]!!.detach()
         data[actualIndex] = null
         val prev = previousNodeIndex[actualIndex]
         val next = nextNodeIndex[actualIndex]
@@ -230,7 +194,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         if (index >= size) indexOutOfBoundsException(index, size)
         return data[actualIndex(index)]!!.element
     }
-
+    
     override fun getNode(index: UInt): KoneMutableListNode<Element> {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -260,67 +224,133 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     // TODO: Actually, it's not O(size) but O(capacity)
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
-        repeat(capacity) {
-            data[it]!!.detach()
-            data[it] = null
-            nextNodeIndex[it] = if (it == capacity - 1u) 0u else it + 1u
-            previousNodeIndex[it] = if (it == 0u) capacity - 1u else it - 1u
-            start = 0u
-            end = capacity - 1u
+        reinitializeBoundsAndData(0u) { null }
+    }
+
+    override fun add(element: Element) {
+        if (isDisposed) disposedInstanceException()
+        if (size == sizeUpperBound) {
+            var actualIndex = start
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it == size -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
+                    else -> null
+                }
+            }
+        } else {
+            justAddAfterTheEnd(element)
+        }
+    }
+    
+    override fun addNode(element: Element): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        return if (size == sizeUpperBound) {
+            val newNode = Node(this@KoneArrayGrowableLinkedNoddedList, element, size)
+            var actualIndex = start
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it == size -> newNode
+                    else -> null
+                }
+            }
+            newNode
+        } else {
+            justAddAfterTheEnd(element)
+        }
+    }
+
+    override fun addAt(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
+        if (index > size) indexOutOfBoundsException(index, size)
+        when {
+            size == sizeUpperBound -> {
+                var actualIndex = start
+                reinitializeBoundsAndData(size + 1u) {
+                    when {
+                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it == index -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
+                        it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        else -> null
+                    }
+                }
+            }
+            index == size -> justAddAfterTheEnd(element)
+            else -> justAddBefore(actualIndex(index), element)
+        }
+    }
+    
+    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        if (index > size) indexOutOfBoundsException(index, size)
+        return when {
+            size == sizeUpperBound -> {
+                val newNode = Node(this, element, index)
+                var actualIndex = start
+                reinitializeBoundsAndData(size + 1u) {
+                    when {
+                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it == index -> newNode
+                        it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        else -> null
+                    }
+                }
+                newNode
+            }
+            index == size -> justAddAfterTheEnd(element)
+            else -> justAddBefore(actualIndex(index), element)
         }
     }
 
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
-        if (size == capacity) capacityOverflowException(capacity)
-        justAddBefore(start, element)
+        if (size == sizeUpperBound) {
+            var actualIndex = start
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it == 0u -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
+                    it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    else -> null
+                }
+            }
+        } else {
+            justAddBefore(start, element)
+        }
     }
 
     override fun addLast(element: Element) {
         if (isDisposed) disposedInstanceException()
-        if (size == capacity) capacityOverflowException(capacity)
-        justAddAfterTheEnd(element)
-    }
-
-    override fun add(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        if (size == capacity) capacityOverflowException(capacity)
-        justAddAfterTheEnd(element)
-    }
-
-    override fun addNode(element: Element): KoneMutableListNode<Element> =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == capacity -> capacityOverflowException(capacity)
-            else -> justAddAfterTheEnd(element)
-        }
-
-    override fun addAt(index: UInt, element: Element) {
-        when {
-            isDisposed -> disposedInstanceException()
-            index > size -> indexOutOfBoundsException(index, size)
-            size == capacity -> capacityOverflowException(capacity)
-            index == size -> justAddAfterTheEnd(element)
-            else -> justAddBefore(actualIndex(index), element)
+        if (size == sizeUpperBound) {
+            var actualIndex = start
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it == size -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
+                    else -> null
+                }
+            }
+        } else {
+            justAddAfterTheEnd(element)
         }
     }
-
-    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> =
-        when {
-            isDisposed -> disposedInstanceException()
-            index > size -> indexOutOfBoundsException(index, size)
-            size == capacity -> capacityOverflowException(capacity)
-            index == size -> justAddAfterTheEnd(element)
-            else -> justAddBefore(actualIndex(index), element)
-        }
-
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
-        if (number == 0u) return
         val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-        
-        justAddAfterTheEnd(number) { builder(it) }
+        if (newSize > sizeUpperBound) {
+            val oldSize = size
+            var actualIndex = start
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < oldSize + number -> Node(this@KoneArrayGrowableLinkedNoddedList, builder(it - oldSize), it)
+                    else -> null
+                }
+            }
+        } else {
+            var localIndex = 0u
+            justAddAfterTheEnd(number) { builder(localIndex++) }
+        }
     }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
@@ -329,8 +359,21 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         if (number == 0u) return
         val newSize = size + number
         when {
-            newSize > capacity -> capacityOverflowException(capacity)
-            index == size -> justAddAfterTheEnd(number) { builder(it) }
+            newSize > sizeUpperBound -> {
+                var actualIndex = start
+                reinitializeBoundsAndData(newSize) {
+                    when {
+                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it < index + number -> Node(this@KoneArrayGrowableLinkedNoddedList, builder(it - index), it)
+                        it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        else -> null
+                    }
+                }
+            }
+            index == size -> {
+                var localIndex = 0u
+                justAddAfterTheEnd(number) { builder(localIndex++) }
+            }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
                 val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
@@ -344,7 +387,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                     }
                     actualInnerPartRightEndIndex = currentActualIndex
                 }
-                
+
                 nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
@@ -354,7 +397,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             }
         }
     }
-
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -382,7 +424,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             var resultSize = 0u
             while (checkingIndex < size) {
                 if (!predicate(checkingIndex, data[checkingActualMark]!!.element)) {
-                    data[resultActualMark] = data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
+                    data[resultActualMark] = data[checkingActualMark]
                     resultActualMark = nextNodeIndex[resultActualMark]
                     resultSize++
                 }
@@ -394,7 +436,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         var currentActualIndexToClear = firstNodeToClear
         repeat(size - newSize) {
-            data[currentActualIndexToClear]!!.detach()
             data[currentActualIndexToClear] = null
             currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
         }
@@ -414,12 +455,11 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             else -> Iterator(
                 list = this,
                 currentIndex = index,
-                actualCurrentIndex = if (capacity == 0u) 0u else actualIndex(index),
+                actualCurrentIndex = actualIndex(index),
             )
         }
 
     override fun toString(): String = buildString {
-        if (isDisposed) disposedInstanceException()
         append('[')
         if (size > 0u) append(data[start])
         var currentActualIndex = start
@@ -431,7 +471,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         append(']')
     }
     override fun hashCode(): Int {
-        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         var currentActualIndex = start
         repeat(size) {
@@ -441,13 +480,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
-        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneArrayFixedCapacityLinkedNoddedList<*> -> {
+            is KoneArrayGrowableLinkedNoddedList<*> -> {
                 var thisCurrentIndex = this.start
                 var otherCurrentIndex = other.start
                 repeat(size) {
@@ -471,33 +509,33 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
 
     internal class Node<Element>(
         override var element: Element,
-        internal var actualIndex: UInt,
-    ): KoneMutableListNode<Element> {
+        var actualIndex: UInt,
+    ) : KoneMutableListNode<Element> {
         override var isDetached: Boolean = false
             private set
         
-        private var _list: KoneArrayFixedCapacityLinkedNoddedList<Element>? = null
-        internal var list: KoneArrayFixedCapacityLinkedNoddedList<Element>
+        private var _list: KoneArrayGrowableLinkedNoddedList<Element>? = null
+        internal var list: KoneArrayGrowableLinkedNoddedList<Element>
             get() = _list!!
             set(value) { _list = value }
         
         override val index: UInt get() = list.virtualIndex(actualIndex)
-
+        
         fun detach() {
             _list = null
             isDetached = true
         }
         
-        constructor(list: KoneArrayFixedCapacityLinkedNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
+        constructor(list: KoneArrayGrowableLinkedNoddedList<Element>, element: Element, actualIndex: UInt) : this(element, actualIndex) {
             this.list = list
         }
-
+        
         override fun remove() {
             if (isDetached) detachedNodeException()
             list.justRemoveAt(actualIndex)
             detach()
         }
-
+        
         override val nextNode: KoneMutableListNode<Element>?
             get() = when {
                 isDetached -> detachedNodeException()
@@ -510,7 +548,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                 actualIndex != list.start -> list.data[list.previousNodeIndex[actualIndex]]
                 else -> null
             }
-
+        
         override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> =
             if (isDetached) detachedNodeException()
             else Iterator(
@@ -528,8 +566,8 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     }
 
     internal class Iterator<Element>(
-        val list: KoneArrayFixedCapacityLinkedNoddedList<Element>,
-        var currentIndex: UInt,
+        val list: KoneArrayGrowableLinkedNoddedList<Element>,
+        var currentIndex: UInt = 0u,
         var actualCurrentIndex: UInt,
     ): KoneMutableLinearIterator<Element> {
         override fun hasNext(): Boolean =
@@ -550,7 +588,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             list.data[currentIndex]!!.element = element
         }
         override fun addNext(element: Element) {
-            if (list.size == list.capacity) capacityOverflowException(list.capacity)
             if (currentIndex == list.size) list.justAddAfterTheEnd(element)
             else list.justAddBefore(list.nextNodeIndex[actualCurrentIndex], element)
         }
@@ -577,7 +614,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             list.data[list.previousNodeIndex[actualCurrentIndex]]!!.element = element
         }
         override fun addPrevious(element: Element) {
-            if (list.size == list.capacity) capacityOverflowException(list.capacity)
             list.justAddBefore(actualCurrentIndex, element)
         }
         override fun removePrevious() {
