@@ -7,7 +7,9 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.KoneGrowableMutableNoddedList
 import dev.lounres.kone.collections.KoneMutableArray
+import dev.lounres.kone.collections.producers.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -29,6 +31,22 @@ public inline fun <Element> KoneGrowableArrayNoddedList(size: UInt, initializer:
         sizeUpperBound = sizeUpperBound,
         data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneGrowableArrayNoddedList.Node(initializer(it), it) else null },
     )
+}
+
+public inline fun <Element> KoneGrowableArrayNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneGrowableArrayNoddedList<Element> {
+    val sizeUpperBound = powerOf2GreaterOrEqualTo(capacity)
+    return KoneGrowableArrayNoddedList(
+        size = size,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneGrowableArrayNoddedList.Node(initializer(it), it) else null },
+    )
+}
+
+public object KoneGrowableArrayNoddedListProducer : KoneGrowableMutableNoddedListProducer {
+    override fun <Element> produce(initialCapacity: UInt): KoneGrowableMutableNoddedList<Element> =
+        KoneGrowableArrayNoddedList(initialCapacity)
+    override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneGrowableMutableNoddedList<Element> =
+        KoneGrowableArrayNoddedList(size = number, capacity = initialCapacity, initializer = builder)
 }
 
 internal class KoneGrowableArrayNoddedListDescriptor(elementDescriptor: SerialDescriptor):
