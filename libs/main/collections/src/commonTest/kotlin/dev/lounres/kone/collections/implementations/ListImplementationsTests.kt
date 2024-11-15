@@ -32,34 +32,59 @@ data class ListImplementationDescription (
 
 // TODO: Add missing list producers
 val listImplementations = listOf<ListImplementationDescription>(
+    // Array fixed capacity implementations.
     ListImplementationDescription(
         name = "KoneArrayFixedCapacityLinkedList",
         producer = KoneArrayFixedCapacityLinkedListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayFixedCapacityLinkedNoddedList",
+        producer = KoneArrayFixedCapacityLinkedNoddedListProducer,
     ),
     ListImplementationDescription(
         name = "KoneArrayFixedCapacityList",
         producer = KoneArrayFixedCapacityListProducer,
     ),
     ListImplementationDescription(
+        name = "KoneArrayFixedCapacityNoddedList",
+        producer = KoneArrayFixedCapacityNoddedListProducer,
+    ),
+    // Array growable implementations.
+    ListImplementationDescription(
         name = "KoneArrayGrowableLinkedList",
         producer = KoneArrayGrowableLinkedListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayGrowableLinkedNoddedList",
+        producer = KoneArrayGrowableLinkedNoddedListProducer,
     ),
     ListImplementationDescription(
         name = "KoneArrayGrowableList",
         producer = KoneArrayGrowableListProducer,
     ),
     ListImplementationDescription(
-        name = "KoneArrayResizableLinkedList",
-        producer = KoneArrayResizableLinkedListProducer,
+        name = "KoneGrowableArrayNoddedList",
+        producer = KoneGrowableArrayNoddedListProducer,
     ),
+    // Array resizable implementations.
+//    ListImplementationDescription(
+//        name = "KoneArrayResizableLinkedList",
+//        producer = KoneArrayResizableLinkedListProducer,
+//    ),
     ListImplementationDescription(
         name = "KoneArrayResizableList",
         producer = KoneArrayResizableListProducer,
     ),
+    // Array settable implementations
     ListImplementationDescription(
         name = "KoneArraySettableList",
         producer = KoneArraySettableListProducer,
     ),
+    ListImplementationDescription(
+        name = "KoneArraySettableNoddedList",
+        producer = KoneArraySettableNoddedListProducer,
+    ),
+    // GC (resizable) implementations
 //    ListImplementationDescription(
 //        name = "KoneGCLinkedList",
 //        producer = KoneGCLinkedListProducer,

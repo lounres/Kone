@@ -8,7 +8,6 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
