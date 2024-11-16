@@ -34,7 +34,7 @@ val minHeapImplementations = listOf<MinimumHeapDescription>(
         override val builder: MinimumHeapBuilder =
             object : MinimumHeapBuilder {
                 override fun <E, P> build(priorityContext: Order<P>): MinimumHeap<E, P> =
-                    BinaryGCMinimumHeap(priorityContext)
+                    KoneGCBinaryMinimumHeap(priorityContext)
             }
     }
 )

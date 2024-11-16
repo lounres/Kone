@@ -39,7 +39,7 @@ val searchTreeImplementations = listOf<SearchTreeImplementationDescription>(
         override val builder: ConnectedSearchTreeBuilder =
             object : ConnectedSearchTreeBuilder {
                 override fun <E> build(elementContext: Order<E>): LinkedSearchTree<E> =
-                    TwoThreeTree(elementContext)
+                    KoneTwoThreeTree(elementContext)
             }
     }
 )

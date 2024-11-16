@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.SearchSegmentResult
+import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.eq
@@ -17,7 +18,7 @@ import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
 
 
-public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*internal*/ constructor(
+public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*internal*/ constructor(
     public val elementContext: ElementContext,
 ) : LinkedSearchTree<Element> {
     override var size: UInt = 0u
@@ -29,13 +30,13 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     private fun NodeHolder<Element>?.replaceChild(oldChild: NodeHolder<Element>, newChild: NodeHolder<Element>) {
         when (this) {
             null -> rootHolder = newChild
-            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder ->
+            is TwoNodeHolder ->
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
                     else -> throw IllegalStateException("Trying to change parent's non-existent child")
                 }
-            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+            is ThreeNodeHolder ->
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
@@ -57,7 +58,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 )
                 rootHolder = newHolder
             }
-            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+            is TwoNodeHolder -> {
                 val parent = this.parent
                 val isThisBottom = this.isItBottom
                 val firstChild = this.firstChild
@@ -91,7 +92,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 
                 parent.replaceChild(this, newNodeHolder)
             }
-            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+            is ThreeNodeHolder -> {
                 val parent = this.parent
                 val isThisBottom = this.isItBottom
                 val firstChild = this.firstChild
@@ -101,9 +102,9 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 val thirdChild = this.thirdChild
                 this.dispose()
                 
-                val firstNewParent: TwoNodeHolder
+                val firstNewParent: TwoNodeHolder<Element>
                 val parentNode: Node<Element>
-                val secondNewParent: TwoNodeHolder
+                val secondNewParent: TwoNodeHolder<Element>
                 
                 when (oldChild) {
                     firstChild -> {
@@ -171,11 +172,11 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 rootHolder = referredChild
                 referredChild?.parent = null
             }
-            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder ->
+            is TwoNodeHolder ->
                 when (oldChild) {
                     this.firstChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newThis = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -189,7 +190,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                                 secondChild.dispose()
                                 parent.replaceChildWithReference(this, newThis)
                             }
-                            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -217,7 +218,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         }
                     this.secondChild ->
                         when (val firstChild = this.firstChild!!) {
-                            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newThis = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -231,7 +232,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                                 firstChild.dispose()
                                 parent.replaceChildWithReference(this, newThis)
                             }
-                            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -259,11 +260,11 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         }
                     else -> throw IllegalStateException("Received not a child of the parent")
                 }
-            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+            is ThreeNodeHolder ->
                 when (oldChild) {
                     this.firstChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -283,7 +284,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -313,7 +314,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         }
                     this.secondChild ->
                         when (val firstChild = this.firstChild!!) {
-                            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -334,7 +335,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -364,7 +365,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         }
                     this.thirdChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newSecondChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -385,7 +386,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newSecondChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -438,7 +439,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                     else -> onEmpty()
                 }
             when (subtree) {
-                is TwoThreeTree<Element, ElementContext>.TwoNodeHolder ->
+                is TwoNodeHolder ->
                     when {
                         elementContext { element lt subtree.element.element } -> {
                             upperBound = subtree.element
@@ -450,7 +451,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                             subtree = subtree.secondChild
                         }
                     }
-                is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+                is ThreeNodeHolder ->
                     when {
                         elementContext { element lt subtree.firstElement.element } -> {
                             upperBound = subtree.firstElement
@@ -474,12 +475,12 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     
     private fun removeBottomNode(node: Node<Element>) {
         when (val holder = node.holder) {
-            is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+            is TwoNodeHolder -> {
                 val parent = holder.parent
                 holder.dispose()
                 parent.replaceChildWithReference(holder, null)
             }
-            is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder -> {
+            is ThreeNodeHolder -> {
                 val newHolder = twoNodeHolder(
                     isItBottom = true,
                     firstChild = null,
@@ -519,12 +520,12 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 val holder = node.holder
                 val nextHolder = nextNode.holder
                 when (holder) {
-                    is TwoThreeTree<Element, ElementContext>.TwoNodeHolder ->
+                    is TwoNodeHolder ->
                         when (node) {
                             holder.element -> holder.element = nextNode
                             else -> throw IllegalStateException("Received not a holder of the node")
                         }
-                    is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         when (node) {
                             holder.firstElement -> holder.firstElement = nextNode
                             holder.secondElement -> holder.secondElement = nextNode
@@ -532,12 +533,12 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         }
                 }
                 when (nextHolder) {
-                    is TwoThreeTree<Element, ElementContext>.TwoNodeHolder ->
+                    is TwoNodeHolder ->
                         when (nextNode) {
                             nextHolder.element -> nextHolder.element = node
                             else -> throw IllegalStateException("Received not a holder of the node")
                         }
-                    is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         when (nextNode) {
                             nextHolder.firstElement -> nextHolder.firstElement = node
                             nextHolder.secondElement -> nextHolder.secondElement = node
@@ -555,6 +556,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 size--
             }
         }
+        node.detach()
     }
     
     override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<Element>> = Nodes()
@@ -588,7 +590,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 val lowerBoundHolder = lowerBound.holder
                 val upperBoundHolder = upperBound.holder
                 when {
-                    lowerBoundHolder.isItBottom && lowerBoundHolder is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                    lowerBoundHolder.isItBottom && lowerBoundHolder is TwoNodeHolder -> {
                         val parent = lowerBoundHolder.parent
                         val newLowerBoundHolder = threeNodeHolder(
                             isItBottom = true,
@@ -605,7 +607,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         newLowerBoundHolder.parent = parent
                         lowerBoundHolder.dispose()
                     }
-                    upperBoundHolder.isItBottom && upperBoundHolder is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                    upperBoundHolder.isItBottom && upperBoundHolder is TwoNodeHolder -> {
                         val parent = upperBoundHolder.parent
                         val newUpperBoundHolder = threeNodeHolder(
                             isItBottom = true,
@@ -643,7 +645,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         lowerBoundHolder.dispose()
                     }
                     lowerBoundHolder.isItBottom -> {
-                        lowerBoundHolder as TwoThreeTree<Element, ElementContext>.ThreeNodeHolder
+                        lowerBoundHolder as ThreeNodeHolder
                         lowerBoundHolder.parent.replaceChild(
                             oldChild = lowerBoundHolder,
                             firstNewChild = twoNodeHolder(
@@ -663,7 +665,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         lowerBoundHolder.dispose()
                     }
                     upperBoundHolder.isItBottom -> {
-                        upperBoundHolder as TwoThreeTree<Element, ElementContext>.ThreeNodeHolder
+                        upperBoundHolder as ThreeNodeHolder
                         upperBoundHolder.parent.replaceChild(
                             oldChild = upperBoundHolder,
                             firstNewChild = twoNodeHolder(
@@ -695,7 +697,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 val minimumHolder = minimum.holder
                 check(minimum.holder.isItBottom) { "For some reason, minimum is not at the bottom" }
                 when (minimumHolder) {
-                    is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                    is TwoNodeHolder -> {
                         val parent = minimumHolder.parent
                         val newMinimumHolder = threeNodeHolder(
                             isItBottom = true,
@@ -711,7 +713,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         )
                         newMinimumHolder.parent = parent
                     }
-                    is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         minimumHolder.parent.replaceChild(
                             oldChild = minimumHolder,
                             firstNewChild = twoNodeHolder(
@@ -740,7 +742,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                 val maximumHolder = maximum.holder
                 check(maximum.holder.isItBottom) { "For some reason, maximum is not at the bottom" }
                 when (maximumHolder) {
-                    is TwoThreeTree<Element, ElementContext>.TwoNodeHolder -> {
+                    is TwoNodeHolder -> {
                         val parent = maximumHolder.parent
                         val newMaximumHolder = threeNodeHolder(
                             isItBottom = true,
@@ -756,7 +758,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
                         )
                         newMaximumHolder.parent = parent
                     }
-                    is TwoThreeTree<Element, ElementContext>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         maximumHolder.parent.replaceChild(
                             oldChild = maximumHolder,
                             firstNewChild = twoNodeHolder(
@@ -823,29 +825,38 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     internal sealed interface NodeHolder<E> : Disposable {
         var parent: NodeHolder<E>?
         val isItBottom: Boolean
-        val tree: TwoThreeTree<E, *>
+        val tree: KoneTwoThreeTree<E, *>
     }
-    internal inner class TwoNodeHolder(
+    internal class TwoNodeHolder<Element>(
+        tree: KoneTwoThreeTree<Element, *>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         element: Node<Element>,
         var secondChild: NodeHolder<Element>?,
     ) : NodeHolder<Element> {
+        override var isDisposed: Boolean = false
+            private set
+        
+        private var _tree: KoneTwoThreeTree<Element, *>? = tree
+        override val tree: KoneTwoThreeTree<Element, *> get() = _tree!!
         override var parent: NodeHolder<Element>? = null
         private var _element: Node<Element>? = element
         var element: Node<Element>
             get() = _element!!
             set(value) { _element = value }
         
-        override val tree: TwoThreeTree<Element, *> get() = this@TwoThreeTree
         override fun dispose() {
+            if (isDisposed) return
+            _tree = null
             parent = null
             firstChild = null
             _element = null
             secondChild = null
+            isDisposed = true
         }
     }
-    internal inner class ThreeNodeHolder(
+    internal class ThreeNodeHolder<Element>(
+        tree: KoneTwoThreeTree<Element, *>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         firstElement: Node<Element>,
@@ -853,6 +864,11 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         secondElement: Node<Element>,
         var thirdChild: NodeHolder<Element>?,
     ) : NodeHolder<Element> {
+        override var isDisposed: Boolean = false
+            private set
+        
+        private var _tree: KoneTwoThreeTree<Element, *>? = tree
+        override val tree: KoneTwoThreeTree<Element, *> get() = _tree!!
         override var parent: NodeHolder<Element>? = null
         private var _firstElement: Node<Element>? = firstElement
         var firstElement: Node<Element>
@@ -863,7 +879,6 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
             get() = _secondElement!!
             set(value) { _secondElement = value }
         
-        override val tree: TwoThreeTree<Element, *> get() = this@TwoThreeTree
         override fun dispose() {
             parent = null
             firstChild = null
@@ -871,6 +886,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
             secondChild = null
             _secondElement = null
             thirdChild = null
+            isDisposed = true
         }
     }
     
@@ -879,12 +895,13 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         firstChild: NodeHolder<Element>?,
         element: Node<Element>,
         secondChild: NodeHolder<Element>?,
-    ): TwoNodeHolder {
+    ): TwoNodeHolder<Element> {
         check(
             if (isItBottom) firstChild == null && secondChild == null
             else firstChild != null && secondChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = TwoNodeHolder(
+            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             element = element,
@@ -903,12 +920,13 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         secondChild: NodeHolder<Element>?,
         secondElement: Node<Element>,
         thirdChild: NodeHolder<Element>?,
-    ): ThreeNodeHolder {
+    ): ThreeNodeHolder<Element> {
         check(
             if (isItBottom) firstChild == null && secondChild == null && thirdChild == null
             else firstChild != null && secondChild != null && thirdChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = ThreeNodeHolder(
+            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             firstElement = firstElement,
@@ -927,6 +945,9 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     internal class Node<E>(
         override val element: E,
     ) : LinkedSearchTreeNode<E> {
+        override var isDetached: Boolean = false
+            private set
+        
         private var _holder: NodeHolder<E>? = null
         internal var holder: NodeHolder<E>
             get() = _holder!!
@@ -936,10 +957,17 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
         override var previousNode: Node<E>? = null
             internal set
         
-        override fun remove() {
-            if (_holder == null) throw IllegalStateException("The node has already been removed")
-            _holder!!.tree.removeNode(this)
+        fun detach() {
+            if (isDetached) return
             _holder = null
+            nextNode = null
+            previousNode = null
+            isDetached = true
+        }
+        
+        override fun remove() {
+            if (isDetached) detachedNodeException()
+            _holder!!.tree.removeNode(this)
         }
     }
     
@@ -984,7 +1012,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     }
     
     internal inner class Nodes : KoneLinkedSet<Node<Element>> {
-        override val size: UInt get() = this@TwoThreeTree.size
+        override val size: UInt get() = this@KoneTwoThreeTree.size
         
         override fun get(index: UInt): Node<Element> {
             TODO("Not yet implemented")
@@ -1041,7 +1069,7 @@ public class TwoThreeTree<Element, out ElementContext: Order<Element>> /*interna
     }
     
     internal inner class Elements : KoneLinkedSet<Element> {
-        override val size: UInt get() = this@TwoThreeTree.size
+        override val size: UInt get() = this@KoneTwoThreeTree.size
         
         override fun get(index: UInt): Element {
             TODO("Not yet implemented")

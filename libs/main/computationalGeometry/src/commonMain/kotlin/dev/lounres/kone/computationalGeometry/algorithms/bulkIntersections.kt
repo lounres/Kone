@@ -10,16 +10,13 @@ import dev.lounres.kone.collections.HeapNode
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneSettableList
 import dev.lounres.kone.collections.MinimumHeap
-import dev.lounres.kone.collections.implementations.BinaryGCMinimumHeap
+import dev.lounres.kone.collections.implementations.KoneGCBinaryMinimumHeap
 import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.withIndex
-import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.compareTo
-import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.gt
 import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
@@ -27,7 +24,6 @@ import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.Segment2
 import dev.lounres.kone.computationalGeometry.end
 import dev.lounres.kone.computationalGeometry.lexicographic2DOrder
-import dev.lounres.kone.computationalGeometry.pointEquality
 import dev.lounres.kone.context.invoke
 
 
@@ -94,7 +90,7 @@ private fun <N, A> addIntersectionFor(
 context(A, EuclideanKategory<N>)
 public fun <N, A> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N>>> where A: Field<N>, A: Order<N> {
     val pointsOrder = lexicographic2DOrder
-    val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = BinaryGCMinimumHeap(pointsOrder)
+    val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = KoneGCBinaryMinimumHeap(pointsOrder)
     val segmentsSearchTree: ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>> = TwoThreeTreeForBentleyOttmann()
     val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>>?>(this.size) { null }
     
