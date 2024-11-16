@@ -430,7 +430,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     // TODO: Review operations. Looks like they are incorrect.
     internal class Iterator<Element>(
         val list: KoneArrayGrowableLinkedList<Element>,
-        var currentIndex: UInt = 0u,
+        var currentIndex: UInt,
     ): KoneMutableLinearIterator<Element> {
         var actualCurrentIndex = if (list.sizeUpperBound == 0u) 0u else list.actualIndex(currentIndex)
         

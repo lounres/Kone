@@ -15,27 +15,53 @@ import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneResizableLinkedArrayListWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constructor(
     size: UInt,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
     private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
-    private var data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    private var nextCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
-    private var previousCellIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
+    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
+    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     private var start: UInt = 0u,
     private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
 ) : KoneMutableList<Element>, KoneDequeue<Element>, Disposable {
+    override var isDisposed: Boolean = false
+        private set
+    
+    private var _data: KoneMutableArray<Any?>? = data
+    private var data: KoneMutableArray<Any?>
+        get() = _data!!
+        set(value) { _data = value }
+    private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
+    private var nextNodeIndex: KoneMutableUIntArray
+        get() = _nextNodeIndex!!
+        set(value) { _nextNodeIndex = value }
+    private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
+    private var previousNodeIndex: KoneMutableUIntArray
+        get() = _previousNodeIndex!!
+        set(value) { _previousNodeIndex = value }
+    
+    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
+        var currentActualIndexToClear = start
+        repeat(size) {
+            this[currentActualIndexToClear] = null
+            currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+        }
+    }
+    override fun dispose() {
+        if (isDisposed) return
+        data.dispose(size)
+        _data = null
+        _nextNodeIndex = null
+        _previousNodeIndex = null
+        isDisposed = true
+    }
+    
     override var size: UInt = size
         private set
 
-    private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
-        var currentActualIndexToClear = start
-        for (i in 0u ..< size) {
-            this[currentActualIndexToClear] = null
-            currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
-        }
-    }
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneResizableLinkedArrayList implementation can not allocate array of size more than 2^31")
         when {
@@ -59,8 +85,8 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         val oldData = data
         data = KoneMutableArray(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
-        nextCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
-        previousCellIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
+        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
+        previousNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
         start = 0u
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
@@ -70,24 +96,20 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         end = (if (size > 0u) size - 1u else sizeUpperBound - 1u)
     }
 
-    override fun dispose() {
-        data.dispose(size)
-    }
-
     private fun actualIndex(index: UInt): UInt =
         when {
-            index == size -> nextCellIndex[end]
+            index == size -> nextNodeIndex[end]
             index <= (size - 1u) / 2u -> {
                 var currentIndex = start
                 repeat(index) {
-                    currentIndex = nextCellIndex[currentIndex]
+                    currentIndex = nextNodeIndex[currentIndex]
                 }
                 currentIndex
             }
             else -> {
                 var currentIndex = end
                 for (i in index ..< size-1u) {
-                    currentIndex = previousCellIndex[currentIndex]
+                    currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
             }
@@ -95,27 +117,27 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     private inline fun justAddAfterTheEnd(newElementsNumber: UInt, generator: (index: UInt) -> Element) {
 
         for (index in 0u ..< newElementsNumber) {
-            end = nextCellIndex[end]
+            end = nextNodeIndex[end]
             data[end] = generator(index)
         }
         size += newElementsNumber
     }
     private fun justAddAfterTheEnd(element: Element) {
-        end = nextCellIndex[end]
+        end = nextNodeIndex[end]
         data[end] = element
         size += 1u
     }
     private fun justAddBefore(actualIndex: UInt, element: Element) {
-        val freeIndex = nextCellIndex[end]
-        val indexAfterTheFreeIndex = nextCellIndex[freeIndex]
-        nextCellIndex[end] = indexAfterTheFreeIndex
-        previousCellIndex[indexAfterTheFreeIndex] = end
+        val freeIndex = nextNodeIndex[end]
+        val indexAfterTheFreeIndex = nextNodeIndex[freeIndex]
+        nextNodeIndex[end] = indexAfterTheFreeIndex
+        previousNodeIndex[indexAfterTheFreeIndex] = end
 
-        val indexBeforeTheActualIndex = previousCellIndex[actualIndex]
-        nextCellIndex[freeIndex] = actualIndex
-        previousCellIndex[freeIndex] = indexBeforeTheActualIndex
-        nextCellIndex[indexBeforeTheActualIndex] = freeIndex
-        previousCellIndex[actualIndex] = freeIndex
+        val indexBeforeTheActualIndex = previousNodeIndex[actualIndex]
+        nextNodeIndex[freeIndex] = actualIndex
+        previousNodeIndex[freeIndex] = indexBeforeTheActualIndex
+        nextNodeIndex[indexBeforeTheActualIndex] = freeIndex
+        previousNodeIndex[actualIndex] = freeIndex
 
         if (actualIndex == start) start = freeIndex
 
@@ -125,54 +147,61 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
     private fun justRemoveAt(actualIndex: UInt) {
         data[actualIndex] = null
-        val prev = previousCellIndex[actualIndex]
-        val next = nextCellIndex[actualIndex]
-        nextCellIndex[prev] = next
-        previousCellIndex[next] = prev
+        val prev = previousNodeIndex[actualIndex]
+        val next = nextNodeIndex[actualIndex]
+        nextNodeIndex[prev] = next
+        previousNodeIndex[next] = prev
         if (start == actualIndex) start = next
         if (end == actualIndex) end = prev
         size--
 
-        val afterEnd = nextCellIndex[end]
-        nextCellIndex[end] = actualIndex
-        previousCellIndex[afterEnd] = actualIndex
-        nextCellIndex[actualIndex] = afterEnd
-        previousCellIndex[actualIndex] = end
+        val afterEnd = nextNodeIndex[end]
+        nextNodeIndex[end] = actualIndex
+        previousNodeIndex[afterEnd] = actualIndex
+        nextNodeIndex[actualIndex] = afterEnd
+        previousNodeIndex[actualIndex] = end
         if (size == 0u) start = actualIndex
     }
 
     override fun get(index: UInt): Element {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        val result = data[actualIndex(index)] as Element
-        return result
+        return data[actualIndex(index)] as Element
     }
 
-    override fun getFirst(): Element {
-        if (isEmpty()) indexOutOfBoundsException(0u, size) // TODO: Maybe replace with another error
-        return data[start] as Element
-    }
+    override fun getFirst(): Element =
+        when {
+            isDisposed -> disposedInstanceException()
+            isEmpty() -> indexOutOfBoundsException(0u, size)
+            else -> data[start] as Element
+        }
 
-    override fun getLast(): Element {
-        if (isEmpty()) indexOutOfBoundsException(size, size) // TODO: Maybe replace with another error
-        return data[end] as Element
-    }
+    override fun getLast(): Element =
+        when {
+            isDisposed -> disposedInstanceException()
+            isEmpty() -> indexOutOfBoundsException(size, size)
+            else -> data[end] as Element
+        }
 
     override fun set(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         data[actualIndex(index)] = element
     }
 
     override fun removeAll() {
+        if (isDisposed) disposedInstanceException()
         reinitializeBoundsAndData(0u) { null }
     }
 
     override fun add(element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
             val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     it == oldSize -> element
                     else -> null
                 }
@@ -181,13 +210,14 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun addFirst(element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
             val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it == 0u -> element
-                    it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -195,12 +225,13 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun addLast(element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
             val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     it == oldSize -> element
                     else -> null
                 }
@@ -209,6 +240,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun addAt(index: UInt, element: Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         when {
             size == sizeUpperBound -> {
@@ -216,9 +248,9 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
                 var actualIndex = start
                 reinitializeBoundsAndData(size + 1u) {
                     when {
-                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         it == index -> element
-                        it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         else -> null
                     }
                 }
@@ -229,13 +261,14 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         val newSize = size + number
         if (newSize > sizeUpperBound) {
             val oldSize = size
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     it < oldSize + number -> builder(it - oldSize)
                     else -> null
                 }
@@ -246,6 +279,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (number == 0u) return
         val newSize = size + number
@@ -254,9 +288,9 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
                 var actualIndex = start
                 reinitializeBoundsAndData(newSize) {
                     when {
-                        it < index -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         it < index + number -> builder(it - index)
-                        it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                         else -> null
                     }
                 }
@@ -266,28 +300,29 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
-                val actualLeftPartIndex = previousCellIndex[actualRightPartIndex]
-                val actualInnerPartLeftEndIndex = nextCellIndex[end]
+                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
+                val actualInnerPartLeftEndIndex = nextNodeIndex[end]
                 val actualInnerPartRightEndIndex: UInt
                 scope {
                     var currentActualIndex = end
                     for (localIndex in 0u ..< number) {
-                        currentActualIndex = nextCellIndex[currentActualIndex]
+                        currentActualIndex = nextNodeIndex[currentActualIndex]
                         data[currentActualIndex] = builder(localIndex)
                     }
                     actualInnerPartRightEndIndex = currentActualIndex
                 }
 
-                nextCellIndex[end] = nextCellIndex[actualInnerPartRightEndIndex]
-                previousCellIndex[nextCellIndex[actualInnerPartRightEndIndex]] = end
-                nextCellIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
-                previousCellIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextCellIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousCellIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
+                previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
+                nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
+                previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
+                nextNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                previousNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
             }
         }
     }
     override fun removeAt(index: UInt) {
+        if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
@@ -295,8 +330,8 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < newSize -> {
-                        if (it == index) actualIndex = nextCellIndex[actualIndex]
-                        get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                        if (it == index) actualIndex = nextNodeIndex[actualIndex]
+                        get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     }
                     else -> null
                 }
@@ -307,13 +342,14 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun removeFirst() {
+        if (isDisposed) disposedInstanceException()
         if (size == 0u) indexOutOfBoundsException(0u, size) // TODO: Maybe replace with another error
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
-            var actualIndex = nextCellIndex[start]
+            var actualIndex = nextNodeIndex[start]
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -323,13 +359,14 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun removeLast() {
+        if (isDisposed) disposedInstanceException()
         if (size == 0u) indexOutOfBoundsException(size, size) // TODO: Maybe replace with another error
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     else -> null
                 }
             }
@@ -339,8 +376,9 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+        if (isDisposed) disposedInstanceException()
         val newSize: UInt
-        val firstCellToClear: UInt
+        val firstNodeToClear: UInt
         scope {
             var checkingActualMark = 0u
             var checkingIndex = 0u
@@ -349,48 +387,57 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             while (checkingIndex < size) {
                 if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
                     data[resultActualMark] = data[checkingActualMark]
-                    resultActualMark = nextCellIndex[resultActualMark]
+                    resultActualMark = nextNodeIndex[resultActualMark]
                     resultSize++
                 }
-                checkingActualMark = nextCellIndex[checkingActualMark]
+                checkingActualMark = nextNodeIndex[checkingActualMark]
                 checkingIndex++
             }
             newSize = resultSize
-            firstCellToClear = resultActualMark
+            firstNodeToClear = resultActualMark
         }
         if (newSize < sizeLowerBound) {
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                    it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
                     else -> null
                 }
             }
         } else {
-            var currentActualIndexToClear = firstCellToClear
+            var currentActualIndexToClear = firstNodeToClear
             repeat(size - newSize) {
                 data[currentActualIndexToClear] = null
-                currentActualIndexToClear = nextCellIndex[currentActualIndexToClear]
+                currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
             }
             size = newSize
         }
     }
 
-    override fun iterator(): KoneMutableLinearIterator<Element> = Iterator()
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> = Iterator(index)
+    override fun iterator(): KoneMutableLinearIterator<Element> =
+        if (isDisposed) disposedInstanceException()
+        else Iterator(this, 0u)
+    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
+        when {
+            isDisposed -> disposedInstanceException()
+            index > size -> indexOutOfBoundsException(index, size)
+            else -> Iterator(this, index)
+        }
 
     override fun toString(): String = buildString {
+        if (isDisposed) disposedInstanceException()
         append('[')
         if (size > 0u) append(data[start])
         var currentIndex = start
         for (i in 1u..<size) {
-            currentIndex = nextCellIndex[currentIndex]
+            currentIndex = nextNodeIndex[currentIndex]
             append(", ")
             append(data[currentIndex])
         }
         append(']')
     }
     override fun hashCode(): Int {
+        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         for (i in 0u..<size) {
             hashCode = 31 * hashCode + this.data[i].hashCode()
@@ -398,6 +445,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
+        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
@@ -408,8 +456,8 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
                 var otherCurrentIndex = other.start
                 repeat(size) {
                     if (this.data[thisCurrentIndex] != other.data[otherCurrentIndex]) return false
-                    thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
-                    otherCurrentIndex = other.nextCellIndex[otherCurrentIndex]
+                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
+                    otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
                 }
             }
             else -> {
@@ -417,97 +465,103 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
                 val otherIterator = other.iterator()
                 for (i in 0u ..< size) {
                     if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
-                    thisCurrentIndex = this.nextCellIndex[thisCurrentIndex]
+                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
                 }
             }
         }
 
         return true
     }
-
-    internal inner class Iterator(var currentIndex: UInt = 0u): KoneMutableLinearIterator<Element> {
-        init {
-            if (currentIndex > size) indexOutOfBoundsException(currentIndex, size)
-        }
-        var actualCurrentIndex = actualIndex(currentIndex)
-        override fun hasNext(): Boolean = currentIndex < size
+    
+    // TODO: Review operations. Looks like they are incorrect.
+    internal class Iterator<Element>(
+        val list: KoneArrayResizableLinkedList<Element>,
+        var currentIndex: UInt,
+    ): KoneMutableLinearIterator<Element> {
+        var actualCurrentIndex = list.actualIndex(currentIndex)
+        
+        override fun hasNext(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex < list.size
         override fun getNext(): Element {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            return data[actualCurrentIndex] as Element
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[actualCurrentIndex] as Element
         }
         override fun moveNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasNext()) noNextElementInIteratorException()
             currentIndex++
-            actualCurrentIndex = nextCellIndex[actualCurrentIndex]
+            actualCurrentIndex = list.nextNodeIndex[actualCurrentIndex]
         }
-        override fun nextIndex(): UInt = if (hasNext()) currentIndex else indexOutOfBoundsException(currentIndex, size)
+        override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            data[actualCurrentIndex] = element
+            if (!hasNext()) noNextElementInIteratorException()
+            list.data[actualCurrentIndex] = element
         }
         override fun addNext(element: Element) {
             when {
-                size == sizeUpperBound -> {
-                    val oldSize = size
-                    var actualIndex = start
-                    reinitializeBoundsAndData(size + 1u) {
+                list.size == list.sizeUpperBound -> {
+                    val oldSize = list.size
+                    var actualIndex = list.start
+                    list.reinitializeBoundsAndData(list.size + 1u) {
                         when {
-                            it < currentIndex -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            it < currentIndex -> get(actualIndex).also { actualIndex = list.nextNodeIndex[actualIndex] }
                             it == currentIndex -> element
-                            it <= oldSize -> get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            it <= oldSize -> get(actualIndex).also { actualIndex = list.nextNodeIndex[actualIndex] }
                             else -> null
                         }
                     }
                     actualCurrentIndex = currentIndex
                 }
-                currentIndex == size -> justAddAfterTheEnd(element)
+                currentIndex == list.size -> list.justAddAfterTheEnd(element)
                 else -> {
-                    justAddBefore(actualCurrentIndex, element)
-                    actualCurrentIndex = previousCellIndex[actualCurrentIndex]
+                    list.justAddBefore(actualCurrentIndex, element)
+                    actualCurrentIndex = list.previousNodeIndex[actualCurrentIndex]
                 }
             }
         }
         override fun removeNext() {
-            if (!hasNext()) indexOutOfBoundsException(currentIndex, size)
-            val newSize = size - 1u
-            if (newSize < sizeLowerBound) {
-                var actualIndex = start
-                reinitializeBoundsAndData(newSize) {
+            if (!hasNext()) noNextElementInIteratorException()
+            val newSize = list.size - 1u
+            if (newSize < list.sizeLowerBound) {
+                var actualIndex = list.start
+                list.reinitializeBoundsAndData(newSize) {
                     when {
                         it < newSize -> {
-                            if (it == currentIndex) actualIndex = nextCellIndex[actualIndex]
-                            get(actualIndex).also { actualIndex = nextCellIndex[actualIndex] }
+                            if (it == currentIndex) actualIndex = list.nextNodeIndex[actualIndex]
+                            get(actualIndex).also { actualIndex = list.nextNodeIndex[actualIndex] }
                         }
                         else -> null
                     }
                 }
                 actualCurrentIndex = currentIndex
             } else {
-                justRemoveAt(actualCurrentIndex)
+                list.justRemoveAt(actualCurrentIndex)
             }
         }
 
-        override fun hasPrevious(): Boolean = currentIndex > 0u
+        override fun hasPrevious(): Boolean =
+            if (list.isDisposed) disposedInstanceException()
+            else currentIndex > 0u
         override fun getPrevious(): Element {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            return data[previousCellIndex[actualCurrentIndex]] as Element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[list.previousNodeIndex[actualCurrentIndex]] as Element
         }
         override fun movePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             currentIndex--
-            actualCurrentIndex = previousCellIndex[actualCurrentIndex]
+            actualCurrentIndex = list.previousNodeIndex[actualCurrentIndex]
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else indexOutOfBoundsException(currentIndex, size)
+        override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            data[previousCellIndex[actualCurrentIndex]] = element
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            list.data[list.previousNodeIndex[actualCurrentIndex]] = element
         }
         override fun addPrevious(element: Element) {
-            justAddBefore(actualCurrentIndex, element)
+            list.justAddBefore(actualCurrentIndex, element)
         }
         override fun removePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(currentIndex, size)
-            justRemoveAt(previousCellIndex[actualCurrentIndex])
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
         }
     }
 }
