@@ -5,21 +5,15 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
 
-//public inline fun <Element, ElementContext: Equality<Element>> KoneListBackedSet(
-//    elementContext: ElementContext,
-//    backingListFabric: (ElementContext) -> KoneIterableList<Element>
-//): KoneListBackedSet<Element, ElementContext> =
-//    KoneListBackedSet(elementContext, backingListFabric(elementContext))
-//
-//public inline fun <Element> KoneListBackedSet(backingListFabric: (Equality<Element>) -> KoneIterableList<Element>): KoneListBackedSet<Element, Equality<Element>> =
-//    KoneListBackedSet(defaultEquality(), backingListFabric(defaultEquality()))
-//
-//internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneCollectionDescriptor(
-//        serialName = "dev.lounres.kone.collections.implementations.KoneListBackedSet<data>",
-//        elementDescriptor = elementDescriptor,
-//    )
+
+internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
+    KoneCollectionDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneListBackedSet<data>",
+        elementDescriptor = elementDescriptor,
+    )
 
 //internal class KoneListBackedSetSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,

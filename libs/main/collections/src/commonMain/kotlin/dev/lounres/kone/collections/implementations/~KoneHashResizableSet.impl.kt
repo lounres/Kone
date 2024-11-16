@@ -20,6 +20,7 @@ import kotlin.math.max
 
 
 //@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
@@ -28,18 +29,17 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateSize(capacityUpperBound, loadFactor),
-    private var data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
+    data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
     override val elementContext: ElementContext,
 ) : KoneMutableSetWithContext<Element, ElementContext>, Disposable {
-    override var size: UInt = size
+    override var isDisposed: Boolean = false
         private set
-
-    private fun Element.localHash(): Int {
-        val contextHash = elementContext { this.hash() }
-        return contextHash xor (contextHash ushr 16)
-    }
-    private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
-
+    
+    private var _data: KoneArray<KoneArrayResizableLinkedList<Element>>? = data
+    private var data: KoneArray<KoneArrayResizableLinkedList<Element>>
+        get() = _data!!
+        set(value) { _data = value }
+    
     private fun KoneArray<KoneArrayResizableLinkedList<Element>>.dispose() {
         // KT-67409
 //        @Suppress("UNCHECKED_CAST")
@@ -50,8 +50,25 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
         }
     }
     override fun dispose() {
+        if (isDisposed) return
         data.dispose()
+        _data = null
+        isDisposed = true
     }
+    
+    override var size: UInt = size
+        get() {
+            if (isDisposed) disposedInstanceException()
+            return field
+        }
+        private set
+
+    private fun Element.localHash(): Int {
+        val contextHash = elementContext { this.hash() }
+        return contextHash xor (contextHash ushr 16)
+    }
+    private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
+    
     private fun reinitializeBounds(newSize: UInt) {
         val newCapacity = calculateCapacity(newSize, loadFactor)
         if (newCapacity > MAX_CAPACITY) throw IllegalArgumentException("KoneResizableHashMap implementation can not allocate array of size more than 2^31 needed for size $newSize and load factor $loadFactor")
@@ -92,11 +109,13 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
 
     override fun contains(element: Element): Boolean {
+        if (isDisposed) disposedInstanceException()
         for (currentElement in data[element.dataIndex()]) if (elementContext { currentElement eq element }) return true
         return false
     }
 
     override fun add(element: Element) {
+        if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
             if (elementContext { iterator.getNext() eq element }) {
@@ -115,10 +134,12 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
     
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+        if (isDisposed) disposedInstanceException()
         repeat(number) { add(builder(it)) }
     }
 
     override fun removeAll() {
+        if (isDisposed) disposedInstanceException()
         dataSizeNumber = 1u
         capacityLowerBound = 0u
         capacityUpperBound = 2u
@@ -129,6 +150,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
 
     override fun removeAllThat(predicate: (element: Element) -> Boolean) {
+        if (isDisposed) disposedInstanceException()
         var newSize = 0u
         for (linkedList in data) linkedList.removeAllThat { element -> predicate(element).also { if (!it) newSize += 1u } }
         if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
@@ -136,6 +158,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
     }
 
     override fun remove(element: Element) {
+        if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
             if (elementContext { iterator.getNext() eq element }) {
@@ -148,9 +171,12 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
         }
     }
 
-    override fun iterator(): KoneRemovableIterator<Element> = Iterator()
+    override fun iterator(): KoneRemovableIterator<Element> =
+        if (isDisposed) disposedInstanceException()
+        else Iterator()
 
     override fun toString(): String = buildString {
+        if (isDisposed) disposedInstanceException()
         append('[')
         scope {
             var dataInnerIndex = 0u
@@ -196,9 +222,11 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
         private var currentBucket: UInt = 0u
         private var currentIterator: KoneRemovableIterator<Element> = data[currentBucket].iterator()
 
-        override fun hasNext(): Boolean = currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
+        override fun hasNext(): Boolean =
+            if (isDisposed) disposedInstanceException()
+            else currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
         override fun getNext(): Element {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             return if (currentIterator.hasNext()) currentIterator.getNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
@@ -206,7 +234,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
             }
         }
         override fun moveNext() {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
@@ -215,7 +243,7 @@ public class KoneResizableHashSet<Element, ElementContext: Hashing<Element>> int
             }
         }
         override fun removeNext() {
-            if (!hasNext()) TODO("Exception is not yet implemented")
+            if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.removeNext()
             else {
                 val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
