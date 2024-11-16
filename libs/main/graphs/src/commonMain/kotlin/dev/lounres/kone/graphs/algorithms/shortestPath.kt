@@ -86,9 +86,10 @@ where G: EdgeWeightedGraph<V, E, W>, G: GraphWithContext<V, *, E, *>, WA: Ring<W
     paths[from] = Path(emptyKoneList(), zero)
     
     while (verticesToCheck.size != 0u) {
-        if (optimalPathToTarget != null && verticesToCheck.takeMinimum().priority geq optimalPathToTarget.weight) break
+        val currentVertexNode = verticesToCheck.popMinimum()
+        if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
         
-        val currentVertex = verticesToCheck.popMinimum().element
+        val currentVertex = currentVertexNode.element
         val (currentPath, currentWeight) = paths[currentVertex]
         for (edge in currentVertex.incidentEdges) {
             val neighbor = edge.ends - currentVertex

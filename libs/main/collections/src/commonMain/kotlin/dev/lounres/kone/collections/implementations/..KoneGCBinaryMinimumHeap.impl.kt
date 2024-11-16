@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.LinkedHeapNode
 import dev.lounres.kone.collections.LinkedMinimumHeap
+import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.lastIndex
 import dev.lounres.kone.comparison.Order
@@ -30,7 +31,6 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         private set
 
     private fun swapNodeHoldersIdentities(holder1: NodeHolder<Element, Priority>, holder2: NodeHolder<Element, Priority>) {
-        holder1.priority = holder2.priority.also { holder2.priority = holder1.priority }
         holder1.node = holder2.node.also { holder2.node = holder1.node }
         holder1.node.holder = holder1
         holder2.node.holder = holder2
@@ -38,7 +38,7 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
     
     private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder<Element, Priority>) {
         val parent = holder.parent ?: return
-        if (priorityContext { parent.priority gt holder.priority }) {
+        if (priorityContext { parent.node.priority gt holder.node.priority }) {
             swapNodeHoldersIdentities(holder, parent)
             siftTheNodeDownToTheRoot(parent)
         }
@@ -50,20 +50,20 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         when {
             firstChild != null && secondChild != null ->
                 when {
-                    priorityContext { firstChild.priority lt holder.priority && firstChild.priority lt secondChild.priority } -> {
+                    priorityContext { firstChild.node.priority lt holder.node.priority && firstChild.node.priority lt secondChild.node.priority } -> {
                         swapNodeHoldersIdentities(firstChild, holder)
                         siftTheNodeUpToTheLeaf(firstChild)
                     }
-                    priorityContext { secondChild.priority lt holder.priority } -> {
+                    priorityContext { secondChild.node.priority lt holder.node.priority } -> {
                         swapNodeHoldersIdentities(secondChild, holder)
                         siftTheNodeUpToTheLeaf(secondChild)
                     }
                 }
-            firstChild != null && priorityContext { firstChild.priority lt holder.priority } -> {
+            firstChild != null && priorityContext { firstChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(firstChild, holder)
                 siftTheNodeUpToTheLeaf(firstChild)
             }
-            secondChild != null && priorityContext { secondChild.priority lt holder.priority } -> {
+            secondChild != null && priorityContext { secondChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(secondChild, holder)
                 siftTheNodeUpToTheLeaf(secondChild)
             }
@@ -110,8 +110,7 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         nodeToSift?.let { siftTheNode(it) }
     }
     
-    private fun changePriority(holder: NodeHolder<Element, Priority>, priority: Priority) {
-        holder.priority = priority
+    private fun updatePlacement(holder: NodeHolder<Element, Priority>) {
         siftTheNode(holder)
     }
     
@@ -183,7 +182,13 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         priority: Priority,
         element: Element,
     ) : Disposable {
-        var heap: BinaryGCMinimumHeap<Element, Priority, *>? = heap
+        override var isDisposed: Boolean = false
+            private set
+        
+        private var _heap: BinaryGCMinimumHeap<Element, Priority, *>? = heap
+        var heap: BinaryGCMinimumHeap<Element, Priority, *>
+            get() = _heap!!
+            set(value) { _heap = value }
         
         var parent: NodeHolder<Element, Priority>? = parent
             private set
@@ -193,49 +198,50 @@ public class BinaryGCMinimumHeap<Element, Priority, out PriorityContext: Order<P
         var firstChild: NodeHolder<Element, Priority>? = null
         var secondChild: NodeHolder<Element, Priority>? = null
         
-        private var _priority: Priority? = priority
-        var priority: Priority
-            get() = _priority as Priority
-            set(value) { _priority = value }
-        
-        private var _node: Node<Element, Priority>? = Node(element, this)
+        private var _node: Node<Element, Priority>? = Node(element, priority, this)
         var node: Node<Element, Priority>
             get() = _node!!
             set(value) { _node = value }
         
         override fun dispose() {
-            heap = null
+            _heap = null
             parent = null
             previous = null
             next = null
             firstChild = null
             secondChild = null
-            _priority = null
             _node = null
+            isDisposed = true
         }
         
-        fun changePriority(priority: Priority) {
-            (heap ?: throw IllegalStateException("This node holder is disposed and cannot change its priority")).changePriority(this, priority)
+        fun updatePlacement() {
+            if (isDisposed) disposedInstanceException()
+            heap.updatePlacement(this)
         }
         
         fun remove() {
-            (heap ?: throw IllegalStateException("This node holder is disposed and cannot be removed")).removeNode(this)
+            if (isDisposed) disposedInstanceException()
+            heap.removeNode(this)
         }
     }
 
     internal class Node<Element, Priority>(
         override var element: Element,
+        priority: Priority,
         holder: NodeHolder<Element, Priority>,
     ): LinkedHeapNode<Element, Priority> {
+        override var isDetached: Boolean = false
+            private set
+        
         private var _holder: NodeHolder<Element, Priority>? = holder
         var holder: NodeHolder<Element, Priority>
             get() = _holder!!
             set(value) { _holder = value }
         
-        override var priority: Priority
-            get() = (_holder ?: throw IllegalStateException("The node has already been removed and therefore has no priority")).priority
+        override var priority: Priority = priority
             set(value) {
-                _holder!!.changePriority(value)
+                field = value
+                _holder!!.updatePlacement()
             }
         
         val heap: BinaryGCMinimumHeap<Element, Priority, *>? get() = _holder?.heap

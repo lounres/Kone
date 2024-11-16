@@ -57,9 +57,7 @@ class HeapImplementationsTests : FunSpec({
                 }
                 
                 for (item in init) {
-                    val node = heap.takeMinimum()
-                    node.priority shouldBe item
-                    heap.popMinimum() shouldBe node
+                    heap.popMinimum().priority shouldBe item
                 }
             }
         }

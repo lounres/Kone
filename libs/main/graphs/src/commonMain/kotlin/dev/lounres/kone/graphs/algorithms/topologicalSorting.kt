@@ -25,10 +25,11 @@ public fun <V, E, G> G.sortVerticesTopologicallyByKahn(): KoneList<V> where G: D
     for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, vertex.indegree)
     
     while (verticesToProcess.size != 0u) {
-        val currentPriority = verticesToProcess.takeMinimum().priority
+        val currentVertexNode = verticesToProcess.popMinimum()
+        val currentPriority = currentVertexNode.priority
         if (currentPriority != 0u) throw IllegalArgumentException("Cannot topologically sort a graph with cycles by Kahn's algorithm")
         
-        val currentVertex = verticesToProcess.popMinimum().element
+        val currentVertex = currentVertexNode.element
         verticesNodes.remove(currentVertex)
         for (edge in currentVertex.outgoingEdges) {
             val nextVertex = edge.tail

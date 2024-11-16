@@ -130,8 +130,9 @@ public fun <N, A> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneL
         val intersections = KoneArrayGrowableList<Intersection<Point2<N>>>()
         
         while (eventsHeap.size != 0u) {
-            val currentEventPriority = eventsHeap.takeMinimum().priority
-            val currentEvent = eventsHeap.popMinimum().element
+            val currentEventNode = eventsHeap.popMinimum()
+            val currentEventPriority = currentEventNode.priority
+            val currentEvent = currentEventNode.element
             
             when (currentEvent) {
                 is EventForBentleyOttmann.SegmentStart<N> -> {
