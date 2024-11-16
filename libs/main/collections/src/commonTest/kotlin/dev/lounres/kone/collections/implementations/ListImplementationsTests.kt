@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.producers.KoneListProducer
@@ -14,6 +14,7 @@ import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.repeat
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -63,8 +64,8 @@ val listImplementations = listOf<ListImplementationDescription>(
         producer = KoneArrayGrowableListProducer,
     ),
     ListImplementationDescription(
-        name = "KoneGrowableArrayNoddedList",
-        producer = KoneGrowableArrayNoddedListProducer,
+        name = "KoneArrayGrowableNoddedList",
+        producer = KoneArrayGrowableNoddedListProducer,
     ),
     // Array resizable implementations.
 //    ListImplementationDescription(
@@ -96,10 +97,10 @@ fun <E> testEqualityByIteration(list1: KoneList<E>, list2: List<E>) {
         val listIterator = list1.iterator()
         for (i in 0u ..< list2.size.toUInt()) {
             if (!listIterator.hasNext()) fail("List iterator stopped before the length ended")
-            val nextValue = listIterator.getAndMoveNext()
             withClue({ "Checking equality of elements at index $i" }) {
-                nextValue shouldBe list2[i.toInt()]
+                listIterator.getNext() shouldBe list2[i.toInt()]
             }
+            listIterator.moveNext()
         }
         if (listIterator.hasNext()) fail("List iterator has extra elements")
     }
@@ -228,21 +229,31 @@ class ListImplementationsTests: FunSpec({
             }
         }
         
+        fun <Element> testKoneMutableListMutabilityOperationsOn(
+            arbData: MutableListOperationWithResult<Element>,
+            mutableList: KoneMutableList<Element>,
+        ) {
+            repeat(arbData.numberOfOperations) {
+                val operation = arbData.operations[it.toInt()]
+                val expected = arbData.results[it.toInt()]
+                withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                    when (operation) {
+                        is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
+                        is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                    }
+                    testEqualityByIteration(mutableList, expected)
+                    testEqualityByStringRepresentation(mutableList, expected)
+                }
+            }
+        }
+        
         if (producer is KoneResizableMutableListProducer) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                 val mutableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                repeat(arbData.numberOfOperations) {
-                    val operation = arbData.operations[it.toInt()]
-                    val expected = arbData.results[it.toInt()]
-                    withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                        when (operation) {
-                            is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
-                            is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
-                        }
-                        testEqualityByIteration(mutableList, expected)
-                        testEqualityByStringRepresentation(mutableList, expected)
-                    }
-                }
+                testKoneMutableListMutabilityOperationsOn(
+                    arbData = arbData,
+                    mutableList = mutableList,
+                )
             }
         }
         
@@ -250,35 +261,19 @@ class ListImplementationsTests: FunSpec({
             test("test mutability operations") {
                 checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                    repeat(arbData.numberOfOperations) {
-                        val operation = arbData.operations[it.toInt()]
-                        val expected = arbData.results[it.toInt()]
-                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                            when (operation) {
-                                is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
-                                is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
-                            }
-                            testEqualityByIteration(mutableList, expected)
-                            testEqualityByStringRepresentation(mutableList, expected)
-                        }
-                    }
+                    testKoneMutableListMutabilityOperationsOn(
+                        arbData = arbData,
+                        mutableList = mutableList,
+                    )
                 }
             }
             test("test mutability operations with ensured capacity") {
                 checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                    repeat(arbData.numberOfOperations) {
-                        val operation = arbData.operations[it.toInt()]
-                        val expected = arbData.results[it.toInt()]
-                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                            when (operation) {
-                                is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
-                                is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
-                            }
-                            testEqualityByIteration(mutableList, expected)
-                            testEqualityByStringRepresentation(mutableList, expected)
-                        }
-                    }
+                    testKoneMutableListMutabilityOperationsOn(
+                        arbData = arbData,
+                        mutableList = mutableList,
+                    )
                 }
             }
         }
@@ -286,17 +281,82 @@ class ListImplementationsTests: FunSpec({
         if (producer is KoneFixedCapacityMutableListProducer) test("test mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
                 val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                repeat(arbData.numberOfOperations) {
-                    val operation = arbData.operations[it.toInt()]
-                    val expected = arbData.results[it.toInt()]
-                    withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                        when (operation) {
-                            is MutableListOperation.AddAt<UInt> -> mutableList.addAt(operation.index, operation.element)
-                            is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                testKoneMutableListMutabilityOperationsOn(
+                    arbData = arbData,
+                    mutableList = mutableList,
+                )
+            }
+        }
+        
+        fun <Element> testKoneMutableListIteratorOn(
+            arbData: MutableListOperationWithResult<Element>,
+            mutableList: KoneMutableList<Element>,
+            nextIteratorIndex: UInt,
+        ) {
+            var nextIteratorIndex = nextIteratorIndex
+            val iterator = mutableList.iteratorFrom(nextIteratorIndex)
+            repeat(arbData.numberOfOperations) {
+                val operation = arbData.operations[it.toInt()]
+                val expected = arbData.results[it.toInt()]
+                withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                    when (operation) {
+                        is MutableListOperation.AddAt<Element> -> {
+                            if (operation.index >= nextIteratorIndex) {
+                                while (operation.index > nextIteratorIndex) {
+                                    iterator.hasNext().shouldBeTrue()
+                                    iterator.nextIndex() shouldBe nextIteratorIndex
+                                    iterator.getNext() shouldBe mutableList[nextIteratorIndex]
+                                    iterator.moveNext()
+                                    nextIteratorIndex++
+                                }
+                                iterator.addNext(operation.element)
+                                iterator.hasNext().shouldBeTrue()
+                                iterator.getNext() shouldBe operation.element
+                                iterator.nextIndex() shouldBe nextIteratorIndex
+                            } else {
+                                while (operation.index < nextIteratorIndex) {
+                                    iterator.hasPrevious().shouldBeTrue()
+                                    iterator.previousIndex() shouldBe nextIteratorIndex - 1u
+                                    iterator.getPrevious() shouldBe mutableList[nextIteratorIndex - 1u]
+                                    iterator.movePrevious()
+                                    nextIteratorIndex--
+                                }
+                                iterator.addPrevious(operation.element)
+                                nextIteratorIndex++
+                                iterator.hasPrevious().shouldBeTrue()
+                                iterator.getPrevious() shouldBe operation.element
+                                iterator.previousIndex() shouldBe nextIteratorIndex - 1u
+                            }
                         }
-                        testEqualityByIteration(mutableList, expected)
-                        testEqualityByStringRepresentation(mutableList, expected)
+                        is MutableListOperation.RemoveAt -> {
+                            if (operation.index >= nextIteratorIndex) {
+                                while (operation.index > nextIteratorIndex) {
+                                    iterator.hasNext().shouldBeTrue()
+                                    iterator.nextIndex() shouldBe nextIteratorIndex
+                                    iterator.getNext() shouldBe mutableList[nextIteratorIndex]
+                                    iterator.moveNext()
+                                    nextIteratorIndex++
+                                }
+                                iterator.hasNext().shouldBeTrue()
+                                iterator.nextIndex() shouldBe operation.index
+                                iterator.removeNext()
+                            } else {
+                                while (operation.index < nextIteratorIndex - 1u) {
+                                    iterator.hasPrevious().shouldBeTrue()
+                                    iterator.previousIndex() shouldBe nextIteratorIndex - 1u
+                                    iterator.getPrevious() shouldBe mutableList[nextIteratorIndex - 1u]
+                                    iterator.movePrevious()
+                                    nextIteratorIndex--
+                                }
+                                iterator.hasPrevious().shouldBeTrue()
+                                iterator.previousIndex() shouldBe operation.index
+                                iterator.removePrevious()
+                                nextIteratorIndex--
+                            }
+                        }
                     }
+                    testEqualityByIteration(mutableList, expected)
+                    testEqualityByStringRepresentation(mutableList, expected)
                 }
             }
         }
@@ -304,50 +364,11 @@ class ListImplementationsTests: FunSpec({
         if (producer is KoneResizableMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                 val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                var nextIteratorIndex = 5u
-                val iterator = mutableList.iteratorFrom(nextIteratorIndex)
-                repeat(arbData.numberOfOperations) {
-                    val operation = arbData.operations[it.toInt()]
-                    val expected = arbData.results[it.toInt()]
-                    withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                        when (operation) {
-                            is MutableListOperation.AddAt<UInt> -> {
-                                if (operation.index >= nextIteratorIndex) {
-                                    while (operation.index > nextIteratorIndex) {
-                                        nextIteratorIndex++
-                                        iterator.moveNext()
-                                    }
-                                    iterator.addNext(operation.element)
-                                } else {
-                                    while (operation.index < nextIteratorIndex) {
-                                        nextIteratorIndex--
-                                        iterator.movePrevious()
-                                    }
-                                    iterator.addPrevious(operation.element)
-                                    nextIteratorIndex++
-                                }
-                            }
-                            is MutableListOperation.RemoveAt -> {
-                                if (operation.index >= nextIteratorIndex) {
-                                    while (operation.index > nextIteratorIndex) {
-                                        nextIteratorIndex++
-                                        iterator.moveNext()
-                                    }
-                                    iterator.removeNext()
-                                } else {
-                                    while (operation.index < nextIteratorIndex - 1u) {
-                                        nextIteratorIndex--
-                                        iterator.movePrevious()
-                                    }
-                                    iterator.removePrevious()
-                                    nextIteratorIndex--
-                                }
-                            }
-                        }
-                        testEqualityByIteration(mutableList, expected)
-                        testEqualityByStringRepresentation(mutableList, expected)
-                    }
-                }
+                testKoneMutableListIteratorOn(
+                    arbData = arbData,
+                    mutableList = mutableList,
+                    nextIteratorIndex = 5u,
+                )
             }
         }
         
@@ -355,99 +376,21 @@ class ListImplementationsTests: FunSpec({
             test("test iterator mutability operations") {
                 checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                    var nextIteratorIndex = 5u
-                    val iterator = mutableList.iteratorFrom(nextIteratorIndex)
-                    repeat(arbData.numberOfOperations) {
-                        val operation = arbData.operations[it.toInt()]
-                        val expected = arbData.results[it.toInt()]
-                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                            when (operation) {
-                                is MutableListOperation.AddAt<UInt> -> {
-                                    if (operation.index >= nextIteratorIndex) {
-                                        while (operation.index > nextIteratorIndex) {
-                                            nextIteratorIndex++
-                                            iterator.moveNext()
-                                        }
-                                        iterator.addNext(operation.element)
-                                    } else {
-                                        while (operation.index < nextIteratorIndex) {
-                                            nextIteratorIndex--
-                                            iterator.movePrevious()
-                                        }
-                                        iterator.addPrevious(operation.element)
-                                        nextIteratorIndex++
-                                    }
-                                }
-                                is MutableListOperation.RemoveAt -> {
-                                    if (operation.index >= nextIteratorIndex) {
-                                        while (operation.index > nextIteratorIndex) {
-                                            nextIteratorIndex++
-                                            iterator.moveNext()
-                                        }
-                                        iterator.removeNext()
-                                    } else {
-                                        while (operation.index < nextIteratorIndex - 1u) {
-                                            nextIteratorIndex--
-                                            iterator.movePrevious()
-                                        }
-                                        iterator.removePrevious()
-                                        nextIteratorIndex--
-                                    }
-                                }
-                            }
-                            testEqualityByIteration(mutableList, expected)
-                            testEqualityByStringRepresentation(mutableList, expected)
-                        }
-                    }
+                    testKoneMutableListIteratorOn(
+                        arbData = arbData,
+                        mutableList = mutableList,
+                        nextIteratorIndex = 5u,
+                    )
                 }
             }
             test("test iterator mutability operations with ensured capacity") {
                 checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy<UInt>(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                    var nextIteratorIndex = 5u
-                    val iterator = mutableList.iteratorFrom(nextIteratorIndex)
-                    repeat(arbData.numberOfOperations) {
-                        val operation = arbData.operations[it.toInt()]
-                        val expected = arbData.results[it.toInt()]
-                        withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                            when (operation) {
-                                is MutableListOperation.AddAt<UInt> -> {
-                                    if (operation.index >= nextIteratorIndex) {
-                                        while (operation.index > nextIteratorIndex) {
-                                            nextIteratorIndex++
-                                            iterator.moveNext()
-                                        }
-                                        iterator.addNext(operation.element)
-                                    } else {
-                                        while (operation.index < nextIteratorIndex) {
-                                            nextIteratorIndex--
-                                            iterator.movePrevious()
-                                        }
-                                        iterator.addPrevious(operation.element)
-                                        nextIteratorIndex++
-                                    }
-                                }
-                                is MutableListOperation.RemoveAt -> {
-                                    if (operation.index >= nextIteratorIndex) {
-                                        while (operation.index > nextIteratorIndex) {
-                                            nextIteratorIndex++
-                                            iterator.moveNext()
-                                        }
-                                        iterator.removeNext()
-                                    } else {
-                                        while (operation.index < nextIteratorIndex - 1u) {
-                                            nextIteratorIndex--
-                                            iterator.movePrevious()
-                                        }
-                                        iterator.removePrevious()
-                                        nextIteratorIndex--
-                                    }
-                                }
-                            }
-                            testEqualityByIteration(mutableList, expected)
-                            testEqualityByStringRepresentation(mutableList, expected)
-                        }
-                    }
+                    testKoneMutableListIteratorOn(
+                        arbData = arbData,
+                        mutableList = mutableList,
+                        nextIteratorIndex = 5u,
+                    )
                 }
             }
         }
@@ -455,50 +398,11 @@ class ListImplementationsTests: FunSpec({
         if (producer is KoneFixedCapacityMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
                 val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
-                var nextIteratorIndex = 5u
-                val iterator = mutableList.iteratorFrom(nextIteratorIndex)
-                repeat(arbData.numberOfOperations) {
-                    val operation = arbData.operations[it.toInt()]
-                    val expected = arbData.results[it.toInt()]
-                    withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
-                        when (operation) {
-                            is MutableListOperation.AddAt<UInt> -> {
-                                if (operation.index >= nextIteratorIndex) {
-                                    while (operation.index > nextIteratorIndex) {
-                                        nextIteratorIndex++
-                                        iterator.moveNext()
-                                    }
-                                    iterator.addNext(operation.element)
-                                } else {
-                                    while (operation.index < nextIteratorIndex) {
-                                        nextIteratorIndex--
-                                        iterator.movePrevious()
-                                    }
-                                    iterator.addPrevious(operation.element)
-                                    nextIteratorIndex++
-                                }
-                            }
-                            is MutableListOperation.RemoveAt -> {
-                                if (operation.index >= nextIteratorIndex) {
-                                    while (operation.index > nextIteratorIndex) {
-                                        nextIteratorIndex++
-                                        iterator.moveNext()
-                                    }
-                                    iterator.removeNext()
-                                } else {
-                                    while (operation.index < nextIteratorIndex - 1u) {
-                                        nextIteratorIndex--
-                                        iterator.movePrevious()
-                                    }
-                                    iterator.removePrevious()
-                                    nextIteratorIndex--
-                                }
-                            }
-                        }
-                        testEqualityByIteration(mutableList, expected)
-                        testEqualityByStringRepresentation(mutableList, expected)
-                    }
-                }
+                testKoneMutableListIteratorOn(
+                    arbData = arbData,
+                    mutableList = mutableList,
+                    nextIteratorIndex = 5u,
+                )
             }
         }
     }

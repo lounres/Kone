@@ -427,6 +427,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         return true
     }
 
+    // TODO: Review operations. Looks like they are incorrect.
     internal class Iterator<Element>(
         val list: KoneArrayGrowableLinkedList<Element>,
         var currentIndex: UInt = 0u,

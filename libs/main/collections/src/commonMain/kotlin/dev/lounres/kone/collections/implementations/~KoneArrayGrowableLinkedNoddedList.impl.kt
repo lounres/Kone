@@ -564,7 +564,8 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
                 actualCurrentIndex = list.nextNodeIndex[actualIndex],
             )
     }
-
+    
+    // TODO: Review operations. Looks like they are incorrect.
     internal class Iterator<Element>(
         val list: KoneArrayGrowableLinkedNoddedList<Element>,
         var currentIndex: UInt = 0u,
