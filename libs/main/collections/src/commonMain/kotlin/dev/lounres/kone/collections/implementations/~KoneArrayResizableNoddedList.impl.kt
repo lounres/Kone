@@ -278,10 +278,10 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
         append('[')
-        if (size > 0u) append(data[0u])
+        if (size > 0u) append(data[0u]!!.element)
         for (i in 1u..<size) {
             append(", ")
-            append(data[i])
+            append(data[i]!!.element)
         }
         append(']')
     }
@@ -289,7 +289,7 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         if (isDisposed) disposedInstanceException()
         var hashCode = 1
         for (i in 0u..<size) {
-            hashCode = 31 * hashCode + this.data[i].hashCode()
+            hashCode = 31 * hashCode + this.data[i]!!.element.hashCode()
         }
         return hashCode
     }
@@ -302,12 +302,12 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         when (other) {
             is KoneArrayResizableNoddedList<*> ->
                 for (i in 0u..<size) {
-                    if (this.data[i] != other.data[i]) return false
+                    if (this.data[i]!!.element != other.data[i]!!.element) return false
                 }
             else -> {
                 val otherIterator = other.iterator()
                 for (i in 0u ..< size) {
-                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
+                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
                 }
             }
         }

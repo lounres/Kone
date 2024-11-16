@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -17,13 +18,12 @@ public fun <Element> KoneArrayResizableLinkedNoddedList(): KoneArrayResizableLin
 public inline fun <Element> KoneArrayResizableLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableLinkedNoddedList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
-    TODO("Not yet implemented")
-//    return KoneArrayResizableLinkedNoddedList(
-//        size = size,
-//        dataSizeNumber = dataSizeNumber,
-//        sizeUpperBound = sizeUpperBound,
-//        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
-//    )
+    return KoneArrayResizableLinkedNoddedList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneArrayResizableLinkedNoddedList.Node(initializer(it), it) else null },
+    )
 }
 
 public object KoneArrayResizableLinkedNoddedListProducer : KoneResizableMutableNoddedListProducer {

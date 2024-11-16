@@ -72,10 +72,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayResizableLinkedList",
         producer = KoneArrayResizableLinkedListProducer,
     ),
-//    ListImplementationDescription(
-//        name = "KoneArrayResizableLinkedNoddedList",
-//        producer = KoneArrayResizableLinkedNoddedListProducer,
-//    ),
+    ListImplementationDescription(
+        name = "KoneArrayResizableLinkedNoddedList",
+        producer = KoneArrayResizableLinkedNoddedListProducer,
+    ),
     ListImplementationDescription(
         name = "KoneArrayResizableList",
         producer = KoneArrayResizableListProducer,
