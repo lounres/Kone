@@ -423,11 +423,16 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun addNext(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
             if (currentIndex == list.size) list.justAddAfterTheEnd(element)
-            else list.justAddBefore(list.nextNodeIndex[actualCurrentIndex], element)
+            else {
+                list.justAddBefore(actualCurrentIndex, element)
+                actualCurrentIndex = list.previousNodeIndex[actualCurrentIndex]
+            }
         }
         override fun removeNext() {
             if (!hasNext()) noNextElementInIteratorException()
-            list.justRemoveAt(actualCurrentIndex.also { actualCurrentIndex = list.nextNodeIndex[actualCurrentIndex] })
+            val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+            list.justRemoveAt(actualCurrentIndex)
+            actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
         }
 
         override fun hasPrevious(): Boolean =
@@ -449,10 +454,18 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun addPrevious(element: Element) {
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
             list.justAddBefore(actualCurrentIndex, element)
+            currentIndex++
         }
         override fun removePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+            val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+            if (actualPreviousIndex == list.end) {
+                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+                actualCurrentIndex = list.nextNodeIndex[list.end]
+            } else {
+                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+            }
+            currentIndex--
         }
     }
 }
