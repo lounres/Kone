@@ -68,13 +68,21 @@ val listImplementations = listOf<ListImplementationDescription>(
         producer = KoneArrayGrowableNoddedListProducer,
     ),
     // Array resizable implementations.
+    ListImplementationDescription(
+        name = "KoneArrayResizableLinkedList",
+        producer = KoneArrayResizableLinkedListProducer,
+    ),
 //    ListImplementationDescription(
-//        name = "KoneArrayResizableLinkedList",
-//        producer = KoneArrayResizableLinkedListProducer,
+//        name = "KoneArrayResizableLinkedNoddedList",
+//        producer = KoneArrayResizableLinkedNoddedListProducer,
 //    ),
     ListImplementationDescription(
         name = "KoneArrayResizableList",
         producer = KoneArrayResizableListProducer,
+    ),
+    ListImplementationDescription(
+        name = "KoneArrayResizableNoddedList",
+        producer = KoneArrayResizableNoddedListProducer,
     ),
     // Array settable implementations
     ListImplementationDescription(
