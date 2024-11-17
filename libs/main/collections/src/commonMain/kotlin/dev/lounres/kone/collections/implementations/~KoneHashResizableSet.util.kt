@@ -6,8 +6,15 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.defaultHashing
 import kotlinx.serialization.descriptors.SerialDescriptor
 
+public fun <Element, ElementContext: Hashing<Element>> KoneResizableHashSet(elementContext: ElementContext): KoneResizableHashSet<Element, ElementContext> =
+    KoneResizableHashSet(size = 0u, elementContext = elementContext)
+
+public fun <Element> KoneResizableHashSet(): KoneResizableHashSet<Element, Hashing<Element>> =
+    KoneResizableHashSet(size = 0u, elementContext = defaultHashing())
 
 internal class KoneResizableHashSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(
