@@ -4,8 +4,6 @@
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
-import kotlinx.benchmark.gradle.JsBenchmarkTarget
-import kotlinx.benchmark.gradle.NativeBenchmarkTarget
 import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.RootProjectAccessor
@@ -18,8 +16,6 @@ import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 
 
@@ -314,6 +310,14 @@ stal {
         "kotlin library settings" {
             configure<KotlinProjectExtension> {
                 explicitApi = Warning
+            }
+        }
+        "atomicfu" {
+            apply(libs.plugins.kotlinx.atomicfu)
+            configure<AtomicFUPluginExtension> {
+                transformJvm = true
+                jvmVariant = "VH"
+                transformJs = true
             }
         }
         "kotest" {

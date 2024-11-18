@@ -1,7 +1,3 @@
-plugins {
-    alias(libs.plugins.kotlinx.atomicfu)
-}
-
 kotlin {
     sourceSets {
         commonMain {
