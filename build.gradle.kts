@@ -192,7 +192,7 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
-                        val commonMain by getting {
+                        commonMain {
                             dependencies {
                                 api(projects.libs.main.core)
                             }
@@ -271,7 +271,7 @@ stal {
 
                 @Suppress("UNUSED_VARIABLE")
                 sourceSets {
-                    val commonTest by getting {
+                    commonTest {
                         dependencies {
                             implementation(kotlin("test"))
                         }
@@ -339,7 +339,7 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
-                        val commonTest by getting {
+                        commonTest {
                             dependencies {
                                 with(libs.kotest) {
                                     implementation(framework.engine)
@@ -349,7 +349,7 @@ stal {
                                 }
                             }
                         }
-                        val jvmTest by getting {
+                        jvmTest {
                             dependencies {
                                 implementation(libs.kotest.runner.junit5)
                             }
@@ -372,7 +372,7 @@ stal {
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
-                        val commonMain by getting {
+                        commonMain {
                             dependencies {
                                 val parentProject = project.parent
                                 if (parentProject != null) implementation(project(parentProject.path))
@@ -397,7 +397,7 @@ stal {
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
-                    val commonMain by sourceSets.getting {
+                    sourceSets.commonMain {
                         dependencies {
                             implementation(libs.kotlinx.benchmark.runtime)
 
@@ -445,11 +445,11 @@ stal {
                                 }
                             }
                             KotlinPlatformType.js -> {
-                                val benchmarkTarget = JsBenchmarkTarget(
-                                    extension = benchmarksExtension,
-                                    name = benchmarksSourceSetName,
-                                    compilation = main as KotlinJsIrCompilation
-                                )
+//                                val benchmarkTarget = JsBenchmarkTarget(
+//                                    extension = benchmarksExtension,
+//                                    name = benchmarksSourceSetName,
+//                                    compilation = main as KotlinJsIrCompilation
+//                                )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
                             }
                             KotlinPlatformType.wasm -> {
@@ -461,11 +461,11 @@ stal {
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
                             }
                             KotlinPlatformType.native -> {
-                                val benchmarkTarget = NativeBenchmarkTarget(
-                                    extension = benchmarksExtension,
-                                    name = benchmarksSourceSetName,
-                                    compilation = main as KotlinNativeCompilation
-                                )
+//                                val benchmarkTarget = NativeBenchmarkTarget(
+//                                    extension = benchmarksExtension,
+//                                    name = benchmarksSourceSetName,
+//                                    compilation = main as KotlinNativeCompilation
+//                                )
 //                                    benchmarksExtension.targets.add(benchmarkTarget)
                             }
                         }
@@ -503,7 +503,7 @@ stal {
             pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
-                        val commonMain by getting {
+                        commonMain {
                             dependencies {
                                 // TODO: Investigate why it creates tasks cycle.
 //                                implementation(projects.libs.util.examples)
@@ -528,7 +528,7 @@ stal {
                     @Suppress("UNUSED_VARIABLE")
                     configure<KotlinMultiplatformExtension> {
                         sourceSets {
-                            val commonMain by getting {
+                            commonMain {
                                 dependencies {
                                     implementation(project(algorithmsSubproject.path))
                                 }
@@ -562,12 +562,12 @@ stal {
 
             task<Jar>("dokkaJar") {
                 group = "dokka"
-                description = "Assembles Kotlin docs with Dokka"
+                description = "Assembles Kotlin docs with Dokka into a javadoc JAR"
                 archiveClassifier = "javadoc"
                 afterEvaluate {
-                    val dokkaGenerate by tasks.getting
-                    dependsOn(dokkaGenerate)
-                    from(dokkaGenerate)
+                    val dokkaGeneratePublicationHtml by tasks.getting
+                    dependsOn(dokkaGeneratePublicationHtml)
+                    from(dokkaGeneratePublicationHtml)
                 }
             }
         }
