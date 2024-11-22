@@ -5,9 +5,8 @@ import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
-import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
-import org.gradle.kotlin.dsl.libs
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -20,7 +19,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 
 
 plugins {
-    with(libs.plugins) {
+    with(versions.plugins) {
         alias(kotlin.multiplatform) apply false
         alias(kotlinx.atomicfu) apply false
         alias(kotlin.allopen) apply false
@@ -112,7 +111,7 @@ allprojects {
 val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
-val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
+val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByName<LibrariesForVersions>("versions")
 val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
 fun PluginAware.apply(pluginDependency: PluginDependency) = apply(plugin = pluginDependency.pluginId)
 fun PluginAware.apply(pluginDependency: Provider<PluginDependency>) = apply(plugin = pluginDependency.get().pluginId)
@@ -159,7 +158,7 @@ publishing {
 }
 
 allprojects {
-    pluginManager.withPlugin(libs.plugins.kotlinx.atomicfu) {
+    pluginManager.withPlugin(versions.plugins.kotlinx.atomicfu) {
         configure<AtomicFUPluginExtension> {
             transformJvm = true
             jvmVariant = "VH"
@@ -171,7 +170,7 @@ allprojects {
 stal {
     action {
         "uses libs main core" {
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -183,8 +182,8 @@ stal {
                     }
                 }
             }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-//                apply(libs.plugins.kotest.multiplatform)
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+//                apply(versions.plugins.kotest.multiplatform)
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -198,7 +197,7 @@ stal {
             }
         }
         "kotlin jvm" {
-            apply(libs.plugins.kotlin.jvm)
+            apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 target {
                     compilerOptions {
@@ -221,7 +220,7 @@ stal {
             }
         }
         "kotlin multiplatform" {
-            apply(libs.plugins.kotlin.multiplatform)
+            apply(versions.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
                 
@@ -279,7 +278,7 @@ stal {
             }
         }
         "kotlin common settings" {
-            pluginManager.withPlugins(libs.plugins.kotlin.jvm, libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugins(versions.plugins.kotlin.jvm, versions.plugins.kotlin.multiplatform) {
                 configure<KotlinProjectExtension> {
                     sourceSets {
                         all {
@@ -313,7 +312,7 @@ stal {
             }
         }
         "atomicfu" {
-            apply(libs.plugins.kotlinx.atomicfu)
+            apply(versions.plugins.kotlinx.atomicfu)
             configure<AtomicFUPluginExtension> {
                 transformJvm = true
                 jvmVariant = "VH"
@@ -321,13 +320,13 @@ stal {
             }
         }
         "kotest" {
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         val test by getting {
                             dependencies {
-                                with(libs.kotest) {
+                                with(versions.kotest) {
                                     implementation(framework.datatest)
                                     implementation(assertions.core)
                                     implementation(property)
@@ -338,14 +337,14 @@ stal {
                     }
                 }
             }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
-                apply(libs.plugins.kotest.multiplatform)
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                apply(versions.plugins.kotest.multiplatform)
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
                         commonTest {
                             dependencies {
-                                with(libs.kotest) {
+                                with(versions.kotest) {
                                     implementation(framework.engine)
                                     implementation(framework.datatest)
                                     implementation(assertions.core)
@@ -355,7 +354,7 @@ stal {
                         }
                         jvmTest {
                             dependencies {
-                                implementation(libs.kotest.runner.junit5)
+                                implementation(versions.kotest.runner.junit5)
                             }
                         }
                     }
@@ -363,16 +362,16 @@ stal {
             }
         }
         "kover" {
-            apply(libs.plugins.kotlinx.kover)
+            apply(versions.plugins.kotlinx.kover)
         }
         "algorithms" {
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
             }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
@@ -387,23 +386,23 @@ stal {
             }
         }
         "benchmarks" {
-            apply(libs.plugins.kotlinx.benchmark)
-            apply(libs.plugins.kotlin.allopen)
+            apply(versions.plugins.kotlinx.benchmark)
+            apply(versions.plugins.kotlin.allopen)
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
 
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("kotlinx.benchmark plugging in and setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
             }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
                 val benchmarksExtension = the<BenchmarksExtension>()
                 @Suppress("UNUSED_VARIABLE")
                 configure<KotlinMultiplatformExtension> {
                     sourceSets.commonMain {
                         dependencies {
-                            implementation(libs.kotlinx.benchmark.runtime)
+                            implementation(versions.kotlinx.benchmark.runtime)
 
                             val parentProject = project.parent
                             if (parentProject != null) {
@@ -437,7 +436,7 @@ stal {
                                 )
                                 benchmarksExtension.targets.add(benchmarkTarget)
 
-                                benchmarkTarget.jmhVersion = libs.versions.jmh.get()
+                                benchmarkTarget.jmhVersion = versions.versions.jmh.get()
 
                                 // Fix kotlinx-benchmarks bug
                                 afterEvaluate {
@@ -499,12 +498,12 @@ stal {
             }
         }
         "examples" {
-            pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                 
                 }
             }
-            pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
                     sourceSets {
                         commonMain {
@@ -523,12 +522,12 @@ stal {
         "libs non-core main" {
             val algorithmsSubproject = project("${project.path}:algorithms")
             project("${project.path}:benchmarks") {
-                pluginManager.withPlugin(libs.plugins.kotlin.jvm) {
+                pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
 //                configure<KotlinJvmProjectExtension> {
 //                    // ...
 //                }
                 }
-                pluginManager.withPlugin(libs.plugins.kotlin.multiplatform) {
+                pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
                     @Suppress("UNUSED_VARIABLE")
                     configure<KotlinMultiplatformExtension> {
                         sourceSets {
@@ -547,9 +546,9 @@ stal {
             val docsProject = project(":docs")
             
             
-            apply(libs.plugins.dokka)
+            apply(versions.plugins.dokka)
             dependencies {
-                dokkaPlugin(libs.dokka.mathjax)
+                dokkaPlugin(versions.dokka.mathjax)
             }
             
             docsProject.afterEvaluate {

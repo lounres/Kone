@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinx.serialization)
+    alias(versions.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -8,7 +8,7 @@ kotlin {
             dependencies {
                 api(projects.libs.main.comparison)
                 implementation(projects.libs.main.algebraic)
-                implementation(libs.kotlinx.serialization.core)
+                implementation(versions.kotlinx.serialization.core)
             }
         }
         commonTest {

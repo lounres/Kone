@@ -4,7 +4,7 @@ kotlin {
             dependencies {
                 api(projects.libs.main.collections)
                 api(projects.libs.main.computations)
-                implementation(libs.kotlinx.coroutines.core)
+                implementation(versions.kotlinx.coroutines.core)
                 implementation(projects.libs.main.enumerativeCombinatorics)
             }
         }

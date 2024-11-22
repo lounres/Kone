@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.dokka)
+    alias(versions.plugins.dokka)
 }
 
 dokka {

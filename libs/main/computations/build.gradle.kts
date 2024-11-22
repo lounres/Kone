@@ -3,7 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.libs.main.collections)
-                implementation(libs.kotlinx.coroutines.core)
+                implementation(versions.kotlinx.coroutines.core)
             }
         }
     }

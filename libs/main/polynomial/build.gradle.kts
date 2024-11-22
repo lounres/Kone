@@ -3,7 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.libs.main.algebraic)
-                api(libs.kmath.core)
+                api(versions.kmath.core)
                 implementation(projects.libs.util.mapOperations)
                 implementation(projects.libs.main.comparison) // TODO: Что-то транзитивность не сработала...
             }
