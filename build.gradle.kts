@@ -16,6 +16,8 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
+import java.time.LocalDate
+import java.time.ZoneId
 
 
 plugins {
@@ -34,10 +36,16 @@ plugins {
     alias(versions.plugins.nexus.publish.plugin)
 }
 
-val koneVersion = project.properties["version"] as String
+
+val today: LocalDate = LocalDate.now(ZoneId.of("UTC"))
+val koneVersion = "0.0.0-experiment-${today.year}.${today.month.value}.${today.dayOfMonth}"
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
+
+allprojects {
+    version = koneVersion
+}
 
 tasks.register("docusaurusGenerateInputData") {
     group = "site"
