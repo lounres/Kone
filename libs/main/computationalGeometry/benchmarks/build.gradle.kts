@@ -1,12 +1,12 @@
 plugins {
-    alias(libs.plugins.kotlinx.serialization)
+    alias(versions.plugins.kotlinx.serialization)
 }
 
 kotlin {
     sourceSets {
         jvmMain {
             dependencies {
-                implementation(libs.kaml)
+                implementation(versions.kaml)
             }
         }
     }

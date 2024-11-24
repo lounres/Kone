@@ -18,7 +18,7 @@ dependencyResolutionManagement {
     }
     
     versionCatalogs {
-        create("versions").from("dev.lounres:versions:$versions")
+        create("versions") { from("dev.lounres:versions:$versions") }
     }
 }
 

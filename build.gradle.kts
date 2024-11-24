@@ -157,16 +157,6 @@ publishing {
     }
 }
 
-allprojects {
-    pluginManager.withPlugin(versions.plugins.kotlinx.atomicfu) {
-        configure<AtomicFUPluginExtension> {
-            transformJvm = true
-            jvmVariant = "VH"
-            transformJs = true
-        }
-    }
-}
-
 stal {
     action {
         "uses libs main core" {
@@ -199,14 +189,13 @@ stal {
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
-                target {
-                    compilerOptions {
-                        jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
-                        freeCompilerArgs = freeCompilerArgs.get() + listOf(
-                            "-Xexpect-actual-classes",
-                            "-Xconsistent-data-class-copy-visibility",
-                        )
-                    }
+                jvmToolchain(jvmTargetVersion.toInt())
+                
+                compilerOptions {
+                    freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                        "-Xexpect-actual-classes",
+                        "-Xconsistent-data-class-copy-visibility",
+                    )
                 }
 
                 @Suppress("UNUSED_VARIABLE")
@@ -224,6 +213,8 @@ stal {
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
                 
+                jvmToolchain(jvmTargetVersion.toInt())
+                
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
                         "-Xexpect-actual-classes",
@@ -232,9 +223,6 @@ stal {
                 }
 
                 jvm {
-                    compilerOptions {
-                        jvmTarget = JvmTarget.fromTarget(jvmTargetVersion)
-                    }
                     testRuns.all {
                         executionTask {
                             useJUnitPlatform()
@@ -298,9 +286,6 @@ stal {
                 }
             }
             pluginManager.withPlugin("org.gradle.java") {
-                configure<JavaPluginExtension> {
-                    targetCompatibility = JavaVersion.toVersion(jvmTargetVersion)
-                }
                 tasks.withType<Test> {
                     useJUnitPlatform()
                 }
@@ -544,7 +529,6 @@ stal {
         "dokka" {
             val thisProject = this
             val docsProject = project(":docs")
-            
             
             apply(versions.plugins.dokka)
             dependencies {
