@@ -30,6 +30,8 @@ plugins {
     }
     `version-catalog`
     `maven-publish`
+    signing
+    alias(versions.plugins.nexus.publish.plugin)
 }
 
 val koneVersion = project.properties["version"] as String
@@ -153,6 +155,15 @@ publishing {
         create<MavenPublication>("versionCatalog") {
             artifactId = "kone.versionCatalog"
             from(components["versionCatalog"])
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
 }
