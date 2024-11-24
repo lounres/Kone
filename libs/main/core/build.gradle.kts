@@ -2,7 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(versions.logkube.core)
+                api(versions.logKube.core)
             }
         }
     }

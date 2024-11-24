@@ -129,9 +129,9 @@ catalog.versionCatalog {
 }
 
 gradle.projectsEvaluated {
-    val bundleMainProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs main") }
-    val bundleMiscProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs misc") }
-    val bundleUtilProjects = stal.lookUp.projectsThat { hasAllOf("publishing", "libs util") }
+    val bundleMainProjects = stal.lookUp.projectsThat { has("versionCatalog bundle main") }
+    val bundleMiscProjects = stal.lookUp.projectsThat { has("versionCatalog bundle misc") }
+    val bundleUtilProjects = stal.lookUp.projectsThat { has("versionCatalog bundle util") }
     val bundleProjects = bundleMainProjects + bundleMiscProjects + bundleUtilProjects
     val bundleMainAliases = bundleMainProjects.map { it.alias }
     val bundleMiscAliases = bundleMiscProjects.map { it.alias }
@@ -558,14 +558,54 @@ stal {
                 }
             }
         }
+        "publication" {
+            pluginManager.withPlugin("org.gradle.maven-publish") {
+                afterEvaluate {
+                    configure<PublishingExtension> {
+                        publications.withType<MavenPublication> {
+                            artifactId = "${extra["artifactPrefix"]}$artifactId"
+                        }
+                    }
+                }
+            }
+        }
         "publishing" {
             apply(plugin = "org.gradle.maven-publish")
+            apply(plugin = "org.gradle.signing")
             afterEvaluate {
                 configure<PublishingExtension> {
                     publications.withType<MavenPublication> {
-                        artifactId = "${extra["artifactPrefix"]}$artifactId"
+                        pom {
+                            name = "Kone library"
+                            description = "Set of libraries for experimental mathematics"
+                            url = "https://github.com/lounres/Kone"
+                            
+                            licenses {
+                                license {
+                                    name = "Apache License, Version 2.0"
+                                    url = "https://opensource.org/license/apache-2-0/"
+                                }
+                            }
+                            developers {
+                                developer {
+                                    id = "lounres"
+                                    name = "Gleb Minaev"
+                                    email = "minaevgleb@yandex.ru"
+                                }
+                            }
+                            scm {
+                                url = "https://github.com/lounres/Kone"
+                            }
+                        }
                     }
                 }
+                tasks.withType<AbstractPublishToMaven>().configureEach {
+                    val signingTasks = tasks.withType<Sign>()
+                    mustRunAfter(signingTasks)
+                }
+            }
+            configure<SigningExtension> {
+                sign(the<PublishingExtension>().publications)
             }
         }
         case { hasAllOf("dokka", "publishing") } implies {

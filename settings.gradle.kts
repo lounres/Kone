@@ -77,11 +77,12 @@ stal {
         // Extra
         "kotest" since { has("libs public") }
         "kover" since { has("libs public") }
-        "publishing" since { hasAnyOf("libs") }
+        "publication" since { hasAnyOf("libs") }
+        "publishing" since { has("publication") }
         "dokka" since { has("libs") }
-        "versionCatalog bundle main" since { hasAllOf("publishing", "libs main") }
-        "versionCatalog bundle misc" since { hasAllOf("publishing", "libs misc") }
-        "versionCatalog bundle util" since { hasAllOf("publishing", "libs util") }
+        "versionCatalog bundle main" since { hasAllOf("publication", "libs main") }
+        "versionCatalog bundle misc" since { hasAllOf("publication", "libs misc") }
+        "versionCatalog bundle util" since { hasAllOf("publication", "libs util") }
     }
 
     action {
