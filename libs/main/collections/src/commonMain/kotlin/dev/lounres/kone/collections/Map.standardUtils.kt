@@ -8,7 +8,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.transformNotNullMaybe
 import kotlin.jvm.JvmName
 
@@ -25,7 +25,7 @@ public fun <Key, Value> KoneMap<Key, Value>.getNode(key: Key): KoneMapNode<Key, 
 public fun <Key, Value> KoneMutableMap<Key, Value>.getNode(key: Key): KoneMutableMapNode<Key, Value> = getNodeOrNull(key) ?: noMatchingKeyException(key)
 public operator fun <Key, Value> KoneMap<in Key, Value>.get(key: Key): Value = getNode(key).value
 public fun <Key, Value> KoneMap<in Key, Value>.getOrNull(key: Key): Value? = getNodeOrNull(key)?.value
-public fun <Key, Value> KoneMap<in Key, Value>.getMaybe(key: Key): Option<Value> = getNodeOrNull(key).transformNotNullMaybe { it.value }
+public fun <Key, Value> KoneMap<in Key, Value>.getMaybe(key: Key): Maybe<Value> = getNodeOrNull(key).transformNotNullMaybe { it.value }
 
 public fun <Key, Value> KoneMap<in Key, Value>.getOrDefault(key: Key, default: Value): Value = getNodeOrNull(key).let { node -> if (node == null) default else node.value }
 public inline fun <Key, Value> KoneMap<in Key, Value>.getOrElse(key: Key, default: () -> Value): Value = getNodeOrNull(key).let { node -> if (node == null) default() else node.value }

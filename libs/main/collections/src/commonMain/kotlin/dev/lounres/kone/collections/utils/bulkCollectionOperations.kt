@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.implementations.KoneArrayGrowableLinkedList
 import dev.lounres.kone.comparison.*
 import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.repeat
 import kotlin.jvm.JvmInline
@@ -206,12 +206,12 @@ public inline fun <E> KoneList<E>.lastThatIndexedOrNull(predicate: (index: UInt,
     return null
 }
 
-public inline fun <E> KoneIterable<E>.firstThatMaybe(predicate: (E) -> Boolean): Option<E> {
+public inline fun <E> KoneIterable<E>.firstThatMaybe(predicate: (E) -> Boolean): Maybe<E> {
     for (element in this) if (predicate(element)) return Some(element)
     return None
 }
 
-public inline fun <E> KoneList<E>.lastThatMaybe(predicate: (E) -> Boolean): Option<E> {
+public inline fun <E> KoneList<E>.lastThatMaybe(predicate: (E) -> Boolean): Maybe<E> {
     val backIterator = iteratorFrom(size)
     while (backIterator.hasPrevious()) {
         val element = backIterator.getPrevious()
@@ -221,7 +221,7 @@ public inline fun <E> KoneList<E>.lastThatMaybe(predicate: (E) -> Boolean): Opti
     return None
 }
 
-public inline fun <E> KoneList<E>.firstThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+public inline fun <E> KoneList<E>.firstThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Maybe<E> {
     val iterator = iterator()
     while (iterator.hasNext()) {
         val element = iterator.getNext()
@@ -231,7 +231,7 @@ public inline fun <E> KoneList<E>.firstThatIndexedMaybe(predicate: (index: UInt,
     return None
 }
 
-public inline fun <E> KoneList<E>.lastThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Option<E> {
+public inline fun <E> KoneList<E>.lastThatIndexedMaybe(predicate: (index: UInt, E) -> Boolean): Maybe<E> {
     val backIterator = iteratorFrom(size)
     while (backIterator.hasPrevious()) {
         val element = backIterator.getPrevious()
@@ -323,7 +323,7 @@ public inline fun <E, R> KoneList<E>.lastOfThatIndexedOrNull(transform: (index:U
     return null
 }
 
-public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Option<R> {
+public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> {
     for (element in this) {
         val result = transform(element)
         if (predicate(result)) return Some(result)
@@ -331,7 +331,7 @@ public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, p
     return None
 }
 
-public inline fun <E, R> KoneList<E>.lastOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Option<R> {
+public inline fun <E, R> KoneList<E>.lastOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> {
     val backIterator = iteratorFrom(size)
     while (backIterator.hasPrevious()) {
         val element = backIterator.getPrevious()
@@ -342,7 +342,7 @@ public inline fun <E, R> KoneList<E>.lastOfThatMaybe(transform: (E) -> R, predic
     return None
 }
 
-public inline fun <E, R> KoneList<E>.firstOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+public inline fun <E, R> KoneList<E>.firstOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Maybe<R> {
     val iterator = iterator()
     while (iterator.hasNext()) {
         val element = iterator.getNext()
@@ -353,7 +353,7 @@ public inline fun <E, R> KoneList<E>.firstOfThatIndexedMaybe(transform: (index: 
     return None
 }
 
-public inline fun <E, R> KoneList<E>.lastOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Option<R> {
+public inline fun <E, R> KoneList<E>.lastOfThatIndexedMaybe(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): Maybe<R> {
     val backIterator = iteratorFrom(size)
     while (backIterator.hasPrevious()) {
         val element = backIterator.getPrevious()
@@ -527,13 +527,13 @@ public inline fun <E: R, R> KoneIterator<E>.reduceOrNull(operation: (acc: R, E) 
 public inline fun <E: R, R> KoneIterable<E>.reduceOrNull(operation: (acc: R, E) -> R): R? =
     iterator().reduceOrNull(operation)
 
-public inline fun <E: R, R> KoneIterator<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> {
+public inline fun <E: R, R> KoneIterator<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> {
     if (!this.hasNext()) return None
     var accumulator: R = this.getAndMoveNext()
     for (element in this) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -> R): Option<R> =
+public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> =
     iterator().reduceMaybe(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
@@ -556,14 +556,14 @@ public inline fun <E: R, R> KoneIterator<E>.reduceIndexedOrNull(operation: (inde
 public inline fun <E: R, R> KoneIterable<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? =
     iterator().reduceIndexedOrNull(operation)
 
-public inline fun <E: R, R> KoneIterator<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> {
+public inline fun <E: R, R> KoneIterator<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> {
     if (!this.hasNext()) return None
     var accumulator: R = this.getAndMoveNext()
     var index = 1u
     for (element in this) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Option<R> =
+public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> =
     iterator().reduceIndexedMaybe(operation)
 
 // TODO: Add `reduce`-like extensions. Like `reduceRight`, `runningReduce`, and `runningReduceRight`.

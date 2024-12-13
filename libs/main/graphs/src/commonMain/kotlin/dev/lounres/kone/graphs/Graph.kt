@@ -10,7 +10,7 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 
 
 public data class EdgeEnds<V>(val start: V, val end: V)
@@ -33,7 +33,7 @@ public interface Graph<V, E> : KoneContext {
     public val V.degree: UInt
     public fun edge(tail: V, head: V): E
     public fun edgeOrNull(tail: V, head: V): E?
-    public fun edgeMaybe(tail: V, head: V): Option<E>
+    public fun edgeMaybe(tail: V, head: V): Maybe<E>
 
     public val E.ends: EdgeEnds<V>
 //    public val E.adjacentEdges: KoneIterableSet<E>
@@ -59,7 +59,7 @@ public interface Digraph<V, E> {
     public val V.degree: UInt
     public fun edge(tail: V, head: V): E
     public fun edgeOrNull(tail: V, head: V): E?
-    public fun edgeMaybe(tail: V, head: V): Option<E>
+    public fun edgeMaybe(tail: V, head: V): Maybe<E>
     public val V.outgoingEdges: KoneSet<E>
     public val V.incomingEdges: KoneSet<E>
     public val V.adjacentOutgoingVertices: KoneSet<V>

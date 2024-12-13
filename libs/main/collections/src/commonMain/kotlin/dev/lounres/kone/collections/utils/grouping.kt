@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.utils
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.isNone
 import dev.lounres.kone.option.orThrow
 
@@ -26,7 +26,7 @@ public inline fun <E, K> KoneIterable<E>.groupingBy(crossinline keySelector: (E)
 
 public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.aggregateTo(
     destination: D,
-    operation: (key: K, accumulator: Option<R>, element: E, first: Boolean) -> R
+    operation: (key: K, accumulator: Maybe<R>, element: E, first: Boolean) -> R
 ): D {
     for (element in this.sourceIterator()) {
         val key = keyOf(element)
@@ -38,7 +38,7 @@ public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.aggre
 
 public inline fun <E, K, R> KoneGrouping<E, K>.aggregate(
     keyContext: Equality<K> = defaultEquality(),
-    operation: (key: K, accumulator: Option<R>, element: E, first: Boolean) -> R
+    operation: (key: K, accumulator: Maybe<R>, element: E, first: Boolean) -> R
 ): KoneMap<K, R> = aggregateTo(koneMutableMapOf(keyContext = keyContext), operation)
 
 public inline fun <E, K, R, D: KoneMutableMap<in K, R>> KoneGrouping<E, K>.foldTo(

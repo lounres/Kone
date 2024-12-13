@@ -18,6 +18,4 @@ public open class IllegalCallException(message: String) : RuntimeException(messa
 /**
  * Throws [IllegalCallException] exception with provided message.
  */
-public fun illegalCall(message: String): Nothing {
-    throw IllegalCallException(message)
-}
+public fun illegalCall(message: String): Nothing = throw IllegalCallException(message)

@@ -33,7 +33,7 @@ package dev.lounres.kone.collections
 //
 //public interface KoneList<out E> : KoneCollection<E> {
 //    public operator fun get(index: UInt): E
-//    public fun getMaybe(index: UInt): Option<E> =
+//    public fun getMaybe(index: UInt): Maybe<E> =
 //        if (index < size) Some(get(index))
 //        else None
 //    override fun contains(element: @UnsafeVariance E): Boolean

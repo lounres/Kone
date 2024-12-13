@@ -60,9 +60,9 @@ package dev.lounres.kone.collections
 //
 //public fun <E> KoneDequeue<out E>.getLastOrNull(): E? = if (size > 0u) getLast() else null
 //
-//public fun <E> KoneDequeue<out E>.getFirstMaybe(): Option<E> = if (size > 0u) Some(getFirst()) else None
+//public fun <E> KoneDequeue<out E>.getFirstMaybe(): Maybe<E> = if (size > 0u) Some(getFirst()) else None
 //
-//public fun <E> KoneDequeue<out E>.getLastMaybe(): Option<E> = if (size > 0u) Some(getLast()) else None
+//public fun <E> KoneDequeue<out E>.getLastMaybe(): Maybe<E> = if (size > 0u) Some(getLast()) else None
 //
 //public fun <E> KoneDequeue<out E>.getFirstOrDefault(default: E): E = if (size > 0u) getFirst() else default
 //
@@ -80,9 +80,9 @@ package dev.lounres.kone.collections
 //
 //public fun <E> KoneDequeue<out E>.popLastOrNull(): E? = if (size > 0u) getLast().also { removeLast() } else null
 //
-//public fun <E> KoneDequeue<out E>.popFirstMaybe(): Option<E> = if (size > 0u) Some(getFirst()).also { removeFirst() } else None
+//public fun <E> KoneDequeue<out E>.popFirstMaybe(): Maybe<E> = if (size > 0u) Some(getFirst()).also { removeFirst() } else None
 //
-//public fun <E> KoneDequeue<out E>.popLastMaybe(): Option<E> = if (size > 0u) Some(getLast()).also { removeLast() } else None
+//public fun <E> KoneDequeue<out E>.popLastMaybe(): Maybe<E> = if (size > 0u) Some(getLast()).also { removeLast() } else None
 //
 //public fun <E> KoneDequeue<out E>.popFirstOrDefault(default: E): E = if (size > 0u) getFirst().also { removeFirst() } else default
 //

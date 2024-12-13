@@ -8,7 +8,7 @@ package dev.lounres.kone.collections
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some
 
 
@@ -19,7 +19,7 @@ public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (in
 /**
  * Returns the element at the provided [index] wrapped in [Some] or [None] if [index] is out of bounds.
  */
-public fun <Element> KoneList<Element>.getMaybe(index: UInt): Option<Element> = if (index < size) Some(this[index]) else None
+public fun <Element> KoneList<Element>.getMaybe(index: UInt): Maybe<Element> = if (index < size) Some(this[index]) else None
 
 /**
  * Adds provided [elements] at the end of the ordered collection.
