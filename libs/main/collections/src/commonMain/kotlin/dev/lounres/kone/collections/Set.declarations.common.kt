@@ -6,11 +6,9 @@
 package dev.lounres.kone.collections
 
 
-// TODO: KoneSet is marked as covariant, but element context can't check equality for element of supertype
-//  So there is need in checking that element context can work with arbitrary argument
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneSet<out Element> : KoneIterable<Element> {
-    public operator fun contains(element: @UnsafeVariance Element): Boolean
+public interface KoneSet<Element> : KoneIterable<Element> {
+    public operator fun contains(element: Element): Boolean
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
@@ -24,7 +22,7 @@ public interface KoneMutableSet<Element> : KoneSet<Element> {
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneNoddedSet<out Element> : KoneSet<Element> {
+public interface KoneNoddedSet<Element> : KoneSet<Element> {
     public val nodes: KoneIterable<KoneSetNode<Element>>
     // TODO: Maybe add the following methods
 //    public fun nodeOfOrNull(element: @UnsafeVariance Element): KoneSetNode<Element>?
@@ -40,4 +38,4 @@ public interface KoneNoddedMutableSet<Element> : KoneMutableSet<Element>, KoneNo
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneLinkedSet<out Element> : KoneSet<Element>, KoneList<Element>
+public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneList<Element>

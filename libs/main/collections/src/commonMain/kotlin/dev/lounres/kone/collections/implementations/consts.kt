@@ -8,6 +8,8 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneUIntArray
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThat
+import kotlin.math.ceil
+import kotlin.math.floor
 
 
 internal const val MAX_CAPACITY = 0b10000000000000000000000000000000u
@@ -24,3 +26,8 @@ internal fun powerOf2GreaterOrEqualTo(size: UInt): UInt =
 internal fun powerOf2IndexGreaterOrEqualTo(size: UInt): UInt =
     if (size > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
     else POWERS_OF_2.firstIndexThat { _, power -> power >= size }
+
+public const val DEFAULT_HASH_TABLE_LOAD_FACTOR: Float = 0.75f
+
+internal fun calculateHashTableCapacity(size: UInt, loadFactor: Float): UInt = ceil(size.toFloat() / loadFactor).toUInt()
+internal fun calculateHashTableSize(capacity: UInt, loadFactor: Float): UInt = floor(capacity.toFloat() * loadFactor).toUInt()

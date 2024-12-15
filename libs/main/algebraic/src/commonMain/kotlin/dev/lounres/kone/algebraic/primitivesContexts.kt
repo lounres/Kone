@@ -11,7 +11,12 @@ import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.ReifiedHashing
 import dev.lounres.kone.comparison.asComparisonResult
+import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Some
 import kotlin.math.pow as kpow
 
 
@@ -22,7 +27,14 @@ import kotlin.math.pow as kpow
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ByteRing: EuclideanRing<Byte>, Order<Byte>, Hashing<Byte> {
+public data object ByteRing: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing<Byte> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Byte
+    override fun reifyMaybe(element: Any?): Maybe<Byte> = if (element is Byte) Some(element) else None
+    override fun reifyOrNull(element: Any?): Byte? = element as? Byte
+    override fun reify(element: Any?): Byte = element as? Byte ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Byte.compareWith(other: Byte): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -111,7 +123,14 @@ public val Byte.Companion.ring: ByteRing get() = ByteRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ShortRing: EuclideanRing<Short>, Order<Short>, Hashing<Short> {
+public data object ShortRing: EuclideanRing<Short>, Order<Short>, ReifiedHashing<Short> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Short
+    override fun reifyMaybe(element: Any?): Maybe<Short> = if (element is Short) Some(element) else None
+    override fun reifyOrNull(element: Any?): Short? = element as? Short
+    override fun reify(element: Any?): Short = element as? Short ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Short.compareWith(other: Short): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -200,7 +219,14 @@ public val Short.Companion.ring: ShortRing get() = ShortRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object IntRing: EuclideanRing<Int>, Order<Int>, Hashing<Int> {
+public data object IntRing: EuclideanRing<Int>, Order<Int>, ReifiedHashing<Int> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Int
+    override fun reifyMaybe(element: Any?): Maybe<Int> = if (element is Int) Some(element) else None
+    override fun reifyOrNull(element: Any?): Int? = element as? Int
+    override fun reify(element: Any?): Int = element as? Int ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Int.compareWith(other: Int): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -277,7 +303,14 @@ public val Int.Companion.ring: IntRing get() = IntRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object LongRing: EuclideanRing<Long>, Order<Long>, Hashing<Long> {
+public data object LongRing: EuclideanRing<Long>, Order<Long>, ReifiedHashing<Long> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Long
+    override fun reifyMaybe(element: Any?): Maybe<Long> = if (element is Long) Some(element) else None
+    override fun reifyOrNull(element: Any?): Long? = element as? Long
+    override fun reify(element: Any?): Long = element as? Long ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Long.compareWith(other: Long): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -355,7 +388,14 @@ public val Long.Companion.ring: LongRing get() = LongRing
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object DoubleField: Field<Double>, Order<Double>, Hashing<Double> {
+public data object DoubleField: Field<Double>, Order<Double>, ReifiedHashing<Double> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Double
+    override fun reifyMaybe(element: Any?): Maybe<Double> = if (element is Double) Some(element) else None
+    override fun reifyOrNull(element: Any?): Double? = element as? Double
+    override fun reify(element: Any?): Double = element as? Double ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Double.compareWith(other: Double): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -456,7 +496,14 @@ public val Double.Companion.field: DoubleField get() = DoubleField
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object FloatField: Field<Float>, Order<Float>, Hashing<Float> {
+public data object FloatField: Field<Float>, Order<Float>, ReifiedHashing<Float> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Float
+    override fun reifyMaybe(element: Any?): Maybe<Float> = if (element is Float) Some(element) else None
+    override fun reifyOrNull(element: Any?): Float? = element as? Float
+    override fun reify(element: Any?): Float = element as? Float ?: reificationException()
+    // endregion
+    
     // region Order
     override fun Float.compareWith(other: Float): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -540,7 +587,7 @@ public data object FloatField: Field<Float>, Order<Float>, Hashing<Float> {
     override fun power(base: Float, exponent: Int): Float = base.kpow(exponent)
     override fun power(base: Float, exponent: Long): Float =
         if (exponent >= 0) base.kpow(exponent.toFloat())
-        else 1/base.kpow(-exponent.toFloat())
+        else 1 / base.kpow(-exponent.toFloat())
     // endregion
 }
 

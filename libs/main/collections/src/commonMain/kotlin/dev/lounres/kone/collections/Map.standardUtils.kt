@@ -6,8 +6,6 @@
 package dev.lounres.kone.collections
 
 import dev.lounres.kone.collections.utils.forEach
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.transformNotNullMaybe
 import kotlin.jvm.JvmName
@@ -20,6 +18,10 @@ public fun KoneMap<*, *>.isNotEmpty(): Boolean = !isEmpty()
 
 public operator fun <Key> KoneMap<in Key, *>.contains(key: Key): Boolean = key in keysView
 public fun <Key> KoneMap<in Key, *>.containsKey(key: Key): Boolean = key in keysView
+// FIXME: Remove if KT-73923 will be closed
+public operator fun <Key> KoneReifiedMap<Key, *>.contains(key: Key): Boolean = key in keysView
+// FIXME: Remove if KT-73923 will be closed
+public fun <Key> KoneReifiedMap<Key, *>.containsKey(key: Key): Boolean = key in keysView
 
 public fun <Key, Value> KoneMap<Key, Value>.getNode(key: Key): KoneMapNode<Key, Value> = getNodeOrNull(key) ?: noMatchingKeyException(key)
 public fun <Key, Value> KoneMutableMap<Key, Value>.getNode(key: Key): KoneMutableMapNode<Key, Value> = getNodeOrNull(key) ?: noMatchingKeyException(key)
@@ -42,16 +44,5 @@ public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(nodes: KoneIterabl
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(map: KoneMap<out Key, Value>) { map.nodesView.forEach { set(it) } }
 
 public fun <Key> KoneMutableMap<in Key, *>.remove(key: Key) { getNode(key).remove() }
-
-public val <Key, Value> KoneMap<Key, Value>.nodes: KoneSet<KoneMapNode<Key, Value>>
-    get() = nodesView.toKoneSet(absoluteEquality())
-public val <Key, Value> KoneMutableMap<Key, Value>.nodes: KoneSet<KoneMutableMapNode<Key, Value>>
-    get() = nodesView.toKoneSet(absoluteEquality())
-public val <Key> KoneMapWithContext<Key, Equality<Key>, *>.keys: KoneSet<Key>
-    get() = keysView.toKoneSet(keyContext)
-public val <Value> KoneMapWithContext<*, *, Value>.values: KoneIterable<Value>
-    get() = valuesView.toKoneList()
-public val <Key, Value> KoneMapWithContext<Key, Equality<Key>, Value>.entries: KoneIterable<KoneMapEntry<Key, Value>>
-    get() = entriesView.toKoneList()
 
 public operator fun <Key, Value> KoneMap<out Key, Value>.iterator(): KoneIterator<KoneMapEntry<Key, Value>> = entriesView.iterator()

@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.ReifiedEquality
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
@@ -45,6 +46,40 @@ public fun <Element, ElementContext: Equality<Element>> KoneListBackedMutableSet
     listProducer: KoneGrowableMutableListProducer,
     builder: (UInt) -> Element
 ): KoneListBackedMutableSet<Element, ElementContext> = KoneListBackedMutableSet(elementContext, listProducer.produceBy(size, builder))
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, KoneArrayResizableLinkedList())
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+    listProducer: KoneResizableMutableListProducer,
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produce())
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+    listProducer: KoneGrowableMutableListProducer,
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produce())
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+    size: UInt,
+    builder: (UInt) -> Element
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, KoneArrayResizableLinkedList(size, builder))
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+    size: UInt,
+    listProducer: KoneResizableMutableListProducer,
+    builder: (UInt) -> Element
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produceBy(size, builder))
+
+public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMutableReifiedSet(
+    elementContext: ElementContext,
+    size: UInt,
+    listProducer: KoneGrowableMutableListProducer,
+    builder: (UInt) -> Element
+): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produceBy(size, builder))
 
 internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneCollectionDescriptor(

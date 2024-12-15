@@ -16,7 +16,7 @@ public interface HeapNode<Element, Priority> {
 
 public interface MinimumHeap<Element, Priority> {
     public val size: UInt
-    public val nodesView: KoneSet<HeapNode<Element, Priority>>
+    public val nodesView: KoneReifiedSet<HeapNode<Element, Priority>>
     public val elementsView: KoneIterable<Element>
     
     public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
@@ -26,7 +26,7 @@ public interface MinimumHeap<Element, Priority> {
 
 public interface MaximumHeap<Element, Priority> {
     public val size: UInt
-    public val nodesView: KoneSet<HeapNode<Element, Priority>>
+    public val nodesView: KoneReifiedSet<HeapNode<Element, Priority>>
     public val elementsView: KoneIterable<Element>
     
     public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
@@ -40,7 +40,7 @@ public interface LinkedHeapNode<Element, Priority> : HeapNode<Element, Priority>
 }
 
 public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Priority> {
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>>
+    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
     override val elementsView: KoneList<Element>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
@@ -49,7 +49,7 @@ public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Pri
 }
 
 public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Priority> {
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>>
+    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
     override val elementsView: KoneList<Element>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>

@@ -12,8 +12,10 @@ import dev.lounres.kone.collections.KoneIterator
 import dev.lounres.kone.collections.KoneMap
 import dev.lounres.kone.collections.KoneMapEntry
 import dev.lounres.kone.collections.KoneMutableListNode
+import dev.lounres.kone.collections.KoneMutableMap
 import dev.lounres.kone.collections.KoneMutableMapNode
-import dev.lounres.kone.collections.KoneMutableMapWithContext
+import dev.lounres.kone.collections.KoneMutableReifiedMap
+import dev.lounres.kone.collections.KoneReifiedSet
 import dev.lounres.kone.collections.KoneSet
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.getAndMoveNext
@@ -22,35 +24,37 @@ import dev.lounres.kone.collections.isNotEmpty
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.toKoneMapEntry
+import dev.lounres.kone.collections.toKoneReifiedSet
+import dev.lounres.kone.collections.toKoneSet
+import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.ReifiedHashing
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
-import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.max
 
 
 // TODO: Add customizable list producer.
-public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal constructor(
+public open class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateCapacity(size, loadFactor), 2u)) - 1u,
+    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
     private var capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
-    private var sizeLowerBound: UInt = calculateSize(capacityLowerBound, loadFactor),
-    private var sizeUpperBound: UInt = calculateSize(capacityUpperBound, loadFactor),
+    private var sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
+    private var sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
     data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
-    override val keyContext: KeyContext,
-) : KoneMutableMapWithContext<Key, KeyContext, Value>, Disposable {
-    override var isDisposed: Boolean = false
+    public val keyContext: KeyContext,
+) : KoneMutableMap<Key, Value>, Disposable {
+    final override var isDisposed: Boolean = false
         private set
     
     private var _data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>>? = data
-    private var data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>>
+    internal var data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>>
         get() = _data!!
         set(value) { _data = value }
     
@@ -69,7 +73,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         isDisposed = true
     }
     
-    override var size: UInt = size
+    final override var size: UInt = size
         get() = if (isDisposed) disposedInstanceException() else field
         private set
 
@@ -77,10 +81,10 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         val contextHash = keyContext { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
-    private fun Key.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
+    protected fun Key.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
     
     private fun reinitializeBounds(newSize: UInt) {
-        val newCapacity = calculateCapacity(newSize, loadFactor)
+        val newCapacity = calculateHashTableCapacity(newSize, loadFactor)
         if (newCapacity > MAX_CAPACITY) throw IllegalArgumentException("KoneResizableHashMap implementation can not allocate array of size more than 2^31 needed for size $newSize and load factor $loadFactor")
         when {
             newCapacity > capacityUpperBound -> {
@@ -89,8 +93,8 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
                     capacityLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
                     capacityUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
                 }
-                sizeLowerBound = calculateSize(capacityLowerBound, loadFactor)
-                sizeUpperBound = calculateSize(capacityUpperBound, loadFactor)
+                sizeLowerBound = calculateHashTableSize(capacityLowerBound, loadFactor)
+                sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
             }
             newCapacity < capacityLowerBound -> {
                 while (newCapacity < capacityUpperBound && dataSizeNumber >= 2u) {
@@ -98,8 +102,8 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
                     capacityLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
                     capacityUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
                 }
-                sizeLowerBound = calculateSize(capacityLowerBound, loadFactor)
-                sizeUpperBound = calculateSize(capacityUpperBound, loadFactor)
+                sizeLowerBound = calculateHashTableSize(capacityLowerBound, loadFactor)
+                sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
             }
         }
     }
@@ -158,7 +162,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         capacityLowerBound = 0u
         capacityUpperBound = 2u
         sizeLowerBound = 0u
-        sizeUpperBound = calculateSize(capacityUpperBound, loadFactor)
+        sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
         data = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() }
         size = 0u
     }
@@ -230,17 +234,18 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         return this.entriesView == other.entriesView
     }
     
-    override val nodesView: KoneSet<KoneMutableMapNode<Key, Value>>
+    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
         field = NodesSet(this)
         get() = if (isDisposed) disposedInstanceException() else field
     override val keysView: KoneSet<Key>
         field = KeysSet(this)
         get() = if (isDisposed) disposedInstanceException() else field
+    override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementContext = keyContext)
     override val valuesView: KoneIterable<Value>
-        field = ValueCollection(this)
+        field = ValueIterable(this)
         get() = if (isDisposed) disposedInstanceException() else field
     override val entriesView: KoneIterable<KoneMapEntry<Key, Value>>
-        field = EntriesSet(this)
+        field = EntriesIterable(this)
         get() = if (isDisposed) disposedInstanceException() else field
     
     internal class Node<Key, Value>(
@@ -393,11 +398,15 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class NodesSet<Key, Value>(
         val map: KoneHashResizableMap<Key, *, Value>,
-    ) : KoneSet<Node<Key, Value>> {
+    ) :  KoneReifiedSet<Node<Key, Value>> {
         override val size: UInt get() = map.size
+        @Suppress("USELESS_IS_CHECK")
         override fun contains(element: Node<Key, Value>): Boolean =
-            if (map.isDisposed) disposedInstanceException()
-            else map.data[with(map) { element.key.dataIndex() }].let { it.firstIndexThat { _, entry -> entry === element } != it.size }
+            when {
+                map.isDisposed -> disposedInstanceException()
+                element !is Node -> false
+                else -> map.data.any { it.any { it === element } }
+            }
         override fun iterator(): KoneIterator<Node<Key, Value>> =
             if (map.isDisposed) disposedInstanceException()
             else NodeIterator(map)
@@ -411,14 +420,14 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         override val size: UInt get() = map.size
         override fun contains(element: Key): Boolean =
             if (map.isDisposed) disposedInstanceException()
-            else map.data[with(map) { element.dataIndex() }].let { it.firstIndexThat { _, entry -> map.keyContext { entry.key eq element } } != it.size }
+            else map.data[with(map) { element.dataIndex() }].any { entry -> map.keyContext { entry.key eq element } }
         override fun iterator(): KoneIterator<Key> =
             if (map.isDisposed) disposedInstanceException()
             else KeyIterator(map)
         // TODO: Override `toString`.
     }
 
-    internal class ValueCollection<Value>(
+    internal class ValueIterable<Value>(
         val map: KoneHashResizableMap<*, *, Value>,
     ) : KoneIterable<Value> {
         override val size: UInt get() = map.size
@@ -428,7 +437,7 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
         // TODO: Override `toString`.
     }
 
-    internal class EntriesSet<Key, Value>(
+    internal class EntriesIterable<Key, Value>(
         val map: KoneHashResizableMap<Key, *, Value>,
     ) : KoneIterable<KoneMapEntry<Key, Value>> {
         override val size: UInt get() = map.size
@@ -437,9 +446,69 @@ public class KoneHashResizableMap<Key, KeyContext: Hashing<Key>, Value> internal
             else EntryIterator(map)
         // TODO: Override `toString`.
     }
+}
 
-    public companion object {
-        private fun calculateCapacity(size: UInt, loadFactor: Float): UInt = ceil(size.toFloat() / loadFactor).toUInt()
-        private fun calculateSize(capacity: UInt, loadFactor: Float): UInt = floor(capacity.toFloat() * loadFactor).toUInt()
+public class KoneHashResizableReifiedMap<Key, KeyContext: ReifiedHashing<Key>, Value> @PublishedApi internal constructor(
+    size: UInt = 0u,
+    loadFactor: Float = 0.75f,
+    dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
+    capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
+    capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
+    sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
+    sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
+    data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
+    keyContext: KeyContext,
+) : KoneHashResizableMap<Key, KeyContext, Value>(
+    size = size,
+    loadFactor = loadFactor,
+    dataSizeNumber = dataSizeNumber,
+    capacityLowerBound = capacityLowerBound,
+    capacityUpperBound = capacityUpperBound,
+    sizeLowerBound = sizeLowerBound,
+    sizeUpperBound = sizeUpperBound,
+    data = data,
+    keyContext = keyContext,
+), KoneMutableReifiedMap<Key, Value> {
+    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+        field = NodesSet(this)
+        get() = if (isDisposed) disposedInstanceException() else field
+    override val keysView: KoneReifiedSet<Key>
+        field = KeysSet(this)
+        get() = if (isDisposed) disposedInstanceException() else field
+    override val keys: KoneReifiedSet<Key> get() = keysView.toKoneReifiedSet(keyContext)
+    
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
+    internal class NodesSet<Key, Value>(
+        val map: KoneHashResizableReifiedMap<Key, *, Value>,
+    ) : KoneReifiedSet<Node<Key, Value>> {
+        override val size: UInt get() = map.size
+        @Suppress("USELESS_IS_CHECK")
+        override fun contains(element: Node<Key, Value>): Boolean =
+            when {
+                map.isDisposed -> disposedInstanceException()
+                element !is Node -> false
+                else -> {
+                    val key = element.key
+                    key in map.keyContext && map.data[with(map) { key.dataIndex() }].any { it === element }
+                }
+            }
+        override fun iterator(): KoneIterator<Node<Key, Value>> =
+            if (map.isDisposed) disposedInstanceException()
+            else NodeIterator(map)
+        // TODO: Override `toString`.
+    }
+    
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
+    internal class KeysSet<Key>(
+        val map: KoneHashResizableReifiedMap<Key, *, *>,
+    ) : KoneReifiedSet<Key> {
+        override val size: UInt get() = map.size
+        override fun contains(element: Key): Boolean =
+            if (map.isDisposed) disposedInstanceException()
+            else element in map.keyContext && map.data[with(map) { element.dataIndex() }].any { entry -> map.keyContext { entry.key eq element } }
+        override fun iterator(): KoneIterator<Key> =
+            if (map.isDisposed) disposedInstanceException()
+            else KeyIterator(map)
+        // TODO: Override `toString`.
     }
 }

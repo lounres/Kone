@@ -5,9 +5,11 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.LinkedSearchTree
 import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.KoneLinearIterator
+import dev.lounres.kone.collections.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.KoneLinkedSet
 import dev.lounres.kone.collections.SearchSegmentResult
 import dev.lounres.kone.collections.detachedNodeException
@@ -559,7 +561,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         node.detach()
     }
     
-    override val nodesView: KoneLinkedSet<LinkedSearchTreeNode<Element>> = Nodes()
+    override val nodesView: KoneLinkedReifiedSet<LinkedSearchTreeNode<Element>> = Nodes()
     override val elementsView: KoneLinkedSet<Element> = Elements()
     
     override fun add(element: Element): LinkedSearchTreeNode<Element> =
@@ -1011,7 +1013,8 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
     }
     
-    internal inner class Nodes : KoneLinkedSet<Node<Element>> {
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
+    internal inner class Nodes : KoneLinkedReifiedSet<Node<Element>> {
         override val size: UInt get() = this@KoneTwoThreeTree.size
         
         override fun get(index: UInt): Node<Element> {
@@ -1068,6 +1071,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
     }
     
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Elements : KoneLinkedSet<Element> {
         override val size: UInt get() = this@KoneTwoThreeTree.size
         

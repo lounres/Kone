@@ -9,16 +9,17 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneListBackedMutableSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
-    override val elementContext: ElementContext,
+public open class KoneListBackedMutableSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
+    public val elementContext: ElementContext,
     internal val backingList: KoneMutableList<Element>,
-) : KoneMutableSet<Element>, KoneMutableSetWithContext<Element, ElementContext> {
+) : KoneMutableSet<Element> {
     override val size: UInt
         get() = backingList.size
 
@@ -56,4 +57,15 @@ public class KoneListBackedMutableSet<Element, ElementContext: Equality<Element>
         }
         append(']')
     }
+}
+
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+public class KoneListBackedMutableReifiedSet<Element, ElementContext: ReifiedEquality<Element>> @PublishedApi internal constructor(
+    elementContext: ElementContext,
+    backingList: KoneMutableList<Element>,
+) : KoneListBackedMutableSet<Element, ElementContext>(
+    elementContext = elementContext,
+    backingList = backingList,
+), KoneMutableReifiedSet<Element> {
+    override fun contains(element: Element): Boolean = element in elementContext && super.contains(element)
 }

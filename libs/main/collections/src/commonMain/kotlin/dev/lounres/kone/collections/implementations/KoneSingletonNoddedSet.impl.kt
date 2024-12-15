@@ -7,15 +7,16 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context.invoke
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>>(
+internal open class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>>(
     val singleElement: Element,
-    override val elementContext: ElementContext,
-) : KoneNoddedSet<Element>, KoneSetWithContext<Element, ElementContext> {
+    open val elementContext: ElementContext,
+) : KoneNoddedSet<Element> {
     override val size: UInt get() = 1u
     override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
     
@@ -27,17 +28,23 @@ internal class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>
 
     override fun toString(): String = "[$singleElement]"
     override fun hashCode(): Int = singleElement.hashCode()
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KoneSet<*>) return false
-        if (other.size != 1u) return false
-
-        return singleElement in other
-    }
+    override fun equals(other: Any?): Boolean = this === other
     
     inner class Node: KoneSetNode<Element> {
         override val isDetached: Boolean get() = false
         
         override val element: Element get() = singleElement
     }
+}
+
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+@PublishedApi
+internal class KoneSingletonNoddedReifiedSet<Element, ElementContext: ReifiedEquality<Element>>(
+    singleElement: Element,
+    override val elementContext: ElementContext,
+) : KoneSingletonNoddedSet<Element, ElementContext>(
+    singleElement = singleElement,
+    elementContext = elementContext,
+), KoneNoddedReifiedSet<Element> {
+    override fun contains(element: Element): Boolean = element in elementContext && elementContext { singleElement eq element }
 }

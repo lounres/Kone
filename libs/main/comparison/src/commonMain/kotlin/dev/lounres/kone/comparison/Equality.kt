@@ -8,6 +8,8 @@
 package dev.lounres.kone.comparison
 
 import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Some
 
 
 /**
@@ -27,6 +29,8 @@ public interface Equality<in Element>: KoneContext {
      */
     public infix fun Element.equalsTo(other: Element): Boolean = this == other
 }
+
+public interface ReifiedEquality<Element> : Reification<Element>, Equality<Element>
 
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
@@ -49,8 +53,24 @@ public inline infix fun <Element> Element.eq(other: Element): Boolean = this equ
 context(Equality<Element>)
 public inline infix fun <Element> Element.neq(other: Element): Boolean = !(this equalsTo other)
 
+context(ReifiedEquality<Element>)
+public inline infix fun <Element> Any?.tryEqualsTo(other: Element): Boolean =
+    when (val reified = reifyMaybe(this)) {
+        None -> false
+        is Some<Element> -> reified.value equalsTo other
+    }
+
+context(ReifiedEquality<Element>)
+public inline infix fun <Element> Any?.tryNotEqualsTo(other: Element): Boolean = !(this tryEqualsTo other)
+
+context(ReifiedEquality<Element>)
+public inline infix fun <Element> Any?.tryEq(other: Element): Boolean = this tryEqualsTo other
+
+context(ReifiedEquality<Element>)
+public inline infix fun <Element> Any?.tryNeq(other: Element): Boolean = !(this tryEqualsTo other)
+
 /**
- * [Equality] builder from a [equalizer] that checks equality of the `left` and `right` elements.
+ * [Equality] builder from an [equalizer] that checks equality of the `left` and `right` elements.
  */
 public inline fun <Element> Equality(crossinline equalizer: (left: Element, right: Element) -> Boolean): Equality<Element> =
     object : Equality<Element> {
@@ -65,3 +85,6 @@ public fun <Element> defaultEquality(): Equality<Element> = DefaultContext
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
 public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteContext
+
+public inline fun <reified Element> defaultReifiedEquality(): ReifiedEquality<Element> = defaultReifiedHashing()
+public inline fun <reified Element> absoluteReifiedEquality(): ReifiedEquality<Element> = absoluteReifiedHashing()

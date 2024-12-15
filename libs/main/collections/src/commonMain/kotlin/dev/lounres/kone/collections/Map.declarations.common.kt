@@ -5,22 +5,29 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.comparison.absoluteReifiedEquality
+
 
 // TODO: Describe contracts on equals and hashCode.
 
 public interface KoneMap<Key, out Value> {
     public val size: UInt
     
-    public val nodesView: KoneSet<KoneMapNode<Key, Value>>
+    public val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>>
+    public val nodes: KoneReifiedSet<KoneMapNode<Key, Value>> get() = nodesView
     public val keysView: KoneSet<Key>
+    public val keys: KoneSet<Key> get() = keysView
     public val valuesView: KoneIterable<Value>
     public val entriesView: KoneIterable<KoneMapEntry<Key, Value>>
 
     public fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>?
 }
 
-public interface KoneMutableMap<Key, Value>: KoneMap<Key, Value> {
-    override val nodesView: KoneSet<KoneMutableMapNode<Key, Value>>
+public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
+    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+    override val nodes: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+        get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+    override val keys: KoneSet<Key>
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>?
     

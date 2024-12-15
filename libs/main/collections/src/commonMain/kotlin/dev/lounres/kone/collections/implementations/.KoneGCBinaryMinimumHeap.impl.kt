@@ -5,8 +5,9 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneLinkedSet
+import dev.lounres.kone.collections.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.LinkedHeapNode
 import dev.lounres.kone.collections.LinkedMinimumHeap
@@ -116,7 +117,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
         siftTheNode(holder)
     }
     
-    override val nodesView: KoneLinkedSet<LinkedHeapNode<Element, Priority>> = Nodes()
+    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> = Nodes()
     override val elementsView: KoneList<Element> = Elements()
 
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority> {
@@ -307,13 +308,14 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
         }
     }
     
-    internal inner class Nodes : KoneLinkedSet<LinkedHeapNode<Element, Priority>> {
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
+    internal inner class Nodes : KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> {
         override val size: UInt get() = this@KoneGCBinaryMinimumHeap.size
         override fun get(index: UInt): LinkedHeapNode<Element, Priority> {
             TODO("Not yet implemented")
         }
         override fun contains(element: LinkedHeapNode<Element, Priority>): Boolean =
-            element is Node<Element, Priority> && element.heap === this@KoneGCBinaryMinimumHeap
+            element is Node<*, *> && element.heap === this@KoneGCBinaryMinimumHeap
         override fun iterator(): KoneLinearIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(rootHolder, this@KoneGCBinaryMinimumHeap.size)
         override fun iteratorFrom(index: UInt): KoneLinearIterator<LinkedHeapNode<Element, Priority>> {
             TODO("Not yet implemented")
@@ -360,6 +362,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
         }
     }
     
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Elements : KoneList<Element> {
         override val size: UInt get() = this@KoneGCBinaryMinimumHeap.size
         override fun get(index: UInt): Element {

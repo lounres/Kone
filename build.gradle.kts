@@ -299,6 +299,7 @@ stal {
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
+                                optIn("io.kotest.common.ExperimentalKotest")
                             }
                         }
                     }
@@ -320,7 +321,6 @@ stal {
             configure<AtomicFUPluginExtension> {
                 transformJvm = true
                 jvmVariant = "VH"
-                transformJs = true
             }
         }
         "kotest" {

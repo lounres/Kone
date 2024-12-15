@@ -6,13 +6,11 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneSettableLinearIterator
-import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.option.orElse
-import dev.lounres.kone.repeat
 
 
 /**
@@ -65,7 +63,7 @@ public class KoneLazyList<Element>(
     override val size: UInt,
     private val generator: (index: UInt) -> Element,
 ) : KoneSettableList<Element> {
-    private val buffer: KoneMutableArray<Option<Element>> = KoneMutableArray(size) { None }
+    private val buffer: KoneMutableArray<Maybe<Element>> = KoneMutableArray(size) { None }
 
     override fun get(index: UInt): Element = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
     override fun set(index: UInt, element: Element) {
@@ -120,7 +118,7 @@ public class KoneLazyList<Element>(
     internal class Iterator<Element>(
         val size: UInt,
         var currentIndex: UInt,
-        val buffer: KoneMutableArray<Option<Element>>,
+        val buffer: KoneMutableArray<Maybe<Element>>,
         val generator: (UInt) -> Element
     ): KoneSettableLinearIterator<Element> {
         override fun hasNext(): Boolean = currentIndex < size

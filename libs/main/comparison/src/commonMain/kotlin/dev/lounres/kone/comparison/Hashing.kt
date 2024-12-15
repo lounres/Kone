@@ -6,6 +6,9 @@
 package dev.lounres.kone.comparison
 
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Some
 
 
 /**
@@ -22,6 +25,8 @@ import dev.lounres.kone.context.invoke
 public interface Hashing<in Element> : Equality<Element> {
     public fun Element.hash(): Int = this.hashCode()
 }
+
+public interface ReifiedHashing<Element> : Hashing<Element>, ReifiedEquality<Element>
 
 /**
  * [Hashing] builder from a [equalizer] that checks equality of the `left` and `right` elements and [hasher]
@@ -53,3 +58,24 @@ public fun <Element> defaultHashing(): Hashing<Element> = DefaultContext
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
 public fun <Element> absoluteHashing(): Hashing<Element> = AbsoluteContext
+
+public inline fun <reified Element> defaultReifiedHashing(): ReifiedHashing<Element> =
+    object : ReifiedHashing<Element> {
+        override fun Element.equalsTo(other: Element): Boolean = this == other
+        override fun Element.hash(): Int = this.hashCode()
+        
+        override fun contains(element: Any?): Boolean = element is Element
+        override fun reifyMaybe(element: Any?): Maybe<Element> = if (element is Element) Some(element) else None
+        override fun reifyOrNull(element: Any?): Element? = element as? Element
+        override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
+    }
+public inline fun <reified Element> absoluteReifiedHashing(): ReifiedHashing<Element> =
+    object : ReifiedHashing<Element> {
+        override fun Element.equalsTo(other: Element): Boolean = this === other
+        override fun Element.hash(): Int = this.hashCode()
+        
+        override fun contains(element: Any?): Boolean = element is Element
+        override fun reifyMaybe(element: Any?): Maybe<Element> = if (element is Element) Some(element) else None
+        override fun reifyOrNull(element: Any?): Element? = element as? Element
+        override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
+    }

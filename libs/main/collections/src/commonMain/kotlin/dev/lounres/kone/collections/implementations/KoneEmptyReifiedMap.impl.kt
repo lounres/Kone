@@ -6,19 +6,15 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.defaultHashing
 
 
-internal open class KoneEmptyMapTemplate<Key, Value> : KoneMapWithContext<Key, Equality<Key>, Value> {
-    override val keyContext: Equality<Key> get() = defaultHashing()
-
+internal open class KoneEmptyMapReifiedTemplate<Key, Value> : KoneReifiedMap<Key, Value> {
     override val size: UInt get() = 0u
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = null
     
-    override val nodesView: KoneSet<KoneMapNode<Key, Value>> get() = KoneEmptyNoddedSet
-    override val keysView: KoneSet<Key> get() = KoneEmptyNoddedSet
+    override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> get() = KoneEmptyNoddedReifiedSet
+    override val keysView: KoneReifiedSet<Key> get() = KoneEmptyNoddedReifiedSet
     override val valuesView: KoneIterable<Value> get() = KoneEmptySettableLinearIterable
     override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> get() = KoneEmptySettableLinearIterable
 
@@ -27,4 +23,4 @@ internal open class KoneEmptyMapTemplate<Key, Value> : KoneMapWithContext<Key, E
     override fun equals(other: Any?): Boolean = other is KoneMap<*, *> && other.isEmpty()
 }
 
-internal object KoneEmptyMap: KoneEmptyMapTemplate<Any?, Nothing>()
+internal object KoneEmptyReifiedMap: KoneEmptyMapReifiedTemplate<Any?, Nothing>()
