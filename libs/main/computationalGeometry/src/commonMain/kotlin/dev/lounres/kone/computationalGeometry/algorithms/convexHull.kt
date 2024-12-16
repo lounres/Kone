@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.comparison.koneSetEquality
 import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.utils.*

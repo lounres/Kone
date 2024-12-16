@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isPositive
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.comparison.koneSetEquality
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.collections.utils.mapTo
 import dev.lounres.kone.comparison.Order
@@ -20,7 +21,6 @@ import dev.lounres.kone.computationalGeometry.MutablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.buildAbstractPolytopicConstruction
 import dev.lounres.kone.computationalGeometry.utils.sumOf
-import dev.lounres.kone.computationalGeometry.vectorEquality
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.experiment1.MDList1
 
