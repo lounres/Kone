@@ -8,7 +8,7 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.comparison.koneSetHashing
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.defaultHashing
@@ -87,7 +87,7 @@ internal class MutableAbstractPolytopicConstructionImpl<N, out NC: Equality<N>>(
             require(faces[dim].isNotEmpty()) { "Can not construct $newPolytopeRank-dimensional polytope without $dim-dimensional faces" }
         }
         // TODO: Implement strongly connectedness requirement
-        if (newPolytopeRank >= 1u) require((koneIterableSetHashing(polytopeContext)) { vertices.hash() == faces[0u].hash() && vertices eq faces[0u] }) { "" }
+        if (newPolytopeRank >= 1u) require((koneSetHashing(polytopeContext)) { vertices.hash() == faces[0u].hash() && vertices eq faces[0u] }) { "" }
         for (dim in 1u ..< newPolytopeRank) {
             for (face in faces[dim]) {
                 require(face in polytopes[dim]) { "Can not construct polytope with nonexistent faces: $face is not registered" }
