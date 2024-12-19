@@ -158,7 +158,7 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             }
         } else {
             if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i].also { if(it != null) it.index = i + 1u }
-            data[index] = Node(this@KoneArrayResizableNoddedList, element, size)
+            data[index] = Node(this@KoneArrayResizableNoddedList, element, index)
             size++
         }
     }
@@ -227,12 +227,12 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < newSize -> get(it+1u)
+                    it < newSize -> get(it+1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            for (i in index..<newSize) data[i] = data[i + 1u]
+            for (i in index..<newSize) data[i] = data[i + 1u].also { it!!.index = i }
             data[size - 1u] = null
             size = newSize
         }
