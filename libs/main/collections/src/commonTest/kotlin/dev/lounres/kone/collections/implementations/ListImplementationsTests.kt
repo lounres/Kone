@@ -795,10 +795,63 @@ val listImplementations = listOf<ListImplementationDescription>(
     ListImplementationDescription(
         name = "KoneArraySettableList",
         producer = KoneArraySettableListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element : Any> validate(list: KoneList<Element>): Boolean {
+                if (list !is KoneArraySettableList<Element>) return false
+                
+                return true
+            }
+            override fun <Element : Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>
+            ): Boolean {
+                if (!validate(list)) return false
+                list as KoneArraySettableList<Element>
+                
+                if (iterator !is KoneArraySettableList.Iterator<Element>) return false
+                if (iterator.data.array !== list.data.array) return false
+                
+                if (iterator.currentIndex > list.size) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArraySettableNoddedList",
         producer = KoneArraySettableNoddedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element : Any> validate(list: KoneList<Element>): Boolean {
+                if (list !is KoneArraySettableNoddedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val data = list.data
+                
+                repeat(data.size) { index ->
+                    val currentNodeOrNull = data[index]
+                    if (currentNodeOrNull == null) return false
+                    if (currentNodeOrNull.index != index) return false
+                    if (currentNodeOrNull.isDetached) return false
+                    if (currentNodeOrNull.list !== list) return false
+                }
+                
+                return true
+            }
+            override fun <Element : Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>
+            ): Boolean {
+                if (!validate(list)) return false
+                list as KoneArraySettableList<Element>
+                
+                if (iterator !is KoneArraySettableList.Iterator<Element>) return false
+                if (iterator.data.array !== list.data.array) return false
+                
+                if (iterator.currentIndex > list.size) return false
+                
+                return true
+            }
+        }
     ),
     // GC (resizable) implementations
 //    ListImplementationDescription(

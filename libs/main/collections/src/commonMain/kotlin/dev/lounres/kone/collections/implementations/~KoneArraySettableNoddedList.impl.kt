@@ -17,16 +17,21 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
+import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.repeat
 
 
 //@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArraySettableNoddedList<Element> @PublishedApi internal constructor(
-    private val data: KoneMutableArray<Node<Element>?>,
+    internal val data: KoneMutableArray<Node<Element>?>,
 ) : KoneSettableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
+    
+    init {
+        data.forEach { it!!.list = this }
+    }
     
     override val size: UInt get() = data.size
     
@@ -116,7 +121,9 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
             private set
         
         private var _list: KoneArraySettableNoddedList<Element>? = null
-        internal val list: KoneArraySettableNoddedList<Element> get() = _list!!
+        internal var list: KoneArraySettableNoddedList<Element>
+            get() = _list!!
+            set(value) { _list = value }
         
         internal constructor(list: KoneArraySettableNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
             _list = list

@@ -41,12 +41,13 @@ import kotlin.jvm.JvmInline
  *
  * @usesMathJax
  */
+// TODO: Make the class `Disposable`.
 @Suppress("UNCHECKED_CAST")
 //@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
 @JvmInline
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public value class KoneArraySettableList<Element> @PublishedApi internal constructor(
-    private val data: KoneMutableArray<Any?>,
+    internal val data: KoneMutableArray<Any?>,
 ) : KoneSettableList<Element> {
     override val size: UInt get() = data.size
 
