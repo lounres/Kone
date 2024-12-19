@@ -7,9 +7,7 @@ package dev.lounres.kone.collections
 
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneReifiedSet<out Element> : KoneSet<@UnsafeVariance Element> {
-    override operator fun contains(element: @UnsafeVariance Element): Boolean
-}
+public interface KoneReifiedSet<out Element> : KoneSet<@UnsafeVariance Element>
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableReifiedSet<Element> : KoneMutableSet<Element>, KoneReifiedSet<Element>

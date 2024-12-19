@@ -14,7 +14,7 @@ import dev.lounres.kone.numberTheory.binomial
 
 @OptIn(ExperimentalKoneAPI::class)
 fun main() {
-    Rational.field /* It's another reference to RationalField */ {
+    Rational.context /* It's another reference to RationalField */ {
         val a = Rational(1, 2)
         val b = Rational(1, 3)
 
@@ -56,7 +56,7 @@ fun main() {
     }
 
     // Contexts can also be used to return a result of computation inside them
-    fun bernoulliNumber(n: Int): Rational = Rational.field {
+    fun bernoulliNumber(n: Int): Rational = Rational.context {
         // Initialise a list for storing the recursively computed Bernoulli numbers
         val bernoulliNumbers = Array<Rational?>(n + 1) { null }
         bernoulliNumbers[0] = one

@@ -71,7 +71,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         private set
     
     private var _data: KoneMutableArray<Any?>? = data
-    private val data: KoneMutableArray<Any?>
+    internal val data: KoneMutableArray<Any?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
     
     override fun dispose() {
@@ -81,7 +81,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         isDisposed = true
     }
     
-    private val capacity: UInt get() = data.size
+    internal val capacity: UInt get() = data.size
     
     override var size: UInt = size
         get() {

@@ -17,9 +17,9 @@ import kotlin.math.max
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
-    private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
-    private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
+    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
+    internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
+    internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray<Node<Element>?>(sizeUpperBound) { null },
 ) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
@@ -30,7 +30,7 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
     }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
-    private var data: KoneMutableArray<Node<Element>?>
+    internal var data: KoneMutableArray<Node<Element>?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
         set(value) { _data = value }
     
@@ -152,12 +152,12 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
                 when {
                     it < index -> get(it)
                     it == index -> Node(this@KoneArrayResizableNoddedList, element, it)
-                    it <= oldSize -> get(it-1u)
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i].also { if(it != null) it.index = i + 1u }
             data[index] = Node(this@KoneArrayResizableNoddedList, element, size)
             size++
         }

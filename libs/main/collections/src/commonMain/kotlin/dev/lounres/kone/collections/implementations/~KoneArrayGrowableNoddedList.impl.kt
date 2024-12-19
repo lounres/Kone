@@ -14,7 +14,7 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
 ) : KoneGrowableMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
@@ -25,7 +25,7 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
     }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
-    private var data: KoneMutableArray<Node<Element>?>
+    internal var data: KoneMutableArray<Node<Element>?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
         set(value) { _data = value }
     
@@ -220,7 +220,7 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
-        for (i in index..<newSize) data[i] = data[i + 1u]
+        for (i in index..<newSize) data[i] = data[i + 1u].also { if (it != null) it.index = i }
         data[size - 1u] = null
         size = newSize
     }

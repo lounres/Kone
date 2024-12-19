@@ -15,14 +15,14 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
 ) : KoneGrowableMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
     private var _data: KoneMutableArray<Any?>? = data
-    private var data: KoneMutableArray<Any?>
+    internal var data: KoneMutableArray<Any?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
         set(value) { _data = value }
     

@@ -18,16 +18,16 @@ import kotlin.math.max
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     size: UInt,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
-    private var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
-    private var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
+    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
+    internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
+    internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
 ) : KoneMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
     private var _data: KoneMutableArray<Any?>? = data
-    private var data: KoneMutableArray<Any?>
+    internal var data: KoneMutableArray<Any?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
         set(value) { _data = value }
     

@@ -15,7 +15,6 @@ import dev.lounres.kone.collections.capacityOverflowException
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.getOrNull
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
@@ -92,7 +91,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
     }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
-    private val data: KoneMutableArray<Node<Element>?>
+    internal val data: KoneMutableArray<Node<Element>?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
 
     override fun dispose() {
