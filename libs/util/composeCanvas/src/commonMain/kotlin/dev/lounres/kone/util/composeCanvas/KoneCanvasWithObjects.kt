@@ -6,6 +6,11 @@
 package dev.lounres.kone.util.composeCanvas
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -38,11 +43,10 @@ private data class PressedLayer(
 @Composable
 public fun KoneCanvasWithDraggableLayers(
     modifier: Modifier = Modifier,
-    canvasState: KoneCanvasState = KoneCanvasState(),
-    onGetCanvasState: () -> KoneCanvasState,
-    onChangeCanvasState: (KoneCanvasState) -> Unit = {},
+    canvasStateState: MutableState<KoneCanvasState> = remember { mutableStateOf(KoneCanvasState()) },
     objects: KoneList<KoneCanvasDraggableLayer> = emptyKoneList(),
 ) {
+    var canvasState by canvasStateState
     KoneCanvas(
         modifier = modifier
             .pointerInput(Unit) {
@@ -55,7 +59,6 @@ public fun KoneCanvasWithDraggableLayers(
                             when (event.type) {
                                 PointerEventType.Press -> {
                                     val lastPosition = event.changes.last().position
-                                    val canvasState = onGetCanvasState()
                                     val (canvasOffset, canvasZoom) = canvasState
                                     val lastCoords = Point2(
                                         (lastPosition.x - size.width / 2) * canvasZoom + canvasOffset.x,
@@ -73,7 +76,6 @@ public fun KoneCanvasWithDraggableLayers(
                                 
                                 PointerEventType.Move -> {
                                     if (pressedLayer != null) {
-                                        val canvasState = onGetCanvasState()
                                         val (oldOffset, oldZoom) = canvasState
                                         val lastPosition = event.changes.last().position
                                         val offset = lastPosition - pressedLayer.currentPosition
@@ -81,11 +83,9 @@ public fun KoneCanvasWithDraggableLayers(
                                         if (pressedLayer.obj != null) {
                                             pressedLayer.obj.shiftBy(Vector2(offset.x, -offset.y) * oldZoom)
                                         } else {
-                                            onChangeCanvasState(
-                                                KoneCanvasState(
-                                                    offset = euclideanKategory { oldOffset - Vector2(offset.x, -offset.y) * oldZoom },
-                                                    zoom = oldZoom
-                                                )
+                                            canvasState = KoneCanvasState(
+                                                offset = euclideanKategory { oldOffset - Vector2(offset.x, -offset.y) * oldZoom },
+                                                zoom = oldZoom
                                             )
                                         }
                                     }
@@ -95,7 +95,6 @@ public fun KoneCanvasWithDraggableLayers(
                                     val lastChange = event.changes.last()
                                     val zoomDelta = exp(lastChange.scrollDelta.y / 10)
                                     
-                                    val canvasState = onGetCanvasState()
                                     val (oldOffset, oldZoom) = canvasState
                                     val newZoom = oldZoom * zoomDelta
                                     val pointerOffset = lastChange.position.let {
@@ -105,11 +104,9 @@ public fun KoneCanvasWithDraggableLayers(
                                         )
                                     }
                                     
-                                    onChangeCanvasState(
-                                        KoneCanvasState(
-                                            offset = oldOffset + pointerOffset * (oldZoom - newZoom),
-                                            zoom = newZoom
-                                        )
+                                    canvasState = KoneCanvasState(
+                                        offset = oldOffset + pointerOffset * (oldZoom - newZoom),
+                                        zoom = newZoom
                                     )
                                 }
                             }
@@ -119,8 +116,6 @@ public fun KoneCanvasWithDraggableLayers(
             },
         canvasState = canvasState,
     ) {
-        for (obj in objects) {
-            obj.draw(canvasState)
-        }
+        for (obj in objects) obj.draw(canvasState)
     }
 }

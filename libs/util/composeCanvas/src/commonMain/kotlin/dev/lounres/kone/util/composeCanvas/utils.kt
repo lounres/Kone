@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.util.composeCanvas
 
-import dev.lounres.kone.algebraic.field
+import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
 import dev.lounres.kone.computationalGeometry.euclideanKategory
 
 
 @PublishedApi
-internal val euclideanKategory: EuclideanKategory<Float> = Float.field.euclideanKategory
+internal val euclideanKategory: EuclideanKategory<Float> = Float.context.euclideanKategory

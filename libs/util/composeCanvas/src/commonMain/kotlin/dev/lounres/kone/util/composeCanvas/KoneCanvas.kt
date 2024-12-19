@@ -8,6 +8,10 @@ package dev.lounres.kone.util.composeCanvas
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Matrix
@@ -56,7 +60,7 @@ public val ViewRegion.rightTop: Offset
 @Composable
 public fun KoneCanvas(
     modifier: Modifier = Modifier,
-    canvasState: KoneCanvasState = KoneCanvasState(),
+    canvasState: KoneCanvasState,
     onDraw: DrawScope.() -> Unit,
 ) {
     Canvas(
@@ -145,3 +149,18 @@ public fun Modifier.defaultKoneCanvasPointerInput(
     getKoneCanvasState = { koneCanvasState.value },
     setKoneCanvasState = { koneCanvasState.value = it },
 )
+
+@Composable
+public fun KoneDefaultCanvas(
+    modifier: Modifier = Modifier,
+    onDraw: DrawScope.(KoneCanvasState) -> Unit,
+) {
+    val canvasStateState = remember { mutableStateOf(KoneCanvasState()) }
+    var canvasState by canvasStateState
+    KoneCanvas(
+        modifier = modifier.defaultKoneCanvasPointerInput(canvasStateState),
+        canvasState = canvasState,
+    ) {
+        onDraw(canvasState)
+    }
+}
