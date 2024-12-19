@@ -6,7 +6,7 @@
 package dev.lounres.kone.misc.lattices
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneResizableHashSet
+import dev.lounres.kone.collections.implementations.KoneHashResizableSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.combinations
 import dev.lounres.kone.comparison.defaultEquality
@@ -85,7 +85,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt
             addAllFrom(otherCellsOfFirstPart)
             add(firstCell)
         }
-        if (!takeFormIf(firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
+        if (!takeFormIf(firstPart.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
         val restCells = buildKoneSet {
             addAllFrom(allCells)
             removeAllFrom(firstPart)
@@ -95,7 +95,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt
         val forms = rotations.map {
             Form(
                 Cell(it(firstCell.position), firstCell.attributes),
-                firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { cell ->
+                firstPart.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { cell ->
                     Cell(it(cell.position), cell.attributes)
                 }
             )
@@ -106,7 +106,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt
                 if(!isActive) return@sequence
                 if (otherFirstCell.position.kind != form.startCell.position.kind) continue
                 val shift = otherFirstCell - form.startCell
-                val part = form.cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
+                val part = form.cells.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
                 if (part.all { it in allCells } && part.none { it in firstPart }) add(part)
             }
         }.toKoneList()
@@ -223,7 +223,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UIn
                 addAllFrom(otherCellsOfFirstPart)
                 add(firstCell)
             }
-            if (!takeFormIf(firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
+            if (!takeFormIf(firstPart.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `firstPart.size` */)) { it.position })) continue
             val restCells = buildKoneSet {
                 addAllFrom(allCells)
                 removeAllFrom(firstPart)
@@ -233,7 +233,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UIn
             val forms = rotations.map {
                 Form(
                     Cell(it(firstCell.position), firstCell.attributes),
-                    firstPart.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { cell ->
+                    firstPart.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `cells.size` */)) { cell ->
                         Cell(it(cell.position), cell.attributes)
                     }
                 )
@@ -243,7 +243,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UIn
                 for (form in forms) for (otherFirstCell in restCells) {
                     if (otherFirstCell.position.kind != form.startCell.position.kind) continue
                     val shift = otherFirstCell - form.startCell
-                    val part = form.cells.mapTo(KoneResizableHashSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
+                    val part = form.cells.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
                     if (part.all { it in allCells } && part.none { it in firstPart }) add(part)
                 }
             }.toKoneList()

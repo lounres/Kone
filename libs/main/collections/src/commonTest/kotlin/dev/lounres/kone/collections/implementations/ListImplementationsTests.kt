@@ -5,19 +5,26 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.algebraic.context
+import dev.lounres.kone.collections.KoneIterator
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableList
+import dev.lounres.kone.collections.contains
 import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.producers.KoneListProducer
 import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.utils.any
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
+import dev.lounres.kone.scope
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.PropTestConfig
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
@@ -26,9 +33,35 @@ import io.kotest.property.exhaustive.ints
 import kotlin.test.fail
 
 
+interface KoneListValidator {
+    fun <Element: Any> validate(
+        list: KoneList<Element>,
+    ): Boolean
+    
+    fun <Element: Any> validateWithIterator(
+        list: KoneList<Element>,
+        iterator: KoneIterator<Element>,
+    ): Boolean
+}
+
+fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>) =
+    withClue("The list is invalid") { validate(list).shouldBeTrue() }
+fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>, iterator: KoneIterator<Element>) =
+    withClue("The list or the iterator is invalid") { validateWithIterator(list, iterator).shouldBeTrue() }
+
 data class ListImplementationDescription (
     val name: String,
     val producer: KoneListProducer,
+    val validator: KoneListValidator = object : KoneListValidator {
+        override fun <Element: Any> validate(
+            list: KoneList<Element>,
+        ): Boolean = true
+        
+        override fun <Element: Any> validateWithIterator(
+            list: KoneList<Element>,
+            iterator: KoneIterator<Element>,
+        ): Boolean = true
+    },
 )
 
 // TODO: Add missing list producers
@@ -37,10 +70,146 @@ val listImplementations = listOf<ListImplementationDescription>(
     ListImplementationDescription(
         name = "KoneArrayFixedCapacityLinkedList",
         producer = KoneArrayFixedCapacityLinkedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayFixedCapacityLinkedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val capacity = list.capacity
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (size > capacity) return false
+                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) return false
+                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(capacity) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == capacity - 1u)) return false
+                    }
+                }
+                
+                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(capacity) { iteration ->
+                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) return false
+                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayFixedCapacityLinkedNoddedList",
         producer = KoneArrayFixedCapacityLinkedNoddedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayFixedCapacityLinkedNoddedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val capacity = list.capacity
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (size > capacity) return false
+                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) return false
+                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(capacity) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == capacity - 1u)) return false
+                    }
+                }
+                
+                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(capacity) { iteration ->
+                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) return false
+                        val currentNodeOrNull = data[currentIndex]
+                        if (iteration < size) {
+                            if (currentNodeOrNull == null) return false
+                            if (currentNodeOrNull.actualIndex != currentIndex) return false
+                            if (currentNodeOrNull.isDetached) return false
+                            if (currentNodeOrNull.list !== list) return false
+                        } else {
+                            if (currentNodeOrNull != null) return false
+                        }
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayFixedCapacityList",
@@ -54,10 +223,148 @@ val listImplementations = listOf<ListImplementationDescription>(
     ListImplementationDescription(
         name = "KoneArrayGrowableLinkedList",
         producer = KoneArrayGrowableLinkedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayGrowableLinkedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val sizeUpperBound = list.sizeUpperBound
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
+                if (size > sizeUpperBound) return false
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(sizeUpperBound) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                    }
+                }
+                
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(sizeUpperBound) { iteration ->
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayGrowableLinkedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayGrowableLinkedNoddedList",
         producer = KoneArrayGrowableLinkedNoddedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayGrowableLinkedNoddedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val sizeUpperBound = list.sizeUpperBound
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
+                if (size > sizeUpperBound) return false
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(sizeUpperBound) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                    }
+                }
+                
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(sizeUpperBound) { iteration ->
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        val currentNodeOrNull = data[currentIndex]
+                        if (iteration < size) {
+                            if (currentNodeOrNull == null) return false
+                            if (currentNodeOrNull.actualIndex != currentIndex) return false
+                            if (currentNodeOrNull.isDetached) return false
+                            if (currentNodeOrNull.list !== list) return false
+                        } else {
+                            if (currentNodeOrNull != null) return false
+                        }
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayGrowableList",
@@ -71,10 +378,154 @@ val listImplementations = listOf<ListImplementationDescription>(
     ListImplementationDescription(
         name = "KoneArrayResizableLinkedList",
         producer = KoneArrayResizableLinkedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayResizableLinkedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val dataSizeNumber = list.dataSizeNumber
+                val sizeLowerBound = list.sizeLowerBound
+                val sizeUpperBound = list.sizeUpperBound
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (dataSizeNumber !in 1u..31u) return false
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
+                if (size > sizeUpperBound) return false
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(sizeUpperBound) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                    }
+                }
+                
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(sizeUpperBound) { iteration ->
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayResizableLinkedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayResizableLinkedNoddedList",
         producer = KoneArrayResizableLinkedNoddedListProducer,
+        validator = object : KoneListValidator {
+            override fun <Element: Any> validate(
+                list: KoneList<Element>,
+            ): Boolean {
+                if (list !is KoneArrayResizableLinkedNoddedList<Element>) return false
+                if (list.isDisposed) return false
+                
+                val dataSizeNumber = list.dataSizeNumber
+                val sizeLowerBound = list.sizeLowerBound
+                val sizeUpperBound = list.sizeUpperBound
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                val nextNodeIndex = list.nextNodeIndex
+                val previousNodeIndex = list.previousNodeIndex
+                val data = list.data
+                
+                if (dataSizeNumber !in 1u..31u) return false
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
+                if (size > sizeUpperBound) return false
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
+                
+                scope {
+                    var tortoise = 0u
+                    var hare = 0u
+                    repeat(sizeUpperBound) { iteration ->
+                        tortoise = nextNodeIndex[tortoise]
+                        hare = nextNodeIndex[nextNodeIndex[hare]]
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                    }
+                }
+                
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
+                
+                scope {
+                    var currentIndex = start
+                    repeat(sizeUpperBound) { iteration ->
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        val currentNodeOrNull = data[currentIndex]
+                        if (iteration < size) {
+                            if (currentNodeOrNull == null) return false
+                            if (currentNodeOrNull.actualIndex != currentIndex) return false
+                            if (currentNodeOrNull.isDetached) return false
+                            if (currentNodeOrNull.list !== list) return false
+                        } else {
+                            if (currentNodeOrNull != null) return false
+                        }
+                        currentIndex = nextNodeIndex[currentIndex]
+                    }
+                }
+                
+                return true
+            }
+            
+            override fun <Element: Any> validateWithIterator(
+                list: KoneList<Element>,
+                iterator: KoneIterator<Element>,
+            ): Boolean {
+                if (!validate(list)) return false
+                
+                if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Element>) return false
+                if (iterator.list !== list) return false
+                
+                val currentIndex = iterator.currentIndex
+                if (currentIndex > list.size) return false
+                val expectedActualCurrentIndex = scope {
+                    var actualIndex = list.start
+                    repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
+                    actualIndex
+                }
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
+                
+                return true
+            }
+        }
     ),
     ListImplementationDescription(
         name = "KoneArrayResizableList",
@@ -100,7 +551,7 @@ val listImplementations = listOf<ListImplementationDescription>(
 //    ),
 )
 
-fun <E> testEqualityByIteration(list1: KoneList<E>, list2: List<E>) {
+fun <Element> testEqualityByIteration(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists by iteration through them") {
         val listIterator = list1.iterator()
         for (i in 0u ..< list2.size.toUInt()) {
@@ -114,33 +565,38 @@ fun <E> testEqualityByIteration(list1: KoneList<E>, list2: List<E>) {
     }
 }
 
-fun <E> testEqualityByStringRepresentation(list1: KoneList<E>, list2: List<E>) {
+fun <Element> testEqualityByStringRepresentation(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists' string representations") {
         list1.toString() shouldBe list2.toString()
     }
 }
 
-sealed interface MutableListOperation<out E> {
-    data class AddAt<out E>(val index: UInt, val element: E): MutableListOperation<E>
+fun <Element> testEquality(list1: KoneList<Element>, list2: List<Element>) {
+    testEqualityByIteration(list1, list2)
+    testEqualityByStringRepresentation(list1, list2)
+}
+
+sealed interface MutableListOperation<out Element> {
+    data class AddAt<out Element>(val index: UInt, val element: Element): MutableListOperation<Element>
     data class RemoveAt(val index: UInt): MutableListOperation<Nothing>
 }
 
-data class MutableListOperationWithResult<out E>(
-    val initialList: List<E>,
+data class MutableListOperationWithResult<out Element>(
+    val initialList: List<Element>,
     val numberOfOperations: UInt,
-    val operations: List<MutableListOperation<E>>,
-    val results: List<List<E>>,
+    val operations: List<MutableListOperation<Element>>,
+    val results: List<List<Element>>,
 )
 
-fun <E> arbMutableListOperationsWithResults(
-    arbElements: Arb<E>,
+fun <Element> arbMutableListOperationsWithResults(
+    arbElements: Arb<Element>,
     initialSize: UInt,
     capacity: UInt? = null,
     numberOfOperations: UInt,
-): Arb<MutableListOperationWithResult<E>> = arbitrary { source ->
+): Arb<MutableListOperationWithResult<Element>> = arbitrary { source ->
     val initialList = List(initialSize.toInt()) { arbElements.bind() }
-    val operations = mutableListOf<MutableListOperation<E>>()
-    val results = mutableListOf<List<E>>()
+    val operations = mutableListOf<MutableListOperation<Element>>()
+    val results = mutableListOf<List<Element>>()
     repeat(numberOfOperations) {
         val lastList = results.lastOrNull() ?: initialList
         if ((capacity == null || capacity.toInt() > lastList.size) && (lastList.isEmpty() || source.random.nextBoolean())) {
@@ -163,6 +619,9 @@ fun <E> arbMutableListOperationsWithResults(
 }
 
 class ListImplementationsTests: FunSpec({
+    invocationTimeout = 60_000L
+    blockingTest = true
+    
     for (impl in listImplementations) context(impl.name) {
         val producer = impl.producer
         
@@ -170,8 +629,8 @@ class ListImplementationsTests: FunSpec({
             checkAll(Exhaustive.ints(0 .. 20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                     val list = producer.produceBy(length.toUInt()) { input[it.toInt()] }
-                    testEqualityByIteration(list, input)
-                    testEqualityByStringRepresentation(list, input)
+                    impl.validator.shouldValidate(list)
+                    testEquality(list, input)
                 }
             }
         }
@@ -180,12 +639,12 @@ class ListImplementationsTests: FunSpec({
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                     val list = producer.produce<UInt>()
-                    testEqualityByIteration(list, emptyList())
-                    testEqualityByStringRepresentation(list, emptyList())
+                    impl.validator.shouldValidate(list)
+                    testEquality(list, emptyList())
                     for (index in 0 ..< length) {
                         list.add(input[index.toInt()])
-                        testEqualityByIteration(list, input.subList(0, index + 1))
-                        testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                        impl.validator.shouldValidate(list)
+                        testEquality(list, input.subList(0, index + 1))
                     }
                 }
             }
@@ -196,12 +655,12 @@ class ListImplementationsTests: FunSpec({
                 checkAll(Exhaustive.ints(0..20)) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>()
-                        testEqualityByIteration(list, emptyList())
-                        testEqualityByStringRepresentation(list, emptyList())
+                        impl.validator.shouldValidate(list)
+                        testEquality(list, emptyList())
                         for (index in 0 ..< length) {
                             list.add(input[index.toInt()])
-                            testEqualityByIteration(list, input.subList(0, index + 1))
-                            testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                            impl.validator.shouldValidate(list)
+                            testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
@@ -210,12 +669,12 @@ class ListImplementationsTests: FunSpec({
                 checkAll(Exhaustive.ints(0..20)) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>(length.toUInt())
-                        testEqualityByIteration(list, emptyList())
-                        testEqualityByStringRepresentation(list, emptyList())
+                        impl.validator.shouldValidate(list)
+                        testEquality(list, emptyList())
                         for (index in 0 ..< length) {
                             list.add(input[index.toInt()])
-                            testEqualityByIteration(list, input.subList(0, index + 1))
-                            testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                            impl.validator.shouldValidate(list)
+                            testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
@@ -226,31 +685,32 @@ class ListImplementationsTests: FunSpec({
             checkAll(Exhaustive.ints(0..20)) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                     val list = producer.produce<UInt>(30u)
-                    testEqualityByIteration(list, emptyList())
-                    testEqualityByStringRepresentation(list, emptyList())
-                    for (index in 0 ..< length) {
+                    impl.validator.shouldValidate(list)
+                    testEquality(list, emptyList())
+                    for (index in 0 ..< length) withClue("at iteration $index") {
                         list.add(input[index.toInt()])
-                        testEqualityByIteration(list, input.subList(0, index + 1))
-                        testEqualityByStringRepresentation(list, input.subList(0, index + 1))
+                        impl.validator.shouldValidate(list)
+                        testEquality(list, input.subList(0, index + 1))
                     }
                 }
             }
         }
         
-        fun <Element> testKoneMutableListMutabilityOperationsOn(
+        fun <Element: Any> testKoneMutableListMutabilityOperationsOn(
             arbData: MutableListOperationWithResult<Element>,
             mutableList: KoneMutableList<Element>,
+            validator: KoneListValidator,
         ) {
             repeat(arbData.numberOfOperations) {
                 val operation = arbData.operations[it.toInt()]
                 val expected = arbData.results[it.toInt()]
-                withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                withClue({ "at iteration $it with current state $mutableList, operation $operation, and expected result $expected" }) {
                     when (operation) {
                         is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
                         is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
                     }
-                    testEqualityByIteration(mutableList, expected)
-                    testEqualityByStringRepresentation(mutableList, expected)
+                    validator.shouldValidate(mutableList)
+                    testEquality(mutableList, expected)
                 }
             }
         }
@@ -261,6 +721,7 @@ class ListImplementationsTests: FunSpec({
                 testKoneMutableListMutabilityOperationsOn(
                     arbData = arbData,
                     mutableList = mutableList,
+                    validator = impl.validator,
                 )
             }
         }
@@ -272,6 +733,7 @@ class ListImplementationsTests: FunSpec({
                     testKoneMutableListMutabilityOperationsOn(
                         arbData = arbData,
                         mutableList = mutableList,
+                        validator = impl.validator,
                     )
                 }
             }
@@ -281,6 +743,7 @@ class ListImplementationsTests: FunSpec({
                     testKoneMutableListMutabilityOperationsOn(
                         arbData = arbData,
                         mutableList = mutableList,
+                        validator = impl.validator,
                     )
                 }
             }
@@ -292,21 +755,23 @@ class ListImplementationsTests: FunSpec({
                 testKoneMutableListMutabilityOperationsOn(
                     arbData = arbData,
                     mutableList = mutableList,
+                    validator = impl.validator,
                 )
             }
         }
         
-        fun <Element> testKoneMutableListIteratorOn(
+        fun <Element: Any> testKoneMutableListIteratorOn(
             arbData: MutableListOperationWithResult<Element>,
             mutableList: KoneMutableList<Element>,
             nextIteratorIndex: UInt,
+            validator: KoneListValidator,
         ) {
             var nextIteratorIndex = nextIteratorIndex
             val iterator = mutableList.iteratorFrom(nextIteratorIndex)
             repeat(arbData.numberOfOperations) {
                 val operation = arbData.operations[it.toInt()]
                 val expected = arbData.results[it.toInt()]
-                withClue("at iteration $it with current state $mutableList, operation $operation, and expected result $expected") {
+                withClue("at iteration $it with current state $mutableList, current next iterator index $nextIteratorIndex, operation $operation, and expected result $expected") {
                     when (operation) {
                         is MutableListOperation.AddAt<Element> -> {
                             if (operation.index >= nextIteratorIndex) {
@@ -318,6 +783,7 @@ class ListImplementationsTests: FunSpec({
                                     nextIteratorIndex++
                                 }
                                 iterator.addNext(operation.element)
+                                validator.shouldValidate(mutableList, iterator)
                                 iterator.hasNext().shouldBeTrue()
                                 iterator.getNext() shouldBe operation.element
                                 iterator.nextIndex() shouldBe nextIteratorIndex
@@ -330,6 +796,7 @@ class ListImplementationsTests: FunSpec({
                                     nextIteratorIndex--
                                 }
                                 iterator.addPrevious(operation.element)
+                                validator.shouldValidate(mutableList, iterator)
                                 nextIteratorIndex++
                                 iterator.hasPrevious().shouldBeTrue()
                                 iterator.getPrevious() shouldBe operation.element
@@ -348,6 +815,7 @@ class ListImplementationsTests: FunSpec({
                                 iterator.hasNext().shouldBeTrue()
                                 iterator.nextIndex() shouldBe operation.index
                                 iterator.removeNext()
+                                validator.shouldValidate(mutableList, iterator)
                             } else {
                                 while (operation.index < nextIteratorIndex - 1u) {
                                     iterator.hasPrevious().shouldBeTrue()
@@ -359,23 +827,25 @@ class ListImplementationsTests: FunSpec({
                                 iterator.hasPrevious().shouldBeTrue()
                                 iterator.previousIndex() shouldBe operation.index
                                 iterator.removePrevious()
+                                validator.shouldValidate(mutableList, iterator)
                                 nextIteratorIndex--
                             }
                         }
                     }
-                    testEqualityByIteration(mutableList, expected)
-                    testEqualityByStringRepresentation(mutableList, expected)
+                    testEquality(mutableList, expected)
                 }
             }
         }
         
         if (producer is KoneResizableMutableListProducer) test("test iterator mutability operations") {
-            checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+            checkAll(PropTestConfig(seed = 8328161071279041350), arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
+                this
                 val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 testKoneMutableListIteratorOn(
                     arbData = arbData,
                     mutableList = mutableList,
                     nextIteratorIndex = 5u,
+                    validator = impl.validator,
                 )
             }
         }
@@ -388,6 +858,7 @@ class ListImplementationsTests: FunSpec({
                         arbData = arbData,
                         mutableList = mutableList,
                         nextIteratorIndex = 5u,
+                        validator = impl.validator,
                     )
                 }
             }
@@ -398,6 +869,7 @@ class ListImplementationsTests: FunSpec({
                         arbData = arbData,
                         mutableList = mutableList,
                         nextIteratorIndex = 5u,
+                        validator = impl.validator,
                     )
                 }
             }
@@ -405,11 +877,13 @@ class ListImplementationsTests: FunSpec({
         
         if (producer is KoneFixedCapacityMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
+                this
                 val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 testKoneMutableListIteratorOn(
                     arbData = arbData,
                     mutableList = mutableList,
                     nextIteratorIndex = 5u,
+                    validator = impl.validator,
                 )
             }
         }

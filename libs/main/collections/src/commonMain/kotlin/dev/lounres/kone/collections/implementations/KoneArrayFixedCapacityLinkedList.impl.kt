@@ -90,22 +90,22 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     size: UInt,
-    private val capacity: UInt,
+    internal val capacity: UInt,
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
     nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
-    private var start: UInt = 0u,
-    private var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
+    internal var start: UInt = 0u,
+    internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
 ) : KoneMutableList<Element>, KoneDequeue<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
     private var _data: KoneMutableArray<Any?>? = data
-    private val data: KoneMutableArray<Any?> get() = _data!!
+    internal val data: KoneMutableArray<Any?> get() = _data!!
     private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
-    private val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
+    internal val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
     private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
-    private val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
+    internal val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
     
     override fun dispose() {
         if (isDisposed) return
@@ -421,6 +421,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             list.data[currentIndex] = element
         }
         override fun addNext(element: Element) {
+            if (list.isDisposed) disposedInstanceException()
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
             if (currentIndex == list.size) list.justAddAfterTheEnd(element)
             else {
@@ -430,9 +431,14 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         }
         override fun removeNext() {
             if (!hasNext()) noNextElementInIteratorException()
-            val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
-            list.justRemoveAt(actualCurrentIndex)
-            actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
+            if (currentIndex == 0u) {
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.start
+            } else {
+                val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
+            }
         }
 
         override fun hasPrevious(): Boolean =
@@ -452,18 +458,25 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             list.data[list.previousNodeIndex[actualCurrentIndex]] = element
         }
         override fun addPrevious(element: Element) {
+            if (list.isDisposed) disposedInstanceException()
             if (list.size == list.capacity) capacityOverflowException(list.capacity)
-            list.justAddBefore(actualCurrentIndex, element)
-            currentIndex++
+            if (currentIndex == list.size) {
+                list.justAddAfterTheEnd(element)
+                currentIndex++
+                actualCurrentIndex = list.nextNodeIndex[actualCurrentIndex]
+            } else {
+                list.justAddBefore(actualCurrentIndex, element)
+                currentIndex++
+            }
         }
         override fun removePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
             if (actualPreviousIndex == list.end) {
-                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+                list.justRemoveAt(actualPreviousIndex)
                 actualCurrentIndex = list.nextNodeIndex[list.end]
             } else {
-                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+                list.justRemoveAt(actualPreviousIndex)
             }
             currentIndex--
         }

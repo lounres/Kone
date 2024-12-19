@@ -62,7 +62,7 @@ public class Rational {
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
 
     public companion object {
-        public val field: RationalField = RationalField
+        public val context: RationalField = RationalField
     }
 }
 
@@ -95,7 +95,7 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
         val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
         val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
 
-        return Long.ring { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
+        return Long.context { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
     }
     public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
     // endregion

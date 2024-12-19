@@ -27,7 +27,7 @@ import kotlin.math.pow as kpow
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ByteRing: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing<Byte> {
+public data object ByteContext: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing<Byte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Byte
     override fun reifyMaybe(element: Any?): Maybe<Byte> = if (element is Byte) Some(element) else None
@@ -112,9 +112,9 @@ public data object ByteRing: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing<By
 }
 
 /**
- * Default ring of the [Byte] type. See [ByteRing] for more.
+ * Default ring of the [Byte] type. See [ByteContext] for more.
  */
-public val Byte.Companion.ring: ByteRing get() = ByteRing
+public val Byte.Companion.context: ByteContext get() = ByteContext
 
 /**
  * Default ring for [Short] type which values are seen as integers and where overflows are ignored.
@@ -123,7 +123,7 @@ public val Byte.Companion.ring: ByteRing get() = ByteRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ShortRing: EuclideanRing<Short>, Order<Short>, ReifiedHashing<Short> {
+public data object ShortContext: EuclideanRing<Short>, Order<Short>, ReifiedHashing<Short> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Short
     override fun reifyMaybe(element: Any?): Maybe<Short> = if (element is Short) Some(element) else None
@@ -208,9 +208,9 @@ public data object ShortRing: EuclideanRing<Short>, Order<Short>, ReifiedHashing
 }
 
 /**
- * Default ring of the [Short] type. See [ShortRing] for more.
+ * Default ring of the [Short] type. See [ShortContext] for more.
  */
-public val Short.Companion.ring: ShortRing get() = ShortRing
+public val Short.Companion.context: ShortContext get() = ShortContext
 
 /**
  * Default ring for [Int] type which values are seen as integers and where overflows are ignored.
@@ -219,7 +219,7 @@ public val Short.Companion.ring: ShortRing get() = ShortRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object IntRing: EuclideanRing<Int>, Order<Int>, ReifiedHashing<Int> {
+public data object IntContext: EuclideanRing<Int>, Order<Int>, ReifiedHashing<Int> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Int
     override fun reifyMaybe(element: Any?): Maybe<Int> = if (element is Int) Some(element) else None
@@ -292,9 +292,9 @@ public data object IntRing: EuclideanRing<Int>, Order<Int>, ReifiedHashing<Int> 
 }
 
 /**
- * Default ring of the [Int] type. See [IntRing] for more.
+ * Default ring of the [Int] type. See [IntContext] for more.
  */
-public val Int.Companion.ring: IntRing get() = IntRing
+public val Int.Companion.context: IntContext get() = IntContext
 
 /**
  * Default ring for [Long] type which values are seen as integers and where overflows are ignored.
@@ -303,7 +303,7 @@ public val Int.Companion.ring: IntRing get() = IntRing
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object LongRing: EuclideanRing<Long>, Order<Long>, ReifiedHashing<Long> {
+public data object LongContext: EuclideanRing<Long>, Order<Long>, ReifiedHashing<Long> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Long
     override fun reifyMaybe(element: Any?): Maybe<Long> = if (element is Long) Some(element) else None
@@ -376,9 +376,73 @@ public data object LongRing: EuclideanRing<Long>, Order<Long>, ReifiedHashing<Lo
 }
 
 /**
- * Default ring of the [Long] type. See [LongRing] for more.
+ * Default ring of the [Long] type. See [LongContext] for more.
  */
-public val Long.Companion.ring: LongRing get() = LongRing
+public val Long.Companion.context: LongContext get() = LongContext
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+public data object UByteContext: Order<UByte>, ReifiedHashing<UByte> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is UByte
+    override fun reifyMaybe(element: Any?): Maybe<UByte> = if (element is UByte) Some(element) else None
+    override fun reifyOrNull(element: Any?): UByte? = element as? UByte
+    override fun reify(element: Any?): UByte = element as? UByte ?: reificationException()
+    // endregion
+    
+    // region Order
+    override fun UByte.compareWith(other: UByte): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+}
+
+public val UByte.Companion.context: UByteContext get() = UByteContext
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+public data object UShortContext: Order<UShort>, ReifiedHashing<UShort> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is UShort
+    override fun reifyMaybe(element: Any?): Maybe<UShort> = if (element is UShort) Some(element) else None
+    override fun reifyOrNull(element: Any?): UShort? = element as? UShort
+    override fun reify(element: Any?): UShort = element as? UShort ?: reificationException()
+    // endregion
+    
+    // region Order
+    override fun UShort.compareWith(other: UShort): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+}
+
+public val UShort.Companion.context: UShortContext get() = UShortContext
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+public data object UIntContext: Order<UInt>, ReifiedHashing<UInt> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is UInt
+    override fun reifyMaybe(element: Any?): Maybe<UInt> = if (element is UInt) Some(element) else None
+    override fun reifyOrNull(element: Any?): UInt? = element as? UInt
+    override fun reify(element: Any?): UInt = element as? UInt ?: reificationException()
+    // endregion
+    
+    // region Order
+    override fun UInt.compareWith(other: UInt): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+}
+
+public val UInt.Companion.context: UIntContext get() = UIntContext
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+public data object ULongContext: Order<ULong>, ReifiedHashing<ULong> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is ULong
+    override fun reifyMaybe(element: Any?): Maybe<ULong> = if (element is ULong) Some(element) else None
+    override fun reifyOrNull(element: Any?): ULong? = element as? ULong
+    override fun reify(element: Any?): ULong = element as? ULong ?: reificationException()
+    // endregion
+    
+    // region Order
+    override fun ULong.compareWith(other: ULong): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+}
+
+public val ULong.Companion.context: ULongContext get() = ULongContext
 
 /**
  * Default field for [Double] type which values are seen as real numbers and where precision problems and occurrences of
@@ -388,7 +452,7 @@ public val Long.Companion.ring: LongRing get() = LongRing
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object DoubleField: Field<Double>, Order<Double>, ReifiedHashing<Double> {
+public data object DoubleContext: Field<Double>, Order<Double>, ReifiedHashing<Double> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Double
     override fun reifyMaybe(element: Any?): Maybe<Double> = if (element is Double) Some(element) else None
@@ -484,9 +548,9 @@ public data object DoubleField: Field<Double>, Order<Double>, ReifiedHashing<Dou
 }
 
 /**
- * Default field of the [Double] type. See [DoubleField] for more.
+ * Default field of the [Double] type. See [DoubleContext] for more.
  */
-public val Double.Companion.field: DoubleField get() = DoubleField
+public val Double.Companion.context: DoubleContext get() = DoubleContext
 
 /**
  * Default field for [Float] type which values are seen as real numbers and where precision problems and occurrences of
@@ -496,7 +560,7 @@ public val Double.Companion.field: DoubleField get() = DoubleField
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object FloatField: Field<Float>, Order<Float>, ReifiedHashing<Float> {
+public data object FloatContext: Field<Float>, Order<Float>, ReifiedHashing<Float> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Float
     override fun reifyMaybe(element: Any?): Maybe<Float> = if (element is Float) Some(element) else None
@@ -592,6 +656,6 @@ public data object FloatField: Field<Float>, Order<Float>, ReifiedHashing<Float>
 }
 
 /**
- * Default field of the [Float] type. See [FloatField] for more.
+ * Default field of the [Float] type. See [FloatContext] for more.
  */
-public val Float.Companion.field: FloatField get() = FloatField
+public val Float.Companion.context: FloatContext get() = FloatContext

@@ -7,7 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import com.charleskorn.kaml.Yaml
 import dev.lounres.kone.algebraic.BigIntegerRing
-import dev.lounres.kone.algebraic.ring
+import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.utils.map
@@ -24,7 +24,7 @@ import java.math.BigInteger
 
 class LongRingBenchmarks {
     companion object {
-        val numberContext = Long.ring
+        val numberContext = Long.context
         val euclideanSpaceScope = numberContext.euclideanKategoryScope
     }
 

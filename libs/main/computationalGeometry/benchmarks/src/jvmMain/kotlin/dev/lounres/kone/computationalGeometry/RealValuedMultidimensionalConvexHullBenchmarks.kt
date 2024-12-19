@@ -6,7 +6,7 @@
 package dev.lounres.kone.computationalGeometry
 
 import com.charleskorn.kaml.Yaml
-import dev.lounres.kone.algebraic.field
+import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.emptyKoneList
 import dev.lounres.kone.collections.utils.map
@@ -21,7 +21,7 @@ import org.openjdk.jmh.annotations.Level
 
 class DoubleBenchmarks {
     companion object {
-        val numberContext = Double.field
+        val numberContext = Double.context
         val euclideanSpaceScope = numberContext.euclideanKategoryScope
     }
 

@@ -14,12 +14,12 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     size: UInt,
-    private var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
     nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
-    private var start: UInt = 0u,
-    private var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
+    internal var start: UInt = 0u,
+    internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
 ) : KoneGrowableMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
@@ -33,15 +33,15 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     }
     
     private var _data: KoneMutableArray<Node<Element>?>? = data
-    private var data: KoneMutableArray<Node<Element>?>
+    internal var data: KoneMutableArray<Node<Element>?>
         get() = _data!!
         set(value) { _data = value }
     private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
-    private var nextNodeIndex: KoneMutableUIntArray
+    internal var nextNodeIndex: KoneMutableUIntArray
         get() = _nextNodeIndex!!
         set(value) { _nextNodeIndex = value }
     private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
-    private var previousNodeIndex: KoneMutableUIntArray
+    internal var previousNodeIndex: KoneMutableUIntArray
         get() = _previousNodeIndex!!
         set(value) { _previousNodeIndex = value }
     
@@ -129,7 +129,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             var actualIndex = start
             reinitializeData {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < size -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     else -> null
                 }
             }
@@ -233,7 +236,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < size -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     it == size -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
                     else -> null
                 }
@@ -250,7 +256,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < size -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     it == size -> newNode
                     else -> null
                 }
@@ -269,9 +278,15 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
                 var actualIndex = start
                 reinitializeBoundsAndData(size + 1u) {
                     when {
-                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it < index -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         it == index -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
-                        it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it <= size -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         else -> null
                     }
                 }
@@ -290,9 +305,15 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
                 var actualIndex = start
                 reinitializeBoundsAndData(size + 1u) {
                     when {
-                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it < index -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         it == index -> newNode
-                        it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it <= size -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         else -> null
                     }
                 }
@@ -310,7 +331,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it == 0u -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
-                    it <= size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it <= size -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     else -> null
                 }
             }
@@ -325,7 +349,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             var actualIndex = start
             reinitializeBoundsAndData(size + 1u) {
                 when {
-                    it < size -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < size -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     it == size -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
                     else -> null
                 }
@@ -342,7 +369,10 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             var actualIndex = start
             reinitializeBoundsAndData(newSize) {
                 when {
-                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                    it < oldSize -> get(actualIndex).also { node ->
+                        node!!.actualIndex = it
+                        actualIndex = nextNodeIndex[actualIndex]
+                    }
                     it < oldSize + number -> Node(this@KoneArrayGrowableLinkedNoddedList, builder(it - oldSize), it)
                     else -> null
                 }
@@ -363,9 +393,15 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
                 var actualIndex = start
                 reinitializeBoundsAndData(newSize) {
                     when {
-                        it < index -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it < index -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         it < index + number -> Node(this@KoneArrayGrowableLinkedNoddedList, builder(it - index), it)
-                        it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        it < newSize -> get(actualIndex).also { node ->
+                            node!!.actualIndex = it
+                            actualIndex = nextNodeIndex[actualIndex]
+                        }
                         else -> null
                     }
                 }
@@ -568,7 +604,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     // TODO: Review operations. Looks like they are incorrect.
     internal class Iterator<Element>(
         val list: KoneArrayGrowableLinkedNoddedList<Element>,
-        var currentIndex: UInt = 0u,
+        var currentIndex: UInt,
         var actualCurrentIndex: UInt,
     ): KoneMutableLinearIterator<Element> {
         override fun hasNext(): Boolean =
@@ -589,12 +625,44 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             list.data[currentIndex]!!.element = element
         }
         override fun addNext(element: Element) {
-            if (currentIndex == list.size) list.justAddAfterTheEnd(element)
-            else list.justAddBefore(list.nextNodeIndex[actualCurrentIndex], element)
+            if (list.isDisposed) disposedInstanceException()
+            when {
+                list.size == list.sizeUpperBound -> {
+                    val oldSize = list.size
+                    var actualIndex = list.start
+                    list.reinitializeBoundsAndData(list.size + 1u) {
+                        when {
+                            it < currentIndex -> get(actualIndex).also { node ->
+                                node!!.actualIndex = it
+                                actualIndex = list.nextNodeIndex[actualIndex]
+                            }
+                            it == currentIndex -> Node(list = list, element = element, actualIndex = currentIndex)
+                            it <= oldSize -> get(actualIndex).also { node ->
+                                node!!.actualIndex = it
+                                actualIndex = list.nextNodeIndex[actualIndex]
+                            }
+                            else -> null
+                        }
+                    }
+                    actualCurrentIndex = currentIndex
+                }
+                currentIndex == list.size -> list.justAddAfterTheEnd(element)
+                else -> {
+                    list.justAddBefore(actualCurrentIndex, element)
+                    actualCurrentIndex = list.previousNodeIndex[actualCurrentIndex]
+                }
+            }
         }
         override fun removeNext() {
             if (!hasNext()) noNextElementInIteratorException()
-            list.justRemoveAt(actualCurrentIndex.also { actualCurrentIndex = list.nextNodeIndex[actualCurrentIndex] })
+            if (currentIndex == 0u) {
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.start
+            } else {
+                val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
+            }
         }
 
         override fun hasPrevious(): Boolean =
@@ -615,11 +683,49 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             list.data[list.previousNodeIndex[actualCurrentIndex]]!!.element = element
         }
         override fun addPrevious(element: Element) {
-            list.justAddBefore(actualCurrentIndex, element)
+            if (list.isDisposed) disposedInstanceException()
+            when {
+                list.size == list.sizeUpperBound -> {
+                    val oldSize = list.size
+                    var actualIndex = list.start
+                    list.reinitializeBoundsAndData(list.size + 1u) {
+                        when {
+                            it < currentIndex -> get(actualIndex).also { node ->
+                                node!!.actualIndex = it
+                                actualIndex = list.nextNodeIndex[actualIndex]
+                            }
+                            it == currentIndex -> Node(list = list, element = element, actualIndex = it)
+                            it <= oldSize -> get(actualIndex).also { node ->
+                                node!!.actualIndex = it
+                                actualIndex = list.nextNodeIndex[actualIndex]
+                            }
+                            else -> null
+                        }
+                    }
+                    currentIndex++
+                    actualCurrentIndex = currentIndex
+                }
+                currentIndex == list.size -> {
+                    list.justAddAfterTheEnd(element)
+                    currentIndex++
+                    actualCurrentIndex = list.nextNodeIndex[actualCurrentIndex]
+                }
+                else -> {
+                    list.justAddBefore(actualCurrentIndex, element)
+                    currentIndex++
+                }
+            }
         }
         override fun removePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+            val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+            if (actualPreviousIndex == list.end) {
+                list.justRemoveAt(actualPreviousIndex)
+                actualCurrentIndex = list.nextNodeIndex[list.end]
+            } else {
+                list.justRemoveAt(actualPreviousIndex)
+            }
+            currentIndex--
         }
     }
 }

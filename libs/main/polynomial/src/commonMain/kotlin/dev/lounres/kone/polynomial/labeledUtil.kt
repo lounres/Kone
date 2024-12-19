@@ -34,7 +34,7 @@ public inline val <C, A : Ring<C>> A.labeledRationalFunctionSpace: DefaultLabele
 public inline val <C, A : Field<C>> A.labeledRationalFunctionSpace: DefaultLabeledRationalFunctionSpaceOverField<C, A>
     get() = this.labeledPolynomialSpace.labeledRationalFunctionSpace
 
-public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.field {
+public fun LabeledPolynomial<Double>.substitute(args: Map<Symbol, Double>): LabeledPolynomial<Double> = Double.context {
     if (coefficients.isEmpty()) return this@substitute
     LabeledPolynomial<Double>(
         buildMap {

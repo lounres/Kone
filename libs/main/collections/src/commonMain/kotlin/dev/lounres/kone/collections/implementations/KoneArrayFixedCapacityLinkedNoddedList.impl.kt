@@ -98,12 +98,12 @@ import dev.lounres.kone.scope
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructor(
     size: UInt,
-    private val capacity: UInt,
+    internal val capacity: UInt,
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray(capacity) { null },
     nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
-    private var start: UInt = 0u,
-    private var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
+    internal var start: UInt = 0u,
+    internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
 ) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
@@ -116,12 +116,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
     }
     
-    private var _data: KoneMutableArray<Node<Element>?>? = data
-    private val data: KoneMutableArray<Node<Element>?> get() = _data!!
-    private var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
-    private val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
-    private var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
-    private val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
+    internal var _data: KoneMutableArray<Node<Element>?>? = data
+    internal val data: KoneMutableArray<Node<Element>?> get() = _data!!
+    internal var _nextNodeIndex: KoneMutableUIntArray? = nextNodeIndex
+    internal val nextNodeIndex: KoneMutableUIntArray get() = _nextNodeIndex!!
+    internal var _previousNodeIndex: KoneMutableUIntArray? = previousNodeIndex
+    internal val previousNodeIndex: KoneMutableUIntArray get() = _previousNodeIndex!!
 
     override fun dispose() {
         if (isDisposed) return
@@ -559,9 +559,14 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         override fun removeNext() {
             if (!hasNext()) noNextElementInIteratorException()
-            val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
-            list.justRemoveAt(actualCurrentIndex)
-            actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
+            if (currentIndex == 0u) {
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.start
+            } else {
+                val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
+                list.justRemoveAt(actualCurrentIndex)
+                actualCurrentIndex = list.nextNodeIndex[actualPreviousIndex]
+            }
         }
 
         override fun hasPrevious(): Boolean =
@@ -590,10 +595,10 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             if (!hasPrevious()) noPreviousElementInIteratorException()
             val actualPreviousIndex = list.previousNodeIndex[actualCurrentIndex]
             if (actualPreviousIndex == list.end) {
-                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+                list.justRemoveAt(actualPreviousIndex)
                 actualCurrentIndex = list.nextNodeIndex[list.end]
             } else {
-                list.justRemoveAt(list.previousNodeIndex[actualCurrentIndex])
+                list.justRemoveAt(actualPreviousIndex)
             }
             currentIndex--
         }

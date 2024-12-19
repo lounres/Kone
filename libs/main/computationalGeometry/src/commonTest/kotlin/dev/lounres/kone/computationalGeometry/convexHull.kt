@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.ring
+import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.koneListOf
 import dev.lounres.kone.collections.koneSetOf
 import dev.lounres.kone.computationalGeometry.algorithms.constructConvexHullByGiftWrapping
@@ -15,8 +15,8 @@ import kotlin.test.assertTrue
 
 class ConvexHullTest {
     @Test
-    fun `MD gift wrapping test 1`(): Unit = Long.ring.euclideanKategory {
-        val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.ring) {
+    fun `MD gift wrapping test 1`(): Unit = Long.context.euclideanKategory {
+        val actualPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.context) {
             val vertices = koneListOf(
                 addVertex(Point(0, 0, 0L)),
                 addVertex(Point(0, 0, 1L)),
@@ -49,7 +49,7 @@ class ConvexHullTest {
 
             vertices.constructConvexHullByGiftWrapping()
         }
-        val expectedPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.ring) {
+        val expectedPolytopeConstruction = buildAbstractPolytopicConstruction(spaceDimension = 3u, numberContext = Long.context) {
             val p000 = addVertex(Point(0, 0, 0L))
             val p001 = addVertex(Point(0, 0, 1L))
             val p002 = addVertex(Point(0, 0, 2L))
