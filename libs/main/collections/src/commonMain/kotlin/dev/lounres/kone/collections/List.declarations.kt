@@ -48,7 +48,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
-    override fun iterator(): KoneLinearIterator<Element> = iteratorFrom(0u)
+    override fun iterator(): KoneListIterator<Element> = iteratorFrom(0u)
 }
 
 /**
@@ -62,7 +62,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
  * @usesMathJax
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneSettableList<Element> : KoneList<Element> {
+public interface KoneSettableList<Element> : KoneList<Element>, KoneSettableLinearIterable<Element> {
     /**
      * Sets another value at the place with the provided [index] with respect to inner order of elements.
      *
@@ -74,6 +74,9 @@ public interface KoneSettableList<Element> : KoneList<Element> {
      * @throws IndexOutOfBoundsException when index is not less than [size].
      */
     public operator fun set(index: UInt, element: Element)
+    
+    override fun iteratorFrom(index: UInt): KoneSettableListIterator<Element>
+    override fun iterator(): KoneSettableListIterator<Element> = iteratorFrom(0u)
 }
 
 /**
@@ -209,7 +212,7 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
-    override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element>
+    override fun iteratorFrom(index: UInt): KoneMutableListIterator<Element>
     /**
      * Initiates a mutable iterator over the collection's elements
      * with pointer before the first element.
@@ -218,7 +221,7 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
-    override fun iterator(): KoneMutableLinearIterator<Element> = iteratorFrom(0u)
+    override fun iterator(): KoneMutableListIterator<Element> = iteratorFrom(0u)
 }
 
 /**
@@ -250,6 +253,9 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
      */
     public fun getNode(index: UInt): KoneListNode<Element>
     override fun get(index: UInt): Element = getNode(index).element
+    
+    override fun iterator(): KoneNoddedListIterator<Element>
+    override fun iteratorFrom(index: UInt): KoneNoddedListIterator<Element>
 }
 
 /**
@@ -263,6 +269,9 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
     override fun getNode(index: UInt): KoneSettableListNode<Element>
+    
+    override fun iterator(): KoneSettableNoddedListIterator<Element>
+    override fun iteratorFrom(index: UInt): KoneSettableNoddedListIterator<Element>
 }
 
 /**
@@ -304,6 +313,9 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
      */
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
     override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
+    
+    override fun iterator(): KoneMutableNoddedListIterator<Element>
+    override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element>
 }
 
 /**

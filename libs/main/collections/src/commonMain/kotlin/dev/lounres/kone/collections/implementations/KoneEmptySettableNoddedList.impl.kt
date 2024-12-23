@@ -3,15 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneSettableListNode
-import dev.lounres.kone.collections.KoneSettableNoddedList
-import dev.lounres.kone.collections.indexOutOfBoundsException
-import dev.lounres.kone.collections.isEmpty
+import dev.lounres.kone.collections.*
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -23,10 +19,10 @@ internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableN
     
     override fun set(index: UInt, element: Element) = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
 
-    override fun iterator(): KoneLinearIterator<Nothing> = KoneEmptySettableLinearIterator
-    override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> =
-        if (index >= 0u) indexOutOfBoundsException(index, 0u)
-        else KoneEmptySettableLinearIterator
+    override fun iterator(): KoneSettableNoddedListIterator<Element> = KoneEmptySettableNoddedListIterator as KoneSettableNoddedListIterator<Element>
+    override fun iteratorFrom(index: UInt): KoneSettableNoddedListIterator<Element> =
+        if (index > 0u) indexOutOfBoundsException(index, 0u)
+        else KoneEmptySettableNoddedListIterator as KoneSettableNoddedListIterator<Element>
 
     override fun toString(): String = "[]"
     override fun hashCode(): Int = 1

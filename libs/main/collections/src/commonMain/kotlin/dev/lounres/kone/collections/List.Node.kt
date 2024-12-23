@@ -71,7 +71,7 @@ public interface KoneListNode<out Element> {
      *
      * @throws [DetachedNodeException] when the node is already detached.
      */
-    public fun iteratorFromBeforeHere(): KoneLinearIterator<Element>
+    public fun iteratorFromBeforeHere(): KoneNoddedListIterator<Element>
     /**
      * Initiates an iterator over corresponding [KoneNoddedList]
      * with cursor placed right after this node.
@@ -85,7 +85,7 @@ public interface KoneListNode<out Element> {
      *
      * @throws [DetachedNodeException] when the node is already detached.
      */
-    public fun iteratorFromAfterHere(): KoneLinearIterator<Element>
+    public fun iteratorFromAfterHere(): KoneNoddedListIterator<Element>
 }
 
 /**
@@ -111,8 +111,8 @@ public interface KoneSettableListNode<Element> : KoneListNode<Element> {
     override val nextNode: KoneSettableListNode<Element>?
     override val previousNode: KoneSettableListNode<Element>?
     
-    override fun iteratorFromBeforeHere(): KoneSettableLinearIterator<Element>
-    override fun iteratorFromAfterHere(): KoneSettableLinearIterator<Element>
+    override fun iteratorFromBeforeHere(): KoneSettableNoddedListIterator<Element>
+    override fun iteratorFromAfterHere(): KoneSettableNoddedListIterator<Element>
 }
 
 /**
@@ -134,6 +134,6 @@ public interface KoneMutableListNode<Element> : KoneSettableListNode<Element> {
     override val nextNode: KoneMutableListNode<Element>?
     override val previousNode: KoneMutableListNode<Element>?
     
-    override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element>
-    override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element>
+    override fun iteratorFromBeforeHere(): KoneMutableNoddedListIterator<Element>
+    override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element>
 }

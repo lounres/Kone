@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
 import dev.lounres.kone.collections.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.implementations.KoneArraySettableList
-import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
+import dev.lounres.kone.collections.implementations.KoneSingletonSettableList
 import dev.lounres.kone.collections.utils.toOptimizedList
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -31,7 +31,7 @@ public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UIn
 
 public fun <Element> koneListOf(): KoneList<Element> = emptyKoneList()
 
-public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonSettableNoddedList(element)
+public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> koneListOf(vararg elements: Element): KoneList<Element> =

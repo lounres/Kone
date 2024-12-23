@@ -8,9 +8,9 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneSettableLinearIterator
 import dev.lounres.kone.collections.KoneSettableListNode
 import dev.lounres.kone.collections.KoneSettableNoddedList
+import dev.lounres.kone.collections.KoneSettableNoddedListIterator
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.getAndMoveNext
@@ -61,10 +61,10 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
         data[index]!!.element = element
     }
     
-    override fun iterator(): KoneSettableLinearIterator<Element> =
+    override fun iterator(): KoneSettableNoddedListIterator<Element> =
         if (isDisposed) disposedInstanceException()
         else Iterator(this, 0u)
-    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> =
+    public override fun iteratorFrom(index: UInt): KoneSettableNoddedListIterator<Element> =
         when {
             isDisposed -> disposedInstanceException()
             index > size -> indexOutOfBoundsException(index, size)
@@ -142,8 +142,8 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
                 else -> null
             }
         
-        override fun iteratorFromAfterHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index + 1u)
-        override fun iteratorFromBeforeHere(): KoneSettableLinearIterator<Element> = list.iteratorFrom(index)
+        override fun iteratorFromAfterHere(): KoneSettableNoddedListIterator<Element> = list.iteratorFrom(index + 1u)
+        override fun iteratorFromBeforeHere(): KoneSettableNoddedListIterator<Element> = list.iteratorFrom(index)
         
         fun detach() {
             if (isDetached) return
@@ -155,11 +155,15 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
     internal class Iterator<Element>(
         val list: KoneArraySettableNoddedList<Element>,
         var currentIndex: UInt,
-    ): KoneSettableLinearIterator<Element> {
+    ): KoneSettableNoddedListIterator<Element> {
         override fun hasNext(): Boolean = if (list.isDisposed) disposedInstanceException() else currentIndex < list.size
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
             return list.data[currentIndex]!!.element
+        }
+        override fun getNextNode(): KoneSettableListNode<Element> {
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[currentIndex]!!
         }
         override fun moveNext() {
             if (!hasNext()) noNextElementInIteratorException()
@@ -175,6 +179,10 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
         override fun getPrevious(): Element {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             return list.data[currentIndex - 1u]!!.element
+        }
+        override fun getPreviousNode(): KoneSettableListNode<Element> {
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[currentIndex - 1u]!!
         }
         override fun movePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()

@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneMutableLinearIterator
 import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
@@ -266,9 +265,9 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         }
     }
     
-    override fun iterator(): KoneMutableLinearIterator<Element> =
+    override fun iterator(): KoneMutableNoddedListIterator<Element> =
         if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
+    public override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> =
         when {
             isDisposed -> disposedInstanceException()
             index > size -> indexOutOfBoundsException(index, size)
@@ -355,22 +354,26 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
                 else -> null
             }
         
-        override fun iteratorFromBeforeHere(): KoneMutableLinearIterator<Element> =
+        override fun iteratorFromBeforeHere(): KoneMutableNoddedListIterator<Element> =
             if (isDetached) detachedNodeException() else list.iteratorFrom(index)
-        override fun iteratorFromAfterHere(): KoneMutableLinearIterator<Element> =
+        override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> =
             if (isDetached) detachedNodeException() else list.iteratorFrom(index + 1u)
     }
 
     internal class Iterator<Element>(
         val list: KoneArrayResizableNoddedList<Element>,
         var currentIndex: UInt = 0u
-    ): KoneMutableLinearIterator<Element> {
+    ): KoneMutableNoddedListIterator<Element> {
         override fun hasNext(): Boolean =
             if (list.isDisposed) disposedInstanceException()
             else currentIndex < list.size
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
             return list.data[currentIndex]!!.element
+        }
+        override fun getNextNode(): KoneMutableListNode<Element> {
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[currentIndex]!!
         }
         override fun moveNext() {
             if (!hasNext()) noNextElementInIteratorException()
@@ -395,6 +398,10 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         override fun getPrevious(): Element {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             return list.data[currentIndex - 1u]!!.element
+        }
+        override fun getPreviousNode(): KoneMutableListNode<Element> {
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[currentIndex - 1u]!!
         }
         override fun movePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
