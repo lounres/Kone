@@ -37,17 +37,17 @@ import kotlin.test.fail
 
 
 interface KoneListValidator {
-    fun <Element: Any> validate(
-        list: KoneList<Element>,
+    fun validate(
+        list: KoneList<Any>,
     ): Boolean
     
-    fun <Element: Any> validateWithIterator(
-        list: KoneList<Element>,
-        iterator: KoneIterator<Element>,
+    fun validateWithIterator(
+        list: KoneList<Any>,
+        iterator: KoneIterator<Any>,
     ): Boolean
 }
 
-fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>) {
+fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>): Validator {
     this should Matcher {
         MatcherResult(
             it.validate(list),
@@ -55,8 +55,9 @@ fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>) {
             { "The list is valid" }
         )
     }
+    return this
 }
-fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>, iterator: KoneIterator<Element>) {
+fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator {
     this should Matcher {
         MatcherResult(
             it.validateWithIterator(list, iterator),
@@ -64,19 +65,20 @@ fun <Element: Any> KoneListValidator.shouldValidate(list: KoneList<Element>, ite
             { "The list and the iterator are valid" }
         )
     }
+    return this
 }
 
 data class ListImplementationDescription (
     val name: String,
     val producer: KoneListProducer,
     val validator: KoneListValidator = object : KoneListValidator {
-        override fun <Element: Any> validate(
-            list: KoneList<Element>,
+        override fun validate(
+            list: KoneList<Any>,
         ): Boolean = true
         
-        override fun <Element: Any> validateWithIterator(
-            list: KoneList<Element>,
-            iterator: KoneIterator<Element>,
+        override fun validateWithIterator(
+            list: KoneList<Any>,
+            iterator: KoneIterator<Any>,
         ): Boolean = true
     },
 )
@@ -88,10 +90,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayFixedCapacityLinkedList",
         producer = KoneArrayFixedCapacityLinkedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayFixedCapacityLinkedList<Element>) return false
+                if (list !is KoneArrayFixedCapacityLinkedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val capacity = list.capacity
@@ -130,13 +132,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -156,10 +158,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayFixedCapacityLinkedNoddedList",
         producer = KoneArrayFixedCapacityLinkedNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayFixedCapacityLinkedNoddedList<Element>) return false
+                if (list !is KoneArrayFixedCapacityLinkedNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val capacity = list.capacity
@@ -206,13 +208,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -232,10 +234,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayFixedCapacityList",
         producer = KoneArrayFixedCapacityListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayFixedCapacityList<Element>) return false
+                if (list !is KoneArrayFixedCapacityList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val size = list.size
@@ -250,13 +252,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayFixedCapacityList.Iterator<Element>) return false
+                if (iterator !is KoneArrayFixedCapacityList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -269,10 +271,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayFixedCapacityNoddedList",
         producer = KoneArrayFixedCapacityNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayFixedCapacityNoddedList<Element>) return false
+                if (list !is KoneArrayFixedCapacityNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val size = list.size
@@ -294,13 +296,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -314,10 +316,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayGrowableLinkedList",
         producer = KoneArrayGrowableLinkedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayGrowableLinkedList<Element>) return false
+                if (list !is KoneArrayGrowableLinkedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val sizeUpperBound = list.sizeUpperBound
@@ -357,13 +359,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayGrowableLinkedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -383,10 +385,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayGrowableLinkedNoddedList",
         producer = KoneArrayGrowableLinkedNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayGrowableLinkedNoddedList<Element>) return false
+                if (list !is KoneArrayGrowableLinkedNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val sizeUpperBound = list.sizeUpperBound
@@ -434,13 +436,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -460,10 +462,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayGrowableList",
         producer = KoneArrayGrowableListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayGrowableList<Element>) return false
+                if (list !is KoneArrayGrowableList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val sizeUpperBound = list.sizeUpperBound
@@ -481,13 +483,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayGrowableList.Iterator<Element>) return false
+                if (iterator !is KoneArrayGrowableList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -500,10 +502,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayGrowableNoddedList",
         producer = KoneArrayGrowableNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayGrowableNoddedList<Element>) return false
+                if (list !is KoneArrayGrowableNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val sizeUpperBound = list.sizeUpperBound
@@ -529,13 +531,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayGrowableNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayGrowableNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -549,10 +551,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayResizableLinkedList",
         producer = KoneArrayResizableLinkedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayResizableLinkedList<Element>) return false
+                if (list !is KoneArrayResizableLinkedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val dataSizeNumber = list.dataSizeNumber
@@ -595,13 +597,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayResizableLinkedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayResizableLinkedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -621,10 +623,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayResizableLinkedNoddedList",
         producer = KoneArrayResizableLinkedNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayResizableLinkedNoddedList<Element>) return false
+                if (list !is KoneArrayResizableLinkedNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val dataSizeNumber = list.dataSizeNumber
@@ -675,13 +677,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 val currentIndex = iterator.currentIndex
@@ -701,10 +703,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayResizableList",
         producer = KoneArrayResizableListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayResizableList<Element>) return false
+                if (list !is KoneArrayResizableList<Any>) return false
                 if (list.isDisposed) return false
 
                 val dataSizeNumber = list.dataSizeNumber
@@ -725,13 +727,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
 
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
 
-                if (iterator !is KoneArrayResizableList.Iterator<Element>) return false
+                if (iterator !is KoneArrayResizableList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
 
                 if (iterator.currentIndex > list.size) return false
@@ -744,10 +746,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArrayResizableNoddedList",
         producer = KoneArrayResizableNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element: Any> validate(
-                list: KoneList<Element>,
+            override fun validate(
+                list: KoneList<Any>,
             ): Boolean {
-                if (list !is KoneArrayResizableNoddedList<Element>) return false
+                if (list !is KoneArrayResizableNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val dataSizeNumber = list.dataSizeNumber
@@ -776,13 +778,13 @@ val listImplementations = listOf<ListImplementationDescription>(
                 return true
             }
             
-            override fun <Element: Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>,
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>,
             ): Boolean {
                 if (!validate(list)) return false
                 
-                if (iterator !is KoneArrayResizableNoddedList.Iterator<Element>) return false
+                if (iterator !is KoneArrayResizableNoddedList.Iterator<Any>) return false
                 if (iterator.list !== list) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -796,19 +798,19 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArraySettableList",
         producer = KoneArraySettableListProducer,
         validator = object : KoneListValidator {
-            override fun <Element : Any> validate(list: KoneList<Element>): Boolean {
-                if (list !is KoneArraySettableList<Element>) return false
+            override fun validate(list: KoneList<Any>): Boolean {
+                if (list !is KoneArraySettableList<Any>) return false
                 
                 return true
             }
-            override fun <Element : Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>
             ): Boolean {
                 if (!validate(list)) return false
-                list as KoneArraySettableList<Element>
+                list as KoneArraySettableList<Any>
                 
-                if (iterator !is KoneArraySettableList.Iterator<Element>) return false
+                if (iterator !is KoneArraySettableList.Iterator<Any>) return false
                 if (iterator.data.array !== list.data.array) return false
                 
                 if (iterator.currentIndex > list.size) return false
@@ -821,8 +823,8 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArraySettableNoddedList",
         producer = KoneArraySettableNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun <Element : Any> validate(list: KoneList<Element>): Boolean {
-                if (list !is KoneArraySettableNoddedList<Element>) return false
+            override fun validate(list: KoneList<Any>): Boolean {
+                if (list !is KoneArraySettableNoddedList<Any>) return false
                 if (list.isDisposed) return false
                 
                 val data = list.data
@@ -837,14 +839,14 @@ val listImplementations = listOf<ListImplementationDescription>(
                 
                 return true
             }
-            override fun <Element : Any> validateWithIterator(
-                list: KoneList<Element>,
-                iterator: KoneIterator<Element>
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>
             ): Boolean {
                 if (!validate(list)) return false
-                list as KoneArraySettableList<Element>
+                list as KoneArraySettableList<Any>
                 
-                if (iterator !is KoneArraySettableList.Iterator<Element>) return false
+                if (iterator !is KoneArraySettableList.Iterator<Any>) return false
                 if (iterator.data.array !== list.data.array) return false
                 
                 if (iterator.currentIndex > list.size) return false
