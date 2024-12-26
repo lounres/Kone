@@ -97,10 +97,10 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
             val isItAFirstChild = parent.firstChild === oldLastHolder
             val isItASecondChild = parent.secondChild === oldLastHolder
             when {
-                isItAFirstChild && isItASecondChild -> throw IllegalStateException("Holder's parent stores it as both the first child and the second child")
+                isItAFirstChild && isItASecondChild -> error("Holder's parent stores it as both the first child and the second child")
                 isItAFirstChild -> parent.firstChild = null
                 isItASecondChild -> parent.secondChild = null
-                else -> throw IllegalStateException("Holder's parent does not store it as neither the first child or the second child")
+                else -> error("Holder's parent does not store it as neither the first child or the second child")
             }
         }
         
@@ -152,7 +152,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
                     if (parent != null) when {
                         parent.firstChild == null -> parent.firstChild = it
                         parent.secondChild == null -> parent.secondChild = it
-                        else -> throw IllegalStateException("Chose parent with both children present to insert a new child in it")
+                        else -> error("Chose parent with both children present to insert a new child in it")
                     }
                 }
             }
@@ -166,13 +166,13 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
     }
     
     override fun takeMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) throw NoSuchElementException("Heap is empty")
+        if (size == 0u) accessRootOfEmptyHeapException()
         val root = rootHolder!!
         return root.node
     }
     
     override fun popMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) throw NoSuchElementException("Heap is empty")
+        if (size == 0u) accessRootOfEmptyHeapException()
         val root = rootHolder!!
         return root.node.also { removeNode(root) }
     }

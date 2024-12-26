@@ -36,14 +36,14 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
-                    else -> throw IllegalStateException("Trying to change parent's non-existent child")
+                    else -> error("Trying to change parent's non-existent child")
                 }
             is ThreeNodeHolder ->
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
                     this.thirdChild -> this.thirdChild = newChild
-                    else -> throw IllegalStateException("Trying to change parent's non-existent child")
+                    else -> error("Trying to change parent's non-existent child")
                 }
         }
     }
@@ -87,7 +87,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             secondElement = node,
                             thirdChild = secondNewChild,
                         )
-                    else -> throw IllegalStateException("Received not a child of the parent")
+                    else -> error("Received not a child of the parent")
                 }
                 
                 newNodeHolder.parent = parent
@@ -154,7 +154,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             secondChild = secondNewChild,
                         )
                     }
-                    else -> throw IllegalStateException("Received an incorrect position")
+                    else -> error("Received an incorrect position")
                 }
                 
                 parent.replaceChild(
@@ -260,7 +260,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                                 parent.replaceChild(this, newThis)
                             }
                         }
-                    else -> throw IllegalStateException("Received not a child of the parent")
+                    else -> error("Received not a child of the parent")
                 }
             is ThreeNodeHolder ->
                 when (oldChild) {
@@ -416,7 +416,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                                 parent.replaceChild(this, newThis)
                             }
                         }
-                    else -> throw IllegalStateException("Received not a child of the parent")
+                    else -> error("Received not a child of the parent")
                 }
         }
     }
@@ -489,7 +489,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                     element = when (node) {
                         holder.firstElement -> holder.secondElement
                         holder.secondElement -> holder.firstElement
-                        else -> throw IllegalStateException("Received not a holder of the node")
+                        else -> error("Received not a holder of the node")
                     },
                     secondChild = null,
                 )
@@ -525,26 +525,26 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                     is TwoNodeHolder ->
                         when (node) {
                             holder.element -> holder.element = nextNode
-                            else -> throw IllegalStateException("Received not a holder of the node")
+                            else -> error("Received not a holder of the node")
                         }
                     is ThreeNodeHolder ->
                         when (node) {
                             holder.firstElement -> holder.firstElement = nextNode
                             holder.secondElement -> holder.secondElement = nextNode
-                            else -> throw IllegalStateException("Received not a holder of the node")
+                            else -> error("Received not a holder of the node")
                         }
                 }
                 when (nextHolder) {
                     is TwoNodeHolder ->
                         when (nextNode) {
                             nextHolder.element -> nextHolder.element = node
-                            else -> throw IllegalStateException("Received not a holder of the node")
+                            else -> error("Received not a holder of the node")
                         }
                     is ThreeNodeHolder ->
                         when (nextNode) {
                             nextHolder.firstElement -> nextHolder.firstElement = node
                             nextHolder.secondElement -> nextHolder.secondElement = node
-                            else -> throw IllegalStateException("Received not a holder of the node")
+                            else -> error("Received not a holder of the node")
                         }
                 }
                 nextNode.nextNode?.previousNode = node
@@ -686,7 +686,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                         )
                         upperBoundHolder.dispose()
                     }
-                    else -> throw IllegalStateException("For some reason, lower and upper bounds' holders are both not at the bottom")
+                    else -> error("For some reason, lower and upper bounds' holders are both not at the bottom")
                 }
                 size++
                 newNode

@@ -138,7 +138,7 @@ public inline fun <E> KoneIterable<E>.countIndexed(predicate: (index: UInt, valu
 
 public inline fun <E> KoneIterable<E>.firstThat(predicate: (E) -> Boolean): E {
     for (element in this) if (predicate(element)) return element
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E> KoneList<E>.lastThat(predicate: (E) -> Boolean): E {
@@ -148,7 +148,7 @@ public inline fun <E> KoneList<E>.lastThat(predicate: (E) -> Boolean): E {
         if (predicate(element)) return element
         backIterator.movePrevious()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E> KoneList<E>.firstThatIndexed(predicate: (index: UInt, E) -> Boolean): E {
@@ -158,7 +158,7 @@ public inline fun <E> KoneList<E>.firstThatIndexed(predicate: (index: UInt, E) -
         if (predicate(iterator.nextIndex(), element)) return element
         iterator.moveNext()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E> KoneList<E>.lastThatIndexed(predicate: (index: UInt, E) -> Boolean): E {
@@ -168,7 +168,7 @@ public inline fun <E> KoneList<E>.lastThatIndexed(predicate: (index: UInt, E) ->
         if (predicate(backIterator.previousIndex(), element)) return element
         backIterator.movePrevious()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E> KoneIterable<E>.firstThatOrNull(predicate: (E) -> Boolean): E? {
@@ -246,7 +246,7 @@ public inline fun <E, R> KoneIterable<E>.firstOfThat(transform: (E) -> R, predic
         val result = transform(element)
         if (predicate(result)) return result
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E, R> KoneList<E>.lastOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R {
@@ -257,7 +257,7 @@ public inline fun <E, R> KoneList<E>.lastOfThat(transform: (E) -> R, predicate: 
         if (predicate(result)) return result
         backIterator.movePrevious()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E, R> KoneList<E>.firstOfThatIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
@@ -268,7 +268,7 @@ public inline fun <E, R> KoneList<E>.firstOfThatIndexed(transform: (index: UInt,
         if (predicate(result)) return result
         iterator.moveNext()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E, R> KoneList<E>.lastOfThatIndexed(transform: (index: UInt, E) -> R, predicate: (R) -> Boolean): R {
@@ -279,7 +279,7 @@ public inline fun <E, R> KoneList<E>.lastOfThatIndexed(transform: (index: UInt, 
         if (predicate(result)) return result
         backIterator.movePrevious()
     }
-    throw NoSuchElementException("Collection contains no element matching the predicate.")
+    noElementMatchingThePredicateException()
 }
 
 public inline fun <E, R> KoneIterable<E>.firstOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? {

@@ -14,14 +14,14 @@ import dev.lounres.kone.collections.*
 internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableNoddedList<Element> {
     override val size: UInt get() = 0u
     
-    override fun getNode(index: UInt): KoneSettableListNode<Element> = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
-    override fun get(index: UInt): Element = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
+    override fun getNode(index: UInt): KoneSettableListNode<Element> = indexOutOfBoundsException(index = index, size = 0u)
+    override fun get(index: UInt): Element = indexOutOfBoundsException(index = index, size = 0u)
     
-    override fun set(index: UInt, element: Element) = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
+    override fun set(index: UInt, element: Element) = indexOutOfBoundsException(index = index, size = 0u)
 
     override fun iterator(): KoneSettableNoddedListIterator<Element> = KoneEmptySettableNoddedListIterator as KoneSettableNoddedListIterator<Element>
     override fun iteratorFrom(index: UInt): KoneSettableNoddedListIterator<Element> =
-        if (index > 0u) indexOutOfBoundsException(index, 0u)
+        if (index > 0u) indexOutOfBoundsException(index = index, size = 0u)
         else KoneEmptySettableNoddedListIterator as KoneSettableNoddedListIterator<Element>
 
     override fun toString(): String = "[]"

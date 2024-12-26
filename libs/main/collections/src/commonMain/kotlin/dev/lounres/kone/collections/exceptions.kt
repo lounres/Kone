@@ -14,6 +14,11 @@ package dev.lounres.kone.collections
 public fun indexOutOfBoundsException(index: UInt, size: UInt): Nothing =
     throw IndexOutOfBoundsException("Index $index is out of bounds for length $size")
 
+public class ElementAccessInEmptyCollectionException(message: String = "Cannot access the element of the empty collection") : NoSuchElementException(message)
+
+public fun accessRootOfEmptyHeapException(): Nothing =
+    throw ElementAccessInEmptyCollectionException("Cannot access the root because the heap is empty")
+
 /**
  * Represents exception that is thrown when user tries to get, set, remove, or bypass the next or the previous non-existent element.
  */
@@ -54,7 +59,22 @@ public fun capacityOverflowException(capacity: UInt): Nothing =
     throw CapacityOverflowException("Overflow of collection with fixed capacity of $capacity")
 
 /**
- * Represents exception that is thrown when user tries to get some data structure's element that matches the provided key but there is no such element.
+ * Represents exception that is thrown when user tries to get some nodded data structure's node that matches given conditions but there is no such element.
+ */
+public class NoCorrespondingNodeException(message: String = "There is no corresponding node"): NoSuchElementException(message)
+
+/**
+ * Throws [NoCorrespondingNodeException] with provided [message].
+ */
+public fun noCorrespondingNodeException(message: String = "There is no corresponding node"): Nothing =
+    throw NoCorrespondingNodeException(message)
+
+public const val NO_CORRESPONDING_SET_NODE_MESSAGE : String = "There is no node in the set corresponding to the provided element"
+
+public fun noCorrespondingSetNodeException(): Nothing = noCorrespondingNodeException(NO_CORRESPONDING_SET_NODE_MESSAGE)
+
+/**
+ * Represents exception that is thrown when user tries to get some [KoneMap] instance's element that matches the provided key but there is no such element.
  */
 public class NoMatchingKeyException(message: String = "There is no value for requested key"): NoSuchElementException(message)
 

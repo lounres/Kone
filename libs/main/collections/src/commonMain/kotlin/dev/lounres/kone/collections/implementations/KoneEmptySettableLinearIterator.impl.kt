@@ -6,18 +6,20 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneSettableLinearIterator
+import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.noPreviousElementInIteratorException
 
 
 internal object KoneEmptySettableLinearIterator: KoneSettableLinearIterator<Nothing> {
     override fun hasNext(): Boolean = false
-    override fun getNext(): Nothing = throw NoSuchElementException("Empty iterator has no next element")
-    override fun moveNext() = throw NoSuchElementException("Empty iterator has no next element")
-    override fun nextIndex(): UInt = throw NoSuchElementException("Empty iterator has no next index")
-    override fun setNext(element: Nothing) = throw NoSuchElementException("Empty iterator has no next element")
+    override fun getNext(): Nothing = noNextElementInIteratorException()
+    override fun moveNext() = noNextElementInIteratorException()
+    override fun nextIndex(): UInt = noNextElementInIteratorException()
+    override fun setNext(element: Nothing) = noNextElementInIteratorException()
 
     override fun hasPrevious(): Boolean = false
-    override fun getPrevious(): Nothing = throw NoSuchElementException("Empty iterator has no previous element")
-    override fun movePrevious() = throw NoSuchElementException("Empty iterator has no previous element")
-    override fun previousIndex(): UInt = throw NoSuchElementException("Empty iterator has no previous index")
-    override fun setPrevious(element: Nothing) = throw NoSuchElementException("Empty iterator has no previous element")
+    override fun getPrevious(): Nothing = noPreviousElementInIteratorException()
+    override fun movePrevious() = noPreviousElementInIteratorException()
+    override fun previousIndex(): UInt = noPreviousElementInIteratorException()
+    override fun setPrevious(element: Nothing) = noPreviousElementInIteratorException()
 }
