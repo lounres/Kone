@@ -9,14 +9,10 @@ import dev.lounres.kone.collections.*
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-internal open class KoneEmptyNoddedReifiedSetTemplate<Element> : KoneNoddedReifiedSet<Element> {
+internal open class KoneEmptyReifiedSetTemplate<Element> : KoneReifiedSet<Element> {
     override val size: UInt get() = 0u
-    
-    override val nodesView: KoneReifiedSet<KoneSetNode<Element>> get() = KoneEmptyReifiedSet
 
     override fun contains(element: Element): Boolean = false
-    override fun nodeOfOrNull(element: Element): KoneSetNode<Element>? = null
-    override fun nodeOf(element: Element): KoneSetNode<Element> = noCorrespondingSetNodeException()
 
     override fun iterator(): KoneNoddedSetIterator<Element> = KoneEmptyNoddedSetIterator
 
@@ -25,4 +21,4 @@ internal open class KoneEmptyNoddedReifiedSetTemplate<Element> : KoneNoddedReifi
     override fun equals(other: Any?): Boolean = other is KoneSet<*> && other.isEmpty()
 }
 
-internal object KoneEmptyNoddedReifiedSet : KoneEmptyNoddedReifiedSetTemplate<Nothing>()
+internal object KoneEmptyReifiedSet : KoneEmptyReifiedSetTemplate<Nothing>()

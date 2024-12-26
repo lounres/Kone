@@ -13,36 +13,83 @@ import dev.lounres.kone.context.invoke
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-internal open class KoneSingletonNoddedSet<Element, ElementContext: Equality<Element>>(
+internal open class KoneSingletonNoddedSet<Element>(
     val singleElement: Element,
-    open val elementContext: ElementContext,
+    open val elementContext: Equality<Element>,
 ) : KoneNoddedSet<Element> {
+    internal val singleNode = Node(this)
+    
     override val size: UInt get() = 1u
     override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
+    override fun nodeOfOrNull(element: Element): KoneSetNode<Element>? =
+        if (elementContext { singleElement eq element }) singleNode else null
+    override fun nodeOf(element: Element): KoneSetNode<Element> =
+        if (elementContext { singleElement eq element }) singleNode
+        else noCorrespondingSetNodeException()
     
-    private val singleNode = Node()
+    override val nodesView: KoneReifiedSet<KoneSetNode<Element>> = Nodes(this)
     
-    override val nodes: KoneIterable<KoneSetNode<Element>> get() = TODO()
-    
-    override fun iterator(): KoneIterator<Element> = TODO()
+    override fun iterator(): KoneNoddedSetIterator<Element> = Iterator(this)
 
     override fun toString(): String = "[$singleElement]"
     override fun hashCode(): Int = singleElement.hashCode()
     override fun equals(other: Any?): Boolean = this === other
     
-    inner class Node: KoneSetNode<Element> {
+    internal class Node<Element>(
+        val set: KoneSingletonNoddedSet<Element>,
+    ) : KoneSetNode<Element> {
         override val isDetached: Boolean get() = false
         
-        override val element: Element get() = singleElement
+        override val element: Element get() = set.singleElement
+    }
+    
+    internal class Nodes<Element>(
+        val set: KoneSingletonNoddedSet<Element>,
+    ) : KoneReifiedSet<KoneSetNode<Element>> {
+        override val size: UInt get() = 1u
+        override fun contains(element: KoneSetNode<Element>): Boolean = element === set.singleNode
+        
+        override fun iterator(): KoneSetIterator<KoneSetNode<Element>> = Iterator(set)
+        
+        internal class Iterator<Element>(
+            val set: KoneSingletonNoddedSet<Element>,
+            var currentlyBeforeSingleElement: Boolean = true,
+        ) : KoneSetIterator<Node<Element>> {
+            override fun hasNext(): Boolean = currentlyBeforeSingleElement
+            override fun getNext(): Node<Element> =
+                if (!hasNext()) noNextElementInIteratorException()
+                else set.singleNode
+            override fun moveNext() {
+                if (!hasNext()) noNextElementInIteratorException()
+                currentlyBeforeSingleElement = false
+            }
+        }
+    }
+    
+    internal class Iterator<Element>(
+        val set: KoneSingletonNoddedSet<Element>,
+        var currentlyBeforeSingleElement: Boolean = true,
+    ) : KoneNoddedSetIterator<Element> {
+        override fun hasNext(): Boolean = currentlyBeforeSingleElement
+        override fun getNext(): Element =
+            if (!hasNext()) noNextElementInIteratorException()
+            else set.singleElement
+        override fun getNextNode(): KoneSetNode<Element> =
+            if (!hasNext()) noNextElementInIteratorException()
+            else set.singleNode
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInIteratorException()
+            currentlyBeforeSingleElement = false
+        }
     }
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @PublishedApi
-internal class KoneSingletonNoddedReifiedSet<Element, ElementContext: ReifiedEquality<Element>>(
+internal class KoneSingletonNoddedReifiedSet<Element>(
     singleElement: Element,
-    override val elementContext: ElementContext,
-) : KoneSingletonNoddedSet<Element, ElementContext>(
+    override val elementContext: ReifiedEquality<Element>,
+) : KoneSingletonNoddedSet<Element>(
     singleElement = singleElement,
     elementContext = elementContext,
 ), KoneNoddedReifiedSet<Element> {

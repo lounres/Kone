@@ -48,32 +48,30 @@ internal class KoneSingletonSettableList<Element>(
         var currentlyBeforeSingleElement: Boolean = true,
     ): KoneSettableListIterator<Element> {
         override fun hasNext(): Boolean = currentlyBeforeSingleElement
-        override fun getNext(): Element {
-            if (!hasNext()) indexOutOfBoundsException(1u, 1u)
-            return list.singleElement
-        }
+        override fun getNext(): Element =
+            if (!hasNext()) noNextElementInIteratorException()
+            else list.singleElement
         override fun moveNext() {
-            if (!hasNext()) indexOutOfBoundsException(1u, 1u)
+            if (!hasNext()) noNextElementInIteratorException()
             currentlyBeforeSingleElement = false
         }
-        override fun nextIndex(): UInt = if (hasNext()) 1u else indexOutOfBoundsException(1u, 1u)
+        override fun nextIndex(): UInt = if (hasNext()) 1u else noNextElementInIteratorException()
         override fun setNext(element: Element) {
-            if (!hasNext()) indexOutOfBoundsException(1u, 1u)
+            if (!hasNext()) noNextElementInIteratorException()
             list.singleElement = element
         }
         
         override fun hasPrevious(): Boolean = !currentlyBeforeSingleElement
-        override fun getPrevious(): Element {
-            if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
-            return list.singleElement
-        }
+        override fun getPrevious(): Element =
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            else list.singleElement
         override fun movePrevious() {
-            if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             currentlyBeforeSingleElement = true
         }
-        override fun previousIndex(): UInt = if (hasPrevious()) 0u else indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
+        override fun previousIndex(): UInt = if (!hasPrevious()) noPreviousElementInIteratorException() else 0u
         override fun setPrevious(element: Element) {
-            if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             list.singleElement = element
         }
     }

@@ -12,7 +12,6 @@ public interface KoneSetNode<out Element> {
     public val element: Element
 }
 
-public interface KoneMutableSetNode<Element> : KoneSetNode<Element> {
-    override var element: Element
+public interface KoneMutableSetNode<out Element> : KoneSetNode<Element> {
     public fun remove()
 }

@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.*
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 internal class KoneSingletonSettableNoddedList<Element>(
-    var singleElement: Element,
+    internal var singleElement: Element,
 ) : KoneSettableNoddedList<Element> {
     override val size: UInt get() = 1u
     

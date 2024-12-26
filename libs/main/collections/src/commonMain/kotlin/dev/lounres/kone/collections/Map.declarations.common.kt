@@ -10,6 +10,7 @@ import dev.lounres.kone.comparison.absoluteReifiedEquality
 
 // TODO: Describe contracts on equals and hashCode.
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMap<Key, out Value> {
     public val size: UInt
     
@@ -23,6 +24,7 @@ public interface KoneMap<Key, out Value> {
     public fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>?
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
     override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
     override val nodes: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
