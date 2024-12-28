@@ -15,3 +15,19 @@ public interface KoneSetNode<out Element> {
 public interface KoneMutableSetNode<out Element> : KoneSetNode<Element> {
     public fun remove()
 }
+
+public interface KoneLinkedSetNode<out Element> : KoneSetNode<Element> {
+    public val nextNode: KoneLinkedSetNode<Element>?
+    public val previousNode: KoneLinkedSetNode<Element>?
+    
+    public fun iteratorFromBeforeHere(): KoneLinkedNoddedSetIterator<Element>
+    public fun iteratorFromAfterHere(): KoneLinkedNoddedSetIterator<Element>
+}
+
+public interface KoneMutableLinkedSetNode<out Element> : KoneMutableSetNode<Element>, KoneLinkedSetNode<Element> {
+    override val nextNode: KoneMutableLinkedSetNode<Element>?
+    override val previousNode: KoneMutableLinkedSetNode<Element>?
+    
+    override fun iteratorFromBeforeHere(): KoneMutableLinkedNoddedSetIterator<Element>
+    override fun iteratorFromAfterHere(): KoneMutableLinkedNoddedSetIterator<Element>
+}

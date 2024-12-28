@@ -6,11 +6,11 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.LinkedSearchTree
-import dev.lounres.kone.collections.LinkedSearchTreeNode
-import dev.lounres.kone.collections.KoneLinearIterator
 import dev.lounres.kone.collections.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.KoneLinkedSet
+import dev.lounres.kone.collections.KoneReversibleIterator
+import dev.lounres.kone.collections.LinkedSearchTree
+import dev.lounres.kone.collections.LinkedSearchTreeNode
 import dev.lounres.kone.collections.SearchSegmentResult
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.indexOutOfBoundsException
@@ -973,19 +973,15 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
     }
     
-    internal class NodesIterator<E>(
-        private var nextNode: Node<E>?,
+    internal class NodesIterator<Element>(
+        private var nextNode: Node<Element>?,
         private val size: UInt,
-    ) : KoneLinearIterator<Node<E>> {
-        private var previousNode: Node<E>? = null
+    ) : KoneReversibleIterator<Node<Element>> {
+        private var previousNode: Node<Element>? = null
         private var nextIndex: UInt = 0u
         
         override fun hasNext(): Boolean = nextNode != null
-        override fun nextIndex(): UInt {
-            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
-            return nextIndex
-        }
-        override fun getNext(): Node<E> {
+        override fun getNext(): Node<Element> {
             if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextNode!!
         }
@@ -997,11 +993,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
         
         override fun hasPrevious(): Boolean = previousNode != null
-        override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
-            return nextIndex - 1u
-        }
-        override fun getPrevious(): Node<E> {
+        override fun getPrevious(): Node<Element> {
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousNode!!
         }
@@ -1017,16 +1009,9 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     internal inner class Nodes : KoneLinkedReifiedSet<Node<Element>> {
         override val size: UInt get() = this@KoneTwoThreeTree.size
         
-        override fun get(index: UInt): Node<Element> {
-            TODO("Not yet implemented")
-        }
-        
         override fun contains(element: Node<Element>): Boolean = find(element.element) === element
         
-        override fun iterator(): KoneLinearIterator<Node<Element>> = NodesIterator(minimum, size)
-        override fun iteratorFrom(index: UInt): KoneLinearIterator<Node<Element>> {
-            TODO("Not yet implemented")
-        }
+        override fun iterator(): KoneReversibleIterator<Node<Element>> = NodesIterator(minimum, size)
         
         // TODO: Add usual `toString` overload
     }
@@ -1034,15 +1019,11 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     internal class ElementsIterator<E>(
         private var nextNode: Node<E>?,
         private val size: UInt,
-    ) : KoneLinearIterator<E> {
+    ) : KoneReversibleIterator<E> {
         private var previousNode: Node<E>? = null
         private var nextIndex: UInt = 0u
         
         override fun hasNext(): Boolean = nextNode != null
-        override fun nextIndex(): UInt {
-            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
-            return nextIndex
-        }
         override fun getNext(): E {
             if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
             return nextNode!!.element
@@ -1055,10 +1036,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
         
         override fun hasPrevious(): Boolean = previousNode != null
-        override fun previousIndex(): UInt {
-            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
-            return nextIndex - 1u
-        }
         override fun getPrevious(): E {
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
             return previousNode!!.element
@@ -1075,16 +1052,9 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     internal inner class Elements : KoneLinkedSet<Element> {
         override val size: UInt get() = this@KoneTwoThreeTree.size
         
-        override fun get(index: UInt): Element {
-            TODO("Not yet implemented")
-        }
-        
         override fun contains(element: Element): Boolean = find(element) != null
         
-        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(minimum, size)
-        override fun iteratorFrom(index: UInt): KoneLinearIterator<Element> {
-            TODO("Not yet implemented")
-        }
+        override fun iterator(): KoneReversibleIterator<Element> = ElementsIterator(minimum, size)
         
         // TODO: Add usual `toString` overload
     }

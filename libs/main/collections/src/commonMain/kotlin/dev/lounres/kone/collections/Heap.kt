@@ -40,8 +40,9 @@ public interface LinkedHeapNode<Element, Priority> : HeapNode<Element, Priority>
 }
 
 public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Priority> {
+    // TODO: Think about this view: it breaks contract of `KoneLinkedReifiedSet` that removal does not change order of other elements.
     override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
-    override val elementsView: KoneList<Element>
+    override val elementsView: KoneReversibleIterable<Element>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMinimum(): LinkedHeapNode<Element, Priority>
@@ -49,8 +50,9 @@ public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Pri
 }
 
 public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Priority> {
+    // TODO: Think about this view: it breaks contract of `KoneLinkedReifiedSet` that removal does not change order of other elements.
     override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
-    override val elementsView: KoneList<Element>
+    override val elementsView: KoneReversibleIterable<Element>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMaximum(): LinkedHeapNode<Element, Priority>

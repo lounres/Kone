@@ -33,7 +33,7 @@ public interface SearchTree<Element> {
     
     public fun add(element: Element): SearchTreeNode<Element>
     public fun find(element: Element): SearchTreeNode<Element>?
-//    public fun findSegmentFor(element: E): SearchSegmentResult<SearchTreeNode<E>>?
+    public fun findSegmentFor(element: Element): SearchSegmentResult<SearchTreeNode<Element>>?
     
     public operator fun contains(element: Element): Boolean = find(element) != null
 }
@@ -41,8 +41,8 @@ public interface SearchTree<Element> {
 public interface LinkedSearchTree<Element> : SearchTree<Element> {
     override val nodesView: KoneLinkedReifiedSet<LinkedSearchTreeNode<Element>>
     override val elementsView: KoneLinkedSet<Element>
-    
+
     override fun add(element: Element): LinkedSearchTreeNode<Element>
     override fun find(element: Element): LinkedSearchTreeNode<Element>?
-    public fun findSegmentFor(element: Element): SearchSegmentResult<LinkedSearchTreeNode<Element>>
+    override fun findSegmentFor(element: Element): SearchSegmentResult<LinkedSearchTreeNode<Element>>
 }

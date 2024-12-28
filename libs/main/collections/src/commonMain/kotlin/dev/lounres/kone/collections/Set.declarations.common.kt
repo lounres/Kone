@@ -40,12 +40,42 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
     override val nodesView: KoneReifiedSet<KoneMutableSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneMutableSetNode<Element>>
         get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+    override fun nodeOfOrNull(element: Element): KoneMutableSetNode<Element>?
+    override fun nodeOf(element: Element): KoneMutableSetNode<Element>
     public fun addNode(element: Element): KoneMutableSetNode<Element>
     override fun add(element: Element) { addNode(element) }
     
     override fun iterator(): KoneMutableNoddedSetIterator<Element>
 }
 
-// TODO: Think about abstractions for linked sets
-//@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-//public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneList<Element>
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneLinkedSet<Element> : KoneSet<Element> {
+    override fun iterator(): KoneLinkedSetIterator<Element>
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMutableSet<Element> {
+    override fun iterator(): KoneMutableLinkedSetIterator<Element>
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneLinkedNoddedSet<Element> : KoneNoddedSet<Element>, KoneLinkedSet<Element> {
+    override val nodesView: KoneReifiedSet<KoneLinkedSetNode<Element>>
+    override val nodes: KoneReifiedSet<KoneLinkedSetNode<Element>> get() = nodesView
+    override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneLinkedSetNode<Element>?
+    override fun nodeOf(element: @UnsafeVariance Element): KoneLinkedSetNode<Element>
+    
+    override fun iterator(): KoneLinkedNoddedSetIterator<Element>
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneMutableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Element>, KoneMutableLinkedSet<Element>, KoneMutableNoddedSet<Element> {
+    override val nodesView: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
+    override val nodes: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
+        get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+    override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>?
+    override fun nodeOf(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>
+    override fun addNode(element: Element): KoneMutableLinkedSetNode<Element>
+    
+    override fun iterator(): KoneMutableLinkedNoddedSetIterator<Element>
+}

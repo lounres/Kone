@@ -18,5 +18,14 @@ public interface KoneNoddedReifiedSet<out Element> : KoneNoddedSet<@UnsafeVarian
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableNoddedReifiedSet<Element> : KoneMutableNoddedSet<Element>, KoneMutableReifiedSet<Element>, KoneNoddedReifiedSet<Element>
 
-//@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-//public interface KoneLinkedReifiedSet<out Element> : KoneLinkedSet<@UnsafeVariance Element>, KoneReifiedSet<Element>
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneLinkedReifiedSet<out Element> : KoneReifiedSet<Element>, KoneLinkedSet<@UnsafeVariance Element>
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneMutableLinkedReifiedSet<Element> : KoneLinkedReifiedSet<Element>, KoneMutableReifiedSet<Element>, KoneMutableLinkedSet<Element>
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneLinkedNoddedReifiedSet<out Element> : KoneNoddedReifiedSet<Element>, KoneLinkedReifiedSet<Element>, KoneLinkedNoddedSet<@UnsafeVariance Element>
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneMutableLinkedNoddedReifiedSet<Element> : KoneLinkedNoddedReifiedSet<Element>, KoneMutableLinkedReifiedSet<Element>, KoneMutableNoddedReifiedSet<Element>, KoneMutableLinkedNoddedSet<Element>
