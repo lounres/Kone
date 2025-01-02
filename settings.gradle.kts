@@ -54,7 +54,6 @@ stal {
                 subdirs("libs misc", "uses libs main core")
             }
             "util" {
-                "kotest"()
                 subdirs("libs util")
             }
         }

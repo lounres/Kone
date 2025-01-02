@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.KoneIterator
 import dev.lounres.kone.collections.KoneList
 import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.contains
+import dev.lounres.kone.collections.implementations.KoneTwoThreeTreeList.Companion.size
 import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.producers.KoneListProducer
@@ -18,12 +19,10 @@ import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
@@ -33,40 +32,23 @@ import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
-import kotlin.test.fail
 
 
 interface KoneListValidator {
     fun validate(
         list: KoneList<Any>,
-    ): Boolean
+    )
     
     fun validateWithIterator(
         list: KoneList<Any>,
         iterator: KoneIterator<Any>,
-    ): Boolean
+    )
 }
 
-fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>): Validator {
-    this should Matcher {
-        MatcherResult(
-            it.validate(list),
-            { "The list is invalid" },
-            { "The list is valid" }
-        )
-    }
-    return this
-}
-fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator {
-    this should Matcher {
-        MatcherResult(
-            it.validateWithIterator(list, iterator),
-            { "The list or the iterator is invalid" },
-            { "The list and the iterator are valid" }
-        )
-    }
-    return this
-}
+fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>): Validator =
+    apply { validate(list) }
+fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator =
+    apply { validateWithIterator(list, iterator) }
 
 data class ListImplementationDescription (
     val name: String,
@@ -74,12 +56,12 @@ data class ListImplementationDescription (
     val validator: KoneListValidator = object : KoneListValidator {
         override fun validate(
             list: KoneList<Any>,
-        ): Boolean = true
+        ) {}
         
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
-        ): Boolean = true
+        ) {}
     },
 )
 
@@ -92,10 +74,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayFixedCapacityLinkedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayFixedCapacityLinkedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val capacity = list.capacity
                 val size = list.size
                 val start = list.start
@@ -103,54 +85,50 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (size > capacity) return false
-                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) return false
-                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) return false
-                
+
+                if (size > capacity) fail("The list is invalid")
+                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(capacity) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == capacity - 1u)) return false
+                        if ((tortoise == hare) != (iteration == capacity - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(capacity) { iteration ->
-                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) return false
-                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) fail("The list is invalid")
+                        if ((iteration < size) != (data[currentIndex] != null)) fail("The list is invalid")
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -160,10 +138,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayFixedCapacityLinkedNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayFixedCapacityLinkedNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val capacity = list.capacity
                 val size = list.size
                 val start = list.start
@@ -171,62 +149,58 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (size > capacity) return false
-                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) return false
-                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) return false
-                
+
+                if (size > capacity) fail("The list is invalid")
+                if (data.size != capacity || nextNodeIndex.size != capacity || previousNodeIndex.size != capacity) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<capacity } || previousNodeIndex.any { it !in 0u..<capacity }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(capacity) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == capacity - 1u)) return false
+                        if ((tortoise == hare) != (iteration == capacity - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(capacity) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(capacity) { iteration ->
-                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) return false
+                        if ((iteration == (size + capacity - 1u).mod(capacity)) != (currentIndex == end)) fail("The list is invalid")
                         val currentNodeOrNull = data[currentIndex]
                         if (iteration < size) {
-                            if (currentNodeOrNull == null) return false
-                            if (currentNodeOrNull.actualIndex != currentIndex) return false
-                            if (currentNodeOrNull.isDetached) return false
-                            if (currentNodeOrNull.list !== list) return false
+                            if (currentNodeOrNull == null) fail("The list is invalid")
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
                         } else {
-                            if (currentNodeOrNull != null) return false
+                            if (currentNodeOrNull != null) fail("The list is invalid")
                         }
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -236,34 +210,30 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayFixedCapacityList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayFixedCapacityList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val size = list.size
                 val data = list.data
-                
-                if (size > data.size) return false
-                
+
+                if (size > data.size) fail("The list is invalid")
+
                 repeat(data.size) { index ->
-                    if ((index < size) != (data[index] != null)) return false
+                    if ((index < size) != (data[index] != null)) fail("The list is invalid")
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayFixedCapacityList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayFixedCapacityList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -273,41 +243,37 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayFixedCapacityNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayFixedCapacityNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val size = list.size
                 val data = list.data
-                
-                if (size > data.size) return false
-                
+
+                if (size > data.size) fail("The list is invalid")
+
                 repeat(data.size) { index ->
                     if (index < size) {
                         val node = data[index]
-                        if (node == null) return false
-                        if (node.list !== list) return false
-                        if (node.index != index) return false
+                        if (node == null) fail("The list is invalid")
+                        if (node.list !== list) fail("The list is invalid")
+                        if (node.index != index) fail("The list is invalid")
                     } else {
-                        if (data[index] != null) return false
+                        if (data[index] != null) fail("The list is invalid")
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -318,10 +284,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayGrowableLinkedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayGrowableLinkedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val sizeUpperBound = list.sizeUpperBound
                 val size = list.size
                 val start = list.start
@@ -329,55 +295,51 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
-                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
-                
+
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(sizeUpperBound) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(sizeUpperBound) { iteration ->
-                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
-                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) fail("The list is invalid")
+                        if ((iteration < size) != (data[currentIndex] != null)) fail("The list is invalid")
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -387,10 +349,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayGrowableLinkedNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayGrowableLinkedNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val sizeUpperBound = list.sizeUpperBound
                 val size = list.size
                 val start = list.start
@@ -398,63 +360,59 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
-                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
-                
+
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(sizeUpperBound) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(sizeUpperBound) { iteration ->
-                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) fail("The list is invalid")
                         val currentNodeOrNull = data[currentIndex]
                         if (iteration < size) {
-                            if (currentNodeOrNull == null) return false
-                            if (currentNodeOrNull.actualIndex != currentIndex) return false
-                            if (currentNodeOrNull.isDetached) return false
-                            if (currentNodeOrNull.list !== list) return false
+                            if (currentNodeOrNull == null) fail("The list is invalid")
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
                         } else {
-                            if (currentNodeOrNull != null) return false
+                            if (currentNodeOrNull != null) fail("The list is invalid")
                         }
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -464,37 +422,33 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayGrowableList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayGrowableList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val sizeUpperBound = list.sizeUpperBound
                 val size = list.size
                 val data = list.data
-                
-                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound) return false
-                
+
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound) fail("The list is invalid")
+
                 repeat(sizeUpperBound) { index ->
-                    if ((index < size) != (data[index] != null)) return false
+                    if ((index < size) != (data[index] != null)) fail("The list is invalid")
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayGrowableList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayGrowableList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -504,45 +458,41 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayGrowableNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayGrowableNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val sizeUpperBound = list.sizeUpperBound
                 val size = list.size
                 val data = list.data
-                
-                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound) return false
-                
+
+                if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound) fail("The list is invalid")
+
                 repeat(sizeUpperBound) { index ->
                     val currentNodeOrNull = data[index]
                     if (index < size) {
-                        if (currentNodeOrNull == null) return false
-                        if (currentNodeOrNull.index != index) return false
-                        if (currentNodeOrNull.isDetached) return false
-                        if (currentNodeOrNull.list !== list) return false
+                        if (currentNodeOrNull == null) fail("The list is invalid")
+                        if (currentNodeOrNull.index != index) fail("The list is invalid")
+                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
                     } else {
-                        if (currentNodeOrNull != null) return false
+                        if (currentNodeOrNull != null) fail("The list is invalid")
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayGrowableNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayGrowableNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -553,10 +503,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayResizableLinkedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayResizableLinkedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val dataSizeNumber = list.dataSizeNumber
                 val sizeLowerBound = list.sizeLowerBound
                 val sizeUpperBound = list.sizeUpperBound
@@ -566,56 +516,52 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (dataSizeNumber !in 1u..31u) return false
-                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
-                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
-                
+
+                if (dataSizeNumber !in 1u..31u) fail("The list is invalid")
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(sizeUpperBound) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(sizeUpperBound) { iteration ->
-                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
-                        if ((iteration < size) != (data[currentIndex] != null)) return false
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) fail("The list is invalid")
+                        if ((iteration < size) != (data[currentIndex] != null)) fail("The list is invalid")
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayResizableLinkedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayResizableLinkedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -625,10 +571,10 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayResizableLinkedNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayResizableLinkedNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val dataSizeNumber = list.dataSizeNumber
                 val sizeLowerBound = list.sizeLowerBound
                 val sizeUpperBound = list.sizeUpperBound
@@ -638,64 +584,60 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val nextNodeIndex = list.nextNodeIndex
                 val previousNodeIndex = list.previousNodeIndex
                 val data = list.data
-                
-                if (dataSizeNumber !in 1u..31u) return false
-                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) return false
-                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) return false
-                
+
+                if (dataSizeNumber !in 1u..31u) fail("The list is invalid")
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
+                if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
+
                 scope {
                     var tortoise = 0u
                     var hare = 0u
                     repeat(sizeUpperBound) { iteration ->
                         tortoise = nextNodeIndex[tortoise]
                         hare = nextNodeIndex[nextNodeIndex[hare]]
-                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) return false
+                        if ((tortoise == hare) != (iteration == sizeUpperBound - 1u)) fail("The list is invalid")
                     }
                 }
-                
-                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) return false }
-                
+
+                repeat(sizeUpperBound) { if (previousNodeIndex[nextNodeIndex[it]] != it) fail("The list is invalid") }
+
                 scope {
                     var currentIndex = start
                     repeat(sizeUpperBound) { iteration ->
-                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) return false
+                        if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) fail("The list is invalid")
                         val currentNodeOrNull = data[currentIndex]
                         if (iteration < size) {
-                            if (currentNodeOrNull == null) return false
-                            if (currentNodeOrNull.actualIndex != currentIndex) return false
-                            if (currentNodeOrNull.isDetached) return false
-                            if (currentNodeOrNull.list !== list) return false
+                            if (currentNodeOrNull == null) fail("The list is invalid")
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
                         } else {
-                            if (currentNodeOrNull != null) return false
+                            if (currentNodeOrNull != null) fail("The list is invalid")
                         }
                         currentIndex = nextNodeIndex[currentIndex]
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
                 val currentIndex = iterator.currentIndex
-                if (currentIndex > list.size) return false
+                if (currentIndex > list.size) fail("The iterator is invalid")
                 val expectedActualCurrentIndex = scope {
                     var actualIndex = list.start
                     repeat(currentIndex) { actualIndex = list.nextNodeIndex[actualIndex] }
                     actualIndex
                 }
-                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) return false
-                
-                return true
+                if (expectedActualCurrentIndex != iterator.actualCurrentIndex) fail("The iterator is invalid")
             }
         },
     ),
@@ -705,9 +647,9 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayResizableList<Any>) return false
-                if (list.isDisposed) return false
+            ) {
+                if (list !is KoneArrayResizableList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
 
                 val dataSizeNumber = list.dataSizeNumber
                 val sizeLowerBound = list.sizeLowerBound
@@ -715,30 +657,26 @@ val listImplementations = listOf<ListImplementationDescription>(
                 val size = list.size
                 val data = list.data
 
-                if (dataSizeNumber !in 1u..31u) return false
-                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound) return false
+                if (dataSizeNumber !in 1u..31u) fail("The list is invalid")
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound) fail("The list is invalid")
 
                 repeat(sizeUpperBound) { index ->
-                    if ((index < size) != (data[index] != null)) return false
+                    if ((index < size) != (data[index] != null)) fail("The list is invalid")
                 }
-
-                return true
             }
 
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
+            ) {
+                validate(list)
 
-                if (iterator !is KoneArrayResizableList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
+                if (iterator !is KoneArrayResizableList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
 
-                if (iterator.currentIndex > list.size) return false
-
-                return true
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -748,48 +686,44 @@ val listImplementations = listOf<ListImplementationDescription>(
         validator = object : KoneListValidator {
             override fun validate(
                 list: KoneList<Any>,
-            ): Boolean {
-                if (list !is KoneArrayResizableNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            ) {
+                if (list !is KoneArrayResizableNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val dataSizeNumber = list.dataSizeNumber
                 val sizeLowerBound = list.sizeLowerBound
                 val sizeUpperBound = list.sizeUpperBound
                 val size = list.size
                 val data = list.data
-                
-                if (dataSizeNumber !in 1u..31u) return false
-                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) return false
-                if (size > sizeUpperBound) return false
-                if (data.size != sizeUpperBound) return false
-                
+
+                if (dataSizeNumber !in 1u..31u) fail("The list is invalid")
+                if (sizeLowerBound != POWERS_OF_2[dataSizeNumber - 1u] || sizeUpperBound != POWERS_OF_2[dataSizeNumber + 1u]) fail("The list is invalid")
+                if (size > sizeUpperBound) fail("The list is invalid")
+                if (data.size != sizeUpperBound) fail("The list is invalid")
+
                 repeat(sizeUpperBound) { index ->
                     val currentNodeOrNull = data[index]
                     if (index < size) {
-                        if (currentNodeOrNull == null) return false
-                        if (currentNodeOrNull.index != index) return false
-                        if (currentNodeOrNull.isDetached) return false
-                        if (currentNodeOrNull.list !== list) return false
+                        if (currentNodeOrNull == null) fail("The list is invalid")
+                        if (currentNodeOrNull.index != index) fail("The list is invalid")
+                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
                     } else {
-                        if (currentNodeOrNull != null) return false
+                        if (currentNodeOrNull != null) fail("The list is invalid")
                     }
                 }
-                
-                return true
             }
-            
+
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>,
-            ): Boolean {
-                if (!validate(list)) return false
-                
-                if (iterator !is KoneArrayResizableNoddedList.Iterator<Any>) return false
-                if (iterator.list !== list) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+            ) {
+                validate(list)
+
+                if (iterator !is KoneArrayResizableNoddedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         },
     ),
@@ -798,24 +732,20 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArraySettableList",
         producer = KoneArraySettableListProducer,
         validator = object : KoneListValidator {
-            override fun validate(list: KoneList<Any>): Boolean {
-                if (list !is KoneArraySettableList<Any>) return false
-                
-                return true
+            override fun validate(list: KoneList<Any>) {
+                if (list !is KoneArraySettableList<Any>) fail("The list is invalid")
             }
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>
-            ): Boolean {
-                if (!validate(list)) return false
+            ) {
+                validate(list)
                 list as KoneArraySettableList<Any>
-                
-                if (iterator !is KoneArraySettableList.Iterator<Any>) return false
-                if (iterator.data.array !== list.data.array) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+
+                if (iterator !is KoneArraySettableList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.data.array !== list.data.array) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         }
     ),
@@ -823,43 +753,177 @@ val listImplementations = listOf<ListImplementationDescription>(
         name = "KoneArraySettableNoddedList",
         producer = KoneArraySettableNoddedListProducer,
         validator = object : KoneListValidator {
-            override fun validate(list: KoneList<Any>): Boolean {
-                if (list !is KoneArraySettableNoddedList<Any>) return false
-                if (list.isDisposed) return false
-                
+            override fun validate(list: KoneList<Any>) {
+                if (list !is KoneArraySettableNoddedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+
                 val data = list.data
-                
+
                 repeat(data.size) { index ->
                     val currentNodeOrNull = data[index]
-                    if (currentNodeOrNull == null) return false
-                    if (currentNodeOrNull.index != index) return false
-                    if (currentNodeOrNull.isDetached) return false
-                    if (currentNodeOrNull.list !== list) return false
+                    if (currentNodeOrNull == null) fail("The list is invalid")
+                    if (currentNodeOrNull.index != index) fail("The list is invalid")
+                    if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                    if (currentNodeOrNull.list !== list) fail("The list is invalid")
                 }
-                
-                return true
             }
             override fun validateWithIterator(
                 list: KoneList<Any>,
                 iterator: KoneIterator<Any>
-            ): Boolean {
-                if (!validate(list)) return false
+            ) {
+                validate(list)
                 list as KoneArraySettableList<Any>
-                
-                if (iterator !is KoneArraySettableList.Iterator<Any>) return false
-                if (iterator.data.array !== list.data.array) return false
-                
-                if (iterator.currentIndex > list.size) return false
-                
-                return true
+
+                if (iterator !is KoneArraySettableList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.data.array !== list.data.array) fail("The iterator is invalid")
+
+                if (iterator.currentIndex > list.size) fail("The iterator is invalid")
             }
         }
     ),
     // GC (resizable) implementations
-//    ListImplementationDescription(
+//    ListImplementationDescription( // TODO
 //        name = "KoneGCLinkedList",
 //        producer = KoneGCLinkedListProducer,
 //    ),
+    ListImplementationDescription(
+        name = "KoneTwoThreeTreeList",
+        producer = KoneTwoThreeTreeListProducer,
+        validator = object : KoneListValidator {
+            override fun validate(list: KoneList<Any>) {
+                if (list !is KoneTwoThreeTreeList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+                
+                val size = list.size
+                val rootHolder = list.rootHolder
+                val firstNode = list.firstNode
+                val lastNode = list.lastNode
+                
+                if (size == 0u) {
+                    if (rootHolder != null || firstNode != null || lastNode != null) fail("The list is invalid")
+                } else {
+                    if (rootHolder == null || firstNode == null || lastNode == null) fail("The list is invalid")
+                    
+                    if (rootHolder.size != size) fail("The list is invalid")
+                    
+                    tailrec fun KoneTwoThreeTreeList.NodeHolder<Any>?.heightAddedTo(number: UInt): UInt =
+                        when (this) {
+                            null -> number
+                            is KoneTwoThreeTreeList.TwoNodeHolder<Any> -> this.firstChild.heightAddedTo(number + 1u)
+                            is KoneTwoThreeTreeList.ThreeNodeHolder<Any> -> this.firstChild.heightAddedTo(number + 1u)
+                        }
+                    
+                    val depth = rootHolder.heightAddedTo(0u)
+                    
+                    fun validateSubtree(
+                        holder: KoneTwoThreeTreeList.NodeHolder<Any>,
+                        depth: UInt,
+                        firstNode: KoneTwoThreeTreeList.Node<Any>,
+                        lastNode: KoneTwoThreeTreeList.Node<Any>,
+                    ) {
+                        if (holder.isDisposed) fail("The list is invalid")
+                        if (holder.tree !== list) fail("The list is invalid")
+                        if (depth == 0u) fail("The list is invalid")
+                        if (depth == 1u) {
+                            if (!holder.isItBottom) fail("The list is invalid")
+                            when (holder) {
+                                is KoneTwoThreeTreeList.TwoNodeHolder<Any> -> {
+                                    if (holder.firstChild != null || holder.secondChild != null) fail("The list is invalid")
+                                    if (holder.firstChildSize != 0u || holder.secondChildSize != 0u) fail("The list is invalid")
+                                    val actualNode = holder.element
+                                    if (actualNode !== firstNode || actualNode !== lastNode) fail("The list is invalid")
+                                }
+                                is KoneTwoThreeTreeList.ThreeNodeHolder<Any> -> {
+                                    if (holder.firstChild != null || holder.secondChild != null || holder.thirdChild != null) fail("The list is invalid")
+                                    if (holder.firstChildSize != 0u || holder.secondChildSize != 0u || holder.thirdChildSize != 0u) fail("The list is invalid")
+                                    val firstActualNode = holder.firstElement
+                                    val secondActualNode = holder.secondElement
+                                    if (firstNode !== firstActualNode || lastNode !== secondActualNode) fail("The list is invalid")
+                                    if (firstActualNode.nextNode !== secondActualNode || secondActualNode.previousNode !== firstActualNode) fail("The list is invalid")
+                                    if (firstActualNode.holder !== holder || secondActualNode.holder !== holder) fail("The list is invalid")
+                                }
+                            }
+                        } else {
+                            if (holder.isItBottom) fail("The list is invalid")
+                            when (holder) {
+                                is KoneTwoThreeTreeList.TwoNodeHolder<Any> -> {
+                                    if (holder.firstChild == null || holder.secondChild == null) fail("The list is invalid")
+                                    if (holder.firstChild!!.parent !== holder || holder.secondChild!!.parent !== holder) fail("The list is invalid")
+                                    if (holder.firstChildSize != holder.firstChild.size || holder.secondChildSize != holder.secondChild.size) fail("The list is invalid")
+                                    val node = holder.element
+                                    if (node.holder !== holder) fail("The list is invalid")
+                                    val previousNode = node.previousNode ?: fail("The list is invalid")
+                                    val nextNode = node.nextNode ?: fail("The list is invalid")
+                                    if (previousNode.nextNode !== node || nextNode.previousNode !== node) fail("The list is invalid")
+                                    validateSubtree(
+                                        holder.firstChild!!,
+                                        depth - 1u,
+                                        firstNode,
+                                        previousNode,
+                                    )
+                                    validateSubtree(
+                                        holder.secondChild!!,
+                                        depth - 1u,
+                                        nextNode,
+                                        lastNode
+                                    )
+                                }
+                                is KoneTwoThreeTreeList.ThreeNodeHolder<Any> -> {
+                                    if (holder.firstChild == null || holder.secondChild == null || holder.thirdChild == null) fail("The list is invalid")
+                                    if (holder.firstChild!!.parent !== holder || holder.secondChild!!.parent !== holder) fail("The list is invalid")
+                                    if (holder.firstChildSize != holder.firstChild.size || holder.secondChildSize != holder.secondChild.size || holder.thirdChildSize != holder.thirdChild.size) fail("The list is invalid")
+                                    val node1 = holder.firstElement
+                                    val node2 = holder.secondElement
+                                    if (node1.holder !== holder || node2.holder !== holder) fail("The list is invalid")
+                                    val previousNode1 = node1.previousNode ?: fail("The list is invalid")
+                                    val nextNode1 = node1.nextNode ?: fail("The list is invalid")
+                                    if (previousNode1.nextNode !== node1 || nextNode1.previousNode !== node1) fail("The list is invalid")
+                                    val previousNode2 = node2.previousNode ?: fail("The list is invalid")
+                                    val nextNode2 = node2.nextNode ?: fail("The list is invalid")
+                                    if (previousNode2.nextNode !== node2 || nextNode2.previousNode !== node2) fail("The list is invalid")
+                                    validateSubtree(
+                                        holder.firstChild!!,
+                                        depth - 1u,
+                                        firstNode,
+                                        previousNode1,
+                                    )
+                                    validateSubtree(
+                                        holder.secondChild!!,
+                                        depth - 1u,
+                                        nextNode1,
+                                        previousNode2,
+                                    )
+                                    validateSubtree(
+                                        holder.thirdChild!!,
+                                        depth - 1u,
+                                        nextNode2,
+                                        lastNode
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    
+                    validateSubtree(rootHolder, depth, firstNode, lastNode)
+                }
+            }
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>
+            ) {
+                validate(list)
+                list as KoneTwoThreeTreeList<Any>
+                
+                if (iterator !is KoneTwoThreeTreeList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+                
+                val nextNode = iterator.nextNode
+                val nextIndex = iterator._nextIndex
+                
+                if (nextIndex != null && (nextNode?.index ?: list.size) != nextIndex) fail("The iterator is invalid")
+            }
+        },
+    )
 )
 
 fun <Element> testEqualityByIteration(list1: KoneList<Element>, list2: List<Element>) {
@@ -1231,7 +1295,6 @@ class ListImplementationsTests: FunSpec({
         
         if (producer is KoneFixedCapacityMutableListProducer) test("test iterator mutability operations") {
             checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
-                this
                 val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 testKoneMutableListIteratorOn(
                     arbData = arbData,

@@ -192,7 +192,6 @@ stal {
                 }
             }
             pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-//                apply(versions.plugins.kotest.multiplatform)
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
@@ -299,7 +298,6 @@ stal {
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
-                                optIn("io.kotest.common.ExperimentalKotest")
                             }
                         }
                     }
@@ -328,6 +326,11 @@ stal {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
+                        all {
+                            languageSettings {
+                                optIn("io.kotest.common.ExperimentalKotest")
+                            }
+                        }
                         val test by getting {
                             dependencies {
                                 with(versions.kotest) {
@@ -335,6 +338,7 @@ stal {
                                     implementation(assertions.core)
                                     implementation(property)
                                     implementation(runner.junit5)
+                                    implementation(projects.libs.util.kotest)
                                 }
                             }
                         }
@@ -346,6 +350,11 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
+                        all {
+                            languageSettings {
+                                optIn("io.kotest.common.ExperimentalKotest")
+                            }
+                        }
                         commonTest {
                             dependencies {
                                 with(versions.kotest) {
@@ -353,6 +362,7 @@ stal {
                                     implementation(framework.datatest)
                                     implementation(assertions.core)
                                     implementation(property)
+                                    implementation(projects.libs.util.kotest)
                                 }
                             }
                         }

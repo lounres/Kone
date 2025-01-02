@@ -20,7 +20,7 @@ import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context.invoke
 
 
-public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*internal*/ constructor(
+public class KoneTwoThreeSearchTree<Element, out ElementContext: Order<Element>> /*internal*/ constructor(
     public val elementContext: ElementContext,
 ) : LinkedSearchTree<Element> {
     override var size: UInt = 0u
@@ -30,6 +30,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     private var minimum: Node<Element>? = null
     
     private fun NodeHolder<Element>?.replaceChild(oldChild: NodeHolder<Element>, newChild: NodeHolder<Element>) {
+        newChild.parent = this
         when (this) {
             null -> rootHolder = newChild
             is TwoNodeHolder ->
@@ -89,8 +90,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                         )
                     else -> error("Received not a child of the parent")
                 }
-                
-                newNodeHolder.parent = parent
                 
                 parent.replaceChild(this, newNodeHolder)
             }
@@ -167,7 +166,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
     }
     
-    private tailrec fun NodeHolder<Element>?.replaceChildWithReference(oldChild: NodeHolder<Element>, referredChild: NodeHolder<Element>?) {
+    private tailrec fun NodeHolder<Element>?.replaceChildWithOneNodeHolder(oldChild: NodeHolder<Element>, referredChild: NodeHolder<Element>?) {
         when (this) {
             null -> {
                 check(rootHolder === oldChild) { "For some reason non-root holder tries to replace root one" }
@@ -190,7 +189,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                                 )
                                 this.dispose()
                                 secondChild.dispose()
-                                parent.replaceChildWithReference(this, newThis)
+                                parent.replaceChildWithOneNodeHolder(this, newThis)
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
@@ -232,7 +231,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                                 )
                                 this.dispose()
                                 firstChild.dispose()
-                                parent.replaceChildWithReference(this, newThis)
+                                parent.replaceChildWithOneNodeHolder(this, newThis)
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
@@ -480,7 +479,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
             is TwoNodeHolder -> {
                 val parent = holder.parent
                 holder.dispose()
-                parent.replaceChildWithReference(holder, null)
+                parent.replaceChildWithOneNodeHolder(holder, null)
             }
             is ThreeNodeHolder -> {
                 val newHolder = twoNodeHolder(
@@ -493,7 +492,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                     },
                     secondChild = null,
                 )
-                newHolder.parent = holder.parent
                 holder.parent.replaceChild(holder, newHolder)
                 holder.dispose()
             }
@@ -606,7 +604,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             oldChild = lowerBoundHolder,
                             newChild = newLowerBoundHolder,
                         )
-                        newLowerBoundHolder.parent = parent
                         lowerBoundHolder.dispose()
                     }
                     upperBoundHolder.isItBottom && upperBoundHolder is TwoNodeHolder -> {
@@ -623,7 +620,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             oldChild = upperBoundHolder,
                             newChild = newUpperBoundHolder,
                         )
-                        newUpperBoundHolder.parent = parent
                         upperBoundHolder.dispose()
                     }
                     lowerBoundHolder.isItBottom && upperBoundHolder.isItBottom -> {
@@ -697,7 +693,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                 minimum.previousNode = newNode
                 this.minimum = newNode
                 val minimumHolder = minimum.holder
-                check(minimum.holder.isItBottom) { "For some reason, minimum is not at the bottom" }
+                check(minimumHolder.isItBottom) { "For some reason, minimum is not at the bottom" }
                 when (minimumHolder) {
                     is TwoNodeHolder -> {
                         val parent = minimumHolder.parent
@@ -713,7 +709,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             oldChild = minimumHolder,
                             newChild = newMinimumHolder
                         )
-                        newMinimumHolder.parent = parent
                     }
                     is ThreeNodeHolder ->
                         minimumHolder.parent.replaceChild(
@@ -758,7 +753,6 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
                             oldChild = maximumHolder,
                             newChild = newMaximumHolder
                         )
-                        newMaximumHolder.parent = parent
                     }
                     is ThreeNodeHolder ->
                         maximumHolder.parent.replaceChild(
@@ -827,10 +821,10 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     internal sealed interface NodeHolder<E> : Disposable {
         var parent: NodeHolder<E>?
         val isItBottom: Boolean
-        val tree: KoneTwoThreeTree<E, *>
+        val tree: KoneTwoThreeSearchTree<E, *>
     }
     internal class TwoNodeHolder<Element>(
-        tree: KoneTwoThreeTree<Element, *>,
+        tree: KoneTwoThreeSearchTree<Element, *>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         element: Node<Element>,
@@ -839,8 +833,8 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         override var isDisposed: Boolean = false
             private set
         
-        private var _tree: KoneTwoThreeTree<Element, *>? = tree
-        override val tree: KoneTwoThreeTree<Element, *> get() = _tree!!
+        private var _tree: KoneTwoThreeSearchTree<Element, *>? = tree
+        override val tree: KoneTwoThreeSearchTree<Element, *> get() = _tree!!
         override var parent: NodeHolder<Element>? = null
         private var _element: Node<Element>? = element
         var element: Node<Element>
@@ -858,7 +852,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         }
     }
     internal class ThreeNodeHolder<Element>(
-        tree: KoneTwoThreeTree<Element, *>,
+        tree: KoneTwoThreeSearchTree<Element, *>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         firstElement: Node<Element>,
@@ -869,8 +863,8 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
         override var isDisposed: Boolean = false
             private set
         
-        private var _tree: KoneTwoThreeTree<Element, *>? = tree
-        override val tree: KoneTwoThreeTree<Element, *> get() = _tree!!
+        private var _tree: KoneTwoThreeSearchTree<Element, *>? = tree
+        override val tree: KoneTwoThreeSearchTree<Element, *> get() = _tree!!
         override var parent: NodeHolder<Element>? = null
         private var _firstElement: Node<Element>? = firstElement
         var firstElement: Node<Element>
@@ -1007,7 +1001,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Nodes : KoneLinkedReifiedSet<Node<Element>> {
-        override val size: UInt get() = this@KoneTwoThreeTree.size
+        override val size: UInt get() = this@KoneTwoThreeSearchTree.size
         
         override fun contains(element: Node<Element>): Boolean = find(element.element) === element
         
@@ -1050,7 +1044,7 @@ public class KoneTwoThreeTree<Element, out ElementContext: Order<Element>> /*int
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Elements : KoneLinkedSet<Element> {
-        override val size: UInt get() = this@KoneTwoThreeTree.size
+        override val size: UInt get() = this@KoneTwoThreeSearchTree.size
         
         override fun contains(element: Element): Boolean = find(element) != null
         
