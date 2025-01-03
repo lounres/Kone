@@ -6,29 +6,36 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.KoneArray
 import dev.lounres.kone.collections.KoneMutableListNode
 import dev.lounres.kone.collections.KoneMutableNoddedList
 import dev.lounres.kone.collections.KoneMutableNoddedListIterator
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.indexOutOfBoundsException
+import dev.lounres.kone.collections.isEmpty
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMutableNoddedList<Element>, Disposable {
+public class KoneTwoThreeTreeList<Element> internal constructor(
+    rootHolder: NodeHolder<Element>?,
+    firstNode: Node<Element>?,
+    lastNode: Node<Element>?,
+    size: UInt,
+) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
-    override var size: UInt = 0u
+    override var size: UInt = size
         private set
     
-    internal var rootHolder: NodeHolder<Element>? = null
+    internal var rootHolder: NodeHolder<Element>? = rootHolder
         private set
-    internal var firstNode: Node<Element>? = null
+    internal var firstNode: Node<Element>? = firstNode
         private set
-    internal var lastNode: Node<Element>? = null
+    internal var lastNode: Node<Element>? = lastNode
         private set
     
     override fun dispose() {
@@ -51,6 +58,146 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 null -> 0U
                 is TwoNodeHolder<*> -> firstChildSize + 1u + secondChildSize
                 is ThreeNodeHolder<*> -> firstChildSize + 1u + secondChildSize + 1u + thirdChildSize
+            }
+        
+        internal data class FollowingSubtree<Element>(
+            val element: Node<Element>,
+            val subtree: NodeHolder<Element>,
+        )
+        
+        internal tailrec fun <Element> createTree(
+            firstSubtree: NodeHolder<Element>,
+            rest: KoneArray<FollowingSubtree<Element>>,
+            holdersRegistry: KoneArrayFixedCapacityList<NodeHolder<Element>>,
+        ): NodeHolder<Element> {
+            if (rest.isEmpty()) return firstSubtree
+            
+            val newFirstSubTree: NodeHolder<Element> =
+                if (rest.size % 2u == 1u) {
+                    val continuation = rest[0u]
+                    TwoNodeHolder<Element>(
+                        isItBottom = false,
+                        firstChild = firstSubtree,
+                        element = continuation.element,
+                        secondChild = continuation.subtree,
+                    ).also {
+                        firstSubtree.parent = it
+                        continuation.element.holder = it
+                        continuation.subtree.parent = it
+                    }
+                } else {
+                    val continuation1 = rest[0u]
+                    val continuation2 = rest[1u]
+                    ThreeNodeHolder<Element>(
+                        isItBottom = false,
+                        firstChild = firstSubtree,
+                        firstElement = continuation1.element,
+                        secondChild = continuation1.subtree,
+                        secondElement = continuation2.element,
+                        thirdChild = continuation2.subtree,
+                    ).also {
+                        firstSubtree.parent = it
+                        continuation1.element.holder = it
+                        continuation1.subtree.parent = it
+                        continuation2.element.holder = it
+                        continuation2.subtree.parent = it
+                    }
+                }
+            holdersRegistry.add(newFirstSubTree)
+            val start = if (rest.size % 2u == 1u) 1u else 2u
+            val newRest = KoneArray((rest.size - start) / 2u) {
+                val continuation1 = rest[start + it * 2u]
+                val continuation2 = rest[start + it * 2u + 1u]
+                FollowingSubtree(
+                    continuation1.element,
+                    TwoNodeHolder(
+                        isItBottom = false,
+                        firstChild = continuation1.subtree,
+                        element = continuation2.element,
+                        secondChild = continuation2.subtree,
+                    ).also {
+                        holdersRegistry.add(it)
+                        continuation1.subtree.parent = it
+                        continuation2.element.holder = it
+                        continuation2.subtree.parent = it
+                    }
+                )
+            }
+            return createTree(newFirstSubTree, newRest, holdersRegistry)
+        }
+        
+        internal fun <Element> createTree(
+            elements: KoneArray<Node<Element>>,
+            holdersRegistry: KoneArrayFixedCapacityList<NodeHolder<Element>>,
+        ): NodeHolder<Element>? =
+            when {
+                elements.isEmpty() -> null
+                elements.size % 2u == 1u -> {
+                    val startNode = elements[0u]
+                    createTree(
+                        firstSubtree = TwoNodeHolder<Element>(
+                            isItBottom = true,
+                            firstChild = null,
+                            element = startNode,
+                            secondChild = null,
+                        ).also {
+                            holdersRegistry.add(it)
+                            startNode.holder = it
+                        },
+                        rest = KoneArray(elements.size / 2u) {
+                            val intermediateNode = elements[it * 2u + 1u]
+                            val wrappedNode = elements[it * 2u + 2u]
+                            FollowingSubtree(
+                                intermediateNode,
+                                TwoNodeHolder(
+                                    isItBottom = true,
+                                    firstChild = null,
+                                    element = wrappedNode,
+                                    secondChild = null,
+                                ).also {
+                                    holdersRegistry.add(it)
+                                    wrappedNode.holder = it
+                                }
+                            )
+                        },
+                        holdersRegistry = holdersRegistry,
+                    )
+                }
+                else -> {
+                    val startNode1 = elements[0u]
+                    val startNode2 = elements[1u]
+                    createTree(
+                        firstSubtree = ThreeNodeHolder<Element>(
+                            isItBottom = true,
+                            firstChild = null,
+                            firstElement = startNode1,
+                            secondChild = null,
+                            secondElement = startNode2,
+                            thirdChild = null,
+                        ).also {
+                            holdersRegistry.add(it)
+                            startNode1.holder = it
+                            startNode2.holder = it
+                        },
+                        rest = KoneArray(elements.size / 2u - 1u) {
+                            val intermediateNode = elements[it * 2u + 2u]
+                            val wrappedNode = elements[it * 2u + 3u]
+                            FollowingSubtree(
+                                intermediateNode,
+                                TwoNodeHolder(
+                                    isItBottom = true,
+                                    firstChild = null,
+                                    element = wrappedNode,
+                                    secondChild = null,
+                                ).also {
+                                    holdersRegistry.add(it)
+                                    wrappedNode.holder = it
+                                }
+                            )
+                        },
+                        holdersRegistry = holdersRegistry,
+                    )
+                }
             }
     }
     
@@ -123,7 +270,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         when (this) {
             null -> {
                 check(rootHolder === oldChild) { "Received not a child of the parent" }
-                val newHolder = TwoNodeHolder(
+                val newHolder = twoNodeHolder(
                     isItBottom = false,
                     firstChild = firstNewChild,
                     element = node,
@@ -142,7 +289,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 
                 val newNodeHolder = when (oldChild) {
                     firstChild ->
-                        ThreeNodeHolder(
+                        threeNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstNewChild,
                             firstElement = node,
@@ -151,7 +298,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             thirdChild = secondChild,
                         )
                     secondChild ->
-                        ThreeNodeHolder(
+                        threeNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstChild,
                             firstElement = element,
@@ -180,14 +327,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 
                 when (oldChild) {
                     firstChild -> {
-                        firstNewParent = TwoNodeHolder(
+                        firstNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstNewChild,
                             element = node,
                             secondChild = secondNewChild,
                         )
                         parentNode = firstElement
-                        secondNewParent = TwoNodeHolder(
+                        secondNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = secondChild,
                             element = secondElement,
@@ -195,14 +342,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         )
                     }
                     secondChild -> {
-                        firstNewParent = TwoNodeHolder(
+                        firstNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstChild,
                             element = firstElement,
                             secondChild = firstNewChild,
                         )
                         parentNode = node
-                        secondNewParent = TwoNodeHolder(
+                        secondNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = secondNewChild,
                             element = secondElement,
@@ -210,14 +357,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         )
                     }
                     thirdChild -> {
-                        firstNewParent = TwoNodeHolder(
+                        firstNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstChild,
                             element = firstElement,
                             secondChild = secondChild,
                         )
                         parentNode = secondElement
-                        secondNewParent = TwoNodeHolder(
+                        secondNewParent = twoNodeHolder(
                             isItBottom = isThisBottom,
                             firstChild = firstNewChild,
                             element = node,
@@ -251,7 +398,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         when (val secondChild = this.secondChild!!) {
                             is TwoNodeHolder -> {
                                 val parent = this.parent
-                                val newThis = ThreeNodeHolder(
+                                val newThis = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = referredChild,
                                     firstElement = this.element,
@@ -266,19 +413,19 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = TwoNodeHolder(
+                                val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = referredChild,
                                     element = this.element,
                                     secondChild = secondChild.firstChild,
                                 )
-                                val newSecondChild = TwoNodeHolder(
+                                val newSecondChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = secondChild.secondChild,
                                     element = secondChild.secondElement,
                                     secondChild = secondChild.thirdChild,
                                 )
-                                val newThis = TwoNodeHolder(
+                                val newThis = twoNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     element = secondChild.firstElement,
@@ -294,7 +441,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         when (val firstChild = this.firstChild!!) {
                             is TwoNodeHolder -> {
                                 val parent = this.parent
-                                val newThis = ThreeNodeHolder(
+                                val newThis = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.firstChild,
                                     firstElement = firstChild.element,
@@ -309,19 +456,19 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = TwoNodeHolder(
+                                val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.firstChild,
                                     element = firstChild.firstElement,
                                     secondChild = firstChild.secondChild,
                                 )
-                                val newSecondChild = TwoNodeHolder(
+                                val newSecondChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.thirdChild,
                                     element = this.element,
                                     secondChild = referredChild,
                                 )
-                                val newThis = TwoNodeHolder(
+                                val newThis = twoNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     element = firstChild.secondElement,
@@ -341,7 +488,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         when (val secondChild = this.secondChild!!) {
                             is TwoNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = ThreeNodeHolder(
+                                val newFirstChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = referredChild,
                                     firstElement = this.firstElement,
@@ -349,7 +496,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                                     secondElement = secondChild.element,
                                     thirdChild = secondChild.secondChild,
                                 )
-                                val newThis = TwoNodeHolder(
+                                val newThis = twoNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     element = this.secondElement,
@@ -361,19 +508,19 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = TwoNodeHolder(
+                                val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = referredChild,
                                     element = this.firstElement,
                                     secondChild = secondChild.firstChild,
                                 )
-                                val newSecondChild = TwoNodeHolder(
+                                val newSecondChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = secondChild.secondChild,
                                     element = secondChild.secondElement,
                                     secondChild = secondChild.thirdChild,
                                 )
-                                val newThis = ThreeNodeHolder(
+                                val newThis = threeNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     firstElement = secondChild.firstElement,
@@ -391,7 +538,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         when (val firstChild = this.firstChild!!) {
                             is TwoNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = ThreeNodeHolder(
+                                val newFirstChild = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.firstChild,
                                     firstElement = firstChild.element,
@@ -399,7 +546,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                                     secondElement = this.firstElement,
                                     thirdChild = referredChild,
                                 )
-                                val newThis = TwoNodeHolder(
+                                val newThis = twoNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     element = this.secondElement,
@@ -412,19 +559,19 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
-                                val newFirstChild = TwoNodeHolder(
+                                val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.firstChild,
                                     element = firstChild.firstElement,
                                     secondChild = firstChild.secondChild,
                                 )
-                                val newSecondChild = TwoNodeHolder(
+                                val newSecondChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
                                     firstChild = firstChild.thirdChild,
                                     element = this.firstElement,
                                     secondChild = referredChild,
                                 )
-                                val newThis = ThreeNodeHolder(
+                                val newThis = threeNodeHolder(
                                     isItBottom = false,
                                     firstChild = newFirstChild,
                                     firstElement = firstChild.secondElement,
@@ -442,7 +589,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                         when (val secondChild = this.secondChild!!) {
                             is TwoNodeHolder -> {
                                 val parent = this.parent
-                                val newSecondChild = ThreeNodeHolder(
+                                val newSecondChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = secondChild.firstChild,
                                     firstElement = secondChild.element,
@@ -450,7 +597,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                                     secondElement = this.secondElement,
                                     thirdChild = referredChild,
                                 )
-                                val newThis = TwoNodeHolder(
+                                val newThis = twoNodeHolder(
                                     isItBottom = false,
                                     firstChild = this.firstChild,
                                     element = this.firstElement,
@@ -463,19 +610,19 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                             }
                             is ThreeNodeHolder -> {
                                 val parent = this.parent
-                                val newSecondChild = TwoNodeHolder(
+                                val newSecondChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = secondChild.firstChild,
                                     element = secondChild.firstElement,
                                     secondChild = secondChild.secondChild,
                                 )
-                                val newThirdChild = TwoNodeHolder(
+                                val newThirdChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
                                     firstChild = secondChild.thirdChild,
                                     element = this.secondElement,
                                     secondChild = referredChild,
                                 )
-                                val newThis = ThreeNodeHolder(
+                                val newThis = threeNodeHolder(
                                     isItBottom = false,
                                     firstChild = this.firstChild,
                                     firstElement = this.firstElement,
@@ -502,7 +649,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 parent.replaceChildWithOneNodeHolder(holder, null)
             }
             is ThreeNodeHolder -> {
-                val newHolder = TwoNodeHolder(
+                val newHolder = twoNodeHolder(
                     isItBottom = true,
                     firstChild = null,
                     element = when (node) {
@@ -627,7 +774,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         if (isDisposed) disposedInstanceException()
         if (size == 0u) {
             val newNode = Node(element)
-            val newHolder = TwoNodeHolder(
+            val newHolder = twoNodeHolder(
                 isItBottom = true,
                 firstChild = null,
                 element = newNode,
@@ -650,7 +797,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         when (oldLastNodeHolder) {
             is TwoNodeHolder -> {
                 val parent = oldLastNodeHolder.parent
-                val newLastNodeHolder = ThreeNodeHolder(
+                val newLastNodeHolder = threeNodeHolder(
                     isItBottom = true,
                     firstChild = null,
                     firstElement = oldLastNode,
@@ -666,14 +813,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             is ThreeNodeHolder ->
                 oldLastNodeHolder.parent.replaceChild(
                     oldChild = oldLastNodeHolder,
-                    firstNewChild = TwoNodeHolder(
+                    firstNewChild = twoNodeHolder(
                         isItBottom = true,
                         firstChild = null,
                         element = oldLastNodeHolder.firstElement,
                         secondChild = null,
                     ),
                     node = oldLastNodeHolder.secondElement,
-                    secondNewChild = TwoNodeHolder(
+                    secondNewChild = twoNodeHolder(
                         isItBottom = true,
                         firstChild = null,
                         element = newNode,
@@ -697,7 +844,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             when (nodeHolder) {
                 is TwoNodeHolder -> {
                     val parent = nodeHolder.parent
-                    val newFirstNodeHolder = ThreeNodeHolder(
+                    val newFirstNodeHolder = threeNodeHolder(
                         isItBottom = true,
                         firstChild = null,
                         firstElement = newNode,
@@ -713,14 +860,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 is ThreeNodeHolder ->
                     nodeHolder.parent.replaceChild(
                         oldChild = nodeHolder,
-                        firstNewChild = TwoNodeHolder(
+                        firstNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = newNode,
                             secondChild = null,
                         ),
                         node = nodeHolder.firstElement,
-                        secondNewChild = TwoNodeHolder(
+                        secondNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = nodeHolder.secondElement,
@@ -741,7 +888,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             when {
                 previousNodeHolder.isItBottom && previousNodeHolder is TwoNodeHolder -> {
                     val parent = previousNodeHolder.parent
-                    val newLowerBoundHolder = ThreeNodeHolder(
+                    val newLowerBoundHolder = threeNodeHolder(
                         isItBottom = true,
                         firstChild = null,
                         firstElement = previousNode,
@@ -757,7 +904,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                 }
                 nodeHolder.isItBottom && nodeHolder is TwoNodeHolder -> {
                     val parent = nodeHolder.parent
-                    val newUpperBoundHolder = ThreeNodeHolder(
+                    val newUpperBoundHolder = threeNodeHolder(
                         isItBottom = true,
                         firstChild = null,
                         firstElement = newNode,
@@ -775,14 +922,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                     check(previousNodeHolder === nodeHolder) { "For some reason, lower and upper bounds' holders are both bottom but are not the same" }
                     previousNodeHolder.parent.replaceChild(
                         oldChild = previousNodeHolder,
-                        firstNewChild = TwoNodeHolder(
+                        firstNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = previousNode,
                             secondChild = null,
                         ),
                         node = newNode,
-                        secondNewChild = TwoNodeHolder(
+                        secondNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = node,
@@ -795,14 +942,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                     previousNodeHolder as ThreeNodeHolder
                     previousNodeHolder.parent.replaceChild(
                         oldChild = previousNodeHolder,
-                        firstNewChild = TwoNodeHolder(
+                        firstNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = previousNodeHolder.firstElement,
                             secondChild = null,
                         ),
                         node = previousNodeHolder.secondElement,
-                        secondNewChild = TwoNodeHolder(
+                        secondNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = newNode,
@@ -815,14 +962,14 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
                     nodeHolder as ThreeNodeHolder
                     nodeHolder.parent.replaceChild(
                         oldChild = nodeHolder,
-                        firstNewChild = TwoNodeHolder(
+                        firstNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = newNode,
                             secondChild = null,
                         ),
                         node = nodeHolder.firstElement,
-                        secondNewChild = TwoNodeHolder(
+                        secondNewChild = twoNodeHolder(
                             isItBottom = true,
                             firstChild = null,
                             element = nodeHolder.secondElement,
@@ -909,10 +1056,9 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
     internal sealed interface NodeHolder<Element> : Disposable {
         var parent: NodeHolder<Element>?
         val isItBottom: Boolean
-        val tree: KoneTwoThreeTreeList<Element>
+        var tree: KoneTwoThreeTreeList<Element>
     }
     internal class TwoNodeHolder<Element>(
-        tree: KoneTwoThreeTreeList<Element>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         element: Node<Element>,
@@ -921,8 +1067,10 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         override var isDisposed: Boolean = false
             private set
         
-        private var _tree: KoneTwoThreeTreeList<Element>? = tree
-        override val tree: KoneTwoThreeTreeList<Element> get() = _tree!!
+        private var _tree: KoneTwoThreeTreeList<Element>? = null
+        override var tree: KoneTwoThreeTreeList<Element>
+            get() = _tree!!
+            set(value) { _tree = value }
         override var parent: NodeHolder<Element>? = null
         var firstChildSize: UInt = firstChild.size
         var secondChildSize: UInt = secondChild.size
@@ -942,7 +1090,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         }
     }
     
-    private fun TwoNodeHolder(
+    private fun twoNodeHolder(
         isItBottom: Boolean,
         firstChild: NodeHolder<Element>?,
         element: Node<Element>,
@@ -953,12 +1101,12 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             else firstChild != null && secondChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = TwoNodeHolder(
-            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             element = element,
             secondChild = secondChild,
         )
+        newHolder.tree = this
         firstChild?.parent = newHolder
         element.holder = newHolder
         secondChild?.parent = newHolder
@@ -966,7 +1114,6 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
     }
     
     internal class ThreeNodeHolder<Element>(
-        tree: KoneTwoThreeTreeList<Element>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<Element>?,
         firstElement: Node<Element>,
@@ -977,8 +1124,10 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         override var isDisposed: Boolean = false
             private set
         
-        private var _tree: KoneTwoThreeTreeList<Element>? = tree
-        override val tree: KoneTwoThreeTreeList<Element> get() = _tree!!
+        private var _tree: KoneTwoThreeTreeList<Element>? = null
+        override var tree: KoneTwoThreeTreeList<Element>
+            get() = _tree!!
+            set(value) { _tree = value }
         override var parent: NodeHolder<Element>? = null
         var firstChildSize: UInt = firstChild.size
         var secondChildSize: UInt = secondChild.size
@@ -1003,7 +1152,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
         }
     }
     
-    private fun ThreeNodeHolder(
+    private fun threeNodeHolder(
         isItBottom: Boolean,
         firstChild: NodeHolder<Element>?,
         firstElement: Node<Element>,
@@ -1016,7 +1165,6 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             else firstChild != null && secondChild != null && thirdChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = ThreeNodeHolder(
-            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             firstElement = firstElement,
@@ -1024,6 +1172,7 @@ public class KoneTwoThreeTreeList<Element> /*internal*/ constructor() : KoneMuta
             secondElement = secondElement,
             thirdChild = thirdChild,
         )
+        newHolder.tree = this
         firstChild?.parent = newHolder
         firstElement.holder = newHolder
         secondChild?.parent = newHolder
