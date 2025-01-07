@@ -4,9 +4,11 @@
  */
 
 @file:OptIn(ExperimentalSerializationApi::class)
+@file:Suppress("FunctionName")
 
 package dev.lounres.kone.collections.serializers
 
+import dev.lounres.kone.collections.KoneArray
 import dev.lounres.kone.collections.KoneExtendableIterable
 import dev.lounres.kone.collections.KoneExtendableLinearIterable
 import dev.lounres.kone.collections.KoneGrowableMutableList
@@ -14,6 +16,7 @@ import dev.lounres.kone.collections.KoneGrowableMutableNoddedList
 import dev.lounres.kone.collections.KoneIterable
 import dev.lounres.kone.collections.KoneLinearIterable
 import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableIterable
 import dev.lounres.kone.collections.KoneMutableLinearIterable
 import dev.lounres.kone.collections.KoneMutableList
@@ -42,18 +45,20 @@ import dev.lounres.kone.collections.utils.withIndex
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.builtins.ArraySerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeCollection
+import kotlin.reflect.KClass
 
 
 // region Serializers templates
 
 internal abstract class KoneIterableSerializationStrategyTemplate<E, in C: KoneIterable<E>>: SerializationStrategy<C> {
-    public abstract val elementSerializer: SerializationStrategy<E>
+    abstract val elementSerializer: SerializationStrategy<E>
 
     final override fun serialize(encoder: Encoder, value: C) {
         encoder.encodeCollection(descriptor, value.size.toInt()) {
@@ -65,7 +70,7 @@ internal abstract class KoneIterableSerializationStrategyTemplate<E, in C: KoneI
 
 internal abstract class KoneIterableSerializerTemplate<E, C: KoneIterable<E>>: KoneIterableSerializationStrategyTemplate<E, C>(), KSerializer<C> {
     abstract override val elementSerializer: KSerializer<E>
-    public abstract fun buildCollection(size: UInt, initializer: (UInt) -> E): C
+    abstract fun buildCollection(size: UInt, initializer: (UInt) -> E): C
 
     final override fun deserialize(decoder: Decoder): C =
         decoder.decodeStructure(descriptor) {
@@ -150,6 +155,60 @@ internal abstract class KoneIterableSerializerTemplate<E, C: KoneIterable<E>>: K
 // endregion
 
 // region Default serializers for common interfaces
+
+// region KoneArray
+
+internal class DefaultKoneArraySerializer<ElementKlass : Any, Element : ElementKlass?>(
+    kClass: KClass<ElementKlass>,
+    val elementSerializer: KSerializer<Element>,
+) : KSerializer<KoneArray<Element>> {
+    val arraySerializer = ArraySerializer<ElementKlass, Element>(kClass, elementSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.collections.KoneArray", arraySerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: KoneArray<Element>) {
+        encoder.encodeSerializableValue(arraySerializer, value.array as Array<Element>)
+    }
+    
+    override fun deserialize(decoder: Decoder): KoneArray<Element> =
+        KoneArray(decoder.decodeSerializableValue(arraySerializer))
+}
+
+public inline fun <reified T : Any, reified E : T?> KoneArraySerializer(elementSerializer: KSerializer<E>): KSerializer<KoneArray<E>> =
+    KoneArraySerializer<T, E>(T::class, elementSerializer)
+
+public fun <T : Any, E : T?> KoneArraySerializer(
+    kClass: KClass<T>,
+    elementSerializer: KSerializer<E>
+): KSerializer<KoneArray<E>> = DefaultKoneArraySerializer<T, E>(kClass, elementSerializer)
+
+internal class DefaultKoneMutableArraySerializer<ElementKlass : Any, Element : ElementKlass?>(
+    kClass: KClass<ElementKlass>,
+    val elementSerializer: KSerializer<Element>,
+) : KSerializer<KoneMutableArray<Element>> {
+    val arraySerializer = ArraySerializer<ElementKlass, Element>(kClass, elementSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.collections.KoneArray", arraySerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: KoneMutableArray<Element>) {
+        encoder.encodeSerializableValue(arraySerializer, value.array)
+    }
+    
+    override fun deserialize(decoder: Decoder): KoneMutableArray<Element> =
+        KoneMutableArray(decoder.decodeSerializableValue(arraySerializer))
+}
+
+public inline fun <reified T : Any, reified E : T?> KoneMutableArraySerializer(elementSerializer: KSerializer<E>): KSerializer<KoneMutableArray<E>> =
+    KoneMutableArraySerializer<T, E>(T::class, elementSerializer)
+
+public fun <T : Any, E : T?> KoneMutableArraySerializer(
+    kClass: KClass<T>,
+    elementSerializer: KSerializer<E>
+): KSerializer<KoneMutableArray<E>> = DefaultKoneMutableArraySerializer<T, E>(kClass, elementSerializer)
+
+// endregion
+
+// region KoneIterable
 
 internal class DefaultKoneIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
@@ -286,6 +345,10 @@ internal class DefaultKoneMutableLinearIterableSerializer<E>(
     override fun deserialize(decoder: Decoder): KoneMutableLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 
+// endregion
+
+// region KoneList
+
 internal class DefaultKoneListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneList<E>>(), KSerializer<KoneList<E>> {
@@ -357,5 +420,7 @@ internal class DefaultKoneGrowableMutableNoddedListSerializer<E>(
     override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
     override fun deserialize(decoder: Decoder): KoneGrowableMutableNoddedList<E> = actualSerializer.deserialize(decoder)
 }
+
+// endregion
 
 // endregion

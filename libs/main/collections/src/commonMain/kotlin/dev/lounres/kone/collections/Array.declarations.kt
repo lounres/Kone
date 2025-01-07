@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 
@@ -14,7 +15,7 @@ import kotlin.jvm.JvmInline
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @JvmInline
-public value class KoneArray<Element>(internal val array: Array<out Element>): KoneList<Element> {
+public value class KoneArray<out Element>(internal val array: Array<out Element>): KoneList<Element> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -106,6 +107,7 @@ public value class KoneMutableArray<Element>(internal val array: Array<Element>)
  * An immutable wrapper for standard [ByteArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneByteArray(internal val array: ByteArray): KoneList<Byte> {
     // FIXME: KT-30915
@@ -153,6 +155,7 @@ public value class KoneByteArray(internal val array: ByteArray): KoneList<Byte> 
  * A wrapper for standard [ByteArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableByteArray(internal val array: ByteArray): KoneSettableList<Byte> {
     // FIXME: KT-30915
@@ -198,6 +201,7 @@ public value class KoneMutableByteArray(internal val array: ByteArray): KoneSett
  * An immutable wrapper for standard [ShortArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneShortArray(internal val array: ShortArray): KoneList<Short> {
     // FIXME: KT-30915
@@ -245,6 +249,7 @@ public value class KoneShortArray(internal val array: ShortArray): KoneList<Shor
  * A wrapper for standard [ShortArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableShortArray(internal val array: ShortArray): KoneSettableList<Short> {
     // FIXME: KT-30915
@@ -290,6 +295,7 @@ public value class KoneMutableShortArray(internal val array: ShortArray): KoneSe
  * An immutable wrapper for standard [IntArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneIntArray(internal val array: IntArray): KoneList<Int> {
     // FIXME: KT-30915
@@ -337,6 +343,7 @@ public value class KoneIntArray(internal val array: IntArray): KoneList<Int> {
  * A wrapper for standard [IntArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableIntArray(internal val array: IntArray): KoneSettableList<Int> {
     // FIXME: KT-30915
@@ -382,6 +389,7 @@ public value class KoneMutableIntArray(internal val array: IntArray): KoneSettab
  * An immutable wrapper for standard [LongArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneLongArray(internal val array: LongArray): KoneList<Long> {
     // FIXME: KT-30915
@@ -429,6 +437,7 @@ public value class KoneLongArray(internal val array: LongArray): KoneList<Long> 
  * A wrapper for standard [LongArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableLongArray(internal val array: LongArray): KoneSettableList<Long> {
     // FIXME: KT-30915
@@ -474,6 +483,7 @@ public value class KoneMutableLongArray(internal val array: LongArray): KoneSett
  * An immutable wrapper for standard [FloatArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneFloatArray(internal val array: FloatArray): KoneList<Float> {
     // FIXME: KT-30915
@@ -521,6 +531,7 @@ public value class KoneFloatArray(internal val array: FloatArray): KoneList<Floa
  * A wrapper for standard [FloatArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSettableList<Float> {
     // FIXME: KT-30915
@@ -566,6 +577,7 @@ public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSe
  * An immutable wrapper for standard [DoubleArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneDoubleArray(internal val array: DoubleArray): KoneList<Double> {
     // FIXME: KT-30915
@@ -613,6 +625,7 @@ public value class KoneDoubleArray(internal val array: DoubleArray): KoneList<Do
  * A wrapper for standard [DoubleArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableDoubleArray(internal val array: DoubleArray): KoneSettableList<Double> {
     // FIXME: KT-30915
@@ -658,6 +671,7 @@ public value class KoneMutableDoubleArray(internal val array: DoubleArray): Kone
  * An immutable wrapper for standard [UByteArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneUByteArray(internal val array: UByteArray): KoneList<UByte> {
     // FIXME: KT-30915
@@ -705,6 +719,7 @@ public value class KoneUByteArray(internal val array: UByteArray): KoneList<UByt
  * A wrapper for standard [UByteArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSettableList<UByte> {
     // FIXME: KT-30915
@@ -750,6 +765,7 @@ public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSe
  * An immutable wrapper for standard [UShortArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneUShortArray(internal val array: UShortArray): KoneList<UShort> {
     // FIXME: KT-30915
@@ -797,6 +813,7 @@ public value class KoneUShortArray(internal val array: UShortArray): KoneList<US
  * A wrapper for standard [UShortArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableUShortArray(internal val array: UShortArray): KoneSettableList<UShort> {
     // FIXME: KT-30915
@@ -842,6 +859,7 @@ public value class KoneMutableUShortArray(internal val array: UShortArray): Kone
  * An immutable wrapper for standard [UIntArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneUIntArray(internal val array: UIntArray): KoneList<UInt> {
     // FIXME: KT-30915
@@ -889,6 +907,7 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneList<UInt> 
  * A wrapper for standard [UIntArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSettableList<UInt> {
     // FIXME: KT-30915
@@ -942,6 +961,7 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
  * An immutable wrapper for standard [ULongArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneULongArray(internal val array: ULongArray): KoneList<ULong> {
     // FIXME: KT-30915
@@ -989,6 +1009,7 @@ public value class KoneULongArray(internal val array: ULongArray): KoneList<ULon
  * A wrapper for standard [ULongArray] with unsigned indexation that also implements [KoneSettableList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
 @JvmInline
 public value class KoneMutableULongArray(internal val array: ULongArray): KoneSettableList<ULong> {
     // FIXME: KT-30915
