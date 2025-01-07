@@ -7,7 +7,7 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.ReifiedEquality
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -82,8 +82,8 @@ public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMut
 ): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produceBy(size, builder))
 
 internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet<data>",
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet",
         elementDescriptor = elementDescriptor,
     )
 

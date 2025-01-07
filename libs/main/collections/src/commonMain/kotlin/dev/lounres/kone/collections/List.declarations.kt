@@ -5,7 +5,16 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.serializers.DefaultKoneGrowableMutableListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneGrowableMutableNoddedListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneMutableListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneMutableNoddedListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneNoddedListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneSettableListSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneSettableNoddedListSerializer
 import dev.lounres.kone.repeat
+import kotlinx.serialization.Serializable
 
 
 // TODO: Add contracts on `toString()`, `equals` and `hashCode`.
@@ -19,6 +28,7 @@ import dev.lounres.kone.repeat
  * @usesMathJax
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneListSerializer::class)
 public interface KoneList<out Element> : KoneLinearIterable<Element> {
     /**
      * Returns element that is placed at the provided [index].
@@ -62,6 +72,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
  * @usesMathJax
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneSettableListSerializer::class)
 public interface KoneSettableList<Element> : KoneList<Element>, KoneSettableLinearIterable<Element> {
     /**
      * Sets another value at the place with the provided [index] with respect to inner order of elements.
@@ -90,6 +101,7 @@ public interface KoneSettableList<Element> : KoneList<Element>, KoneSettableLine
  * @usesMathJax
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneMutableListSerializer::class)
 public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutableLinearIterable<Element> {
     /**
      * Adds provided [element] at the end of the ordered collection.
@@ -228,6 +240,7 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
  * Represents a [KoneMutableList] which inner structure has a capacity that can be increased.
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneGrowableMutableListSerializer::class)
 public interface KoneGrowableMutableList<Element> : KoneMutableList<Element> {
     /**
      * Increases inner structure's capacity so that it can hold [minimalCapacity] number of elements
@@ -247,6 +260,7 @@ public interface KoneGrowableMutableList<Element> : KoneMutableList<Element> {
  * @see KoneListNode
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneNoddedListSerializer::class)
 public interface KoneNoddedList<out Element> : KoneList<Element> {
     /**
      * Returns node that corresponds to the place with the provided [index].
@@ -267,6 +281,7 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
  * @see KoneNoddedList
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneSettableNoddedListSerializer::class)
 public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, KoneSettableList<Element> {
     override fun getNode(index: UInt): KoneSettableListNode<Element>
     
@@ -283,6 +298,7 @@ public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, Kone
  * @see KoneNoddedList
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneMutableNoddedListSerializer::class)
 public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element>, KoneMutableList<Element> {
     override fun getNode(index: UInt): KoneMutableListNode<Element>
     
@@ -327,4 +343,5 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
  * @see KoneNoddedList
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+@Serializable(with = DefaultKoneGrowableMutableNoddedListSerializer::class)
 public interface KoneGrowableMutableNoddedList<Element> : KoneMutableNoddedList<Element>, KoneGrowableMutableList<Element>

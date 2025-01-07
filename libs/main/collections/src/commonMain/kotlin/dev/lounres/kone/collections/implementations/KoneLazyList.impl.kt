@@ -11,6 +11,7 @@ import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.option.orElse
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -57,7 +58,7 @@ import dev.lounres.kone.option.orElse
  *
  * @usesMathJax
  */
-//@Serializable(with = KoneLazyListWithContextSerializer::class)
+@Serializable(with = KoneLazyListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneLazyList<Element>(
     override val size: UInt,

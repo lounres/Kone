@@ -21,6 +21,7 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -78,7 +79,7 @@ import dev.lounres.kone.scope
  *
  * @usesMathJax
  */
-//@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayFixedCapacityNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,

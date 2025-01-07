@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.buildKoneMap
 import dev.lounres.kone.collections.iterator
 import dev.lounres.kone.collections.next
 import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Option
+import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some
 import kotlin.contracts.InvocationKind.AT_MOST_ONCE
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE

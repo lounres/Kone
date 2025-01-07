@@ -13,7 +13,7 @@ import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
 
 
-internal open class KoneCollectionDescriptor internal constructor(
+internal open class KoneIterableDescriptor internal constructor(
     final override val serialName: String,
     val elementDescriptor: SerialDescriptor,
 ) : SerialDescriptor {
@@ -42,7 +42,7 @@ internal open class KoneCollectionDescriptor internal constructor(
     final override fun equals(other: Any?): Boolean =
         when {
             other === this -> true
-            other !is KoneCollectionDescriptor -> false
+            other !is KoneIterableDescriptor -> false
             serialName == other.serialName
                     && elementDescriptor == other.elementDescriptor -> true
             else -> false

@@ -9,10 +9,11 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 import kotlin.math.max
 
 
-//@Serializable(with = KoneArrayResizableLinkedNoddedListWithContextSerializer::class)
+@Serializable(with = KoneArrayResizableLinkedNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,

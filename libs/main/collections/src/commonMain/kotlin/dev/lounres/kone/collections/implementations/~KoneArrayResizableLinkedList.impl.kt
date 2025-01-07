@@ -10,11 +10,12 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
-//@Serializable(with = KoneResizableLinkedArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayResizableLinkedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constructor(
     size: UInt,

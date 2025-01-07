@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 
 
 // TODO: Create `NodeIterator` that does not compute virtual index and does not take O(size) time for initialization
@@ -94,7 +95,7 @@ import dev.lounres.kone.scope
  *
  * @usesMathJax
  */
-//@Serializable(with = KoneFixedCapacityLinkedArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayFixedCapacityLinkedNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructor(
     size: UInt,

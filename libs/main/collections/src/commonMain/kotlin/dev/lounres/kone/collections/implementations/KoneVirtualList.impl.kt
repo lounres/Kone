@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -41,7 +41,7 @@ import dev.lounres.kone.collections.*
  *
  * @usesMathJax
  */
-//@Serializable(with = KoneVirtualListWithContextSerializer::class)
+@Serializable(with = KoneVirtualListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneVirtualList<Element>(
     override val size: UInt,

@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -61,7 +62,7 @@ import dev.lounres.kone.scope
  * @usesMathJax
  */
 @Suppress("UNCHECKED_CAST")
-//@Serializable(with = KoneFixedCapacityArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayFixedCapacityListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayFixedCapacityList<Element> @PublishedApi internal constructor(
     size: UInt,

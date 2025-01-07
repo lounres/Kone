@@ -5,34 +5,23 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 internal class KoneLazyListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneLazyList<data>",
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneLazyList",
         elementDescriptor = elementDescriptor,
     )
 
-//internal class KoneLazyListSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneLazyList<E, EC>>(), DeserializationStrategy<KoneLazyList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneLazyListDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneLazyList<E, EC> =
-//        KoneLazyList(size, elementContext, initializer)
-//}
-//
-//internal class KoneLazyListWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneLazyList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneLazyList",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneLazyList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneLazyList<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneLazyList<E, EC> =
-//        KoneLazyList(elementList.size, elementContext) { elementList[it] }
-//}
+internal class KoneLazyListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneLazyList<E>>(), DeserializationStrategy<KoneLazyList<E>> {
+    override val descriptor: SerialDescriptor = KoneLazyListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneLazyList<E> =
+        KoneLazyList(size, initializer)
+}

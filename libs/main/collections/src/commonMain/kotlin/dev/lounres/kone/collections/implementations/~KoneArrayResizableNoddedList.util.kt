@@ -9,8 +9,11 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
 
@@ -36,29 +39,15 @@ public object KoneArrayResizableNoddedListProducer : KoneResizableMutableNoddedL
 }
 
 internal class KoneArrayResizableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableNoddedList<data>",
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableNoddedList",
         elementDescriptor = elementDescriptor,
     )
 
-//internal class KoneArrayResizableNoddedListSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneArrayResizableNoddedList<E, EC>>(), DeserializationStrategy<KoneArrayResizableNoddedList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneArrayResizableNoddedListDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableNoddedList<E, EC> =
-//        KoneArrayResizableNoddedList(size, elementContext, initializer)
-//}
-//
-//internal class KoneArrayResizableNoddedListWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneArrayResizableNoddedList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneArrayResizableNoddedList",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneArrayResizableNoddedList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneArrayResizableNoddedList<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneArrayResizableNoddedList<E, EC> =
-//        KoneArrayResizableNoddedList(elementList.size, elementContext) { elementList[it] }
-//}
+internal class KoneArrayResizableNoddedListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneArrayResizableNoddedList<E>>(), DeserializationStrategy<KoneArrayResizableNoddedList<E>> {
+    override val descriptor: SerialDescriptor = KoneArrayResizableNoddedListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableNoddedList<E> =
+        KoneArrayResizableNoddedList(size, initializer)
+}

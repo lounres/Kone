@@ -8,7 +8,10 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.KoneMutableArray
 import dev.lounres.kone.collections.KoneMutableList
 import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
@@ -42,7 +45,7 @@ public inline fun <Element> KoneArrayFixedCapacityList(size: UInt, initializer: 
  * in their order starting with `0`.
  */
 public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityList<Element> {
-    require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
+    require(size <= capacity) { "Cannot initialize KoneArrayFixedCapacityList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityList(
         size = size,
         data = KoneMutableArray(capacity) { if (it < size) initializer(it) else null },
@@ -59,29 +62,15 @@ public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListP
 }
 
 internal class KoneArrayFixedCapacityListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList<data>",
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList",
         elementDescriptor = elementDescriptor,
     )
 
-//internal class KoneFixedCapacityArrayListSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneFixedCapacityArrayList<E, EC>>(), DeserializationStrategy<KoneFixedCapacityArrayList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneFixedCapacityArrayListDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneFixedCapacityArrayList<E, EC> =
-//        KoneFixedCapacityArrayList(size, elementContext, initializer)
-//}
-//
-//internal class KoneFixedCapacityArrayListWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneFixedCapacityArrayList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneFixedCapacityArrayList",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneFixedCapacityArrayList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneFixedCapacityArrayList<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneFixedCapacityArrayList<E, EC> =
-//        KoneFixedCapacityArrayList(elementList.size, elementContext) { elementList[it] }
-//}
+internal class KoneArrayFixedCapacityListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneArrayFixedCapacityList<E>>(), DeserializationStrategy<KoneArrayFixedCapacityList<E>> {
+    override val descriptor: SerialDescriptor = KoneArrayFixedCapacityListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayFixedCapacityList<E> =
+        KoneArrayFixedCapacityList(size, initializer)
+}

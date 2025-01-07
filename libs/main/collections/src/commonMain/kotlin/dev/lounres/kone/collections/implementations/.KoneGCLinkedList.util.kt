@@ -7,7 +7,12 @@ package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.KoneMutableNoddedList
 import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.repeat
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public fun <Element> KoneGCLinkedList(): KoneGCLinkedList<Element> = KoneGCLinkedList(size = 0u, startNode = null, endNode = null)
@@ -31,30 +36,16 @@ public object KoneGCLinkedListProducer : KoneResizableMutableNoddedListProducer 
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedList(number, builder)
 }
 
-//internal class KoneLinkedGCListDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneCollectionDescriptor(
-//        serialName = "dev.lounres.kone.collections.implementations.KoneLinkedGCList<data>",
-//        elementDescriptor = elementDescriptor,
-//    )
-//
-//internal class KoneLinkedGCListSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneLinkedGCList<E, EC>>(), DeserializationStrategy<KoneLinkedGCList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneLinkedGCListDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneLinkedGCList<E, EC> =
-//        KoneLinkedGCList(size, elementContext, initializer)
-//}
-//
-//internal class KoneLinkedGCListWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneLinkedGCList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneLinkedGCList",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneLinkedGCList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneLinkedGCList<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneLinkedGCList<E, EC> =
-//        KoneLinkedGCList(elementList.size, elementContext) { elementList[it] }
-//}
+internal class KoneGCLinkedListDescriptor(elementDescriptor: SerialDescriptor):
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneGCLinkedList",
+        elementDescriptor = elementDescriptor,
+    )
+
+internal class KoneGCLinkedListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneGCLinkedList<E>>(), DeserializationStrategy<KoneGCLinkedList<E>> {
+    override val descriptor: SerialDescriptor = KoneGCLinkedListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneGCLinkedList<E> =
+        KoneGCLinkedList(size, initializer)
+}

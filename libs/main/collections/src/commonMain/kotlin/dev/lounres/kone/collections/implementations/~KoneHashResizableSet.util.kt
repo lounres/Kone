@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedHashing
 import dev.lounres.kone.comparison.defaultHashing
@@ -26,7 +26,7 @@ public inline fun <reified Element> KoneHashResizableReifiedSet(): KoneHashResiz
     KoneHashResizableReifiedSet(size = 0u, elementContext = defaultReifiedHashing())
 
 internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
+    KoneIterableDescriptor(
         serialName = "dev.lounres.kone.collections.implementations.KoneHashResizableSet<data>",
         elementDescriptor = elementDescriptor,
     )

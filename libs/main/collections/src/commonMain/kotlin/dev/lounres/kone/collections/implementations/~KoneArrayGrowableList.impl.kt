@@ -8,10 +8,11 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 
 
 @Suppress("UNCHECKED_CAST")
-//@Serializable(with = KoneGrowableArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayGrowableListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,

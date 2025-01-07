@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
+    KoneIterableDescriptor(
         serialName = "dev.lounres.kone.collections.implementations.KoneListBackedSet<data>",
         elementDescriptor = elementDescriptor,
     )

@@ -5,10 +5,28 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.serializers.DefaultKoneExtendableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneExtendableLinearIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneLinearIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneMutableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneMutableLinearIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneRemovableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneRemovableLinearIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneReversibleExtendableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneReversibleIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneReversibleMutableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneReversibleRemovableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneReversibleSettableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneSettableIterableSerializer
+import dev.lounres.kone.collections.serializers.DefaultKoneSettableLinearMutableIterableSerializer
+import kotlinx.serialization.Serializable
+
 
 /**
  * Represents a finite collection of elements with described size and iteration over it.
  */
+@Serializable(with = DefaultKoneIterableSerializer::class)
 public interface KoneIterable<out Element> {
     /**
      * Number of elements in the collection.
@@ -25,6 +43,7 @@ public interface KoneIterable<out Element> {
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleIterator].
  */
+@Serializable(with = DefaultKoneReversibleIterableSerializer::class)
 public interface KoneReversibleIterable<out Element>: KoneIterable<Element> {
     public override operator fun iterator(): KoneReversibleIterator<Element>
 }
@@ -32,6 +51,7 @@ public interface KoneReversibleIterable<out Element>: KoneIterable<Element> {
 /**
  * Represents [KoneIterable] that can be iterated by [KoneSettableIterator].
  */
+@Serializable(with = DefaultKoneSettableIterableSerializer::class)
 public interface KoneSettableIterable<Element> : KoneIterable<Element> {
     public override operator fun iterator(): KoneSettableIterator<Element>
 }
@@ -39,6 +59,7 @@ public interface KoneSettableIterable<Element> : KoneIterable<Element> {
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleSettableIterator].
  */
+@Serializable(with = DefaultKoneReversibleSettableIterableSerializer::class)
 public interface KoneReversibleSettableIterable<Element> : KoneReversibleIterable<Element>, KoneSettableIterable<Element> {
     public override operator fun iterator(): KoneReversibleSettableIterator<Element>
 }
@@ -46,6 +67,7 @@ public interface KoneReversibleSettableIterable<Element> : KoneReversibleIterabl
 /**
  * Represents [KoneIterable] that can be iterated by [KoneExtendableIterator].
  */
+@Serializable(with = DefaultKoneExtendableIterableSerializer::class)
 public interface KoneExtendableIterable<Element> : KoneIterable<Element> {
     public override operator fun iterator(): KoneExtendableIterator<Element>
 }
@@ -53,6 +75,7 @@ public interface KoneExtendableIterable<Element> : KoneIterable<Element> {
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleExtendableIterator].
  */
+@Serializable(with = DefaultKoneReversibleExtendableIterableSerializer::class)
 public interface KoneReversibleExtendableIterable<Element> : KoneReversibleIterable<Element>, KoneExtendableIterable<Element> {
     public override operator fun iterator(): KoneReversibleExtendableIterator<Element>
 }
@@ -60,6 +83,7 @@ public interface KoneReversibleExtendableIterable<Element> : KoneReversibleItera
 /**
  * Represents [KoneIterable] that can be iterated by [KoneRemovableIterator].
  */
+@Serializable(with = DefaultKoneRemovableIterableSerializer::class)
 public interface KoneRemovableIterable<out Element> : KoneIterable<Element> {
     public override operator fun iterator(): KoneRemovableIterator<Element>
 }
@@ -67,6 +91,7 @@ public interface KoneRemovableIterable<out Element> : KoneIterable<Element> {
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleRemovableIterator].
  */
+@Serializable(with = DefaultKoneReversibleRemovableIterableSerializer::class)
 public interface KoneReversibleRemovableIterable<out Element> : KoneReversibleIterable<Element>, KoneRemovableIterable<Element> {
     public override operator fun iterator(): KoneReversibleRemovableIterator<Element>
 }
@@ -74,6 +99,7 @@ public interface KoneReversibleRemovableIterable<out Element> : KoneReversibleIt
 /**
  * Represents [KoneIterable] that can be iterated by [KoneMutableIterator].
  */
+@Serializable(with = DefaultKoneMutableIterableSerializer::class)
 public interface KoneMutableIterable<Element> : KoneSettableIterable<Element>, KoneExtendableIterable<Element>, KoneRemovableIterable<Element> {
     public override operator fun iterator(): KoneMutableIterator<Element>
 }
@@ -81,6 +107,7 @@ public interface KoneMutableIterable<Element> : KoneSettableIterable<Element>, K
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleMutableIterator].
  */
+@Serializable(with = DefaultKoneReversibleMutableIterableSerializer::class)
 public interface KoneReversibleMutableIterable<Element> : KoneMutableIterable<Element>, KoneReversibleSettableIterable<Element>, KoneReversibleExtendableIterable<Element>, KoneReversibleRemovableIterable<Element> {
     public override operator fun iterator(): KoneReversibleMutableIterator<Element>
 }
@@ -88,6 +115,7 @@ public interface KoneReversibleMutableIterable<Element> : KoneMutableIterable<El
 /**
  * Represents [KoneIterable] that can be iterated by [KoneLinearIterator].
  */
+@Serializable(with = DefaultKoneLinearIterableSerializer::class)
 public interface KoneLinearIterable<out Element> : KoneReversibleIterable<Element> {
     public override operator fun iterator(): KoneLinearIterator<Element>
 }
@@ -95,6 +123,7 @@ public interface KoneLinearIterable<out Element> : KoneReversibleIterable<Elemen
 /**
  * Represents [KoneIterable] that can be iterated by [KoneSettableLinearIterator].
  */
+@Serializable(with = DefaultKoneSettableLinearMutableIterableSerializer::class)
 public interface KoneSettableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleSettableIterable<Element> {
     public override operator fun iterator(): KoneSettableLinearIterator<Element>
 }
@@ -102,6 +131,7 @@ public interface KoneSettableLinearIterable<Element> : KoneLinearIterable<Elemen
 /**
  * Represents [KoneIterable] that can be iterated by [KoneExtendableLinearIterator].
  */
+@Serializable(with = DefaultKoneExtendableLinearIterableSerializer::class)
 public interface KoneExtendableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleExtendableIterable<Element> {
     public override operator fun iterator(): KoneExtendableLinearIterator<Element>
 }
@@ -109,6 +139,7 @@ public interface KoneExtendableLinearIterable<Element> : KoneLinearIterable<Elem
 /**
  * Represents [KoneIterable] that can be iterated by [KoneRemovableLinearIterator].
  */
+@Serializable(with = DefaultKoneRemovableLinearIterableSerializer::class)
 public interface KoneRemovableLinearIterable<out Element> : KoneLinearIterable<Element>, KoneReversibleRemovableIterable<Element> {
     public override operator fun iterator(): KoneRemovableLinearIterator<Element>
 }
@@ -116,6 +147,7 @@ public interface KoneRemovableLinearIterable<out Element> : KoneLinearIterable<E
 /**
  * Represents [KoneIterable] that can be iterated by [KoneMutableLinearIterator].
  */
+@Serializable(with = DefaultKoneMutableLinearIterableSerializer::class)
 public interface KoneMutableLinearIterable<Element> : KoneSettableLinearIterable<Element>, KoneExtendableLinearIterable<Element>, KoneRemovableLinearIterable<Element>, KoneReversibleMutableIterable<Element> {
     public override operator fun iterator(): KoneMutableLinearIterator<Element>
 }

@@ -19,9 +19,10 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.repeat
+import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
+@Serializable(with = KoneArraySettableNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArraySettableNoddedList<Element> @PublishedApi internal constructor(
     internal val data: KoneMutableArray<Node<Element>?>,

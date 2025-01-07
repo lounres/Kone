@@ -8,9 +8,10 @@ package dev.lounres.kone.collections.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = KoneGrowableLinkedArrayListWithContextSerializer::class)
+@Serializable(with = KoneArrayGrowableLinkedNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     size: UInt,

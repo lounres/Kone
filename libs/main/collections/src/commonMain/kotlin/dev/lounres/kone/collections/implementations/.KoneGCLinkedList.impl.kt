@@ -18,9 +18,10 @@ import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.repeat
+import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = KoneLinkedGCListWithContextSerializer::class)
+@Serializable(with = KoneGCLinkedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     size: UInt = 0u,

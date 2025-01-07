@@ -16,8 +16,10 @@ import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.isEmpty
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
+import kotlinx.serialization.Serializable
 
 
+@Serializable(with = KoneTwoThreeTreeListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneTwoThreeTreeList<Element> internal constructor(
     internal var rootHolder: NodeHolder<Element>? = null,

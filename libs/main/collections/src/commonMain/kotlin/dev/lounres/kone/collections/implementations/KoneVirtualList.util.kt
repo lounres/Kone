@@ -5,34 +5,23 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.serializers.KoneCollectionDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 internal class KoneVirtualListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneCollectionDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneVirtualList<data>",
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneVirtualList",
         elementDescriptor = elementDescriptor,
     )
 
-//internal class KoneVirtualListSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneVirtualList<E, EC>>(), DeserializationStrategy<KoneVirtualList<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneVirtualListDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneVirtualList<E, EC> =
-//        KoneVirtualList(size, elementContext, initializer)
-//}
-//
-//internal class KoneVirtualListWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneVirtualList<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneVirtualList",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneVirtualList<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneVirtualList<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneVirtualList<E, EC> =
-//        KoneVirtualList(elementList.size, elementContext) { elementList[it] }
-//}
+internal class KoneVirtualListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneVirtualList<E>>(), DeserializationStrategy<KoneVirtualList<E>> {
+    override val descriptor: SerialDescriptor = KoneVirtualListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneVirtualList<E> =
+        KoneVirtualList(size, initializer)
+}

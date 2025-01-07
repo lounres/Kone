@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.*
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 
@@ -41,9 +42,9 @@ import kotlin.jvm.JvmInline
  *
  * @usesMathJax
  */
-// TODO: Make the class `Disposable`.
+// TODO: Think about making the class `Disposable`.
 @Suppress("UNCHECKED_CAST")
-//@Serializable(with = KoneSettableArrayListWithContextSerializer::class)
+@Serializable(with = KoneArraySettableListSerializer::class)
 @JvmInline
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public value class KoneArraySettableList<Element> @PublishedApi internal constructor(

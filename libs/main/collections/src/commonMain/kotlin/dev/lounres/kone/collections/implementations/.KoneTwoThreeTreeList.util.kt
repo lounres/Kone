@@ -9,8 +9,13 @@ import dev.lounres.kone.collections.KoneArray
 import dev.lounres.kone.collections.indices
 import dev.lounres.kone.collections.lastIndex
 import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.last
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public fun <Element> KoneTwoThreeTreeList(): KoneTwoThreeTreeList<Element> =
@@ -40,4 +45,18 @@ public object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProdu
     override fun <Element> produce(): KoneTwoThreeTreeList<Element> = KoneTwoThreeTreeList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneTwoThreeTreeList<Element> =
         KoneTwoThreeTreeList(size = number, initializer = builder)
+}
+
+internal class KoneTwoThreeTreeListDescriptor(elementDescriptor: SerialDescriptor):
+    KoneIterableDescriptor(
+        serialName = "dev.lounres.kone.collections.implementations.KoneTwoThreeTreeList",
+        elementDescriptor = elementDescriptor,
+    )
+
+internal class KoneTwoThreeTreeListSerializer<E>(
+    override val elementSerializer: KSerializer<E>,
+): KoneIterableSerializerTemplate<E, KoneTwoThreeTreeList<E>>(), DeserializationStrategy<KoneTwoThreeTreeList<E>> {
+    override val descriptor: SerialDescriptor = KoneTwoThreeTreeListDescriptor(elementSerializer.descriptor)
+    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneTwoThreeTreeList<E> =
+        KoneTwoThreeTreeList(size, initializer)
 }
