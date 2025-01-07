@@ -20,22 +20,15 @@ import dev.lounres.kone.collections.noPreviousElementInIteratorException
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneTwoThreeTreeList<Element> internal constructor(
-    rootHolder: NodeHolder<Element>?,
-    firstNode: Node<Element>?,
-    lastNode: Node<Element>?,
-    size: UInt,
+    internal var rootHolder: NodeHolder<Element>? = null,
+    internal var firstNode: Node<Element>? = null,
+    internal var lastNode: Node<Element>? = null,
+    size: UInt = 0u,
 ) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
     override var size: UInt = size
-        private set
-    
-    internal var rootHolder: NodeHolder<Element>? = rootHolder
-        private set
-    internal var firstNode: Node<Element>? = firstNode
-        private set
-    internal var lastNode: Node<Element>? = lastNode
         private set
     
     override fun dispose() {
@@ -59,147 +52,143 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
                 is TwoNodeHolder<*> -> firstChildSize + 1u + secondChildSize
                 is ThreeNodeHolder<*> -> firstChildSize + 1u + secondChildSize + 1u + thirdChildSize
             }
+    }
+    
+    internal data class FollowingSubtree<Element>(
+        val element: Node<Element>,
+        val subtree: NodeHolder<Element>,
+    )
+    
+    internal tailrec fun createTree(
+        firstSubtree: NodeHolder<Element>,
+        rest: KoneArray<FollowingSubtree<Element>>,
+    ): NodeHolder<Element> {
+        if (rest.isEmpty()) return firstSubtree
         
-        internal data class FollowingSubtree<Element>(
-            val element: Node<Element>,
-            val subtree: NodeHolder<Element>,
-        )
-        
-        internal tailrec fun <Element> createTree(
-            firstSubtree: NodeHolder<Element>,
-            rest: KoneArray<FollowingSubtree<Element>>,
-            holdersRegistry: KoneArrayFixedCapacityList<NodeHolder<Element>>,
-        ): NodeHolder<Element> {
-            if (rest.isEmpty()) return firstSubtree
-            
-            val newFirstSubTree: NodeHolder<Element> =
-                if (rest.size % 2u == 1u) {
-                    val continuation = rest[0u]
-                    TwoNodeHolder<Element>(
-                        isItBottom = false,
-                        firstChild = firstSubtree,
-                        element = continuation.element,
-                        secondChild = continuation.subtree,
-                    ).also {
-                        firstSubtree.parent = it
-                        continuation.element.holder = it
-                        continuation.subtree.parent = it
-                    }
-                } else {
-                    val continuation1 = rest[0u]
-                    val continuation2 = rest[1u]
-                    ThreeNodeHolder<Element>(
-                        isItBottom = false,
-                        firstChild = firstSubtree,
-                        firstElement = continuation1.element,
-                        secondChild = continuation1.subtree,
-                        secondElement = continuation2.element,
-                        thirdChild = continuation2.subtree,
-                    ).also {
-                        firstSubtree.parent = it
-                        continuation1.element.holder = it
-                        continuation1.subtree.parent = it
-                        continuation2.element.holder = it
-                        continuation2.subtree.parent = it
-                    }
+        val newFirstSubTree: NodeHolder<Element> =
+            if (rest.size % 2u == 1u) {
+                val continuation = rest[0u]
+                TwoNodeHolder<Element>(
+                    isItBottom = false,
+                    firstChild = firstSubtree,
+                    element = continuation.element,
+                    secondChild = continuation.subtree,
+                ).also {
+                    firstSubtree.parent = it
+                    continuation.element.holder = it
+                    continuation.subtree.parent = it
                 }
-            holdersRegistry.add(newFirstSubTree)
-            val start = if (rest.size % 2u == 1u) 1u else 2u
-            val newRest = KoneArray((rest.size - start) / 2u) {
-                val continuation1 = rest[start + it * 2u]
-                val continuation2 = rest[start + it * 2u + 1u]
-                FollowingSubtree(
-                    continuation1.element,
-                    TwoNodeHolder(
-                        isItBottom = false,
-                        firstChild = continuation1.subtree,
-                        element = continuation2.element,
-                        secondChild = continuation2.subtree,
+            } else {
+                val continuation1 = rest[0u]
+                val continuation2 = rest[1u]
+                ThreeNodeHolder<Element>(
+                    isItBottom = false,
+                    firstChild = firstSubtree,
+                    firstElement = continuation1.element,
+                    secondChild = continuation1.subtree,
+                    secondElement = continuation2.element,
+                    thirdChild = continuation2.subtree,
+                ).also {
+                    firstSubtree.parent = it
+                    continuation1.element.holder = it
+                    continuation1.subtree.parent = it
+                    continuation2.element.holder = it
+                    continuation2.subtree.parent = it
+                }
+            }
+        newFirstSubTree.tree = this
+        val start = if (rest.size % 2u == 1u) 1u else 2u
+        val newRest = KoneArray((rest.size - start) / 2u) {
+            val continuation1 = rest[start + it * 2u]
+            val continuation2 = rest[start + it * 2u + 1u]
+            FollowingSubtree(
+                continuation1.element,
+                TwoNodeHolder(
+                    isItBottom = false,
+                    firstChild = continuation1.subtree,
+                    element = continuation2.element,
+                    secondChild = continuation2.subtree,
+                ).also {
+                    it.tree = this
+                    continuation1.subtree.parent = it
+                    continuation2.element.holder = it
+                    continuation2.subtree.parent = it
+                }
+            )
+        }
+        return createTree(newFirstSubTree, newRest)
+    }
+    
+    internal fun createTree(
+        elements: KoneArray<Node<Element>>,
+    ): NodeHolder<Element>? =
+        when {
+            elements.isEmpty() -> null
+            elements.size % 2u == 1u -> {
+                val startNode = elements[0u]
+                createTree(
+                    firstSubtree = TwoNodeHolder<Element>(
+                        isItBottom = true,
+                        firstChild = null,
+                        element = startNode,
+                        secondChild = null,
                     ).also {
-                        holdersRegistry.add(it)
-                        continuation1.subtree.parent = it
-                        continuation2.element.holder = it
-                        continuation2.subtree.parent = it
-                    }
+                        it.tree = this
+                        startNode.holder = it
+                    },
+                    rest = KoneArray(elements.size / 2u) {
+                        val intermediateNode = elements[it * 2u + 1u]
+                        val wrappedNode = elements[it * 2u + 2u]
+                        FollowingSubtree(
+                            intermediateNode,
+                            TwoNodeHolder(
+                                isItBottom = true,
+                                firstChild = null,
+                                element = wrappedNode,
+                                secondChild = null,
+                            ).also {
+                                it.tree = this
+                                wrappedNode.holder = it
+                            }
+                        )
+                    },
                 )
             }
-            return createTree(newFirstSubTree, newRest, holdersRegistry)
-        }
-        
-        internal fun <Element> createTree(
-            elements: KoneArray<Node<Element>>,
-            holdersRegistry: KoneArrayFixedCapacityList<NodeHolder<Element>>,
-        ): NodeHolder<Element>? =
-            when {
-                elements.isEmpty() -> null
-                elements.size % 2u == 1u -> {
-                    val startNode = elements[0u]
-                    createTree(
-                        firstSubtree = TwoNodeHolder<Element>(
-                            isItBottom = true,
-                            firstChild = null,
-                            element = startNode,
-                            secondChild = null,
-                        ).also {
-                            holdersRegistry.add(it)
-                            startNode.holder = it
-                        },
-                        rest = KoneArray(elements.size / 2u) {
-                            val intermediateNode = elements[it * 2u + 1u]
-                            val wrappedNode = elements[it * 2u + 2u]
-                            FollowingSubtree(
-                                intermediateNode,
-                                TwoNodeHolder(
-                                    isItBottom = true,
-                                    firstChild = null,
-                                    element = wrappedNode,
-                                    secondChild = null,
-                                ).also {
-                                    holdersRegistry.add(it)
-                                    wrappedNode.holder = it
-                                }
-                            )
-                        },
-                        holdersRegistry = holdersRegistry,
-                    )
-                }
-                else -> {
-                    val startNode1 = elements[0u]
-                    val startNode2 = elements[1u]
-                    createTree(
-                        firstSubtree = ThreeNodeHolder<Element>(
-                            isItBottom = true,
-                            firstChild = null,
-                            firstElement = startNode1,
-                            secondChild = null,
-                            secondElement = startNode2,
-                            thirdChild = null,
-                        ).also {
-                            holdersRegistry.add(it)
-                            startNode1.holder = it
-                            startNode2.holder = it
-                        },
-                        rest = KoneArray(elements.size / 2u - 1u) {
-                            val intermediateNode = elements[it * 2u + 2u]
-                            val wrappedNode = elements[it * 2u + 3u]
-                            FollowingSubtree(
-                                intermediateNode,
-                                TwoNodeHolder(
-                                    isItBottom = true,
-                                    firstChild = null,
-                                    element = wrappedNode,
-                                    secondChild = null,
-                                ).also {
-                                    holdersRegistry.add(it)
-                                    wrappedNode.holder = it
-                                }
-                            )
-                        },
-                        holdersRegistry = holdersRegistry,
-                    )
-                }
+            else -> {
+                val startNode1 = elements[0u]
+                val startNode2 = elements[1u]
+                createTree(
+                    firstSubtree = ThreeNodeHolder<Element>(
+                        isItBottom = true,
+                        firstChild = null,
+                        firstElement = startNode1,
+                        secondChild = null,
+                        secondElement = startNode2,
+                        thirdChild = null,
+                    ).also {
+                        it.tree = this
+                        startNode1.holder = it
+                        startNode2.holder = it
+                    },
+                    rest = KoneArray(elements.size / 2u - 1u) {
+                        val intermediateNode = elements[it * 2u + 2u]
+                        val wrappedNode = elements[it * 2u + 3u]
+                        FollowingSubtree(
+                            intermediateNode,
+                            TwoNodeHolder(
+                                isItBottom = true,
+                                firstChild = null,
+                                element = wrappedNode,
+                                secondChild = null,
+                            ).also {
+                                it.tree = this
+                                wrappedNode.holder = it
+                            }
+                        )
+                    },
+                )
             }
-    }
+        }
     
     private tailrec fun NodeHolder<Element>?.updateSizeOfChildUpToTheRoot(child: NodeHolder<Element>) {
         when (this) {

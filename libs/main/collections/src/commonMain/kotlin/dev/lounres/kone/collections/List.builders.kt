@@ -47,49 +47,15 @@ public fun <Element> koneMutableListOf(): KoneMutableList<Element> =
 public fun <Element> koneMutableListOf(vararg elements: Element): KoneMutableList<Element> =
     KoneArrayResizableList(elements.size.toUInt()) { elements[it.toInt()] }
 
-public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
-    if (this is Collection<Element>) return this.toKoneMutableList()
-    
-    val result = KoneArrayResizableList<Element>()
-    for (element in this) result.add(element)
-    return result
-}
-
-public fun <Element> Collection<Element>.toKoneMutableList(): KoneMutableList<Element> {
-    val iterator = iterator()
-    return KoneArrayResizableList(size.toUInt(), ) { iterator.next() }
-}
-
 public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
     return KoneArrayResizableList(size) { iterator.getAndMoveNext() }
-}
-
-public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
-    if (this is Collection<Element>) return this.toKoneSettableList()
-    
-    val result = KoneArrayResizableList<Element>()
-    for (element in this) result.add(element)
-    return KoneSettableList(result.size) { result[it] }
-}
-
-public fun <Element> Collection<Element>.toKoneSettableList(): KoneSettableList<Element> {
-    val iterator = iterator()
-    return KoneSettableList(size.toUInt(), ) { iterator.next() }
 }
 
 public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
     return KoneSettableList(size) { iterator.getAndMoveNext() }
 }
-
-public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =
-    if(this is Collection<Element>) this.toKoneList()
-    else this.toKoneMutableList()
-
-public fun <Element> Collection<Element>.toKoneList(): KoneList<Element> =
-    if (size == 0) emptyKoneList()
-    else this.toKoneMutableList().toOptimizedList()
 
 public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
     if (size == 0u) emptyKoneList()

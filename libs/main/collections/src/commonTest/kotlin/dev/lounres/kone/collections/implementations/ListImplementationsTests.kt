@@ -26,7 +26,6 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
-import io.kotest.property.PropTestConfig
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
@@ -781,10 +780,55 @@ val listImplementations = listOf<ListImplementationDescription>(
         }
     ),
     // GC (resizable) implementations
-//    ListImplementationDescription( // TODO
-//        name = "KoneGCLinkedList",
-//        producer = KoneGCLinkedListProducer,
-//    ),
+    ListImplementationDescription(
+        name = "KoneGCLinkedList",
+        producer = KoneGCLinkedListProducer,
+        validator = object : KoneListValidator {
+            override fun validate(list: KoneList<Any>) {
+                if (list !is KoneGCLinkedList<Any>) fail("The list is invalid")
+                if (list.isDisposed) fail("The list is invalid")
+                
+                val size = list.size
+                val start = list.start
+                val end = list.end
+                
+                if (size == 0u) {
+                    if (start != null || end != null) fail("The list is invalid")
+                } else {
+                    if (start == null || end == null) fail("The list is invalid")
+                    
+                    if (start.previousNode != null) fail("The list is invalid")
+                    
+                    var index = 0u
+                    var currentNode = start
+                    while (currentNode != null) {
+                        if (index >= size) fail("The list is invalid")
+                        val nextNode = currentNode._nextNode
+                        if (nextNode != null && nextNode._previousNode != currentNode) fail("The list is invalid")
+                        currentNode = nextNode
+                        index++
+                    }
+                    if (index != size) fail("The list is invalid")
+                }
+            }
+            override fun validateWithIterator(
+                list: KoneList<Any>,
+                iterator: KoneIterator<Any>
+            ) {
+                validate(list)
+                list as KoneGCLinkedList<Any>
+
+                if (iterator !is KoneGCLinkedList.Iterator<Any>) fail("The iterator is invalid")
+                if (iterator.list !== list) fail("The iterator is invalid")
+                
+                val nextNode = iterator.nextNode
+                val nextIndex = iterator._nextIndex
+                
+                if (nextNode != null && nextNode.list !== list) fail("The iterator is invalid")
+                if (nextIndex != null && nextIndex != (nextNode?.index ?: list.size)) fail("The iterator is invalid")
+            }
+        },
+    ),
     ListImplementationDescription(
         name = "KoneTwoThreeTreeList",
         producer = KoneTwoThreeTreeListProducer,
@@ -1255,8 +1299,7 @@ class ListImplementationsTests: FunSpec({
         }
         
         if (producer is KoneResizableMutableListProducer) test("test iterator mutability operations") {
-            checkAll(PropTestConfig(seed = 8328161071279041350), arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
-                this
+            checkAll(arbMutableListOperationsWithResults(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                 val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                 testKoneMutableListIteratorOn(
                     arbData = arbData,

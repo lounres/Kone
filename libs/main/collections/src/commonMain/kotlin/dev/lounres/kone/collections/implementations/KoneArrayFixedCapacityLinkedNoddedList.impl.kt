@@ -257,16 +257,12 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         data[actualIndex(index)]!!.element = element
     }
     
-    // TODO: Actually, it's not O(size) but O(capacity)
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
-        repeat(capacity) {
-            data[it]!!.detach()
-            data[it] = null
-            nextNodeIndex[it] = if (it == capacity - 1u) 0u else it + 1u
-            previousNodeIndex[it] = if (it == 0u) capacity - 1u else it - 1u
-            start = 0u
-            end = capacity - 1u
+        repeat(size) {
+            data[start]!!.detach()
+            data[start] = null
+            start = nextNodeIndex[start]
         }
     }
 
@@ -480,10 +476,9 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         internal var list: KoneArrayFixedCapacityLinkedNoddedList<Element>
             get() = _list!!
             set(value) { _list = value }
-        
-        override val index: UInt get() = list.virtualIndex(actualIndex)
 
         fun detach() {
+            if (isDetached) return
             _list = null
             isDetached = true
         }
@@ -491,6 +486,8 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         constructor(list: KoneArrayFixedCapacityLinkedNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
             this.list = list
         }
+        
+        override val index: UInt get() = list.virtualIndex(actualIndex)
 
         override fun remove() {
             if (isDetached) detachedNodeException()

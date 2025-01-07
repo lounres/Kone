@@ -5,18 +5,38 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.KoneMutableNoddedList
+import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.repeat
 
-//public fun <Element> KoneLinkedGCList(size: UInt, initializer: (index: UInt) -> Element): KoneLinkedGCList<Element> =
-//    KoneLinkedGCList<Element>().apply {
-//        for (index in 0u ..< size) add(initializer(index))
-//    }
-//
+
+public fun <Element> KoneGCLinkedList(): KoneGCLinkedList<Element> = KoneGCLinkedList(size = 0u, startNode = null, endNode = null)
+
+public inline fun <Element> KoneGCLinkedList(size: UInt, initializer: (index: UInt) -> Element): KoneGCLinkedList<Element> {
+    val result = KoneGCLinkedList<Element>(size = size)
+    var previousNode: KoneGCLinkedList.Node<Element>? = null
+    repeat(size) {
+        val newNode = result.Node(initializer(it))
+        newNode._previousNode = previousNode
+        previousNode?._nextNode = newNode
+        if (it == 0u) result.start = newNode
+        previousNode = newNode
+    }
+    result.end = previousNode
+    return result
+}
+
+public object KoneGCLinkedListProducer : KoneResizableMutableNoddedListProducer {
+    override fun <Element> produce(): KoneGCLinkedList<Element> = KoneGCLinkedList()
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedList(number, builder)
+}
+
 //internal class KoneLinkedGCListDescriptor(elementDescriptor: SerialDescriptor):
 //    KoneCollectionDescriptor(
 //        serialName = "dev.lounres.kone.collections.implementations.KoneLinkedGCList<data>",
 //        elementDescriptor = elementDescriptor,
 //    )
-
+//
 //internal class KoneLinkedGCListSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,
 //    public val elementContext: EC,
