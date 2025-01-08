@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections
 
+import dev.lounres.kone.collections.map.KoneMap
+
 
 // TODO: Check that exceptions are used correctly
 
