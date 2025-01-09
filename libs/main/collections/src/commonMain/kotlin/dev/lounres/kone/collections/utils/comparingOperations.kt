@@ -7,7 +7,14 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.koneMutableListOf
+import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.comparison.*
 
 public fun <E : Comparable<E>> KoneIterable<E>.min(): E {

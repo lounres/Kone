@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.emptyKoneList
-import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.implementations.KoneArraySettableList
-import dev.lounres.kone.collections.implementations.KoneSingletonSettableNoddedList
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
+import dev.lounres.kone.collections.list.singleton.KoneSingletonSettableNoddedList
 
 
 // TODO: Apply where it is necessary.

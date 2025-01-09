@@ -5,7 +5,18 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.iterables.KoneExtendableLinearIterator
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.KoneLinearIterator
+import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
+import dev.lounres.kone.collections.iterables.KoneRemovableLinearIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleExtendableIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleMutableIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleSettableIterator
+import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
 import kotlin.jvm.JvmInline
 
 

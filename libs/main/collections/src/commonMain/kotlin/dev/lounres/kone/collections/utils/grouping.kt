@@ -5,7 +5,14 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.containsKey
+import dev.lounres.kone.collections.map.getMaybe
+import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.option.Maybe

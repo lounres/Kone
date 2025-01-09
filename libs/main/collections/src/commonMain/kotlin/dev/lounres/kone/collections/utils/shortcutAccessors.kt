@@ -5,9 +5,10 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.isEmpty
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.list.lastIndex
 
 
 public operator fun <E> KoneList<E>.component1(): E = get(0u)
