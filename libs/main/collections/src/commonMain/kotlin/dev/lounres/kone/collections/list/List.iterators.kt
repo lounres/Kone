@@ -3,7 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.list
+
+import dev.lounres.kone.collections.iterables.KoneLinearIterator
+import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
+import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
 
 
 public typealias KoneListIterator<Element> = KoneLinearIterator<Element>

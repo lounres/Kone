@@ -1,9 +1,11 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.list
+
+import dev.lounres.kone.collections.DetachedNodeException
 
 
 /**
@@ -35,7 +37,7 @@ public interface KoneListNode<out Element> {
      *
      * Also, this property throws [DetachedNodeException] when the node is already detached.
      *
-     * @throws [DetachedNodeException] when the node is already detached.
+     * @throws DetachedNodeException when the node is already detached.
      */
     public val index: UInt
     
@@ -45,7 +47,7 @@ public interface KoneListNode<out Element> {
      *
      * Also, this property throws [DetachedNodeException] when the node is already detached.
      *
-     * @throws [DetachedNodeException] when the node is already detached.
+     * @throws DetachedNodeException when the node is already detached.
      */
     public val nextNode: KoneListNode<Element>?
     /**
@@ -54,7 +56,7 @@ public interface KoneListNode<out Element> {
      *
      * Also, this property throws [DetachedNodeException] when the node is already detached.
      *
-     * @throws [DetachedNodeException] when the node is already detached.
+     * @throws DetachedNodeException when the node is already detached.
      */
     public val previousNode: KoneListNode<Element>?
     
@@ -69,7 +71,7 @@ public interface KoneListNode<out Element> {
      *
      * Also, this property throws [DetachedNodeException] when the node is already detached.
      *
-     * @throws [DetachedNodeException] when the node is already detached.
+     * @throws DetachedNodeException when the node is already detached.
      */
     public fun iteratorFromBeforeHere(): KoneNoddedListIterator<Element>
     /**
@@ -83,7 +85,7 @@ public interface KoneListNode<out Element> {
      *
      * Also, this property throws [DetachedNodeException] when the node is already detached.
      *
-     * @throws [DetachedNodeException] when the node is already detached.
+     * @throws DetachedNodeException when the node is already detached.
      */
     public fun iteratorFromAfterHere(): KoneNoddedListIterator<Element>
 }
@@ -128,6 +130,8 @@ public interface KoneSettableListNode<Element> : KoneListNode<Element> {
 public interface KoneMutableListNode<Element> : KoneSettableListNode<Element> {
     /**
      * Removes corresponding place from the list and detaches the node.
+     *
+     * The operation must be idempotent. It means that calling this function again must not do anything at all.
      */
     public fun remove()
     

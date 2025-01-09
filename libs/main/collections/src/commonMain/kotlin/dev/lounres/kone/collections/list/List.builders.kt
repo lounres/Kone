@@ -1,15 +1,18 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.list
 
-import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.implementations.KoneEmptySettableNoddedList
-import dev.lounres.kone.collections.implementations.KoneArrayResizableList
-import dev.lounres.kone.collections.implementations.KoneArraySettableList
-import dev.lounres.kone.collections.implementations.KoneSingletonSettableList
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.list.empty.KoneEmptySettableNoddedList
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
+import dev.lounres.kone.collections.list.singleton.KoneSingletonSettableList
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.utils.toOptimizedList
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

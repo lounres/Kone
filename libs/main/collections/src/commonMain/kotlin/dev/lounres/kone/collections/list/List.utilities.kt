@@ -3,8 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.list
 
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.option.None

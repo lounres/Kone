@@ -1,18 +1,23 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.list
 
-import dev.lounres.kone.collections.serializers.DefaultKoneGrowableMutableListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneGrowableMutableNoddedListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneMutableListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneMutableNoddedListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneNoddedListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneSettableListSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneSettableNoddedListSerializer
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.iterables.KoneLinearIterable
+import dev.lounres.kone.collections.iterables.KoneLinearIterator
+import dev.lounres.kone.collections.iterables.KoneMutableLinearIterable
+import dev.lounres.kone.collections.iterables.KoneSettableLinearIterable
+import dev.lounres.kone.collections.list.serializers.DefaultKoneGrowableMutableListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneGrowableMutableNoddedListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneMutableListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneMutableNoddedListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneNoddedListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneSettableListSerializer
+import dev.lounres.kone.collections.list.serializers.DefaultKoneSettableNoddedListSerializer
 import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 

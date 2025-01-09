@@ -3,16 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.producers
+package dev.lounres.kone.collections.list.producers
 
-import dev.lounres.kone.collections.KoneGrowableMutableList
-import dev.lounres.kone.collections.KoneGrowableMutableNoddedList
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.KoneMutableNoddedList
-import dev.lounres.kone.collections.KoneNoddedList
-import dev.lounres.kone.collections.KoneSettableList
-import dev.lounres.kone.collections.KoneSettableNoddedList
+import dev.lounres.kone.collections.list.KoneGrowableMutableList
+import dev.lounres.kone.collections.list.KoneGrowableMutableNoddedList
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.list.KoneMutableNoddedList
+import dev.lounres.kone.collections.list.KoneNoddedList
+import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.KoneSettableNoddedList
 
 
 /**
