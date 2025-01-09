@@ -5,9 +5,10 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.MinimumHeap
-import dev.lounres.kone.collections.koneListOf
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.heap.MinimumHeap
+import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.utils.sorted
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions

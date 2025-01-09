@@ -5,12 +5,14 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.LinkedSearchTree
-import dev.lounres.kone.collections.SearchTree
-import dev.lounres.kone.collections.SearchTreeNode
+import dev.lounres.kone.collections.searchTree.LinkedSearchTree
+import dev.lounres.kone.collections.searchTree.SearchTree
+import dev.lounres.kone.collections.searchTree.SearchTreeNode
+import dev.lounres.kone.collections.searchTree.implementations.KoneTwoThreeSearchTree
 import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.toKoneList
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.testEqualityByIteration
+import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.defaultOrder

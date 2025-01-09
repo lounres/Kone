@@ -1,20 +1,21 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.algebraic.context
-import dev.lounres.kone.collections.KoneIterator
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.contains
-import dev.lounres.kone.collections.implementations.KoneTwoThreeTreeList.Companion.size
-import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.producers.KoneListProducer
-import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.implementations.POWERS_OF_2
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.list.implementations.KoneTwoThreeTreeList.Companion.size
+import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneListProducer
+import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
