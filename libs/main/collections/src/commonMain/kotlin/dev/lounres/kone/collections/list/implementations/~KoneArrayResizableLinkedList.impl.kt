@@ -1,13 +1,23 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneMutableLinearIterator
-import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
+import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.KoneMutableUIntArray
+import dev.lounres.kone.collections.dequeue.KoneDequeue
+import dev.lounres.kone.collections.dequeue.isEmpty
+import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.implementations.MAX_CAPACITY
+import dev.lounres.kone.collections.implementations.POWERS_OF_2
+import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
@@ -23,7 +33,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
@@ -86,7 +96,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         val oldData = data
         data = KoneMutableArray(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
-        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound-1u) 0u else it + 1u }
+        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u }
         previousNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
         start = 0u
     }

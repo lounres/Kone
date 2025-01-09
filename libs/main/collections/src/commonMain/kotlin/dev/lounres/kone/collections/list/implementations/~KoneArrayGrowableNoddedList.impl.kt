@@ -1,29 +1,41 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.implementations.MAX_CAPACITY
+import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.list.KoneGrowableMutableNoddedList
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableListNode
+import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
 
-@Suppress("UNCHECKED_CAST")
-@Serializable(with = KoneArrayGrowableListSerializer::class)
+@Serializable(with = KoneArrayGrowableNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
+public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
     internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-) : KoneGrowableMutableList<Element>, Disposable {
+    data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
+) : KoneGrowableMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
-    private var _data: KoneMutableArray<Any?>? = data
-    internal var data: KoneMutableArray<Any?>
+    init {
+        repeat(size) { data[it]!!.list = this }
+    }
+    
+    private var _data: KoneMutableArray<Node<Element>?>? = data
+    internal var data: KoneMutableArray<Node<Element>?>
         get() = if (isDisposed) disposedInstanceException() else _data!!
         set(value) { _data = value }
     
@@ -32,7 +44,10 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     }
     override fun dispose() {
         if (isDisposed) return
-        data.dispose(size)
+        repeat(size) {
+            data[it]!!.detach()
+            data[it] = null
+        }
         _data = null
         isDisposed = true
     }
@@ -43,19 +58,19 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             return field
         }
         private set
-
+    
     private fun reinitializeBounds(newSize: UInt) {
         if (newSize > MAX_CAPACITY) throw IllegalArgumentException("Kone collection implementations can not allocate array of size more than 2^31")
         while (newSize > sizeUpperBound) {
             sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
         }
     }
-    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+    private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
         val oldData = data
         data = KoneMutableArray(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
     }
-    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
+    private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
         reinitializeBounds(newSize)
         reinitializeData(generator = generator)
         size = newSize
@@ -77,49 +92,99 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     override fun get(index: UInt): Element {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        return data[index] as Element
+        return data[index]!!.element
+    }
+    override fun getNode(index: UInt): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        if (index >= size) indexOutOfBoundsException(index, size)
+        return data[index]!!
     }
 
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
-        data[index] = element
+        data[index]!!.element = element
     }
 
+    override fun removeAll() {
+        if (isDisposed) disposedInstanceException()
+        reinitializeBoundsAndData(0u) { null }
+    }
     override fun add(element: Element) {
         if (isDisposed) disposedInstanceException()
+        val newNode = Node(this, element, size)
         if (size == sizeUpperBound) {
             val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < oldSize -> get(it)
-                    it == oldSize -> element
+                    it == oldSize -> newNode
                     else -> null
                 }
             }
         } else {
-            data[size] = element
+            data[size] = newNode
             size++
         }
+    }
+    override fun addNode(element: Element): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        val newNode = Node(this, element, size)
+        if (size == sizeUpperBound) {
+            val oldSize = size
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < oldSize -> get(it)
+                    it == oldSize -> newNode
+                    else -> null
+                }
+            }
+        } else {
+            data[size] = newNode
+            size++
+        }
+        return newNode
     }
     override fun addAt(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
+        val newNode = Node(this, element, index)
         if (size == sizeUpperBound) {
             val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
-                    it == index -> element
-                    it <= oldSize -> get(it-1u)
+                    it == index -> newNode
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
-            data[index] = element
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i].also { it!!.index = i + 1u }
+            data[index] = newNode
             size++
         }
+    }
+    override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
+        if (isDisposed) disposedInstanceException()
+        if (index > size) indexOutOfBoundsException(index, size)
+        val newNode = Node(this, element, index)
+        if (size == sizeUpperBound) {
+            val oldSize = size
+            reinitializeBoundsAndData(size + 1u) {
+                when {
+                    it < index -> get(it)
+                    it == index -> newNode
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
+                    else -> null
+                }
+            }
+        } else {
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i].also { it!!.index = i + 1u }
+            data[index] = newNode
+            size++
+        }
+        return newNode
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
@@ -129,12 +194,14 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < oldSize -> get(it)
-                    it < oldSize + number -> builder(it - size)
+                    it < oldSize + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - size), it)
                     else -> null
                 }
             }
         } else {
-            repeat(number) { data[it + size] = builder(it) }
+            repeat(number) {
+                data[size + it] = Node(this, builder(it), size + it)
+            }
             size = newSize
         }
     }
@@ -146,14 +213,16 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < index + number -> builder(it - index)
-                    it < newSize -> get(it - number)
+                    it < index + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - index), it)
+                    it < newSize -> get(it - number).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
-            repeat(number) { data[it + index] = builder(it) }
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
+            repeat(number) {
+                data[index + it] = Node(this, builder(it), index + it)
+            }
             size = newSize
         }
     }
@@ -161,7 +230,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         val newSize = size - 1u
-        for (i in index..<newSize) data[i] = data[i + 1u]
+        for (i in index..<newSize) data[i] = data[i + 1u].also { if (it != null) it.index = i }
         data[size - 1u] = null
         size = newSize
     }
@@ -173,7 +242,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             var checkingMark = 0u
             var resultMark = 0u
             while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark] as Element)) {
+                if (!predicate(checkingMark, data[checkingMark]!!.element)) {
                     data[resultMark] = data[checkingMark]
                     resultMark++
                 }
@@ -184,72 +253,113 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         for (i in newSize ..< size) data[i] = null
         size = newSize
     }
-    override fun removeAll() {
-        if (isDisposed) disposedInstanceException()
-        reinitializeBounds(0u)
-        data.dispose(size)
-        size = 0u
-    }
-    
-    public override fun iteratorFrom(index: UInt): KoneMutableLinearIterator<Element> =
+
+    override fun iterator(): KoneMutableNoddedListIterator<Element> =
+        if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
+    public override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> =
         when {
             isDisposed -> disposedInstanceException()
             index > size -> indexOutOfBoundsException(index, size)
             else -> Iterator(this, index)
         }
-    override fun iterator(): KoneMutableLinearIterator<Element> =
-        if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
 
     override fun toString(): String = buildString {
-        if (isDisposed) disposedInstanceException()
         append('[')
-        if (size > 0u) append(data[0u])
+        if (size > 0u) append(data[0u]!!.element)
         for (i in 1u..<size) {
             append(", ")
-            append(data[i])
+            append(data[i]!!.element)
         }
         append(']')
     }
     override fun hashCode(): Int {
-        if (isDisposed) disposedInstanceException()
         var hashCode = 1
         repeat(size) {
-            hashCode = 31 * hashCode + data[it].hashCode()
+            hashCode = 31 * hashCode + data[it]!!.element.hashCode()
         }
         return hashCode
     }
     override fun equals(other: Any?): Boolean {
-        if (isDisposed) disposedInstanceException()
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
 
         when (other) {
-            is KoneArrayGrowableList<*> ->
+            is KoneArrayGrowableNoddedList<*> ->
                 repeat(size) {
-                    if (this.data[it] != other.data[it]) return false
+                    if (this.data[it]!!.element != other.data[it]!!.element) return false
                 }
             else -> {
                 val otherIterator = other.iterator()
                 for (i in 0u ..< size) {
-                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
+                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
                 }
             }
         }
 
         return true
     }
+    
+    @PublishedApi
+    internal class Node<Element>(
+        override var element: Element,
+        override var index: UInt,
+    ) : KoneMutableListNode<Element> {
+        override var isDetached: Boolean = false
+        
+        private var _list: KoneArrayGrowableNoddedList<Element>? = null
+        var list: KoneArrayGrowableNoddedList<Element>
+            get() = _list!!
+            set(value) { _list = value }
+        
+        constructor(list: KoneArrayGrowableNoddedList<Element>, element: Element, index: UInt) : this(element, index) {
+            _list = list
+        }
+        
+        fun detach() {
+            if (isDetached) return
+            _list = null
+            isDetached = true
+        }
+        
+        override fun remove() {
+            if (isDetached) detachedNodeException()
+            list.removeAt(index)
+        }
+        
+        override val nextNode: KoneMutableListNode<Element>?
+            get() = when {
+                isDetached -> detachedNodeException()
+                index + 1u < list.size -> list.data[index + 1u]!!
+                else -> null
+            }
+        override val previousNode: KoneMutableListNode<Element>?
+            get() = when {
+                isDetached -> detachedNodeException()
+                index > 0u -> list.data[index - 1u]!!
+                else -> null
+            }
+        
+        override fun iteratorFromBeforeHere(): KoneMutableNoddedListIterator<Element> =
+            if (isDetached) detachedNodeException() else list.iteratorFrom(index)
+        override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> =
+            if (isDetached) detachedNodeException() else list.iteratorFrom(index + 1u)
+    }
 
     internal class Iterator<Element>(
-        val list: KoneArrayGrowableList<Element>,
-        var currentIndex: UInt,
-    ): KoneMutableLinearIterator<Element> {
+        val list: KoneArrayGrowableNoddedList<Element>,
+        var currentIndex: UInt = 0u
+    ): KoneMutableNoddedListIterator<Element> {
         override fun hasNext(): Boolean =
             if (list.isDisposed) disposedInstanceException()
             else currentIndex < list.size
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
-            return list.data[currentIndex] as Element
+            return list.data[currentIndex]!!.element
+        }
+        override fun getNextNode(): KoneMutableListNode<Element> {
+            if (!hasNext()) noNextElementInIteratorException()
+            return list.data[currentIndex]!!
         }
         override fun moveNext() {
             if (!hasNext()) noNextElementInIteratorException()
@@ -258,7 +368,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
             if (!hasNext()) noNextElementInIteratorException()
-            list.data[currentIndex] = element
+            list.data[currentIndex]!!.element = element
         }
         override fun addNext(element: Element) {
             list.addAt(currentIndex, element)
@@ -273,7 +383,11 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             else currentIndex > 0u
         override fun getPrevious(): Element {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            return list.data[currentIndex - 1u] as Element
+            return list.data[currentIndex - 1u]!!.element
+        }
+        override fun getPreviousNode(): KoneMutableListNode<Element> {
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            return list.data[currentIndex - 1u]!!
         }
         override fun movePrevious() {
             if (!hasPrevious()) noPreviousElementInIteratorException()
@@ -282,7 +396,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
         override fun setPrevious(element: Element) {
             if (!hasPrevious()) noPreviousElementInIteratorException()
-            list.data[currentIndex - 1u] = element
+            list.data[currentIndex - 1u]!!.element = element
         }
         override fun addPrevious(element: Element) {
             list.addAt(currentIndex, element)

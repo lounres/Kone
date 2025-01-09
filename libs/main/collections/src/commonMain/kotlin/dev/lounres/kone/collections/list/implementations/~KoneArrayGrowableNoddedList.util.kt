@@ -1,16 +1,17 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.producers.KoneGrowableMutableNoddedListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -52,8 +53,8 @@ public object KoneArrayGrowableNoddedListProducer : KoneGrowableMutableNoddedLis
 }
 
 internal class KoneArrayGrowableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayGrowableNoddedList",
+    KoneListImplementationDescriptor(
+        implementationName = "KoneArrayGrowableNoddedList",
         elementDescriptor = elementDescriptor,
     )
 

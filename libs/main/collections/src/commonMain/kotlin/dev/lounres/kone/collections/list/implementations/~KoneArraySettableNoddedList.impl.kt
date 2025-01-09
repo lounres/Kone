@@ -1,19 +1,20 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneSettableListNode
-import dev.lounres.kone.collections.KoneSettableNoddedList
-import dev.lounres.kone.collections.KoneSettableNoddedListIterator
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.list.KoneSettableListNode
+import dev.lounres.kone.collections.list.KoneSettableNoddedList
+import dev.lounres.kone.collections.list.KoneSettableNoddedListIterator
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
-import dev.lounres.kone.collections.getAndMoveNext
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
