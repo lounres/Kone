@@ -428,7 +428,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun nextIndex(): UInt = if (hasNext()) currentIndex else noNextElementInIteratorException()
         override fun setNext(element: Element) {
             if (!hasNext()) noNextElementInIteratorException()
-            list.data[currentIndex] = element
+            list.data[actualCurrentIndex] = element
         }
         override fun addNext(element: Element) {
             if (list.isDisposed) disposedInstanceException()

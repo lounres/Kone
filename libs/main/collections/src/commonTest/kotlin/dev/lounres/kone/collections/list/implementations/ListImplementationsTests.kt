@@ -32,6 +32,7 @@ import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.ints
+import kotlin.random.nextUInt
 
 
 interface KoneListValidator {
@@ -996,6 +997,7 @@ fun <Element> testEquality(list1: KoneList<Element>, list2: List<Element>) {
 }
 
 sealed interface MutableListOperation<out Element> {
+    data class SetAt<out Element>(val index: UInt, val element: Element): MutableListOperation<Element>
     data class AddAt<out Element>(val index: UInt, val element: Element): MutableListOperation<Element>
     data class RemoveAt(val index: UInt): MutableListOperation<Nothing>
 }
@@ -1018,15 +1020,24 @@ fun <Element> arbMutableListOperationsWithResults(
     val results = mutableListOf<List<Element>>()
     repeat(numberOfOperations) {
         val lastList = results.lastOrNull() ?: initialList
-        if ((capacity == null || capacity.toInt() > lastList.size) && (lastList.isEmpty() || source.random.nextBoolean())) {
-            val newElement = arbElements.bind()
-            val insertionIndex = source.random.nextInt(lastList.size + 1)
-            operations.add(MutableListOperation.AddAt(insertionIndex.toUInt(), newElement))
-            results.add(lastList.subList(0, insertionIndex) + newElement + lastList.subList(insertionIndex, lastList.size))
-        } else {
-            val deletionIndex = source.random.nextInt(lastList.size)
-            operations.add(MutableListOperation.RemoveAt(deletionIndex.toUInt()))
-            results.add(lastList.subList(0, deletionIndex) + lastList.subList(deletionIndex + 1, lastList.size))
+        when {
+            lastList.isNotEmpty() && source.random.nextUInt(3u) == 0u -> {
+                val newElement = arbElements.bind()
+                val settingIndex = source.random.nextInt(lastList.size)
+                operations.add(MutableListOperation.SetAt(settingIndex.toUInt(), newElement))
+                results.add(lastList.subList(0, settingIndex) + newElement + lastList.subList(settingIndex + 1, lastList.size))
+            }
+            (capacity == null || capacity.toInt() > lastList.size) && (lastList.isEmpty() || source.random.nextBoolean()) -> {
+                val newElement = arbElements.bind()
+                val insertionIndex = source.random.nextInt(lastList.size + 1)
+                operations.add(MutableListOperation.AddAt(insertionIndex.toUInt(), newElement))
+                results.add(lastList.subList(0, insertionIndex) + newElement + lastList.subList(insertionIndex, lastList.size))
+            }
+            else -> {
+                val deletionIndex = source.random.nextInt(lastList.size)
+                operations.add(MutableListOperation.RemoveAt(deletionIndex.toUInt()))
+                results.add(lastList.subList(0, deletionIndex) + lastList.subList(deletionIndex + 1, lastList.size))
+            }
         }
     }
     MutableListOperationWithResult(
@@ -1168,6 +1179,7 @@ class ListImplementationsTests: FunSpec({
                 val expected = arbData.results[it.toInt()]
                 withClue({ "at iteration $it with current state $mutableList, operation $operation, and expected result $expected" }) {
                     when (operation) {
+                        is MutableListOperation.SetAt<Element> -> mutableList[operation.index] = operation.element
                         is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
                         is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
                     }
@@ -1235,6 +1247,37 @@ class ListImplementationsTests: FunSpec({
                 val expected = arbData.results[it.toInt()]
                 withClue("at iteration $it with current state $mutableList, current next iterator index $nextIteratorIndex, operation $operation, and expected result $expected") {
                     when (operation) {
+                        is MutableListOperation.SetAt<Element> -> {
+                            if (operation.index >= nextIteratorIndex) {
+                                while (operation.index > nextIteratorIndex) {
+                                    iterator.hasNext().shouldBeTrue()
+                                    iterator.nextIndex() shouldBe nextIteratorIndex
+                                    iterator.getNext() shouldBe mutableList[nextIteratorIndex]
+                                    iterator.moveNext()
+                                    nextIteratorIndex++
+                                }
+                                iterator.hasNext().shouldBeTrue()
+                                iterator.nextIndex() shouldBe operation.index
+                                iterator.setNext(operation.element)
+                                validator.shouldValidate(mutableList, iterator)
+                                iterator.hasNext().shouldBeTrue()
+                                iterator.nextIndex() shouldBe operation.index
+                            } else {
+                                while (operation.index < nextIteratorIndex - 1u) {
+                                    iterator.hasPrevious().shouldBeTrue()
+                                    iterator.previousIndex() shouldBe nextIteratorIndex - 1u
+                                    iterator.getPrevious() shouldBe mutableList[nextIteratorIndex - 1u]
+                                    iterator.movePrevious()
+                                    nextIteratorIndex--
+                                }
+                                iterator.hasPrevious().shouldBeTrue()
+                                iterator.previousIndex() shouldBe operation.index
+                                iterator.setPrevious(operation.element)
+                                validator.shouldValidate(mutableList, iterator)
+                                iterator.hasPrevious().shouldBeTrue()
+                                iterator.previousIndex() shouldBe operation.index
+                            }
+                        }
                         is MutableListOperation.AddAt<Element> -> {
                             if (operation.index >= nextIteratorIndex) {
                                 while (operation.index > nextIteratorIndex) {
