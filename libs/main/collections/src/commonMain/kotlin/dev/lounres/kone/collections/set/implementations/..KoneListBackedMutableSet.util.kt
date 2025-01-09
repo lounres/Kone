@@ -1,13 +1,14 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.producers.KoneResizableMutableListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.ReifiedEquality
 import kotlinx.serialization.descriptors.SerialDescriptor

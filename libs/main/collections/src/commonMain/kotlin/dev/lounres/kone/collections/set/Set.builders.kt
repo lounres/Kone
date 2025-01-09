@@ -1,21 +1,24 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.set
 
-import dev.lounres.kone.collections.implementations.KoneEmptyNoddedReifiedSet
-import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.implementations.KoneListBackedSet
-import dev.lounres.kone.collections.implementations.KoneListBackedMutableSet
-import dev.lounres.kone.collections.implementations.KoneHashResizableSet
-import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedList
-import dev.lounres.kone.collections.implementations.KoneHashResizableReifiedSet
-import dev.lounres.kone.collections.implementations.KoneListBackedMutableReifiedSet
-import dev.lounres.kone.collections.implementations.KoneListBackedReifiedSet
-import dev.lounres.kone.collections.implementations.KoneSingletonNoddedReifiedSet
-import dev.lounres.kone.collections.implementations.KoneSingletonNoddedSet
+import dev.lounres.kone.collections.set.empty.KoneEmptyNoddedReifiedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableSet
+import dev.lounres.kone.collections.set.implementations.KoneHashResizableSet
+import dev.lounres.kone.collections.set.implementations.KoneHashResizableReifiedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableReifiedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedEquality

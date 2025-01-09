@@ -1,11 +1,11 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedHashing
 import dev.lounres.kone.comparison.defaultHashing
@@ -27,7 +27,7 @@ public inline fun <reified Element> KoneHashResizableReifiedSet(): KoneHashResiz
 
 internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneHashResizableSet<data>",
+        serialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet<data>",
         elementDescriptor = elementDescriptor,
     )
 
@@ -46,7 +46,7 @@ internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescripto
 //    override val elementSerializer: KSerializer<E>,
 //    override val elementContextSerializer: KSerializer<EC>,
 //): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneHashResizableSet<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneHashResizableSet",
+//    collectionSerialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet",
 //    elementDescriptor = elementSerializer.descriptor,
 //), DeserializationStrategy<KoneHashResizableSet<E, EC>> {
 //    override val elementCollectionSerializer: SerializationStrategy<KoneHashResizableSet<E, EC>> =

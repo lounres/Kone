@@ -1,11 +1,17 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.set.singleton
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.set.KoneNoddedReifiedSet
+import dev.lounres.kone.collections.set.KoneNoddedSet
+import dev.lounres.kone.collections.set.KoneNoddedSetIterator
+import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneSetIterator
+import dev.lounres.kone.collections.set.KoneSetNode
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.eq

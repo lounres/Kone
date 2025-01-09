@@ -1,17 +1,17 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
     KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneListBackedSet<data>",
+        serialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet<data>",
         elementDescriptor = elementDescriptor,
     )
 
@@ -37,7 +37,7 @@ internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
 //    override val elementSerializer: KSerializer<E>,
 //    override val elementContextSerializer: KSerializer<EC>,
 //): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneListBackedSet<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneListBackedSet",
+//    collectionSerialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet",
 //    elementDescriptor = elementSerializer.descriptor,
 //), DeserializationStrategy<KoneListBackedSet<E, EC>> {
 //    override val elementCollectionSerializer: SerializationStrategy<KoneListBackedSet<E, EC>> =

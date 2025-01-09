@@ -51,7 +51,7 @@ internal class DefaultKoneMutableArraySerializer<ElementKlass : Any, Element : E
 ) : KSerializer<KoneMutableArray<Element>> {
     val arraySerializer = ArraySerializer<ElementKlass, Element>(kClass, elementSerializer)
     
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.collections.array.KoneArray", arraySerializer.descriptor)
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.collections.array.KoneMutableArray", arraySerializer.descriptor)
     
     override fun serialize(encoder: Encoder, value: KoneMutableArray<Element>) {
         encoder.encodeSerializableValue(arraySerializer, value.array)
