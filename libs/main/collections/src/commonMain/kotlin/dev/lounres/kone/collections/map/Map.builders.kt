@@ -1,21 +1,24 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
 @file:OptIn(ExperimentalTypeInference::class)
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.map
 
-import dev.lounres.kone.collections.implementations.KoneArrayGrowableLinkedNoddedListProducer
-import dev.lounres.kone.collections.implementations.KoneArrayResizableLinkedNoddedListProducer
-import dev.lounres.kone.collections.implementations.KoneEmptyReifiedMap
-import dev.lounres.kone.collections.implementations.KoneMutableListBackedMap
-import dev.lounres.kone.collections.implementations.KoneHashResizableMap
-import dev.lounres.kone.collections.implementations.KoneHashResizableReifiedMap
-import dev.lounres.kone.collections.implementations.KoneMutableListBackedReifiedMap
-import dev.lounres.kone.collections.implementations.KoneSingletonMap
-import dev.lounres.kone.collections.implementations.KoneSingletonReifiedMap
+import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedNoddedListProducer
+import dev.lounres.kone.collections.map.empty.KoneEmptyReifiedMap
+import dev.lounres.kone.collections.map.implementations.KoneMutableListBackedMap
+import dev.lounres.kone.collections.map.implementations.KoneHashResizableMap
+import dev.lounres.kone.collections.map.implementations.KoneHashResizableReifiedMap
+import dev.lounres.kone.collections.map.implementations.KoneMutableListBackedReifiedMap
+import dev.lounres.kone.collections.map.singleton.KoneSingletonMap
+import dev.lounres.kone.collections.map.singleton.KoneSingletonReifiedMap
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListProducer
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedEquality

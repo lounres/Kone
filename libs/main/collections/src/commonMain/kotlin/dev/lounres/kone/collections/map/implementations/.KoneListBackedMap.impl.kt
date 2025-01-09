@@ -1,11 +1,23 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.map.implementations
 
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedSet
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMapEntry
+import dev.lounres.kone.collections.map.KoneMapNode
+import dev.lounres.kone.collections.map.KoneReifiedMap
+import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.collections.utils.map

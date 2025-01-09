@@ -1,20 +1,22 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.map.singleton
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.KoneIterable
-import dev.lounres.kone.collections.KoneIterator
-import dev.lounres.kone.collections.KoneMap
-import dev.lounres.kone.collections.KoneMapEntry
-import dev.lounres.kone.collections.KoneMapNode
-import dev.lounres.kone.collections.KoneReifiedMap
-import dev.lounres.kone.collections.KoneReifiedSet
-import dev.lounres.kone.collections.KoneSet
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMapEntry
+import dev.lounres.kone.collections.map.KoneMapNode
+import dev.lounres.kone.collections.map.KoneReifiedMap
+import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.ReifiedEquality

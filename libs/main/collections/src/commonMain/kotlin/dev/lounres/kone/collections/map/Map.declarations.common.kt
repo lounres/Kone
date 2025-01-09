@@ -1,10 +1,15 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.map
 
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.comparison.absoluteReifiedEquality
 
 

@@ -1,11 +1,19 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.map.empty
 
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.empty.KoneEmptySettableLinearIterable
+import dev.lounres.kone.collections.set.empty.KoneEmptyNoddedReifiedSet
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMapEntry
+import dev.lounres.kone.collections.map.KoneMapNode
+import dev.lounres.kone.collections.map.KoneReifiedMap
+import dev.lounres.kone.collections.map.isEmpty
+import dev.lounres.kone.collections.set.KoneReifiedSet
 
 
 internal open class KoneEmptyMapReifiedTemplate<Key, Value> : KoneReifiedMap<Key, Value> {

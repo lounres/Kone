@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.collections.KoneUIntArray
+import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThat
 import kotlin.math.ceil

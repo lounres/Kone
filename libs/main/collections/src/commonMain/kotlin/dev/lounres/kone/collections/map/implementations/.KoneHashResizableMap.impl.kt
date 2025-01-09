@@ -1,31 +1,38 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.map.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.KoneArray
-import dev.lounres.kone.collections.KoneIterable
-import dev.lounres.kone.collections.KoneIterator
-import dev.lounres.kone.collections.KoneMap
-import dev.lounres.kone.collections.KoneMapEntry
-import dev.lounres.kone.collections.KoneMutableListNode
-import dev.lounres.kone.collections.KoneMutableMap
-import dev.lounres.kone.collections.KoneMutableMapNode
-import dev.lounres.kone.collections.KoneMutableReifiedMap
-import dev.lounres.kone.collections.KoneReifiedSet
-import dev.lounres.kone.collections.KoneSet
+import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMapEntry
+import dev.lounres.kone.collections.list.KoneMutableListNode
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.KoneMutableMapNode
+import dev.lounres.kone.collections.map.KoneMutableReifiedMap
+import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.disposedInstanceException
-import dev.lounres.kone.collections.getAndMoveNext
-import dev.lounres.kone.collections.isEmpty
-import dev.lounres.kone.collections.isNotEmpty
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.implementations.MAX_CAPACITY
+import dev.lounres.kone.collections.implementations.POWERS_OF_2
+import dev.lounres.kone.collections.implementations.calculateHashTableCapacity
+import dev.lounres.kone.collections.implementations.calculateHashTableSize
+import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
+import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedList
 import dev.lounres.kone.collections.noNextElementInIteratorException
-import dev.lounres.kone.collections.toKoneMapEntry
-import dev.lounres.kone.collections.toKoneReifiedSet
-import dev.lounres.kone.collections.toKoneSet
+import dev.lounres.kone.collections.map.toKoneMapEntry
+import dev.lounres.kone.collections.set.toKoneReifiedSet
+import dev.lounres.kone.collections.set.toKoneSet
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat

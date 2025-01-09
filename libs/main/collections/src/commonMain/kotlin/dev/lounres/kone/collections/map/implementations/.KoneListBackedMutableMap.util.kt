@@ -1,12 +1,13 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.map.implementations
 
-import dev.lounres.kone.collections.producers.KoneGrowableMutableNoddedListProducer
-import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListProducer
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.defaultEquality

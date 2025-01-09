@@ -1,10 +1,13 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.map
 
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.noMatchingKeyException
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.transformNotNullMaybe
