@@ -1,25 +1,25 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.iterables
 
-import dev.lounres.kone.collections.serializers.DefaultKoneExtendableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneExtendableLinearIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneLinearIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneMutableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneMutableLinearIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneRemovableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneRemovableLinearIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneReversibleExtendableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneReversibleIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneReversibleMutableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneReversibleRemovableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneReversibleSettableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneSettableIterableSerializer
-import dev.lounres.kone.collections.serializers.DefaultKoneSettableLinearMutableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneExtendableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneExtendableLinearIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneLinearIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneMutableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneMutableLinearIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneRemovableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneRemovableLinearIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneReversibleExtendableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneReversibleIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneReversibleMutableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneReversibleRemovableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneReversibleSettableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneSettableIterableSerializer
+import dev.lounres.kone.collections.iterables.serializers.DefaultKoneSettableLinearMutableIterableSerializer
 import kotlinx.serialization.Serializable
 
 
