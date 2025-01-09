@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections
+package dev.lounres.kone.collections.dequeue
 
 
 public fun KoneDequeue<*>.isEmpty(): Boolean = size == 0u

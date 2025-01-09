@@ -1,20 +1,21 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.KoneLinearIterator
-import dev.lounres.kone.collections.KoneLinkedReifiedSet
-import dev.lounres.kone.collections.KoneLinkedSetIterator
-import dev.lounres.kone.collections.KoneReversibleIterable
-import dev.lounres.kone.collections.LinkedHeapNode
-import dev.lounres.kone.collections.LinkedMinimumHeap
+import dev.lounres.kone.collections.iterables.KoneLinearIterator
+import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
+import dev.lounres.kone.collections.set.KoneLinkedSetIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleIterable
+import dev.lounres.kone.collections.heap.LinkedHeapNode
+import dev.lounres.kone.collections.heap.LinkedMinimumHeap
 import dev.lounres.kone.collections.accessRootOfEmptyHeapException
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
+import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.gt
