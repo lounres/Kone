@@ -7,30 +7,18 @@
 
 package dev.lounres.kone.collections.list.comparison
 
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.map.KoneMapEntry
-import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.list.getMaybe
-import dev.lounres.kone.collections.map.iterator
-import dev.lounres.kone.collections.map.koneMutableMapOf
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.map.getMaybe
-import dev.lounres.kone.collections.set.toKoneSet
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.any
-import dev.lounres.kone.collections.utils.copyTo
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedHashing
-import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.comparison.reificationException
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
-import dev.lounres.kone.option.orElse
 
 
 internal open class KoneListHashing<Element>(open val elementContext: Hashing<Element>) : Hashing<KoneList<Element>> {

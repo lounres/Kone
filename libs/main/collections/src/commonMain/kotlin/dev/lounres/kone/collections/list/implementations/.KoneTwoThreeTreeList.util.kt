@@ -1,16 +1,16 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneArray
-import dev.lounres.kone.collections.indices
-import dev.lounres.kone.collections.lastIndex
-import dev.lounres.kone.collections.producers.KoneResizableMutableNoddedListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.indices
+import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.last
 import kotlinx.serialization.DeserializationStrategy
@@ -48,8 +48,8 @@ public object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProdu
 }
 
 internal class KoneTwoThreeTreeListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneTwoThreeTreeList",
+    KoneListImplementationDescriptor(
+        implementationName = "KoneTwoThreeTreeList",
         elementDescriptor = elementDescriptor,
     )
 

@@ -8,6 +8,7 @@
 
 package dev.lounres.kone.collections.list.serializers
 
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializationStrategyTemplate
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableListSerializer
@@ -21,6 +22,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 
+
+internal open class KoneListImplementationDescriptor(
+    implementationName: String,
+    elementDescriptor: SerialDescriptor
+) : KoneIterableDescriptor(
+    serialName = "dev.lounres.kone.collections.list.implementations.$implementationName",
+    elementDescriptor = elementDescriptor,
+)
 
 // region Default serializers for common interfaces
 
