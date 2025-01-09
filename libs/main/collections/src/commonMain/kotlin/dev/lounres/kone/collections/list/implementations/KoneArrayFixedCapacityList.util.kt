@@ -1,15 +1,15 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -62,8 +62,8 @@ public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListP
 }
 
 internal class KoneArrayFixedCapacityListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList",
+    KoneListImplementationDescriptor(
+        implementationName = "KoneArrayFixedCapacityList",
         elementDescriptor = elementDescriptor,
     )
 

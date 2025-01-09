@@ -1,15 +1,16 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneGrowableMutableList
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.KoneGrowableMutableList
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -50,8 +51,8 @@ public object KoneArrayGrowableLinkedListProducer : KoneGrowableMutableListProdu
 }
 
 internal class KoneArrayGrowableLinkedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayGrowableLinkedList",
+    KoneListImplementationDescriptor(
+        implementationName = "KoneArrayGrowableLinkedList",
         elementDescriptor = elementDescriptor,
     )
 

@@ -1,14 +1,14 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.KoneMutableArray
-import dev.lounres.kone.collections.producers.KoneFixedCapacityMutableNoddedListProducer
-import dev.lounres.kone.collections.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableNoddedListProducer
+import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -62,15 +62,15 @@ public object KoneArrayFixedCapacityNoddedListProducer : KoneFixedCapacityMutabl
 }
 
 internal class KoneArrayFixedCapacityNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityNoddedList",
+    KoneListImplementationDescriptor(
+        implementationName = "KoneArrayFixedCapacityNoddedList",
         elementDescriptor = elementDescriptor,
     )
 
 internal class KoneArrayFixedCapacityNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayFixedCapacityNoddedList<E>>(), DeserializationStrategy<KoneArrayFixedCapacityNoddedList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayFixedCapacityListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor = KoneArrayFixedCapacityNoddedListDescriptor(elementSerializer.descriptor)
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayFixedCapacityNoddedList<E> =
         KoneArrayFixedCapacityNoddedList(size, initializer)
 }

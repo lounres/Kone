@@ -1,11 +1,14 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.implementations
+package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import dev.lounres.kone.collections.list.KoneSettableList
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
