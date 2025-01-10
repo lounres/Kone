@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.searchTree.SearchTreeNode
 import dev.lounres.kone.collections.searchTree.implementations.KoneTwoThreeSearchTree
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.implementations.testEqualityByIteration
+import dev.lounres.kone.collections.list.testEqualityByIteration
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.comparison.Order

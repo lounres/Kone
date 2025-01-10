@@ -8,8 +8,8 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.dequeue.KoneDequeue
-import dev.lounres.kone.collections.dequeue.isEmpty
+import dev.lounres.kone.collections.deque.KoneDeque
+import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
@@ -33,7 +33,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-) : KoneGrowableMutableList<Element>, KoneDequeue<Element>, Disposable {
+) : KoneGrowableMutableList<Element>, KoneDeque<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -242,18 +242,24 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
 
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
-        if (size == sizeUpperBound) {
-            val oldSize = size
-            var actualIndex = start
-            reinitializeBoundsAndData(size + 1u) {
-                when {
-                    it == 0u -> element
-                    it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    else -> null
+        when {
+            size == sizeUpperBound -> {
+                val oldSize = size
+                var actualIndex = start
+                reinitializeBoundsAndData(size + 1u) {
+                    when {
+                        it == 0u -> element
+                        it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
+                        else -> null
+                    }
                 }
             }
-        } else {
-            justAddBefore(start, element)
+            size == 0u -> {
+                data[start] = element
+                end = start
+                size++
+            }
+            else -> justAddBefore(start, element)
         }
     }
 

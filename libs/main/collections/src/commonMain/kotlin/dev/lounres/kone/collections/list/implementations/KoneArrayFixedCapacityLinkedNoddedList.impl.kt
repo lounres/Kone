@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.dequeue.KoneDequeue
+import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
@@ -114,7 +114,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
+) : KoneMutableNoddedList<Element>, KoneDeque<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -279,7 +279,11 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == capacity) capacityOverflowException(capacity)
-        justAddBefore(start, element)
+        if (size == 0u) {
+            data[start] = Node(this, element, start)
+            end = start
+            size++
+        } else justAddBefore(start, element)
     }
 
     override fun addLast(element: Element) {

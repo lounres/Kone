@@ -8,8 +8,8 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.dequeue.KoneDequeue
-import dev.lounres.kone.collections.dequeue.isEmpty
+import dev.lounres.kone.collections.deque.KoneDeque
+import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
 import dev.lounres.kone.collections.iterables.getAndMoveNext
@@ -106,7 +106,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableList<Element>, KoneDequeue<Element>, Disposable {
+) : KoneMutableList<Element>, KoneDeque<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -242,7 +242,11 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == capacity) capacityOverflowException(capacity)
-        justAddBefore(start, element)
+        if (size == 0u) {
+            data[start] = element
+            end = start
+            size++
+        } else justAddBefore(start, element)
     }
 
     override fun addLast(element: Element) {

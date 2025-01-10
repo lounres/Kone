@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.dequeue.KoneDequeue
+import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
@@ -28,7 +28,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     startNode: Node<Element>? = null,
     endNode: Node<Element>? = null,
-) : KoneMutableNoddedList<Element>, KoneDequeue<Element>, Disposable {
+) : KoneMutableNoddedList<Element>, KoneDeque<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -107,7 +107,9 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     override fun addFirst(element: Element) {
         if (isDisposed) disposedInstanceException()
         val newNode = Node(element)
-        newNode._nextNode = start
+        val nextNode = start
+        newNode._nextNode = nextNode
+        nextNode?._previousNode = newNode
         start = newNode
         if (size == 0u) end = newNode
         size++
@@ -116,7 +118,9 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     override fun addLast(element: Element) {
         if (isDisposed) disposedInstanceException()
         val newNode = Node(element)
-        newNode._previousNode = end
+        val previousNode = end
+        newNode._previousNode = previousNode
+        previousNode?._nextNode = newNode
         end = newNode
         if (size == 0u) start = newNode
         size++
@@ -243,6 +247,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         start = nextNode
         if (nextNode == null) end = null
         nodeToRemove.detach()
+        size--
     }
     
     override fun removeLast() {
@@ -253,6 +258,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         if (previousNode == null) start = null
         end = previousNode
         nodeToRemove.detach()
+        size--
     }
     
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
