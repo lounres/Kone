@@ -285,7 +285,6 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             index == size -> justAddAfterTheEnd(number) { builder(it) }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
-                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
                 val actualInnerPartLeftEndIndex = nextNodeIndex[end]
                 val actualInnerPartRightEndIndex: UInt
                 scope {
@@ -299,6 +298,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
                 nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
+                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
                 previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
                 previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
