@@ -193,6 +193,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         repeat(number) {
             val newNode = Node(builder(it))
             newNode._previousNode = end
+            end?._nextNode = newNode
             end = newNode
             if (size == 0u && it == 0u) start = newNode
         }
@@ -206,6 +207,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
             repeat(number) {
                 val newNode = Node(builder(it))
                 newNode._previousNode = end
+                end?._nextNode = newNode
                 end = newNode
                 if (size == 0u && it == 0u) start = newNode
             }
@@ -264,6 +266,9 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         var currentNode = start
         var currentIndex = 0u
+        var searchingForStart = true
+        start = null
+        end = null
         while (currentNode != null) {
             if (predicate(currentIndex, currentNode.element)) {
                 currentNode._nextNode?._previousNode = currentNode._previousNode
@@ -271,6 +276,11 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
                 size--
                 currentNode = currentNode._nextNode.also { currentNode.detach() }
             } else {
+                if (searchingForStart) {
+                    start = currentNode
+                    searchingForStart = false
+                }
+                end = currentNode
                 currentNode = currentNode._nextNode
             }
             currentIndex++

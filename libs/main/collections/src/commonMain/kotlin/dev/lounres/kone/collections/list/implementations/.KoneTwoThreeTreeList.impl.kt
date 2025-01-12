@@ -1014,7 +1014,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         var currentNode = firstNode
         while (currentNode != null) {
             currentNode.holder.dispose()
-            currentNode = currentNode.nextNode?.also { it.detach() }
+            currentNode = currentNode.nextNode?.also { currentNode.detach() }
         }
         rootHolder = null
         firstNode = null
