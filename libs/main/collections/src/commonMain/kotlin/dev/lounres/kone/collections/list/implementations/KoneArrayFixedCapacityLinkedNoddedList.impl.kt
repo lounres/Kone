@@ -274,6 +274,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             data[start] = null
             start = nextNodeIndex[start]
         }
+        size = 0u
     }
 
     override fun addFirst(element: Element) {
@@ -333,7 +334,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         justAddAfterTheEnd(number) { builder(it) }
     }
 
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (number == 0u) return
@@ -359,8 +360,11 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
                 previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                nextNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                
+                if (index == 0u) start = actualInnerPartLeftEndIndex
+                size += number
             }
         }
     }
@@ -386,15 +390,17 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         val newSize: UInt
         val firstNodeToClear: UInt
         scope {
-            var checkingActualMark = 0u
+            var checkingActualMark = start
             var checkingIndex = 0u
-            var resultActualMark = 0u
+            var resultActualMark = start
             var resultSize = 0u
             while (checkingIndex < size) {
                 if (!predicate(checkingIndex, data[checkingActualMark]!!.element)) {
                     data[resultActualMark] = data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
                     resultActualMark = nextNodeIndex[resultActualMark]
                     resultSize++
+                } else {
+                    data[checkingActualMark]!!.detach()
                 }
                 checkingActualMark = nextNodeIndex[checkingActualMark]
                 checkingIndex++
@@ -402,12 +408,15 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             newSize = resultSize
             firstNodeToClear = resultActualMark
         }
-        var currentActualIndexToClear = firstNodeToClear
-        repeat(size - newSize) {
-            data[currentActualIndexToClear]!!.detach()
-            data[currentActualIndexToClear] = null
-            currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+        end = previousNodeIndex[firstNodeToClear]
+        scope {
+            var currentActualIndexToClear = firstNodeToClear
+            repeat(size - newSize) {
+                data[currentActualIndexToClear] = null
+                currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+            }
         }
+        size = newSize
     }
 
     override fun iterator(): KoneMutableNoddedListIterator<Element> =

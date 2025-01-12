@@ -172,7 +172,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         repeat(number) { data[size + it] = Node(this, builder(it), size + it) }
         size = newSize
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -199,7 +199,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
             var resultMark = 0u
             while (checkingMark < size) {
                 if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark]
+                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
                     resultMark++
                 } else {
                     data[checkingMark]!!.detach()

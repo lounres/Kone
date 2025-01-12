@@ -128,7 +128,7 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         repeat(number) { data[size + it] = builder(it) }
         size = newSize
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number

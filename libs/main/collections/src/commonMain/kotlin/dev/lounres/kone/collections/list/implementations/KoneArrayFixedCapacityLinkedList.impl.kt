@@ -227,16 +227,13 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         data[actualIndex(index)] = element
     }
 
-    // TODO: Actually, it's not O(size) but O(capacity)
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
-        repeat(capacity) {
-            data[it] = null
-            nextNodeIndex[it] = if (it == capacity - 1u) 0u else it + 1u
-            previousNodeIndex[it] = if (it == 0u) capacity - 1u else it - 1u
-            start = 0u
-            end = capacity - 1u
+        repeat(size) {
+            data[start] = null
+            start = nextNodeIndex[start]
         }
+        size = 0u
     }
 
     override fun addFirst(element: Element) {
@@ -278,7 +275,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
 
         justAddAfterTheEnd(number) { builder(it) }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (number == 0u) return
@@ -304,8 +301,11 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
                 previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                nextNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                
+                if (index == 0u) start = actualInnerPartLeftEndIndex
+                size += number
             }
         }
     }
@@ -328,9 +328,9 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         val newSize: UInt
         val firstNodeToClear: UInt
         scope {
-            var checkingActualMark = 0u
+            var checkingActualMark = start
             var checkingIndex = 0u
-            var resultActualMark = 0u
+            var resultActualMark = start
             var resultSize = 0u
             while (checkingIndex < size) {
                 if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
@@ -344,11 +344,15 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             newSize = resultSize
             firstNodeToClear = resultActualMark
         }
-        var currentActualIndexToClear = firstNodeToClear
-        repeat(size - newSize) {
-            data[currentActualIndexToClear] = null
-            currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+        end = previousNodeIndex[firstNodeToClear]
+        scope {
+            var currentActualIndexToClear = firstNodeToClear
+            repeat(size - newSize) {
+                data[currentActualIndexToClear] = null
+                currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+            }
         }
+        size = newSize
     }
 
     override fun iterator(): KoneMutableLinearIterator<Element> =
