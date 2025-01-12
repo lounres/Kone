@@ -137,7 +137,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < oldSize -> get(it)
-                    it < oldSize + number -> builder(it - size)
+                    it < oldSize + number -> builder(it - oldSize)
                     else -> null
                 }
             }
@@ -146,7 +146,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number

@@ -194,7 +194,7 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < oldSize -> get(it)
-                    it < oldSize + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - size), it)
+                    it < oldSize + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - oldSize), it)
                     else -> null
                 }
             }
@@ -205,7 +205,7 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -243,7 +243,7 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
             var resultMark = 0u
             while (checkingMark < size) {
                 if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark]
+                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
                     resultMark++
                 }
                 checkingMark++
