@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProduc
 import dev.lounres.kone.collections.list.producers.KoneListProducer
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.repeat
+import dev.lounres.kone.scope
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
@@ -19,7 +20,6 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
-import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
@@ -96,9 +96,20 @@ fun <Element> testEquality(list1: KoneList<Element>, list2: List<Element>) {
 }
 
 sealed interface MutableListOperation<out Element> {
-    data class SetAt<out Element>(val index: UInt, val element: Element): MutableListOperation<Element>
-    data class AddAt<out Element>(val index: UInt, val element: Element): MutableListOperation<Element>
-    data class RemoveAt(val index: UInt): MutableListOperation<Nothing>
+    data class Set<out Element>(val index: UInt, val element: Element) : MutableListOperation<Element>
+    data class AddAt<out Element>(val index: UInt, val element: Element) : MutableListOperation<Element>
+    data class RemoveAt(val index: UInt) : MutableListOperation<Nothing>
+}
+
+sealed interface MutableListExtraOperation<out Element> {
+    data class Set<out Element>(val index: UInt, val element: Element) : MutableListExtraOperation<Element>
+    data class Add<out Element>(val element: Element) : MutableListExtraOperation<Element>
+    data class AddAt<out Element>(val element: Element, val index: UInt) : MutableListExtraOperation<Element>
+    data class AddSeveral<out Element>(val elements: List<Element>) : MutableListExtraOperation<Element>
+    data class AddSeveralAt<out Element>(val elements: List<Element>, val index: UInt) : MutableListExtraOperation<Element>
+    data class RemoveAt(val index: UInt) : MutableListExtraOperation<Nothing>
+    data class RemoveAllThatIndexed(val indices: List<UInt>) : MutableListExtraOperation<Nothing>
+    data object RemoveAll : MutableListExtraOperation<Nothing>
 }
 
 data class MutableListOperationsWithResultsSeries<out Element>(
@@ -106,6 +117,11 @@ data class MutableListOperationsWithResultsSeries<out Element>(
     val numberOfOperations: UInt,
     val operations: List<MutableListOperation<Element>>,
     val results: List<List<Element>>,
+)
+
+data class MutableListExtraOperationWithResult<out Element>(
+    val operation: MutableListExtraOperation<Element>,
+    val result: List<Element>,
 )
 
 val <Element> MutableListOperationsWithResultsSeries<Element>.lastResult: List<Element> get() = results.lastOrNull() ?: initialList
@@ -125,7 +141,7 @@ fun <Element> arbMutableListOperationsWithResultsSeries(
             lastList.isNotEmpty() && source.random.nextUInt(3u) == 0u -> {
                 val newElement = arbElements.bind()
                 val settingIndex = source.random.nextInt(lastList.size)
-                operations.add(MutableListOperation.SetAt(settingIndex.toUInt(), newElement))
+                operations.add(MutableListOperation.Set(settingIndex.toUInt(), newElement))
                 results.add(lastList.subList(0, settingIndex) + newElement + lastList.subList(settingIndex + 1, lastList.size))
             }
             (capacity == null || capacity.toInt() > lastList.size) && (lastList.isEmpty() || source.random.nextBoolean()) -> {
@@ -155,7 +171,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationsWithResultsSeriesWith
     capacity: UInt? = null,
     numberOfOperations: UInt,
 ): Exhaustive<MutableListOperationsWithResultsSeries<Element>> = buildList<MutableListOperationsWithResultsSeries<Element>> {
-    val newElementsIterator = arbElements.samples(RandomSource.default()).iterator()
+    val newElementsIterator = arbElements.samples().iterator()
     fun element() = newElementsIterator.next().value
     
     val seriesToProcess = ArrayDeque<MutableListOperationsWithResultsSeries<Element>>()
@@ -174,31 +190,27 @@ fun <Element> Exhaustive.Companion.allMutableListOperationsWithResultsSeriesWith
         val lastResult = series.lastResult
         
         if (series.numberOfOperations < numberOfOperations) {
-            if (lastResult.isNotEmpty()) {
-                for (index in lastResult.indices) {
-                    val newElement = element()
-                    seriesToProcess.add(
-                        MutableListOperationsWithResultsSeries(
-                            initialList = series.initialList,
-                            numberOfOperations = series.numberOfOperations + 1u,
-                            operations = series.operations + MutableListOperation.SetAt(index.toUInt(), newElement),
-                            results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index + 1, lastResult.size)),
-                        )
+            for (index in lastResult.indices) {
+                val newElement = element()
+                seriesToProcess.add(
+                    MutableListOperationsWithResultsSeries(
+                        initialList = series.initialList,
+                        numberOfOperations = series.numberOfOperations + 1u,
+                        operations = series.operations + MutableListOperation.Set(index.toUInt(), newElement),
+                        results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index + 1, lastResult.size)),
                     )
-                }
+                )
             }
             
-            if (lastResult.isNotEmpty()) {
-                for (index in lastResult.indices) {
-                    seriesToProcess.add(
-                        MutableListOperationsWithResultsSeries(
-                            initialList = series.initialList,
-                            numberOfOperations = series.numberOfOperations + 1u,
-                            operations = series.operations + MutableListOperation.RemoveAt(index.toUInt()),
-                            results = series.results + listOf(lastResult.subList(0, index) + lastResult.subList(index + 1, lastResult.size)),
-                        )
+            for (index in lastResult.indices) {
+                seriesToProcess.add(
+                    MutableListOperationsWithResultsSeries(
+                        initialList = series.initialList,
+                        numberOfOperations = series.numberOfOperations + 1u,
+                        operations = series.operations + MutableListOperation.RemoveAt(index.toUInt()),
+                        results = series.results + listOf(lastResult.subList(0, index) + lastResult.subList(index + 1, lastResult.size)),
                     )
-                }
+                )
             }
             
             if (capacity == null || lastResult.size < capacity.toInt()) {
@@ -216,6 +228,98 @@ fun <Element> Exhaustive.Companion.allMutableListOperationsWithResultsSeriesWith
             }
         }
     }
+}.exhaustive()
+
+fun <Element> Exhaustive.Companion.allMutableListExtraOperationWithResult(
+    arbElements: Arb<Element>,
+    initialList: List<Element>,
+    severalElementsAdditionLimit: Int,
+) : Exhaustive<MutableListExtraOperationWithResult<Element>> = buildList {
+    val newElementsIterator = arbElements.samples().iterator()
+    fun element() = newElementsIterator.next().value
+    
+    // Set
+    for (index in initialList.indices) {
+        val newElement = element()
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.Set(index.toUInt(), newElement),
+                result = initialList.subList(0, index) + newElement + initialList.subList(index + 1, initialList.size),
+            )
+        )
+    }
+    
+    // Add
+    scope {
+        val newElement = element()
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.Add(newElement),
+                result = initialList + newElement,
+            )
+        )
+    }
+    
+    // AddAt
+    for (index in 0 .. initialList.size) {
+        val newElement = element()
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.AddAt(newElement, index.toUInt()),
+                result = initialList.subList(0, index) + newElement + initialList.subList(index, initialList.size),
+            )
+        )
+    }
+    
+    // AddSeveral
+    for (extraSize in 0 ..< severalElementsAdditionLimit) {
+        val newElements = List(extraSize) { element() }
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.AddSeveral(newElements),
+                result = initialList + newElements,
+            )
+        )
+    }
+    
+    // AddSeveralAt
+    for (index in 0 .. initialList.size) for (extraSize in 0 ..< severalElementsAdditionLimit) {
+        val newElements = List(extraSize) { element() }
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.AddSeveralAt(newElements, index.toUInt()),
+                result = initialList.subList(0, index) + newElements + initialList.subList(index, initialList.size),
+            )
+        )
+    }
+    
+    // RemoveAt
+    for (index in initialList.indices) {
+        add(
+            MutableListExtraOperationWithResult(
+                operation = MutableListExtraOperation.RemoveAt(index.toUInt()),
+                result = initialList.subList(0, index) + initialList.subList(index + 1, initialList.size),
+            )
+        )
+    }
+    
+    // RemoveAllThatIndexed
+    add(
+        MutableListExtraOperationWithResult(
+            operation = MutableListExtraOperation.RemoveAllThatIndexed(
+                initialList.indices.filter { it % 2 == 0 }.map { it.toUInt() }
+            ),
+            result = initialList.filterIndexed { index, _ -> index % 2 != 0 }
+        )
+    )
+    
+    // RemoveAll
+    add(
+        MutableListExtraOperationWithResult(
+            operation = MutableListExtraOperation.RemoveAll,
+            result = emptyList(),
+        )
+    )
 }.exhaustive()
 
 class ListImplementationsTests : FunSpec({
@@ -349,7 +453,7 @@ class ListImplementationsTests : FunSpec({
                 val expected = arbData.results[it.toInt()]
                 withClue({ "at iteration $it with current state $mutableList, operation $operation, and expected result $expected" }) {
                     when (operation) {
-                        is MutableListOperation.SetAt<Element> -> mutableList[operation.index] = operation.element
+                        is MutableListOperation.Set<Element> -> mutableList[operation.index] = operation.element
                         is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
                         is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
                     }
@@ -404,6 +508,97 @@ class ListImplementationsTests : FunSpec({
             }
         }
         
+        fun <Element: Any> testKoneMutableListMutabilityExtraOperationsOn(
+            previousSteps: MutableListOperationsWithResultsSeries<Element>,
+            operation: MutableListExtraOperation<Element>,
+            result: List<Element>,
+            mutableList: KoneMutableList<Element>,
+            validator: KoneListValidator,
+        ) {
+            repeat(previousSteps.numberOfOperations) {
+                val step = previousSteps.operations[it.toInt()]
+                when (step) {
+                    is MutableListOperation.Set<Element> -> mutableList[step.index] = step.element
+                    is MutableListOperation.AddAt<Element> -> mutableList.addAt(step.index, step.element)
+                    is MutableListOperation.RemoveAt -> mutableList.removeAt(step.index)
+                }
+            }
+            validator.shouldValidate(mutableList)
+            when (operation) {
+                is MutableListExtraOperation.Set<Element> -> mutableList[operation.index] = operation.element
+                is MutableListExtraOperation.Add<Element> -> mutableList.add(operation.element)
+                is MutableListExtraOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
+                is MutableListExtraOperation.AddSeveral<Element> -> mutableList.addSeveral(operation.elements.size.toUInt()) { operation.elements[it.toInt()] }
+                is MutableListExtraOperation.AddSeveralAt<Element> -> mutableList.addSeveralAt(operation.index, operation.elements.size.toUInt()) { operation.elements[it.toInt()] }
+                is MutableListExtraOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                is MutableListExtraOperation.RemoveAllThatIndexed -> mutableList.removeAllThatIndexed { index, _ -> index in operation.indices }
+                MutableListExtraOperation.RemoveAll -> mutableList.removeAll()
+            }
+            validator.shouldValidate(mutableList)
+            testEquality(mutableList, result)
+        }
+        
+        if (producer is KoneResizableMutableListProducer) test("test of mutability operations after series of changes") {
+            checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                    testKoneMutableListMutabilityExtraOperationsOn(
+                        previousSteps = previousSteps,
+                        operation = operattion,
+                        result = result,
+                        mutableList = mutableList,
+                        validator = impl.listValidator,
+                    )
+                }
+            }
+        }
+        
+        if (producer is KoneGrowableMutableListProducer) {
+            test("test of mutability operations after series of changes") {
+                checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                        val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableListMutabilityExtraOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableList = mutableList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+            test("test of mutability operations after series of changes with ensured capacity") {
+                checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                        val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableListMutabilityExtraOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableList = mutableList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+        }
+        
+        if (producer is KoneFixedCapacityMutableListProducer) test("test of mutability operations after series of changes") {
+            checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) { previousSteps ->
+                checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                    testKoneMutableListMutabilityExtraOperationsOn(
+                        previousSteps = previousSteps,
+                        operation = operattion,
+                        result = result,
+                        mutableList = mutableList,
+                        validator = impl.listValidator,
+                    )
+                }
+            }
+        }
+        
         fun <Element: Any> testKoneMutableListIteratorOn(
             arbData: MutableListOperationsWithResultsSeries<Element>,
             mutableList: KoneMutableList<Element>,
@@ -417,7 +612,7 @@ class ListImplementationsTests : FunSpec({
                 val expected = arbData.results[it.toInt()]
                 withClue("at iteration $it with current state $mutableList, current next iterator index $nextIteratorIndex, operation $operation, and expected result $expected") {
                     when (operation) {
-                        is MutableListOperation.SetAt<Element> -> {
+                        is MutableListOperation.Set<Element> -> {
                             if (operation.index >= nextIteratorIndex) {
                                 while (operation.index > nextIteratorIndex) {
                                     iterator.hasNext().shouldBeTrue()
