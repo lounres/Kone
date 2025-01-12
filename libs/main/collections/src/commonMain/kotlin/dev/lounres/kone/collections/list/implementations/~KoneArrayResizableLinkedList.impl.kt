@@ -296,7 +296,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         }
     }
 
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         if (number == 0u) return
@@ -318,7 +318,6 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             }
             else -> {
                 val actualRightPartIndex = actualIndex(index)
-                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
                 val actualInnerPartLeftEndIndex = nextNodeIndex[end]
                 val actualInnerPartRightEndIndex: UInt
                 scope {
@@ -332,10 +331,14 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
 
                 nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
                 previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
+                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
                 nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
                 previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                nextNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                previousNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+                nextNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+                
+                if (index == 0u) start = actualInnerPartLeftEndIndex
+                size += number
             }
         }
     }
@@ -398,9 +401,9 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         val newSize: UInt
         val firstNodeToClear: UInt
         scope {
-            var checkingActualMark = 0u
+            var checkingActualMark = start
             var checkingIndex = 0u
-            var resultActualMark = 0u
+            var resultActualMark = start
             var resultSize = 0u
             while (checkingIndex < size) {
                 if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
@@ -423,10 +426,13 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
                 }
             }
         } else {
-            var currentActualIndexToClear = firstNodeToClear
-            repeat(size - newSize) {
-                data[currentActualIndexToClear] = null
-                currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+            end = previousNodeIndex[firstNodeToClear]
+            scope {
+                var currentActualIndexToClear = firstNodeToClear
+                repeat(size - newSize) {
+                    data[currentActualIndexToClear] = null
+                    currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
+                }
             }
             size = newSize
         }
