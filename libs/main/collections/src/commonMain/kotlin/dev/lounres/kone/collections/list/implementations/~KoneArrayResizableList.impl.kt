@@ -150,7 +150,7 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -201,7 +201,7 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
                 }
                 checkingMark++
             }
-            newSize = checkingMark
+            newSize = resultMark
         }
         if (newSize < sizeLowerBound) {
             reinitializeBoundsAndData(newSize) {

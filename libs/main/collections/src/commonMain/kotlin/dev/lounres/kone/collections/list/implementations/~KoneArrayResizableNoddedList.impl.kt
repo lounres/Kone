@@ -209,7 +209,7 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             size = newSize
         }
     }
-    override fun addSeveralAt(number: UInt, index: UInt, builder: (UInt) -> Element) {
+    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -218,12 +218,12 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
                 when {
                     it < index -> get(it)
                     it < index + number -> Node(this@KoneArrayResizableNoddedList, builder(it - index), it)
-                    it < newSize -> get(it - number)
+                    it < newSize -> get(it - number).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i + number] = data[i]
+            for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
             repeat(number) { data[index + it] = Node(this, builder(it), index + it) }
             size = newSize
         }
@@ -255,12 +255,14 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             var resultMark = 0u
             while (checkingMark < size) {
                 if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark]
+                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
                     resultMark++
+                } else {
+                    data[checkingMark]!!.detach()
                 }
                 checkingMark++
             }
-            newSize = checkingMark
+            newSize = resultMark
         }
         if (newSize < sizeLowerBound) {
             reinitializeBoundsAndData(newSize) {
