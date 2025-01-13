@@ -538,7 +538,7 @@ class ListImplementationsTests : FunSpec({
             testEquality(mutableList, result)
         }
         
-        if (producer is KoneResizableMutableListProducer) test("test of mutability operations after series of changes") {
+        if (producer is KoneResizableMutableListProducer) test("test of mutability extra operations after series of changes") {
             checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
                 checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
                     val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -554,7 +554,7 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneGrowableMutableListProducer) {
-            test("test of mutability operations after series of changes") {
+            test("test of mutability extra operations after series of changes") {
                 checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
                     checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
                         val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -568,7 +568,7 @@ class ListImplementationsTests : FunSpec({
                     }
                 }
             }
-            test("test of mutability operations after series of changes with ensured capacity") {
+            test("test of mutability extra operations after series of changes with ensured capacity") {
                 checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
                     checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
                         val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -584,7 +584,7 @@ class ListImplementationsTests : FunSpec({
             }
         }
         
-        if (producer is KoneFixedCapacityMutableListProducer) test("test of mutability operations after series of changes") {
+        if (producer is KoneFixedCapacityMutableListProducer) test("test of mutability extra operations after series of changes") {
             checkAll(Exhaustive.allMutableListOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) { previousSteps ->
                 checkAll(Exhaustive.allMutableListExtraOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
                     val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
