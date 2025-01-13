@@ -38,10 +38,10 @@ object KoneArraySettableNoddedListDescription : ListImplementationDescription {
             iterator: KoneIterator<Any>
         ) {
             validate(list)
-            list as KoneArraySettableList<Any>
+            list as KoneArraySettableNoddedList<Any>
             
-            if (iterator !is KoneArraySettableList.Iterator<Any>) fail("The iterator is invalid")
-            if (iterator.data.array !== list.data.array) fail("The iterator is invalid")
+            if (iterator !is KoneArraySettableNoddedList.Iterator<Any>) fail("The iterator is invalid")
+            if (iterator.list !== list) fail("The iterator is invalid")
             
             if (iterator.currentIndex > list.size) fail("The iterator is invalid")
         }
