@@ -382,7 +382,7 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneSettableListProducer)
-            test("test settable list getting and setting operations") {
+            test("test random series of getting and setting operations") {
                 checkAll(arbSettableListGettingSettingOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val settableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     repeat(arbData.numberOfOperations) {
@@ -401,7 +401,7 @@ class ListImplementationsTests : FunSpec({
             }
         
         if (producer is KoneSettableListProducer)
-            test("test settable list iterator getting and setting operations") {
+            test("test random series of iterator getting and setting operations") {
                 checkAll(arbSettableListGettingSettingOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val settableList = producer.produceBy(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     var nextIteratorIndex = 5u
@@ -856,7 +856,7 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneResizableMutableListProducer)
-            test("test random series of iterator mutability operations") {
+            test("test random series of iterator extension and reduction operations") {
                 checkAll(arbMutableListExtensionReductionOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     testKoneMutableListIteratorExtensionReductionOperationsOn(
@@ -869,7 +869,7 @@ class ListImplementationsTests : FunSpec({
             }
         
         if (producer is KoneGrowableMutableListProducer) {
-            test("test random series of iterator mutability operations") {
+            test("test random series of iterator extension and reduction operations") {
                 checkAll(arbMutableListExtensionReductionOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy<UInt>(arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     testKoneMutableListIteratorExtensionReductionOperationsOn(
@@ -880,7 +880,7 @@ class ListImplementationsTests : FunSpec({
                     )
                 }
             }
-            test("test random series of iterator mutability operations with ensured capacity") {
+            test("test random series of iterator extension and reduction operations with ensured capacity") {
                 checkAll(arbMutableListExtensionReductionOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy<UInt>(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     testKoneMutableListIteratorExtensionReductionOperationsOn(
@@ -894,7 +894,7 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneFixedCapacityMutableListProducer)
-            test("test random series of iterator mutability operations") {
+            test("test random series of iterator extension and reduction operations") {
                 checkAll(arbMutableListExtensionReductionOperationsWithResultsSeries(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 100u)) { arbData ->
                     val mutableList = producer.produceBy(20u, arbData.initialList.size.toUInt()) { arbData.initialList[it.toInt()] }
                     testKoneMutableListIteratorExtensionReductionOperationsOn(
