@@ -61,7 +61,7 @@ public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements
  * If there is no equal element, the list is not modified.
  * If there are several equal elements, only the first one is found and removed.
  */
-context(Equality<Element>)
+context(_: Equality<Element>)
 public fun <Element> KoneMutableList<Element>.remove(element: Element) {
     val iterator = iterator()
     while (iterator.hasNext() && iterator.getNext() neq element) iterator.moveNext()

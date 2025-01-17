@@ -40,6 +40,7 @@ import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedHashing
 import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.hash
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
 import kotlin.math.max

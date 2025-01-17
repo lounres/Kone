@@ -47,16 +47,14 @@ public object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProdu
         KoneTwoThreeTreeList(size = number, initializer = builder)
 }
 
-internal class KoneTwoThreeTreeListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneTwoThreeTreeList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneTwoThreeTreeListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneTwoThreeTreeList<E>>(), DeserializationStrategy<KoneTwoThreeTreeList<E>> {
-    override val descriptor: SerialDescriptor = KoneTwoThreeTreeListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneTwoThreeTreeList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneTwoThreeTreeList<E> =
         KoneTwoThreeTreeList(size, initializer)
 }

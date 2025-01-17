@@ -25,11 +25,11 @@ public fun <Element, ElementContext: ReifiedHashing<Element>> KoneHashResizableR
 public inline fun <reified Element> KoneHashResizableReifiedSet(): KoneHashResizableReifiedSet<Element, ReifiedHashing<Element>> =
     KoneHashResizableReifiedSet(size = 0u, elementContext = defaultReifiedHashing())
 
-internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet<data>",
-        elementDescriptor = elementDescriptor,
-    )
+//internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
+//    KoneIterableDescriptor(
+//        serialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet<data>",
+//        elementDescriptor = elementDescriptor,
+//    )
 
 //internal class KoneHashResizableSetSerializer<E, EC: Hashing<E>>(
 //    override val elementSerializer: KSerializer<E>,

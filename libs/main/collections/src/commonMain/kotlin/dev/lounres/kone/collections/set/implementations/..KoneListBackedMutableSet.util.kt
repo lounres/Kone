@@ -82,11 +82,11 @@ public fun <Element, ElementContext: ReifiedEquality<Element>> KoneListBackedMut
     builder: (UInt) -> Element
 ): KoneListBackedMutableReifiedSet<Element, ElementContext> = KoneListBackedMutableReifiedSet(elementContext, listProducer.produceBy(size, builder))
 
-internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet",
-        elementDescriptor = elementDescriptor,
-    )
+//internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
+//    KoneIterableDescriptor(
+//        serialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet",
+//        elementDescriptor = elementDescriptor,
+//    )
 
 //internal class KoneMutableListBackedSetSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,

@@ -40,16 +40,14 @@ public object KoneArrayResizableListProducer : KoneResizableMutableListProducer 
         KoneArrayResizableList(number, builder)
 }
 
-internal class KoneArrayResizableListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayResizableList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayResizableListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayResizableList<E>>(), DeserializationStrategy<KoneArrayResizableList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayResizableListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayResizableList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableList<E> =
         KoneArrayResizableList(size, initializer)
 }

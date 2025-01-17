@@ -50,16 +50,14 @@ public object KoneArrayGrowableLinkedListProducer : KoneGrowableMutableListProdu
         KoneArrayGrowableLinkedList(initialCapacity, number, builder)
 }
 
-internal class KoneArrayGrowableLinkedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayGrowableLinkedList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayGrowableLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayGrowableLinkedList<E>>(), DeserializationStrategy<KoneArrayGrowableLinkedList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayGrowableLinkedListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayGrowableLinkedList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayGrowableLinkedList<E> =
         KoneArrayGrowableLinkedList(size, initializer)
 }

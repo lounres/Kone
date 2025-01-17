@@ -55,16 +55,14 @@ public object KoneArrayGrowableListProducer : KoneGrowableMutableListProducer {
         KoneArrayGrowableList(initialCapacity, number, builder)
 }
 
-internal class KoneArrayGrowableListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayGrowableList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayGrowableListSerializer<Element>(
     override val elementSerializer: KSerializer<Element>,
 ): KoneIterableSerializationStrategyTemplate<Element, KoneArrayGrowableList<Element>>(), KSerializer<KoneArrayGrowableList<Element>> {
-    override val descriptor: SerialDescriptor = KoneArrayGrowableListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayGrowableList",
+            elementSerializer = elementSerializer
+        )
 
     override fun deserialize(decoder: Decoder): KoneArrayGrowableList<Element> =
         decoder.decodeStructure(descriptor) {

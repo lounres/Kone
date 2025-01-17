@@ -40,16 +40,14 @@ public object KoneArrayResizableNoddedListProducer : KoneResizableMutableNoddedL
         KoneArrayResizableNoddedList(size = number, initializer = builder)
 }
 
-internal class KoneArrayResizableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayResizableNoddedList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayResizableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayResizableNoddedList<E>>(), DeserializationStrategy<KoneArrayResizableNoddedList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayResizableNoddedListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayResizableNoddedList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableNoddedList<E> =
         KoneArrayResizableNoddedList(size, initializer)
 }

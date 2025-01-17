@@ -11,7 +11,6 @@ import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.context.invoke
 
 
 // region Conversion
@@ -37,7 +36,7 @@ internal class KoneIterableAsKotlinCollectionWrapper<Element>(
     
     override fun iterator(): Iterator<Element> = KoneIteratorAsKotlinIteratorWrapper(iterable.iterator())
     
-    override fun contains(element: Element): Boolean = (defaultEquality<Element>()) { iterable.contains(element) }
+    override fun contains(element: Element): Boolean = defaultEquality { iterable.contains(element) }
     override fun containsAll(elements: Collection<Element>): Boolean = elements.all { contains(it) }
 }
 

@@ -67,11 +67,11 @@ public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneList(@BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return koneMutableListOf<Element>().apply(builderAction)
+    return koneMutableListOf<Element>().apply(builderAction).toOptimizedList()
 }
 
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneList(initialCapacity: UInt, @BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneArrayGrowableList<Element>(initialCapacity).apply(builderAction)
+    return KoneArrayGrowableList<Element>(initialCapacity).apply(builderAction).toOptimizedList()
 }

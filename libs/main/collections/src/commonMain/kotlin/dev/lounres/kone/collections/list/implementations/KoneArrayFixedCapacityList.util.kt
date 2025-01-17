@@ -61,16 +61,14 @@ public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListP
         KoneArrayFixedCapacityList(capacity, number, builder)
 }
 
-internal class KoneArrayFixedCapacityListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayFixedCapacityList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayFixedCapacityListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayFixedCapacityList<E>>(), DeserializationStrategy<KoneArrayFixedCapacityList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayFixedCapacityListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayFixedCapacityList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayFixedCapacityList<E> =
         KoneArrayFixedCapacityList(size, initializer)
 }

@@ -33,16 +33,15 @@ public object KoneArraySettableListProducer : KoneSettableListProducer {
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableList<Element> = KoneArraySettableList(number, builder)
 }
 
-internal class KoneArraySettableListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArraySettableList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArraySettableListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArraySettableList<E>>() {
-    override val descriptor: SerialDescriptor = KoneArraySettableListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArraySettableList",
+            elementSerializer = elementSerializer,
+        )
+    
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArraySettableList<E> =
         KoneArraySettableList(size, initializer)
 }

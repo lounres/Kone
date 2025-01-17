@@ -15,6 +15,7 @@ import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.ReifiedHashing
+import dev.lounres.kone.comparison.hash
 import dev.lounres.kone.comparison.reificationException
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.option.Maybe

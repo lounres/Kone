@@ -12,16 +12,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-internal class KoneVirtualListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneVirtualList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneVirtualListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneVirtualList<E>>(), DeserializationStrategy<KoneVirtualList<E>> {
-    override val descriptor: SerialDescriptor = KoneVirtualListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneVirtualList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneVirtualList<E> =
         KoneVirtualList(size, initializer)
 }

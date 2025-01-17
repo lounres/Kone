@@ -9,11 +9,11 @@ import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-    KoneIterableDescriptor(
-        serialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet<data>",
-        elementDescriptor = elementDescriptor,
-    )
+//internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
+//    KoneIterableDescriptor(
+//        serialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet<data>",
+//        elementDescriptor = elementDescriptor,
+//    )
 
 //internal class KoneListBackedSetSerializer<E, EC: Equality<E>>(
 //    override val elementSerializer: KSerializer<E>,

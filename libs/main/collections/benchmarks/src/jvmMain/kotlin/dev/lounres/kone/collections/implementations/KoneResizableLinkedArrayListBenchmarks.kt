@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections.implementations
 
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
 import kotlinx.benchmark.BenchmarkTimeUnit

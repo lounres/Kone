@@ -6,6 +6,10 @@
 package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.one
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
@@ -396,7 +400,7 @@ public inline fun <E> KoneList<E>.firstIndexThat(predicate: (index: UInt, elemen
     return iterator.nextIndex()
 }
 
-context(Equality<E>)
+context(_: Equality<E>)
 public fun <E> KoneList<E>.firstIndexOf(element: E): UInt = firstIndexThat { _, currentElement -> element eq currentElement }
 
 public inline fun <E> KoneList<E>.lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
@@ -409,7 +413,7 @@ public inline fun <E> KoneList<E>.lastIndexThat(predicate: (index: UInt, element
     return iterator.previousIndex()
 }
 
-context(Equality<E>)
+context(_: Equality<E>)
 public fun <E> KoneList<E>.lastIndexOf(element: E): UInt = lastIndexThat { _, currentElement -> element eq currentElement }
 
 public fun <E> KoneIterable<E>.random(random: Random): E {
@@ -592,22 +596,22 @@ public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index
 
 // TODO: Add summing and multiplying extensions for primitives. Maybe.
 
-context(Ring<E>)
+context(_: Ring<E>)
 public fun <E> KoneIterable<E>.sum(): E = fold(zero) { acc, e -> acc + e }
 
-context(Ring<N>)
+context(_: Ring<N>)
 public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
 
-context(Ring<N>)
+context(_: Ring<N>)
 public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
-context(Ring<E>)
+context(_: Ring<E>)
 public fun <E> KoneIterable<E>.product(): E = fold(one) { acc, e -> acc * e }
 
-context(Ring<N>)
+context(_: Ring<N>)
 public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc * selector(e) }
 
-context(Ring<N>)
+context(_: Ring<N>)
 public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
 
 public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K): D {
@@ -669,7 +673,7 @@ public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
     }
     quickSort(0u, lastIndex)
 }
-context(Order<E>)
+context(_: Order<E>)
 public fun <E> KoneSettableList<E>.sort() {
     fun divide(from: UInt, to: UInt): UInt {
         var i = from
@@ -755,7 +759,7 @@ public fun <E: Comparable<E>> KoneSettableList<E>.sortDescending() {
     }
     quickSort(0u, lastIndex)
 }
-context(Order<E>)
+context(_: Order<E>)
 public fun <E> KoneSettableList<E>.sortDescending() {
     fun divide(from: UInt, to: UInt): UInt {
         var i = from
@@ -846,7 +850,7 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.sortBy(selector: (E)
     quickSort(0u, lastIndex, selector)
 }
 // TODO: Move inside the following `sortBy` function when local inline functions will be ready
-context(Order<R>)
+context(_: Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, selector: (E) -> R): UInt {
     var i = from
@@ -864,7 +868,7 @@ internal inline fun <E, R> KoneSettableList<E>.divide(from: UInt, to: UInt, sele
     return i
 }
 // TODO: Move inside the following `sortBy` function when local inline functions will be ready
-context(Order<R>)
+context(_: Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, selector: (E) -> R) {
     val sortQueue: KoneDeque<RangeToSort> = KoneArrayGrowableLinkedList()
@@ -876,7 +880,7 @@ internal inline fun <E, R> KoneSettableList<E>.quickSort(from: UInt, to: UInt, s
         if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
     }
 }
-context(Order<R>)
+context(_: Order<R>)
 public inline fun <E, R> KoneSettableList<E>.sortBy(selector: (E) -> R) {
     quickSort(0u, lastIndex, selector)
 }
@@ -946,7 +950,7 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.sortByDescending(sel
     quickSortDescending(0u, lastIndex, selector)
 }
 // TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
-context(Order<R>)
+context(_: Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: UInt, selector: (E) -> R): UInt {
     var i = from
@@ -964,7 +968,7 @@ internal inline fun <E, R> KoneSettableList<E>.divideDescending(from: UInt, to: 
     return i
 }
 // TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
-context(Order<R>)
+context(_: Order<R>)
 @PublishedApi
 internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, to: UInt, selector: (E) -> R) {
     val sortQueue: KoneDeque<RangeToSort> = KoneArrayGrowableLinkedList()
@@ -976,7 +980,7 @@ internal inline fun <E, R> KoneSettableList<E>.quickSortDescending(from: UInt, t
         if (middle < to) sortQueue.addLast(RangeToSort(middle, to))
     }
 }
-context(Order<R>)
+context(_: Order<R>)
 public inline fun <E, R> KoneSettableList<E>.sortByDescending(selector: (E) -> R) {
     quickSortDescending(0u, lastIndex, selector)
 }
@@ -1016,7 +1020,7 @@ public inline fun <E, R> KoneSettableList<E>.sortWithByDescending(comparator: Co
 public fun <E: Comparable<E>> KoneIterable<E>.sorted(): KoneList<E> =
     toKoneSettableList().apply { sort() }
 
-context(Order<E>)
+context(_: Order<E>)
 public fun <E> KoneIterable<E>.sorted(): KoneList<E> =
     toKoneSettableList().apply { sort() }
 
@@ -1026,7 +1030,7 @@ public fun <E> KoneIterable<E>.sortedWith(comparator: Comparator<E>): KoneList<E
 public fun <E: Comparable<E>> KoneIterable<E>.sortedDescending(): KoneList<E> =
     toKoneSettableList().apply { sortDescending() }
 
-context(Order<E>)
+context(_: Order<E>)
 public fun <E> KoneIterable<E>.sortedDescending(): KoneList<E> =
     toKoneSettableList().apply { sortDescending() }
 
@@ -1036,7 +1040,7 @@ public fun <E> KoneIterable<E>.sortedWithDescending(comparator: Comparator<E>): 
 public inline fun <E, R: Comparable<R>> KoneIterable<E>.sortedBy(selector: (E) -> R): KoneList<E> =
     toKoneSettableList().apply { sortBy(selector) }
 
-context(Order<R>)
+context(_: Order<R>)
 public inline fun <E, R> KoneIterable<E>.sortedBy(selector: (E) -> R): KoneList<E> =
     toKoneSettableList().apply { sortBy(selector) }
 
@@ -1046,7 +1050,7 @@ public inline fun <E, R> KoneIterable<E>.sortedWithBy(comparator: Comparator<R>,
 public inline fun <E, R: Comparable<R>> KoneIterable<E>.sortedByDescending(selector: (E) -> R): KoneList<E> =
     toKoneSettableList().apply { sortByDescending(selector) }
 
-context(Order<R>)
+context(_: Order<R>)
 public inline fun <E, R> KoneIterable<E>.sortedByDescending(selector: (E) -> R): KoneList<E> =
     toKoneSettableList().apply { sortByDescending(selector) }
 

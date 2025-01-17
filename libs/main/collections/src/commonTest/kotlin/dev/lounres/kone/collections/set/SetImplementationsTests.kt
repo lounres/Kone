@@ -1,0 +1,26 @@
+/*
+ * Copyright © 2025 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+package dev.lounres.kone.collections.set
+
+import dev.lounres.kone.collections.list.KoneListValidator
+import dev.lounres.kone.collections.list.ListDisposabilityTest
+import dev.lounres.kone.collections.list.producers.KoneListProducer
+import dev.lounres.kone.comparison.Equality
+import io.kotest.core.spec.style.FunSpec
+
+
+interface KoneMutableSetProducer {
+    fun <Element> produce(elementContext: Equality<Element>)
+}
+
+interface ListImplementationDescription {
+    val name: String
+    val setProducer: KoneMutableSetProducer
+}
+
+class SetImplementationsTests : FunSpec({
+
+})

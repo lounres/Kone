@@ -126,7 +126,7 @@ internal class DefaultKoneIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneIterable<E>>(), KSerializer<KoneIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
 
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -134,8 +134,8 @@ internal class DefaultKoneReversibleIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneReversibleIterable<E>>(), KSerializer<KoneReversibleIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneReversibleIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneReversibleIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -144,7 +144,7 @@ internal class DefaultKoneSettableIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneSettableIterable<E>>(), KSerializer<KoneSettableIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneSettableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneSettableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -153,7 +153,7 @@ internal class DefaultKoneReversibleSettableIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneReversibleSettableIterable<E>>(), KSerializer<KoneReversibleSettableIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneReversibleSettableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneReversibleSettableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -161,8 +161,8 @@ internal class DefaultKoneExtendableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneExtendableIterable<E>>(), KSerializer<KoneExtendableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneExtendableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneExtendableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -170,8 +170,8 @@ internal class DefaultKoneReversibleExtendableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneReversibleExtendableIterable<E>>(), KSerializer<KoneReversibleExtendableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneReversibleExtendableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneReversibleExtendableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -179,8 +179,8 @@ internal class DefaultKoneRemovableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneRemovableIterable<E>>(), KSerializer<KoneRemovableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneRemovableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneRemovableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -188,8 +188,8 @@ internal class DefaultKoneReversibleRemovableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneReversibleRemovableIterable<E>>(), KSerializer<KoneReversibleRemovableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneReversibleRemovableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneReversibleRemovableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -197,8 +197,8 @@ internal class DefaultKoneMutableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneMutableIterable<E>>(), KSerializer<KoneMutableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneMutableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneMutableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -206,8 +206,8 @@ internal class DefaultKoneReversibleMutableIterableSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ) : KoneIterableSerializationStrategyTemplate<E, KoneReversibleMutableIterable<E>>(), KSerializer<KoneReversibleMutableIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
-
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneReversibleMutableIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneReversibleMutableIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -216,7 +216,7 @@ internal class DefaultKoneLinearIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneLinearIterable<E>>(), KSerializer<KoneLinearIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneLinearIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -225,7 +225,7 @@ internal class DefaultKoneSettableLinearMutableIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneSettableLinearIterable<E>>(), KSerializer<KoneSettableLinearIterable<E>> {
     private val actualSerializer = KoneArraySettableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneSettableLinearIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneSettableLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -234,7 +234,7 @@ internal class DefaultKoneExtendableLinearIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneExtendableLinearIterable<E>>(), KSerializer<KoneExtendableLinearIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneExtendableLinearIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneExtendableLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -243,7 +243,7 @@ internal class DefaultKoneRemovableLinearIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneRemovableLinearIterable<E>>(), KSerializer<KoneRemovableLinearIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneRemovableLinearIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneRemovableLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 
@@ -252,7 +252,7 @@ internal class DefaultKoneMutableLinearIterableSerializer<E>(
 ) : KoneIterableSerializationStrategyTemplate<E, KoneMutableLinearIterable<E>>(), KSerializer<KoneMutableLinearIterable<E>> {
     private val actualSerializer = KoneArrayResizableListSerializer(elementSerializer)
     
-    override val descriptor: SerialDescriptor get() = actualSerializer.descriptor
+    override val descriptor: SerialDescriptor get() = KoneIterableDeclarationDescriptor("KoneMutableLinearIterable", actualSerializer)
     override fun deserialize(decoder: Decoder): KoneMutableLinearIterable<E> = actualSerializer.deserialize(decoder)
 }
 

@@ -4,6 +4,7 @@
  */
 
 @file:Suppress("UNCHECKED_CAST")
+@file:OptIn(DelicateImmutableArrayConstructor::class)
 
 package dev.lounres.kone.collections.array
 

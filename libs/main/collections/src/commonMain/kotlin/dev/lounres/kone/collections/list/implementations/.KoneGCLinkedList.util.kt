@@ -36,16 +36,14 @@ public object KoneGCLinkedListProducer : KoneResizableMutableNoddedListProducer 
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedList(number, builder)
 }
 
-internal class KoneGCLinkedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneGCLinkedList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneGCLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneGCLinkedList<E>>(), DeserializationStrategy<KoneGCLinkedList<E>> {
-    override val descriptor: SerialDescriptor = KoneGCLinkedListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneGCLinkedList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneGCLinkedList<E> =
         KoneGCLinkedList(size, initializer)
 }

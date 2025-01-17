@@ -52,16 +52,14 @@ public object KoneArrayGrowableNoddedListProducer : KoneGrowableMutableNoddedLis
         KoneArrayGrowableNoddedList(size = number, capacity = initialCapacity, initializer = builder)
 }
 
-internal class KoneArrayGrowableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArrayGrowableNoddedList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArrayGrowableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArrayGrowableNoddedList<E>>(), DeserializationStrategy<KoneArrayGrowableNoddedList<E>> {
-    override val descriptor: SerialDescriptor = KoneArrayGrowableNoddedListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArrayGrowableNoddedList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayGrowableNoddedList<E> =
         KoneArrayGrowableNoddedList(size, initializer)
 }

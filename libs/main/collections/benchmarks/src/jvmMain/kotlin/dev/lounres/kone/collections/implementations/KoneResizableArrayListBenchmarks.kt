@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import kotlinx.benchmark.*
 import org.openjdk.jmh.annotations.Level
 

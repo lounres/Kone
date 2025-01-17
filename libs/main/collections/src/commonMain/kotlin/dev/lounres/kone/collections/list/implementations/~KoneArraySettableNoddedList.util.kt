@@ -20,16 +20,14 @@ public object KoneArraySettableNoddedListProducer : KoneSettableNoddedListProduc
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableNoddedList<Element> = KoneArraySettableNoddedList(number, builder)
 }
 
-internal class KoneArraySettableNoddedListDescriptor(elementDescriptor: SerialDescriptor):
-    KoneListImplementationDescriptor(
-        implementationName = "KoneArraySettableNoddedList",
-        elementDescriptor = elementDescriptor,
-    )
-
 internal class KoneArraySettableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
 ): KoneIterableSerializerTemplate<E, KoneArraySettableNoddedList<E>>() {
-    override val descriptor: SerialDescriptor = KoneArraySettableNoddedListDescriptor(elementSerializer.descriptor)
+    override val descriptor: SerialDescriptor =
+        KoneListImplementationDescriptor(
+            implementationName = "KoneArraySettableNoddedList",
+            elementSerializer = elementSerializer
+        )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArraySettableNoddedList<E> =
         KoneArraySettableNoddedList(size, initializer)
 }

@@ -23,10 +23,10 @@ public fun <Element> KoneIterable<Element>.isNotEmpty(): Boolean = !isEmpty()
 /**
  * Checks if there is an element equal (in terms of the provided [Equality]) to the provided [element].
  */
-context(Equality<Element>)
+context(_: Equality<Element>)
 public operator fun <Element> KoneIterable<Element>.contains(element: Element): Boolean = any { it eq element }
 /**
  * Checks if there are elements equal (in terms of the provided [Equality]) to elements from provided [collection][elements].
  */
-context(Equality<Element>)
+context(_: Equality<Element>)
 public fun <Element> KoneIterable<Element>.containsAllFrom(elements: KoneIterable<Element>): Boolean = elements.all { it in this }
