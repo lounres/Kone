@@ -5,6 +5,7 @@ import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
+//import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
 import org.jetbrains.dokka.gradle.DokkaExtension
@@ -21,15 +22,13 @@ import java.time.ZoneId
 
 
 plugins {
-    with(versions.plugins) {
-        alias(kotlin.multiplatform) apply false
-        alias(kotlinx.atomicfu) apply false
-        alias(kotlin.allopen) apply false
-        alias(kotlinx.benchmark) apply false
-        alias(kotest.multiplatform) apply false
-        alias(kotlinx.kover) apply false
-        alias(dokka)
-    }
+    alias(versions.plugins.kotlin.multiplatform) apply false
+    alias(versions.plugins.kotlinx.atomicfu) apply false
+    alias(versions.plugins.kotlin.allopen) apply false
+    alias(versions.plugins.kotlinx.benchmark) apply false
+    alias(versions.plugins.kotest.multiplatform) apply false
+    alias(versions.plugins.kotlinx.kover) apply false
+    alias(versions.plugins.dokka)
     `version-catalog`
     `maven-publish`
     signing
@@ -122,6 +121,7 @@ val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByName<LibrariesForVersions>("versions")
+//val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
 val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
 fun PluginAware.apply(pluginDependency: PluginDependency) = apply(plugin = pluginDependency.pluginId)
 fun PluginAware.apply(pluginDependency: Provider<PluginDependency>) = apply(plugin = pluginDependency.get().pluginId)
@@ -211,6 +211,7 @@ stal {
                 
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                     )
@@ -235,6 +236,7 @@ stal {
                 
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                     )
@@ -290,7 +292,7 @@ stal {
                         all {
                             languageSettings {
                                 progressiveMode = true
-                                enableLanguageFeature("ContextReceivers")
+                                enableLanguageFeature("ContextParameters")
                                 enableLanguageFeature("ValueClasses")
                                 enableLanguageFeature("ContractSyntaxV2")
                                 enableLanguageFeature("ExplicitBackingFields")
@@ -298,6 +300,7 @@ stal {
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
+                                optIn("kotlin.uuid.ExperimentalUuidApi")
                             }
                         }
                     }
