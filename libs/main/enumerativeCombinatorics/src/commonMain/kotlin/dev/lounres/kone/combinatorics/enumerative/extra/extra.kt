@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.combinatorics.enumerative.extra
 
-import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 
 

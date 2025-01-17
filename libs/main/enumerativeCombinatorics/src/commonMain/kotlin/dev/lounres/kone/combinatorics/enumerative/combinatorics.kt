@@ -6,7 +6,25 @@
 package dev.lounres.kone.combinatorics.enumerative
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.KoneMutableUIntArray
+import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.collections.array.toKoneUIntArray
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.addAllFrom
+import dev.lounres.kone.collections.list.buildKoneList
+import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.koneMutableListOf
+import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.list.toKoneList
+import dev.lounres.kone.collections.list.toKoneMutableList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.scope
 
@@ -236,7 +254,7 @@ public fun <E> KoneList<E>.allPermutations(): Sequence<KoneList<E>> {
 
     return sequence {
         val size = collection.size
-        val references = KoneMutableUIntArray(size + 1u) { it+1u }
+        val references = KoneMutableUIntArray(size + 1u) { it + 1u }
         var currentSize = 0u
         val currentIndices = KoneMutableUIntArray(size) { 0u }
         val currentElements = KoneSettableList<E?>(size) { null }
@@ -350,7 +368,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equali
                 var lastIndex = 0u
                 KoneList(size) {
                     lastIndex = references[lastIndex]
-                    collection[lastIndex-1u]
+                    collection[lastIndex - 1u]
                 }
             }
             groupStarts = scope {
@@ -457,7 +475,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
                 var lastIndex = 0u
                 KoneList(size) {
                     lastIndex = references[lastIndex]
-                    collection[lastIndex-1u]
+                    collection[lastIndex - 1u]
                 }
             }
             groupStarts = scope {
