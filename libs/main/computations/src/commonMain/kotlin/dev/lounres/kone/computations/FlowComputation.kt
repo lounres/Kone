@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computations
 
-import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.list.KoneList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 

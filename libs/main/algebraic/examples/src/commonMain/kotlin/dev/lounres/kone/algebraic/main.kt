@@ -20,10 +20,8 @@ fun main() {
         val b = Rational(1, 3)
 
         // Operations with Rationals
-        println(+a)
-//      >>> 1/2
-        println(-b)
-//      >>> -1/3
+        println(-a)
+//      >>> -1/2
         println(a + b)
 //      >>> 5/6
         println(a - b)

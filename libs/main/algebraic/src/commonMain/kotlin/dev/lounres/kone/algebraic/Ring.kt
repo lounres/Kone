@@ -285,10 +285,6 @@ public interface Ring<Number> : Equality<Number> {
 
     // region Number-Number operations
     /**
-     * Returns the same value.
-     */
-    public operator fun Number.unaryPlus(): Number = this
-    /**
      * Inverses [this] value in terms of the [Ring].
      */
     public operator fun Number.unaryMinus(): Number
@@ -444,8 +440,6 @@ public operator fun <Number> ULong.times(other: Number): Number = with(ring) { t
 // endregion
 
 // region Number-Number operations
-context(ring: Ring<Number>)
-public operator fun <Number> Number.unaryPlus(): Number = with(ring) { +this@unaryPlus }
 context(ring: Ring<Number>)
 public operator fun <Number> Number.unaryMinus(): Number = with(ring) { -this@unaryMinus }
 context(ring: Ring<Number>)
