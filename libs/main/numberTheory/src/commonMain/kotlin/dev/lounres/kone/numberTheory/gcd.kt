@@ -7,7 +7,14 @@ package dev.lounres.kone.numberTheory
 
 import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
-import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.algebraic.divrem
+import dev.lounres.kone.algebraic.isZero
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.one
+import dev.lounres.kone.algebraic.rem
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.zero
+import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
 import kotlin.jvm.JvmInline
 import kotlin.math.*
@@ -128,20 +135,20 @@ internal tailrec fun bezoutIdentityWithGCDInternalLogic(a: Long, b: Long, m1: Lo
  *
  * @usesMathJax
  */
-context(EuclideanRing<N>)
+context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 public tailrec fun <N> gcd(a: N, b: N): N = if (a.isZero()) b else gcd(b % a, a)
 
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(EuclideanRing<N>)
+context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 public fun <N> gcd(vararg values: N): N = if (values.isEmpty()) zero else values.reduce { a, b -> gcd(a, b) }
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(EuclideanRing<N>)
+context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else zero }
 
@@ -149,7 +156,7 @@ public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor) of [a] and [b].
  */
-context(EuclideanRing<N>)
+context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
     bezoutIdentityWithGCDInternalLogic(a, b, one, zero, zero, one)
@@ -160,7 +167,7 @@ public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
  *
  * Also assumes that [a] and [b] are non-negative. TODO: Docs
  */
-context(EuclideanRing<N>)
+context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 internal tailrec fun <N> bezoutIdentityWithGCDInternalLogic(a: N, b: N, m1: N, m2: N, m3: N, m4: N): BezoutCoefficientsWithGCD<N> =
     if (b == 0L) BezoutCoefficientsWithGCD(m1, m3, a)

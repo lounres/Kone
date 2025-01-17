@@ -9,6 +9,7 @@ import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.compareWith
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.numberTheory.gcd
 import kotlin.jvm.JvmField

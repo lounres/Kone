@@ -6,6 +6,11 @@
 package dev.lounres.kone.numberTheory
 
 import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.div
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.one
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
 
 
 // region Int
@@ -25,7 +30,7 @@ public fun binomial(n: Int, k: Int): Int {
 /**
  * Computes [binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Binomial_coefficients_as_polynomials).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: Int): N {
     require(k >= 0) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
     var acc = one
@@ -46,7 +51,7 @@ public fun risingBinomial(n: Int, k: Int): Int {
 /**
  * Computes [rising binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Multiset_(rising)_binomial_coefficient).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: Int): N {
     require(k >= 0) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
     var acc = one
@@ -72,7 +77,7 @@ public fun binomial(n: UInt, k: UInt): UInt {
 /**
  * Computes [binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Binomial_coefficients_as_polynomials).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: UInt): N {
     var acc = one
     for (i in 1u..k) acc = acc * (n - (i - 1u)) / i
@@ -91,7 +96,7 @@ public fun risingBinomial(n: UInt, k: UInt): UInt {
 /**
  * Computes [rising binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Multiset_(rising)_binomial_coefficient).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: UInt): N {
     var acc = one
     for (i in 1u..k) acc = acc * (n + (i - 1u)) / i
@@ -117,7 +122,7 @@ public fun binomial(n: Long, k: Long): Long {
 /**
  * Computes [binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Binomial_coefficients_as_polynomials).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: Long): N {
     require(k >= 0L) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
     var acc = one
@@ -138,7 +143,7 @@ public fun risingBinomial(n: Long, k: Long): Long {
 /**
  * Computes [rising binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Multiset_(rising)_binomial_coefficient).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: Long): N {
     require(k >= 0L) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
     var acc = one
@@ -164,7 +169,7 @@ public fun binomial(n: ULong, k: ULong): ULong {
 /**
  * Computes [binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Binomial_coefficients_as_polynomials).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: ULong): N {
     require(k >= 0uL) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
     var acc = one
@@ -184,7 +189,7 @@ public fun risingBinomial(n: ULong, k: ULong): ULong {
 /**
  * Computes [rising binomial coefficient C(n, k) as polynomial of n](https://en.wikipedia.org/wiki/Binomial_coefficient#Multiset_(rising)_binomial_coefficient).
  */
-context(Field<N>)
+context(_: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: ULong): N {
     var acc = one
     for (i in 1uL..k) acc = acc * (n + (i - 1uL)) / i

@@ -31,7 +31,7 @@ import dev.lounres.kone.comparison.Equality
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Ring<Number>: Equality<Number> {
+public interface Ring<Number> : Equality<Number> {
     // region Constants
     /**
      * Represents zero element (a.k.a *neutral additive element*).
@@ -330,3 +330,136 @@ public interface Ring<Number>: Equality<Number> {
     public infix fun Number.pow(exponent: ULong): Number = power(this, exponent)
     // endregion
 }
+
+
+// region Constants
+context(ring: Ring<Number>)
+public val <Number> zero: Number get() = ring.zero
+context(ring: Ring<Number>)
+public val <Number> one: Number get() = ring.one
+// endregion
+
+// region Equality
+context(ring: Ring<Number>)
+public fun <Number> Number.isZero(): Boolean = with(ring) { this@isZero.isZero() }
+context(ring: Ring<Number>)
+public fun <Number> Number.isOne(): Boolean = with(ring) { this@isOne.isOne() }
+// FIXME: KT-5351
+context(ring: Ring<Number>)
+public fun <Number> Number.isNotZero(): Boolean = with(ring) { this@isNotZero.isNotZero() }
+// FIXME: KT-5351
+context(ring: Ring<Number>)
+public fun <Number> Number.isNotOne(): Boolean = with(ring) { this@isNotOne.isNotOne() }
+// endregion
+
+// region Integers conversion
+context(ring: Ring<Number>)
+public fun <Number> valueOf(arg: Int): Number = ring.valueOf(arg)
+context(ring: Ring<Number>)
+public fun <Number> valueOf(arg: UInt): Number = ring.valueOf(arg)
+context(ring: Ring<Number>)
+public fun <Number> valueOf(arg: Long): Number = ring.valueOf(arg)
+context(ring: Ring<Number>)
+public fun <Number> valueOf(arg: ULong): Number = ring.valueOf(arg)
+context(ring: Ring<Number>)
+public val <Number> Int.value: Number get() = with(ring) { this@value.value }
+context(ring: Ring<Number>)
+public val <Number> UInt.value: Number get() = with(ring) { this@value.value }
+context(ring: Ring<Number>)
+public val <Number> Long.value: Number get() = with(ring) { this@value.value }
+context(ring: Ring<Number>)
+public val <Number> ULong.value: Number get() = with(ring) { this@value.value }
+// endregion
+
+// region Number-Int operations
+context(ring: Ring<Number>)
+public operator fun <Number> Number.plus(other: Int): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.minus(other: Int): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.times(other: Int): Number = with(ring) { this@times * other }
+// endregion
+
+// region Number-UInt operations
+context(ring: Ring<Number>)
+public operator fun <Number> Number.plus(other: UInt): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.minus(other: UInt): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.times(other: UInt): Number = with(ring) { this@times * other }
+// endregion
+
+// region Number-Long operations
+context(ring: Ring<Number>)
+public operator fun <Number> Number.plus(other: Long): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.minus(other: Long): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.times(other: Long): Number = with(ring) { this@times * other }
+// endregion
+
+// region Number-ULong operations
+context(ring: Ring<Number>)
+public operator fun <Number> Number.plus(other: ULong): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.minus(other: ULong): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.times(other: ULong): Number = with(ring) { this@times * other }
+// endregion
+
+// region Int-Number operations
+context(ring: Ring<Number>)
+public operator fun <Number> Int.plus(other: Number): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Int.minus(other: Number): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Int.times(other: Number): Number = with(ring) { this@times * other }
+// endregion
+
+// region UInt-Number operations
+context(ring: Ring<Number>)
+public operator fun <Number> UInt.plus(other: Number): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> UInt.minus(other: Number): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> UInt.times(other: Number): Number = with(ring) { this@times * other }
+// endregion
+
+// region Long-Number operations
+context(ring: Ring<Number>)
+public operator fun <Number> Long.plus(other: Number): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Long.minus(other: Number): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Long.times(other: Number): Number = with(ring) { this@times * other }
+// endregion
+
+// region ULong-Number operations
+context(ring: Ring<Number>)
+public operator fun <Number> ULong.plus(other: Number): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> ULong.minus(other: Number): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> ULong.times(other: Number): Number = with(ring) { this@times * other }
+// endregion
+
+// region Number-Number operations
+context(ring: Ring<Number>)
+public operator fun <Number> Number.unaryPlus(): Number = with(ring) { +this@unaryPlus }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.unaryMinus(): Number = with(ring) { -this@unaryMinus }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.plus(other: Number): Number = with(ring) { this@plus + other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.minus(other: Number): Number = with(ring) { this@minus - other }
+context(ring: Ring<Number>)
+public operator fun <Number> Number.times(other: Number): Number = with(ring) { this@times * other }
+context(ring: Ring<Number>)
+public fun <Number> power(base: Number, exponent: UInt): Number = ring.power(base, exponent)
+context(ring: Ring<Number>)
+public fun <Number> power(base: Number, exponent: ULong): Number = ring.power(base, exponent)
+context(ring: Ring<Number>)
+public infix fun <Number> Number.pow(exponent: UInt): Number = with(ring) { this@pow pow exponent }
+context(ring: Ring<Number>)
+public infix fun <Number> Number.pow(exponent: ULong): Number = with(ring) { this@pow pow exponent }
+// endregion

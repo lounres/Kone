@@ -7,6 +7,13 @@ package dev.lounres.kone.algebraic.util
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.one
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.reciprocal
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.algebraic.zero
 import kotlin.jvm.JvmName
 
 
@@ -35,7 +42,7 @@ import kotlin.jvm.JvmName
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Int): Number = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -61,7 +68,7 @@ public infix fun <Number> Number.doublingPlus(other: Int): Number = rightAddMult
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Int): Number = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -88,8 +95,8 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
+context(_: Ring<Number>)
+public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
 // region Number-UInt additive operations
@@ -113,7 +120,7 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultip
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: UInt): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -135,7 +142,7 @@ public infix fun <Number> Number.doublingPlus(other: UInt): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -157,8 +164,8 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
+context(_: Ring<Number>)
+public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
 // region Number-Long additive operations
@@ -187,7 +194,7 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMulti
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Long): Number = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -213,7 +220,7 @@ public infix fun <Number> Number.doublingPlus(other: Long): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Long): Number = rightAddMultipliedByDoubling(this, one, -other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -240,8 +247,8 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMultiplyByDoubling(this, other, ::zero, { left, right -> left + right }, { c -> -c })
+context(_: Ring<Number>)
+public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
 // region Number-ULong additive operations
@@ -265,7 +272,7 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMulti
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: ULong): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -287,7 +294,7 @@ public infix fun <Number> Number.doublingPlus(other: ULong): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -309,8 +316,8 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddM
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMultiplyByDoubling(this, other, ::zero) { left, right -> left + right }
+context(_: Ring<Number>)
+public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
 // region Int-Number additive operations
@@ -338,7 +345,7 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMult
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Int.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -364,7 +371,7 @@ public infix fun <Number> Int.doublingPlus(other: Number): Number = rightAddMult
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Int.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -391,8 +398,8 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
+context(_: Ring<Number>)
+public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
 // region UInt-Number additive operations
@@ -416,7 +423,7 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultip
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> UInt.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -438,7 +445,7 @@ public infix fun <Number> UInt.doublingPlus(other: Number): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -460,8 +467,8 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
+context(_: Ring<Number>)
+public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
 // region Long-Number additive operations
@@ -489,7 +496,7 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMulti
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Long.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -515,7 +522,7 @@ public infix fun <Number> Long.doublingPlus(other: Number): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> Long.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -542,8 +549,8 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, ::zero, { left, right -> left + right }, { c -> -c })
+context(_: Ring<Number>)
+public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
 // region ULong-Number additive operations
@@ -567,7 +574,7 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMulti
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> ULong.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -589,7 +596,7 @@ public infix fun <Number> ULong.doublingPlus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -611,8 +618,8 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddM
  *
  * @usesMathJax
  */
-context(Ring<Number>)
-public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, ::zero) { left, right -> left + right }
+context(_: Ring<Number>)
+public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
 //region Multiplicative operations
@@ -641,9 +648,9 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMult
  *
  * @usesMathJax
  */
-context(Field<Number>)
+context(_: Field<Number>)
 @JvmName("squaringPowerReceiver")
-public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [Ring.one] if [exponent] is zero.
@@ -664,9 +671,9 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMul
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 @JvmName("squaringPowerUReceiver")
-public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right })
+public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, raise `this.reciprocal`
@@ -692,9 +699,9 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMu
  *
  * @usesMathJax
  */
-context(Field<Number>)
+context(_: Field<Number>)
 @JvmName("squaringPowerReceiver")
-public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [Ring.one] if [exponent] is zero.
@@ -715,7 +722,7 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMu
  *
  * @usesMathJax
  */
-context(Ring<Number>)
+context(_: Ring<Number>)
 @JvmName("squaringPowerUReceiver")
-public infix fun <Number> Number.squaringPower(exponent: ULong): Number = rightMultiplyByDoubling(this, exponent, ::one, { left, right -> left * right })
+public infix fun <Number> Number.squaringPower(exponent: ULong): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 //endregion

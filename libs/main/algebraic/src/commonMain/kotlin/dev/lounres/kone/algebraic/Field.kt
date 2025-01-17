@@ -11,7 +11,7 @@ package dev.lounres.kone.algebraic
  * It means that it is an extension of [Ring] interface that also provides division and exponentiation to the negative
  * integer power. See docs of [Ring] for a full description and docs of the [Field] interface's operations.
  */
-public interface Field<Number>: Ring<Number> {
+public interface Field<Number> : Ring<Number> {
     /**
      * Divides [this] number by [other] number in terms of the [Field].
      */
@@ -103,3 +103,32 @@ public interface Field<Number>: Ring<Number> {
      */
     public infix fun Number.pow(exponent: Long): Number = power(this, exponent)
 }
+
+context(field: Field<Number>)
+public operator fun <Number> Number.div(other: Number): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public val <Number> Number.reciprocal: Number get() = with(field) { this@reciprocal.reciprocal }
+context(field: Field<Number>)
+public operator fun <Number> Number.div(other: Int): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> Number.div(other: UInt): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> Number.div(other: Long): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> Number.div(other: ULong): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> Int.div(other: Number): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> UInt.div(other: Number): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> Long.div(other: Number): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public operator fun <Number> ULong.div(other: Number): Number = with(field) { this@div / other }
+context(field: Field<Number>)
+public fun <Number> power(base: Number, exponent: Int): Number = field.power(base, exponent)
+context(field: Field<Number>)
+public fun <Number> power(base: Number, exponent: Long): Number = field.power(base, exponent)
+context(field: Field<Number>)
+public infix fun <Number> Number.pow(exponent: Int): Number = with(field) { this@pow pow exponent }
+context(field: Field<Number>)
+public infix fun <Number> Number.pow(exponent: Long): Number = with(field) { this@pow pow exponent }

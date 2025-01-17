@@ -23,6 +23,13 @@ public class ReificationException(message: String) : RuntimeException(message)
 
 public fun reificationException(message: String = "Value can not be reified"): Nothing = throw ReificationException(message)
 
+context(reification: Reification<Element>)
+public fun <Element> reifyMaybe(element: Any?): Maybe<Element> = reification.reifyMaybe(element)
+context(reification: Reification<Element>)
+public fun <Element> reifyOrNull(element: Any?): Element? = reification.reifyOrNull(element)
+context(reification: Reification<Element>)
+public fun <Element> reify(element: Any?): Element = reification.reify(element)
+
 ///**
 // * [Reification] builder from a reified type [Element] that is used to cast elements.
 // */
@@ -47,3 +54,6 @@ public inline fun <reified Element> Reification(): Reification<Element> =
         override fun reifyOrNull(element: Any?): Element? = element as? Element
         override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
     }
+
+public inline fun <reified Element, Result> Reification(block: context(Reification<Element>) () -> Result): Result =
+    block(Reification())

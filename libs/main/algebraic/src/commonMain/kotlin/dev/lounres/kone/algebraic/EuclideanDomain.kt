@@ -42,3 +42,13 @@ public interface EuclideanRing<Number> : Ring<Number> {
      */
     public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
 }
+
+context(ring: EuclideanRing<Number>)
+@ExperimentalKoneAPI
+public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<Number> = with(ring) { this@divrem divrem other }
+context(ring: EuclideanRing<Number>)
+@ExperimentalKoneAPI
+public operator fun <Number> Number.div(other: Number): Number = with(ring) { this@div / other }
+context(ring: EuclideanRing<Number>)
+@ExperimentalKoneAPI
+public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }

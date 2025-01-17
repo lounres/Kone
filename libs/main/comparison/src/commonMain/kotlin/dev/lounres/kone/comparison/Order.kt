@@ -78,70 +78,76 @@ public fun <Element> KotlinStdlibComparator<Element>.asKotlinStdlib(): Comparato
     Comparator { left, right -> compare(left, right).asComparisonResult() }
 
 /**
+ * Compares [this] and [other] elements. Bridge contextual function for [Order.compareWith].
+ */
+context(order: Order<Element>)
+public infix fun <Element> Element.compareWith(other: Element): ComparisonResult = with(order) { this@compareWith.compareWith(other) }
+
+/**
  * Compares [this] and [other] elements but in terms of the built-in language `compareTo` operator.
  *
  * The only usage is to import to make `<`, `<=`, `>`, and `>=` work in [Order] context.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public operator fun <Element> Element.compareTo(other: Element): Int = this.compareWith(other).asKotlinComparisonResult()
 
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.greaterThan(other: Element): Boolean = this.compareWith(other) == ComparisonResult.LeftIsGreaterThanRight
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.greaterThanOrEqual(other: Element): Boolean = this.compareWith(other) != ComparisonResult.LeftIsLessThanRight
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.lessThen(other: Element): Boolean = this.compareWith(other) == ComparisonResult.LeftIsLessThanRight
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.lessThenOrEqual(other: Element): Boolean = this.compareWith(other) != ComparisonResult.LeftIsGreaterThanRight
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.gt(other: Element): Boolean = this greaterThan other
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.geq(other: Element): Boolean = this greaterThanOrEqual other
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.lt(other: Element): Boolean = this lessThen other
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public inline infix fun <Element> Element.leq(other: Element): Boolean = this lessThenOrEqual other
 
 /**
  * Returns the smaller of two values [a] and [b].
  */
-context(Order<Element>)
-public fun <Element> min(a: Element, b: Element): Element = if (a <= b) a else b
+context(_: Order<Element>)
+public fun <Element> min(a: Element, b: Element): Element = if (a leq b) a else b
 /**
  * Returns the greater of two values [a] and [b].
  */
-context(Order<Element>)
-public fun <Element> max(a: Element, b: Element): Element = if (a >= b) a else b
+context(_: Order<Element>)
+public fun <Element> max(a: Element, b: Element): Element = if (a geq b) a else b
 /**
  * Returns the smallest value from [elements]. If [elements] is empty throws [IllegalArgumentException].
  *
  * @throws IllegalArgumentException If [elements] is empty.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public fun <Element> min(vararg elements: Element): Element {
     if (elements.isEmpty()) throw IllegalArgumentException("Cannot calculate minimum of an empty collection of elements")
     return elements.reduce { a, b -> min(a, b) }
@@ -151,7 +157,7 @@ public fun <Element> min(vararg elements: Element): Element {
  *
  * @throws IllegalArgumentException If [elements] is empty.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public fun <Element> max(vararg elements: Element): Element {
     if (elements.isEmpty()) throw IllegalArgumentException("Cannot calculate maximum of an empty collection of elements")
     return elements.reduce { a, b -> max(a, b) }
@@ -215,7 +221,7 @@ public fun <Element> Order<Element>.asComparator(): Comparator<Element> = Compar
  * Converts provided [Order] context receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public val <Element> comparator: Comparator<Element> get() = Comparator { left, right -> left.compareWith(right) }
 /**
  * Creates a comparator using the sequence of functions to calculate a result of comparison.
@@ -226,7 +232,7 @@ public val <Element> comparator: Comparator<Element> get() = Comparator { left, 
  * Such order is usually called [lexicographic order](https://en.wikipedia.org/wiki/Lexicographic_order#Cartesian_products)
  * with respect to the provided orders.
  */
-context(Order<Element>)
+context(_: Order<Element>)
 public fun <Target, Element> compareByOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { a, b ->
     for (s in selectors) {
         val comparisonResult = s(a).compareWith(s(b))
@@ -264,11 +270,11 @@ public operator fun <Element> Element.rangeUntil(other: Element): RightOpenRange
  * Checks if the provided [element] lies in a closed interval from [ClosedRange.start] to [ClosedRange.endInclusive]
  * with respect to contextual order.
  */
-context(Order<Element>)
-public operator fun <Element> ClosedRange<Element>.contains(element: Element): Boolean = element >= start && element <= endInclusive
+context(_: Order<Element>)
+public operator fun <Element> ClosedRange<Element>.contains(element: Element): Boolean = element geq start && element leq endInclusive
 /**
  * Checks if the provided [element] lies in a right-open interval from [RightOpenRange.start] to [RightOpenRange.endExclusive]
  * with respect to contextual order.
  */
-context(Order<Element>)
-public operator fun <Element> RightOpenRange<Element>.contains(element: Element): Boolean = element >= start && element < endExclusive
+context(_: Order<Element>)
+public operator fun <Element> RightOpenRange<Element>.contains(element: Element): Boolean = element geq start && element lt endExclusive

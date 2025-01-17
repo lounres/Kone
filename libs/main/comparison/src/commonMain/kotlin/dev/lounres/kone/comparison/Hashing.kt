@@ -26,6 +26,9 @@ public interface Hashing<in Element> : Equality<Element> {
     public fun Element.hash(): Int = this.hashCode()
 }
 
+context(hashing: Hashing<Element>)
+public fun <Element> Element.hash(): Int = with(hashing) { this@hash.hash() }
+
 public interface ReifiedHashing<Element> : Hashing<Element>, ReifiedEquality<Element>
 
 /**
@@ -79,3 +82,9 @@ public inline fun <reified Element> absoluteReifiedHashing(): ReifiedHashing<Ele
         override fun reifyOrNull(element: Any?): Element? = element as? Element
         override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
     }
+
+public inline fun <Element, Result> defaultHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultContext)
+public inline fun <Element, Result> absoluteHashing(block: context(Hashing<Element>) () -> Result): Result = block(AbsoluteContext)
+
+public inline fun <reified Element, Result> defaultReifiedHashing(block: context(ReifiedHashing<Element>) () -> Result): Result = block(defaultReifiedHashing())
+public inline fun <reified Element, Result> absoluteReifiedHashing(block: context(ReifiedHashing<Element>) () -> Result): Result = block(absoluteReifiedHashing())
