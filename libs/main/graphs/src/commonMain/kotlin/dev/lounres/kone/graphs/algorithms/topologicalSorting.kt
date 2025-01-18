@@ -5,24 +5,26 @@
 
 package dev.lounres.kone.graphs.algorithms
 
-import dev.lounres.kone.collections.HeapNode
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.get
-import dev.lounres.kone.collections.implementations.KoneGCBinaryMinimumHeap
-import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.collections.koneMutableMapOf
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.collections.heap.HeapNode
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.map.get
+import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.map.koneMutableMapOf
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.defaultOrder
-import dev.lounres.kone.graphs.DigraphWithContext
+import dev.lounres.kone.graphs.Digraph
+import dev.lounres.kone.graphs.DigraphVertex
 
 
-public fun <V, E, G> G.sortVerticesTopologicallyByKahn(): KoneList<V> where G: DigraphWithContext<V, *, E, *> {
-    val verticesToProcess = KoneGCBinaryMinimumHeap<V, UInt, Order<UInt>>(defaultOrder<UInt>())
-    val result = KoneArrayFixedCapacityList<V>(vertices.size)
-    val verticesNodes = koneMutableMapOf<V, HeapNode<V, UInt>>(vertexContext)
+public fun <Vertex: DigraphVertex<Vertex, *>> Digraph<Vertex, *>.sortVerticesTopologicallyByKahn(): KoneList<Vertex> {
+    val verticesToProcess = KoneGCBinaryMinimumHeap<Vertex, UInt, Order<UInt>>(defaultOrder<UInt>())
+    val result = KoneArrayFixedCapacityList<Vertex>(vertices.size)
+    val verticesNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, UInt>>(absoluteEquality())
     
-    for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, vertex.indegree)
+    for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, vertex.inDegree)
     
     while (verticesToProcess.size != 0u) {
         val currentVertexNode = verticesToProcess.popMinimum()

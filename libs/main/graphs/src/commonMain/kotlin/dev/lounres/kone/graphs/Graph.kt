@@ -5,122 +5,22 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.collections.KoneSet
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.KoneContext
-import dev.lounres.kone.context.invoke
-import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.collections.set.KoneReifiedSet
 
 
-public data class EdgeEnds<V>(val start: V, val end: V)
-
-context(Equality<V>)
-public operator fun <V> EdgeEnds<V>.contains(vertex: V): Boolean = vertex eq start || vertex eq end
-context(GraphWithContext<V, *, *, *>)
-public operator fun <V> EdgeEnds<V>.contains(vertex: V): Boolean = vertexContext { vertex eq start || vertex eq end }
-context(Equality<V>)
-public operator fun <V> EdgeEnds<V>.minus(vertex: V): V = if (vertex eq start) end else start
-context(GraphWithContext<V, *, *, *>)
-public operator fun <V> EdgeEnds<V>.minus(vertex: V): V = vertexContext { if (vertex eq start) end else start }
-
-public interface Graph<V, E> : KoneContext {
-    public val vertices: KoneSet<V>
-    public val edges: KoneSet<E>
-
-    public val V.incidentEdges: KoneSet<E>
-    public val V.adjacentVertices: KoneSet<V>
-    public val V.degree: UInt
-    public fun edge(tail: V, head: V): E
-    public fun edgeOrNull(tail: V, head: V): E?
-    public fun edgeMaybe(tail: V, head: V): Maybe<E>
-
-    public val E.ends: EdgeEnds<V>
-//    public val E.adjacentEdges: KoneIterableSet<E>
-//        get() = buildKoneIterableSet(edgeContext) {
-//            val ends = ends
-//            addAllFrom(ends.first.incidentEdges)
-//            addAllFrom(ends.second.incidentEdges)
-//        }
+public interface GraphVertex<out Vertex: GraphVertex<Vertex, Edge>, out Edge: GraphEdge<Vertex, Edge>> {
+    public val incidentEdges: KoneReifiedSet<Edge>
+    public val adjacentVertices: KoneReifiedSet<Vertex>
+    public val degree: UInt
+        get() = incidentEdges.size
 }
 
-public interface GraphWithContext<V, out VC: Equality<V>, E, out EC: Equality<E>>: Graph<V, E> {
-    public val vertexContext: VC
-    public val edgeContext: EC
+public interface GraphEdge<out Vertex: GraphVertex<Vertex, Edge>, out Edge: GraphEdge<Vertex, Edge>> {
+    public val ends: EdgeEnds<Vertex>
+    public val adjacentEdges: KoneReifiedSet<Edge>
 }
 
-public interface Digraph<V, E> {
-    
-    public val vertices: KoneSet<V>
-    public val edges: KoneSet<E>
-    
-    public val V.incidentEdges: KoneSet<E>
-    public val V.adjacentVertices: KoneSet<V>
-    public val V.degree: UInt
-    public fun edge(tail: V, head: V): E
-    public fun edgeOrNull(tail: V, head: V): E?
-    public fun edgeMaybe(tail: V, head: V): Maybe<E>
-    public val V.outgoingEdges: KoneSet<E>
-    public val V.incomingEdges: KoneSet<E>
-    public val V.adjacentOutgoingVertices: KoneSet<V>
-    public val V.adjacentIncomingVertices: KoneSet<V>
-    public val V.outdegree: UInt
-    public val V.indegree: UInt
-    
-    public val E.ends: EdgeEnds<V>
-    public val E.head: V // from
-    public val E.tail: V // to
+public interface Graph<out Vertex: GraphVertex<Vertex, Edge>, out Edge: GraphEdge<Vertex, Edge>> {
+    public val vertices: KoneReifiedSet<Vertex>
+    public val edges: KoneReifiedSet<Edge>
 }
-
-public interface DigraphWithContext<V, VC: Equality<V>, E, EC: Equality<E>>: Digraph<V, E> {
-    public val vertexContext: VC
-    public val edgeContext: EC
-}
-
-public interface EdgeWeightedGraph<V, E, W>: Graph<V, E> {
-    public val E.weight: W
-}
-
-//context(Graph<V, E>)
-//public inline fun <V, E> V.breadthFirstSearch(onEach: (vertex: V) -> Unit) {
-//    val queue = ArrayDeque<V>()
-//    queue.add(this)
-//    val exploredVertices = HashSet<V>(vertices.size)
-//    while (queue.isNotEmpty()) {
-//        val v = queue.removeFirst()
-//        exploredVertices.add(v)
-//        for (u in v.adjacentVertices) if (u !in exploredVertices) queue.add(u)
-//        onEach(v)
-//    }
-//}
-
-//context(Graph<V, E>)
-//public inline fun <V, E> V.depthFirstSearch(onEach: (vertex: V) -> Unit) {
-//    val stack = ArrayDeque<Iterator<V>>()
-//    stack.add(iterator { yield(this@V) })
-//    val exploredVertices = HashSet<V>(vertices.size)
-//    while (stack.isNotEmpty()) {
-//        val lastIterator = stack.last()
-//        if (lastIterator.hasNext()) {
-//            val nextVertex = lastIterator.next()
-//            if (nextVertex in exploredVertices) continue
-//            onEach(nextVertex)
-//            exploredVertices.add(nextVertex)
-//            stack.add(nextVertex.adjacentVertices.iterator())
-//        } else {
-//            stack.removeLast()
-//        }
-//    }
-//}
-
-//context(EdgeWeightedGraph<V, E, N>)
-//public fun <V, E, N> KoneIterableSet<V>.topologicallySorted(): KoneIterableList<E> {
-//    val result = KoneFixedCapacityArrayList(capacity = this.size, elementContext = vertexContext)
-//
-//
-//}
-
-//context(EdgeWeightedGraph<V, E, N>, Ring<N>, Order<N>)
-//public fun <V, E, N> dijkstrasAlgorithm(start: V): Map<V, N> {
-//
-//}
