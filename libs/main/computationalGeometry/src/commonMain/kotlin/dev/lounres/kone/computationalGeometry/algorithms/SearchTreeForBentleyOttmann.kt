@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms
 
-import dev.lounres.kone.collections.implementations.Disposable
+import dev.lounres.kone.collections.Disposable
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {
@@ -797,6 +797,9 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         element: Node<E>,
         var secondChild: NodeHolder<E>?,
     ) : NodeHolder<E> {
+        override var isDisposed: Boolean = false
+            private set
+        
         override var parent: NodeHolder<E>? = null
         private var _element: Node<E>? = element
         var element: Node<E>
@@ -819,6 +822,9 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         secondElement: Node<E>,
         var thirdChild: NodeHolder<E>?,
     ) : NodeHolder<E> {
+        override var isDisposed: Boolean = false
+            private set
+        
         override var parent: NodeHolder<E>? = null
         private var _firstElement: Node<E>? = firstElement
         var firstElement: Node<E>

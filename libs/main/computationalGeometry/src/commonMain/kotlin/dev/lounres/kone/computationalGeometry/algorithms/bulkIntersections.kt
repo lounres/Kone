@@ -6,24 +6,29 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.collections.HeapNode
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneSettableList
-import dev.lounres.kone.collections.MinimumHeap
-import dev.lounres.kone.collections.implementations.KoneGCBinaryMinimumHeap
-import dev.lounres.kone.collections.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.algebraic.div
+import dev.lounres.kone.algebraic.isNotZero
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.collections.heap.HeapNode
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.heap.MinimumHeap
+import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.compareTo
 import dev.lounres.kone.comparison.gt
 import dev.lounres.kone.comparison.lt
-import dev.lounres.kone.computationalGeometry.EuclideanKategory
+import dev.lounres.kone.computationalGeometry.EuclideanKategory2
 import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Segment2
-import dev.lounres.kone.computationalGeometry.end
-import dev.lounres.kone.computationalGeometry.lexicographic2DOrder
+import dev.lounres.kone.computationalGeometry.curves.Segment2
+import dev.lounres.kone.computationalGeometry.curves.end
+import dev.lounres.kone.computationalGeometry.utils.lexicographic2DOrder
 import dev.lounres.kone.context.invoke
 
 
@@ -51,7 +56,7 @@ private fun <N, A> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttm
     }
 }
 
-context(A, EuclideanKategory<N>, Order<Point2<N>>)
+context(_: A, _: EuclideanKategory2<N>, _: Order<Point2<N>>)
 private fun <N, A> addIntersectionFor(
     segmentsList: KoneList<Segment2<N>>,
     eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>>,
@@ -87,7 +92,7 @@ private fun <N, A> addIntersectionFor(
 /**
  * https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
  */
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory2<N>)
 public fun <N, A> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N>>> where A: Field<N>, A: Order<N> {
     val pointsOrder = lexicographic2DOrder
     val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = KoneGCBinaryMinimumHeap(pointsOrder)

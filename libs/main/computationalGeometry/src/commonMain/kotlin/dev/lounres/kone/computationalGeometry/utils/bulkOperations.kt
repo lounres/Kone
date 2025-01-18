@@ -8,7 +8,23 @@ package dev.lounres.kone.computationalGeometry.utils
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.Vector
-import dev.lounres.kone.linearAlgebra.experiment1.utils.*
+import dev.lounres.kone.linearAlgebra.utils.all
+import dev.lounres.kone.linearAlgebra.utils.allIndexed
+import dev.lounres.kone.linearAlgebra.utils.any
+import dev.lounres.kone.linearAlgebra.utils.anyIndexed
+import dev.lounres.kone.linearAlgebra.utils.fold
+import dev.lounres.kone.linearAlgebra.utils.foldIndexed
+import dev.lounres.kone.linearAlgebra.utils.forEach
+import dev.lounres.kone.linearAlgebra.utils.forEachIndexed
+import dev.lounres.kone.linearAlgebra.utils.map
+import dev.lounres.kone.linearAlgebra.utils.mapIndexed
+import dev.lounres.kone.linearAlgebra.utils.none
+import dev.lounres.kone.linearAlgebra.utils.noneIndexed
+import dev.lounres.kone.linearAlgebra.utils.sum
+import dev.lounres.kone.linearAlgebra.utils.sumOf
+import dev.lounres.kone.linearAlgebra.utils.sumOfIndexed
+import dev.lounres.kone.linearAlgebra.utils.withEach
+import dev.lounres.kone.linearAlgebra.utils.withEachIndexed
 
 
 public inline fun <E> Point<E>.forEach(block: (value: E) -> Unit) {
@@ -85,22 +101,22 @@ public inline fun <E, R> Vector<E>.foldIndexed(initial: R, operation: (index: UI
 
 // TODO: Add `reduce`-like extensions
 
-context(Ring<E>)
+context(_: Ring<E>)
 public fun <E> Point<E>.sum(): E = coordinates.sum()
 
-context(Ring<E>)
+context(_: Ring<E>)
 public fun <E> Vector<E>.sum(): E = coordinates.sum()
 
-context(Ring<A>)
+context(_: Ring<A>)
 public inline fun <E, A> Point<E>.sumOf(selector: (E) -> A): A = coordinates.sumOf(selector)
 
-context(Ring<A>)
+context(_: Ring<A>)
 public inline fun <E, A> Vector<E>.sumOf(selector: (E) -> A): A = coordinates.sumOf(selector)
 
-context(Ring<A>)
+context(_: Ring<A>)
 public inline fun <E, A> Point<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = coordinates.sumOfIndexed(selector)
 
-context(Ring<A>)
+context(_: Ring<A>)
 public inline fun <E, A> Vector<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = coordinates.sumOfIndexed(selector)
 
 // TODO: Add bulk operations

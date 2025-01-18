@@ -6,13 +6,18 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.KoneList
-import dev.lounres.kone.collections.KoneMutableList
-import dev.lounres.kone.collections.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.collections.next
+import dev.lounres.kone.algebraic.one
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
-import dev.lounres.kone.computationalGeometry.MutablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.Vector
+import dev.lounres.kone.computationalGeometry.dot
+import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.computationalGeometry.times
 import dev.lounres.kone.repeat
 
 
@@ -22,15 +27,15 @@ internal data class GramSchmidtOrthogonalizationIntermediateState<N>(
     val exclusiveProducts: KoneMutableList<N>,
 )
 
-context(MutablePolytopicConstruction<N, *, *>)
+context(mutablePolytopicConstruction: MutablePolytopicConstruction<N>)
 internal fun <N> GramSchmidtOrthogonalizationIntermediateState<N>.clone(): GramSchmidtOrthogonalizationIntermediateState<N> =
     GramSchmidtOrthogonalizationIntermediateState(
-        orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
+        orthogonalizedBasis = KoneArrayFixedCapacityList(mutablePolytopicConstruction.spaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
         product = product,
-        exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
+        exclusiveProducts = KoneArrayFixedCapacityList(mutablePolytopicConstruction.spaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
     )
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory<N>)
 internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationUsage(newVector: Vector<N>): Vector<N> {
     // FIXME: KT-67840
 //    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
@@ -47,7 +52,7 @@ internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gr
     return result
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory<N>)
 internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector<N>) {
     val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
@@ -57,12 +62,12 @@ internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gr
     product *= currentNorm
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory<N>)
 internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationStep(newVector: Vector<N>) {
     gramSchmidtOrthogonalizationExtension(gramSchmidtOrthogonalizationUsage(newVector))
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory<N>)
 internal fun <N, A: Ring<N>> KoneList<Vector<N>>.gramSchmidtOrthogonalization(): KoneList<Vector<N>> {
     val result = GramSchmidtOrthogonalizationIntermediateState<N>(
         orthogonalizedBasis = KoneArrayFixedCapacityList(size),

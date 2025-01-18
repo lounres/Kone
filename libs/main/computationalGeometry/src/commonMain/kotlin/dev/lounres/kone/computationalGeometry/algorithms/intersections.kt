@@ -5,21 +5,12 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.contains
-import dev.lounres.kone.comparison.leq
-import dev.lounres.kone.comparison.max
-import dev.lounres.kone.comparison.min
-import dev.lounres.kone.comparison.rangeTo
-import dev.lounres.kone.computationalGeometry.EuclideanKategory
-import dev.lounres.kone.computationalGeometry.Line2
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Segment2
-import dev.lounres.kone.computationalGeometry.cross
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.times
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.comparison.*
+import dev.lounres.kone.computationalGeometry.*
+import dev.lounres.kone.computationalGeometry.curves.Line2
+import dev.lounres.kone.computationalGeometry.curves.Segment2
+import dev.lounres.kone.computationalGeometry.utils.cross
 
 
 public sealed interface Line2WithLine2IntersectionInSteps<out N> {
@@ -28,7 +19,7 @@ public sealed interface Line2WithLine2IntersectionInSteps<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val step1: N, val step2: N) : Line2WithLine2IntersectionInSteps<N>
 }
 
-context(Field<N>, EuclideanKategory<N>)
+context(_: Field<N>, _: EuclideanKategory2<N>)
 public fun <N> Line2<N>.intersectInSteps(other: Line2<N>): Line2WithLine2IntersectionInSteps<N> {
     val det = this.direction cross other.direction
     val dif = other.start - this.start
@@ -48,7 +39,7 @@ public sealed interface Line2WithLine2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>) : Line2WithLine2Intersection<N>
 }
 
-context(Field<N>, EuclideanKategory<N>)
+context(_: Field<N>, _: EuclideanKategory2<N>)
 public fun <N> Line2<N>.intersect(other: Line2<N>): Line2WithLine2Intersection<N> =
     when (val resultInSteps = this.intersectInSteps(other)) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
@@ -65,7 +56,7 @@ public sealed interface Line2WithSegment2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Line2WithSegment2Intersection<N>
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory2<N>)
 public fun <N, A> Line2<N>.intersect(other: Segment2<N>): Line2WithSegment2Intersection<N> where A: Field<N>, A: Order<N> =
     when (val resultInSteps = this.intersectInSteps(Line2(other.start, other.direction))) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
@@ -84,7 +75,7 @@ public sealed interface Segment2WithLine2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Segment2WithLine2Intersection<N>
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory2<N>)
 public fun <N, A> Segment2<N>.intersect(other: Line2<N>): Segment2WithLine2Intersection<N> where A: Field<N>, A: Order<N> =
     when (val resultInSteps = Line2(this.start, this.direction).intersectInSteps(other)) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
@@ -103,7 +94,7 @@ public sealed interface Segment2WithSegment2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Segment2WithSegment2Intersection<N>
 }
 
-context(A, EuclideanKategory<N>)
+context(_: A, _: EuclideanKategory2<N>)
 public fun <N, A> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment2Intersection<N> where A: Field<N>, A: Order<N> =
     when (val resultInSteps = Line2(this.start, this.direction).intersectInSteps(Line2(other.start, other.direction))) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
