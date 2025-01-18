@@ -8,7 +8,7 @@ package dev.lounres.kone.multidimensionalCollections
 import dev.lounres.kone.collections.array.KoneUIntArray
 
 
-public class ShapeMismatchException(message: String = "Shapes mismatch") : RuntimeException(message = message)
+public class ShapeMismatchException(message: String = "Shapes mismatch") : RuntimeException(message)
 
 public fun shapeMismatchException(left: MDShape, right: MDShape): Nothing =
     throw ShapeMismatchException("Shapes $left and $right mismatch.")

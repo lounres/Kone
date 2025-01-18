@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry.util
 
-import dev.lounres.kone.collections.KoneList
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.computationalGeometry.Point
 import kotlinx.serialization.Serializable
 
