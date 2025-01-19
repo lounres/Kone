@@ -6,7 +6,10 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.isNotZero
+import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
@@ -14,15 +17,19 @@ import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
+import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.buildKoneSet
+import dev.lounres.kone.collections.set.comparison.koneSetEquality
 import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
 import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.collections.set.koneReifiedSetOf
@@ -33,6 +40,7 @@ import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.compareWith
+import dev.lounres.kone.comparison.defaultReifiedEquality
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.Vector
@@ -41,7 +49,10 @@ import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionPolytope
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVertex
+import dev.lounres.kone.computationalGeometry.times
+import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.scope
 
 
@@ -89,10 +100,7 @@ internal fun <
     require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
     val allVertices = otherPoints.toKoneMutableSet(elementContext = absoluteEquality()).apply { addAllFrom(startFacet.vertices) }
 
-    scope {
-        val registeredFace = computedFacesRegistry.getOrNull(allVertices)
-        if (registeredFace != null) return registeredFace
-    }
+    computedFacesRegistry.getOrNull(allVertices)?.let { return it }
 
     if (subspaceDimension == 1u) {
         val startKoneVertex = startFacet.vertices.single()
@@ -182,8 +190,6 @@ internal fun <
     return addPolytope(convexHullVertices, restConvexHullFaces).also { computedFacesRegistry[convexHullVertices] = it }
 }
 
-// TODO: Fix migration to new API.
-
 internal data class WrappingResult<Number, Polytope, Vertex>(
     var polytope: Polytope,
     val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
@@ -191,112 +197,166 @@ internal data class WrappingResult<Number, Polytope, Vertex>(
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number>,
 )
 
-//context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
-//internal fun <N, A, P, V: P> giftWrappingExtension(
-//    subspaceDimension: UInt,
-//    wrappingResult: WrappingResult<N, P, V>,
-//    normalVector: Vector<N>,
-//    otherPoints: KoneIterable<V>
-//) where A: Ring<N>, A: Order<N> {
-//    if (otherPoints.isEmpty()) return
-//    require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
-//
-//    val otherPoints = otherPoints.toKoneMutableSet(elementContext = polytopeContext)
-//    var currentNormalVector = normalVector
-//
-//    while (otherPoints.isNotEmpty()) {
-//        if (wrappingResult.orthogonalizationState.orthogonalizedBasis.size == subspaceDimension - 1u) {
-//            val resultingPolytope = giftWrappingIncrement(
-//                subspaceDimension = subspaceDimension,
-//                startFacet = wrappingResult.polytope,
-//                otherPoints = otherPoints,
-//                computedFacesRegistry = wrappingResult.computedFacesRegistry,
-//            )
-//            wrappingResult.polytope = resultingPolytope
-//            val newVector = otherPoints.first().position - wrappingResult.startPoint
-//            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
-//            return
-//        }
-//
-//        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
-//        extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
-//
-//        val tangentVector = otherPoints.firstOfThatOrNull({
-//            extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
-//        }) { it.any { it.isNotZero() } } ?: scope {
-//            val resultingPolytope = giftWrappingIncrement(
-//                subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
-//                startFacet = wrappingResult.polytope,
-//                otherPoints = otherPoints,
-//                computedFacesRegistry = wrappingResult.computedFacesRegistry,
-//            )
-//            wrappingResult.polytope = resultingPolytope
-//            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(otherPoints.first().position - wrappingResult.startPoint)
-//            return
-//        }
-//
-//        val nextPoints = giftWrappingAtom(
-//            startPoint = wrappingResult.startPoint,
-//            normalGiftWrappingVector = currentNormalVector,
-//            tangentGiftWrappingVector = tangentVector,
-//            otherPoints = otherPoints
-//        )
-//
-//        giftWrappingExtension(
-//            subspaceDimension = subspaceDimension - 1u,
-//            wrappingResult = wrappingResult,
-//            normalVector = currentNormalVector,
-//            otherPoints = nextPoints,
-//        )
-//
-//        otherPoints.removeAllFrom(nextPoints)
-//        currentNormalVector = scope {
-//            val vectorOfTheExtensionDirection = nextPoints.first().position - wrappingResult.startPoint
-//            tangentVector * (currentNormalVector dot vectorOfTheExtensionDirection) - currentNormalVector * (tangentVector dot vectorOfTheExtensionDirection)
-//        }
-//    }
-//}
-//
-//context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
-//internal fun <N, A, P, V: P> giftWrappingFull(
-//    subspaceDimension: UInt,
-//    points: KoneIterable<V>,
-//): WrappingResult<N, P, V> where A: Ring<N>, A: Order<N> {
-//    require(points.isNotEmpty()) { TODO("Error message is not specified") }
-//    if (subspaceDimension == 0u) {
-//        val theOnlyVertex = points.single()
-//        return WrappingResult(
-//            polytope = theOnlyVertex,
-//            computedFacesRegistry = koneMutableMapOf(
-//                keyContext = koneSetEquality(polytopeContext)
-//            ),
-//            startPoint = theOnlyVertex.position,
-//            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
-//                orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension),
-//                product = one,
-//                exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension)
-//            )
-//        )
-//    }
-//
-//    val startPoints = points.minListBy { it.position.coordinates[subspaceDimension - 1u] }
-//    val wrappingResult = giftWrappingFull(subspaceDimension - 1u, startPoints)
-//
-//    giftWrappingExtension(
-//        subspaceDimension = subspaceDimension,
-//        wrappingResult = wrappingResult,
-//        normalVector = dev.lounres.kone.computationalGeometry.Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
-//        otherPoints = points.toKoneMutableSet(elementContext = polytopeContext).apply { removeAllFrom(startPoints) }
-//    )
-//
-//    return wrappingResult
-//}
-//
-//context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
-//public fun <N, A, P, V: P> KoneIterable<V>.constructConvexHullByGiftWrapping(): P where A: Ring<N>, A: Order<N> {
-//    require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
-//    return giftWrappingFull(spaceDimension, this).polytope
-//}
+context(_: NumberContext, _: EuclideanKategory<Number>)
+internal fun <
+    Number,
+    NumberContext,
+    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingExtension(
+    subspaceDimension: UInt,
+    wrappingResult: WrappingResult<Number, Polytope, Vertex>,
+    normalVector: Vector<Number>,
+    otherPoints: KoneIterable<Vertex>,
+    vertexContext: ReifiedEquality<Vertex>,
+    polytopeContext: ReifiedEquality<Polytope>,
+) where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+    if (otherPoints.isEmpty()) return
+    require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
+
+    val otherPoints = otherPoints.toKoneMutableSet(elementContext = vertexContext)
+    var currentNormalVector = normalVector
+
+    while (otherPoints.isNotEmpty()) {
+        if (wrappingResult.orthogonalizationState.orthogonalizedBasis.size == subspaceDimension - 1u) {
+            val resultingPolytope = giftWrappingIncrement(
+                subspaceDimension = subspaceDimension,
+                startFacet = wrappingResult.polytope,
+                otherPoints = otherPoints,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
+                vertexContext = vertexContext,
+                polytopeContext = polytopeContext,
+            )
+            wrappingResult.polytope = resultingPolytope
+            val newVector = otherPoints.first().position - wrappingResult.startPoint
+            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
+            return
+        }
+
+        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
+        extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
+
+        val tangentVector = otherPoints.firstOfThatOrNull({
+            extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
+        }) { it.any { it.isNotZero() } } ?: scope {
+            val resultingPolytope = giftWrappingIncrement(
+                subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
+                startFacet = wrappingResult.polytope,
+                otherPoints = otherPoints,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
+                vertexContext = vertexContext,
+                polytopeContext = polytopeContext,
+            )
+            wrappingResult.polytope = resultingPolytope
+            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(otherPoints.first().position - wrappingResult.startPoint)
+            return
+        }
+
+        val nextPoints = giftWrappingAtom(
+            startPoint = wrappingResult.startPoint,
+            normalGiftWrappingVector = currentNormalVector,
+            tangentGiftWrappingVector = tangentVector,
+            otherPoints = otherPoints
+        )
+
+        giftWrappingExtension(
+            subspaceDimension = subspaceDimension - 1u,
+            wrappingResult = wrappingResult,
+            normalVector = currentNormalVector,
+            otherPoints = nextPoints,
+            vertexContext = vertexContext,
+            polytopeContext = polytopeContext,
+        )
+
+        otherPoints.removeAllFrom(nextPoints)
+        currentNormalVector = scope {
+            val vectorOfTheExtensionDirection = nextPoints.first().position - wrappingResult.startPoint
+            tangentVector * (currentNormalVector dot vectorOfTheExtensionDirection) - currentNormalVector * (tangentVector dot vectorOfTheExtensionDirection)
+        }
+    }
+}
+
+context(_: NumberContext, _: EuclideanKategory<Number>)
+internal fun <
+    Number,
+    NumberContext,
+    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingFull(
+    subspaceDimension: UInt,
+    points: KoneIterable<Vertex>,
+    vertexContext: ReifiedEquality<Vertex>,
+    polytopeContext: ReifiedEquality<Polytope>,
+): WrappingResult<Number, Polytope, Vertex> where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+    require(points.isNotEmpty()) { TODO("Error message is not specified") }
+    if (subspaceDimension == 0u) {
+        val theOnlyVertex = points.single()
+        return WrappingResult(
+            polytope = theOnlyVertex.asPolytope(),
+            computedFacesRegistry = koneMutableMapOf(
+                keyContext = koneSetEquality(vertexContext)
+            ),
+            startPoint = theOnlyVertex.position,
+            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
+                orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension),
+                product = one,
+                exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension)
+            )
+        )
+    }
+
+    val startPoints = points.minListBy { it.position.coordinates[subspaceDimension - 1u] }
+    val wrappingResult = giftWrappingFull(
+        subspaceDimension = subspaceDimension - 1u,
+        points = startPoints,
+        vertexContext = vertexContext,
+        polytopeContext = polytopeContext,
+    )
+
+    giftWrappingExtension(
+        subspaceDimension = subspaceDimension,
+        wrappingResult = wrappingResult,
+        normalVector = dev.lounres.kone.computationalGeometry.Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
+        otherPoints = points.toKoneMutableSet(elementContext = vertexContext).apply { removeAllFrom(startPoints) },
+        vertexContext = vertexContext,
+        polytopeContext = polytopeContext,
+    )
+
+    return wrappingResult
+}
+
+context(_: NumberContext, _: EuclideanKategory<Number>)
+public fun <
+    Number,
+    NumberContext,
+    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
+    vertices: KoneIterable<Vertex>,
+    vertexContext: ReifiedEquality<Vertex>,
+    polytopeContext: ReifiedEquality<Polytope>,
+): Polytope where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+    require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
+    return giftWrappingFull(
+        subspaceDimension = spaceDimension,
+        points = vertices,
+        vertexContext = vertexContext,
+        polytopeContext = polytopeContext,
+    ).polytope
+}
+
+context(_: NumberContext, _: EuclideanKategory<Number>)
+public inline fun <
+    Number,
+    NumberContext,
+    reified Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    reified Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
+    vertices: KoneIterable<Vertex>,
+): Polytope where NumberContext: Ring<Number>, NumberContext: Order<Number> =
+    constructConvexHullByGiftWrapping(vertices, defaultReifiedEquality(), defaultReifiedEquality())
+
+// TODO: Finish migration to new API.
 
 //public fun <N, A, P, V: P, PE: Equality<P>> KoneIterable<V, PE>.constructConvexHullByGiftWrapping4(euclideanSpace: EuclideanSpace<N, A>, construction: MutablePolytopicConstruction<N, A, P, V, PE>): P where A: Ring<N>, A: Order<N> =
 //    with(euclideanSpace) { with(construction) { this@constructConvexHullByGiftWrapping4.giftWrapping(spaceDimension).polytope } }

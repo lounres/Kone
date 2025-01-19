@@ -21,6 +21,7 @@ import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.collections.utils.mapTo
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
@@ -28,9 +29,9 @@ import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruc
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.polytopes.RemovablePolytope
-import dev.lounres.kone.computationalGeometry.polytopes.RemovableVertex
-import dev.lounres.kone.computationalGeometry.utils.sumOf
+import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionPolytope
+import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVertex
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1
 
@@ -39,11 +40,19 @@ import dev.lounres.kone.multidimensionalCollections.MDList1
 
 //// TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
 ////   and that there are at least 2 triangles in the triangulation
-//context(numberRing: A, _: EuclideanKategory<N>, inputPolytope: MutablePolytopicConstruction<N>)
-//public fun <N, A> KoneIterable<RemovableVertex<N>>.constructDelaunayTriangulation(): KoneList<RemovablePolytope<N>> where A: Ring<N>, A: Order<N> {
-//    val theDimension = inputPolytope.spaceDimension + 1u
-//    val outerPolytopeContext = polytopeContext
-//    buildAbstractPolytopicConstruction<N>(theDimension, numberContext = numberRing) {
+//context(numberRing: NumberContext, _: EuclideanKategory<Number>, inputPolytope: )
+//public fun <
+//    Number,
+//    NumberContext,
+//    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+//    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+//> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructDelaunayTriangulation(
+//    vertices: KoneIterable<Vertex>,
+//    vertexContext: ReifiedEquality<Vertex>,
+//    polytopeContext: ReifiedEquality<Polytope>,
+//): KoneList<Polytope> where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+//    val theDimension = spaceDimension + 1u
+//    buildAbstractPolytopicConstruction<Number>(theDimension, numberContext = numberRing) {
 //        val simplicesMapping =
 //            koneMutableMapOf<AbstractPolytope, P>(keyContext = defaultEquality())
 //

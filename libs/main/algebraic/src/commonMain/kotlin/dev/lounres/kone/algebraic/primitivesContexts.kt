@@ -380,6 +380,7 @@ public data object LongContext: EuclideanRing<Long>, Order<Long>, ReifiedHashing
  */
 public val Long.Companion.context: LongContext get() = LongContext
 
+// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UByteContext: Order<UByte>, ReifiedHashing<UByte> {
     // region Reification
@@ -396,6 +397,7 @@ public data object UByteContext: Order<UByte>, ReifiedHashing<UByte> {
 
 public val UByte.Companion.context: UByteContext get() = UByteContext
 
+// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UShortContext: Order<UShort>, ReifiedHashing<UShort> {
     // region Reification
@@ -412,6 +414,7 @@ public data object UShortContext: Order<UShort>, ReifiedHashing<UShort> {
 
 public val UShort.Companion.context: UShortContext get() = UShortContext
 
+// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UIntContext: Order<UInt>, ReifiedHashing<UInt> {
     // region Reification
@@ -428,6 +431,7 @@ public data object UIntContext: Order<UInt>, ReifiedHashing<UInt> {
 
 public val UInt.Companion.context: UIntContext get() = UIntContext
 
+// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object ULongContext: Order<ULong>, ReifiedHashing<ULong> {
     // region Reification
