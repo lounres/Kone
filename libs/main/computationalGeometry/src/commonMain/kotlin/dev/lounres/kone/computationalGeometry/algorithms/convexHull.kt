@@ -233,7 +233,7 @@ internal fun <
             return
         }
 
-        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
+        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone(subspaceDimension)
         extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
 
         val tangentVector = otherPoints.firstOfThatOrNull({

@@ -13,7 +13,6 @@ import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
-import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.Vector
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.minus
@@ -21,22 +20,21 @@ import dev.lounres.kone.computationalGeometry.times
 import dev.lounres.kone.repeat
 
 
-internal data class GramSchmidtOrthogonalizationIntermediateState<N>(
-    val orthogonalizedBasis: KoneMutableList<Vector<N>>,
-    var product: N,
-    val exclusiveProducts: KoneMutableList<N>,
+internal data class GramSchmidtOrthogonalizationIntermediateState<Number>(
+    val orthogonalizedBasis: KoneMutableList<Vector<Number>>,
+    var product: Number,
+    val exclusiveProducts: KoneMutableList<Number>,
 )
 
-context(mutablePolytopicConstruction: MutablePolytopicConstruction<N>)
-internal fun <N> GramSchmidtOrthogonalizationIntermediateState<N>.clone(): GramSchmidtOrthogonalizationIntermediateState<N> =
+internal fun <Number> GramSchmidtOrthogonalizationIntermediateState<Number>.clone(maximalSubspaceDimension: UInt): GramSchmidtOrthogonalizationIntermediateState<Number> =
     GramSchmidtOrthogonalizationIntermediateState(
-        orthogonalizedBasis = KoneArrayFixedCapacityList(mutablePolytopicConstruction.spaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
+        orthogonalizedBasis = KoneArrayFixedCapacityList(maximalSubspaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
         product = product,
-        exclusiveProducts = KoneArrayFixedCapacityList(mutablePolytopicConstruction.spaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
+        exclusiveProducts = KoneArrayFixedCapacityList(maximalSubspaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
     )
 
-context(_: A, _: EuclideanKategory<N>)
-internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState<N>.gramSchmidtOrthogonalizationUsage(newVector: Vector<N>): Vector<N> {
+context(_: NumberContext, _: EuclideanKategory<Number>)
+internal fun <Number, NumberContext: Ring<Number>> GramSchmidtOrthogonalizationIntermediateState<Number>.gramSchmidtOrthogonalizationUsage(newVector: Vector<Number>): Vector<Number> {
     // FIXME: KT-67840
 //    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
 //        val previousOrthogonalizedVector = orthogonalizedBasis[index]
