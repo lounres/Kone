@@ -6,10 +6,7 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
@@ -17,181 +14,183 @@ import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.map.KoneMutableMap
-import dev.lounres.kone.collections.map.getMaybe
-import dev.lounres.kone.collections.map.koneMutableMapOf
-import dev.lounres.kone.collections.set.KoneMutableSet
+import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.buildKoneSet
-import dev.lounres.kone.collections.set.comparison.koneSetEquality
+import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
 import dev.lounres.kone.collections.set.koneMutableSetOf
-import dev.lounres.kone.collections.set.koneSetOf
+import dev.lounres.kone.collections.set.koneReifiedSetOf
 import dev.lounres.kone.collections.set.removeAllFrom
 import dev.lounres.kone.collections.set.toKoneMutableSet
-import dev.lounres.kone.collections.set.toKoneSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.ReifiedEquality
+import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.compareWith
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
-import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.Vector
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.times
-import dev.lounres.kone.computationalGeometry.utils.any
-import dev.lounres.kone.linearAlgebra.ColumnVector
+import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionPolytope
+import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVertex
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
-import dev.lounres.kone.option.Some
 
+
+context(_: NumberContext, _: EuclideanKategory<Number>)
+internal fun <
+    Number,
+    NumberContext,
+    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> giftWrappingAtom(
+    startPoint: Point<Number>,
+    normalGiftWrappingVector: Vector<Number>,
+    tangentGiftWrappingVector: Vector<Number>,
+    otherPoints: KoneIterable<Vertex>,
+): KoneList<Vertex> where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+    data class TangentFraction(val numerator: Number, val denominator: Number)
+    return otherPoints.minListWithBy(
+        { left, right -> (left.numerator * right.denominator) compareWith (right.numerator * left.denominator) }
+    ) {
+        val v = it.position - startPoint
+        TangentFraction(v dot tangentGiftWrappingVector, v dot normalGiftWrappingVector)
+    }
+}
+
+// TODO: Docs
+/**
+ * Строит выпуклую оболочку точек в подпространстве.
+ *
+ * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
+ */
+context(_: NumberContext, _: EuclideanKategory<Number>)
+internal fun <
+    Number,
+    NumberContext,
+    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
+    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingIncrement(
+    subspaceDimension: UInt,
+    startFacet: Polytope,
+    otherPoints: KoneIterable<Vertex>,
+    computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
+    vertexContext: ReifiedEquality<Vertex>,
+    polytopeContext: ReifiedEquality<Polytope>,
+): Polytope where NumberContext: Ring<Number>, NumberContext: Order<Number> {
+    require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
+    val allVertices = otherPoints.toKoneMutableSet(elementContext = absoluteEquality()).apply { addAllFrom(startFacet.vertices) }
+
+    scope {
+        val registeredFace = computedFacesRegistry.getOrNull(allVertices)
+        if (registeredFace != null) return registeredFace
+    }
+
+    if (subspaceDimension == 1u) {
+        val startKoneVertex = startFacet.vertices.single()
+        val startPoint = startKoneVertex.position
+        val endVertex = otherPoints.maxBy { // TODO: Может быть это можно оптимизировать
+            val radiusVector = it.position - startPoint
+            radiusVector dot radiusVector
+        }
+        val vertices = koneReifiedSetOf(startKoneVertex, endVertex, elementContext = vertexContext)
+        return addPolytope(
+            vertices,
+            koneListOf(vertices.mapTo(koneMutableReifiedSetOf(polytopeContext)) { it.asPolytope() }),
+        ).also { computedFacesRegistry[vertices] = it }
+    }
+
+    val convexHullVertices = koneMutableReifiedSetOf<Vertex>(elementContext = vertexContext)
+    val restConvexHullFaces = KoneList(subspaceDimension) { index ->
+        if (index == 0u) convexHullVertices.mapTo(koneMutableReifiedSetOf(polytopeContext)) { it.asPolytope() }
+        else koneMutableReifiedSetOf(elementContext = polytopeContext)
+    }
+
+    for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
+    restConvexHullFaces[subspaceDimension-1u].add(startFacet)
+
+    val facetsToProcess: KoneDeque<Polytope> = KoneArrayResizableLinkedList()
+    val subfacetsToProcess = koneMutableSetOf<Polytope>(elementContext = polytopeContext)
+
+    facetsToProcess.addLast(startFacet)
+    subfacetsToProcess.addAllFrom(startFacet.facesOfDimension(subspaceDimension - 2u))
+
+    while (facetsToProcess.isNotEmpty()) {
+        val facet = facetsToProcess.popFirst()
+        for (subfacet in facet.facesOfDimension(subspaceDimension - 2u)) if (subfacet in subfacetsToProcess) {
+            val startPoint: Point<Number>
+            val normalGiftWrappingVector: Vector<Number>
+            val tangentGiftWrappingVector: Vector<Number>
+            scope {
+                val facetFlag = KoneSettableList(subspaceDimension) { facet }
+                facetFlag[subspaceDimension - 2u] = subfacet
+                if (subspaceDimension >= 3u) for (dim in subspaceDimension - 3u downTo 0u) {
+                    facetFlag[dim] = facetFlag[dim+1u].facesOfDimension(dim).first()
+                }
+                startPoint = facetFlag[0u].vertices.single().position
+                val basis = KoneList(subspaceDimension) { index ->
+                    if (index < subspaceDimension - 1u) facetFlag[index + 1u].vertices.firstThat { it !in facetFlag[index].vertices }.position - startPoint
+                    else allVertices.firstThat { it !in facet.vertices }.position - startPoint
+                }
+                val orthogonalizedBasis = basis.gramSchmidtOrthogonalization()
+                tangentGiftWrappingVector = orthogonalizedBasis[subspaceDimension-2u]
+                normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
+            }
+
+            val newVertices: KoneList<Vertex> = giftWrappingAtom(
+                startPoint = startPoint,
+                normalGiftWrappingVector = normalGiftWrappingVector,
+                tangentGiftWrappingVector = tangentGiftWrappingVector,
+                otherPoints = buildKoneSet<Vertex>(elementContext = vertexContext) {
+                    addAllFrom(allVertices)
+                    removeAllFrom(subfacet.vertices)
+                }
+            )
+
+            val newFacet: Polytope = giftWrappingIncrement(
+                subspaceDimension = subspaceDimension - 1u,
+                startFacet = subfacet,
+                otherPoints = newVertices,
+                computedFacesRegistry = computedFacesRegistry,
+                vertexContext = vertexContext,
+                polytopeContext = polytopeContext,
+            )
+
+            allVertices.removeAllThat { vertexContext { it in newVertices } && it !in newFacet.vertices }
+
+            for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
+            restConvexHullFaces[subspaceDimension-1u].add(newFacet)
+
+            facetsToProcess.addLast(newFacet)
+            for (newSubfacet in newFacet.facesOfDimension(subspaceDimension - 2u))
+                if (newSubfacet in subfacetsToProcess) subfacetsToProcess.remove(newSubfacet)
+                else subfacetsToProcess.add(newSubfacet)
+        }
+    }
+
+    check(subfacetsToProcess.isEmpty()) { "For some reason some subfacets are left after \"gift wrapping increment\" procedure" }
+
+    // TODO: Separate polytope creation and polytope finding
+    return addPolytope(convexHullVertices, restConvexHullFaces).also { computedFacesRegistry[convexHullVertices] = it }
+}
 
 // TODO: Fix migration to new API.
 
-//context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
-//internal fun <N, A, P, V: P> giftWrappingAtom(
-//    startPoint: Point<N>,
-//    normalGiftWrappingVector: Vector<N>,
-//    tangentGiftWrappingVector: Vector<N>,
-//    otherPoints: KoneIterable<V>,
-//): KoneList<V> where A: Ring<N>, A: Order<N> {
-//    data class TangentFraction(val numerator: N, val denominator: N)
-//    return otherPoints.minListWithBy(
-//        { left, right -> (left.numerator * right.denominator) compareWith (right.numerator * left.denominator) }
-//    ) {
-//        val v = it.position - startPoint
-//        TangentFraction(v dot tangentGiftWrappingVector, v dot normalGiftWrappingVector)
-//    }
-//}
-//
-//// TODO: Docs
-///**
-// * Строит выпуклую оболочку точек в подпространстве.
-// *
-// * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
-// */
-//context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
-//internal fun <N, A, P, V: P> giftWrappingIncrement(
-//    subspaceDimension: UInt,
-//    startFacet: P,
-//    otherPoints: KoneIterable<V>,
-//    computedFacesRegistry: KoneMutableMap<KoneSet<V>, P>,
-//): P where A: Ring<N>, A: Order<N> {
-//    require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
-//    val allVertices = otherPoints.toKoneMutableSet(elementContext = polytopeContext).apply { addAllFrom(startFacet.vertices) }
-//
-//    scope {
-//        val registeredFaceMaybe = computedFacesRegistry.getMaybe(allVertices)
-//        if (registeredFaceMaybe is Some<P>) return registeredFaceMaybe.value
-//    }
-//
-//    if (subspaceDimension == 1u) {
-//        @Suppress("UNCHECKED_CAST")
-//        val startVertex = startFacet as V
-//        val startPoint = startVertex.position
-//        val endVertex = otherPoints.maxBy { // TODO: Может быть это можно оптимизировать
-//            val radiusVector = it.position - startPoint
-//            radiusVector dot radiusVector
-//        }
-//        val vertices = koneSetOf(startVertex, endVertex, elementContext = polytopeContext)
-//        return addPolytope(vertices,
-//                           koneListOf(
-//                               vertices.toKoneSet<P>(elementContext = polytopeContext),
-//                           )
-//        ).also {
-//            computedFacesRegistry[vertices] = it
-//        }
-//    }
-//
-//    val convexHullVertices = koneMutableSetOf<V>(elementContext = polytopeContext)
-//    @Suppress("UNCHECKED_CAST")
-//    val convexHullFaces = KoneList(subspaceDimension) {
-//        if (it == 0u) convexHullVertices as KoneMutableSet<P> else koneMutableSetOf(elementContext = polytopeContext)
-//    }
-//
-//    for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
-//    convexHullFaces[subspaceDimension-1u].add(startFacet)
-//
-//    val facetsToProcess: KoneDeque<P> = KoneArrayResizableLinkedList()
-//    val subfacetsToProcess = koneMutableSetOf<P>(elementContext = polytopeContext)
-//
-//    facetsToProcess.addLast(startFacet)
-//    subfacetsToProcess.addAllFrom(startFacet.facesOfDimension(subspaceDimension - 2u))
-//
-//    while (facetsToProcess.isNotEmpty()) {
-//        val facet = facetsToProcess.popFirst()
-//        for (subfacet in facet.facesOfDimension(subspaceDimension - 2u)) if (subfacet in subfacetsToProcess) {
-//            val startPoint: Point<N>
-//            val normalGiftWrappingVector: Vector<N>
-//            val tangentGiftWrappingVector: Vector<N>
-//            scope {
-//                val facetFlag = KoneSettableList(subspaceDimension) { facet }
-//                facetFlag[subspaceDimension - 2u] = subfacet
-//                if (subspaceDimension >= 3u) for (dim in subspaceDimension - 3u downTo 0u) {
-//                    facetFlag[dim] = facetFlag[dim+1u].facesOfDimension(dim).first()
-//                }
-//                @Suppress("UNCHECKED_CAST")
-//                startPoint = (facetFlag[0u] as V).position
-//                val basis = KoneList(subspaceDimension) { index ->
-//                    if (index < subspaceDimension - 1u) facetFlag[index + 1u].vertices.firstThat { it !in facetFlag[index].vertices }.position - startPoint
-//                    else allVertices.firstThat { it !in facet.vertices }.position - startPoint
-//                }
-//                val orthogonalizedBasis = basis.gramSchmidtOrthogonalization()
-//                tangentGiftWrappingVector = orthogonalizedBasis[subspaceDimension-2u]
-//                normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
-//            }
-//
-//            val newVertices: KoneList<V> = giftWrappingAtom(
-//                startPoint = startPoint,
-//                normalGiftWrappingVector = normalGiftWrappingVector,
-//                tangentGiftWrappingVector = tangentGiftWrappingVector,
-//                otherPoints = buildKoneSet<V>(elementContext = polytopeContext) {
-//                    addAllFrom(allVertices)
-//                    removeAllFrom(subfacet.vertices)
-//                }
-//            )
-//
-//            val newFacet: P = giftWrappingIncrement(
-//                subspaceDimension = subspaceDimension - 1u,
-//                startFacet = subfacet,
-//                otherPoints = newVertices,
-//                computedFacesRegistry = computedFacesRegistry,
-//            )
-//
-//            allVertices.removeAllThat { polytopeContext { it in newVertices } && it !in newFacet.vertices }
-//
-//            for (dim in 0u .. subspaceDimension-2u) convexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
-//            convexHullFaces[subspaceDimension-1u].add(newFacet)
-//
-//            facetsToProcess.addLast(newFacet)
-//            for (newSubfacet in newFacet.facesOfDimension(subspaceDimension - 2u))
-//                if (newSubfacet in subfacetsToProcess) subfacetsToProcess.remove(newSubfacet)
-//                else subfacetsToProcess.add(newSubfacet)
-//        }
-//    }
-//
-//    check(subfacetsToProcess.isEmpty()) { "For some reason some subfacets are left after \"gift wrapping increment\" procedure" }
-//
-//    // TODO: Separate polytope creation and polytope finding
-//    return addPolytope(convexHullVertices, convexHullFaces).also {
-//        println("Created $it")
-//        computedFacesRegistry[convexHullVertices] = it
-//    }
-//}
-//
-//internal data class WrappingResult<N, P, V: P>(
-//    var polytope: P,
-//    val computedFacesRegistry: KoneMutableMap<KoneSet<V>, P>,
-//    val startPoint: Point<N>,
-//    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<N>,
-//)
-//
+internal data class WrappingResult<Number, Polytope, Vertex>(
+    var polytope: Polytope,
+    val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
+    val startPoint: Point<Number>,
+    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number>,
+)
+
 //context(_: A, _: EuclideanKategory<N>, _: MutablePolytopicConstruction<N, P, V>)
 //internal fun <N, A, P, V: P> giftWrappingExtension(
 //    subspaceDimension: UInt,

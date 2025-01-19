@@ -208,6 +208,7 @@ public inline fun <Element> Order(equalizer: Equality<Element>, comparator: Comp
  * and which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
 public fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
+public fun <Element: Comparable<Element>> absoluteOrder(): Order<Element> = AbsoluteOrderOnComparables
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
