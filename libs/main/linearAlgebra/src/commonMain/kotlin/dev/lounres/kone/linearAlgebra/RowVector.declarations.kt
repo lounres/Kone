@@ -7,8 +7,10 @@ package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.SettableMDList1
+import kotlinx.serialization.Serializable
 
 
+@Serializable(with = RowVectorSerializer::class)
 /*@JvmInline*/
 public open /*value*/ class RowVector<out N>(
     public open val coefficients: MDList1<N>,
@@ -19,6 +21,7 @@ public open /*value*/ class RowVector<out N>(
     override fun toString(): String = "RowVector$coefficients"
 }
 
+@Serializable(with = SettableRowVectorSerializer::class)
 /*@JvmInline*/
 public /*value*/ class SettableRowVector<N>(
     override val coefficients: SettableMDList1<N>

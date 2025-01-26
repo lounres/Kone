@@ -7,13 +7,17 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.multidimensionalCollections.MDList1
+import kotlinx.serialization.Serializable
 
 
 // FIXME: KT-42977
+@Serializable(with = PointSerializer::class)
 //@JvmInline
 public open /*value*/ class Point<out N>(public open val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Point${coordinates.coefficients}"
 }
+
+@Serializable(with = Point2Serializer::class)
 //@JvmInline
 public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {

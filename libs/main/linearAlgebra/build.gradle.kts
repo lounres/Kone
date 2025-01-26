@@ -1,3 +1,7 @@
+plugins {
+    alias(versions.plugins.kotlinx.serialization)
+}
+
 kotlin {
     sourceSets {
         commonMain {
@@ -7,6 +11,8 @@ kotlin {
                 api(projects.libs.main.collections)
                 api(projects.libs.main.multidimensionalCollections)
                 implementation(projects.libs.main.enumerativeCombinatorics)
+                
+                implementation(versions.kotlinx.serialization.core)
             }
         }
         commonTest {
