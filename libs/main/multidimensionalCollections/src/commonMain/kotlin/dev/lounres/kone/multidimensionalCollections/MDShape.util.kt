@@ -27,12 +27,12 @@ public fun requireShapeEquality(left: MDShape, right: MDShape) {
     if (
         left.size != right.size ||
         left.anyIndexed { index, value -> value != right[index] }
-    ) throw shapeMismatchException(left = left, right = right)
+    ) shapeMismatchException(left = left, right = right)
 }
 
 public fun requireIndexInShape(index: KoneUIntArray, shape: MDShape) {
     if (
         index.size != shape.size ||
         index.anyIndexed { dim, value -> value >= shape[dim] }
-    ) throw indexOutOfShapeException(shape = shape, index = index)
+    ) indexOutOfShapeException(shape = shape, index = index)
 }

@@ -6,6 +6,7 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.array.koneUIntArrayOf
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneVirtualList
@@ -34,3 +35,44 @@ public val <E> MDList2<E>.columns: KoneList<KoneList<E>>
 
 public inline val MDList2<*>.rowIndices: UIntRange get() = 0u ..< rowNumber
 public inline val MDList2<*>.columnIndices: UIntRange get() = 0u ..< columnNumber
+
+/*@JvmInline*/
+internal open /*value*/ class MDList2Wrapper<E>(open val list: MDList<E>): MDList2<E> {
+    init {
+        @Suppress("LeakingThis")
+        require(list.shape.size == 2u) { "Cannot wrap MDList with shape ${list.shape} as a MDList2" }
+    }
+    
+    override val rowNumber: UInt get() = list.shape[0u]
+    override val columnNumber: UInt get() = list.shape[1u]
+    override val shape: MDShape get() = list.shape
+    override fun get(rowIndex: UInt, columnIndex: UInt): E = list[koneUIntArrayOf(rowIndex, columnIndex)]
+}
+
+/*@JvmInline*/
+internal /*value*/ class SettableMDList2Wrapper<E>(override val list: SettableMDList<E>): MDList2Wrapper<E>(list),
+    SettableMDList2<E> {
+    // FIXME: KT-65793
+    override val shape: MDShape get() = list.shape
+    override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
+        list[koneUIntArrayOf(rowIndex, columnIndex)] = element
+    }
+}
+
+public fun <E> MDList<E>.as2D(): MDList2<E> =
+    this as? MDList2<E> ?:
+    if (shape.size == 1u) MDList2Wrapper(this)
+    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of shape $shape")
+
+public fun <E> SettableMDList<E>.as2D(): SettableMDList2<E> =
+    this as? SettableMDList2<E> ?:
+    if (shape.size == 1u) SettableMDList2Wrapper(this)
+    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of shape $shape")
+
+public fun <E> MDList2<E>.asMD(): MDList<E> =
+    if (this is MDList2Wrapper) list
+    else this
+
+public fun <E> SettableMDList2<E>.asMD(): SettableMDList<E> =
+    if (this is SettableMDList2Wrapper) list
+    else this
