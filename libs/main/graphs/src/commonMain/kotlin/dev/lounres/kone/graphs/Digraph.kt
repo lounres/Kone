@@ -23,3 +23,20 @@ public interface DigraphEdge<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: 
 }
 
 public interface Digraph<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : Graph<Vertex, Edge>
+
+public interface ExtendableDigraph<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge> {
+    public fun addVertex(): Vertex
+    public fun addEdge(tail: @UnsafeVariance Vertex, head: @UnsafeVariance Vertex): Edge
+}
+
+public interface RemovableDigraphVertex<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphVertex<Vertex, Edge> {
+    public fun remove()
+}
+
+public interface RemovableDigraphEdge<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphEdge<Vertex, Edge> {
+    public fun remove()
+}
+
+public interface ReducibleDigraph<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge>
+
+public interface MutableDigraph<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : ExtendableDigraph<Vertex, Edge>, ReducibleDigraph<Vertex, Edge>

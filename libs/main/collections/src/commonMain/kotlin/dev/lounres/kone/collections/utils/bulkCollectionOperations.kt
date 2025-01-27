@@ -5,40 +5,26 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.one
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.zero
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.KoneMutableList
-import dev.lounres.kone.collections.set.KoneMutableSet
-import dev.lounres.kone.collections.list.addAllFrom
-import dev.lounres.kone.collections.list.emptyKoneList
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
+import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.koneMutableListOf
-import dev.lounres.kone.collections.list.lastIndex
-import dev.lounres.kone.collections.noElementMatchingThePredicateException
-import dev.lounres.kone.collections.list.toKoneList
-import dev.lounres.kone.collections.list.toKoneSettableList
+import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrSet
 import dev.lounres.kone.collections.map.koneMutableMapOf
+import dev.lounres.kone.collections.noElementMatchingThePredicateException
+import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.comparison.*
-import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.repeat
 import kotlin.jvm.JvmInline
@@ -77,22 +63,50 @@ public operator fun <E> KoneMutableSet<E>.plusAssign(element: E) {
 }
 
 public fun <E> KoneIterable<E>.take(n: UInt): KoneList<E> {
-    val size = min(size, n)
-    if (size == 0u) return emptyKoneList()
+    val newSize = min(size, n)
+    if (newSize == 0u) return emptyKoneList()
     val iterator = iterator()
-    return KoneList(size) { iterator.getAndMoveNext() }
+    return KoneList(newSize) { iterator.getAndMoveNext() }
 }
 
-public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> {
-    if (n == 0u) return toKoneList()
-    if (n >= size) return emptyKoneList()
-    val resultSize = size - n
-    val list = KoneArrayFixedCapacityList<E>(resultSize)
-    var count = 0u
-    for (item in this) {
-        if (count >= n) list.add(item) else ++count
+public fun <E> KoneIterable<E>.takeLast(n: UInt): KoneList<E> {
+    val newSize = min(size, n)
+    if (newSize == 0u) return emptyKoneList()
+    val iterator = iterator()
+    repeat(size - newSize) { iterator.moveNext() }
+    return KoneList(newSize) { iterator.getAndMoveNext() }
+}
+
+public fun <E> KoneList<E>.takeLast(n: UInt): KoneList<E> {
+    val newSize = min(size, n)
+    if (newSize == 0u) return emptyKoneList()
+    val result = KoneMutableArray<Any?>(newSize) { null }
+    var currentIndex = newSize - 1u
+    val iterator = iteratorFrom(size)
+    repeat(newSize) {
+        result[currentIndex] = iterator.getPrevious()
+        iterator.movePrevious()
+        currentIndex--
     }
-    return list.toOptimizedList()
+    return KoneArraySettableList(result)
+}
+
+public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
+public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
+public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - n)
+
+public fun <E> KoneIterable<E>.reversed(): KoneList<E> {
+    if (isEmpty()) return emptyKoneList()
+    
+    val result = KoneMutableArray<Any?>(size) { null }
+    var currentIndex = size - 1u
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        result[currentIndex] = iterator.getNext()
+        iterator.moveNext()
+        currentIndex--
+    }
+    return KoneArraySettableList(result)
 }
 
 public inline fun <E> KoneIterable<E>.forEach(block: (value: E) -> Unit) {
@@ -391,26 +405,26 @@ public inline fun <E, R> KoneList<E>.lastOfThatIndexedMaybe(transform: (index: U
 }
 
 public inline fun <E> KoneList<E>.firstIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
-    var iterator = iterator()
+    val iterator = iterator()
     while (iterator.hasNext()) {
         val element = iterator.getNext()
         if (predicate(iterator.nextIndex(), element)) break
         iterator.moveNext()
     }
-    return iterator.nextIndex()
+    return if (iterator.hasNext()) iterator.nextIndex() else size
 }
 
 context(_: Equality<E>)
 public fun <E> KoneList<E>.firstIndexOf(element: E): UInt = firstIndexThat { _, currentElement -> element eq currentElement }
 
 public inline fun <E> KoneList<E>.lastIndexThat(predicate: (index: UInt, element: E) -> Boolean): UInt {
-    var iterator = iteratorFrom(size)
+    val iterator = iteratorFrom(size)
     while (iterator.hasPrevious()) {
         val element = iterator.getPrevious()
         if (predicate(iterator.previousIndex(), element)) break
         iterator.movePrevious()
     }
-    return iterator.previousIndex()
+    return if (iterator.hasPrevious()) iterator.previousIndex() else UInt.MAX_VALUE
 }
 
 context(_: Equality<E>)
@@ -443,6 +457,7 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(d
     return destination
 }
 
+// TODO: Reimplement using just KoneArraySettableList
 public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> = mapTo(koneMutableListOf(), transform)
 
 public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> =

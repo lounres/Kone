@@ -18,6 +18,25 @@ import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.comparison.*
 
 
+
+public fun <E, R : Comparable<R>> KoneIterable<E>.maxOfOrNull(selector: (E) -> R): R? {
+    val iterator = iterator()
+    if (!iterator.hasNext()) return null
+    val maxElement = iterator.getAndMoveNext()
+    if (!iterator.hasNext()) return selector(maxElement)
+    var maxValue = selector(maxElement)
+    do {
+        val nextElement = iterator.getAndMoveNext()
+        val nextValue = selector(nextElement)
+        if (maxValue < nextValue) {
+            maxValue = nextValue
+        }
+    } while (iterator.hasNext())
+    return maxValue
+}
+
+// TODO: Add `(min|max)Maybe` and `(min|max)OrNull`
+
 public fun <E : Comparable<E>> KoneIterable<E>.min(): E {
     val iterator = iterator()
     if (!iterator.hasNext()) throw NoSuchElementException()

@@ -24,3 +24,20 @@ public interface Graph<out Vertex: GraphVertex<Vertex, Edge>, out Edge: GraphEdg
     public val vertices: KoneReifiedSet<Vertex>
     public val edges: KoneReifiedSet<Edge>
 }
+
+public interface ExtendableGraph<out Vertex: GraphVertex<Vertex, Edge>, out Edge: GraphEdge<Vertex, Edge>> : Graph<Vertex, Edge> {
+    public fun addVertex(): Vertex
+    public fun addEdge(head: @UnsafeVariance Vertex, tail: @UnsafeVariance Vertex): Edge
+}
+
+public interface RemovableGraphVertex<out Vertex: RemovableGraphVertex<Vertex, Edge>, out Edge: RemovableGraphEdge<Vertex, Edge>> : GraphVertex<Vertex, Edge> {
+    public fun remove()
+}
+
+public interface RemovableGraphEdge<out Vertex: RemovableGraphVertex<Vertex, Edge>, out Edge: RemovableGraphEdge<Vertex, Edge>> : GraphEdge<Vertex, Edge> {
+    public fun remove()
+}
+
+public interface ReducibleGraph<out Vertex: RemovableGraphVertex<Vertex, Edge>, out Edge: RemovableGraphEdge<Vertex, Edge>> : Graph<Vertex, Edge>
+
+public interface MutableGraph<out Vertex: RemovableGraphVertex<Vertex, Edge>, out Edge: RemovableGraphEdge<Vertex, Edge>> : ExtendableGraph<Vertex, Edge>, ReducibleGraph<Vertex, Edge>

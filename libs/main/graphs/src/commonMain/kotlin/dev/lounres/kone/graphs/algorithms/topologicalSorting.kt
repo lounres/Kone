@@ -36,7 +36,7 @@ public fun <Vertex: DigraphVertex<Vertex, *>> Digraph<Vertex, *>.sortVerticesTop
         for (edge in currentVertex.outgoingEdges) {
             val nextVertex = edge.tail
             val nextVertexNode = verticesNodes[nextVertex]
-            check(nextVertexNode.priority > 0u) { "Attempt to decrease indegree that is already zero" }
+            check(nextVertexNode.priority > 0u) { "Attempt to decrease in-degree that is already zero" }
             nextVertexNode.priority -= 1u
         }
     }

@@ -22,6 +22,7 @@ public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (in
  * Returns the element at the provided [index] wrapped in [Some] or [None] if [index] is out of bounds.
  */
 public fun <Element> KoneList<Element>.getMaybe(index: UInt): Maybe<Element> = if (index < size) Some(this[index]) else None
+public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Element): Element = if (index < size) this[index] else block()
 
 /**
  * Adds provided [elements] at the end of the ordered collection.

@@ -250,10 +250,10 @@ stal {
                     }
                 }
 
-//                js(IR) {
-//                    browser()
-//                    nodejs()
-//                }
+                js {
+                    browser()
+                    nodejs()
+                }
 
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {

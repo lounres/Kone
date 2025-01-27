@@ -6,648 +6,770 @@
 package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
-import kotlin.js.JsName
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.buildKoneSet
+import dev.lounres.kone.context.invoke
+import dev.lounres.kone.polynomial.div
+import dev.lounres.kone.polynomial.minus
+import dev.lounres.kone.polynomial.numeratorDegree
+import dev.lounres.kone.polynomial.plus
+import dev.lounres.kone.polynomial.rationalFunctionValue
+import dev.lounres.kone.polynomial.times
+import dev.lounres.kone.polynomial.variables
 import kotlin.jvm.JvmName
 
 
-public interface RationalFunction<C, P: Polynomial<C>> {
-    public val numerator: P
-    public val denominator: P
-    public operator fun component1(): P = numerator
-    public operator fun component2(): P = denominator
+public interface RationalFunction<Polynomial> {
+    public val numerator: Polynomial
+    public val denominator: Polynomial
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
-public interface RationalFunctionSpace<C, P: Polynomial<C>, RF: RationalFunction<C, P>, out A: Ring<C>, out PS: PolynomialSpace<C, P, A>> : Field<RF> {
-    // region Context accessors
-    public val ring: A get() = this@A
-    public val polynomialSpace: PS get() = this@PS
-    // endregion
-
+public interface RationalFunctionSpace<Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> : Field<RationalFunctionType> {
     // region Rational functions constants
-    public val rationalFunctionZero: RF get() = zero
-    public val rationalFunctionOne: RF get() = one
-    // endregion
-
-    // region Equality
-    override infix fun RF.equalsTo(other: RF): Boolean = numerator * other.denominator equalsTo denominator * other.numerator
-    override fun RF.isZero(): Boolean = numerator equalsTo polynomialZero
-    override fun RF.isOne(): Boolean = numerator equalsTo denominator
-    // endregion
-
-    // region Integer-to-Polynomial conversion
-    public fun polynomialValueOf(value: Int): P = polynomialSpace.run { valueOf(value) }
-    public fun polynomialValueOf(value: UInt): P = polynomialSpace.run { valueOf(value) }
-    public fun polynomialValueOf(value: Long): P = polynomialSpace.run { valueOf(value) }
-    public fun polynomialValueOf(value: ULong): P = polynomialSpace.run { valueOf(value) }
-    public val Int.polynomialValue: P get() = polynomialValueOf(this)
-    public val UInt.polynomialValue: P get() = polynomialValueOf(this)
-    public val Long.polynomialValue: P get() = polynomialValueOf(this)
-    public val ULong.polynomialValue: P get() = polynomialValueOf(this)
+    public val rationalFunctionZero: RationalFunctionType get() = zero
+    public val rationalFunctionOne: RationalFunctionType get() = one
     // endregion
 
     // region Integer-to-Rational-Function conversion
-    override fun valueOf(value: Int): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    override fun valueOf(value: UInt): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    override fun valueOf(value: Long): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    override fun valueOf(value: ULong): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public fun rationalFunctionValueOf(value: Int): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public fun rationalFunctionValueOf(value: UInt): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public fun rationalFunctionValueOf(value: Long): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public fun rationalFunctionValueOf(value: ULong): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public val Int.rationalFunctionValue: RF get() = valueOf(this)
-    public val UInt.rationalFunctionValue: RF get() = valueOf(this)
-    public val Long.rationalFunctionValue: RF get() = valueOf(this)
-    public val ULong.rationalFunctionValue: RF get() = valueOf(this)
+    override fun valueOf(value: Int): RationalFunctionType
+    override fun valueOf(value: UInt): RationalFunctionType
+    override fun valueOf(value: Long): RationalFunctionType
+    override fun valueOf(value: ULong): RationalFunctionType
+    public fun rationalFunctionValueOf(value: Int): RationalFunctionType = valueOf(value)
+    public fun rationalFunctionValueOf(value: UInt): RationalFunctionType = valueOf(value)
+    public fun rationalFunctionValueOf(value: Long): RationalFunctionType = valueOf(value)
+    public fun rationalFunctionValueOf(value: ULong): RationalFunctionType = valueOf(value)
+    public val Int.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
+    public val UInt.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
+    public val Long.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
+    public val ULong.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
     // endregion
 
-    // region Constant-to-Polynomial conversion
-    public fun polynomialValueOf(value: C): P = polynomialOne * value
-    public val C.polynomialValue: P get() = polynomialValueOf(this)
-    // endregion
-
-    // region Constant-to-Rational-Function conversion
-    public fun rationalFunctionValueOf(value: C): RF = rationalFunctionValueOf(polynomialValueOf(value))
-    public val C.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
+    // region Number-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfNumber")
+    public fun rationalFunctionValueOf(value: Number): RationalFunctionType
+    @get:JvmName("rationalFunctionValueNumber")
+    public val Number.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
-    public fun rationalFunctionValueOf(value: P): RF = one * value
-    public val P.rationalFunctionValue: RF get() = rationalFunctionValueOf(this)
+    @JvmName("rationalFunctionValueOfPolynomial")
+    public fun rationalFunctionValueOf(value: Polynomial): RationalFunctionType
+    @get:JvmName("rationalFunctionValuePolynomial")
+    public val Polynomial.rationalFunctionValue: RationalFunctionType get() = rationalFunctionValueOf(this)
     // endregion
 
-    // region Constant-Rational-Function operations
-    @JvmName("plusConstantRational")
-    public operator fun C.plus(other: RF): RF
-    @JvmName("minusConstantRational")
-    public operator fun C.minus(other: RF): RF
-    @JvmName("timesConstantRational")
-    public operator fun C.times(other: RF): RF
-    @JvmName("divConstantRational")
-    public operator fun C.div(other: RF): RF
+    // region Number-Rational-Function operations
+    @JvmName("plusNumberRational")
+    public operator fun Number.plus(other: RationalFunctionType): RationalFunctionType
+    @JvmName("minusNumberRational")
+    public operator fun Number.minus(other: RationalFunctionType): RationalFunctionType
+    @JvmName("timesNumberRational")
+    public operator fun Number.times(other: RationalFunctionType): RationalFunctionType
+    @JvmName("divNumberRational")
+    public operator fun Number.div(other: RationalFunctionType): RationalFunctionType
     // endregion
 
-    // region Rational-Function-Constant operations
-    @JvmName("plusRationalConstant")
-    public operator fun RF.plus(other: C): RF
-    @JvmName("minusRationalConstant")
-    public operator fun RF.minus(other: C): RF
-    @JvmName("timesRationalConstant")
-    public operator fun RF.times(other: C): RF
-    @JvmName("divRationalConstant")
-    public operator fun RF.div(other: C): RF
+    // region Rational-Function-Number operations
+    @JvmName("plusRationalNumber")
+    public operator fun RationalFunctionType.plus(other: Number): RationalFunctionType
+    @JvmName("minusRationalNumber")
+    public operator fun RationalFunctionType.minus(other: Number): RationalFunctionType
+    @JvmName("timesRationalNumber")
+    public operator fun RationalFunctionType.times(other: Number): RationalFunctionType
+    @JvmName("divRationalNumber")
+    public operator fun RationalFunctionType.div(other: Number): RationalFunctionType
     // endregion
 
     // region Polynomial-Rational-Function operations
     @JvmName("plusPolynomialRational")
-    public operator fun P.plus(other: RF): RF
+    public operator fun Polynomial.plus(other: RationalFunctionType): RationalFunctionType
     @JvmName("minusPolynomialRational")
-    public operator fun P.minus(other: RF): RF
+    public operator fun Polynomial.minus(other: RationalFunctionType): RationalFunctionType
     @JvmName("timesPolynomialRational")
-    public operator fun P.times(other: RF): RF
+    public operator fun Polynomial.times(other: RationalFunctionType): RationalFunctionType
     @JvmName("divPolynomialRational")
-    public operator fun P.div(other: RF): RF
+    public operator fun Polynomial.div(other: RationalFunctionType): RationalFunctionType
     // endregion
 
     // region Rational-Function-Polynomial operations
     @JvmName("plusRationalPolynomial")
-    public operator fun RF.plus(other: P): RF
+    public operator fun RationalFunctionType.plus(other: Polynomial): RationalFunctionType
     @JvmName("minusRationalPolynomial")
-    public operator fun RF.minus(other: P): RF
+    public operator fun RationalFunctionType.minus(other: Polynomial): RationalFunctionType
     @JvmName("timesRationalPolynomial")
-    public operator fun RF.times(other: P): RF
+    public operator fun RationalFunctionType.times(other: Polynomial): RationalFunctionType
     @JvmName("divRationalPolynomial")
-    public operator fun RF.div(other: P): RF
+    public operator fun RationalFunctionType.div(other: Polynomial): RationalFunctionType
     // endregion
 
     // region Polynomial operations
-    public operator fun P.div(other: P): RF
-    // endregion
-
-    // region Rational-Function-Rational-Function operations
-    override operator fun RF.unaryPlus(): RF = this
-    override operator fun RF.unaryMinus(): RF
-    override operator fun RF.plus(other: RF): RF
-    override operator fun RF.minus(other: RF): RF
-    override operator fun RF.times(other: RF): RF
-    override operator fun RF.div(other: RF): RF
+    public operator fun Polynomial.div(other: Polynomial): RationalFunctionType
     // endregion
 
     // region Rational Function properties
-    public val RF.numeratorDegree: Int get() = numerator.degree
-    public val RF.denominatorDegree: Int get() = denominator.degree
+    public val RationalFunctionType.numeratorDegree: UInt
+    public val RationalFunctionType.denominatorDegree: UInt
     // endregion
 }
 
-context(A, PS)
+// region Rational functions constants
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionZero: RationalFunctionType
+    get() = with(rationalFunctionSpace) { rationalFunctionZero }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionOne: RationalFunctionType
+    get() = with(rationalFunctionSpace) { rationalFunctionOne }
+// endregion
+
+// region Integer-to-Rational-Function conversion
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Int): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(value)
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: UInt): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(value)
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Long): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(value)
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: ULong): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(value)
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Int.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> UInt.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Long.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> ULong.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+// endregion
+
+// region Number-to-Rational-Function conversion
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("rationalFunctionValueOfNumber")
+public fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Number): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@get:JvmName("rationalFunctionValueNumber")
+public val <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+// endregion
+
+// region Polynomial-to-Rational-Function conversion
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("rationalFunctionValueOfPolynomial")
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@get:JvmName("rationalFunctionValuePolynomial")
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+// endregion
+
+// region Number-Rational-Function operations
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("plusNumberRational")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("minusNumberRational")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("timesNumberRational")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("divNumberRational")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Rational-Function-Number operations
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("plusRationalNumber")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("minusRationalNumber")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("timesRationalNumber")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+@JvmName("divRationalNumber")
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Polynomial-Rational-Function operations
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("plusPolynomialRational")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("minusPolynomialRational")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("timesPolynomialRational")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("divPolynomialRational")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Rational-Function-Polynomial operations
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("plusRationalPolynomial")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("minusRationalPolynomial")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("timesRationalPolynomial")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+@JvmName("divRationalPolynomial")
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Polynomial operations
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.div(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Rational Function properties
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.numeratorDegree: UInt get() = with(rationalFunctionSpace) { this@numeratorDegree.numeratorDegree }
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.denominatorDegree: UInt get() = with(rationalFunctionSpace) { this@denominatorDegree.denominatorDegree }
+// endregion
+
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public abstract class PolynomialSpaceOfFractions<
-        C,
-        P: Polynomial<C>,
-        RF: RationalFunction<C, P>,
-        out A: Ring<C>,
-        out PS: PolynomialSpace<C, P, A>
-        > : RationalFunctionSpace<C, P, RF, A, PS> {
-
-    protected abstract fun constructRationalFunction(numerator: P, denominator: P = polynomialOne) : RF
+        Number,
+        Polynomial,
+        RationalFunctionType: RationalFunction<Polynomial>,
+> : RationalFunctionSpace<Number, Polynomial, RationalFunctionType> {
+    protected abstract val polynomialSpace: PolynomialSpace<Number, Polynomial>
+    protected abstract fun constructRationalFunction(numerator: Polynomial, denominator: Polynomial = polynomialSpace.one) : RationalFunctionType
 
     // region Rational Function constants
-    override val zero: RF by lazy { constructRationalFunction(polynomialZero) }
-    override val one: RF by lazy { constructRationalFunction(polynomialOne) }
+    final override val zero: RationalFunctionType by lazy { constructRationalFunction(polynomialSpace.zero) }
+    final override val one: RationalFunctionType by lazy { constructRationalFunction(polynomialSpace.one) }
     // endregion
 
     // region Integer-to-Rational-Function conversion
-    override fun valueOf(value: Int): RF = constructRationalFunction(polynomialValueOf(value))
-    override fun valueOf(value: UInt): RF = constructRationalFunction(polynomialValueOf(value))
-    override fun valueOf(value: Long): RF = constructRationalFunction(polynomialValueOf(value))
-    override fun valueOf(value: ULong): RF = constructRationalFunction(polynomialValueOf(value))
+    final override fun valueOf(value: Int): RationalFunctionType = constructRationalFunction(polynomialSpace.valueOf(value))
+    final override fun valueOf(value: UInt): RationalFunctionType = constructRationalFunction(polynomialSpace.valueOf(value))
+    final override fun valueOf(value: Long): RationalFunctionType = constructRationalFunction(polynomialSpace.valueOf(value))
+    final override fun valueOf(value: ULong): RationalFunctionType = constructRationalFunction(polynomialSpace.valueOf(value))
     // endregion
 
-    // region Constant-to-Rational-Function conversion
-    override fun rationalFunctionValueOf(value: C): RF = constructRationalFunction(polynomialValueOf(value))
+    // region Number-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfNumber")
+    final override fun rationalFunctionValueOf(value: Number): RationalFunctionType = constructRationalFunction(polynomialSpace.polynomialValueOf(value))
     // endregion
 
     // region Polynomial-to-Rational-Function conversion
-    override fun rationalFunctionValueOf(value: P): RF = constructRationalFunction(value)
+    @JvmName("rationalFunctionValueOfPolynomial")
+    final override fun rationalFunctionValueOf(value: Polynomial): RationalFunctionType = constructRationalFunction(value)
     // endregion
 
     // region Rational-Function-Int operations
-    override operator fun RF.plus(other: Int): RF =
+    final override operator fun RationalFunctionType.plus(other: Int): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
-    override operator fun RF.minus(other: Int): RF =
+    final override operator fun RationalFunctionType.minus(other: Int): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
-    override operator fun RF.times(other: Int): RF =
+    final override operator fun RationalFunctionType.times(other: Int): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
-    override operator fun RF.div(other: Int): RF =
+    final override operator fun RationalFunctionType.div(other: Int): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
     
     // region Rational-Function-UInt operations
-    override operator fun RF.plus(other: UInt): RF =
+    final override operator fun RationalFunctionType.plus(other: UInt): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
-    override operator fun RF.minus(other: UInt): RF =
+    final override operator fun RationalFunctionType.minus(other: UInt): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
-    override operator fun RF.times(other: UInt): RF =
+    final override operator fun RationalFunctionType.times(other: UInt): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
-    override operator fun RF.div(other: UInt): RF =
+    final override operator fun RationalFunctionType.div(other: UInt): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
 
     // region Rational-Function-Long operations
-    override operator fun RF.plus(other: Long): RF =
+    final override operator fun RationalFunctionType.plus(other: Long): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
-    override operator fun RF.minus(other: Long): RF =
+    final override operator fun RationalFunctionType.minus(other: Long): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
-    override operator fun RF.times(other: Long): RF =
+    final override operator fun RationalFunctionType.times(other: Long): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
-    override operator fun RF.div(other: Long): RF =
+    final override operator fun RationalFunctionType.div(other: Long): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
     
     // region Rational-Function-Long operations
-    override operator fun RF.plus(other: ULong): RF =
+    final override operator fun RationalFunctionType.plus(other: ULong): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
-    override operator fun RF.minus(other: ULong): RF =
+    final override operator fun RationalFunctionType.minus(other: ULong): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
-    override operator fun RF.times(other: ULong): RF =
+    final override operator fun RationalFunctionType.times(other: ULong): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
-    override operator fun RF.div(other: ULong): RF =
+    final override operator fun RationalFunctionType.div(other: ULong): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
 
     // region Int-Rational-Function operations
-    override operator fun Int.plus(other: RF): RF =
+    final override operator fun Int.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this@plus + other.numerator },
             other.denominator
         )
-    override operator fun Int.minus(other: RF): RF =
+    final override operator fun Int.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this@minus - other.numerator },
             other.denominator
         )
-    override operator fun Int.times(other: RF): RF =
+    final override operator fun Int.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this@times * other.numerator },
             other.denominator
         )
-    override operator fun Int.div(other: RF): RF =
+    final override operator fun Int.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this@div * other.denominator },
             other.numerator
         )
     // endregion
     
     // region Int-Rational-Function operations
-    override operator fun UInt.plus(other: RF): RF =
+    final override operator fun UInt.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this@plus + other.numerator },
             other.denominator
         )
-    override operator fun UInt.minus(other: RF): RF =
+    final override operator fun UInt.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this@minus - other.numerator },
             other.denominator
         )
-    override operator fun UInt.times(other: RF): RF =
+    final override operator fun UInt.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this@times * other.numerator },
             other.denominator
         )
-    override operator fun UInt.div(other: RF): RF =
+    final override operator fun UInt.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this@div * other.denominator },
             other.numerator
         )
     // endregion
 
     // region Long-Rational-Function operations
-    override operator fun Long.plus(other: RF): RF =
+    final override operator fun Long.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this + other.numerator },
             other.denominator
         )
-    override operator fun Long.minus(other: RF): RF =
+    final override operator fun Long.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this - other.numerator },
             other.denominator
         )
-    override operator fun Long.times(other: RF): RF =
+    final override operator fun Long.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this * other.numerator },
             other.denominator
         )
-    override operator fun Long.div(other: RF): RF =
+    final override operator fun Long.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this * other.denominator },
             other.numerator
         )
     // endregion
     
     // region Long-Rational-Function operations
-    override operator fun ULong.plus(other: RF): RF =
+    final override operator fun ULong.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this + other.numerator },
             other.denominator
         )
-    override operator fun ULong.minus(other: RF): RF =
+    final override operator fun ULong.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this - other.numerator },
             other.denominator
         )
-    override operator fun ULong.times(other: RF): RF =
+    final override operator fun ULong.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this * other.numerator },
             other.denominator
         )
-    override operator fun ULong.div(other: RF): RF =
+    final override operator fun ULong.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this * other.denominator },
             other.numerator
         )
     // endregion
 
-    // region Constant-Rational-Function operations
-    @JvmName("plusConstantRational")
-    override operator fun C.plus(other: RF): RF =
+    // region Number-Rational-Function operations
+    @JvmName("plusNumberRational")
+    final override operator fun Number.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this + other.numerator },
             other.denominator
         )
-    @JvmName("minusConstantRational")
-    override operator fun C.minus(other: RF): RF =
+    @JvmName("minusNumberRational")
+    final override operator fun Number.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this - other.numerator },
             other.denominator
         )
-    @JvmName("timesConstantRational")
-    override operator fun C.times(other: RF): RF =
+    @JvmName("timesNumberRational")
+    final override operator fun Number.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            with(polynomialSpace) { this@times * other.numerator },
             other.denominator
         )
-    @JvmName("divConstantRational")
-    override operator fun C.div(other: RF): RF =
+    @JvmName("divNumberRational")
+    final override operator fun Number.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            with(polynomialSpace) { this@div * other.denominator },
             other.numerator
         )
     // endregion
 
-    // region Rational-Function-Constant operations
-    @JvmName("plusRationalConstant")
-    override operator fun RF.plus(other: C): RF =
+    // region Rational-Function-Number operations
+    @JvmName("plusRationalNumber")
+    final override operator fun RationalFunctionType.plus(other: Number): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
-    @JvmName("minusRationalConstant")
-    override operator fun RF.minus(other: C): RF =
+    @JvmName("minusRationalNumber")
+    final override operator fun RationalFunctionType.minus(other: Number): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
-    @JvmName("timesRationalConstant")
-    override operator fun RF.times(other: C): RF =
+    @JvmName("timesRationalNumber")
+    final override operator fun RationalFunctionType.times(other: Number): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
-    @JvmName("divRationalConstant")
-    override operator fun RF.div(other: C): RF =
+    @JvmName("divRationalNumber")
+    final override operator fun RationalFunctionType.div(other: Number): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
 
     // region Polynomial-Polynomial operations
     @JvmName("divPolynomialPolynomial")
-    override operator fun P.div(other: P): RF = constructRationalFunction(this, other)
+    final override operator fun Polynomial.div(other: Polynomial): RationalFunctionType = constructRationalFunction(this, other)
     // endregion
 
     // region Polynomial-Rational-Function operations
     @JvmName("plusPolynomialRational")
-    override operator fun P.plus(other: RF): RF =
+    final override operator fun Polynomial.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this + other.numerator,
+            polynomialSpace { other.denominator * this + other.numerator },
             other.denominator
         )
     @JvmName("minusPolynomialRational")
-    override operator fun P.minus(other: RF): RF =
+    final override operator fun Polynomial.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            other.denominator * this - other.numerator,
+            polynomialSpace { other.denominator * this - other.numerator },
             other.denominator
         )
     @JvmName("timesPolynomialRational")
-    override operator fun P.times(other: RF): RF =
+    final override operator fun Polynomial.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this * other.numerator },
             other.denominator
         )
     @JvmName("divPolynomialRational")
-    override operator fun P.div(other: RF): RF =
+    final override operator fun Polynomial.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this * other.denominator },
             other.numerator
         )
     // endregion
 
     // region Rational-Function-Polynomial operations
     @JvmName("plusRationalPolynomial")
-    override operator fun RF.plus(other: P): RF =
+    final override operator fun RationalFunctionType.plus(other: Polynomial): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
     @JvmName("minusRationalPolynomial")
-    override operator fun RF.minus(other: P): RF =
+    final override operator fun RationalFunctionType.minus(other: Polynomial): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
     @JvmName("timesRationalPolynomial")
-    override operator fun RF.times(other: P): RF =
+    final override operator fun RationalFunctionType.times(other: Polynomial): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
     @JvmName("divRationalPolynomial")
-    override operator fun RF.div(other: P): RF =
+    final override operator fun RationalFunctionType.div(other: Polynomial): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
 
     // region Rational-Function-Rational-Function operations
-    override operator fun RF.unaryMinus(): RF = constructRationalFunction(-numerator, denominator)
-    override operator fun RF.plus(other: RF): RF =
+    final override operator fun RationalFunctionType.unaryMinus(): RationalFunctionType = polynomialSpace { constructRationalFunction(-numerator, denominator) }
+    final override operator fun RationalFunctionType.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            numerator * other.denominator + denominator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace { numerator * other.denominator + denominator * other.numerator },
+            polynomialSpace { denominator * other.denominator }
         )
-    override operator fun RF.minus(other: RF): RF =
+    final override operator fun RationalFunctionType.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            numerator * other.denominator - denominator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace { numerator * other.denominator - denominator * other.numerator },
+            polynomialSpace { denominator * other.denominator }
         )
-    override operator fun RF.times(other: RF): RF =
+    final override operator fun RationalFunctionType.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            numerator * other.numerator,
-            denominator * other.denominator
+            polynomialSpace { numerator * other.numerator },
+            polynomialSpace { denominator * other.denominator }
         )
-    override operator fun RF.div(other: RF): RF =
+    final override operator fun RationalFunctionType.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            numerator * other.denominator,
-            denominator * other.numerator
+            polynomialSpace { numerator * other.denominator },
+            polynomialSpace { denominator * other.numerator }
         )
-    override fun power(base: RF, exponent: UInt): RF =
+    final override fun power(base: RationalFunctionType, exponent: UInt): RationalFunctionType =
         constructRationalFunction(
-            power(base.numerator, exponent),
-            power(base.denominator, exponent),
+            polynomialSpace.power(base.numerator, exponent),
+            polynomialSpace.power(base.denominator, exponent),
         )
-    override fun power(base: RF, exponent: ULong): RF =
+    final override fun power(base: RationalFunctionType, exponent: ULong): RationalFunctionType =
         constructRationalFunction(
-            power(base.numerator, exponent),
-            power(base.denominator, exponent),
+            polynomialSpace.power(base.numerator, exponent),
+            polynomialSpace.power(base.denominator, exponent),
         )
+    // endregion
+    
+    // region Rational Function properties
+    final override val RationalFunctionType.numeratorDegree: UInt get() = with(polynomialSpace) { this@numeratorDegree.numerator.degree }
+    final override val RationalFunctionType.denominatorDegree: UInt get() = with(polynomialSpace) { this@denominatorDegree.denominator.degree }
     // endregion
 }
 
-context(A, PS)
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariateRationalFunctionSpace<
-        C,
-        V,
-        P: Polynomial<C>,
-        RF: RationalFunction<C, P>,
-        out A: Ring<C>,
-        out PS: MultivariatePolynomialSpace<C, V, P, A>
-        > : RationalFunctionSpace<C, P, RF, A, PS> {
-
-    // region Variable-to-Polynomial conversion
-    @JvmName("polynomialValueOfVariable")
-    public fun polynomialValueOf(variable: V): P = polynomialSpace.run { polynomialValueOf(variable) }
-    @get:JvmName("polynomialValueVariable")
-    public val V.polynomialValue: P get() = polynomialValueOf(this)
-    // endregion
-
+    Number,
+    Variable,
+    Polynomial,
+    RationalFunctionType: RationalFunction<Polynomial>,
+> : RationalFunctionSpace<Number, Polynomial, RationalFunctionType> {
     // region Variable-to-Rational-Function conversion
-    @JvmName("valueOfVariable")
-    public fun valueOf(variable: V): RF = rationalFunctionValueOf(polynomialValueOf(variable))
-    @get:JvmName("valueVariable")
-    public val V.value: RF get() = valueOf(this)
+    @JvmName("rationalFunctionValueOfVariable")
+    public fun rationalFunctionValueOf(variable: Variable): RationalFunctionType
+    @get:JvmName("rationalFunctionValueVariable")
+    public val Variable.rationalFunctionValue: RationalFunctionType
     // endregion
 
     // region Variable-Rational-Function operations
     @JvmName("plusVariableRational")
-    public operator fun V.plus(other: RF): RF
+    public operator fun Variable.plus(other: RationalFunctionType): RationalFunctionType
     @JvmName("minusVariableRational")
-    public operator fun V.minus(other: RF): RF
+    public operator fun Variable.minus(other: RationalFunctionType): RationalFunctionType
     @JvmName("timesVariableRational")
-    public operator fun V.times(other: RF): RF
+    public operator fun Variable.times(other: RationalFunctionType): RationalFunctionType
     @JvmName("divVariableRational")
-    public operator fun V.div(other: RF): RF
+    public operator fun Variable.div(other: RationalFunctionType): RationalFunctionType
     // endregion
 
     // region Rational-Function-Variable operations
     @JvmName("plusRationalVariable")
-    public operator fun RF.plus(other: V): RF
+    public operator fun RationalFunctionType.plus(other: Variable): RationalFunctionType
     @JvmName("minusRationalVariable")
-    public operator fun RF.minus(other: V): RF
+    public operator fun RationalFunctionType.minus(other: Variable): RationalFunctionType
     @JvmName("timesRationalVariable")
-    public operator fun RF.times(other: V): RF
+    public operator fun RationalFunctionType.times(other: Variable): RationalFunctionType
     @JvmName("divRationalVariable")
-    public operator fun RF.div(other: V): RF
+    public operator fun RationalFunctionType.div(other: Variable): RationalFunctionType
     // endregion
 
     // region Rational Function properties
-    public val RF.variables: Set<V> get() = numerator.variables union denominator.variables
-    public val RF.countOfVariables: Int get() = variables.size
+    public val RationalFunctionType.variables: KoneSet<Variable>
+    public val RationalFunctionType.numberOfVariables: UInt get() = variables.size
     // endregion
 }
 
-context(A, PS)
+// region Variable-to-Rational-Function conversion
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("rationalFunctionValueOfVariable")
+public fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(variable: Variable): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(variable)
+//context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+//@get:JvmName("rationalFunctionValueVariable")
+//public val <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
+// endregion
+
+// region Variable-Rational-Function operations
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("plusVariableRational")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("minusVariableRational")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("timesVariableRational")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("divVariableRational")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Rational-Function-Variable operations
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("plusRationalVariable")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("minusRationalVariable")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("timesRationalVariable")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+@JvmName("divRationalVariable")
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
+// endregion
+
+// region Rational Function properties
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+public val <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.variables: KoneSet<Variable> get() = with(rationalFunctionSpace) { this@variables.variables }
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+public val <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.numberOfVariables: UInt get() = with(rationalFunctionSpace) { this@numberOfVariables.numberOfVariables }
+// endregion
+
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public abstract class MultivariatePolynomialSpaceOfFractions<
-        C,
-        V,
-        P: Polynomial<C>,
-        RF: RationalFunction<C, P>,
-        out A: Ring<C>,
-        out PS: MultivariatePolynomialSpace<C, V, P, A>
-        > : MultivariateRationalFunctionSpace<C, V, P, RF, A, PS>,  PolynomialSpaceOfFractions<C, P, RF, A, PS>() {
+    Number,
+    Variable,
+    Polynomial,
+    RationalFunctionType: RationalFunction<Polynomial>,
+> : MultivariateRationalFunctionSpace<Number, Variable, Polynomial, RationalFunctionType>,  PolynomialSpaceOfFractions<Number, Polynomial, RationalFunctionType>() {
+    abstract override val polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>
+    
+    // region Variable-to-Rational-Function conversion
+    @JvmName("rationalFunctionValueOfVariable")
+    final override fun rationalFunctionValueOf(variable: Variable): RationalFunctionType = constructRationalFunction(polynomialSpace.polynomialValueOf(variable))
+    @get:JvmName("rationalFunctionValueVariable")
+    final override val Variable.rationalFunctionValue: RationalFunctionType get() = constructRationalFunction(with(polynomialSpace) { this@rationalFunctionValue.polynomialValue })
+    // endregion
 
     // region Variable-Rational-Function operations
     @JvmName("plusVariableRational")
-    override operator fun V.plus(other: RF): RF =
+    final override operator fun Variable.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator + other.numerator,
+            polynomialSpace { this * other.denominator + other.numerator },
             other.denominator
         )
     @JvmName("minusVariableRational")
-    override operator fun V.minus(other: RF): RF =
+    final override operator fun Variable.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator - other.numerator,
+            polynomialSpace { this * other.denominator - other.numerator },
             other.denominator
         )
     @JvmName("timesVariableRational")
-    override operator fun V.times(other: RF): RF =
+    final override operator fun Variable.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.numerator,
+            polynomialSpace { this * other.numerator },
             other.denominator
         )
     @JvmName("divVariableRational")
-    override operator fun V.div(other: RF): RF =
+    final override operator fun Variable.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            this * other.denominator,
+            polynomialSpace { this * other.denominator },
             other.numerator
         )
     // endregion
 
     // region Rational-Function-Variable operations
     @JvmName("plusRationalVariable")
-    override operator fun RF.plus(other: V): RF =
+    final override operator fun RationalFunctionType.plus(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            numerator + denominator * other,
+            polynomialSpace { numerator + denominator * other },
             denominator
         )
     @JvmName("minusRationalVariable")
-    override operator fun RF.minus(other: V): RF =
+    final override operator fun RationalFunctionType.minus(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            numerator - denominator * other,
+            polynomialSpace { numerator - denominator * other },
             denominator
         )
     @JvmName("timesRationalVariable")
-    override operator fun RF.times(other: V): RF =
+    final override operator fun RationalFunctionType.times(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            numerator * other,
+            polynomialSpace { numerator * other },
             denominator
         )
     @JvmName("divRationalVariable")
-    override operator fun RF.div(other: V): RF =
+    final override operator fun RationalFunctionType.div(other: Variable): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            denominator * other
+            polynomialSpace { denominator * other }
         )
     // endregion
-}
-
-context(A, PS)
-@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface RationalFunctionSpaceOverField<
-        C,
-        P: Polynomial<C>,
-        RF: RationalFunction<C, P>,
-        out A: Field<C>,
-        out PS: PolynomialSpaceOverField<C, P, A>
-        > : RationalFunctionSpace<C, P, RF, A, PS> {
-
-    // region Polynomial-Constant operations
-    @JvmName("divPolynomialConstant")
-    @JsName("divPolynomialConstant")
-    public operator fun P.div(other: C): P = polynomialSpace.run { this@div.div(other) }
+    
+    // region Rational Function properties
+    final override val RationalFunctionType.variables: KoneSet<Variable>
+        get() = polynomialSpace {
+            buildKoneSet {
+                addAllFrom(numerator.variables)
+                addAllFrom(denominator.variables)
+            }
+        }
     // endregion
 }
-
-context(A, PS)
-@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariateRationalFunctionSpaceOverField<
-        C,
-        V,
-        P: Polynomial<C>,
-        RF: RationalFunction<C, P>,
-        out A: Field<C>,
-        out PS: MultivariatePolynomialSpaceOverField<C, V, P, A>
-        > : RationalFunctionSpaceOverField<C, P, RF, A, PS>, MultivariateRationalFunctionSpace<C, V, P, RF, A, PS>

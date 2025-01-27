@@ -20,6 +20,7 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
+import kotlin.js.JsName
 
 
 @Serializable(with = KoneGCLinkedListSerializer::class)
@@ -140,6 +141,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         if (isDisposed) disposedInstanceException()
         val newNode = Node(element)
         newNode._previousNode = end
+        end?._nextNode = newNode
         end = newNode
         if (size == 0u) start = newNode
         size++
@@ -173,6 +175,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         val newNode = Node(element)
         if (index == size) {
             newNode._previousNode = end
+            end?._nextNode = newNode
             end = newNode
             if (size == 0u) start = newNode
         } else {
@@ -374,9 +377,8 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         internal var _previousNode: Node<Element>? = null
         
         private var _list: KoneGCLinkedList<Element>? = list
-        internal var list: KoneGCLinkedList<Element>
+        internal val list: KoneGCLinkedList<Element>
             get() = _list!!
-            set(value) { _list = value }
         
         internal fun detach() {
             if (isDetached) return
@@ -406,6 +408,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
             _nextNode?._previousNode = _previousNode
             if (_previousNode == null) list.start = _nextNode
             if (_nextNode == null) list.end = _previousNode
+            list.size--
             _nextNode = null
             _previousNode = null
             _list = null
@@ -436,6 +439,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         currentIndex: UInt?,
     ): KoneMutableNoddedListIterator<Element> {
         internal var _nextIndex: UInt? = currentIndex
+        @JsName("nextIndexField")
         val nextIndex: UInt get() = (_nextIndex ?: nextNode?.index ?: list.size).also { _nextIndex = it }
         
         override fun hasNext(): Boolean =

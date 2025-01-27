@@ -167,6 +167,7 @@ public inline fun <Key, Value> buildKoneReifiedMap(
     return mapBuilder.apply(builderAction)
 }
 
+// TODO: Move following function somewhere else
 public inline fun <Element, Key, Value, Destination: KoneMutableMap<in Key, in Value>> KoneIterable<Element>.associateTo(destination: Destination, transform: (Element) -> KoneMapEntry<Key, Value>): Destination {
     for (element in this) destination.set(transform(element))
     return destination
@@ -222,3 +223,55 @@ public inline fun <reified Key, Value> KoneIterable<Key>.associateWithReified(va
 
 public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(keyContext: ReifiedEquality<Key>, valueSelector: (Key) -> Value): KoneReifiedMap<Key, Value> =
     associateWithTo(koneMutableReifiedMapOf(keyContext = keyContext), valueSelector)
+
+public inline fun <K, V, W, D : KoneMutableMap<in K, in W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W): D =
+    entriesView.associateByTo(destination, { it.key }, transform)
+
+public inline fun <K, V, W> KoneMap<out K, V>.mapValues(keyContext: Equality<K> = defaultEquality(), transform: (KoneMapEntry<K, V>) -> W): KoneMap<K, W> =
+    mapValuesTo(koneMutableMapOf<K, W>(keyContext = keyContext), transform)
+
+public inline fun <K, V, W> KoneMap<out K, V>.mapValuesReified(keyContext: ReifiedEquality<K>, transform: (KoneMapEntry<K, V>) -> W): KoneReifiedMap<K, W> =
+    mapValuesTo(koneMutableReifiedMapOf<K, W>(keyContext = keyContext), transform)
+
+public inline fun <reified K, V, W> KoneMap<out K, V>.mapValuesReified(transform: (KoneMapEntry<K, V>) -> W): KoneReifiedMap<K, W> =
+    mapValuesTo(koneMutableReifiedMapOf<K, W>(), transform)
+
+public inline fun <K, V, L, D : KoneMutableMap<in L, in V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L): D =
+    entriesView.associateByTo(destination, transform, { it.value })
+
+public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(keyContext: Equality<L> = defaultEquality(), transform: (KoneMapEntry<K, V>) -> L): KoneMap<L, V> =
+    mapKeysTo(koneMutableMapOf(keyContext), transform)
+
+public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(keyContext: ReifiedEquality<L>, transform: (KoneMapEntry<K, V>) -> L): KoneReifiedMap<L, V> =
+    mapKeysTo(koneMutableReifiedMapOf(keyContext), transform)
+
+public inline fun <K, V, reified L> KoneMap<out K, V>.mapKeysReified(transform: (KoneMapEntry<K, V>) -> L): KoneReifiedMap<L, V> =
+    mapKeysTo(koneMutableReifiedMapOf(), transform)
+
+public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterKeysTo(destination: D, predicate: (K) -> Boolean): D {
+    for ((key, value) in this) if (predicate(key)) destination[key] = value
+    return destination
+}
+
+public inline fun <K, V> KoneMap<out K, V>.filterKeys(keyContext: Equality<K> = defaultEquality(), predicate: (K) -> Boolean): KoneMap<K, V> =
+    filterKeysTo(koneMutableMapOf(keyContext), predicate)
+
+public inline fun <reified K, V> KoneMap<out K, V>.filterKeysReified(predicate: (K) -> Boolean): KoneReifiedMap<K, V> =
+    filterKeysTo(koneMutableReifiedMapOf(defaultReifiedEquality()), predicate)
+
+public inline fun <K, V> KoneMap<out K, V>.filterKeysReified(keyContext: ReifiedEquality<K>, predicate: (K) -> Boolean): KoneReifiedMap<K, V> =
+    filterKeysTo(koneMutableReifiedMapOf(keyContext), predicate)
+
+public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterValuesTo(destination: D, predicate: (V) -> Boolean): D {
+    for ((key, value) in this) if (predicate(value)) destination[key] = value
+    return destination
+}
+
+public inline fun <K, V> KoneMap<out K, V>.filterValues(keyContext: Equality<K> = defaultEquality(), predicate: (V) -> Boolean): KoneMap<K, V> =
+    filterValuesTo(koneMutableMapOf(keyContext), predicate)
+
+public inline fun <reified K, V> KoneMap<out K, V>.filterValuesReified(predicate: (V) -> Boolean): KoneReifiedMap<K, V> =
+    filterValuesTo(koneMutableReifiedMapOf(defaultReifiedEquality()), predicate)
+
+public inline fun <K, V> KoneMap<out K, V>.filterValuesReified(keyContext: ReifiedEquality<K>, predicate: (V) -> Boolean): KoneReifiedMap<K, V> =
+    filterValuesTo(koneMutableReifiedMapOf(keyContext), predicate)

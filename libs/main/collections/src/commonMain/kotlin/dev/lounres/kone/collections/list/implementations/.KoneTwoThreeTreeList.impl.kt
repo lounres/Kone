@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import kotlinx.serialization.Serializable
+import kotlin.js.JsName
 
 
 @Serializable(with = KoneTwoThreeTreeListSerializer::class)
@@ -1258,6 +1259,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         var nextNode: Node<Element>?,
         var _nextIndex: UInt? = null,
     ) : KoneMutableNoddedListIterator<Element> {
+        @JsName("nextIndexField")
         val nextIndex: UInt get() = (_nextIndex ?: nextNode?.index ?: list.size).also { _nextIndex = it }
         
         override fun hasNext(): Boolean =

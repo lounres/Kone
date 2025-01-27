@@ -1,11 +1,16 @@
 kotlin {
     sourceSets {
+        all {
+            languageSettings {
+                optIn("dev.lounres.kone.polynomial.DelicatePolynomialAPI")
+            }
+        }
         commonMain {
             dependencies {
+                implementation(projects.libs.main.core)
+                api(projects.libs.main.comparison) // TODO: Что-то транзитивность не сработала...
                 api(projects.libs.main.algebraic)
-                api(versions.kmath.core)
-                implementation(projects.libs.util.mapOperations)
-                implementation(projects.libs.main.comparison) // TODO: Что-то транзитивность не сработала...
+                api(projects.libs.main.collections)
             }
         }
         commonTest {
