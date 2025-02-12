@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.map.getOrSet
 import dev.lounres.kone.collections.map.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.utils.anyIndexed
+import dev.lounres.kone.multidimensionalCollections.comparison.MDShapeEquality
 import dev.lounres.kone.multidimensionalCollections.comparison.MDShapeHashing
 
 
@@ -19,7 +20,7 @@ public fun RowMDShapeStrides(shape: MDShape): MDShapeStrides = MDShapeStrides(sh
 
 // TODO: Replace with concurrent map!!!
 //@ThreadLocal
-private val defaultStridesCache = KoneHashResizableMap<MDShape, _, MDShapeStrides>(keyContext = MDShapeHashing)
+private val defaultStridesCache = KoneHashResizableMap<MDShape, MDShapeStrides>(keyEquality = MDShapeEquality, keyHashing = MDShapeHashing)
 
 public fun MDShapeStrides(shape: MDShape): MDShapeStrides = defaultStridesCache.getOrSet(shape) { ColumnMDShapeStrides(shape) }
 

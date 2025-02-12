@@ -17,7 +17,6 @@ import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.context.KoneContext
 
 
 public typealias MDShape = KoneUIntArray
@@ -42,7 +41,7 @@ internal class MDShapeIndexerIterator(
     }
 }
 
-public interface MDShapeIndexer: KoneContext, KoneIterable<KoneUIntArray> {
+public interface MDShapeIndexer : KoneIterable<KoneUIntArray> {
     public val shape: MDShape
     override val size: UInt get() = shape.fold(1u) { acc, dim -> acc * dim }
 

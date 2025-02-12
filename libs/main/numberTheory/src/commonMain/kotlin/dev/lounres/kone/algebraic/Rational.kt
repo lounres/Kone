@@ -7,11 +7,19 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.compareWith
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.context
+import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.numberTheory.gcd
+import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Some
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
 
@@ -67,6 +75,21 @@ public class Rational {
     }
 }
 
+@OptIn(ExperimentalKoneAPI::class)
+public fun KoneContextRegistryBuilder.installRationalContext() {
+    val rationalSuppliedType = SuppliedType.Regular<Rational>(
+        kClass = Rational::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Equality.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Ring.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Field.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Order.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Hashing.Key(rationalSuppliedType)] = RationalField
+}
+
 @JvmInline
 internal value class QuotientsByGCD(val first: Long, val second: Long) {
     operator fun component1(): Long = first
@@ -81,7 +104,14 @@ internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
 // TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
 
 @ExperimentalKoneAPI
-public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rational> {
+public data object RationalField : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
+    // region Reification
+    override fun contains(element: Any?): Boolean = element is Rational
+    override fun reifyMaybe(element: Any?): Maybe<Rational> = if (element is Rational) Some(element) else None
+    override fun reifyOrNull(element: Any?): Rational? = element as? Rational
+    override fun reify(element: Any?): Rational = element as? Rational ?: reificationException()
+    // endregion
+    
     // region Constants
     public override val zero: Rational = Rational(0L)
     public override val one: Rational = Rational(1L)
@@ -96,7 +126,7 @@ public data object RationalField : Field<Rational>, Order<Rational>, Hashing<Rat
         val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
         val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
 
-        return Long.context { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
+        return context(Long.context) { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
     }
     public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
     // endregion

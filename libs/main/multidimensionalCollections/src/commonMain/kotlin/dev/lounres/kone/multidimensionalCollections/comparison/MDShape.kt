@@ -14,15 +14,18 @@ import dev.lounres.kone.multidimensionalCollections.MDShape
 import dev.lounres.kone.repeat
 
 
-internal object MDShapeHashing: Hashing<MDShape> {
+// TODO: Move to kone-collections
+internal object MDShapeEquality: Equality<MDShape> {
     override fun MDShape.equalsTo(other: MDShape): Boolean {
         if (this.size != other.size) return false
-
+        
         for (index in 0u ..< this.size) if (this[index] != other[index]) return false
-
+        
         return true
     }
+}
 
+internal object MDShapeHashing: Hashing<MDShape> {
     override fun MDShape.hash(): Int {
         var hashCode = 1
         repeat(size) {
@@ -32,8 +35,8 @@ internal object MDShapeHashing: Hashing<MDShape> {
     }
 }
 
-public fun mdShapeEquality(): Equality<MDShape> = MDShapeHashing
+public fun mdShapeEquality(): Equality<MDShape> = MDShapeEquality
 public fun mdShapeHashing(): Hashing<MDShape> = MDShapeHashing
 
-public fun <Result> mdShapeEquality(block: context(Equality<MDShape>) () -> Result): Result = block(MDShapeHashing)
-public fun <Result> mdShapeHashing(block: context(Equality<MDShape>) () -> Result): Result = block(MDShapeHashing)
+public fun <Result> mdShapeEquality(block: context(Equality<MDShape>) () -> Result): Result = block(MDShapeEquality)
+public fun <Result> mdShapeHashing(block: context(Hashing<MDShape>) () -> Result): Result = block(MDShapeHashing)

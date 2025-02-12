@@ -8,12 +8,20 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.option.Maybe
+import dev.lounres.kone.option.None
+import dev.lounres.kone.option.Some
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 
 
 @ExperimentalKoneAPI
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
-public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
+public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<Int> {
 
     public val modulus: Int
 
@@ -21,6 +29,11 @@ public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
         require(modulus != 0) { "modulus can not be zero" }
         this.modulus = if (modulus < 0) -modulus else modulus
     }
+    
+    override fun contains(element: Any?): Boolean = element is Int
+    override fun reifyMaybe(element: Any?): Maybe<Int> = if (element is Int) Some(element) else None
+    override fun reifyOrNull(element: Any?): Int? = element as? Int
+    override fun reify(element: Any?): Int = element as? Int ?: reificationException()
 
     override fun Int.hash(): Int = this.mod(modulus)
 
@@ -64,4 +77,18 @@ public class IntModuloRing(modulus: Int) : Ring<Int>, Hashing<Int> {
     override operator fun ULong.plus(other: Int): Int = ((this.toLong() + other) % modulus).toInt()
     override operator fun ULong.minus(other: Int): Int = ((this.toLong() - other) % modulus).toInt()
     override operator fun ULong.times(other: Int): Int = ((this.toLong() * other) % modulus).toInt()
+}
+
+@OptIn(ExperimentalKoneAPI::class)
+public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
+    val ring = IntModuloRing(modulus)
+    val intModuloSuppliedType = SuppliedType.Regular<Int>(
+        kClass = Int::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(intModuloSuppliedType)] = ring
+    contextsBuilder[Equality.Key(intModuloSuppliedType)] = ring
+    contextsBuilder[Ring.Key(intModuloSuppliedType)] = ring
+    contextsBuilder[Hashing.Key(intModuloSuppliedType)] = ring
 }
