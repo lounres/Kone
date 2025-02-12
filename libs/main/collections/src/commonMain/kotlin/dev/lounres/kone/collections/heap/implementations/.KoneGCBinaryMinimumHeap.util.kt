@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.heap.implementations
 import dev.lounres.kone.comparison.Order
 
 
-public fun <Element, Priority, PriorityContext: Order<Priority>> KoneGCBinaryMinimumHeap(priorityContext: PriorityContext): KoneGCBinaryMinimumHeap<Element, Priority, PriorityContext> =
+public fun <Element, Priority> KoneGCBinaryMinimumHeap(priorityContext: Order<Priority>): KoneGCBinaryMinimumHeap<Element, Priority> =
     KoneGCBinaryMinimumHeap(
         priorityContext = priorityContext,
         rootHolder = null,

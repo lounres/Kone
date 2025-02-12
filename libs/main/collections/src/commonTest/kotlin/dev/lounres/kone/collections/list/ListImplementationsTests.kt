@@ -8,9 +8,12 @@ package dev.lounres.kone.collections.list
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.implementations.*
 import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableNoddedListProducer
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.producers.KoneListProducer
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.producers.KoneSettableListProducer
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
@@ -45,10 +48,15 @@ fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>)
 fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator =
     apply { validateWithIterator(list, iterator) }
 
+interface ListDisposabilityTest {
+    fun <Element: Any> test(list: KoneList<Element>) {}
+}
+
 interface ListImplementationDescription {
     val name: String
     val listProducer: KoneListProducer
     val listValidator: KoneListValidator
+    val listDisposabilityTest: ListDisposabilityTest? get() = null
 }
 
 val listImplementations = listOf<ListImplementationDescription>(
@@ -117,6 +125,11 @@ sealed interface MutableListOperation<out Element> {
     data object RemoveAll : MutableListOperation<Nothing>
 }
 
+sealed interface MutableNoddedListOperation<out Element> {
+    data class AddNode<out Element>(val element: Element) : MutableNoddedListOperation<Element>
+    data class AddNodeAt<out Element>(val element: Element, val index: UInt) : MutableNoddedListOperation<Element>
+}
+
 data class SettableListGettingSettingOperationsWithResultsSeries<out Element>(
     val initialList: List<Element>,
     val numberOfOperations: UInt,
@@ -133,6 +146,11 @@ data class MutableListExtensionReductionOperationsWithResultsSeries<out Element>
 
 data class MutableListOperationWithResult<out Element>(
     val operation: MutableListOperation<Element>,
+    val result: List<Element>,
+)
+
+data class MutableNoddedListOperationWithResult<out Element>(
+    val operation: MutableNoddedListOperation<Element>,
     val result: List<Element>,
 )
 
@@ -294,6 +312,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
         )
     }
     
+    // TODO: Добавить проверку вместимости
     // Add
     scope {
         val newElement = element()
@@ -305,6 +324,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
         )
     }
     
+    // TODO: Добавить проверку вместимости
     // AddAt
     for (index in 0 .. initialList.size) {
         val newElement = element()
@@ -316,6 +336,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
         )
     }
     
+    // TODO: Добавить проверку вместимости
     // AddSeveral
     for (extraSize in 0 ..< severalElementsAdditionLimit) {
         val newElements = List(extraSize) { element() }
@@ -327,6 +348,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
         )
     }
     
+    // TODO: Добавить проверку вместимости
     // AddSeveralAt
     for (index in 0 .. initialList.size) for (extraSize in 0 ..< severalElementsAdditionLimit) {
         val newElements = List(extraSize) { element() }
@@ -367,6 +389,43 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
     )
 }.exhaustive()
 
+fun <Element> Exhaustive.Companion.allMutableNoddedListOperationWithResult(
+    arbElements: Arb<Element>,
+    initialList: List<Element>,
+) : Exhaustive<MutableNoddedListOperationWithResult<Element>> = buildList {
+    val newElementsIterator = arbElements.samples().iterator()
+    fun element() = newElementsIterator.next().value
+
+    // TODO: Добавить проверку вместимости
+    // AddNode
+    scope {
+        val newElement = element()
+        add(
+            MutableNoddedListOperationWithResult(
+                operation = MutableNoddedListOperation.AddNode(newElement),
+                result = initialList + newElement,
+            )
+        )
+    }
+    
+    // TODO: Добавить проверку вместимости
+    // AddNodeAt
+    for (index in 0 .. initialList.size) {
+        val newElement = element()
+        add(
+            MutableNoddedListOperationWithResult(
+                operation = MutableNoddedListOperation.AddNodeAt(newElement, index.toUInt()),
+                result = initialList.subList(0, index) + newElement + initialList.subList(index, initialList.size),
+            )
+        )
+    }
+}.exhaustive()
+
+// TODO: Написать тесты на:
+//   1. Ноды
+//   2. `dispose`.
+//   3. `hashCode`, `equals`.
+//   4. `getNextNode`, `getPreviousNode`.
 class ListImplementationsTests : FunSpec({
     for (impl in listImplementations) context(impl.name) {
         val producer = impl.listProducer
@@ -741,6 +800,99 @@ class ListImplementationsTests : FunSpec({
                             operation = operattion,
                             result = result,
                             mutableList = mutableList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+        
+        fun <Element: Any> testKoneMutableNoddedListMutabilityOperationsOn(
+            previousSteps: MutableListExtensionReductionOperationsWithResultsSeries<Element>,
+            operation: MutableNoddedListOperation<Element>,
+            result: List<Element>,
+            mutableNoddedList: KoneMutableNoddedList<Element>,
+            validator: KoneListValidator,
+        ) {
+            repeat(previousSteps.numberOfOperations) {
+                val step = previousSteps.operations[it.toInt()]
+                when (step) {
+//                    is MutableListExtensionReductionOperation.Set<Element> -> mutableList[step.index] = step.element
+                    is MutableListExtensionReductionOperation.AddAt<Element> -> mutableNoddedList.addAt(step.index, step.element)
+                    is MutableListExtensionReductionOperation.RemoveAt -> mutableNoddedList.removeAt(step.index)
+                }
+            }
+            validator.shouldValidate(mutableNoddedList)
+            when (operation) {
+                is MutableNoddedListOperation.AddNode<Element> -> {
+                    mutableNoddedList.addNode(operation.element)
+                    // TODO: Добавить проверку получаемой ноды
+                }
+                is MutableNoddedListOperation.AddNodeAt<Element> -> {
+                    mutableNoddedList.addNodeAt(operation.index, operation.element)
+                    // TODO: Добавить проверку получаемой ноды
+                }
+            }
+            validator.shouldValidate(mutableNoddedList)
+            testEquality(mutableNoddedList, result)
+        }
+        
+        if (producer is KoneResizableMutableNoddedListProducer)
+            test("test of nodded mutability operations after series of changes") {
+                checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                        val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableNoddedListMutabilityOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableNoddedList = mutableNoddedList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+        
+        if (producer is KoneGrowableMutableNoddedListProducer) {
+            test("test of nodded mutability operations after series of changes") {
+                checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                        val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableNoddedListMutabilityOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableNoddedList = mutableNoddedList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+            test("test of nodded mutability operations after series of changes with ensured capacity") {
+                checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                        val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableNoddedListMutabilityOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableNoddedList = mutableNoddedList,
+                            validator = impl.listValidator,
+                        )
+                    }
+                }
+            }
+        }
+        
+        if (producer is KoneFixedCapacityMutableNoddedListProducer)
+            test("test of nodded mutability operations after series of changes") {
+                checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) { previousSteps ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                        val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
+                        testKoneMutableNoddedListMutabilityOperationsOn(
+                            previousSteps = previousSteps,
+                            operation = operattion,
+                            result = result,
+                            mutableNoddedList = mutableNoddedList,
                             validator = impl.listValidator,
                         )
                     }

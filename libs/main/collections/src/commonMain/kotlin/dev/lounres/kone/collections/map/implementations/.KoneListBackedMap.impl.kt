@@ -5,8 +5,6 @@
 
 package dev.lounres.kone.collections.map.implementations
 
-import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedSet
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.next
@@ -17,30 +15,32 @@ import dev.lounres.kone.collections.map.KoneMapNode
 import dev.lounres.kone.collections.map.KoneReifiedMap
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
+import dev.lounres.kone.collections.set.implementations.KoneListBackedSet
 import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.comparison.absoluteReifiedEquality
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
-public open class KoneListBackedMap<Key, KeyContext: Equality<Key>, Value> @PublishedApi internal constructor(
-    public val keyContext: KeyContext,
+public open class KoneListBackedMap<Key, Value> @PublishedApi internal constructor(
+    public val keyEquality: Equality<Key>,
     internal val backingList: KoneList<Node<Key, Value>>,
 ) : KoneMap<Key, Value> {
     override val size: UInt
         get() = backingList.size
     
-    override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> = backingList.toKoneReifiedSet(absoluteReifiedEquality())
-    override val keysView: KoneSet<Key> = KoneListBackedSet(keyContext, backingList.map { it.key })
+    override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> = backingList.toKoneReifiedSet(elementEquality = absoluteEquality())
+    override val keysView: KoneSet<Key> = KoneListBackedSet(keyEquality, backingList.map { it.key })
     override val valuesView: KoneIterable<Value> = backingList.map { it.value }
     override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = backingList.map { KoneMapEntry(it.key, it.value) }
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { keyContext { it.key eq key } }
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { context(keyEquality) { it.key eq key } }
     
     // TODO: Override equals and `hashCode`
 
@@ -65,14 +65,15 @@ public open class KoneListBackedMap<Key, KeyContext: Equality<Key>, Value> @Publ
     }
 }
 
-public class KoneListBackedReifiedMap<Key, KeyContext: ReifiedEquality<Key>, Value> @PublishedApi internal constructor(
-    keyContext: KeyContext,
+public class KoneListBackedReifiedMap<Key, Value> @PublishedApi internal constructor(
+    public val keyReification: Reification<Key>,
+    keyEquality: Equality<Key>,
     backingList: KoneList<Node<Key, Value>>,
-) : KoneListBackedMap<Key, KeyContext, Value>(
-    keyContext = keyContext,
+) : KoneListBackedMap<Key, Value>(
+    keyEquality = keyEquality,
     backingList = backingList,
 ), KoneReifiedMap<Key, Value> {
-    override val keysView: KoneReifiedSet<Key> = KoneListBackedReifiedSet(keyContext, backingList.map { it.key })
+    override val keysView: KoneReifiedSet<Key> = KoneListBackedReifiedSet(keyReification, keyEquality, backingList.map { it.key })
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (key in keyContext) backingList.firstThatOrNull { keyContext { it.key eq key } } else null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (key in keyReification) backingList.firstThatOrNull { context(keyEquality) { it.key eq key } } else null
 }

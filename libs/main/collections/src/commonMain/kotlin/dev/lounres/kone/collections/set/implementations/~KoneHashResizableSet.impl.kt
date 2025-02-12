@@ -18,19 +18,20 @@ import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstIndexThat
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.ReifiedHashing
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.hash
-import dev.lounres.kone.context.invoke
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
+import dev.lounres.kone.context
 import kotlin.math.max
 
 
 //@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>> @PublishedApi internal constructor(
+public open class KoneHashResizableSet<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = DEFAULT_HASH_TABLE_LOAD_FACTOR,
     private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
@@ -39,7 +40,8 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
     private var sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
     data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
-    public val elementContext: ElementContext,
+    public val elementEquality: Equality<Element>,
+    public val elementHashing: Hashing<Element>,
 ) : KoneMutableSet<Element>, Disposable {
     final override var isDisposed: Boolean = false
         private set
@@ -73,7 +75,7 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
         private set
 
     private fun Element.localHash(): Int {
-        val contextHash = elementContext { this.hash() }
+        val contextHash = context(elementHashing) { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
     private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
@@ -119,7 +121,7 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
 
     override fun contains(element: Element): Boolean {
         if (isDisposed) disposedInstanceException()
-        for (currentElement in data[element.dataIndex()]) if (elementContext { currentElement eq element }) return true
+        for (currentElement in data[element.dataIndex()]) if (context(elementEquality) { currentElement eq element }) return true
         return false
     }
 
@@ -127,7 +129,7 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
         if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
-            if (elementContext { iterator.getNext() eq element }) {
+            if (context(elementEquality) { iterator.getNext() eq element }) {
                 iterator.setNext(element)
                 return
             }
@@ -170,7 +172,7 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
         if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
-            if (elementContext { iterator.getNext() eq element }) {
+            if (context(elementEquality) { iterator.getNext() eq element }) {
                 iterator.removeNext()
                 if (size == sizeLowerBound) reinitializeBoundsAndData(size - 1u)
                 else size--
@@ -254,7 +256,7 @@ public open class KoneHashResizableSet<Element, ElementContext: Hashing<Element>
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneHashResizableReifiedSet<Element, ElementContext: ReifiedHashing<Element>> @PublishedApi internal constructor(
+public class KoneHashResizableReifiedSet<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     loadFactor: Float = DEFAULT_HASH_TABLE_LOAD_FACTOR,
     dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
@@ -263,8 +265,10 @@ public class KoneHashResizableReifiedSet<Element, ElementContext: ReifiedHashing
     sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
     data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
-    elementContext: ElementContext,
-) : KoneHashResizableSet<Element, ElementContext> (
+    public val elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
+    elementHashing: Hashing<Element>,
+) : KoneHashResizableSet<Element> (
     size = size,
     loadFactor = loadFactor,
     dataSizeNumber = dataSizeNumber,
@@ -273,7 +277,8 @@ public class KoneHashResizableReifiedSet<Element, ElementContext: ReifiedHashing
     sizeLowerBound = sizeLowerBound,
     sizeUpperBound = sizeUpperBound,
     data = data,
-    elementContext = elementContext,
+    elementEquality = elementEquality,
+    elementHashing = elementHashing,
 ), KoneMutableReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementContext && super.contains(element)
+    override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
 }

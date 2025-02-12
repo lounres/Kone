@@ -21,10 +21,15 @@ import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListProducer
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.comparison.ReifiedHashing
+import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.comparison.defaultReifiedEquality
+import dev.lounres.kone.comparison.loadEqualityFor
+import dev.lounres.kone.comparison.loadHashingForOrNull
+import dev.lounres.kone.comparison.loadOrderForOrNull
+import dev.lounres.kone.comparison.loadReificationFor
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.experimental.ExperimentalTypeInference
 
@@ -38,37 +43,112 @@ public fun <Key, Value> emptyKoneMap(): KoneMap<Key, Value> = KoneEmptyReifiedMa
 public fun <Key, Value> emptyKoneReifiedMap(): KoneReifiedMap<Key, Value> = KoneEmptyReifiedMap as KoneReifiedMap<Key, Value>
 
 @Suppress("unused")
-public fun <Key, Value> koneMapOf(keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
-    emptyKoneMap()
+public fun <Key, Value> koneMapOf(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMap<Key, Value> = emptyKoneMap()
+
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMapOf(
+    keyType: SuppliedType<Key>,
+): KoneMap<Key, Value> =
+    koneMapOf(
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
 
 @Suppress("unused")
-public inline fun <reified Key, Value> koneReifiedMapOf(): KoneReifiedMap<Key, Value> = emptyKoneReifiedMap()
+public inline fun <reified Key, Value> koneReifiedMapOf(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> = emptyKoneReifiedMap()
 
 @Suppress("unused")
-public fun <Key, Value> koneReifiedMapOf(keyContext: ReifiedEquality<Key>): KoneReifiedMap<Key, Value> =
-    emptyKoneReifiedMap()
+public fun <Key, Value> koneReifiedMapOf(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> = emptyKoneReifiedMap()
 
-public fun <Key, Value> koneMapOf(entry: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualReifiedMapOf(
+    keyType: SuppliedType<Key>,
+): KoneReifiedMap<Key, Value> =
+    koneReifiedMapOf(
+        keyReification = loadReificationFor(keyType),
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
+
+@Suppress("unused")
+public fun <Key, Value> koneMapOf(
+    entry: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMap<Key, Value> =
     KoneSingletonMap(
         singleKey = entry.key,
         singleValue = entry.value,
-        keyContext = keyContext,
+        keyEquality = keyEquality,
     )
 
-public inline fun <reified Key, Value> koneReifiedMapOf(entry: KoneMapEntry<Key, Value>): KoneReifiedMap<Key, Value> =
-    koneReifiedMapOf(entry = entry, keyContext = defaultReifiedEquality())
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMapOf(
+    entry: KoneMapEntry<Key, Value>,
+    keyType: SuppliedType<Key>,
+): KoneMap<Key, Value> =
+    koneMapOf(
+        entry = entry,
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
 
-public fun <Key, Value> koneReifiedMapOf(entry: KoneMapEntry<Key, Value>, keyContext: ReifiedEquality<Key>): KoneReifiedMap<Key, Value> =
+@Suppress("unused")
+public inline fun <reified Key, Value> koneReifiedMapOf(
+    entry: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> =
+    koneReifiedMapOf(
+        entry = entry,
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+    )
+
+@Suppress("unused")
+public fun <Key, Value> koneReifiedMapOf(
+    entry: KoneMapEntry<Key, Value>,
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> =
     KoneSingletonReifiedMap(
         singleKey = entry.key,
         singleValue = entry.value,
-        keyContext = keyContext,
+        keyReification = keyReification,
+        keyEquality = keyEquality,
     )
 
-public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMap<Key, Value> =
+public fun <Key, Value> koneMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMap<Key, Value> =
     when {
         entries.isEmpty() -> emptyKoneMap()
-        keyContext is Hashing -> KoneHashResizableMap<Key, _, Value>(keyContext = keyContext).apply {
+        keyHashing != null -> KoneHashResizableMap<Key, Value>(keyEquality = keyEquality).apply {
             setAllFrom(KoneArray(entries))
         }
 //        else -> KoneMutableListBackedMap(keyContext = keyContext).apply {
@@ -77,13 +157,42 @@ public fun <Key, Value> koneMapOf(vararg entries: KoneMapEntry<Key, Value>, keyC
         else -> TODO()
     }
 
-public inline fun <reified Key, Value> koneReifiedMapOf(vararg entries: KoneMapEntry<Key, Value>): KoneReifiedMap<Key, Value> =
-    koneReifiedMapOf(entries = entries, keyContext = defaultReifiedEquality())
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyType: SuppliedType<Key>,
+): KoneMap<Key, Value> =
+    koneMapOf(
+        entries = entries,
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
 
-public fun <Key, Value> koneReifiedMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: ReifiedEquality<Key>): KoneReifiedMap<Key, Value> =
+public inline fun <reified Key, Value> koneReifiedMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> =
+    koneReifiedMapOf(
+        entries = entries,
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+    )
+
+public fun <Key, Value> koneReifiedMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneReifiedMap<Key, Value> =
     when {
         entries.isEmpty() -> emptyKoneReifiedMap()
-        keyContext is ReifiedHashing -> KoneHashResizableReifiedMap<Key, _, Value>(keyContext = keyContext).apply {
+        keyHashing != null -> KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply {
             setAllFrom(KoneArray(entries))
         }
 //        else -> KoneMutableListBackedReifiedMap(keyContext = keyContext).apply {
@@ -92,82 +201,240 @@ public fun <Key, Value> koneReifiedMapOf(vararg entries: KoneMapEntry<Key, Value
         else -> TODO()
     }
 
-public fun <Key, Value> koneMutableMapOf(keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
-    if (keyContext is Hashing<Key>) KoneHashResizableMap(keyContext = keyContext)
-    else KoneMutableListBackedMap(keyContext = keyContext)
+public fun <Key, Value> koneMutableMapOf(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableMap<Key, Value> =
+    if (keyHashing != null) KoneHashResizableMap(keyEquality = keyEquality, keyHashing = keyHashing)
+    else KoneMutableListBackedMap(keyEquality = keyEquality)
 
-public inline fun <reified Key, Value> koneMutableReifiedMapOf(): KoneMutableReifiedMap<Key, Value> =
-    koneMutableReifiedMapOf(keyContext = defaultReifiedEquality())
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMutableMapOf(
+    keyType: SuppliedType<Key>,
+): KoneMutableMap<Key, Value> =
+    koneMutableMapOf(
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
 
-public fun <Key, Value> koneMutableReifiedMapOf(keyContext: ReifiedEquality<Key>): KoneMutableReifiedMap<Key, Value> =
-    if (keyContext is ReifiedHashing<Key>) KoneHashResizableReifiedMap(keyContext = keyContext)
-    else KoneMutableListBackedReifiedMap(keyContext = keyContext)
+public inline fun <reified Key, Value> koneMutableReifiedMapOf(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableReifiedMap<Key, Value> =
+    koneMutableReifiedMapOf(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+    )
 
-public fun <Key, Value> koneMutableMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: Equality<Key> = defaultEquality()): KoneMutableMap<Key, Value> =
-    if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
-    else KoneMutableListBackedMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
+public fun <Key, Value> koneMutableReifiedMapOf(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableReifiedMap<Key, Value> =
+    if (keyHashing != null) KoneHashResizableReifiedMap(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
+    else KoneMutableListBackedReifiedMap(keyReification = keyReification, keyEquality = keyEquality)
 
-public inline fun <reified Key, Value> koneMutableReifiedMapOf(vararg entries: KoneMapEntry<Key, Value>): KoneMutableReifiedMap<Key, Value> =
-    koneMutableReifiedMapOf(entries = entries, keyContext = defaultReifiedEquality())
+public fun <Key, Value> koneMutableMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableMap<Key, Value> =
+    if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
+    else KoneMutableListBackedMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-public fun <Key, Value> koneMutableReifiedMapOf(vararg entries: KoneMapEntry<Key, Value>, keyContext: ReifiedEquality<Key>): KoneMutableReifiedMap<Key, Value> =
-    if (keyContext is ReifiedHashing<Key>) KoneHashResizableReifiedMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
-    else KoneMutableListBackedReifiedMap<Key, _, Value>(keyContext = keyContext).apply { setAllFrom(KoneArray(entries)) }
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMutableMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyType: SuppliedType<Key>,
+): KoneMutableMap<Key, Value> =
+    koneMutableMapOf(
+        entries = entries,
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
+
+public inline fun <reified Key, Value> koneMutableReifiedMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableReifiedMap<Key, Value> =
+    koneMutableReifiedMapOf(
+        entries = entries,
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+    )
+
+public fun <Key, Value> koneMutableReifiedMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+): KoneMutableReifiedMap<Key, Value> =
+    if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
+    else KoneMutableListBackedReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
+
+context(_: KoneContextRegistry)
+public fun <Key, Value> koneContextualMutableReifiedMapOf(
+    vararg entries: KoneMapEntry<Key, Value>,
+    keyType: SuppliedType<Key>,
+): KoneMutableReifiedMap<Key, Value> =
+    koneMutableReifiedMapOf(
+        entries = entries,
+        keyReification = loadReificationFor(keyType),
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+    )
 
 public inline fun <Key, Value> buildKoneMap(
-    keyContext: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext)
-        else KoneMutableListBackedMap(keyContext = keyContext, KoneArrayResizableLinkedNoddedListProducer)
+        if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing)
+        else KoneMutableListBackedMap(keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
+context(_: KoneContextRegistry)
+public inline fun <Key, Value> buildKoneContextualMap(
+    keyType: SuppliedType<Key>,
+    @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
+): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+    buildKoneMap(
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+        builderAction = builderAction,
+    )
+
 public inline fun <reified Key, Value> buildKoneReifiedMap(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    buildKoneReifiedMap(keyContext = defaultReifiedEquality(), builderAction)
+    buildKoneReifiedMap(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        builderAction = builderAction
+    )
 
 public inline fun <Key, Value> buildKoneReifiedMap(
-    keyContext: ReifiedEquality<Key>,
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is ReifiedHashing<Key>) KoneHashResizableReifiedMap<Key, _, Value>(keyContext = keyContext)
-        else KoneMutableListBackedReifiedMap(keyContext = keyContext, KoneArrayResizableLinkedNoddedListProducer)
+        if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
+        else KoneMutableListBackedReifiedMap(keyReification = keyReification, keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
+
+context(_: KoneContextRegistry)
+public inline fun <Key, Value> buildKoneContextualReifiedMap(
+    keyType: SuppliedType<Key>,
+    @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
+): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+    buildKoneReifiedMap(
+        keyReification = loadReificationFor(keyType),
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+        builderAction = builderAction,
+    )
 
 public inline fun <Key, Value> buildKoneMap(
     initialCapacity: UInt,
-    keyContext: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is Hashing<Key>) KoneHashResizableMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
-        else KoneMutableListBackedMap(initialCapacity = initialCapacity, keyContext = keyContext, KoneArrayGrowableLinkedNoddedListProducer)
+        if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
+        else KoneMutableListBackedMap(initialCapacity = initialCapacity, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
+
+context(_: KoneContextRegistry)
+public inline fun <Key, Value> buildKoneContextualMap(
+    initialCapacity: UInt,
+    keyType: SuppliedType<Key>,
+    @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
+): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+    buildKoneMap(
+        initialCapacity = initialCapacity,
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+        builderAction = builderAction,
+    )
 
 public inline fun <reified Key, Value> buildKoneReifiedMap(
     initialCapacity: UInt,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    buildKoneReifiedMap(initialCapacity = initialCapacity, keyContext = defaultReifiedEquality(), builderAction = builderAction)
+    buildKoneReifiedMap(
+        initialCapacity = initialCapacity,
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        builderAction = builderAction,
+    )
 
 public inline fun <Key, Value> buildKoneReifiedMap(
     initialCapacity: UInt,
-    keyContext: ReifiedEquality<Key>,
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
-        if (keyContext is ReifiedHashing<Key>) KoneHashResizableReifiedMap<Key, _, Value>(keyContext = keyContext) // TODO: Replace with growable hash map
-        else KoneMutableListBackedReifiedMap(initialCapacity = initialCapacity, keyContext = keyContext, KoneArrayGrowableLinkedNoddedListProducer)
+        if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
+        else KoneMutableListBackedReifiedMap(initialCapacity = initialCapacity, keyReification = keyReification, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
-// TODO: Move following function somewhere else
+context(_: KoneContextRegistry)
+public inline fun <Key, Value> buildKoneContextualReifiedMap(
+    initialCapacity: UInt,
+    keyType: SuppliedType<Key>,
+    @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
+): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+    buildKoneReifiedMap(
+        initialCapacity = initialCapacity,
+        keyReification = loadReificationFor(keyType),
+        keyEquality = loadEqualityFor(keyType),
+        keyHashing = loadHashingForOrNull(keyType),
+        keyOrder = loadOrderForOrNull(keyType),
+        builderAction = builderAction,
+    )
+
+// TODO: Move the following functions somewhere else
 public inline fun <Element, Key, Value, Destination: KoneMutableMap<in Key, in Value>> KoneIterable<Element>.associateTo(destination: Destination, transform: (Element) -> KoneMapEntry<Key, Value>): Destination {
     for (element in this) destination.set(transform(element))
     return destination
@@ -188,90 +455,393 @@ public inline fun <Key, Value, Destination : KoneMutableMap<in Key, in Value>> K
     return destination
 }
 
-public inline fun <Element, Key, Value> KoneIterable<Element>.associate(keyContext: Equality<Key> = defaultEquality(), transform: (Element) -> KoneMapEntry<Key, Value>): KoneMap<Key, Value> =
-    associateTo(koneMutableMapOf(keyContext = keyContext), transform)
+public inline fun <Element, Key, Value> KoneIterable<Element>.associate(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (Element) -> KoneMapEntry<Key, Value>
+): KoneMap<Key, Value> =
+    associateTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder
+        ),
+        transform = transform,
+    )
 
-public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateReified(transform: (Element) -> KoneMapEntry<Key, Value>): KoneReifiedMap<Key, Value> =
-    associateReified(keyContext = defaultReifiedEquality(), transform = transform)
+public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (Element) -> KoneMapEntry<Key, Value>,
+): KoneReifiedMap<Key, Value> =
+    associateReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        transform = transform
+    )
 
-public inline fun <Element, Key, Value> KoneIterable<Element>.associateReified(keyContext: ReifiedEquality<Key>, transform: (Element) -> KoneMapEntry<Key, Value>): KoneReifiedMap<Key, Value> =
-    associateTo(koneMutableReifiedMapOf(keyContext = keyContext), transform)
+public inline fun <Element, Key, Value> KoneIterable<Element>.associateReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (Element) -> KoneMapEntry<Key, Value>
+): KoneReifiedMap<Key, Value> =
+    associateTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder
+        ),
+        transform = transform,
+    )
 
-public inline fun <Element, Key> KoneIterable<Element>.associateBy(keyContext: Equality<Key> = defaultEquality(), keySelector: (Element) -> Key): KoneMap<Key, Element> =
-    associateByTo(koneMutableMapOf(keyContext = keyContext), keySelector)
+public inline fun <Element, Key> KoneIterable<Element>.associateBy(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key
+): KoneMap<Key, Element> =
+    associateByTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector,
+    )
 
-public inline fun <Element, reified Key> KoneIterable<Element>.associateByReified(keySelector: (Element) -> Key): KoneReifiedMap<Key, Element> =
-    associateByReified(keyContext = defaultReifiedEquality(), keySelector = keySelector)
+public inline fun <Element, reified Key> KoneIterable<Element>.associateByReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key
+): KoneReifiedMap<Key, Element> =
+    associateByReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        keySelector = keySelector
+    )
 
-public inline fun <Element, Key> KoneIterable<Element>.associateByReified(keyContext: ReifiedEquality<Key>, keySelector: (Element) -> Key): KoneReifiedMap<Key, Element> =
-    associateByTo(koneMutableReifiedMapOf(keyContext = keyContext), keySelector)
+public inline fun <Element, Key> KoneIterable<Element>.associateByReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key,
+): KoneReifiedMap<Key, Element> =
+    associateByTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector,
+    )
 
-public inline fun <Element, Key, Value> KoneIterable<Element>.associateBy(keyContext: Equality<Key> = defaultEquality(), keySelector: (Element) -> Key, valueTransform: (Element) -> Value): KoneMap<Key, Value> =
-    associateByTo(koneMutableMapOf(keyContext = keyContext), keySelector, valueTransform)
+public inline fun <Element, Key, Value> KoneIterable<Element>.associateBy(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key,
+    valueTransform: (Element) -> Value
+): KoneMap<Key, Value> =
+    associateByTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector,
+        valueTransform = valueTransform,
+    )
 
-public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateByReified(keySelector: (Element) -> Key, valueTransform: (Element) -> Value): KoneReifiedMap<Key, Value> =
-    associateByReified(keyContext = defaultReifiedEquality(), keySelector = keySelector, valueTransform = valueTransform)
+public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateByReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key,
+    valueTransform: (Element) -> Value
+): KoneReifiedMap<Key, Value> =
+    associateByReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        keySelector = keySelector,
+        valueTransform = valueTransform
+    )
 
-public inline fun <Element, Key, Value> KoneIterable<Element>.associateByReified(keyContext: ReifiedEquality<Key>, keySelector: (Element) -> Key, valueTransform: (Element) -> Value): KoneReifiedMap<Key, Value> =
-    associateByTo(koneMutableReifiedMapOf(keyContext = keyContext), keySelector, valueTransform)
+public inline fun <Element, Key, Value> KoneIterable<Element>.associateByReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    keySelector: (Element) -> Key,
+    valueTransform: (Element) -> Value
+): KoneReifiedMap<Key, Value> =
+    associateByTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector,
+        valueTransform = valueTransform,
+    )
 
-public inline fun <Key, Value> KoneIterable<Key>.associateWith(keyContext: Equality<Key> = defaultEquality(), valueSelector: (Key) -> Value): KoneMap<Key, Value> =
-    associateWithTo(koneMutableMapOf(keyContext = keyContext), valueSelector)
+public inline fun <Key, Value> KoneIterable<Key>.associateWith(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    valueSelector: (Key) -> Value
+): KoneMap<Key, Value> =
+    associateWithTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        valueSelector = valueSelector,
+    )
 
-public inline fun <reified Key, Value> KoneIterable<Key>.associateWithReified(valueSelector: (Key) -> Value): KoneReifiedMap<Key, Value> =
-    associateWithReified(keyContext = defaultReifiedEquality(), valueSelector = valueSelector)
+public inline fun <reified Key, Value> KoneIterable<Key>.associateWithReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    valueSelector: (Key) -> Value,
+): KoneReifiedMap<Key, Value> =
+    associateWithReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        valueSelector = valueSelector,
+    )
 
-public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(keyContext: ReifiedEquality<Key>, valueSelector: (Key) -> Value): KoneReifiedMap<Key, Value> =
-    associateWithTo(koneMutableReifiedMapOf(keyContext = keyContext), valueSelector)
+public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    valueSelector: (Key) -> Value
+): KoneReifiedMap<Key, Value> =
+    associateWithTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        valueSelector = valueSelector,
+    )
 
 public inline fun <K, V, W, D : KoneMutableMap<in K, in W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W): D =
     entriesView.associateByTo(destination, { it.key }, transform)
 
-public inline fun <K, V, W> KoneMap<out K, V>.mapValues(keyContext: Equality<K> = defaultEquality(), transform: (KoneMapEntry<K, V>) -> W): KoneMap<K, W> =
-    mapValuesTo(koneMutableMapOf<K, W>(keyContext = keyContext), transform)
+public inline fun <Key, V, W> KoneMap<out Key, V>.mapValues(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (KoneMapEntry<Key, V>) -> W
+): KoneMap<Key, W> =
+    mapValuesTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        transform = transform,
+    )
 
-public inline fun <K, V, W> KoneMap<out K, V>.mapValuesReified(keyContext: ReifiedEquality<K>, transform: (KoneMapEntry<K, V>) -> W): KoneReifiedMap<K, W> =
-    mapValuesTo(koneMutableReifiedMapOf<K, W>(keyContext = keyContext), transform)
+public inline fun <reified Key, V, W> KoneMap<out Key, V>.mapValuesReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (KoneMapEntry<Key, V>) -> W
+): KoneReifiedMap<Key, W> =
+    mapValuesReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        transform = transform,
+    )
 
-public inline fun <reified K, V, W> KoneMap<out K, V>.mapValuesReified(transform: (KoneMapEntry<K, V>) -> W): KoneReifiedMap<K, W> =
-    mapValuesTo(koneMutableReifiedMapOf<K, W>(), transform)
+public inline fun <Key, V, W> KoneMap<out Key, V>.mapValuesReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    transform: (KoneMapEntry<Key, V>) -> W
+): KoneReifiedMap<Key, W> =
+    mapValuesTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        transform = transform,
+    )
 
 public inline fun <K, V, L, D : KoneMutableMap<in L, in V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L): D =
     entriesView.associateByTo(destination, transform, { it.value })
 
-public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(keyContext: Equality<L> = defaultEquality(), transform: (KoneMapEntry<K, V>) -> L): KoneMap<L, V> =
-    mapKeysTo(koneMutableMapOf(keyContext), transform)
+public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
+    keyEquality: Equality<L> = defaultEquality(),
+    keyHashing: Hashing<L>? = null,
+    keyOrder: Order<L>? = null,
+    transform: (KoneMapEntry<K, V>) -> L
+): KoneMap<L, V> =
+    mapKeysTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        transform = transform,
+    )
 
-public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(keyContext: ReifiedEquality<L>, transform: (KoneMapEntry<K, V>) -> L): KoneReifiedMap<L, V> =
-    mapKeysTo(koneMutableReifiedMapOf(keyContext), transform)
+public inline fun <K, V, reified L> KoneMap<out K, V>.mapKeysReified(
+    keyEquality: Equality<L> = defaultEquality(),
+    keyHashing: Hashing<L>? = null,
+    keyOrder: Order<L>? = null,
+    transform: (KoneMapEntry<K, V>) -> L
+): KoneReifiedMap<L, V> =
+    mapKeysReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        transform = transform,
+    )
 
-public inline fun <K, V, reified L> KoneMap<out K, V>.mapKeysReified(transform: (KoneMapEntry<K, V>) -> L): KoneReifiedMap<L, V> =
-    mapKeysTo(koneMutableReifiedMapOf(), transform)
+
+public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(
+    keyReification: Reification<L>,
+    keyEquality: Equality<L> = defaultEquality(),
+    keyHashing: Hashing<L>? = null,
+    keyOrder: Order<L>? = null,
+    transform: (KoneMapEntry<K, V>) -> L
+): KoneReifiedMap<L, V> =
+    mapKeysTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        transform = transform,
+    )
 
 public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterKeysTo(destination: D, predicate: (K) -> Boolean): D {
     for ((key, value) in this) if (predicate(key)) destination[key] = value
     return destination
 }
 
-public inline fun <K, V> KoneMap<out K, V>.filterKeys(keyContext: Equality<K> = defaultEquality(), predicate: (K) -> Boolean): KoneMap<K, V> =
-    filterKeysTo(koneMutableMapOf(keyContext), predicate)
+public inline fun <Key, V> KoneMap<out Key, V>.filterKeys(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (Key) -> Boolean
+): KoneMap<Key, V> =
+    filterKeysTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        predicate = predicate,
+    )
 
-public inline fun <reified K, V> KoneMap<out K, V>.filterKeysReified(predicate: (K) -> Boolean): KoneReifiedMap<K, V> =
-    filterKeysTo(koneMutableReifiedMapOf(defaultReifiedEquality()), predicate)
+public inline fun <reified Key, V> KoneMap<out Key, V>.filterKeysReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (Key) -> Boolean
+): KoneReifiedMap<Key, V> =
+    filterKeysReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        predicate = predicate,
+    )
 
-public inline fun <K, V> KoneMap<out K, V>.filterKeysReified(keyContext: ReifiedEquality<K>, predicate: (K) -> Boolean): KoneReifiedMap<K, V> =
-    filterKeysTo(koneMutableReifiedMapOf(keyContext), predicate)
+public inline fun <Key, V> KoneMap<out Key, V>.filterKeysReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (Key) -> Boolean
+): KoneReifiedMap<Key, V> =
+    filterKeysTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        predicate = predicate,
+    )
 
 public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterValuesTo(destination: D, predicate: (V) -> Boolean): D {
     for ((key, value) in this) if (predicate(value)) destination[key] = value
     return destination
 }
 
-public inline fun <K, V> KoneMap<out K, V>.filterValues(keyContext: Equality<K> = defaultEquality(), predicate: (V) -> Boolean): KoneMap<K, V> =
-    filterValuesTo(koneMutableMapOf(keyContext), predicate)
+public inline fun <Key, V> KoneMap<out Key, V>.filterValues(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (V) -> Boolean
+): KoneMap<Key, V> =
+    filterValuesTo(
+        koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        predicate = predicate,
+    )
 
-public inline fun <reified K, V> KoneMap<out K, V>.filterValuesReified(predicate: (V) -> Boolean): KoneReifiedMap<K, V> =
-    filterValuesTo(koneMutableReifiedMapOf(defaultReifiedEquality()), predicate)
+public inline fun <reified Key, V> KoneMap<out Key, V>.filterValuesReified(
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (V) -> Boolean
+): KoneReifiedMap<Key, V> =
+    filterValuesReified(
+        keyReification = Reification(),
+        keyEquality = keyEquality,
+        keyHashing = keyHashing,
+        keyOrder = keyOrder,
+        predicate = predicate,
+    )
 
-public inline fun <K, V> KoneMap<out K, V>.filterValuesReified(keyContext: ReifiedEquality<K>, predicate: (V) -> Boolean): KoneReifiedMap<K, V> =
-    filterValuesTo(koneMutableReifiedMapOf(keyContext), predicate)
+public inline fun <Key, Value> KoneMap<out Key, Value>.filterValuesReified(
+    keyReification: Reification<Key>,
+    keyEquality: Equality<Key> = defaultEquality(),
+    keyHashing: Hashing<Key>? = null,
+    keyOrder: Order<Key>? = null,
+    predicate: (Value) -> Boolean)
+: KoneReifiedMap<Key, Value> =
+    filterValuesTo(
+        koneMutableReifiedMapOf(
+            keyReification = keyReification,
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        predicate = predicate
+    )

@@ -18,15 +18,18 @@ import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrSet
+import dev.lounres.kone.collections.map.koneContextualMutableMapOf
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.noElementMatchingThePredicateException
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.comparison.*
+import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
 import dev.lounres.kone.repeat
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmInline
 import kotlin.math.min
 import kotlin.random.Random
@@ -647,11 +650,63 @@ public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableList<V>>> KoneIt
     return destination
 }
 
-public inline fun <E, K> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), keySelector: (E) -> K): KoneMap<K, KoneList<E>> =
-    groupByTo(destination = koneMutableMapOf(keyContext = keyContext), keySelector = keySelector)
+public inline fun <E, K> KoneIterable<E>.groupBy(
+    keyEquality: Equality<K> = defaultEquality(),
+    keyHashing: Hashing<K>? = null,
+    keyOrder: Order<K>? = null,
+    keySelector: (E) -> K
+): KoneMap<K, KoneList<E>> =
+    groupByTo(
+        destination = koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector
+    )
 
-public inline fun <E, K, V> KoneIterable<E>.groupBy(keyContext: Equality<K> = defaultEquality(), keySelector: (E) -> K, valueTransform: (E) -> V): KoneMap<K, KoneList<V>> =
-    groupByTo(destination = koneMutableMapOf(keyContext = keyContext), keySelector = keySelector, valueTransform = valueTransform)
+context(_: KoneContextRegistry)
+public inline fun <E, K> KoneIterable<E>.groupContextualBy(
+    keyType: SuppliedType<K>,
+    keySelector: (E) -> K
+): KoneMap<K, KoneList<E>> =
+    groupByTo(
+        destination = koneContextualMutableMapOf(
+            keyType = keyType,
+        ),
+        keySelector = keySelector
+    )
+
+public inline fun <E, K, V> KoneIterable<E>.groupBy(
+    keyEquality: Equality<K> = defaultEquality(),
+    keyHashing: Hashing<K>? = null,
+    keyOrder: Order<K>? = null,
+    keySelector: (E) -> K,
+    valueTransform: (E) -> V,
+): KoneMap<K, KoneList<V>> =
+    groupByTo(
+        destination = koneMutableMapOf(
+            keyEquality = keyEquality,
+            keyHashing = keyHashing,
+            keyOrder = keyOrder,
+        ),
+        keySelector = keySelector,
+        valueTransform = valueTransform,
+    )
+
+context(_: KoneContextRegistry)
+public inline fun <E, K, V> KoneIterable<E>.groupContextualBy(
+    keyType: SuppliedType<K>,
+    keySelector: (E) -> K,
+    valueTransform: (E) -> V,
+): KoneMap<K, KoneList<V>> =
+    groupByTo(
+        destination = koneContextualMutableMapOf(
+            keyType = keyType,
+        ),
+        keySelector = keySelector,
+        valueTransform = valueTransform,
+    )
 
 @PublishedApi
 @JvmInline
@@ -659,6 +714,8 @@ internal value class RangeToSort(val from: UInt, val to: UInt) {
     operator fun component1(): UInt = from
     operator fun component2(): UInt = to
 }
+
+// TODO: Rename `sort` to `quickSort` and implement heap sort
 
 public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
     fun divide(from: UInt, to: UInt): UInt {

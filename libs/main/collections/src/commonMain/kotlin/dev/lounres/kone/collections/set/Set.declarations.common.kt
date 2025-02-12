@@ -7,7 +7,9 @@ package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.comparison.absoluteReifiedEquality
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.comparison.defaultHashing
 
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
@@ -41,7 +43,11 @@ public interface KoneNoddedSet<Element> : KoneSet<Element> {
 public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNoddedSet<Element> {
     override val nodesView: KoneReifiedSet<KoneMutableSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneMutableSetNode<Element>>
-        get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+        get() = nodesView.toKoneReifiedSet(
+            elementReification = Reification(),
+            elementEquality = absoluteEquality(),
+            elementHashing = defaultHashing(),
+        )
     override fun nodeOfOrNull(element: Element): KoneMutableSetNode<Element>?
     override fun nodeOf(element: Element): KoneMutableSetNode<Element>
     public fun addNode(element: Element): KoneMutableSetNode<Element>
@@ -74,7 +80,11 @@ public interface KoneLinkedNoddedSet<Element> : KoneNoddedSet<Element>, KoneLink
 public interface KoneMutableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Element>, KoneMutableLinkedSet<Element>, KoneMutableNoddedSet<Element> {
     override val nodesView: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
-        get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+        get() = nodesView.toKoneReifiedSet(
+            elementReification = Reification(),
+            elementEquality = absoluteEquality(),
+            elementHashing = defaultHashing(),
+        )
     override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>?
     override fun nodeOf(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>
     override fun addNode(element: Element): KoneMutableLinkedSetNode<Element>

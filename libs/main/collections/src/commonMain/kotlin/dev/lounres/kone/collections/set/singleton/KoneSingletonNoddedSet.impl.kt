@@ -13,24 +13,24 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.collections.set.KoneSetNode
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 internal open class KoneSingletonNoddedSet<Element>(
     val singleElement: Element,
-    open val elementContext: Equality<Element>,
+    open val elementEquality: Equality<Element>,
 ) : KoneNoddedSet<Element> {
     internal val singleNode = Node(this)
     
     override val size: UInt get() = 1u
-    override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
+    override fun contains(element: Element): Boolean = with(elementEquality) { singleElement eq element }
     override fun nodeOfOrNull(element: Element): KoneSetNode<Element>? =
-        if (elementContext { singleElement eq element }) singleNode else null
+        if (context(elementEquality) { singleElement eq element }) singleNode else null
     override fun nodeOf(element: Element): KoneSetNode<Element> =
-        if (elementContext { singleElement eq element }) singleNode
+        if (context(elementEquality) { singleElement eq element }) singleNode
         else noCorrespondingSetNodeException()
     
     override val nodesView: KoneReifiedSet<KoneSetNode<Element>> = Nodes(this)
@@ -94,10 +94,11 @@ internal open class KoneSingletonNoddedSet<Element>(
 @PublishedApi
 internal class KoneSingletonNoddedReifiedSet<Element>(
     singleElement: Element,
-    override val elementContext: ReifiedEquality<Element>,
+    val elementReification: Reification<Element>,
+    override val elementEquality: Equality<Element>,
 ) : KoneSingletonNoddedSet<Element>(
     singleElement = singleElement,
-    elementContext = elementContext,
+    elementEquality = elementEquality,
 ), KoneNoddedReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementContext && elementContext { singleElement eq element }
+    override fun contains(element: Element): Boolean = element in elementReification && context(elementEquality) { singleElement eq element }
 }

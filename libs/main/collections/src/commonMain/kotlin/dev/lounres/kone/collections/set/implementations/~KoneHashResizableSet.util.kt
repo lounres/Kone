@@ -5,25 +5,31 @@
 
 package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.ReifiedHashing
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
-import dev.lounres.kone.comparison.defaultReifiedHashing
-import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-public fun <Element, ElementContext: Hashing<Element>> KoneHashResizableSet(elementContext: ElementContext): KoneHashResizableSet<Element, ElementContext> =
-    KoneHashResizableSet(size = 0u, elementContext = elementContext)
+public fun <Element> KoneHashResizableSet(
+    elementEquality: Equality<Element> = defaultEquality(),
+    elementHashing: Hashing<Element> = defaultHashing()
+): KoneHashResizableSet<Element> =
+    KoneHashResizableSet(size = 0u, elementEquality = elementEquality, elementHashing = elementHashing)
 
-public fun <Element> KoneHashResizableSet(): KoneHashResizableSet<Element, Hashing<Element>> =
-    KoneHashResizableSet(size = 0u, elementContext = defaultHashing())
+public fun <Element> KoneHashResizableReifiedSet(
+    elementReification: Reification<Element>,
+    elementEquality: Equality<Element> = defaultEquality(),
+    elementHashing: Hashing<Element> = defaultHashing(),
+): KoneHashResizableReifiedSet<Element> =
+    KoneHashResizableReifiedSet(size = 0u, elementReification = elementReification, elementEquality = elementEquality,  elementHashing = elementHashing)
 
-public fun <Element, ElementContext: ReifiedHashing<Element>> KoneHashResizableReifiedSet(elementContext: ElementContext): KoneHashResizableReifiedSet<Element, ElementContext> =
-    KoneHashResizableReifiedSet(size = 0u, elementContext = elementContext)
-
-public inline fun <reified Element> KoneHashResizableReifiedSet(): KoneHashResizableReifiedSet<Element, ReifiedHashing<Element>> =
-    KoneHashResizableReifiedSet(size = 0u, elementContext = defaultReifiedHashing())
+public inline fun <reified Element> KoneHashResizableReifiedSet(
+    elementEquality: Equality<Element> = defaultEquality(),
+    elementHashing: Hashing<Element> = defaultHashing(),
+): KoneHashResizableReifiedSet<Element> =
+    KoneHashResizableReifiedSet(size = 0u, elementReification = Reification(), elementEquality = elementEquality,  elementHashing = elementHashing)
 
 //internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
 //    KoneIterableDescriptor(

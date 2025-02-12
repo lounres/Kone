@@ -15,19 +15,19 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.context
 
 
 //@Serializable(with = KoneListBackedSetWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public open class KoneListBackedSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
-    public val elementContext: ElementContext,
+public open class KoneListBackedSet<Element> @PublishedApi internal constructor(
+    public val elementEquality: Equality<Element>,
     internal val backingList: KoneList<Element>,
 ) : KoneSet<Element> {
     override val size: UInt get() = backingList.size
 
-    override fun contains(element: Element): Boolean = elementContext { element in backingList }
+    override fun contains(element: Element): Boolean = context(elementEquality) { element in backingList }
 
     override fun iterator(): KoneIterator<Element> = backingList.iterator()
 
@@ -46,9 +46,10 @@ public open class KoneListBackedSet<Element, ElementContext: Equality<Element>> 
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneListBackedReifiedSet<Element, ElementContext: ReifiedEquality<Element>> @PublishedApi internal constructor(
-    elementContext: ElementContext,
+public class KoneListBackedReifiedSet<Element> @PublishedApi internal constructor(
+    public val elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
     backingList: KoneList<Element>,
-) : KoneListBackedSet<Element, ElementContext>(elementContext, backingList), KoneReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementContext && super.contains(element)
+) : KoneListBackedSet<Element>(elementEquality, backingList), KoneReifiedSet<Element> {
+    override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
 }

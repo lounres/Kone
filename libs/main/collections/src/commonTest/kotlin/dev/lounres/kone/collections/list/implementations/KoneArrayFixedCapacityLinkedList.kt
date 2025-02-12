@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.deque.KoneDequeValidator
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
+import dev.lounres.kone.collections.list.ListDisposabilityTest
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.producers.KoneListProducer
 import dev.lounres.kone.collections.utils.any
@@ -98,6 +99,15 @@ object KoneArrayFixedCapacityLinkedListDescription : ListImplementationDescripti
             if (list !is KoneArrayFixedCapacityLinkedList<Any>) fail("The list is invalid")
             if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) fail("The iterator is invalid")
             Validator.validateWithIterator(list, iterator)
+        }
+    }
+    override val listDisposabilityTest: ListDisposabilityTest = object : ListDisposabilityTest {
+        override fun <Element : Any> test(list: KoneList<Element>) {
+            if (list !is KoneArrayFixedCapacityLinkedList<Element>) fail("The list is invalid")
+            
+            TODO()
+            
+            list.dispose()
         }
     }
     

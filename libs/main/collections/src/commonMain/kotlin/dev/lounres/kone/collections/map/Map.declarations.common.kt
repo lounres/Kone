@@ -10,7 +10,9 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.set.toKoneReifiedSet
-import dev.lounres.kone.comparison.absoluteReifiedEquality
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.absoluteEquality
+import dev.lounres.kone.comparison.defaultHashing
 
 
 // TODO: Describe contracts on equals and hashCode.
@@ -33,7 +35,11 @@ public interface KoneMap<Key, out Value> {
 public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
     override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
     override val nodes: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
-        get() = nodesView.toKoneReifiedSet(absoluteReifiedEquality())
+        get() = nodesView.toKoneReifiedSet(
+            elementReification = Reification(),
+            elementEquality = absoluteEquality(),
+            elementHashing = defaultHashing(),
+        )
     override val keys: KoneSet<Key>
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>?

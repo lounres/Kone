@@ -10,18 +10,18 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 internal open class KoneSingletonSet<Element>(
     val singleElement: Element,
-    open val elementContext: Equality<Element>,
+    open val elementEquality: Equality<Element>,
 ) : KoneSet<Element> {
     override val size: UInt get() = 1u
-    override fun contains(element: Element): Boolean = elementContext { singleElement eq element }
+    override fun contains(element: Element): Boolean = context(elementEquality) { singleElement eq element }
     
     override fun iterator(): KoneSetIterator<Element> = Iterator(this)
 
@@ -48,10 +48,11 @@ internal open class KoneSingletonSet<Element>(
 @PublishedApi
 internal class KoneSingletonReifiedSet<Element>(
     singleElement: Element,
-    override val elementContext: ReifiedEquality<Element>,
+    val elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
 ) : KoneSingletonSet<Element>(
     singleElement = singleElement,
-    elementContext = elementContext,
+    elementEquality = elementEquality,
 ), KoneReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementContext && elementContext { singleElement eq element }
+    override fun contains(element: Element): Boolean = element in elementReification && context(elementEquality) { singleElement eq element }
 }

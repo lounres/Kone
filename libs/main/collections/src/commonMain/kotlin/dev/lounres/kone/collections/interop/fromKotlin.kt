@@ -5,79 +5,14 @@
 
 package dev.lounres.kone.collections.interop
 
-import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.array.KoneByteArray
-import dev.lounres.kone.collections.array.KoneDoubleArray
-import dev.lounres.kone.collections.array.KoneFloatArray
-import dev.lounres.kone.collections.array.KoneIntArray
+import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.array.KoneLongArray
-import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneMutableByteArray
-import dev.lounres.kone.collections.array.KoneMutableDoubleArray
-import dev.lounres.kone.collections.array.KoneMutableFloatArray
-import dev.lounres.kone.collections.array.KoneMutableIntArray
 import dev.lounres.kone.collections.list.KoneMutableList
-import dev.lounres.kone.collections.array.KoneMutableLongArray
-import dev.lounres.kone.collections.set.KoneMutableReifiedSet
-import dev.lounres.kone.collections.set.KoneMutableSet
-import dev.lounres.kone.collections.array.KoneMutableShortArray
-import dev.lounres.kone.collections.array.KoneMutableUByteArray
-import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.array.KoneMutableULongArray
-import dev.lounres.kone.collections.array.KoneMutableUShortArray
-import dev.lounres.kone.collections.set.KoneReifiedSet
-import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.array.KoneShortArray
-import dev.lounres.kone.collections.array.KoneUByteArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.KoneULongArray
-import dev.lounres.kone.collections.array.KoneUShortArray
-import dev.lounres.kone.collections.list.addAllFrom
-import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.list.emptyKoneList
-import dev.lounres.kone.collections.set.emptyKoneReifiedSet
-import dev.lounres.kone.collections.set.emptyKoneSet
-import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
-import dev.lounres.kone.collections.set.implementations.KoneHashResizableReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneHashResizableSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableSet
-import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
-import dev.lounres.kone.collections.set.koneMutableSetOf
-import dev.lounres.kone.collections.array.toKoneArray
-import dev.lounres.kone.collections.array.toKoneByteArray
-import dev.lounres.kone.collections.array.toKoneDoubleArray
-import dev.lounres.kone.collections.array.toKoneFloatArray
-import dev.lounres.kone.collections.array.toKoneIntArray
-import dev.lounres.kone.collections.array.toKoneLongArray
-import dev.lounres.kone.collections.array.toKoneMutableArray
-import dev.lounres.kone.collections.array.toKoneMutableByteArray
-import dev.lounres.kone.collections.array.toKoneMutableDoubleArray
-import dev.lounres.kone.collections.array.toKoneMutableFloatArray
-import dev.lounres.kone.collections.array.toKoneMutableIntArray
-import dev.lounres.kone.collections.array.toKoneMutableLongArray
-import dev.lounres.kone.collections.array.toKoneMutableShortArray
-import dev.lounres.kone.collections.array.toKoneMutableUByteArray
-import dev.lounres.kone.collections.array.toKoneMutableUIntArray
-import dev.lounres.kone.collections.array.toKoneMutableULongArray
-import dev.lounres.kone.collections.array.toKoneMutableUShortArray
-import dev.lounres.kone.collections.array.toKoneShortArray
-import dev.lounres.kone.collections.array.toKoneUByteArray
-import dev.lounres.kone.collections.array.toKoneUIntArray
-import dev.lounres.kone.collections.array.toKoneULongArray
-import dev.lounres.kone.collections.array.toKoneUShortArray
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.utils.toOptimizedList
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.comparison.ReifiedHashing
-import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.comparison.defaultReifiedEquality
-import dev.lounres.kone.context.invoke
 
 
 // region Conversions
@@ -355,7 +290,7 @@ public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Elem
 
 public fun <Element> Collection<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
-    return KoneArrayResizableList(size.toUInt(), ) { iterator.next() }
+    return KoneArrayResizableList(size.toUInt()) { iterator.next() }
 }
 
 public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
@@ -376,76 +311,78 @@ public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =
     else this.toKoneMutableList()
 
 public fun <Element> Collection<Element>.toKoneList(): KoneList<Element> =
-    if (size == 0) emptyKoneList()
+    if (isEmpty()) emptyKoneList()
     else this.toKoneMutableList().toOptimizedList()
 
-public fun <Element> Iterable<Element>.toKoneMutableSet(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> {
-    if (this is Collection<Element>) return this.toKoneMutableSet(elementContext = elementContext)
-    
-    val result = koneMutableSetOf<Element>(elementContext = elementContext)
-    for (element in this) result.add(element)
-    return result
-}
+// TODO: Review the following converters
 
-public inline fun <reified Element> Iterable<Element>.toKoneMutableReifiedSet(): KoneMutableReifiedSet<Element> =
-    toKoneMutableReifiedSet(defaultReifiedEquality())
-
-public fun <Element> Iterable<Element>.toKoneMutableReifiedSet(elementContext: ReifiedEquality<Element>): KoneMutableReifiedSet<Element> {
-    if (this is Collection<Element>) return this.toKoneMutableReifiedSet(elementContext = elementContext)
-    
-    val result = koneMutableReifiedSetOf<Element>(elementContext = elementContext)
-    for (element in this) result.add(element)
-    return result
-}
-
-public fun <Element> Collection<Element>.toKoneMutableSet(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> =
-    if (elementContext is Hashing<Element>)
-        KoneHashResizableSet(elementContext = elementContext)
-            .apply {
-                val iterator = this@toKoneMutableSet.iterator()
-                addSeveral(this@toKoneMutableSet.size.toUInt()) { iterator.next() }
-            }
-    else {
-        val backingList = KoneArrayGrowableList<Element>()
-        for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
-        KoneListBackedMutableSet(elementContext, KoneArrayResizableLinkedList<Element>().apply { addAllFrom(backingList) })
-    }
-
-public inline fun <reified Element> Collection<Element>.toKoneMutableReifiedSet(): KoneMutableReifiedSet<Element> =
-    toKoneMutableReifiedSet(elementContext = defaultReifiedEquality())
-
-public fun <Element> Collection<Element>.toKoneMutableReifiedSet(elementContext: ReifiedEquality<Element>): KoneMutableReifiedSet<Element> =
-    if (elementContext is ReifiedHashing<Element>)
-        KoneHashResizableReifiedSet(elementContext = elementContext)
-            .apply {
-                val iterator = this@toKoneMutableReifiedSet.iterator()
-                addSeveral(this@toKoneMutableReifiedSet.size.toUInt()) { iterator.next() }
-            }
-    else {
-        val backingList = KoneArrayGrowableList<Element>()
-        for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
-        KoneListBackedMutableReifiedSet(elementContext, KoneArrayResizableLinkedList<Element>().apply { addAllFrom(backingList) })
-    }
-
-public fun <Element> Iterable<Element>.toKoneSet(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
-    if (this is Collection<Element>) this.toKoneSet(elementContext = elementContext)
-    else this.toKoneMutableSet(elementContext = elementContext)
-
-public inline fun <reified Element> Iterable<Element>.toKoneReifiedSet(): KoneReifiedSet<Element> =
-    toKoneReifiedSet(elementContext = defaultReifiedEquality())
-
-public fun <Element> Iterable<Element>.toKoneReifiedSet(elementContext: ReifiedEquality<Element>): KoneReifiedSet<Element> =
-    if (this is Collection<Element>) this.toKoneReifiedSet(elementContext = elementContext)
-    else this.toKoneMutableReifiedSet(elementContext = elementContext)
-
-public fun <Element> Collection<Element>.toKoneSet(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
-    if (size == 0) emptyKoneSet()
-    else this.toKoneMutableSet(elementContext = elementContext)
-
-public inline fun <reified Element> Collection<Element>.toKoneReifiedSet(): KoneReifiedSet<Element> =
-    toKoneReifiedSet(defaultReifiedEquality())
-
-public fun <Element> Collection<Element>.toKoneReifiedSet(elementContext: ReifiedEquality<Element>): KoneReifiedSet<Element> =
-    if (size == 0) emptyKoneReifiedSet()
-    else this.toKoneMutableReifiedSet(elementContext = elementContext)
+//public fun <Element> Iterable<Element>.toKoneMutableSet(elementEquality: Equality<Element> = defaultEquality()): KoneMutableSet<Element> {
+//    if (this is Collection<Element>) return this.toKoneMutableSet(elementContext = elementEquality)
+//
+//    val result = koneMutableSetOf(elementEquality = elementEquality)
+//    for (element in this) result.add(element)
+//    return result
+//}
+//
+//public inline fun <reified Element> Iterable<Element>.toKoneMutableReifiedSet(): KoneMutableReifiedSet<Element> =
+//    toKoneMutableReifiedSet(defaultReifiedEquality())
+//
+//public fun <Element> Iterable<Element>.toKoneMutableReifiedSet(elementContext: ReifiedEquality<Element>): KoneMutableReifiedSet<Element> {
+//    if (this is Collection<Element>) return this.toKoneMutableReifiedSet(elementContext = elementContext)
+//
+//    val result = koneMutableReifiedSetOf<Element>(elementContext = elementContext)
+//    for (element in this) result.add(element)
+//    return result
+//}
+//
+//public fun <Element> Collection<Element>.toKoneMutableSet(elementContext: Equality<Element> = defaultEquality()): KoneMutableSet<Element> =
+//    if (elementContext is Hashing<Element>)
+//        KoneHashResizableSet(elementContext = elementContext)
+//            .apply {
+//                val iterator = this@toKoneMutableSet.iterator()
+//                addSeveral(this@toKoneMutableSet.size.toUInt()) { iterator.next() }
+//            }
+//    else {
+//        val backingList = KoneArrayGrowableList<Element>()
+//        for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
+//        KoneListBackedMutableSet(elementContext, KoneArrayResizableLinkedList<Element>().apply { addAllFrom(backingList) })
+//    }
+//
+//public inline fun <reified Element> Collection<Element>.toKoneMutableReifiedSet(): KoneMutableReifiedSet<Element> =
+//    toKoneMutableReifiedSet(elementContext = defaultReifiedEquality())
+//
+//public fun <Element> Collection<Element>.toKoneMutableReifiedSet(elementContext: ReifiedEquality<Element>): KoneMutableReifiedSet<Element> =
+//    if (elementContext is ReifiedHashing<Element>)
+//        KoneHashResizableReifiedSet(elementContext = elementContext)
+//            .apply {
+//                val iterator = this@toKoneMutableReifiedSet.iterator()
+//                addSeveral(this@toKoneMutableReifiedSet.size.toUInt()) { iterator.next() }
+//            }
+//    else {
+//        val backingList = KoneArrayGrowableList<Element>()
+//        for (element in this) if (elementContext { element !in backingList }) backingList.add(element)
+//        KoneListBackedMutableReifiedSet(elementContext, KoneArrayResizableLinkedList<Element>().apply { addAllFrom(backingList) })
+//    }
+//
+//public fun <Element> Iterable<Element>.toKoneSet(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
+//    if (this is Collection<Element>) this.toKoneSet(elementContext = elementContext)
+//    else this.toKoneMutableSet(elementEquality = elementContext)
+//
+//public inline fun <reified Element> Iterable<Element>.toKoneReifiedSet(): KoneReifiedSet<Element> =
+//    toKoneReifiedSet(elementContext = defaultReifiedEquality())
+//
+//public fun <Element> Iterable<Element>.toKoneReifiedSet(elementContext: ReifiedEquality<Element>): KoneReifiedSet<Element> =
+//    if (this is Collection<Element>) this.toKoneReifiedSet(elementContext = elementContext)
+//    else this.toKoneMutableReifiedSet(elementContext = elementContext)
+//
+//public fun <Element> Collection<Element>.toKoneSet(elementContext: Equality<Element> = defaultEquality()): KoneSet<Element> =
+//    if (size == 0) emptyKoneSet()
+//    else this.toKoneMutableSet(elementContext = elementContext)
+//
+//public inline fun <reified Element> Collection<Element>.toKoneReifiedSet(): KoneReifiedSet<Element> =
+//    toKoneReifiedSet(defaultReifiedEquality())
+//
+//public fun <Element> Collection<Element>.toKoneReifiedSet(elementContext: ReifiedEquality<Element>): KoneReifiedSet<Element> =
+//    if (size == 0) emptyKoneReifiedSet()
+//    else this.toKoneMutableReifiedSet(elementContext = elementContext)
 // endregion

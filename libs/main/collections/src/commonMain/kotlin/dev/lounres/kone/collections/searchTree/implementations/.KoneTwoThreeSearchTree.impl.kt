@@ -16,9 +16,9 @@ import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.comparison.coincidesWith
 import dev.lounres.kone.comparison.lt
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 public class KoneTwoThreeSearchTree<Element, out ElementContext: Order<Element>> /*internal*/ constructor(
@@ -443,11 +443,11 @@ public class KoneTwoThreeSearchTree<Element, out ElementContext: Order<Element>>
             when (subtree) {
                 is TwoNodeHolder ->
                     when {
-                        elementContext { element lt subtree.element.element } -> {
+                        context(elementContext) { element lt subtree.element.element } -> {
                             upperBound = subtree.element
                             subtree = subtree.firstChild
                         }
-                        elementContext { element eq subtree.element.element } -> return onCoincidence(subtree.element)
+                        context(elementContext) { element coincidesWith subtree.element.element } -> return onCoincidence(subtree.element)
                         else -> {
                             lowerBound = subtree.element
                             subtree = subtree.secondChild
@@ -455,17 +455,17 @@ public class KoneTwoThreeSearchTree<Element, out ElementContext: Order<Element>>
                     }
                 is ThreeNodeHolder ->
                     when {
-                        elementContext { element lt subtree.firstElement.element } -> {
+                        context(elementContext) { element lt subtree.firstElement.element } -> {
                             upperBound = subtree.firstElement
                             subtree = subtree.firstChild
                         }
-                        elementContext { element eq subtree.firstElement.element } -> return onCoincidence(subtree.firstElement)
-                        elementContext { element lt subtree.secondElement.element } -> {
+                        context(elementContext) { element coincidesWith subtree.firstElement.element } -> return onCoincidence(subtree.firstElement)
+                        context(elementContext) { element lt subtree.secondElement.element } -> {
                             lowerBound = subtree.firstElement
                             upperBound = subtree.secondElement
                             subtree = subtree.secondChild
                         }
-                        elementContext { element eq subtree.secondElement.element } -> return onCoincidence(subtree.secondElement)
+                        context(elementContext) { element coincidesWith subtree.secondElement.element } -> return onCoincidence(subtree.secondElement)
                         else -> {
                             lowerBound = subtree.secondElement
                             subtree = subtree.thirdChild

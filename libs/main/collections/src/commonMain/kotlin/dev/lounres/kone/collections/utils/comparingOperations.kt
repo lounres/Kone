@@ -14,9 +14,11 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.list.koneMutableListOf
+import dev.lounres.kone.collections.set.koneContextualMutableSetOf
 import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.comparison.*
-
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 
 
 public fun <E, R : Comparable<R>> KoneIterable<E>.maxOfOrNull(selector: (E) -> R): R? {
@@ -751,8 +753,26 @@ public fun <E, R> KoneIterable<E>.maxListWithBy(comparator: Comparator<R>, selec
     return maxList
 }
 
-public fun <E> KoneIterable<E>.hasDuplicates(elementContext: Equality<E> = defaultEquality()): Boolean {
-    val setOfElements = koneMutableSetOf(elementContext = elementContext)
+public fun <E> KoneIterable<E>.hasDuplicates(
+    elementEquality: Equality<E> = defaultEquality(),
+    elementHashing: Hashing<E>? = null,
+    elementOrder: Order<E>? = null,
+): Boolean {
+    val setOfElements = koneMutableSetOf(
+        elementEquality = elementEquality,
+        elementHashing = elementHashing,
+        elementOrder = elementOrder,
+    )
+    for (element in this) {
+        if (element in setOfElements) return true
+        setOfElements.add(element)
+    }
+    return false
+}
+
+context(_: KoneContextRegistry)
+public fun <E> KoneIterable<E>.hasDuplicatesContextual(elementType: SuppliedType<E>): Boolean {
+    val setOfElements = koneContextualMutableSetOf(elementType)
     for (element in this) {
         if (element in setOfElements) return true
         setOfElements.add(element)

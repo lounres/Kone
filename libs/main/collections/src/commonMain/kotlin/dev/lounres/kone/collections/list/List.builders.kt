@@ -21,14 +21,38 @@ import kotlin.experimental.ExperimentalTypeInference
 
 // TODO: Add builders for nodded lists
 
+/**
+ * Returns empty list.
+ */
 public fun <Element> emptyKoneList(): KoneList<Element> = KoneEmptySettableNoddedList
 
+/**
+ * Returns a list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneList(size: UInt, initializer: (index: UInt) -> Element): KoneList<Element> =
     KoneArraySettableList(size, initializer)
 
+/**
+ * Returns a settable list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneSettableList(size: UInt, initializer: (index: UInt) -> Element): KoneSettableList<Element> =
     KoneArraySettableList(size, initializer)
 
+/**
+ * Returns a mutable list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList(size, initializer)
 

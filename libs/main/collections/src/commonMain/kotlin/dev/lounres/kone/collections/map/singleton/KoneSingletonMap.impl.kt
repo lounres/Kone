@@ -12,24 +12,24 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.KoneMapNode
 import dev.lounres.kone.collections.map.KoneReifiedMap
+import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
 import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.comparison.absoluteReifiedEquality
+import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 internal open class KoneSingletonMap<Key, Value>(
     val singleKey: Key,
     val singleValue: Value,
-    open val keyContext: Equality<Key>,
+    open val keyEquality: Equality<Key>,
 ) : KoneMap<Key, Value> {
     internal val singleEntry = KoneMapEntry(singleKey, singleValue)
     internal val singleNode = Node(singleKey, singleValue)
@@ -38,17 +38,18 @@ internal open class KoneSingletonMap<Key, Value>(
     override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> =
         KoneSingletonNoddedReifiedSet( // TODO: Replace with `KoneSingletonNoddedAbsoluteReifiedSet`
             singleElement = singleNode,
-            elementContext = absoluteReifiedEquality(),
+            elementReification = Reification(),
+            elementEquality = absoluteEquality(),
         )
     override val keysView: KoneSet<Key> =
         KoneSingletonNoddedSet(
             singleElement = singleKey,
-            elementContext = keyContext
+            elementEquality = keyEquality
         )
     override val valuesView: KoneIterable<Value> = Values(this)
     override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = Entries(this)
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (keyContext { key eq singleKey }) singleNode else null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (context(keyEquality) { key eq singleKey }) singleNode else null
     
     override fun toString(): String = "{$singleKey=$singleValue}"
     override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
@@ -120,18 +121,20 @@ internal open class KoneSingletonMap<Key, Value>(
 internal open class KoneSingletonReifiedMap<Key, Value>(
     singleKey: Key,
     singleValue: Value,
-    override val keyContext: ReifiedEquality<Key>,
+    val keyReification: Reification<Key>,
+    keyEquality: Equality<Key>,
 ) : KoneSingletonMap<Key, Value>(
     singleKey = singleKey,
     singleValue = singleValue,
-    keyContext = keyContext,
+    keyEquality = keyEquality,
 ), KoneReifiedMap<Key, Value> {
     override val keysView: KoneReifiedSet<Key> =
         KoneSingletonNoddedReifiedSet(
             singleElement = singleKey,
-            elementContext = keyContext
+            elementReification = keyReification,
+            elementEquality = keyEquality
         )
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? =
-        if (key in keyContext && keyContext { key eq singleKey }) singleNode else null
+        if (key in keyReification && context(keyEquality) { key eq singleKey }) singleNode else null
 }

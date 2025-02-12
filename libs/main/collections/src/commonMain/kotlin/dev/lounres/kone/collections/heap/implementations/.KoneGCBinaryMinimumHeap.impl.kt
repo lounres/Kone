@@ -20,13 +20,13 @@ import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.gt
 import dev.lounres.kone.comparison.lt
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 // TODO: Think about linear creation: https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap
 @Suppress("UNCHECKED_CAST")
-public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Order<Priority>> internal constructor(
-    public val priorityContext: PriorityContext,
+public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
+    public val priorityContext: Order<Priority>,
     private var rootHolder: NodeHolder<Element, Priority>?,
     private var lastHolder: NodeHolder<Element, Priority>?,
 ): LinkedMinimumHeap<Element, Priority> {
@@ -41,7 +41,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
     
     private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder<Element, Priority>) {
         val parent = holder.parent ?: return
-        if (priorityContext { parent.node.priority gt holder.node.priority }) {
+        if (context(priorityContext) { parent.node.priority gt holder.node.priority }) {
             swapNodeHoldersIdentities(holder, parent)
             siftTheNodeDownToTheRoot(parent)
         }
@@ -53,20 +53,20 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
         when {
             firstChild != null && secondChild != null ->
                 when {
-                    priorityContext { firstChild.node.priority lt holder.node.priority && firstChild.node.priority lt secondChild.node.priority } -> {
+                    context(priorityContext) { firstChild.node.priority lt holder.node.priority && firstChild.node.priority lt secondChild.node.priority } -> {
                         swapNodeHoldersIdentities(firstChild, holder)
                         siftTheNodeUpToTheLeaf(firstChild)
                     }
-                    priorityContext { secondChild.node.priority lt holder.node.priority } -> {
+                    context(priorityContext) { secondChild.node.priority lt holder.node.priority } -> {
                         swapNodeHoldersIdentities(secondChild, holder)
                         siftTheNodeUpToTheLeaf(secondChild)
                     }
                 }
-            firstChild != null && priorityContext { firstChild.node.priority lt holder.node.priority } -> {
+            firstChild != null && context(priorityContext) { firstChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(firstChild, holder)
                 siftTheNodeUpToTheLeaf(firstChild)
             }
-            secondChild != null && priorityContext { secondChild.node.priority lt holder.node.priority } -> {
+            secondChild != null && context(priorityContext) { secondChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(secondChild, holder)
                 siftTheNodeUpToTheLeaf(secondChild)
             }
@@ -179,7 +179,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
     }
     
     internal class NodeHolder<Element, Priority>(
-        heap: KoneGCBinaryMinimumHeap<Element, Priority, *>,
+        heap: KoneGCBinaryMinimumHeap<Element, Priority>,
         val index: UInt,
         parent: NodeHolder<Element, Priority>?,
         previous: NodeHolder<Element, Priority>?,
@@ -189,8 +189,8 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
         override var isDisposed: Boolean = false
             private set
         
-        private var _heap: KoneGCBinaryMinimumHeap<Element, Priority, *>? = heap
-        var heap: KoneGCBinaryMinimumHeap<Element, Priority, *>
+        private var _heap: KoneGCBinaryMinimumHeap<Element, Priority>? = heap
+        var heap: KoneGCBinaryMinimumHeap<Element, Priority>
             get() = _heap!!
             set(value) { _heap = value }
         
@@ -254,7 +254,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority, out PriorityContext: Ord
             isDetached = true
         }
         
-        val heap: KoneGCBinaryMinimumHeap<Element, Priority, *>?
+        val heap: KoneGCBinaryMinimumHeap<Element, Priority>?
             get() = if (isDetached) detachedNodeException() else _holder?.heap
         override val nextNode: LinkedHeapNode<Element, Priority>?
             get() = if (isDetached) detachedNodeException() else _holder?.next?.node

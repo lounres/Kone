@@ -16,24 +16,24 @@ import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.ReifiedEquality
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.repeat
+import dev.lounres.kone.context
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public open class KoneListBackedMutableSet<Element, ElementContext: Equality<Element>> @PublishedApi internal constructor(
-    public val elementContext: ElementContext,
+public open class KoneListBackedMutableSet<Element> @PublishedApi internal constructor(
+    public val elementEquality: Equality<Element>,
     internal val backingList: KoneMutableList<Element>,
 ) : KoneMutableSet<Element> {
     override val size: UInt
         get() = backingList.size
 
-    override fun contains(element: Element): Boolean = elementContext { element in backingList }
+    override fun contains(element: Element): Boolean = context(elementEquality) { element in backingList }
 
     override fun add(element: Element) {
-        if (elementContext { element !in backingList }) backingList.add(element)
+        if (context(elementEquality) { element !in backingList }) backingList.add(element)
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         repeat(number) { add(builder(it)) }
@@ -44,7 +44,8 @@ public open class KoneListBackedMutableSet<Element, ElementContext: Equality<Ele
     }
 
     override fun remove(element: Element) {
-        backingList.removeAt(elementContext { backingList.firstIndexOf(element) })
+        val index = context(elementEquality) { backingList.firstIndexOf(element) }
+        if (index != backingList.size) backingList.removeAt(index)
     }
     override fun removeAllThat(predicate: (element: Element) -> Boolean) {
         backingList.removeAllThat(predicate)
@@ -67,12 +68,13 @@ public open class KoneListBackedMutableSet<Element, ElementContext: Equality<Ele
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneListBackedMutableReifiedSet<Element, ElementContext: ReifiedEquality<Element>> @PublishedApi internal constructor(
-    elementContext: ElementContext,
+public class KoneListBackedMutableReifiedSet<Element> @PublishedApi internal constructor(
+    public val elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
     backingList: KoneMutableList<Element>,
-) : KoneListBackedMutableSet<Element, ElementContext>(
-    elementContext = elementContext,
+) : KoneListBackedMutableSet<Element>(
+    elementEquality = elementEquality,
     backingList = backingList,
 ), KoneMutableReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementContext && super.contains(element)
+    override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
 }
