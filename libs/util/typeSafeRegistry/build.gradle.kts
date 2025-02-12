@@ -2,9 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-//                api(versions.logKube.core)
                 api(projects.libs.util.suppliedTypes)
-                api(projects.libs.util.typeSafeRegistry)
             }
         }
     }

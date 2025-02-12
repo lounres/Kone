@@ -9,13 +9,13 @@ import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.equalsTo
 import dev.lounres.kone.comparison.neq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 import dev.lounres.kone.numberTheory.binomial
 
 
 @OptIn(ExperimentalKoneAPI::class)
 fun main() {
-    Rational.context /* It's another reference to RationalField */ {
+    context(Rational.context) /* It's another reference to RationalField */ {
         val a = Rational(1, 2)
         val b = Rational(1, 3)
 
@@ -55,7 +55,7 @@ fun main() {
     }
 
     // Contexts can also be used to return a result of computation inside them
-    fun bernoulliNumber(n: Int): Rational = Rational.context {
+    fun bernoulliNumber(n: Int): Rational = context(Rational.context) {
         // Initialise a list for storing the recursively computed Bernoulli numbers
         val bernoulliNumbers = Array<Rational?>(n + 1) { null }
         bernoulliNumbers[0] = one

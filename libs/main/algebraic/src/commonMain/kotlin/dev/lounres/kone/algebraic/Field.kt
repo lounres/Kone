@@ -5,6 +5,11 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
+
 
 /**
  * Describes a context that represents [mathematical field](https://en.wikipedia.org/wiki/Field_(mathematics)).
@@ -102,6 +107,22 @@ public interface Field<Number> : Ring<Number> {
      * and reciprocal of product of `-exponent` number of [this] copies otherwise.
      */
     public infix fun Number.pow(exponent: Long): Number = power(this, exponent)
+    
+    public class Key<Number>(
+        elementType: SuppliedType<Number>,
+    ) : RegistryKey<Field<Number>> {
+        override val typeKey: SuppliedType.Regular<Field<Number>> =
+            SuppliedType.Regular(
+                kClass = Field::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 context(field: Field<Number>)

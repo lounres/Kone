@@ -8,6 +8,10 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
 
 
 /**
@@ -325,6 +329,22 @@ public interface Ring<Number> : Equality<Number> {
      */
     public infix fun Number.pow(exponent: ULong): Number = power(this, exponent)
     // endregion
+    
+    public class Key<Number>(
+        elementType: SuppliedType<Number>,
+    ) : RegistryKey<Ring<Number>> {
+        override val typeKey: SuppliedType.Regular<Ring<Number>> =
+            SuppliedType.Regular(
+                kClass = Ring::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 

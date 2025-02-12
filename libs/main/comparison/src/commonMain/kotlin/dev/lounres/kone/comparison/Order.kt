@@ -7,7 +7,15 @@
 
 package dev.lounres.kone.comparison
 
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.context.load
+import dev.lounres.kone.context.loadOrDefault
+import dev.lounres.kone.context.loadOrElse
+import dev.lounres.kone.context.loadOrNull
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
 import kotlin.Comparator as KotlinStdlibComparator
 
 
@@ -22,7 +30,7 @@ public enum class ComparisonResult {
 
 /**
  * Describes a context that provides [linear (total) order](https://en.wikipedia.org/wiki/Total_order) as a [compareTo]
- * besides inherited [equalsTo] operator. This operator should return `0` iff [equalsTo] returns `true`
+ * besides inherited [coincidesWith] operator. This operator should return `0` iff [coincidesWith] returns `true`
  *
  * Such contexts are used instead of usual [compareTo] operator defined right inside the [Element] type for several reasons.
  * Some of them are:
@@ -32,9 +40,34 @@ public enum class ComparisonResult {
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Order<in Element> : Equality<Element> {
+public interface Order<in Element> {
     public infix fun Element.compareWith(other: Element): ComparisonResult
+    
+    public class Key<Element>(
+        elementType: SuppliedType<Element>,
+    ) : RegistryKey<Order<Element>> {
+        override val typeKey: SuppliedType.Regular<Order<Element>> =
+            SuppliedType.Regular(
+                kClass = Order::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
+
+context(_: KoneContextRegistry)
+public fun <Element> loadOrderFor(elementType: SuppliedType<Element>): Order<Element> = load(Order.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadOrderForOrNull(elementType: SuppliedType<Element>): Order<Element>? = loadOrNull(Order.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadOrderForOrDefault(elementType: SuppliedType<Element>, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(elementType), default)
+context(_: KoneContextRegistry)
+public inline fun <Element> loadOrderForOrElse(elementType: SuppliedType<Element>, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(elementType), block)
 
 /**
  * Provides comparison of two elements. Alternative of [KotlinStdlibComparator] but with result of type [ComparisonResult].
@@ -91,6 +124,12 @@ public infix fun <Element> Element.compareWith(other: Element): ComparisonResult
 context(_: Order<Element>)
 public operator fun <Element> Element.compareTo(other: Element): Int = this.compareWith(other).asKotlinComparisonResult()
 
+// FIXME: KT-5351
+context(_: Order<Element>)
+public inline infix fun <Element> Element.coincidesWith(other: Element): Boolean = this.compareWith(other) == ComparisonResult.Equal
+// FIXME: KT-5351
+context(_: Order<Element>)
+public inline infix fun <Element> Element.notCoincidesWith(other: Element): Boolean = this.compareWith(other) != ComparisonResult.Equal
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  */
@@ -167,9 +206,8 @@ public fun <Element> max(vararg elements: Element): Element {
  * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
  * that compares the `left` and `right` elements to each other.
  */
-public inline fun <Element> Order(crossinline equalizer: (left: Element, right: Element) -> Boolean, crossinline comparator: (left: Element, right: Element) -> ComparisonResult): Order<Element> =
+public inline fun <Element> Order(crossinline comparator: (left: Element, right: Element) -> ComparisonResult): Order<Element> =
     object : Order<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer(this, other)
         override fun Element.compareWith(other: Element): ComparisonResult = comparator(this, other)
     }
 
@@ -177,38 +215,16 @@ public inline fun <Element> Order(crossinline equalizer: (left: Element, right: 
  * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
  * that compares the `left` and `right` elements to each other.
  */
-public inline fun <Element> Order(crossinline equalizer: (left: Element, right: Element) -> Boolean, comparator: Comparator<Element>): Order<Element> =
+public inline fun <Element> Order(comparator: Comparator<Element>): Order<Element> =
     object : Order<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer(this, other)
         override fun Element.compareWith(other: Element): ComparisonResult = comparator.compare(this, other)
     }
 
 /**
- * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
- * that compares the `left` and `right` elements to each other.
- */
-public inline fun <Element> Order(equalizer: Equality<Element>, crossinline comparator: (left: Element, right: Element) -> ComparisonResult): Order<Element> =
-    object : Order<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer { this eq other }
-        override fun Element.compareWith(other: Element): ComparisonResult = comparator(this, other)
-    }
-
-/**
- * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
- * that compares the `left` and `right` elements to each other.
- */
-public inline fun <Element> Order(equalizer: Equality<Element>, comparator: Comparator<Element>): Order<Element> =
-    object : Order<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer { this eq other }
-        override fun Element.compareWith(other: Element): ComparisonResult = comparator.compare(this, other)
-    }
-
-/**
- * Returns [Order] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value
+ * Returns [Order] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value
  * and which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
 public fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
-public fun <Element: Comparable<Element>> absoluteOrder(): Order<Element> = AbsoluteOrderOnComparables
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */

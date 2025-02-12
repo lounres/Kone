@@ -5,15 +5,21 @@
 
 package dev.lounres.kone.comparison
 
-import dev.lounres.kone.context.invoke
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.context.load
+import dev.lounres.kone.context.loadOrDefault
+import dev.lounres.kone.context.loadOrElse
+import dev.lounres.kone.context.loadOrNull
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
 
 
 /**
- * Describes a context that provides [hash] operator besides inherited [equalsTo] operator. This operator should return
- * the same value for elements that are equal according to [equalsTo] operator.
+ * Describes a context that provides [hash] operator besides inherited [coincidesWith] operator. This operator should return
+ * the same value for elements that are equal according to [coincidesWith] operator.
  *
  * Such contexts are used instead of usual [hashCode] overloading for several reasons. Some of them are:
  * - Following structural pattern, any behaviour *between* elements should not be a part of the elements' logic
@@ -22,69 +28,55 @@ import dev.lounres.kone.option.Some
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Hashing<in Element> : Equality<Element> {
+public interface Hashing<in Element> {
     public fun Element.hash(): Int = this.hashCode()
+    
+    public class Key<Element>(
+        elementType: SuppliedType<Element>,
+    ) : RegistryKey<Hashing<Element>> {
+        override val typeKey: SuppliedType.Regular<Hashing<Element>> =
+            SuppliedType.Regular(
+                kClass = Hashing::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
+}
+
+context(_: KoneContextRegistry)
+public fun <Element> loadHashingFor(elementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadHashingForOrNull(elementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadHashingForOrDefault(elementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(elementType), default)
+context(_: KoneContextRegistry)
+public inline fun <Element> loadHashingForOrElse(elementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(elementType), block)
+
+public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType<Element>) {
+    contextsBuilder[Hashing.Key(suppliedElementType)] = defaultHashing<Element>()
 }
 
 context(hashing: Hashing<Element>)
 public fun <Element> Element.hash(): Int = with(hashing) { this@hash.hash() }
 
-public interface ReifiedHashing<Element> : Hashing<Element>, ReifiedEquality<Element>
-
 /**
- * [Hashing] builder from a [equalizer] that checks equality of the `left` and `right` elements and [hasher]
- * that computes hash of provided element.
+ * [Hashing] builder from a [hasher] that computes hash of provided element.
  */
-public inline fun <Element> Hashing(crossinline equalizer: (left: Element, right: Element) -> Boolean, crossinline hasher: (Element) -> Int): Hashing<Element> =
+public inline fun <Element> Hashing(crossinline hasher: (Element) -> Int): Hashing<Element> =
     object : Hashing<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer(this, other)
         override fun Element.hash(): Int = hasher(this)
     }
 
 /**
- * [Hashing] builder from a [equalizer] that checks equality of the `left` and `right` elements and [hasher]
- * that computes hash of provided element.
- */
-public inline fun <Element> Hashing(equalizer: Equality<Element>, crossinline hasher: (Element) -> Int): Hashing<Element> =
-    object : Hashing<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = equalizer { this eq other }
-        override fun Element.hash(): Int = hasher(this)
-    }
-
-/**
- * Returns [Hashing] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value
+ * Returns [Hashing] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
-public fun <Element> defaultHashing(): Hashing<Element> = DefaultContext
-/**
- * Returns [Hashing] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value
- * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
- */
-public fun <Element> absoluteHashing(): Hashing<Element> = AbsoluteContext
+public fun <Element> defaultHashing(): Hashing<Element> = DefaultHashing
 
-public inline fun <reified Element> defaultReifiedHashing(): ReifiedHashing<Element> =
-    object : ReifiedHashing<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = this == other
-        override fun Element.hash(): Int = this.hashCode()
-        
-        override fun contains(element: Any?): Boolean = element is Element
-        override fun reifyMaybe(element: Any?): Maybe<Element> = if (element is Element) Some(element) else None
-        override fun reifyOrNull(element: Any?): Element? = element as? Element
-        override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
-    }
-public inline fun <reified Element> absoluteReifiedHashing(): ReifiedHashing<Element> =
-    object : ReifiedHashing<Element> {
-        override fun Element.equalsTo(other: Element): Boolean = this === other
-        override fun Element.hash(): Int = this.hashCode()
-        
-        override fun contains(element: Any?): Boolean = element is Element
-        override fun reifyMaybe(element: Any?): Maybe<Element> = if (element is Element) Some(element) else None
-        override fun reifyOrNull(element: Any?): Element? = element as? Element
-        override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
-    }
-
-public inline fun <Element, Result> defaultHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultContext)
-public inline fun <Element, Result> absoluteHashing(block: context(Hashing<Element>) () -> Result): Result = block(AbsoluteContext)
-
-public inline fun <reified Element, Result> defaultReifiedHashing(block: context(ReifiedHashing<Element>) () -> Result): Result = block(defaultReifiedHashing())
-public inline fun <reified Element, Result> absoluteReifiedHashing(block: context(ReifiedHashing<Element>) () -> Result): Result = block(absoluteReifiedHashing())
+public inline fun <Element, Result> defaultHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultHashing)
+public inline fun <Element, Result> absoluteHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultHashing)

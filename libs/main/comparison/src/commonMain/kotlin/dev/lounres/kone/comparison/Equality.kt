@@ -7,7 +7,16 @@
 
 package dev.lounres.kone.comparison
 
-import dev.lounres.kone.context.KoneContext
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.context.load
+import dev.lounres.kone.context.loadOrDefault
+import dev.lounres.kone.context.loadOrElse
+import dev.lounres.kone.context.loadOrNull
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
 
 
 /**
@@ -21,14 +30,44 @@ import dev.lounres.kone.context.KoneContext
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Equality<in Element>: KoneContext {
+public interface Equality<in Element> {
     /**
      * Checks equality of [this] and [other] elements.
      */
     public infix fun Element.equalsTo(other: Element): Boolean = this == other
+    
+    public class Key<Element>(
+        elementType: SuppliedType<Element>,
+    ) : RegistryKey<Equality<Element>> {
+        override val typeKey: SuppliedType.Regular<Equality<Element>> =
+            SuppliedType.Regular(
+                kClass = Equality::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
-public interface ReifiedEquality<Element> : Reification<Element>, Equality<Element>
+context(_: KoneContextRegistry)
+public fun <Element> loadEqualityFor(elementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadEqualityForOrNull(elementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(elementType))
+context(_: KoneContextRegistry)
+public fun <Element> loadEqualityForOrDefault(elementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(elementType), default)
+context(_: KoneContextRegistry)
+public inline fun <Element> loadEqualityForOrElse(elementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(elementType), block)
+
+public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType<Element>) {
+    contextsBuilder[Equality.Key(suppliedElementType)] = defaultEquality<Element>()
+}
+public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppliedElementType: SuppliedType<Element>) {
+    contextsBuilder[Equality.Key(suppliedElementType)] = absoluteEquality<Element>()
+}
 
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
@@ -39,37 +78,37 @@ context(equality: Equality<Element>)
 public inline infix fun <Element> Element.equalsTo(other: Element): Boolean = with(equality) { this@equalsTo equalsTo other }
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for negation of [Equality.equalsTo].
+ * A shortcut for negation of [Equality.coincidesWith].
  */
 // FIXME: KT-5351
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean = !(this@notEqualsTo equalsTo other)
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for [Equality.equalsTo].
+ * A shortcut for [Equality.coincidesWith].
  */
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.eq(other: Element): Boolean = this equalsTo other
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for negation of [Equality.equalsTo].
+ * A shortcut for negation of [Equality.coincidesWith].
  */
 // FIXME: KT-5351
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.neq(other: Element): Boolean = !(this equalsTo other)
 
-context(reifiedEquality: ReifiedEquality<Element>)
+context(reification: Reification<Element>, _: Equality<Element>)
 @Suppress("UNCHECKED_CAST")
 public inline infix fun <Element> Any?.tryEqualsTo(other: Element): Boolean =
-    if (this !in reifiedEquality) false else (this as Element) equalsTo other
+    if (this !in reification) false else (this as Element) equalsTo other
 
-context(_: ReifiedEquality<Element>)
+context(_: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryNotEqualsTo(other: Element): Boolean = !(this tryEqualsTo other)
 
-context(_: ReifiedEquality<Element>)
+context(_: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryEq(other: Element): Boolean = this tryEqualsTo other
 
-context(_: ReifiedEquality<Element>)
+context(_: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryNeq(other: Element): Boolean = !(this tryEqualsTo other)
 
 /**
@@ -81,19 +120,13 @@ public inline fun <Element> Equality(crossinline equalizer: (left: Element, righ
     }
 
 /**
- * Returns [Equality] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value.
+ * Returns [Equality] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value.
  */
-public fun <Element> defaultEquality(): Equality<Element> = DefaultContext
+public fun <Element> defaultEquality(): Equality<Element> = DefaultEquality
 /**
- * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
+ * Returns [Equality] instance which [Equality.coincidesWith] operator just uses absolute equality `===` operator's result as a return value.
  */
-public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteContext
+public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteEquality
 
-public inline fun <reified Element> defaultReifiedEquality(): ReifiedEquality<Element> = defaultReifiedHashing()
-public inline fun <reified Element> absoluteReifiedEquality(): ReifiedEquality<Element> = absoluteReifiedHashing()
-
-public inline fun <Element, Result> defaultEquality(block: context(Equality<Element>) () -> Result): Result = block(DefaultContext)
-public inline fun <Element, Result> absoluteEquality(block: context(Equality<Element>) () -> Result): Result = block(AbsoluteContext)
-
-public inline fun <reified Element, Result> defaultReifiedEquality(block: context(ReifiedEquality<Element>) () -> Result): Result = block(defaultReifiedHashing())
-public inline fun <reified Element, Result> absoluteReifiedEquality(block: context(ReifiedEquality<Element>) () -> Result): Result = block(absoluteReifiedHashing())
+public inline fun <Element, Result> defaultEquality(block: context(Equality<Element>) () -> Result): Result = block(DefaultEquality)
+public inline fun <Element, Result> absoluteEquality(block: context(Equality<Element>) () -> Result): Result = block(AbsoluteEquality)

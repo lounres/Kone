@@ -28,11 +28,15 @@ public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
     for (index in 0u ..< times) action(index)
 }
 
-public inline fun <Context1, Result> withContext(context1: Context1, block: context(Context1) () -> Result): Result =
+public inline fun <Context1, Result> context(context1: Context1, block: context(Context1) () -> Result): Result =
     block(context1)
 
-public inline fun <Context1, Context2, Result> withContext(context1: Context1, context2: Context2, block: context(Context1, Context2) () -> Result): Result =
+public inline fun <Context1, Context2, Result> context(context1: Context1, context2: Context2, block: context(Context1, Context2) () -> Result): Result =
     block(context1, context2)
 
-public inline fun <Context1, Context2, Context3, Result> withContext(context1: Context1, context2: Context2, context3: Context3, block: context(Context1, Context2, Context3) () -> Result): Result =
+public inline fun <Context1, Context2, Context3, Result> context(context1: Context1, context2: Context2, context3: Context3, block: context(Context1, Context2, Context3) () -> Result): Result =
     block(context1, context2, context3)
+
+context(context: Context)
+@Suppress("NOTHING_TO_INLINE")
+public inline fun <Context> inline(): Context = context

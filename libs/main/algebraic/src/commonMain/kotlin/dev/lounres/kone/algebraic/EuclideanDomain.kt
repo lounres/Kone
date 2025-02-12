@@ -6,7 +6,11 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmInline
+import kotlin.reflect.KVariance
 
 
 /**
@@ -41,6 +45,22 @@ public interface EuclideanRing<Number> : Ring<Number> {
      * Returns remainder of Euclidean division (a.k.a. division with remainder).
      */
     public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
+    
+    public class Key<Number>(
+        elementType: SuppliedType<Number>,
+    ) : RegistryKey<EuclideanRing<Number>> {
+        override val typeKey: SuppliedType.Regular<EuclideanRing<Number>> =
+            SuppliedType.Regular(
+                kClass = EuclideanRing::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 context(ring: EuclideanRing<Number>)

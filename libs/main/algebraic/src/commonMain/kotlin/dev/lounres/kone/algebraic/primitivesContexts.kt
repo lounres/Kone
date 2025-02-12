@@ -9,14 +9,17 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.comparison.ComparisonResult
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.ReifiedHashing
+import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.asComparisonResult
 import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
 
 
@@ -27,7 +30,7 @@ import kotlin.math.pow as kpow
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ByteContext: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing<Byte> {
+public data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<Byte>, Hashing<Byte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Byte
     override fun reifyMaybe(element: Any?): Maybe<Byte> = if (element is Byte) Some(element) else None
@@ -115,6 +118,19 @@ public data object ByteContext: EuclideanRing<Byte>, Order<Byte>, ReifiedHashing
  * Default ring of the [Byte] type. See [ByteContext] for more.
  */
 public val Byte.Companion.context: ByteContext get() = ByteContext
+public fun KoneContextRegistryBuilder.installByteContext() {
+    val byteSuppliedType = SuppliedType.Regular<Byte>(
+        kClass = Byte::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[Equality.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[Ring.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[EuclideanRing.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[Order.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[Hashing.Key(byteSuppliedType)] = ByteContext
+}
 
 /**
  * Default ring for [Short] type which values are seen as integers and where overflows are ignored.
@@ -123,7 +139,7 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ShortContext: EuclideanRing<Short>, Order<Short>, ReifiedHashing<Short> {
+public data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order<Short>, Hashing<Short> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Short
     override fun reifyMaybe(element: Any?): Maybe<Short> = if (element is Short) Some(element) else None
@@ -211,6 +227,19 @@ public data object ShortContext: EuclideanRing<Short>, Order<Short>, ReifiedHash
  * Default ring of the [Short] type. See [ShortContext] for more.
  */
 public val Short.Companion.context: ShortContext get() = ShortContext
+public fun KoneContextRegistryBuilder.installShortContext() {
+    val shortSuppliedType = SuppliedType.Regular<Short>(
+        kClass = Short::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[Equality.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[Ring.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[EuclideanRing.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[Order.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[Hashing.Key(shortSuppliedType)] = ShortContext
+}
 
 /**
  * Default ring for [Int] type which values are seen as integers and where overflows are ignored.
@@ -219,7 +248,7 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object IntContext: EuclideanRing<Int>, Order<Int>, ReifiedHashing<Int> {
+public data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>, Hashing<Int> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Int
     override fun reifyMaybe(element: Any?): Maybe<Int> = if (element is Int) Some(element) else None
@@ -295,6 +324,19 @@ public data object IntContext: EuclideanRing<Int>, Order<Int>, ReifiedHashing<In
  * Default ring of the [Int] type. See [IntContext] for more.
  */
 public val Int.Companion.context: IntContext get() = IntContext
+public fun KoneContextRegistryBuilder.installIntContext() {
+    val intSuppliedType = SuppliedType.Regular<Int>(
+        kClass = Int::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(intSuppliedType)] = IntContext
+    contextsBuilder[Equality.Key(intSuppliedType)] = IntContext
+    contextsBuilder[Ring.Key(intSuppliedType)] = IntContext
+    contextsBuilder[EuclideanRing.Key(intSuppliedType)] = IntContext
+    contextsBuilder[Order.Key(intSuppliedType)] = IntContext
+    contextsBuilder[Hashing.Key(intSuppliedType)] = IntContext
+}
 
 /**
  * Default ring for [Long] type which values are seen as integers and where overflows are ignored.
@@ -303,7 +345,7 @@ public val Int.Companion.context: IntContext get() = IntContext
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object LongContext: EuclideanRing<Long>, Order<Long>, ReifiedHashing<Long> {
+public data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Long>, Hashing<Long> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Long
     override fun reifyMaybe(element: Any?): Maybe<Long> = if (element is Long) Some(element) else None
@@ -379,10 +421,23 @@ public data object LongContext: EuclideanRing<Long>, Order<Long>, ReifiedHashing
  * Default ring of the [Long] type. See [LongContext] for more.
  */
 public val Long.Companion.context: LongContext get() = LongContext
+public fun KoneContextRegistryBuilder.installLongContext() {
+    val longSuppliedType = SuppliedType.Regular<Long>(
+        kClass = Long::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(longSuppliedType)] = LongContext
+    contextsBuilder[Equality.Key(longSuppliedType)] = LongContext
+    contextsBuilder[Ring.Key(longSuppliedType)] = LongContext
+    contextsBuilder[EuclideanRing.Key(longSuppliedType)] = LongContext
+    contextsBuilder[Order.Key(longSuppliedType)] = LongContext
+    contextsBuilder[Hashing.Key(longSuppliedType)] = LongContext
+}
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UByteContext: Order<UByte>, ReifiedHashing<UByte> {
+public data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UByte>, Hashing<UByte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UByte
     override fun reifyMaybe(element: Any?): Maybe<UByte> = if (element is UByte) Some(element) else None
@@ -396,10 +451,21 @@ public data object UByteContext: Order<UByte>, ReifiedHashing<UByte> {
 }
 
 public val UByte.Companion.context: UByteContext get() = UByteContext
+public fun KoneContextRegistryBuilder.installUByteContext() {
+    val uByteSuppliedType = SuppliedType.Regular<UByte>(
+        kClass = UByte::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(uByteSuppliedType)] = UByteContext
+    contextsBuilder[Equality.Key(uByteSuppliedType)] = UByteContext
+    contextsBuilder[Order.Key(uByteSuppliedType)] = UByteContext
+    contextsBuilder[Hashing.Key(uByteSuppliedType)] = UByteContext
+}
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UShortContext: Order<UShort>, ReifiedHashing<UShort> {
+public data object UShortContext: Reification<UShort>, Equality<UShort>, Order<UShort>, Hashing<UShort> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UShort
     override fun reifyMaybe(element: Any?): Maybe<UShort> = if (element is UShort) Some(element) else None
@@ -413,10 +479,21 @@ public data object UShortContext: Order<UShort>, ReifiedHashing<UShort> {
 }
 
 public val UShort.Companion.context: UShortContext get() = UShortContext
+public fun KoneContextRegistryBuilder.installUShortContext() {
+    val uShortSuppliedType = SuppliedType.Regular<UShort>(
+        kClass = UShort::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(uShortSuppliedType)] = UShortContext
+    contextsBuilder[Equality.Key(uShortSuppliedType)] = UShortContext
+    contextsBuilder[Order.Key(uShortSuppliedType)] = UShortContext
+    contextsBuilder[Hashing.Key(uShortSuppliedType)] = UShortContext
+}
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UIntContext: Order<UInt>, ReifiedHashing<UInt> {
+public data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>, Hashing<UInt> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UInt
     override fun reifyMaybe(element: Any?): Maybe<UInt> = if (element is UInt) Some(element) else None
@@ -430,10 +507,21 @@ public data object UIntContext: Order<UInt>, ReifiedHashing<UInt> {
 }
 
 public val UInt.Companion.context: UIntContext get() = UIntContext
+public fun KoneContextRegistryBuilder.installUIntContext() {
+    val uIntSuppliedType = SuppliedType.Regular<UInt>(
+        kClass = UInt::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(uIntSuppliedType)] = UIntContext
+    contextsBuilder[Equality.Key(uIntSuppliedType)] = UIntContext
+    contextsBuilder[Order.Key(uIntSuppliedType)] = UIntContext
+    contextsBuilder[Hashing.Key(uIntSuppliedType)] = UIntContext
+}
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ULongContext: Order<ULong>, ReifiedHashing<ULong> {
+public data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULong>, Hashing<ULong> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is ULong
     override fun reifyMaybe(element: Any?): Maybe<ULong> = if (element is ULong) Some(element) else None
@@ -447,6 +535,17 @@ public data object ULongContext: Order<ULong>, ReifiedHashing<ULong> {
 }
 
 public val ULong.Companion.context: ULongContext get() = ULongContext
+public fun KoneContextRegistryBuilder.installULongContext() {
+    val uLongSuppliedType = SuppliedType.Regular<ULong>(
+        kClass = ULong::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(uLongSuppliedType)] = ULongContext
+    contextsBuilder[Equality.Key(uLongSuppliedType)] = ULongContext
+    contextsBuilder[Order.Key(uLongSuppliedType)] = ULongContext
+    contextsBuilder[Hashing.Key(uLongSuppliedType)] = ULongContext
+}
 
 /**
  * Default field for [Double] type which values are seen as real numbers and where precision problems and occurrences of
@@ -456,7 +555,7 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object DoubleContext: Field<Double>, Order<Double>, ReifiedHashing<Double> {
+public data object DoubleContext: Reification<Double>, Field<Double>, Order<Double>, Hashing<Double> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Double
     override fun reifyMaybe(element: Any?): Maybe<Double> = if (element is Double) Some(element) else None
@@ -555,6 +654,19 @@ public data object DoubleContext: Field<Double>, Order<Double>, ReifiedHashing<D
  * Default field of the [Double] type. See [DoubleContext] for more.
  */
 public val Double.Companion.context: DoubleContext get() = DoubleContext
+public fun KoneContextRegistryBuilder.installDoubleContext() {
+    val doubleSuppliedType = SuppliedType.Regular<Double>(
+        kClass = Double::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Equality.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Ring.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Field.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Order.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Hashing.Key(doubleSuppliedType)] = DoubleContext
+}
 
 /**
  * Default field for [Float] type which values are seen as real numbers and where precision problems and occurrences of
@@ -564,7 +676,7 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * Such field is useless when used as is, but useful when used in generalized algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object FloatContext: Field<Float>, Order<Float>, ReifiedHashing<Float> {
+public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>, Hashing<Float> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Float
     override fun reifyMaybe(element: Any?): Maybe<Float> = if (element is Float) Some(element) else None
@@ -663,3 +775,16 @@ public data object FloatContext: Field<Float>, Order<Float>, ReifiedHashing<Floa
  * Default field of the [Float] type. See [FloatContext] for more.
  */
 public val Float.Companion.context: FloatContext get() = FloatContext
+public fun KoneContextRegistryBuilder.installFloatContext() {
+    val floatSuppliedType = SuppliedType.Regular<Float>(
+        kClass = Float::class,
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    contextsBuilder[Reification.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Equality.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Ring.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Field.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Order.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Hashing.Key(floatSuppliedType)] = FloatContext
+}
