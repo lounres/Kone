@@ -29,7 +29,7 @@ import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.curves.Segment2
 import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.utils.lexicographic2DOrder
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 
 
 public data class Intersection<I>(public val index1: UInt, public val index2: UInt, public val intersection: I)
@@ -46,7 +46,7 @@ internal data class SegmentNodeForBentleyOttmann<N>(
     var lowerIntersection: HeapNode<EventForBentleyOttmann<N>, Point2<N>>? = null,
 )
 
-private fun <N, A> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttmann<N>, tSegmentNode: SegmentNodeForBentleyOttmann<N>) where A: Field<N>, A: Order<N> {
+private fun <N> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttmann<N>, tSegmentNode: SegmentNodeForBentleyOttmann<N>) {
     val stIntersectionNode = sSegmentNode.upperIntersection
     check(stIntersectionNode === tSegmentNode.lowerIntersection) { "For some reason neighbors in the segments search tree do not share the same intersection" }
     if (stIntersectionNode != null) {
@@ -56,14 +56,14 @@ private fun <N, A> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttm
     }
 }
 
-context(_: A, _: EuclideanKategory2<N>, _: Order<Point2<N>>)
-private fun <N, A> addIntersectionFor(
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>, _: Order<Point2<N>>)
+private fun <N> addIntersectionFor(
     segmentsList: KoneList<Segment2<N>>,
     eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>>,
     currentPriority: Point2<N>,
     sSegmentNode: SegmentNodeForBentleyOttmann<N>,
     tSegmentNode: SegmentNodeForBentleyOttmann<N>
-) where A: Field<N>, A: Order<N> {
+) {
     val sSegmentIndex = sSegmentNode.segmentIndex
     val tSegmentIndex = tSegmentNode.segmentIndex
     val sSegment = segmentsList[sSegmentIndex]
@@ -92,14 +92,14 @@ private fun <N, A> addIntersectionFor(
 /**
  * https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
  */
-context(_: A, _: EuclideanKategory2<N>)
-public fun <N, A> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N>>> where A: Field<N>, A: Order<N> {
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
+public fun <N> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N>>> {
     val pointsOrder = lexicographic2DOrder
     val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = KoneGCBinaryMinimumHeap(pointsOrder)
     val segmentsSearchTree: ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>> = TwoThreeTreeForBentleyOttmann()
     val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>>?>(this.size) { null }
     
-    pointsOrder {
+    context(pointsOrder) {
         for ((index, segment) in this.withIndex()) {
             val structuralStart = segment.start
             val structuralEnd = segment.end

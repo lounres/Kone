@@ -21,7 +21,6 @@ import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.collections.utils.mapTo
 import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.ReifiedEquality
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.comparison.defaultHashing
 import dev.lounres.kone.computationalGeometry.EuclideanKategory

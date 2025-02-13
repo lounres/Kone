@@ -17,18 +17,18 @@ public interface PolytopicConstructionPolytope<
 > {
     public val dimension: UInt
     public val faces: KoneList<KoneReifiedSet<Polytope>>
-    public fun facesOfDimension(dim: UInt): KoneReifiedSet<Polytope>
-    public operator fun get(dim: UInt): KoneReifiedSet<Polytope>
+    public fun facesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = faces[dim] // TODO: Add corresponding error
+    public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = facesOfDimension(dim)
     public val vertices: KoneReifiedSet<Vertex>
     public val cofaces: KoneList<KoneReifiedSet<Polytope>>
-    public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<Polytope>
+    public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = cofaces[dim]
 }
 
 public interface PolytopicConstructionVertex<
     out Number,
     out Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
     out Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-> : PolytopicConstructionPolytope<Number, Polytope, Vertex> {
+> {
     public val position: Point<Number>
     public fun asPolytope(): Polytope
 }
@@ -41,8 +41,8 @@ public interface PolytopicConstruction<
     public val spaceDimension: UInt
 
     public val polytopes: KoneList<KoneReifiedSet<Polytope>>
-    public fun polytopesOfDimension(dim: UInt): KoneReifiedSet<Polytope>
-    public operator fun get(dim: UInt): KoneReifiedSet<Polytope>
+    public fun polytopesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = polytopes[dim] // TODO: Add corresponding error
+    public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = polytopesOfDimension(dim)
 
     public val vertices: KoneReifiedSet<Vertex>
 }
@@ -53,6 +53,7 @@ public interface ExtendablePolytopicConstruction<
     out Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
 > : PolytopicConstruction<Number, Polytope, Vertex> {
     public fun addPolytope(
+        dimension: UInt,
         vertices: KoneReifiedSet<@UnsafeVariance Vertex>,
         faces: KoneList<KoneReifiedSet<@UnsafeVariance Polytope>>
     ): Polytope
@@ -72,7 +73,9 @@ public interface RemovablePolytopicConstructionVertex<
     out Number,
     out Polytope: RemovablePolytopicConstructionPolytope<Number, Polytope, Vertex>,
     out Vertex: RemovablePolytopicConstructionVertex<Number, Polytope, Vertex>,
-> : PolytopicConstructionVertex<Number, Polytope, Vertex>, RemovablePolytopicConstructionPolytope<Number, Polytope, Vertex>
+> : PolytopicConstructionVertex<Number, Polytope, Vertex> {
+    public fun remove()
+}
 
 public interface ReduciblePolytopicConstruction<
     Number,
@@ -86,17 +89,7 @@ public interface MutablePolytopicConstruction<
     out Vertex: RemovablePolytopicConstructionVertex<Number, Polytope, Vertex>,
 > : ExtendablePolytopicConstruction<Number, Polytope, Vertex>, ReduciblePolytopicConstruction<Number, Polytope, Vertex>
 
-//public interface PolytopicConstruction2<N, P, V: P>: PolytopicConstruction<N, P, V> {
-//    override val spaceDimension: UInt get() = 2u
-//
-//    override val V.position: Point2<N>
-//}
 
-//public interface MutablePolytopicConstruction2<N, P, V: P>: PolytopicConstruction2<N, P, V> {
-//    public fun addPolytope(vertices: KoneSet<V>, faces: KoneList<KoneSet<P>>): P
-//
-//    public fun addVertex(position: Point2<N>): V
-//}
 
 
 

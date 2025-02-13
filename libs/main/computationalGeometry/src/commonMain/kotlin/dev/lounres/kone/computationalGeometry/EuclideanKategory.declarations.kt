@@ -12,18 +12,15 @@ import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.computationalGeometry.comparison.pointEquality
 import dev.lounres.kone.computationalGeometry.comparison.vectorEquality
 import dev.lounres.kone.computationalGeometry.utils.fold
-import dev.lounres.kone.context.KoneContext
-import dev.lounres.kone.context.invoke
-import dev.lounres.kone.linearAlgebra.VectorKategory
-import dev.lounres.kone.linearAlgebra.minus
-import dev.lounres.kone.linearAlgebra.plus
-import dev.lounres.kone.linearAlgebra.requireShapeEquality
-import dev.lounres.kone.linearAlgebra.times
-import dev.lounres.kone.linearAlgebra.unaryMinus
-import dev.lounres.kone.linearAlgebra.vectorKategory
+import dev.lounres.kone.context
+import dev.lounres.kone.linearAlgebra.*
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance
 
 
-public interface EuclideanKategory<N> : KoneContext {
+public interface EuclideanKategory<N> {
     public val pointEquality: Equality<Point<N>>
     public val vectorEquality: Equality<Vector<N>>
     
@@ -54,6 +51,22 @@ public interface EuclideanKategory<N> : KoneContext {
     public val Vector<N>.lengthSquared: N
 
     public infix fun Vector<N>.dot(other: Vector<N>): N
+    
+    public class Key<Number>(
+        elementType: SuppliedType<Number>,
+    ) : RegistryKey<EuclideanKategory<Number>> {
+        override val typeKey: SuppliedType.Regular<EuclideanKategory<Number>> =
+            SuppliedType.Regular(
+                kClass = EuclideanKategory::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 context(euclideanKategory: EuclideanKategory<N>)
@@ -90,19 +103,19 @@ internal class EuclideanKategoryWithNumberRingAndVectorKategory<N>(
     override val pointEquality: Equality<Point<N>> = pointEquality(numberRing)
     override val vectorEquality: Equality<Vector<N>> = vectorEquality(numberRing)
     
-    override fun Vector<N>.unaryMinus(): Vector<N> = Vector(vectorKategory { -coordinates })
-    override fun Vector<N>.plus(other: Vector<N>): Vector<N> = Vector(vectorKategory { this.coordinates + other.coordinates })
-    override fun Vector<N>.minus(other: Vector<N>): Vector<N> = Vector(vectorKategory { this.coordinates - other.coordinates })
+    override fun Vector<N>.unaryMinus(): Vector<N> = Vector(context(vectorKategory) { -coordinates })
+    override fun Vector<N>.plus(other: Vector<N>): Vector<N> = Vector(context(vectorKategory) { this.coordinates + other.coordinates })
+    override fun Vector<N>.minus(other: Vector<N>): Vector<N> = Vector(context(vectorKategory) { this.coordinates - other.coordinates })
     
-    override fun Vector<N>.times(other: N): Vector<N> = Vector(vectorKategory { coordinates * other })
-    override fun N.times(other: Vector<N>): Vector<N> = Vector(vectorKategory { this * other.coordinates })
+    override fun Vector<N>.times(other: N): Vector<N> = Vector(context(vectorKategory) { coordinates * other })
+    override fun N.times(other: Vector<N>): Vector<N> = Vector(context(vectorKategory) { this * other.coordinates })
     
-    override fun Point<N>.plus(other: Vector<N>): Point<N> = Point(vectorKategory { this.coordinates + other.coordinates })
-    override fun Point<N>.minus(other: Vector<N>): Point<N> = Point(vectorKategory { this.coordinates - other.coordinates })
-    override fun Vector<N>.plus(other: Point<N>): Point<N> = Point(vectorKategory { this.coordinates + other.coordinates })
-    override fun Point<N>.minus(other: Point<N>): Vector<N> = Vector(vectorKategory { this.coordinates - other.coordinates })
+    override fun Point<N>.plus(other: Vector<N>): Point<N> = Point(context(vectorKategory) { this.coordinates + other.coordinates })
+    override fun Point<N>.minus(other: Vector<N>): Point<N> = Point(context(vectorKategory) { this.coordinates - other.coordinates })
+    override fun Vector<N>.plus(other: Point<N>): Point<N> = Point(context(vectorKategory) { this.coordinates + other.coordinates })
+    override fun Point<N>.minus(other: Point<N>): Vector<N> = Vector(context(vectorKategory) { this.coordinates - other.coordinates })
     
-    override val Vector<N>.lengthSquared: N get() = fold(numberRing.zero) { acc, n -> numberRing { acc + n * n } }
+    override val Vector<N>.lengthSquared: N get() = fold(numberRing.zero) { acc, n -> context(numberRing) { acc + n * n } }
     
     override fun Vector<N>.dot(other: Vector<N>): N {
         requireShapeEquality(this.coordinates, other.coordinates)
@@ -112,7 +125,7 @@ internal class EuclideanKategoryWithNumberRingAndVectorKategory<N>(
         var result = numberRing.zero
         var index = 0u
         while (index < size) {
-            result = numberRing { result + this.coordinates[index] * other.coordinates[index] }
+            result = context(numberRing) { result + this.coordinates[index] * other.coordinates[index] }
             index++
         }
         return result

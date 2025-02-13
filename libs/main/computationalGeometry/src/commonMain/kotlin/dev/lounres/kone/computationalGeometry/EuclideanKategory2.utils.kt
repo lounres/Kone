@@ -7,18 +7,22 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public data class EuclideanKategory2Scope<N, A, E: EuclideanKategory2<N>>(
+public data class EuclideanKategory2Scope<N, A: Ring<N>, E: EuclideanKategory2<N>>(
     val numberRing: A,
+    val numberOrder: Order<N>,
     val euclideanKategory: E,
-) where A: Ring<N>, A: Order<N>
+)
 
-public inline operator fun <N, A, E: EuclideanKategory2<N>,R> EuclideanKategory2Scope<N, A, E>.invoke(block: context(A, E) () -> R): R where A: Ring<N>, A: Order<N> {
+public inline operator fun <N, A: Ring<N>, E: EuclideanKategory2<N>,R> EuclideanKategory2Scope<N, A, E>.invoke(block: context(A, E) () -> R): R {
 //    FIXME: KT-32313
 //    contract {
 //        callsInPlace(block, EXACTLY_ONCE)
@@ -26,22 +30,30 @@ public inline operator fun <N, A, E: EuclideanKategory2<N>,R> EuclideanKategory2
     return block(this.numberRing, this.euclideanKategory)
 }
 
-public fun <N, A> A.euclideanKategory2(
+public fun <N> Ring<N>.euclideanKategory2(
     vectorKategory: VectorKategory<N> = vectorKategory(),
-): EuclideanKategory2<N> where A: Ring<N>, A: Order<N> =
+): EuclideanKategory2<N> =
     EuclideanKategory2WithNumberRingAndVectorKategory(this, vectorKategory)
 
-public fun <N, A> A.euclideanKategory2Scope(
-    vectorKategory: VectorKategory<N> = vectorKategory(),
-): EuclideanKategory2Scope<N, A, EuclideanKategory2<N>> where A: Ring<N>, A: Order<N> =
-    EuclideanKategory2Scope(this, euclideanKategory2(vectorKategory))
+public fun <N> KoneContextRegistryBuilder.installEuclideanKategory2For(numberType: SuppliedType<N>) {
+    val euclideanKategory2 = contextsBuilder[Ring.Key(numberType)].euclideanKategory2(contextsBuilder[VectorKategory.Key(numberType)])
+    contextsBuilder[EuclideanKategory2.Key(numberType)] = euclideanKategory2
+}
 
-public inline fun <N, A, R> A.euclideanKategory2Scope(
-    vectorKategory: VectorKategory<N> = vectorKategory(),
-    block: context(A, EuclideanKategory2<N>) () -> R
-): R where A: Ring<N>, A: Order<N> {
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategory2For(numberType: SuppliedType<N>, block: context(EuclideanKategory2<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(this, this.euclideanKategory2(vectorKategory))
+    return block(contexts[EuclideanKategory2.Key(numberType)])
+}
+
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategoryScope2For(numberType: SuppliedType<N>, block: context(Ring<N>, Order<N>, EuclideanKategory2<N>) () -> R): R {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        contexts[Ring.Key(numberType)],
+        contexts[Order.Key(numberType)],
+        contexts[EuclideanKategory2.Key(numberType)]
+    )
 }

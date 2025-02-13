@@ -10,30 +10,27 @@ import dev.lounres.kone.comparison.Hashing
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.hash
 import dev.lounres.kone.computationalGeometry.Point
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.linearAlgebra.comparison.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.comparison.columnVectorHashing
 import kotlin.jvm.JvmName
 
 
-internal class PointEquality<N>(val columnVectorContext: Equality<ColumnVector<N>>) : Equality<Point<N>> {
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
+internal class PointEquality<N>(val columnVectorEquality: Equality<ColumnVector<N>>) : Equality<Point<N>> {
+    override fun Point<N>.equalsTo(other: Point<N>): Boolean = context(columnVectorEquality) { this.coordinates eq other.coordinates }
 }
 
 @JvmName("pointEqualityForColumnVector")
-public fun <N> pointEquality(columnVectorContext: Equality<ColumnVector<N>>): Equality<Point<N>> =
-    if (columnVectorContext is Hashing<ColumnVector<N>>) PointHashing(columnVectorContext)
-    else PointEquality(columnVectorContext)
+public fun <N> pointEquality(columnVectorEquality: Equality<ColumnVector<N>>): Equality<Point<N>> =
+    PointEquality(columnVectorEquality)
 
 @JvmName("pointEqualityForNumber")
-public fun <N> pointEquality(numberContext: Equality<N>): Equality<Point<N>> =
-    if (numberContext is Hashing<N>) PointHashing(columnVectorHashing(numberContext))
-    else PointEquality(columnVectorEquality(numberContext))
+public fun <N> pointEquality(numberEquality: Equality<N>): Equality<Point<N>> =
+    PointEquality(columnVectorEquality(numberEquality))
 
-internal class PointHashing<N>(val columnVectorContext: Hashing<ColumnVector<N>>) : Hashing<Point<N>> {
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorContext { this.coordinates eq other.coordinates }
-    override fun Point<N>.hash(): Int = columnVectorContext { this.coordinates.hash() }
+internal class PointHashing<N>(val columnVectorHashing: Hashing<ColumnVector<N>>) : Hashing<Point<N>> {
+    override fun Point<N>.hash(): Int = context(columnVectorHashing) { this.coordinates.hash() }
 }
 
 @JvmName("pointHashingForColumnVector")

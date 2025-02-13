@@ -56,8 +56,8 @@ public sealed interface Line2WithSegment2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Line2WithSegment2Intersection<N>
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-public fun <N, A> Line2<N>.intersect(other: Segment2<N>): Line2WithSegment2Intersection<N> where A: Field<N>, A: Order<N> =
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
+public fun <N> Line2<N>.intersect(other: Segment2<N>): Line2WithSegment2Intersection<N> =
     when (val resultInSteps = this.intersectInSteps(Line2(other.start, other.direction))) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
             Line2WithSegment2Intersection.TheLinesAreParallel
@@ -75,8 +75,8 @@ public sealed interface Segment2WithLine2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Segment2WithLine2Intersection<N>
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-public fun <N, A> Segment2<N>.intersect(other: Line2<N>): Segment2WithLine2Intersection<N> where A: Field<N>, A: Order<N> =
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
+public fun <N> Segment2<N>.intersect(other: Line2<N>): Segment2WithLine2Intersection<N> =
     when (val resultInSteps = Line2(this.start, this.direction).intersectInSteps(other)) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
             Segment2WithLine2Intersection.TheLinesAreParallel
@@ -94,8 +94,8 @@ public sealed interface Segment2WithSegment2Intersection<out N> {
     public data class TheLinesAreInGeneralPosition<N>(val intersection: Point2<N>?) : Segment2WithSegment2Intersection<N>
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-public fun <N, A> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment2Intersection<N> where A: Field<N>, A: Order<N> =
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
+public fun <N> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment2Intersection<N> =
     when (val resultInSteps = Line2(this.start, this.direction).intersectInSteps(Line2(other.start, other.direction))) {
         Line2WithLine2IntersectionInSteps.TheLinesAreParallel ->
             Segment2WithSegment2Intersection.TheLinesAreParallel
