@@ -17,9 +17,7 @@ public data class LabeledRationalFunction<Number>(
 
 public open class LabeledRationalFunctionSpace<Number>(
     override val polynomialSpace: MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>>
-) :
-    MultivariatePolynomialSpaceOfFractions<Number, LabeledVariable, LabeledPolynomial<Number>, LabeledRationalFunction<Number>>() {
-
+) : MultivariatePolynomialSpaceOfFractions<Number, LabeledVariable, LabeledPolynomial<Number>, LabeledRationalFunction<Number>>() {
     override fun constructRationalFunction(numerator: LabeledPolynomial<Number>, denominator: LabeledPolynomial<Number>): LabeledRationalFunction<Number> =
         LabeledRationalFunction<Number>(numerator, denominator)
 }

@@ -7,27 +7,9 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.reciprocal
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.map.KoneReifiedMap
-import dev.lounres.kone.collections.map.buildKoneReifiedMap
-import dev.lounres.kone.collections.map.emptyKoneReifiedMap
-import dev.lounres.kone.collections.map.getOrElse
-import dev.lounres.kone.collections.map.isEmpty
-import dev.lounres.kone.collections.map.koneReifiedMapOf
-import dev.lounres.kone.collections.map.mapKeysReified
-import dev.lounres.kone.collections.map.mapValuesReified
-import dev.lounres.kone.collections.map.mapsTo
+import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.buildKoneReifiedSet
@@ -45,15 +27,9 @@ import dev.lounres.kone.collections.utils.mergingAll
 import dev.lounres.kone.collections.utils.setOrChange
 import dev.lounres.kone.collections.utils.sortedWith
 import dev.lounres.kone.collections.utils.withSetOrChangedReified
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.ComparisonResult
-import dev.lounres.kone.comparison.defaultComparator
-import dev.lounres.kone.comparison.defaultReifiedHashing
-import dev.lounres.kone.comparison.equalsTo
-import dev.lounres.kone.context.invoke
-import kotlin.js.JsName
+import dev.lounres.kone.comparison.*
+import dev.lounres.kone.context
 import kotlin.jvm.JvmInline
-import kotlin.jvm.JvmName
 import kotlin.math.max
 import kotlin.reflect.KProperty
 
@@ -136,188 +112,188 @@ public open class LabeledPolynomialSpace<Number>(
     override val one: LabeledPolynomial<Number> by lazy { numberOne.asLabeledPolynomial() }
 
     public override infix fun LabeledPolynomial<Number>.equalsTo(other: LabeledPolynomial<Number>): Boolean =
-        numberContext { mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 equalsTo c2 } }
-    public override fun LabeledPolynomial<Number>.isZero(): Boolean = coefficients.valuesView.all { numberContext { it.isZero() } }
-    public override fun LabeledPolynomial<Number>.isOne(): Boolean = coefficients.entriesView.all { it.key.isEmpty() || numberContext { it.value.isZero() } }
+        context(numberContext) { mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 eq c2 } }
+    public override fun LabeledPolynomial<Number>.isZero(): Boolean = coefficients.valuesView.all { context(numberContext) { it.isZero() } }
+    public override fun LabeledPolynomial<Number>.isOne(): Boolean = coefficients.entriesView.all { it.key.isEmpty() || context(numberContext) { it.value.isZero() } }
 
     public override fun polynomialValueOf(value: Number): LabeledPolynomial<Number> = value.asLabeledPolynomial()
     
-    public override fun polynomialValueOf(variable: LabeledVariable): LabeledPolynomial<Number> = numberContext { variable.asLabeledPolynomial() }
+    public override fun polynomialValueOf(variable: LabeledVariable): LabeledPolynomial<Number> = context(numberContext) { variable.asLabeledPolynomial() }
 
     public override operator fun LabeledVariable.plus(other: Int): LabeledPolynomial<Number> =
         if (other == 0) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo other.numberValue,
         )
     public override operator fun LabeledVariable.minus(other: Int): LabeledPolynomial<Number> =
         if (other == 0) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo (-other).numberValue,
         )
     public override operator fun LabeledVariable.times(other: Int): LabeledPolynomial<Number> =
         if (other == 0) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo other.numberValue,
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo other.numberValue,
         )
     
     public override operator fun LabeledVariable.plus(other: UInt): LabeledPolynomial<Number> =
         if (other == 0u) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo other.numberValue,
         )
     public override operator fun LabeledVariable.minus(other: UInt): LabeledPolynomial<Number> =
         if (other == 0u) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { -other.numberValue },
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { -other.numberValue },
         )
     public override operator fun LabeledVariable.times(other: UInt): LabeledPolynomial<Number> =
         if (other == 0u) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo other.numberValue,
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo other.numberValue,
         )
 
     public override operator fun LabeledVariable.plus(other: Long): LabeledPolynomial<Number> =
         if (other == 0L) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo other.numberValue,
         )
     public override operator fun LabeledVariable.minus(other: Long): LabeledPolynomial<Number> =
         if (other == 0L) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo (-other).numberValue,
         )
     public override operator fun LabeledVariable.times(other: Long): LabeledPolynomial<Number> =
         if (other == 0L) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo other.numberValue,
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo other.numberValue,
         )
     
     public override operator fun LabeledVariable.plus(other: ULong): LabeledPolynomial<Number> =
         if (other == 0uL) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo other.numberValue,
         )
     public override operator fun LabeledVariable.minus(other: ULong): LabeledPolynomial<Number> =
         if (other == 0uL) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { -other.numberValue },
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { -other.numberValue },
         )
     public override operator fun LabeledVariable.times(other: ULong): LabeledPolynomial<Number> =
         if (other == 0uL) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo other.numberValue,
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo other.numberValue,
         )
 
     public override operator fun Int.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@plus.numberValue,
         )
     public override operator fun Int.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { this@minus * numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { this@minus * numberOne },
         )
     public override operator fun Int.times(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo this@times.numberValue,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo this@times.numberValue,
         )
     
     public override operator fun UInt.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0u) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@plus.numberValue,
         )
     public override operator fun UInt.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0u) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { numberOne * this@minus },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { numberOne * this@minus },
         )
     public override operator fun UInt.times(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0u) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo this@times.numberValue,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo this@times.numberValue,
         )
 
     public override operator fun Long.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0L) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@plus.numberValue,
         )
     public override operator fun Long.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0L) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { numberOne * this@minus },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { numberOne * this@minus },
         )
     public override operator fun Long.times(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0L) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo this@times.numberValue,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo this@times.numberValue,
         )
     
     public override operator fun ULong.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0uL) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@plus.numberValue,
         )
     public override operator fun ULong.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0uL) LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { numberOne * this@minus },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { numberOne * this@minus },
         )
     public override operator fun ULong.times(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == 0uL) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo this@times.numberValue,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo this@times.numberValue,
         )
 
     public override operator fun LabeledPolynomial<Number>.plus(other: Int): LabeledPolynomial<Number> =
@@ -325,7 +301,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0 -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { other.numberValue }) { it -> numberContext { it + other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { other.numberValue }) { it -> context(numberContext) { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: Int): LabeledPolynomial<Number> =
@@ -333,7 +309,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0 -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { (-other).numberValue }) { it -> numberContext { it - other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { (-other).numberValue }) { it -> context(numberContext) { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: Int): LabeledPolynomial<Number> =
@@ -341,7 +317,7 @@ public open class LabeledPolynomialSpace<Number>(
             0 -> zero
             1 -> this
             else -> LabeledPolynomialAsIs(
-                coefficients.mapValuesReified { (_, value) -> numberContext { value * other } }
+                coefficients.mapValuesReified { (_, value) -> context(numberContext) { value * other } }
             )
         }
     
@@ -350,7 +326,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0u -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { other.numberValue }) { it -> numberContext { it + other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { other.numberValue }) { it -> context(numberContext) { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: UInt): LabeledPolynomial<Number> =
@@ -358,7 +334,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0u -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { numberContext { -other.numberValue } }) { it -> numberContext { it - other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { context(numberContext) { -other.numberValue } }) { it -> context(numberContext) { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: UInt): LabeledPolynomial<Number> =
@@ -366,7 +342,7 @@ public open class LabeledPolynomialSpace<Number>(
             0u -> zero
             1u -> this
             else -> LabeledPolynomialAsIs(
-                coefficients.mapValuesReified { (_, value) -> numberContext { value * other } }
+                coefficients.mapValuesReified { (_, value) -> context(numberContext) { value * other } }
             )
         }
 
@@ -375,7 +351,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0L -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { other.numberValue }) { it -> numberContext { it + other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { other.numberValue }) { it -> context(numberContext) { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: Long): LabeledPolynomial<Number> =
@@ -383,7 +359,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0L -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { (-other).numberValue }) { it -> numberContext { it - other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { (-other).numberValue }) { it -> context(numberContext) { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: Long): LabeledPolynomial<Number> =
@@ -391,7 +367,7 @@ public open class LabeledPolynomialSpace<Number>(
             0L -> zero
             1L -> this
             else -> LabeledPolynomialAsIs(
-                coefficients.mapValuesReified { (_, value) -> numberContext { value * other } }
+                coefficients.mapValuesReified { (_, value) -> context(numberContext) { value * other } }
             )
         }
     
@@ -400,7 +376,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0uL -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { other.numberValue }) { it -> numberContext { it + other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { other.numberValue }) { it -> context(numberContext) { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: ULong): LabeledPolynomial<Number> =
@@ -408,7 +384,7 @@ public open class LabeledPolynomialSpace<Number>(
             other == 0uL -> this
             coefficients.isEmpty() -> other.value
             else -> LabeledPolynomialAsIs(
-                coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { numberContext { -other.numberValue } }) { it -> numberContext { it - other } }
+                coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { context(numberContext) { -other.numberValue } }) { it -> context(numberContext) { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: ULong): LabeledPolynomial<Number> =
@@ -416,7 +392,7 @@ public open class LabeledPolynomialSpace<Number>(
             0uL -> zero
             1uL -> this
             else -> LabeledPolynomialAsIs(
-                coefficients.mapValuesReified { (_, value) -> numberContext { value * other } }
+                coefficients.mapValuesReified { (_, value) -> context(numberContext) { value * other } }
             )
         }
 
@@ -425,7 +401,7 @@ public open class LabeledPolynomialSpace<Number>(
             this == 0 -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { this@plus.numberValue }) { it -> numberContext { this@plus + it } }
+                other.coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { this@plus.numberValue }) { it -> context(numberContext) { this@plus + it } }
             )
         }
     public override operator fun Int.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -434,8 +410,8 @@ public open class LabeledPolynomialSpace<Number>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildKoneReifiedMap(other.coefficients.size + 1u) {
-                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }) { it -> numberContext { this@minus - it } })
-                    other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }) { _, currentC, _ -> currentC }
+                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }) { it -> context(numberContext) { this@minus - it } })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -444,7 +420,7 @@ public open class LabeledPolynomialSpace<Number>(
             0 -> zero
             1 -> other
             else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValuesReified { (_, value) -> numberContext { this@times * value } }
+                other.coefficients.mapValuesReified { (_, value) -> context(numberContext) { this@times * value } }
             )
         }
     
@@ -453,7 +429,7 @@ public open class LabeledPolynomialSpace<Number>(
             this == 0u -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { this@plus.numberValue }) { it -> numberContext { this@plus + it } }
+                other.coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { this@plus.numberValue }) { it -> context(numberContext) { this@plus + it } }
             )
         }
     public override operator fun UInt.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -462,8 +438,8 @@ public open class LabeledPolynomialSpace<Number>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildKoneReifiedMap(other.coefficients.size + 1u) {
-                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }) { it -> numberContext { this@minus - it } })
-                    other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }) { _, currentC, _ -> currentC }
+                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }) { it -> context(numberContext) { this@minus - it } })
+                    other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -472,7 +448,7 @@ public open class LabeledPolynomialSpace<Number>(
             0u -> zero
             1u -> other
             else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValuesReified { (_, value) -> numberContext { this@times * value } }
+                other.coefficients.mapValuesReified { (_, value) -> context(numberContext) { this@times * value } }
             )
         }
 
@@ -481,7 +457,7 @@ public open class LabeledPolynomialSpace<Number>(
             this == 0L -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { this@plus.numberValue }, { numberContext { this@plus + it } })
+                other.coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { this@plus.numberValue }, transformOnChange = { context(numberContext) { this@plus + it } })
             )
         }
     public override operator fun Long.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -490,8 +466,8 @@ public open class LabeledPolynomialSpace<Number>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildKoneReifiedMap(other.coefficients.size + 1u) {
-                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }, { numberContext { this@minus - it } }))
-                    other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }) { _, currentC, _ -> currentC }
+                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }, { context(numberContext) { this@minus - it } }))
+                    other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -500,7 +476,7 @@ public open class LabeledPolynomialSpace<Number>(
             0L -> zero
             1L -> other
             else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValuesReified { (_, value) -> numberContext { this@times * value } }
+                other.coefficients.mapValuesReified { (_, value) -> context(numberContext) { this@times * value } }
             )
         }
     
@@ -509,7 +485,7 @@ public open class LabeledPolynomialSpace<Number>(
             this == 0uL -> other
             other.coefficients.isEmpty() -> this@plus.value
             else -> LabeledPolynomialAsIs(
-                other.coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { this@plus.numberValue }, { numberContext { this@plus + it } })
+                other.coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { this@plus.numberValue }, transformOnChange = { context(numberContext) { this@plus + it } })
             )
         }
     public override operator fun ULong.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -518,8 +494,8 @@ public open class LabeledPolynomialSpace<Number>(
             other.coefficients.isEmpty() -> this@minus.value
             else -> LabeledPolynomialAsIs(
                 buildKoneReifiedMap(other.coefficients.size + 1u) {
-                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }, { numberContext { this@minus - it } }) )
-                    other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }) { _, currentC, _ -> currentC }
+                    set(emptyKoneReifiedMap(), other.coefficients.computeOnOrElse(emptyKoneReifiedMap(), { this@minus.numberValue }, { context(numberContext) { this@minus - it } }) )
+                    other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }) { _, currentC, _ -> currentC }
                 }
             )
         }
@@ -528,147 +504,147 @@ public open class LabeledPolynomialSpace<Number>(
             0uL -> zero
             1uL -> other
             else -> LabeledPolynomialAsIs(
-                other.coefficients.mapValuesReified { (_, value) -> numberContext { this@times * value } }
+                other.coefficients.mapValuesReified { (_, value) -> context(numberContext) { this@times * value } }
             )
         }
 
     public override operator fun LabeledVariable.plus(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo other,
         )
     public override operator fun LabeledVariable.minus(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
-            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo numberContext { -other },
+            koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
+            emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo context(numberContext) { -other },
         )
     public override operator fun LabeledVariable.times(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this@times mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo other,
+            koneReifiedMapOf(this@times mapsTo 1U, keyHashing = defaultHashing()) mapsTo other,
         )
 
     public override operator fun Number.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@plus,
         )
     public override operator fun Number.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
             emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this@minus,
         )
     public override operator fun Number.times(other: LabeledVariable): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo this@times,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo this@times,
         )
 
     override operator fun LabeledPolynomial<Number>.plus(other: Number): LabeledPolynomial<Number> =
         if (coefficients.isEmpty()) other.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { other }, { numberContext { it + other } })
+            coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { other }, transformOnChange = { context(numberContext) { it + other } })
         )
     override operator fun LabeledPolynomial<Number>.minus(other: Number): LabeledPolynomial<Number> =
         if (coefficients.isEmpty()) other.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { numberContext { -other } }, { numberContext { it - other } })
+            coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { context(numberContext) { -other } }, transformOnChange = { context(numberContext) { it - other } })
         )
     override operator fun LabeledPolynomial<Number>.times(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value * other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value * other } }
         )
 
     override operator fun Number.plus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         if (other.coefficients.isEmpty()) this@plus.asLabeledPolynomial()
         else LabeledPolynomialAsIs(
-            other.coefficients.withSetOrChangedReified(emptyKoneReifiedMap(), { this@plus }, { numberContext { this@plus + it } })
+            other.coefficients.withSetOrChangedReified(key = emptyKoneReifiedMap(), valueOnSet = { this@plus }, transformOnChange = { context(numberContext) { this@plus + it } })
         )
     override operator fun Number.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         if (other.coefficients.isEmpty()) this@minus.polynomialValue
         else LabeledPolynomialAsIs(
             buildKoneReifiedMap(other.coefficients.size + 1u) {
                 set(emptyKoneReifiedMap(), this@minus)
-                other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }, { _, currentC, newC -> numberContext { currentC - newC } })
+                other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }, { _, currentC, newC -> context(numberContext) { currentC - newC } })
             }
         )
     override operator fun Number.times(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            other.coefficients.mapValuesReified { numberContext { this@times * it.value } }
+            other.coefficients.mapValuesReified { context(numberContext) { this@times * it.value } }
         )
 
     public override operator fun LabeledVariable.unaryMinus(): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
     public override operator fun LabeledVariable.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == other) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { numberOne * 2 }
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { numberOne * 2 }
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
     public override operator fun LabeledVariable.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == other) zero
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
-            koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { -numberOne },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
+            koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { -numberOne },
         )
     public override operator fun LabeledVariable.times(other: LabeledVariable): LabeledPolynomial<Number> =
         if (this == other) LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 2U, keyContext = defaultReifiedHashing()) mapsTo numberOne
+            koneReifiedMapOf(this mapsTo 2U, keyHashing = defaultHashing()) mapsTo numberOne
         )
         else LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, other mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberOne,
+            koneReifiedMapOf(this mapsTo 1U, other mapsTo 1U, keyHashing = defaultHashing()) mapsTo numberOne,
         )
 
     public override operator fun LabeledVariable.plus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         if (other.coefficients.isEmpty()) this@plus.polynomialValue
         else LabeledPolynomialAsIs(
-            other.coefficients.withSetOrChangedReified(koneReifiedMapOf(this@plus mapsTo 1U, keyContext = defaultReifiedHashing()), { numberOne }, { numberContext { numberOne + it } })
+            other.coefficients.withSetOrChangedReified(key = koneReifiedMapOf(this@plus mapsTo 1U, keyHashing = defaultHashing()), valueOnSet = { numberOne }, transformOnChange = { context(numberContext) { numberOne + it } })
         )
     public override operator fun LabeledVariable.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         if (other.coefficients.isEmpty()) this@minus.polynomialValue
         else LabeledPolynomialAsIs(
             buildKoneReifiedMap(other.coefficients.size + 1u) {
-                set(koneReifiedMapOf(this@minus mapsTo 1U, keyContext = defaultReifiedHashing()), numberOne)
-                other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }, { _, currentC, newC -> numberContext { currentC - newC } })
+                set(koneReifiedMapOf(this@minus mapsTo 1U, keyHashing = defaultHashing()), numberOne)
+                other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }, { _, currentC, newC -> context(numberContext) { currentC - newC } })
             }
         )
     public override operator fun LabeledVariable.times(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
             other.coefficients
-                .mapKeysReified { (degs, _) -> degs.withSetOrChangedReified(this, { 1u }, { it + 1u }) }
+                .mapKeysReified { (degs, _) -> degs.withSetOrChangedReified(key = this, valueOnSet = { 1u }, transformOnChange = { it + 1u }) }
         )
 
     public override operator fun LabeledPolynomial<Number>.plus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
-            coefficients.withSetOrChangedReified(koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()), { numberOne }, { numberContext { it + numberOne } })
+            coefficients.withSetOrChangedReified(key = koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()), valueOnSet = { numberOne }, transformOnChange = { context(numberContext) { it + numberOne } })
         )
     public override operator fun LabeledPolynomial<Number>.minus(other: LabeledVariable): LabeledPolynomial<Number> =
         if (coefficients.isEmpty()) other.polynomialValue
         else LabeledPolynomialAsIs(
-            coefficients.withSetOrChangedReified(koneReifiedMapOf(other mapsTo 1U, keyContext = defaultReifiedHashing()), { numberContext { -numberOne } }, { numberContext { it - numberOne } })
+            coefficients.withSetOrChangedReified(key = koneReifiedMapOf(other mapsTo 1U, keyHashing = defaultHashing()), valueOnSet = { context(numberContext) { -numberOne } }, transformOnChange = { context(numberContext) { it - numberOne } })
         )
     public override operator fun LabeledPolynomial<Number>.times(other: LabeledVariable): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
             coefficients
-                .mapKeysReified(labeledMonomialSignatureReifiedHashing) { (degs, _) -> degs.withSetOrChangedReified(other, { 1u }, { it + 1u }) }
+                .mapKeysReified(keyHashing = labeledMonomialSignatureHashing) { (degs, _) -> degs.withSetOrChangedReified(key = other, valueOnSet = { 1u }, transformOnChange = { it + 1u }) }
         )
 
     override fun LabeledPolynomial<Number>.unaryMinus(): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { -it.value } }
+            coefficients.mapValuesReified { context(numberContext) { -it.value } }
         )
     override operator fun LabeledPolynomial<Number>.plus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            mergeByReified(coefficients, other.coefficients) { _, c1, c2 -> numberContext { c1 + c2 } }
+            mergeByReified(coefficients, other.coefficients) { _, c1, c2 -> context(numberContext) { c1 + c2 } }
         )
     override operator fun LabeledPolynomial<Number>.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
             buildKoneReifiedMap(coefficients.size + other.coefficients.size) {
                 coefficients.copyTo(this)
-                other.coefficients.copyMapToBy(this, { (_, c) -> numberContext { -c } }, { _, currentC, newC -> numberContext { currentC - newC } })
+                other.coefficients.copyMapToBy(this, { (_, c) -> context(numberContext) { -c } }, { _, currentC, newC -> context(numberContext) { currentC - newC } })
             }
         )
     override operator fun LabeledPolynomial<Number>.times(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -676,14 +652,14 @@ public open class LabeledPolynomialSpace<Number>(
             buildKoneReifiedMap(coefficients.size * other.coefficients.size) {
                 for ((degs1, c1) in coefficients.entriesView) for ((degs2, c2) in other.coefficients.entriesView) {
                     val degs = mergeByReified(degs1, degs2) { _, deg1, deg2 -> deg1 + deg2 }
-                    val c = numberContext { c1 * c2 }
-                    this.setOrChange(degs, { c }, { numberContext { it + c } })
+                    val c = context(numberContext) { c1 * c2 }
+                    this.setOrChange(degs, { c }, { context(numberContext) { it + c } })
                 }
             }
         )
 
     override val LabeledPolynomial<Number>.degree: UInt
-        get() = numberContext {
+        get() = context(numberContext) {
             val iterator = coefficients.entriesView.iterator()
             var maxDegree: UInt
             while (true) {
@@ -704,14 +680,14 @@ public open class LabeledPolynomialSpace<Number>(
             buildKoneReifiedMap {
                 var foundNonZeroCoef = false
                 coefficients.entriesView.forEach { (degs, coef) ->
-                    if (numberContext { coef.isNotZero() }) {
+                    if (context(numberContext) { coef.isNotZero() }) {
                         foundNonZeroCoef = true
                         degs.copyToBy(this) { _, currentDeg, newDeg -> max(currentDeg, newDeg) }
                     }
                 }
                 if (!foundNonZeroCoef) zeroPolynomialDegreeException()
             }
-    public override fun LabeledPolynomial<Number>.degreeBy(variable: LabeledVariable): UInt = numberContext {
+    public override fun LabeledPolynomial<Number>.degreeBy(variable: LabeledVariable): UInt = context(numberContext) {
         val iterator = coefficients.entriesView.iterator()
         var maxDegree: UInt
         while (true) {
@@ -727,7 +703,7 @@ public open class LabeledPolynomialSpace<Number>(
         }
         maxDegree
     }
-    public override fun LabeledPolynomial<Number>.degreeBy(variables: KoneSet<LabeledVariable>): UInt = numberContext {
+    public override fun LabeledPolynomial<Number>.degreeBy(variables: KoneSet<LabeledVariable>): UInt = context(numberContext) {
         val iterator = coefficients.entriesView.iterator()
         var maxDegree: UInt
         while (true) {
@@ -746,7 +722,7 @@ public open class LabeledPolynomialSpace<Number>(
     public override val LabeledPolynomial<Number>.variables: KoneSet<LabeledVariable>
         get() =
             buildKoneSet {
-                coefficients.entriesView.forEach { (degs, coef) -> if (numberContext { coef.isNotZero() }) addAllFrom(degs.keys) }
+                coefficients.entriesView.forEach { (degs, coef) -> if (context(numberContext) { coef.isNotZero() }) addAllFrom(degs.keys) }
             }
     public override val LabeledPolynomial<Number>.numberOfVariables: UInt get() = variables.size
 }
@@ -757,70 +733,70 @@ public class LabeledPolynomialSpaceOverField<Number>(
     // region Number-Int operations
     override operator fun LabeledPolynomial<Number>.div(other: Int): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value / other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value / other } }
         )
     // endregion
     
     // region Number-UInt operations
     override operator fun LabeledPolynomial<Number>.div(other: UInt): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value / other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value / other } }
         )
     // endregion
     
     // region Number-Long operations
     override operator fun LabeledPolynomial<Number>.div(other: Long): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value / other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value / other } }
         )
     // endregion
     
     // region Number-ULong operations
     override operator fun LabeledPolynomial<Number>.div(other: ULong): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value / other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value / other } }
         )
     // endregion
     
     // region Polynomial-Number operations
     override operator fun LabeledPolynomial<Number>.div(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            coefficients.mapValuesReified { numberContext { it.value / other } }
+            coefficients.mapValuesReified { context(numberContext) { it.value / other } }
         )
     // endregion
     
     // region Variable-Int operations
     override operator fun LabeledVariable.div(other: Int): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { numberOne / other },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { numberOne / other },
         )
     // endregion
     
     // region Variable-UInt operations
     override operator fun LabeledVariable.div(other: UInt): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { numberOne / other },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { numberOne / other },
         )
     // endregion
     
     // region Variable-Long operations
     override operator fun LabeledVariable.div(other: Long): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { numberOne / other },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { numberOne / other },
         )
     // endregion
     
     // region Variable-ULong operations
     override operator fun LabeledVariable.div(other: ULong): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { numberOne / other },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { numberOne / other },
         )
     // endregion
     
     // region Variable-Number operations
     override operator fun LabeledVariable.div(other: Number): LabeledPolynomial<Number> =
         LabeledPolynomialAsIs(
-            koneReifiedMapOf(this mapsTo 1U, keyContext = defaultReifiedHashing()) mapsTo numberContext { other.reciprocal },
+            koneReifiedMapOf(this mapsTo 1U, keyHashing = defaultHashing()) mapsTo context(numberContext) { other.reciprocal },
         )
     // endregion
 }

@@ -11,7 +11,6 @@ import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.defaultHashing
-import dev.lounres.kone.comparison.defaultReifiedHashing
 import kotlin.jvm.JvmName
 
 
@@ -48,7 +47,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
     else LabeledPolynomial<C>(
         buildKoneReifiedMap {
             coefficients.entriesView.forEach { (degs, c) ->
-                val newDegs = degs.filterKeysReified(defaultReifiedHashing()) { it !in args.keysView }
+                val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
                 val newC = args.entriesView.fold(c) { product, (variable, substitution) ->
                     val deg = degs.getOrDefault(variable, 0u)
                     if (deg == 0u) product else product * power(substitution, deg)
@@ -60,15 +59,15 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
 
 context(_: Ring<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledPolynomial<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 // TODO: To optimize boxing
 context(_: LabeledPolynomialSpace<C>)
 @JvmName("substitutePolynomial")
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledPolynomial<C>>) : LabeledPolynomial<C> =
     coefficients.entriesView.fold(polynomialZero) { acc, (degs, c) ->
-        val newDegs = degs.filterKeysReified(defaultReifiedHashing()) { it !in args.keysView }
-        acc + args.entriesView.fold(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, labeledMonomialSignatureReifiedHashing))) { product, (variable, substitution) ->
+        val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
+        acc + args.entriesView.fold(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing))) { product, (variable, substitution) ->
             val deg = degs.getOrDefault(variable, 0u)
             if (deg == 0u) product else product * power(substitution, deg)
         }
@@ -77,15 +76,15 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
 context(_: LabeledPolynomialSpace<C>)
 @JvmName("substitutePolynomial")
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledPolynomial<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 // TODO: To optimize boxing
 context(_: LabeledPolynomialSpace<C>, rationalFunctionSpace: LabeledRationalFunctionSpace<C>)
 @JvmName("substituteRationalFunction")
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
     coefficients.entriesView.fold(rationalFunctionZero) { acc, (degs, c) ->
-        val newDegs = degs.filterKeysReified(defaultReifiedHashing()) { it !in args.keysView }
-        acc + args.entriesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, labeledMonomialSignatureReifiedHashing)))) { product, (variable, substitution) ->
+        val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
+        acc + args.entriesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, (variable, substitution) ->
             val deg = degs.getOrDefault(variable, 0u)
             if (deg == 0u) product else product * rationalFunctionSpace.power(substitution, deg)
         }
@@ -94,7 +93,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
 context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
 @JvmName("substituteRationalFunction")
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 context(_: Ring<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, C>): LabeledRationalFunction<C> =
@@ -102,7 +101,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 
 context(_: Ring<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledRationalFunction<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 // TODO: To optimize calculation
 context(_: LabeledPolynomialSpace<C>)
@@ -113,7 +112,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 context(_: LabeledPolynomialSpace<C>)
 @JvmName("substitutePolynomial")
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 // TODO: To optimize calculation
 context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
@@ -124,7 +123,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
 @JvmName("substituteRationalFunction")
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(koneMapOf(entries = inputs, keyContext = defaultHashing<LabeledVariable>()))
+    this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 context(numberContext: Ring<C>)
 @ExperimentalKoneAPI
@@ -223,7 +222,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
             coefficients.entriesView.forEach { (degs, c) ->
-                val newDegs = degs.withSetOrChangedReified(defaultReifiedHashing(), variable, { 1u }, { it + 1u })
+                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { 1u }, transformOnChange = { it + 1u }) // FIXME
                 set(
                     newDegs,
                     c / (one doublingTimes newDegs[variable])
@@ -242,7 +241,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     else LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
             coefficients.entriesView.forEach { (degs, c) ->
-                val newDegs = degs.withSetOrChangedReified(defaultReifiedHashing(), variable, { order }, { it + order })
+                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { order }, transformOnChange = { it + order }) // FIXME
                 set(
                     newDegs,
                     newDegs[variable].let { deg ->
@@ -264,7 +263,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     return LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
             coefficients.entriesView.forEach { (degs, c) ->
-                val newDegs = mergeByReified(degs, filteredVariablesAndOrders, defaultReifiedHashing()) { _, deg, order -> deg + order }
+                val newDegs = mergeByReified(degs, filteredVariablesAndOrders, /*defaultReifiedHashing()*/) { _, deg, order -> deg + order } // FIXME
                 set(
                     newDegs,
                     filteredVariablesAndOrders.entriesView.fold(c) { acc1, (index, order) ->

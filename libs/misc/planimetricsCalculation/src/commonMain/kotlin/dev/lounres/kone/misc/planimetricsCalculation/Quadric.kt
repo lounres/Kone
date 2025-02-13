@@ -7,12 +7,11 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.collections.koneListOf
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.linearAlgebra.experiment1.Matrix
+import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
-import kotlin.reflect.KProperty
 
 
 public data class Quadric<E>(
@@ -24,14 +23,14 @@ public data class Quadric<E>(
     val yz: LabeledPolynomial<E>
 ) {
     public companion object {
-        context(A)
-        public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<E> = Quadric(property.name)
-        context(PlanimetricsCalculationContext<E, *>)
-        public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<E> = Quadric(property.name)
+//        context(_: A)
+//        public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<E> = Quadric(property.name)
+//        context(_: PlanimetricsCalculationScope<E, *>)
+//        public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Quadric<E> = Quadric(property.name)
     }
 }
 
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public infix fun <E> Quadric<E>.equalsTo(other: Quadric<E>): Boolean = this === other || calculate {
     xx * other.yy eq yy * other.xx &&
             xx * other.zz eq zz * other.xx &&
@@ -50,15 +49,15 @@ public infix fun <E> Quadric<E>.equalsTo(other: Quadric<E>): Boolean = this === 
             xz * other.yz eq yz * other.xz
 }
 // FIXME: KT-5351
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Quadric<E>.notEqualsTo(other: Quadric<E>): Boolean = !(this equalsTo other)
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Quadric<E>.eq(other: Quadric<E>): Boolean = this equalsTo other
 // FIXME: KT-5351
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Quadric<E>.neq(other: Quadric<E>): Boolean = !(this equalsTo other)
 
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
     get() = calculate {
         Matrix(

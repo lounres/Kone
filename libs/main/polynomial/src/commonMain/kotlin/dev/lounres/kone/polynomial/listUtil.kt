@@ -20,8 +20,7 @@ import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.mapIndexedTo
 import dev.lounres.kone.repeat
-import dev.lounres.kone.withContext
-import kotlin.math.max
+import dev.lounres.kone.context
 
 
 /**
@@ -143,7 +142,7 @@ public fun <C> ListPolynomial<C>.derivative(): ListPolynomial<C> =
     if (coefficients.isEmpty()) polynomialZero
     else ListPolynomial(
         buildKoneList(coefficients.size - 1u) {
-            for (deg in 1u .. coefficients.lastIndex) withContext(numberContext) { add(deg * coefficients[deg]) }
+            for (deg in 1u .. coefficients.lastIndex) context(numberContext) { add(deg * coefficients[deg]) }
         }
     )
 

@@ -7,8 +7,9 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
+import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.comparison.neq
-import dev.lounres.kone.linearAlgebra.experiment1.*
+import dev.lounres.kone.linearAlgebra.*
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.jvm.JvmInline
 
@@ -22,7 +23,7 @@ public value class Transformation<E>(
     }
 }
 
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Transformation<E>.equalsTo(other: Transformation<E>): Boolean = this.matrix === other.matrix || calculate {
     for (i1 in matrix.rowIndices) {
         for (i2 in 0u until i1) for (j1 in matrix.columnIndices) for (j2 in matrix.columnIndices)
@@ -34,17 +35,17 @@ public inline infix fun <E> Transformation<E>.equalsTo(other: Transformation<E>)
     true
 }
 // FIXME: KT-5351
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Transformation<E>.notEqualsTo(other: Transformation<E>): Boolean = !(this equalsTo other)
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E> Transformation<E>.eq(other: Transformation<E>): Boolean = this equalsTo other
 // FIXME: KT-5351
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public inline infix fun <E>Transformation<E>.neq(other: Transformation<E>): Boolean = !(this equalsTo other)
 
-context(PlanimetricsCalculationContext<E, *>)
+context(_: PlanimetricsCalculationSpace<E>)
 public operator fun <E> Transformation<E>.invoke(P: Point<E>): Point<E> = calculate { Point(matrix * P.columnVector) }
-context(PlanimetricsCalculationContext<E, *>)
-public operator fun <E> Transformation<E>.invoke(l: Line<E>): Line<E> = calculate { Line(l.rowVector * matrix.adjugate) }
-context(PlanimetricsCalculationContext<E, *>)
-public operator fun <E> Transformation<E>.invoke(q: Quadric<E>): Quadric<E> = calculate { matrix.adjugate.let { Quadric(it.transpose * q.matrix * it) } }
+//context(_: PlanimetricsCalculationSpace<E>)
+//public operator fun <E> Transformation<E>.invoke(l: Line<E>): Line<E> = calculate { Line(l.rowVector * matrix.adjugate) }
+//context(_: PlanimetricsCalculationSpace<E>)
+//public operator fun <E> Transformation<E>.invoke(q: Quadric<E>): Quadric<E> = calculate { matrix.adjugate.let { Quadric(it.transpose * q.matrix * it) } }

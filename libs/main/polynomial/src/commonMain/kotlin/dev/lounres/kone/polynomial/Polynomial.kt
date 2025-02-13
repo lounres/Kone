@@ -9,8 +9,12 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
 import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.util.registry.RegistryKey
+import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
+import kotlin.reflect.KVariance
 
 
 @Suppress("INAPPLICABLE_JVM_NAME", "PARAMETER_NAME_CHANGED_ON_OVERRIDE") // FIXME: Waiting for KT-31420
@@ -79,6 +83,27 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
     // region Polynomial properties
     public val Polynomial.degree: UInt
     // endregion
+    
+    public class Key<Number, Polynomial>(
+        numberType: SuppliedType<Number>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<PolynomialSpace<Number, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<PolynomialSpace<Number, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = PolynomialSpace::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 // region Number constants
@@ -157,7 +182,7 @@ public val <Number, Polynomial> Number.polynomialValue: Polynomial get() = with(
 // FIXME: KT-74730
 //context(polynomialSpace: PolynomialSpace<Number, Polynomial>)
 //public operator fun <Number, Polynomial> Number.minus(other: Polynomial): Polynomial = with(polynomialSpace) { this@minus - other }
-// FIXME: KT-74730
+//// FIXME: KT-74730
 //context(polynomialSpace: PolynomialSpace<Number, Polynomial>)
 //public operator fun <Number, Polynomial> Number.times(other: Polynomial): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion

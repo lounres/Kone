@@ -14,28 +14,20 @@ import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.map.KoneMapEntry
-import dev.lounres.kone.collections.map.KoneMutableReifiedMap
-import dev.lounres.kone.collections.map.KoneReifiedMap
-import dev.lounres.kone.collections.map.associateReified
-import dev.lounres.kone.collections.map.comparison.koneReifiedMapReifiedHashing
-import dev.lounres.kone.collections.map.emptyKoneReifiedMap
-import dev.lounres.kone.collections.map.filterValuesReified
-import dev.lounres.kone.collections.map.koneMutableReifiedMapOf
-import dev.lounres.kone.collections.map.koneReifiedMapOf
-import dev.lounres.kone.collections.map.mapsTo
+import dev.lounres.kone.collections.map.*
+import dev.lounres.kone.collections.map.comparison.koneMapHashing
 import dev.lounres.kone.collections.utils.associateByReified
 import dev.lounres.kone.collections.utils.mapKeysReified
 import dev.lounres.kone.collections.utils.setOrChange
-import dev.lounres.kone.comparison.ReifiedHashing
-import dev.lounres.kone.comparison.defaultReifiedHashing
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.context
 
 
 @PublishedApi
 internal fun LabeledMonomialSignature.cleanUp(): LabeledMonomialSignature = filterValuesReified { it > 0U }
 @PublishedApi
-internal val labeledMonomialSignatureReifiedHashing: ReifiedHashing<KoneReifiedMap<LabeledVariable, UInt>> = koneReifiedMapReifiedHashing(keyContext = defaultReifiedHashing(), valueContext = defaultReifiedHashing())
+internal val labeledMonomialSignatureHashing: Hashing<KoneReifiedMap<LabeledVariable, UInt>> = koneMapHashing(keyHashing = defaultHashing(), valueHashing = defaultHashing())
 
 @DelicatePolynomialAPI
 public inline fun <Number> LabeledPolynomialAsIs(coefs: LabeledPolynomialCoefficients<Number>) : LabeledPolynomial<Number> =
@@ -43,12 +35,12 @@ public inline fun <Number> LabeledPolynomialAsIs(coefs: LabeledPolynomialCoeffic
 
 @DelicatePolynomialAPI
 public fun <Number> LabeledPolynomialAsIs(entries: KoneIterable<KoneMapEntry<LabeledMonomialSignature, Number>>) : LabeledPolynomial<Number> =
-    LabeledPolynomial<Number>(entries.associateReified(labeledMonomialSignatureReifiedHashing) { it })
+    LabeledPolynomial<Number>(entries.associateReified(keyHashing = labeledMonomialSignatureHashing) { it })
 
 @DelicatePolynomialAPI
 @OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Number> LabeledPolynomialAsIs(vararg entries: KoneMapEntry<LabeledMonomialSignature, Number>) : LabeledPolynomial<Number> =
-    LabeledPolynomial<Number>(KoneArray(entries).associateReified(labeledMonomialSignatureReifiedHashing) { it })
+    LabeledPolynomial<Number>(KoneArray(entries).associateReified(keyHashing = labeledMonomialSignatureHashing) { it })
 
 public inline fun <Number> LabeledPolynomial(coefs: LabeledPolynomialCoefficients<Number>, add: (Number, Number) -> Number) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
@@ -57,13 +49,13 @@ public inline fun <Number> LabeledPolynomial(coefs: LabeledPolynomialCoefficient
 
 public inline fun <Number> LabeledPolynomial(entries: KoneIterable<KoneMapEntry<LabeledMonomialSignature, Number>>, add: (Number, Number) -> Number) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
-        entries.associateByReified(labeledMonomialSignatureReifiedHashing, { it.key.cleanUp() }, { it.value }, { _, c1, c2 -> add(c1, c2)})
+        entries.associateByReified(keyHashing = labeledMonomialSignatureHashing, keySelector = { it.key.cleanUp() }, valueTransform = { it.value }, resolve = { _, c1, c2 -> add(c1, c2)})
     )
 
 @OptIn(DelicateImmutableArrayConstructor::class)
 public inline fun <Number> LabeledPolynomial(vararg entries: KoneMapEntry<LabeledMonomialSignature, Number>, add: (Number, Number) -> Number) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
-        KoneArray(entries).associateByReified(labeledMonomialSignatureReifiedHashing, { it.key.cleanUp() }, { it.value }, { _, c1, c2 -> add(c1, c2)})
+        KoneArray(entries).associateByReified(keyHashing = labeledMonomialSignatureHashing, keySelector = { it.key.cleanUp() }, valueTransform = { it.value }, resolve = { _, c1, c2 -> add(c1, c2)})
     )
 
 context(_: Ring<C>)
@@ -91,7 +83,7 @@ internal annotation class LabeledPolynomialConstructorDSL1
 @ExperimentalKoneAPI
 @LabeledPolynomialConstructorDSL1
 public class DSL1LabeledPolynomialTermSignatureBuilder {
-    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = koneMutableReifiedMapOf(defaultReifiedHashing())
+    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = koneMutableReifiedMapOf(keyHashing = defaultHashing())
 
     @PublishedApi
     internal fun build(): LabeledMonomialSignature = signature
@@ -111,7 +103,7 @@ public class DSL1LabeledPolynomialBuilder<C>(
     private val add: (C, C) -> C,
     initialCapacity: Int? = null
 ) {
-    private val coefficients: KoneMutableReifiedMap<LabeledMonomialSignature, C> = koneMutableReifiedMapOf(labeledMonomialSignatureReifiedHashing) // TODO: Use `initialCapacity` eventually
+    private val coefficients: KoneMutableReifiedMap<LabeledMonomialSignature, C> = koneMutableReifiedMapOf(keyHashing = labeledMonomialSignatureHashing) // TODO: Use `initialCapacity` eventually
 
     @PublishedApi
     internal fun build(): LabeledPolynomial<C> = LabeledPolynomial<C>(coefficients)
@@ -406,6 +398,6 @@ public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
 context(numberContext: Ring<C>, _: LabeledPolynomialSpace<C>)
 public fun <C> LabeledVariable.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
-        numberContext { this.asLabeledPolynomial() },
+        context(numberContext) { this.asLabeledPolynomial() },
         polynomialOne,
     )
