@@ -86,6 +86,10 @@ public class NoMatchingKeyException(message: String = "There is no value for req
 public fun noMatchingKeyException(key: Any?): Nothing =
     throw NoMatchingKeyException("There is no value for key $key")
 
+public class EmptyDequeAccessException(message: String = "There is no elements in empty deque") : NoSuchElementException(message)
+
+public fun emptyDequeAccessException(): Nothing = throw EmptyDequeAccessException()
+
 /**
  * Represents exception that is thrown when user tries to change detached node's properties.
  */

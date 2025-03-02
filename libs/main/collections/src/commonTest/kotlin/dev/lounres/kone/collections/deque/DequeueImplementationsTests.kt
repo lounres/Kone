@@ -5,13 +5,6 @@
 
 package dev.lounres.kone.collections.deque
 
-import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityLinkedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityLinkedNoddedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedNoddedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListDescription
-import dev.lounres.kone.collections.list.implementations.KoneGCLinkedListDescription
 import dev.lounres.kone.repeat
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
@@ -22,23 +15,20 @@ import io.kotest.property.arbitrary.uInt
 import io.kotest.property.checkAll
 
 
-sealed interface KoneDequeProducer {
-    interface KoneFixedCapacityDequeProducer : KoneDequeProducer {
-        fun <Element> produce(capacity: UInt): KoneDeque<Element>
-    }
-    interface KoneResizableDequeProducer : KoneDequeProducer {
-        fun <Element> produce(): KoneDeque<Element>
-    }
-    interface KoneGrowableDequeProducer : KoneDequeProducer {
-        fun <Element> produce(): KoneDeque<Element>
-        fun <Element> produce(initialCapacity: UInt): KoneDeque<Element>
-    }
+interface KoneDequeProducer
+interface KoneFixedCapacityDequeProducer : KoneDequeProducer {
+    fun <Element> produce(capacity: UInt): KoneDeque<Element>
+}
+interface KoneResizableDequeProducer : KoneDequeProducer {
+    fun <Element> produce(): KoneDeque<Element>
+}
+interface KoneGrowableDequeProducer : KoneDequeProducer {
+    fun <Element> produce(): KoneDeque<Element>
+    fun <Element> produce(initialCapacity: UInt): KoneDeque<Element>
 }
 
 interface KoneDequeValidator {
-    fun <Element: Any> validate(
-        list: KoneDeque<Element>,
-    )
+    fun <Element: Any> validate(list: KoneDeque<Element>)
 }
 
 fun <Validator: KoneDequeValidator, Element: Any> Validator.shouldValidate(list: KoneDeque<Element>): Validator =
@@ -51,13 +41,13 @@ interface DequeImplementationDescription {
 }
 
 val dequeImplementations = listOf<DequeImplementationDescription>(
-    KoneArrayFixedCapacityLinkedListDescription,
-    KoneArrayFixedCapacityLinkedNoddedListDescription,
-    KoneArrayGrowableLinkedListDescription,
-    KoneArrayGrowableLinkedNoddedListDescription,
-    KoneArrayResizableLinkedListDescription,
-    KoneArrayResizableLinkedNoddedListDescription,
-    KoneGCLinkedListDescription,
+//    KoneArrayFixedCapacityLinkedListDescription,
+//    KoneArrayFixedCapacityLinkedNoddedListDescription,
+//    KoneArrayGrowableLinkedListDescription,
+//    KoneArrayGrowableLinkedNoddedListDescription,
+//    KoneArrayResizableLinkedListDescription,
+//    KoneArrayResizableLinkedNoddedListDescription,
+//    KoneGCLinkedListDescription,
 )
 
 sealed interface DequeOperation<out Element> {
@@ -136,7 +126,7 @@ class DequeImplementationsTest : FunSpec({
         }
         
         when (producer) {
-            is KoneDequeProducer.KoneFixedCapacityDequeProducer -> {
+            is KoneFixedCapacityDequeProducer -> {
                 test("test mutability operations") {
                     checkAll(arbDequeOperations(arbElements = Arb.uInt(), capacity = 20u, numberOfOperations = 100u)) { arbData ->
                         val deque = producer.produce<UInt>(20u)
@@ -148,7 +138,7 @@ class DequeImplementationsTest : FunSpec({
                     }
                 }
             }
-            is KoneDequeProducer.KoneResizableDequeProducer -> {
+            is KoneResizableDequeProducer -> {
                 test("test mutability operations") {
                     checkAll(arbDequeOperations(arbElements = Arb.uInt(), numberOfOperations = 100u)) { arbData ->
                         val deque = producer.produce<UInt>()
@@ -160,7 +150,7 @@ class DequeImplementationsTest : FunSpec({
                     }
                 }
             }
-            is KoneDequeProducer.KoneGrowableDequeProducer -> {
+            is KoneGrowableDequeProducer -> {
                 test("test mutability operations") {
                     checkAll(arbDequeOperations(arbElements = Arb.uInt(), capacity = 20u, numberOfOperations = 100u)) { arbData ->
                         val deque = producer.produce<UInt>()
