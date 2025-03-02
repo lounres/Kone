@@ -15,7 +15,7 @@ import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.heap.MinimumHeap
-import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.utils.plusAssign
@@ -95,7 +95,7 @@ private fun <N> addIntersectionFor(
 context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
 public fun <N> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N>>> {
     val pointsOrder = lexicographic2DOrder
-    val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = KoneGCBinaryMinimumHeap(pointsOrder)
+    val eventsHeap: MinimumHeap<EventForBentleyOttmann<N>, Point2<N>> = KoneBinaryGCMinimumHeap(pointsOrder)
     val segmentsSearchTree: ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>> = TwoThreeTreeForBentleyOttmann()
     val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>>?>(this.size) { null }
     

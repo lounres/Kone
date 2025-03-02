@@ -13,13 +13,12 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.map.getMaybe
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.geq
 import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.graphs.EdgeWeightedGraphEdge
@@ -39,16 +38,15 @@ public value class Path<out Weight, out Edge>(public val totalWeight: Weight, pu
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-context(weightsContext: WeightsContext)
+context(_: Ring<Weight>, weightsOrder: Order<Weight>)
 public fun <
     Weight,
-    WeightsContext,
     Vertex: EdgeWeightedGraphVertex<Weight, Vertex, Edge>,
     Edge: EdgeWeightedGraphEdge<Weight, Vertex, Edge>
 > shortestPathsMapByDijkstra(
     from: Vertex,
-): KoneMap<Vertex, Path<Weight, Edge>> where WeightsContext: Ring<Weight>, WeightsContext: Order<Weight> {
-    val verticesToCheck = KoneGCBinaryMinimumHeap<Vertex, Weight, WeightsContext>(weightsContext)
+): KoneMap<Vertex, Path<Weight, Edge>> {
+    val verticesToCheck = KoneBinaryGCMinimumHeap<Vertex, Weight>(weightsOrder)
     val queueNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, Weight>>(absoluteEquality())
     val paths = koneMutableMapOf<Vertex, Path<Weight, Edge>>(absoluteEquality())
     
@@ -82,15 +80,13 @@ public fun <
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-context(weightsContext: WeightsContext)
+context(_: Ring<Weight>, weightsOrder: Order<Weight>)
 public fun <
     Weight,
-    WeightsContext,
     Vertex: EdgeWeightedGraphVertex<Weight, Vertex, Edge>,
     Edge: EdgeWeightedGraphEdge<Weight, Vertex, Edge>
-> shortestPathByDijkstra(from: Vertex, to: Vertex): Path<Weight, Edge>?
-where WeightsContext: Ring<Weight>, WeightsContext: Order<Weight> {
-    val verticesToCheck = KoneGCBinaryMinimumHeap<Vertex, Weight, WeightsContext>(weightsContext)
+> shortestPathByDijkstra(from: Vertex, to: Vertex): Path<Weight, Edge>? {
+    val verticesToCheck = KoneBinaryGCMinimumHeap<Vertex, Weight>(weightsOrder)
     val queueNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, Weight>>(absoluteEquality())
     val paths = koneMutableMapOf<Vertex, Path<Weight, Edge>>(absoluteEquality())
     var optimalPathToTarget: Path<Weight, Edge>? = null

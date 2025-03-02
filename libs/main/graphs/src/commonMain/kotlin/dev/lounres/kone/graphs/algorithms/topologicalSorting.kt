@@ -8,11 +8,10 @@ package dev.lounres.kone.graphs.algorithms
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.heap.implementations.KoneGCBinaryMinimumHeap
+import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.absoluteEquality
 import dev.lounres.kone.comparison.defaultOrder
 import dev.lounres.kone.graphs.Digraph
@@ -20,7 +19,7 @@ import dev.lounres.kone.graphs.DigraphVertex
 
 
 public fun <Vertex: DigraphVertex<Vertex, *>> Digraph<Vertex, *>.sortVerticesTopologicallyByKahn(): KoneList<Vertex> {
-    val verticesToProcess = KoneGCBinaryMinimumHeap<Vertex, UInt, Order<UInt>>(defaultOrder<UInt>())
+    val verticesToProcess = KoneBinaryGCMinimumHeap<Vertex, UInt>(defaultOrder<UInt>())
     val result = KoneArrayFixedCapacityList<Vertex>(vertices.size)
     val verticesNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, UInt>>(absoluteEquality())
     
