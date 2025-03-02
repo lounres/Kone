@@ -9,8 +9,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(versions.kotlinx.serialization.json)
-                
                 implementation(compose.foundation)
+                api(projects.libs.main.core)
+                api(projects.libs.main.comparison)
+                api(projects.libs.main.algebraic)
+                api(projects.libs.main.collections)
+                api(projects.libs.main.linearAlgebra)
                 api(projects.libs.main.computationalGeometry)
             }
         }
