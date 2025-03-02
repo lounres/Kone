@@ -48,59 +48,33 @@ allprojects {
 
 tasks.register("docusaurusGenerateInputData") {
     group = "site"
-    outputs.files("site/src/inputData.ts", "site/inputData.js")
+    outputs.files("site/src/inputData.ts", "site/inputData.ts")
     doLast {
-        rootDir.resolve("site/src/inputData.ts").writer().use {
-            it.write(
-                """
-                    export const koneGroup = "$koneGroup"
-                    export const koneVersion = "$koneVersion"
-                    export const koneUrl = "$koneUrl"
-                    export const koneBaseUrl = "$koneBaseUrl"
-                """.trimIndent()
-            )
-        }
-        rootDir.resolve("site/inputData.js").writer().use {
-            it.write(
-                """
-                    module.exports = {
-                        koneGroup: "$koneGroup",
-                        koneVersion: "$koneVersion",
-                        koneUrl: "$koneUrl",
-                        koneBaseUrl: "$koneBaseUrl",
-                    }
-                """.trimIndent()
-            )
-        }
+        val inputDataContent =
+            """
+                export const koneGroup = "$koneGroup"
+                export const koneVersion = "$koneVersion"
+                export const koneUrl = "$koneUrl"
+                export const koneBaseUrl = "$koneBaseUrl"
+            """.trimIndent()
+        rootDir.resolve("site/src/inputData.ts").writer().use { it.write(inputDataContent) }
+        rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
     }
 }
 
 tasks.register("docusaurusGenerateDevInputData") {
     group = "site"
-    outputs.files("site/src/inputData.ts", "site/inputData.js")
+    outputs.files("site/src/inputData.ts", "site/inputData.ts")
     doLast {
-        rootDir.resolve("site/src/inputData.ts").writer().use {
-            it.write(
-                """
-                    export const koneGroup = "$koneGroup"
-                    export const koneVersion = "$koneVersion"
-                    export const koneUrl = "http://localhost:3000"
-                    export const koneBaseUrl = "$koneBaseUrl"
-                """.trimIndent()
-            )
-        }
-        rootDir.resolve("site/inputData.js").writer().use {
-            it.write(
-                """
-                    module.exports = {
-                        koneGroup: "$koneGroup",
-                        koneVersion: "$koneVersion",
-                        koneUrl: "http://localhost:3000",
-                        koneBaseUrl: "$koneBaseUrl",
-                    }
-                """.trimIndent()
-            )
-        }
+        val inputDataContent =
+            """
+                export const koneGroup = "$koneGroup"
+                export const koneVersion = "$koneVersion"
+                export const koneUrl = "http://localhost:3000"
+                export const koneBaseUrl = "$koneBaseUrl"
+            """.trimIndent()
+        rootDir.resolve("site/src/inputData.ts").writer().use { it.write(inputDataContent) }
+        rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
     }
 }
 
@@ -579,7 +553,7 @@ stal {
                 dokkaGeneratorIsolation = ClassLoaderIsolation()
             }
 
-            task<Jar>("dokkaJar") {
+            tasks.register<Jar>("dokkaJar") {
                 group = "dokka"
                 description = "Assembles Kotlin docs with Dokka into a javadoc JAR"
                 archiveClassifier = "javadoc"

@@ -82,6 +82,7 @@ fabric.properties
 *.iml
 out
 gen
+test/
 
 ### Gradle template
 .gradle
