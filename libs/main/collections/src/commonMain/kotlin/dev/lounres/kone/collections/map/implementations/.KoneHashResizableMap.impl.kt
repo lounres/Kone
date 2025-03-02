@@ -159,12 +159,19 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         size = 0u
     }
 
-//    override fun removeAllThat(predicate: (key: K, value: V) -> Boolean) {
-//        var newSize = 0u
-//        for (linkedList in data) linkedList.removeAllThat { entry -> predicate(entry.key, entry.value).also { if (!it) newSize += 1u } }
-//        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
-//        else size = newSize
-//    }
+    override fun removeAllThat(predicate: (key: Key, value: Value) -> Boolean) {
+        var newSize = 0u
+        for (linkedList in data) linkedList.removeAllThat { node -> predicate(node.key, node.value).also { if (!it) newSize += 1u } }
+        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
+        else size = newSize
+    }
+    
+    override fun removeAllNodesThat(predicate: (nodes: KoneMutableMapNode<Key, Value>) -> Boolean) {
+        var newSize = 0u
+        for (linkedList in data) linkedList.removeAllThat { node -> predicate(node).also { if (!it) newSize += 1u } }
+        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
+        else size = newSize
+    }
 
     override fun remove(key: Key) {
         if (isDisposed) disposedInstanceException()
@@ -265,6 +272,8 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
             map = null
             isDetached = true
         }
+        
+        override fun toString(): String = "$key=$value"
     }
     
     internal class NodeIterator<Key, Value>(

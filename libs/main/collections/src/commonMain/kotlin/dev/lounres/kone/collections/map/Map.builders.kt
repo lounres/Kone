@@ -7,13 +7,14 @@
 
 package dev.lounres.kone.collections.map
 
+import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedNoddedListProducer
 import dev.lounres.kone.collections.map.empty.KoneEmptyReifiedMap
-import dev.lounres.kone.collections.map.implementations.KoneMutableListBackedMap
+import dev.lounres.kone.collections.map.implementations.KoneListBackedMutableMap
 import dev.lounres.kone.collections.map.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.map.implementations.KoneHashResizableReifiedMap
-import dev.lounres.kone.collections.map.implementations.KoneMutableListBackedReifiedMap
+import dev.lounres.kone.collections.map.implementations.KoneListBackedMutableReifiedMap
 import dev.lounres.kone.collections.map.singleton.KoneSingletonMap
 import dev.lounres.kone.collections.map.singleton.KoneSingletonReifiedMap
 import dev.lounres.kone.collections.iterables.KoneIterable
@@ -140,6 +141,7 @@ public fun <Key, Value> koneReifiedMapOf(
         keyEquality = keyEquality,
     )
 
+@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> koneMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyEquality: Equality<Key> = defaultEquality(),
@@ -183,6 +185,7 @@ public inline fun <reified Key, Value> koneReifiedMapOf(
         keyOrder = keyOrder,
     )
 
+@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> koneReifiedMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
@@ -207,7 +210,7 @@ public fun <Key, Value> koneMutableMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneMutableMap<Key, Value> =
     if (keyHashing != null) KoneHashResizableMap(keyEquality = keyEquality, keyHashing = keyHashing)
-    else KoneMutableListBackedMap(keyEquality = keyEquality)
+    else KoneListBackedMutableMap(keyEquality = keyEquality)
 
 context(_: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableMapOf(
@@ -238,8 +241,9 @@ public fun <Key, Value> koneMutableReifiedMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
     if (keyHashing != null) KoneHashResizableReifiedMap(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
-    else KoneMutableListBackedReifiedMap(keyReification = keyReification, keyEquality = keyEquality)
+    else KoneListBackedMutableReifiedMap(keyReification = keyReification, keyEquality = keyEquality)
 
+@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> koneMutableMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyEquality: Equality<Key> = defaultEquality(),
@@ -247,7 +251,7 @@ public fun <Key, Value> koneMutableMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneMutableMap<Key, Value> =
     if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
-    else KoneMutableListBackedMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
+    else KoneListBackedMutableMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
 context(_: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableMapOf(
@@ -275,6 +279,7 @@ public inline fun <reified Key, Value> koneMutableReifiedMapOf(
         keyOrder = keyOrder,
     )
 
+@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> koneMutableReifiedMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
@@ -283,7 +288,7 @@ public fun <Key, Value> koneMutableReifiedMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
     if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
-    else KoneMutableListBackedReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
+    else KoneListBackedMutableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
 context(_: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableReifiedMapOf(
@@ -306,7 +311,7 @@ public inline fun <Key, Value> buildKoneMap(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing)
-        else KoneMutableListBackedMap(keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
+        else KoneListBackedMutableMap(keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
@@ -345,7 +350,7 @@ public inline fun <Key, Value> buildKoneReifiedMap(
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
-        else KoneMutableListBackedReifiedMap(keyReification = keyReification, keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
+        else KoneListBackedMutableReifiedMap(keyReification = keyReification, keyEquality = keyEquality, KoneArrayResizableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
@@ -371,7 +376,7 @@ public inline fun <Key, Value> buildKoneMap(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
-        else KoneMutableListBackedMap(initialCapacity = initialCapacity, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
+        else KoneListBackedMutableMap(initialCapacity = initialCapacity, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
@@ -415,7 +420,7 @@ public inline fun <Key, Value> buildKoneReifiedMap(
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
-        else KoneMutableListBackedReifiedMap(initialCapacity = initialCapacity, keyReification = keyReification, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
+        else KoneListBackedMutableReifiedMap(initialCapacity = initialCapacity, keyReification = keyReification, keyEquality = keyEquality, KoneArrayGrowableLinkedNoddedListProducer)
     return mapBuilder.apply(builderAction)
 }
 
@@ -695,7 +700,7 @@ public inline fun <Key, V, W> KoneMap<out Key, V>.mapValuesReified(
     )
 
 public inline fun <K, V, L, D : KoneMutableMap<in L, in V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L): D =
-    entriesView.associateByTo(destination, transform, { it.value })
+    entriesView.associateByTo(destination = destination, keySelector = transform, valueTransform = { it.value })
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
     keyEquality: Equality<L> = defaultEquality(),

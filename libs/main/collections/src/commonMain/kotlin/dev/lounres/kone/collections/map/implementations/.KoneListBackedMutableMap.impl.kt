@@ -29,7 +29,7 @@ import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.context
 
 
-public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal constructor(
+public open class KoneListBackedMutableMap<Key, Value> @PublishedApi internal constructor(
     public val keyEquality: Equality<Key>,
     internal val backingList: KoneMutableNoddedList<Node<Key, Value>>,
 ) : KoneMutableMap<Key, Value> {
@@ -72,6 +72,14 @@ public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal co
         backingList.forEach { it.detach() }
         backingList.removeAll()
     }
+    
+    override fun removeAllThat(predicate: (Key, Value) -> Boolean) {
+        backingList.removeAllThat { node -> predicate(node.key, node.value).also { if (it) node.detach() } }
+    }
+    
+    override fun removeAllNodesThat(predicate: (KoneMutableMapNode<Key, Value>) -> Boolean) {
+        backingList.removeAllThat { node -> predicate(node).also { if (it) node.detach() } }
+    }
 
     // TODO: Override equals and `hashCode`
 
@@ -108,6 +116,8 @@ public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal co
             listNode.remove()
             _backingListNode = null
         }
+        
+        override fun toString(): String = "$key=$value"
     }
     
     internal class KeysIterator<K>(private val nodesIterator: KoneIterator<KoneMutableMapNode<K, *>>) : KoneIterator<K> {
@@ -120,7 +130,7 @@ public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal co
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class KeysView : KoneSet<Key> {
-        override val size: UInt get() = this@KoneMutableListBackedMap.size
+        override val size: UInt get() = this@KoneListBackedMutableMap.size
         
         override fun contains(element: Key): Boolean =
             backingList.any { currentNode -> context(keyEquality) { element eq currentNode.key } }
@@ -137,7 +147,7 @@ public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal co
     }
     
     internal inner class ValuesView : KoneIterable<Value> {
-        override val size: UInt get() = this@KoneMutableListBackedMap.size
+        override val size: UInt get() = this@KoneListBackedMutableMap.size
         override fun iterator(): KoneIterator<Value> = ValuesIterator(backingList.iterator())
     }
     
@@ -150,16 +160,16 @@ public open class KoneMutableListBackedMap<Key, Value> @PublishedApi internal co
     }
     
     internal inner class EntriesView : KoneIterable<KoneMapEntry<Key, Value>> {
-        override val size: UInt get() = this@KoneMutableListBackedMap.size
+        override val size: UInt get() = this@KoneListBackedMutableMap.size
         override fun iterator(): KoneIterator<KoneMapEntry<Key, Value>> = EntriesIterator(backingList.iterator())
     }
 }
 
-public class KoneMutableListBackedReifiedMap<Key, Value> @PublishedApi internal constructor(
+public class KoneListBackedMutableReifiedMap<Key, Value> @PublishedApi internal constructor(
     public val keyReification: Reification<Key>,
     keyEquality: Equality<Key>,
     backingList: KoneMutableNoddedList<Node<Key, Value>>,
-) : KoneMutableListBackedMap<Key, Value>(
+) : KoneListBackedMutableMap<Key, Value>(
     keyEquality = keyEquality,
     backingList = backingList,
 ), KoneMutableReifiedMap<Key, Value> {
@@ -182,7 +192,7 @@ public class KoneMutableListBackedReifiedMap<Key, Value> @PublishedApi internal 
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class KeysView : KoneReifiedSet<Key> {
-        override val size: UInt get() = this@KoneMutableListBackedReifiedMap.size
+        override val size: UInt get() = this@KoneListBackedMutableReifiedMap.size
         
         override fun contains(element: Key): Boolean =
             element in keyReification && backingList.any { currentNode -> context(keyEquality) { element eq currentNode.key } }

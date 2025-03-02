@@ -51,7 +51,8 @@ public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
     public fun removeAll()
     
     // TODO: Think about bulk operations.
-//    public fun removeAllThat(predicate: (key: K, value: V) -> Boolean)
+    public fun removeAllThat(predicate: (key: Key, value: Value) -> Boolean)
+    public fun removeAllNodesThat(predicate: (node: KoneMutableMapNode<Key, Value>) -> Boolean)
 //    public fun setAllFrom(from: KoneMap<out K, V>) {
 //        for ((key, value) in from) set(key, value)
 //    }

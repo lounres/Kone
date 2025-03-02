@@ -62,6 +62,8 @@ public open class KoneListBackedMap<Key, Value> @PublishedApi internal construct
     ) : KoneMapNode<K, V> {
         override var isDetached: Boolean = false
             private set
+        
+        override fun toString(): String = "$key=$value"
     }
 }
 
