@@ -26,15 +26,23 @@ public data class Point<E>(
     public operator fun getValue(thisRef: Any?, property: KProperty<*>) : Point<E> = this
     
     public companion object {
-//        context(_: Ring<E>)
+//        context(_: PlanimetricsCalculationSpace<E>)
 //        public operator fun <E> provideDelegate(thisRef: Any?, property: KProperty<*>): Point<E> = Point(property.name)
     }
 
     @Suppress("ClassName")
     public object finite {
-//        context(_: Ring<E>)
+//        context(_: PlanimetricsCalculationSpace<E>)
 //        public operator fun <E> provideDelegate(thisRef: Any?, property: KProperty<*>) : Point<E> =
-//            property.name.let { Point("${it}_x".convert(), "${it}_y".convert(), one.asLabeledPolynomial()) }
+//            calculate {
+//                property.name.let {
+//                    Point(
+//                        LabeledVariable(it + "_x").asLabeledPolynomial<E>(),
+//                        LabeledVariable(it + "_y").asLabeledPolynomial<E>(),
+//                        polynomialOne
+//                    )
+//                }
+//            }
     }
 }
 

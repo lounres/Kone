@@ -24,18 +24,7 @@ public data class Line<E>(
     public operator fun getValue(thisRef: Any?, property: KProperty<*>) : Line<E> = this
 
     public companion object {
-//        context(_: Ring<E>)
+//        context(_: PlanimetricsCalculationSpace<E>)
 //        public operator fun <E> provideDelegate(thisRef: Any?, property: KProperty<*>): Line<E> = Line(property.name)
-    }
-
-    @Suppress("ClassName")
-    public object finite {
-//        context(A)
-//        public operator fun <E, A: Ring<E>> getValue(thisRef: Any?, property: KProperty<*>) : Point<E> =
-//            TODO("Declaration of finiteness of line ${property.name} is not yet implemented")
-//        context(PlanimetricsCalculationContext<E, *>)
-//        public operator fun <E> getValue(thisRef: Any?, property: KProperty<*>) : Point<E> = calculate {
-//            TODO("Declaration of finiteness of line ${property.name} is not yet implemented")
-//        }
     }
 }

@@ -15,12 +15,15 @@ import dev.lounres.kone.linearAlgebra.vectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
+import dev.lounres.kone.polynomial.asLabeledPolynomial
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
+import dev.lounres.kone.polynomial.polynomialOne
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
+import kotlin.reflect.KProperty
 import kotlin.reflect.KVariance
 
 
@@ -36,6 +39,15 @@ public class PlanimetricsCalculationSpace<Number>(
     public val xAxis: Line<Number> = context(polynomialSpace) { Line(zero, one, zero) }
     public val yAxis: Line<Number> = context(polynomialSpace) { Line(one, zero, zero) }
     public val lineAtInfinity: Line<Number> = context(polynomialSpace) { Line(zero, zero, one) }
+    
+    @Suppress("PropertyName")
+    public val Point: PointDelegate<Number> = PointDelegate(this)
+    
+    @Suppress("PropertyName")
+    public val Line: LineDelegate<Number> = LineDelegate(this)
+    
+    @Suppress("PropertyName")
+    public val Quadric: QuadricDelegate<Number> = QuadricDelegate(this)
     
     // TODO: Think about point and line equalities
 //    public val pointContext: Equality<Point<Number>> =
@@ -59,6 +71,48 @@ public class PlanimetricsCalculationSpace<Number>(
 //                }
 //            }
 //        }
+    
+    public class PointDelegate<Number> internal constructor(
+        private val space: PlanimetricsCalculationSpace<Number>,
+    ) {
+        public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): Point<Number> = context(space) {
+            Point(property.name)
+        }
+        
+        public val finite: FinitePointDelegate<Number> = FinitePointDelegate(space)
+        
+        public class FinitePointDelegate<Number> internal constructor(
+            private val space: PlanimetricsCalculationSpace<Number>,
+        ) {
+            public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): Point<Number> = context(space) {
+                calculate {
+                    property.name.let {
+                        Point(
+                            LabeledVariable(it + "_x").asLabeledPolynomial<Number>(),
+                            LabeledVariable(it + "_y").asLabeledPolynomial<Number>(),
+                            polynomialOne
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    public class LineDelegate<Number> internal constructor(
+        private val space: PlanimetricsCalculationSpace<Number>,
+    ) {
+        public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): Line<Number> = context(space) {
+            Line(property.name)
+        }
+    }
+    
+    public class QuadricDelegate<Number> internal constructor(
+        private val space: PlanimetricsCalculationSpace<Number>,
+    ) {
+        public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): Quadric<Number> = context(space) {
+            Quadric(property.name)
+        }
+    }
     
     public class Key<Number>(
         elementType: SuppliedType<Number>,
