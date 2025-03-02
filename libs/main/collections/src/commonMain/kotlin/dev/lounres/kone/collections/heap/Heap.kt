@@ -11,6 +11,8 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 
 
+public data class HeapEntry<out Element, out Priority>(public val element: Element, public val priority: Priority)
+
 public interface HeapNode<Element, Priority> {
     public val isDetached: Boolean
     

@@ -23,15 +23,18 @@ import dev.lounres.kone.comparison.lt
 import dev.lounres.kone.context
 
 
-// TODO: Think about linear creation: https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap
+// TODO: Make the implementation disposable
 @Suppress("UNCHECKED_CAST")
-public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
+public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal constructor(
     public val priorityContext: Order<Priority>,
-    private var rootHolder: NodeHolder<Element, Priority>?,
-    private var lastHolder: NodeHolder<Element, Priority>?,
+    @PublishedApi
+    internal var rootHolder: NodeHolder<Element, Priority>?,
+    @PublishedApi
+    internal var lastHolder: NodeHolder<Element, Priority>?,
+    size: UInt = 0u,
 ): LinkedMinimumHeap<Element, Priority> {
-    override var size: UInt = 0u
-        private set
+    override var size: UInt = size
+        internal set
 
     private fun swapNodeHoldersIdentities(holder1: NodeHolder<Element, Priority>, holder2: NodeHolder<Element, Priority>) {
         holder1.node = holder2.node.also { holder2.node = holder1.node }
@@ -47,7 +50,8 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         }
     }
     
-    private tailrec fun siftTheNodeUpToTheLeaf(holder: NodeHolder<Element, Priority>) {
+    @PublishedApi
+    internal tailrec fun siftTheNodeUpToTheLeaf(holder: NodeHolder<Element, Priority>) {
         val firstChild = holder.firstChild
         val secondChild = holder.secondChild
         when {
@@ -178,8 +182,9 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         return root.node.also { removeNode(root) }
     }
     
+    @PublishedApi
     internal class NodeHolder<Element, Priority>(
-        heap: KoneGCBinaryMinimumHeap<Element, Priority>,
+        heap: KoneBinaryGCMinimumHeap<Element, Priority>,
         val index: UInt,
         parent: NodeHolder<Element, Priority>?,
         previous: NodeHolder<Element, Priority>?,
@@ -189,8 +194,8 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         override var isDisposed: Boolean = false
             private set
         
-        private var _heap: KoneGCBinaryMinimumHeap<Element, Priority>? = heap
-        var heap: KoneGCBinaryMinimumHeap<Element, Priority>
+        private var _heap: KoneBinaryGCMinimumHeap<Element, Priority>? = heap
+        var heap: KoneBinaryGCMinimumHeap<Element, Priority>
             get() = _heap!!
             set(value) { _heap = value }
         
@@ -234,8 +239,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         priority: Priority,
         holder: NodeHolder<Element, Priority>,
     ): LinkedHeapNode<Element, Priority> {
-        override var isDetached: Boolean = false
-            private set
+        override val isDetached: Boolean get() = _holder == null
         
         private var _holder: NodeHolder<Element, Priority>? = holder
         var holder: NodeHolder<Element, Priority>
@@ -251,10 +255,9 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         
         fun detach() {
             _holder = null
-            isDetached = true
         }
         
-        val heap: KoneGCBinaryMinimumHeap<Element, Priority>?
+        val heap: KoneBinaryGCMinimumHeap<Element, Priority>?
             get() = if (isDetached) detachedNodeException() else _holder?.heap
         override val nextNode: LinkedHeapNode<Element, Priority>?
             get() = if (isDetached) detachedNodeException() else _holder?.next?.node
@@ -264,8 +267,6 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         override fun remove() {
             if (isDetached) detachedNodeException()
             _holder!!.remove()
-            _holder = null
-            isDetached = true
         }
     }
     
@@ -295,7 +296,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
         }
         override fun movePrevious() {
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
-            nextIndex++
+            nextIndex--
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
         }
@@ -303,10 +304,10 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Nodes : KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> {
-        override val size: UInt get() = this@KoneGCBinaryMinimumHeap.size
+        override val size: UInt get() = this@KoneBinaryGCMinimumHeap.size
         override fun contains(element: LinkedHeapNode<Element, Priority>): Boolean =
-            element is Node<*, *> && element.heap === this@KoneGCBinaryMinimumHeap
-        override fun iterator(): KoneLinkedSetIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(rootHolder, this@KoneGCBinaryMinimumHeap.size)
+            element is Node<*, *> && element.heap === this@KoneBinaryGCMinimumHeap
+        override fun iterator(): KoneLinkedSetIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(rootHolder, this@KoneBinaryGCMinimumHeap.size)
     }
     
     internal class ElementsIterator<Element, Priority>(
@@ -351,7 +352,7 @@ public class KoneGCBinaryMinimumHeap<Element, Priority> internal constructor(
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal inner class Elements : KoneReversibleIterable<Element> {
-        override val size: UInt get() = this@KoneGCBinaryMinimumHeap.size
-        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(rootHolder, this@KoneGCBinaryMinimumHeap.size)
+        override val size: UInt get() = this@KoneBinaryGCMinimumHeap.size
+        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(rootHolder, this@KoneBinaryGCMinimumHeap.size)
     }
 }
