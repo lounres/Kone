@@ -6,10 +6,6 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.algebraic.context
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.DequeImplementationDescription
-import dev.lounres.kone.collections.deque.KoneDequeProducer
-import dev.lounres.kone.collections.deque.KoneDequeValidator
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
@@ -18,13 +14,13 @@ import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.producers.KoneListProducer
 import dev.lounres.kone.collections.utils.any
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import io.kotest.assertions.fail
 
 
-object KoneArrayGrowableLinkedListDescription : ListImplementationDescription, DequeImplementationDescription {
+object KoneArrayGrowableLinkedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayGrowableLinkedList"
     
     internal object Validator {
@@ -41,7 +37,7 @@ object KoneArrayGrowableLinkedListDescription : ListImplementationDescription, D
             val previousNodeIndex = list.previousNodeIndex
             val data = list.data
             
-            if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+            if (context(UInt.context) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
             if (size > sizeUpperBound) fail("The list is invalid")
             if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
             if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
@@ -103,17 +99,6 @@ object KoneArrayGrowableLinkedListDescription : ListImplementationDescription, D
             if (list !is KoneArrayGrowableLinkedList<Any>) fail("The list is invalid")
             if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) fail("The iterator is invalid")
             Validator.validateWithIterator(list, iterator)
-        }
-    }
-    
-    override val dequeProducer: KoneDequeProducer = object : KoneDequeProducer.KoneGrowableDequeProducer {
-        override fun <Element> produce(): KoneDeque<Element> = KoneArrayGrowableLinkedList()
-        override fun <Element> produce(initialCapacity: UInt): KoneDeque<Element> = KoneArrayGrowableLinkedList(initialCapacity)
-    }
-    override val dequeValidator: KoneDequeValidator = object : KoneDequeValidator {
-        override fun <Element: Any> validate(list: KoneDeque<Element>) {
-            if (list !is KoneArrayGrowableLinkedList<Element>) fail("The list is invalid")
-            Validator.validate(list)
         }
     }
 }

@@ -29,7 +29,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     startNode: Node<Element>? = null,
     endNode: Node<Element>? = null,
-) : KoneMutableNoddedList<Element>, KoneDeque<Element>, Disposable {
+) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -76,20 +76,6 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         return getInternalNode(index)
     }
     
-    override fun getFirst(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(0u, size)
-            else -> start!!.element
-        }
-    
-    override fun getLast(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(size, size)
-            else -> end!!.element
-        }
-    
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -103,28 +89,6 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         start = null
         end = null
         size = 0u
-    }
-    
-    override fun addFirst(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        val newNode = Node(element)
-        val nextNode = start
-        newNode._nextNode = nextNode
-        nextNode?._previousNode = newNode
-        start = newNode
-        if (size == 0u) end = newNode
-        size++
-    }
-    
-    override fun addLast(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        val newNode = Node(element)
-        val previousNode = end
-        newNode._previousNode = previousNode
-        previousNode?._nextNode = newNode
-        end = newNode
-        if (size == 0u) start = newNode
-        size++
     }
     
     override fun add(element: Element) {
@@ -240,28 +204,6 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         nextNode?._previousNode = previousNode
         if (previousNode == null) start = nextNode
         if (nextNode == null) end = previousNode
-        nodeToRemove.detach()
-        size--
-    }
-    
-    override fun removeFirst() {
-        if (isDisposed) disposedInstanceException()
-        val nodeToRemove = start!!
-        val nextNode = nodeToRemove._nextNode
-        nextNode?._previousNode = null
-        start = nextNode
-        if (nextNode == null) end = null
-        nodeToRemove.detach()
-        size--
-    }
-    
-    override fun removeLast() {
-        if (isDisposed) disposedInstanceException()
-        val nodeToRemove = end!!
-        val previousNode = nodeToRemove._previousNode
-        previousNode?._nextNode = null
-        if (previousNode == null) start = null
-        end = previousNode
         nodeToRemove.detach()
         size--
     }

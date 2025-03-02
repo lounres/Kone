@@ -37,7 +37,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-) : KoneMutableList<Element>, KoneDeque<Element>, Disposable {
+) : KoneMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -179,20 +179,6 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         return data[actualIndex(index)] as Element
     }
 
-    override fun getFirst(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            isEmpty() -> indexOutOfBoundsException(0u, size)
-            else -> data[start] as Element
-        }
-
-    override fun getLast(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            isEmpty() -> indexOutOfBoundsException(size, size)
-            else -> data[end] as Element
-        }
-
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -205,44 +191,6 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
     }
 
     override fun add(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        if (size == sizeUpperBound) {
-            val oldSize = size
-            var actualIndex = start
-            reinitializeBoundsAndData(size + 1u) {
-                when {
-                    it < oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    it == oldSize -> element
-                    else -> null
-                }
-            }
-        } else justAddAfterTheEnd(element)
-    }
-
-    override fun addFirst(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        when {
-            size == sizeUpperBound -> {
-                val oldSize = size
-                var actualIndex = start
-                reinitializeBoundsAndData(size + 1u) {
-                    when {
-                        it == 0u -> element
-                        it <= oldSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                        else -> null
-                    }
-                }
-            }
-            size == 0u -> {
-                data[start] = element
-                end = start
-                size++
-            }
-            else -> justAddBefore(start, element)
-        }
-    }
-
-    override fun addLast(element: Element) {
         if (isDisposed) disposedInstanceException()
         if (size == sizeUpperBound) {
             val oldSize = size
@@ -359,40 +307,6 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             }
         } else {
             justRemoveAt(actualIndex(index))
-        }
-    }
-
-    override fun removeFirst() {
-        if (isDisposed) disposedInstanceException()
-        if (size == 0u) indexOutOfBoundsException(0u, size) // TODO: Maybe replace with another error
-        val newSize = size - 1u
-        if (newSize < sizeLowerBound) {
-            var actualIndex = nextNodeIndex[start]
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        } else {
-            justRemoveAt(start)
-        }
-    }
-
-    override fun removeLast() {
-        if (isDisposed) disposedInstanceException()
-        if (size == 0u) indexOutOfBoundsException(size, size) // TODO: Maybe replace with another error
-        val newSize = size - 1u
-        if (newSize < sizeLowerBound) {
-            var actualIndex = start
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < newSize -> get(actualIndex).also { actualIndex = nextNodeIndex[actualIndex] }
-                    else -> null
-                }
-            }
-        } else {
-            justRemoveAt(end)
         }
     }
 

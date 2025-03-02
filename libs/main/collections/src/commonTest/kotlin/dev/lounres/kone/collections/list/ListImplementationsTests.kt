@@ -78,6 +78,16 @@ val listImplementations = listOf<ListImplementationDescription>(
     KoneTwoThreeTreeListDescription,
 )
 
+fun <Element> testEqualityIndexAccess(list1: KoneList<Element>, list2: List<Element>) {
+    withClue("Checking equality of the lists by accessing element by index") {
+        if (list1.size != list2.size.toUInt()) fail("the lists have different sizes")
+        for (index in 0u ..< list1.size)
+            withClue({ "Checking equality of elements at index $index" }) {
+                list1[index] shouldBe list2[index.toInt()]
+            }
+    }
+}
+
 fun <Element> testEqualityByIteration(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists by iteration through them") {
         val listIterator = list1.iterator()
@@ -99,6 +109,7 @@ fun <Element> testEqualityByStringRepresentation(list1: KoneList<Element>, list2
 }
 
 fun <Element> testEquality(list1: KoneList<Element>, list2: List<Element>) {
+    testEqualityIndexAccess(list1, list2)
     testEqualityByIteration(list1, list2)
     testEqualityByStringRepresentation(list1, list2)
 }

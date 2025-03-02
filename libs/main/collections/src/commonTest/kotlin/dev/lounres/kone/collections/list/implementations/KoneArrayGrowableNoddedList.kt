@@ -13,7 +13,7 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.producers.KoneListProducer
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.context
 import dev.lounres.kone.repeat
 import io.kotest.assertions.fail
 
@@ -33,7 +33,7 @@ object KoneArrayGrowableNoddedListDescription : ListImplementationDescription {
             val size = list.size
             val data = list.data
             
-            if (UInt.context { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+            if (context(UInt.context) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
             if (size > sizeUpperBound) fail("The list is invalid")
             if (data.size != sizeUpperBound) fail("The list is invalid")
             

@@ -32,7 +32,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
-) : KoneGrowableMutableNoddedList<Element>, KoneDeque<Element>, Disposable {
+) : KoneGrowableMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -216,20 +216,6 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         return data[actualIndex(index)]!!
     }
 
-    override fun getFirst(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(0u, size)
-            else -> data[start]!!.element
-        }
-
-    override fun getLast(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(size, size)
-            else -> data[end]!!.element
-        }
-
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -336,49 +322,6 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         }
     }
 
-    override fun addFirst(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        when {
-            size == sizeUpperBound -> {
-                var actualIndex = start
-                reinitializeBoundsAndData(size + 1u) {
-                    when {
-                        it == 0u -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
-                        it <= size -> get(actualIndex).also { node ->
-                            node!!.actualIndex = it
-                            actualIndex = nextNodeIndex[actualIndex]
-                        }
-                        else -> null
-                    }
-                }
-            }
-            size == 0u -> {
-                data[start] = Node(this, element, start)
-                end = start
-                size++
-            }
-            else -> justAddBefore(start, element)
-        }
-    }
-
-    override fun addLast(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        if (size == sizeUpperBound) {
-            var actualIndex = start
-            reinitializeBoundsAndData(size + 1u) {
-                when {
-                    it < size -> get(actualIndex).also { node ->
-                        node!!.actualIndex = it
-                        actualIndex = nextNodeIndex[actualIndex]
-                    }
-                    it == size -> Node(this@KoneArrayGrowableLinkedNoddedList, element, it)
-                    else -> null
-                }
-            }
-        } else {
-            justAddAfterTheEnd(element)
-        }
-    }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         val newSize = size + number
@@ -458,16 +401,6 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
-    }
-
-    override fun removeFirst() {
-        if (isDisposed) disposedInstanceException()
-        justRemoveAt(start)
-    }
-
-    override fun removeLast() {
-        if (isDisposed) disposedInstanceException()
-        justRemoveAt(end)
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {

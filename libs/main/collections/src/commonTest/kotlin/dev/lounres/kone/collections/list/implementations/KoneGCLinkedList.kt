@@ -5,10 +5,6 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.DequeImplementationDescription
-import dev.lounres.kone.collections.deque.KoneDequeProducer
-import dev.lounres.kone.collections.deque.KoneDequeValidator
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
@@ -17,7 +13,7 @@ import dev.lounres.kone.collections.list.producers.KoneListProducer
 import io.kotest.assertions.fail
 
 
-object KoneGCLinkedListDescription : ListImplementationDescription, DequeImplementationDescription {
+object KoneGCLinkedListDescription : ListImplementationDescription {
     override val name get() = "KoneGCLinkedList"
     
     internal object Validator {
@@ -80,16 +76,6 @@ object KoneGCLinkedListDescription : ListImplementationDescription, DequeImpleme
             if (list !is KoneGCLinkedList<Any>) fail("The list is invalid")
             if (iterator !is KoneGCLinkedList.Iterator<Any>) fail("The iterator is invalid")
             Validator.validateWithIterator(list, iterator)
-        }
-    }
-    
-    override val dequeProducer: KoneDequeProducer = object : KoneDequeProducer.KoneResizableDequeProducer {
-        override fun <Element> produce(): KoneDeque<Element> = KoneGCLinkedList()
-    }
-    override val dequeValidator: KoneDequeValidator = object : KoneDequeValidator {
-        override fun <Element: Any> validate(list: KoneDeque<Element>) {
-            if (list !is KoneGCLinkedList<Element>) fail("The list is invalid")
-            Validator.validate(list)
         }
     }
 }

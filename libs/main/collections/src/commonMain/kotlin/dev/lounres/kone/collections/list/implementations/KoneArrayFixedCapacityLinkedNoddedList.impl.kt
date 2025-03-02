@@ -8,7 +8,6 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
@@ -114,7 +113,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
-) : KoneMutableNoddedList<Element>, KoneDeque<Element>, Disposable {
+) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
     
@@ -247,20 +246,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         return data[actualIndex(index)]!!
     }
 
-    override fun getFirst(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(0u, size)
-            else -> data[start]!!.element
-        }
-
-    override fun getLast(): Element =
-        when {
-            isDisposed -> disposedInstanceException()
-            size == 0u -> indexOutOfBoundsException(size, size)
-            else -> data[end]!!.element
-        }
-
     override fun set(index: UInt, element: Element) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -275,22 +260,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             start = nextNodeIndex[start]
         }
         size = 0u
-    }
-
-    override fun addFirst(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        if (size == capacity) capacityOverflowException(capacity)
-        if (size == 0u) {
-            data[start] = Node(this, element, start)
-            end = start
-            size++
-        } else justAddBefore(start, element)
-    }
-
-    override fun addLast(element: Element) {
-        if (isDisposed) disposedInstanceException()
-        if (size == capacity) capacityOverflowException(capacity)
-        justAddAfterTheEnd(element)
     }
 
     override fun add(element: Element) {
@@ -373,16 +342,6 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
-    }
-
-    override fun removeFirst() {
-        if (isDisposed) disposedInstanceException()
-        justRemoveAt(start)
-    }
-
-    override fun removeLast() {
-        if (isDisposed) disposedInstanceException()
-        justRemoveAt(end)
     }
 
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {

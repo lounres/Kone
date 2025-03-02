@@ -5,10 +5,6 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.DequeImplementationDescription
-import dev.lounres.kone.collections.deque.KoneDequeProducer
-import dev.lounres.kone.collections.deque.KoneDequeValidator
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
@@ -20,7 +16,7 @@ import dev.lounres.kone.scope
 import io.kotest.assertions.fail
 
 
-object KoneArrayFixedCapacityLinkedNoddedListDescription : ListImplementationDescription, DequeImplementationDescription {
+object KoneArrayFixedCapacityLinkedNoddedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayFixedCapacityLinkedNoddedList"
     
     internal object Validator {
@@ -106,16 +102,6 @@ object KoneArrayFixedCapacityLinkedNoddedListDescription : ListImplementationDes
             if (list !is KoneArrayFixedCapacityLinkedNoddedList<Any>) fail("The list is invalid")
             if (iterator !is KoneArrayFixedCapacityLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
             Validator.validateWithIterator(list, iterator)
-        }
-    }
-    
-    override val dequeProducer: KoneDequeProducer = object : KoneDequeProducer.KoneFixedCapacityDequeProducer {
-        override fun <Element> produce(capacity: UInt): KoneDeque<Element> = KoneArrayFixedCapacityLinkedNoddedList(capacity)
-    }
-    override val dequeValidator: KoneDequeValidator = object : KoneDequeValidator {
-        override fun <Element: Any> validate(list: KoneDeque<Element>) {
-            if (list !is KoneArrayFixedCapacityLinkedNoddedList<Element>) fail("The list is invalid")
-            Validator.validate(list)
         }
     }
 }
