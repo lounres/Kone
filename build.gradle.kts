@@ -557,11 +557,9 @@ stal {
                 group = "dokka"
                 description = "Assembles Kotlin docs with Dokka into a javadoc JAR"
                 archiveClassifier = "javadoc"
-                afterEvaluate {
-                    val dokkaGeneratePublicationHtml by tasks.getting
-                    dependsOn(dokkaGeneratePublicationHtml)
-                    from(dokkaGeneratePublicationHtml)
-                }
+                val dokkaGeneratePublicationHtml by tasks.getting
+                dependsOn(dokkaGeneratePublicationHtml)
+                from(dokkaGeneratePublicationHtml)
             }
         }
         "publication" {

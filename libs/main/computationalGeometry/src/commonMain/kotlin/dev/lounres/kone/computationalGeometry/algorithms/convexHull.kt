@@ -7,6 +7,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.deque.KoneDeque
+import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.*
@@ -21,21 +22,21 @@ import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.comparison.koneSetEquality
 import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.comparison.compareWith
-import dev.lounres.kone.comparison.loadEqualityFor
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionPolytope
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVertex
 import dev.lounres.kone.computationalGeometry.utils.any
-import dev.lounres.kone.context
 import dev.lounres.kone.context.KoneContextRegistry
-import dev.lounres.kone.context.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.scope
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 
+
+// TODO: There is a problem: some mandatory contexts are used as implicit contexts taken from `KoneContextRegistry`.
 
 context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
 internal fun <
@@ -63,7 +64,7 @@ internal fun <
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>, _: Equality<Vertex>)
 internal fun <
     Number,
     Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
@@ -105,7 +106,7 @@ internal fun <
     for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
     restConvexHullFaces[subspaceDimension-1u].add(startFacet)
 
-    val facetsToProcess: KoneDeque<Polytope> = KoneArrayResizableLinkedList()
+    val facetsToProcess: KoneDeque<Polytope> = KoneListBackedDeque(KoneArrayResizableLinkedList())
     val subfacetsToProcess = koneContextualMutableSetOf(elementType = polytopeSuppliedType)
 
     facetsToProcess.addLast(startFacet)
@@ -152,7 +153,7 @@ internal fun <
                 computedFacesRegistry = computedFacesRegistry,
             )
 
-            allVertices.removeAllThat { context(loadEqualityFor(vertexSuppliedType)) { it in newVertices } && it !in newFacet.vertices }
+            allVertices.removeAllThat { it in newVertices && it !in newFacet.vertices }
 
             for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
             restConvexHullFaces[subspaceDimension-1u].add(newFacet)
@@ -177,7 +178,7 @@ internal data class WrappingResult<Number, Polytope, Vertex>(
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number>,
 )
 
-context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>, _: Equality<Vertex>)
 internal fun <
     Number,
     Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
@@ -255,7 +256,7 @@ internal fun <
     }
 }
 
-context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>, vertexEquality: Equality<Vertex>)
 internal fun <
     Number,
     Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
@@ -272,7 +273,7 @@ internal fun <
         return WrappingResult(
             polytope = theOnlyVertex.asPolytope(),
             computedFacesRegistry = koneMutableMapOf(
-                keyEquality = koneSetEquality(loadEqualityFor(vertexSuppliedType))
+                keyEquality = koneSetEquality(vertexEquality)
             ),
             startPoint = theOnlyVertex.position,
             orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
@@ -296,14 +297,14 @@ internal fun <
         vertexSuppliedType = vertexSuppliedType,
         subspaceDimension = subspaceDimension,
         wrappingResult = wrappingResult,
-        normalVector = dev.lounres.kone.computationalGeometry.Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
+        normalVector = Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
         otherPoints = points.toKoneContextualMutableSet(elementType = vertexSuppliedType).apply { removeAllFrom(startPoints) },
     )
 
     return wrappingResult
 }
 
-context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>, _: Equality<Vertex>)
 public fun <
     Number,
     Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
@@ -314,25 +315,6 @@ public fun <
     vertices: KoneIterable<Vertex>,
 ): Polytope {
     require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
-    return giftWrappingFull(
-        polytopeSuppliedType = polytopeSuppliedType,
-        vertexSuppliedType = vertexSuppliedType,
-        subspaceDimension = spaceDimension,
-        points = vertices,
-    ).polytope
-}
-
-context(_: KoneContextRegistry)
-public fun <
-    Number,
-    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByContextualGiftWrapping(
-    numberSuppliedType: SuppliedType<Number>,
-    polytopeSuppliedType: SuppliedType<Polytope>,
-    vertexSuppliedType: SuppliedType<Vertex>,
-    vertices: KoneIterable<Vertex>,
-): Polytope = context(load(Ring.Key(numberSuppliedType)), load(Order.Key(numberSuppliedType)), load(EuclideanKategory.Key(numberSuppliedType))) {
     return giftWrappingFull(
         polytopeSuppliedType = polytopeSuppliedType,
         vertexSuppliedType = vertexSuppliedType,

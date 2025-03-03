@@ -11,7 +11,7 @@ kotlin {
                 api(projects.libs.main.collections)
                 api(projects.libs.main.multidimensionalCollections)
                 api(projects.libs.main.linearAlgebra)
-                api(projects.libs.main.hooks)
+//                api(projects.libs.main.hooks)
                 
                 implementation(versions.kotlinx.serialization.core)
             }
