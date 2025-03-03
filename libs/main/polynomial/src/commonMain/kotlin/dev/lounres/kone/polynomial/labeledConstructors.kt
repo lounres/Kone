@@ -46,14 +46,14 @@ public inline fun <Number> LabeledPolynomial(coefs: LabeledPolynomialCoefficient
     LabeledPolynomialAsIs(
         coefs
             .mapKeys(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, transform = { (key, _) -> key.cleanUp() }, resolve = { _, c1, c2 -> add(c1, c2) })
-            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = isZero)
+            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = { !isZero(it) })
     )
 
 public inline fun <Number> LabeledPolynomial(entries: KoneIterable<KoneMapEntry<LabeledMonomialSignature, Number>>, add: (Number, Number) -> Number, isZero: (Number) -> Boolean) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
         entries
             .associateBy(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, keySelector = { it.key.cleanUp() }, valueTransform = { it.value }, resolve = { _, c1, c2 -> add(c1, c2)})
-            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = isZero)
+            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = { !isZero(it) })
     )
 
 @OptIn(DelicateImmutableArrayConstructor::class)
@@ -61,7 +61,7 @@ public inline fun <Number> LabeledPolynomial(vararg entries: KoneMapEntry<Labele
     LabeledPolynomialAsIs(
         KoneArray(entries)
             .associateBy(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, keySelector = { it.key.cleanUp() }, valueTransform = { it.value }, resolve = { _, c1, c2 -> add(c1, c2)})
-            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = isZero)
+            .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = { !isZero(it) })
     )
 
 context(_: Ring<C>)

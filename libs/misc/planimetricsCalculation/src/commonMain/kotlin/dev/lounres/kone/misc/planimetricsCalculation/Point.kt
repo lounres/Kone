@@ -45,20 +45,3 @@ public data class Point<E>(
 //            }
     }
 }
-
-public data class AbsoluteType<T>(
-    public val kClass: KClass<T & Any>,
-    public val typeArguments: List<AbsoluteType<*>>,
-    public val isNullable: Boolean,
-)
-
-public fun <T> absoluteTypeOf(): AbsoluteType<T> = error("Intrinsic function call. Should be replaced by compiler plugin.")
-
-public interface RegistryKey<T> {
-    public val typeKey: AbsoluteType<T>
-}
-
-public interface Registry {
-    public operator fun <T> get(registryKey: RegistryKey<T>): T
-    public fun <T> getMaybe(registryKey: RegistryKey<T>): Maybe<T>
-}

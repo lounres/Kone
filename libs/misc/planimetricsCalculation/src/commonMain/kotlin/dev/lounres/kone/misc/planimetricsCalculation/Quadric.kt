@@ -29,33 +29,6 @@ public data class Quadric<E>(
 }
 
 context(_: PlanimetricsCalculationSpace<E>)
-public infix fun <E> Quadric<E>.equalsTo(other: Quadric<E>): Boolean = this === other || calculate {
-    xx * other.yy eq yy * other.xx &&
-            xx * other.zz eq zz * other.xx &&
-            xx * other.xy eq xy * other.xx &&
-            xx * other.xz eq xz * other.xx &&
-            xx * other.yz eq yz * other.xx &&
-            yy * other.zz eq zz * other.yy &&
-            yy * other.xy eq xy * other.yy &&
-            yy * other.xz eq xz * other.yy &&
-            yy * other.yz eq yz * other.yy &&
-            zz * other.xy eq xy * other.zz &&
-            zz * other.xz eq xz * other.zz &&
-            zz * other.yz eq yz * other.zz &&
-            xy * other.xz eq xz * other.xy &&
-            xy * other.yz eq yz * other.xy &&
-            xz * other.yz eq yz * other.xz
-}
-// FIXME: KT-5351
-context(_: PlanimetricsCalculationSpace<E>)
-public inline infix fun <E> Quadric<E>.notEqualsTo(other: Quadric<E>): Boolean = !(this equalsTo other)
-context(_: PlanimetricsCalculationSpace<E>)
-public inline infix fun <E> Quadric<E>.eq(other: Quadric<E>): Boolean = this equalsTo other
-// FIXME: KT-5351
-context(_: PlanimetricsCalculationSpace<E>)
-public inline infix fun <E> Quadric<E>.neq(other: Quadric<E>): Boolean = !(this equalsTo other)
-
-context(_: PlanimetricsCalculationSpace<E>)
 public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
     get() = calculate {
         Matrix(

@@ -329,13 +329,39 @@ public interface MultivariatePolynomialSpace<Number, Variable, Polynomial> : Pol
     public operator fun Polynomial.times(other: Variable): Polynomial
     // endregion
 
-    // Polynomial properties
+    // region Polynomial properties
     public val Polynomial.degrees: KoneMap<Variable, UInt>
     public fun Polynomial.degreeBy(variable: Variable): UInt = degrees.getOrElse(variable) { 0u }
     public fun Polynomial.degreeBy(variables: KoneSet<Variable>): UInt
     public val Polynomial.variables: KoneSet<Variable> get() = degrees.keys
     public val Polynomial.numberOfVariables: UInt get() = variables.size
     // endregion
+    
+    public class Key<Number, Variable, Polynomial>(
+        numberType: SuppliedType<Number>,
+        variableType: SuppliedType<Variable>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<MultivariatePolynomialSpace<Number, Variable, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<MultivariatePolynomialSpace<Number, Variable, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = MultivariatePolynomialSpace::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        variableType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 // region Variable-to-Polynomial conversion
@@ -507,7 +533,7 @@ context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Polynomial.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
-// Polynomial properties
+// region Polynomial properties
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public val <Variable, Polynomial> Polynomial.degrees: KoneMap<Variable, UInt> get() = with(polynomialSpace) { this@degrees.degrees }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
@@ -551,6 +577,27 @@ public interface PolynomialSpaceOverField<Number, Polynomial> : PolynomialSpace<
     @JsName("divPolynomialNumber")
     public operator fun Polynomial.div(other: Number): Polynomial
     // endregion
+    
+    public class Key<Number, Polynomial>(
+        numberType: SuppliedType<Number>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<PolynomialSpaceOverField<Number, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<PolynomialSpaceOverField<Number, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = PolynomialSpaceOverField::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 // region Number-Int operations
@@ -614,6 +661,32 @@ public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomi
     @JvmName("divVariableNumber")
     public operator fun Variable.div(other: Number): Polynomial
     // endregion
+    
+    public class Key<Number, Variable, Polynomial>(
+        numberType: SuppliedType<Number>,
+        variableType: SuppliedType<Variable>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = MultivariatePolynomialSpaceOverField::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        variableType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
 }
 
 // region Variable-Int operations

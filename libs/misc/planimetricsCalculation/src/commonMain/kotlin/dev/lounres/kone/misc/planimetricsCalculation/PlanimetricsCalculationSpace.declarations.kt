@@ -132,6 +132,13 @@ public class PlanimetricsCalculationSpace<Number>(
 }
 
 context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> Point: PlanimetricsCalculationSpace.PointDelegate<Number> get() = planimetricsCalculationSpace.Point
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> Line: PlanimetricsCalculationSpace.LineDelegate<Number> get() = planimetricsCalculationSpace.Line
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> Quadric: PlanimetricsCalculationSpace.QuadricDelegate<Number> get() = planimetricsCalculationSpace.Quadric
+
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
 public inline fun <Number, R> calculate(
     block: context(Ring<Number>, MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>>, VectorKategory<LabeledPolynomial<Number>>) () -> R
 ): R {
