@@ -60,14 +60,10 @@ public interface Order<in Element> {
     }
 }
 
-context(_: KoneContextRegistry)
-public fun <Element> loadOrderFor(elementType: SuppliedType<Element>): Order<Element> = load(Order.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadOrderForOrNull(elementType: SuppliedType<Element>): Order<Element>? = loadOrNull(Order.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadOrderForOrDefault(elementType: SuppliedType<Element>, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(elementType), default)
-context(_: KoneContextRegistry)
-public inline fun <Element> loadOrderForOrElse(elementType: SuppliedType<Element>, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(elementType), block)
+public fun <Element> KoneContextRegistry.loadOrderFor(elementType: SuppliedType<Element>): Order<Element> = load(Order.Key(elementType))
+public fun <Element> KoneContextRegistry.loadOrderForOrNull(elementType: SuppliedType<Element>): Order<Element>? = loadOrNull(Order.Key(elementType))
+public fun <Element> KoneContextRegistry.loadOrderForOrDefault(elementType: SuppliedType<Element>, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(elementType), default)
+public inline fun <Element> KoneContextRegistry.loadOrderForOrElse(elementType: SuppliedType<Element>, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(elementType), block)
 
 /**
  * Provides comparison of two elements. Alternative of [KotlinStdlibComparator] but with result of type [ComparisonResult].

@@ -45,14 +45,10 @@ public interface Reification<out Element> {
     }
 }
 
-context(_: KoneContextRegistry)
-public fun <Element> loadReificationFor(elementType: SuppliedType<Element>): Reification<Element> = load(Reification.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadReificationForOrNull(elementType: SuppliedType<Element>): Reification<Element>? = loadOrNull(Reification.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadReificationForOrDefault(elementType: SuppliedType<Element>, default: Reification<Element>): Reification<Element> = loadOrDefault(Reification.Key(elementType), default)
-context(_: KoneContextRegistry)
-public inline fun <Element> loadReificationForOrElse(elementType: SuppliedType<Element>, block: () -> Reification<Element>): Reification<Element> = loadOrElse(Reification.Key(elementType), block)
+public fun <Element> KoneContextRegistry.loadReificationFor(elementType: SuppliedType<Element>): Reification<Element> = load(Reification.Key(elementType))
+public fun <Element> KoneContextRegistry.loadReificationForOrNull(elementType: SuppliedType<Element>): Reification<Element>? = loadOrNull(Reification.Key(elementType))
+public fun <Element> KoneContextRegistry.loadReificationForOrDefault(elementType: SuppliedType<Element>, default: Reification<Element>): Reification<Element> = loadOrDefault(Reification.Key(elementType), default)
+public inline fun <Element> KoneContextRegistry.loadReificationForOrElse(elementType: SuppliedType<Element>, block: () -> Reification<Element>): Reification<Element> = loadOrElse(Reification.Key(elementType), block)
 
 public inline fun <reified Element> KoneContextRegistryBuilder.installReificationFor(elementType: SuppliedType<Element>) {
     contextsBuilder[Reification.Key(elementType)] = Reification()

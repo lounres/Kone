@@ -48,14 +48,10 @@ public interface Hashing<in Element> {
     }
 }
 
-context(_: KoneContextRegistry)
-public fun <Element> loadHashingFor(elementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadHashingForOrNull(elementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadHashingForOrDefault(elementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(elementType), default)
-context(_: KoneContextRegistry)
-public inline fun <Element> loadHashingForOrElse(elementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(elementType), block)
+public fun <Element> KoneContextRegistry.loadHashingFor(elementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(elementType))
+public fun <Element> KoneContextRegistry.loadHashingForOrNull(elementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(elementType))
+public fun <Element> KoneContextRegistry.loadHashingForOrDefault(elementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(elementType), default)
+public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(elementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(elementType), block)
 
 public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType<Element>) {
     contextsBuilder[Hashing.Key(suppliedElementType)] = defaultHashing<Element>()

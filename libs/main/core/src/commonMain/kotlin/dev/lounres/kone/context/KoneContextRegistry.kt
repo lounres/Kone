@@ -27,14 +27,10 @@ public inline operator fun <R> KoneContextRegistry.invoke(block: KoneContextRegi
     return block(this)
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <T> load(key: RegistryKey<T>): T = koneContextRegistry.contexts[key]
-context(koneContextRegistry: KoneContextRegistry)
-public fun <T> loadOrNull(key: RegistryKey<T>): T? = koneContextRegistry.contexts.getOrNull(key)
-context(koneContextRegistry: KoneContextRegistry)
-public fun <T> loadOrDefault(key: RegistryKey<T>, default: T): T = koneContextRegistry.contexts.getOrDefault(key, default)
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <T> loadOrElse(key: RegistryKey<T>, block: () -> T): T = koneContextRegistry.contexts.getOrElse(key, block)
+public fun <T> KoneContextRegistry.load(key: RegistryKey<T>): T = this.contexts[key]
+public fun <T> KoneContextRegistry.loadOrNull(key: RegistryKey<T>): T? = this.contexts.getOrNull(key)
+public fun <T> KoneContextRegistry.loadOrDefault(key: RegistryKey<T>, default: T): T = this.contexts.getOrDefault(key, default)
+public inline fun <T> KoneContextRegistry.loadOrElse(key: RegistryKey<T>, block: () -> T): T = this.contexts.getOrElse(key, block)
 
 @JvmInline
 public value class KoneContextRegistryBuilder(public val contextsBuilder: RegistryBuilder)

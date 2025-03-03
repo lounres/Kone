@@ -51,14 +51,14 @@ public fun <Element> koneSetOf(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = emptyKoneSet()
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualSetOf(
     elementType: SuppliedType<Element>,
 ): KoneSet<Element> =
     koneSetOf(
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 @Suppress("UNUSED_PARAMETER")
@@ -76,15 +76,15 @@ public fun <Element> koneReifiedSetOf(
     elementOrder: Order<Element>? = null,
 ): KoneReifiedSet<Element> = emptyKoneReifiedSet()
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualReifiedSetOf(
     elementType: SuppliedType<Element>,
 ): KoneReifiedSet<Element> =
     koneReifiedSetOf(
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 @Suppress("unused")
@@ -95,16 +95,16 @@ public fun <Element> koneSetOf(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = KoneSingletonNoddedSet(element, elementEquality)
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualSetOf(
     element: Element,
     elementType: SuppliedType<Element>,
 ): KoneSet<Element> =
     koneSetOf(
         element = element,
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 @Suppress("unused")
@@ -125,17 +125,17 @@ public fun <Element> koneReifiedSetOf(
 ): KoneReifiedSet<Element> =
     KoneSingletonNoddedReifiedSet(element, elementReification = elementReification, elementEquality = elementEquality)
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualReifiedSetOf(
     element: Element,
     elementType: SuppliedType<Element>,
 ): KoneReifiedSet<Element> =
     koneReifiedSetOf(
         element = element,
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public fun <Element> koneSetOf(
@@ -153,16 +153,16 @@ public fun <Element> koneSetOf(
         KoneListBackedSet(elementEquality, backingList)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualSetOf(
     vararg elements: Element,
     elementType: SuppliedType<Element>,
 ): KoneSet<Element> =
     koneSetOf(
         elements = elements,
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> koneReifiedSetOf(
@@ -197,17 +197,17 @@ public fun <Element> koneReifiedSetOf(
         KoneListBackedReifiedSet(elementReification, elementEquality, backingList)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualReifiedSetOf(
     vararg elements: Element,
     elementType: SuppliedType<Element>,
 ): KoneReifiedSet<Element> =
     koneReifiedSetOf(
         elements = elements,
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public fun <Element> koneMutableSetOf(
@@ -218,14 +218,14 @@ public fun <Element> koneMutableSetOf(
     if (elementHashing != null) KoneHashResizableSet(elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableSet(elementEquality = elementEquality)
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualMutableSetOf(
     elementType: SuppliedType<Element>,
 ): KoneMutableSet<Element> =
     koneMutableSetOf(
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> koneMutableReifiedSetOf(
@@ -248,15 +248,15 @@ public fun <Element> koneMutableReifiedSetOf(
     if (elementHashing != null) KoneHashResizableReifiedSet(elementReification = elementReification, elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableReifiedSet(elementReification = elementReification, elementEquality = elementEquality)
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualMutableReifiedSetOf(
     elementType: SuppliedType<Element>,
 ): KoneMutableReifiedSet<Element> =
     koneMutableReifiedSetOf(
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public fun <Element> koneMutableSetOf(
@@ -274,16 +274,16 @@ public fun <Element> koneMutableSetOf(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualMutableSetOf(
     vararg elements: Element,
     elementType: SuppliedType<Element>,
 ): KoneMutableSet<Element> =
     koneMutableSetOf(
         elements = elements,
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> koneMutableReifiedSetOf(
@@ -323,17 +323,17 @@ public fun <Element> koneMutableReifiedSetOf(
         )
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> koneContextualMutableReifiedSetOf(
     vararg elements: Element,
     elementType: SuppliedType<Element>,
 ): KoneMutableReifiedSet<Element> =
     koneMutableReifiedSetOf(
         elements = elements,
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneIterable<Element>.toKoneMutableSet(
@@ -350,14 +350,14 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualMutableSet(
     elementType: SuppliedType<Element>,
 ): KoneMutableSet<Element> =
     toKoneMutableSet(
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneMutableReifiedSet(
@@ -387,15 +387,15 @@ public fun <Element> KoneIterable<Element>.toKoneMutableReifiedSet(
         KoneListBackedMutableReifiedSet(elementReification, elementEquality, backingList)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(
     elementType: SuppliedType<Element>,
 ): KoneMutableReifiedSet<Element> =
     toKoneMutableReifiedSet(
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneIterable<Element>.toKoneSet(
@@ -409,14 +409,14 @@ public fun <Element> KoneIterable<Element>.toKoneSet(
         else -> this.toKoneMutableSet(elementEquality = elementEquality, elementHashing = elementHashing, elementOrder = elementOrder)
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualSet(
     elementType: SuppliedType<Element>,
 ): KoneSet<Element> =
     toKoneSet(
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneReifiedSet(
@@ -452,15 +452,15 @@ public fun <Element> KoneIterable<Element>.toKoneReifiedSet(
         )
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualReifiedSet(
     elementType: SuppliedType<Element>,
 ): KoneReifiedSet<Element> =
     toKoneReifiedSet(
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
     )
 
 @OptIn(ExperimentalTypeInference::class)
@@ -478,16 +478,16 @@ public inline fun <Element> buildKoneSet(
     return result.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneContextualSet(
     elementType: SuppliedType<Element>,
     @BuilderInference builderAction: KoneMutableSet<Element>.() -> Unit,
 ): KoneSet<Element> =
     buildKoneSet(
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
         builderAction = builderAction,
     )
 
@@ -522,17 +522,17 @@ public inline fun <Element> buildKoneReifiedSet(
     return result.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneContextualReifiedSet(
     elementType: SuppliedType<Element>,
     @BuilderInference builderAction: KoneMutableReifiedSet<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     buildKoneReifiedSet(
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
         builderAction = builderAction,
     )
 
@@ -552,7 +552,7 @@ public inline fun <Element> buildKoneSet(
     return result.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneContextualSet(
     initialCapacity: UInt,
@@ -561,9 +561,9 @@ public inline fun <Element> buildKoneContextualSet(
 ): KoneSet<Element> =
     buildKoneSet(
         initialCapacity = initialCapacity,
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
         builderAction = builderAction,
     )
 
@@ -601,7 +601,7 @@ public inline fun <Element> buildKoneReifiedSet(
     return result.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> buildKoneContextualReifiedSet(
     initialCapacity: UInt,
@@ -610,9 +610,9 @@ public inline fun <Element> buildKoneContextualReifiedSet(
 ): KoneReifiedSet<Element> =
     buildKoneReifiedSet(
         initialCapacity = initialCapacity,
-        elementReification = loadReificationFor(elementType),
-        elementEquality = loadEqualityFor(elementType),
-        elementHashing = loadHashingForOrNull(elementType),
-        elementOrder = loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.loadReificationFor(elementType),
+        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
+        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
         builderAction = builderAction,
     )

@@ -53,14 +53,10 @@ public interface Equality<in Element> {
     }
 }
 
-context(_: KoneContextRegistry)
-public fun <Element> loadEqualityFor(elementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadEqualityForOrNull(elementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(elementType))
-context(_: KoneContextRegistry)
-public fun <Element> loadEqualityForOrDefault(elementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(elementType), default)
-context(_: KoneContextRegistry)
-public inline fun <Element> loadEqualityForOrElse(elementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(elementType), block)
+public fun <Element> KoneContextRegistry.loadEqualityFor(elementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(elementType))
+public fun <Element> KoneContextRegistry.loadEqualityForOrNull(elementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(elementType))
+public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(elementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(elementType), default)
+public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(elementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(elementType), block)
 
 public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType<Element>) {
     contextsBuilder[Equality.Key(suppliedElementType)] = defaultEquality<Element>()

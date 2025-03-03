@@ -50,14 +50,14 @@ public fun <Key, Value> koneMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> = emptyKoneMap()
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMapOf(
     keyType: SuppliedType<Key>,
 ): KoneMap<Key, Value> =
     koneMapOf(
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 @Suppress("unused")
@@ -75,15 +75,15 @@ public fun <Key, Value> koneReifiedMapOf(
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> = emptyKoneReifiedMap()
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualReifiedMapOf(
     keyType: SuppliedType<Key>,
 ): KoneReifiedMap<Key, Value> =
     koneReifiedMapOf(
-        keyReification = loadReificationFor(keyType),
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.loadReificationFor(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 @Suppress("unused")
@@ -99,16 +99,16 @@ public fun <Key, Value> koneMapOf(
         keyEquality = keyEquality,
     )
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMapOf(
     entry: KoneMapEntry<Key, Value>,
     keyType: SuppliedType<Key>,
 ): KoneMap<Key, Value> =
     koneMapOf(
         entry = entry,
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 @Suppress("unused")
@@ -159,16 +159,16 @@ public fun <Key, Value> koneMapOf(
         else -> TODO()
     }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyType: SuppliedType<Key>,
 ): KoneMap<Key, Value> =
     koneMapOf(
         entries = entries,
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> koneReifiedMapOf(
@@ -212,14 +212,14 @@ public fun <Key, Value> koneMutableMapOf(
     if (keyHashing != null) KoneHashResizableMap(keyEquality = keyEquality, keyHashing = keyHashing)
     else KoneListBackedMutableMap(keyEquality = keyEquality)
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableMapOf(
     keyType: SuppliedType<Key>,
 ): KoneMutableMap<Key, Value> =
     koneMutableMapOf(
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> koneMutableReifiedMapOf(
@@ -253,16 +253,16 @@ public fun <Key, Value> koneMutableMapOf(
     if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyType: SuppliedType<Key>,
 ): KoneMutableMap<Key, Value> =
     koneMutableMapOf(
         entries = entries,
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> koneMutableReifiedMapOf(
@@ -290,17 +290,17 @@ public fun <Key, Value> koneMutableReifiedMapOf(
     if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> koneContextualMutableReifiedMapOf(
     vararg entries: KoneMapEntry<Key, Value>,
     keyType: SuppliedType<Key>,
 ): KoneMutableReifiedMap<Key, Value> =
     koneMutableReifiedMapOf(
         entries = entries,
-        keyReification = loadReificationFor(keyType),
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.loadReificationFor(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
     )
 
 public inline fun <Key, Value> buildKoneMap(
@@ -315,15 +315,15 @@ public inline fun <Key, Value> buildKoneMap(
     return mapBuilder.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> buildKoneContextualMap(
     keyType: SuppliedType<Key>,
     @BuilderInference builderAction: KoneMutableMap<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     buildKoneMap(
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
         builderAction = builderAction,
     )
 
@@ -354,16 +354,16 @@ public inline fun <Key, Value> buildKoneReifiedMap(
     return mapBuilder.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> buildKoneContextualReifiedMap(
     keyType: SuppliedType<Key>,
     @BuilderInference builderAction: KoneMutableReifiedMap<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     buildKoneReifiedMap(
-        keyReification = loadReificationFor(keyType),
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.loadReificationFor(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
         builderAction = builderAction,
     )
 
@@ -380,7 +380,7 @@ public inline fun <Key, Value> buildKoneMap(
     return mapBuilder.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> buildKoneContextualMap(
     initialCapacity: UInt,
     keyType: SuppliedType<Key>,
@@ -388,9 +388,9 @@ public inline fun <Key, Value> buildKoneContextualMap(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     buildKoneMap(
         initialCapacity = initialCapacity,
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
         builderAction = builderAction,
     )
 
@@ -424,7 +424,7 @@ public inline fun <Key, Value> buildKoneReifiedMap(
     return mapBuilder.apply(builderAction)
 }
 
-context(_: KoneContextRegistry)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> buildKoneContextualReifiedMap(
     initialCapacity: UInt,
     keyType: SuppliedType<Key>,
@@ -432,10 +432,10 @@ public inline fun <Key, Value> buildKoneContextualReifiedMap(
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     buildKoneReifiedMap(
         initialCapacity = initialCapacity,
-        keyReification = loadReificationFor(keyType),
-        keyEquality = loadEqualityFor(keyType),
-        keyHashing = loadHashingForOrNull(keyType),
-        keyOrder = loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.loadReificationFor(keyType),
+        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
+        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
         builderAction = builderAction,
     )
 
