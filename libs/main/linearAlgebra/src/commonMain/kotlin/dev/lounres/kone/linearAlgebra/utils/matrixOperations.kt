@@ -52,52 +52,6 @@ context(_: A, _: VectorKategory<N>)
 public val <N, A> Matrix<N>.transpose: Matrix<N> where A : Ring<N>
     get() = Matrix(this.columnNumber, this.rowNumber) { row, column -> this[column, row] }
 
-context(_: A, _: VectorKategory<N>)
-public val <N, A> Matrix<N>.det: N where A : Ring<N>
-    get() = TODO("Not yet implemented")
-
 //context(_: VectorSpace<N>)
 //public val <N, A> Matrix<N>.reciprocal: Matrix<N> where A : Ring<N>
 //    get() = (this.getFeature<_, InvertibleMatrixFeature<N>>() ?: throw IllegalArgumentException("Could not compute reciprocal matrix")).inverseMatrix
-
-context(_: A, _: VectorKategory<N>)
-public val <N, A> Matrix<N>.adjugate: Matrix<N> where A : Ring<N>
-    get() = TODO("Not yet implemented")
-
-public data class MatrixMinorComputerFeature<N>(private val matrix: Matrix<N>, private val minorComputer: (rowIndices: KoneUIntArray, columnIndices: KoneUIntArray) -> N) {
-    public operator fun get(rowIndices: KoneUIntArray, columnIndices: KoneUIntArray): N = minorComputer(rowIndices, columnIndices)
-    public fun first(rowIndex: UInt, columnIndex: UInt): N =
-        minorComputer(
-            KoneUIntArray(matrix.rowNumber - 1u) { if (it < rowIndex) it else it + 1u },
-            KoneUIntArray(matrix.columnNumber - 1u) { if (it < columnIndex) it else it + 1u }
-        )
-}
-
-context(_: A, _: VectorKategory<N>)
-public val <N, A: Ring<N>> Matrix<N>.minor: MatrixMinorComputerFeature<N>
-    get() = MatrixMinorComputerFeature(this) { rowIndices, columnIndices ->
-        require(rowIndices.size == columnIndices.size) { TODO("Error message is not specified") }
-        val minorSize = rowIndices.size
-        if (rowIndices.hasDuplicates() || columnIndices.hasDuplicates()) return@MatrixMinorComputerFeature zero
-        
-        (0u ..< minorSize).toKoneList().permutations().fold(zero) { result, permutation ->
-            val permutationIsEven = scope {
-                var permutationIsEven = true
-                val visited = KoneMutableArray(minorSize) { false } // TODO: Can be replaced with specialised array
-                for (i in 0u ..< minorSize) if (!visited[i]) {
-                    var current = i
-                    visited[i] = true
-                    var cycleIsEven = false
-                    while (true) {
-                        current = permutation[current]
-                        if (current == i) break
-                        cycleIsEven = !cycleIsEven
-                        visited[current] = true
-                    }
-                    if (cycleIsEven) permutationIsEven = !permutationIsEven
-                }
-                permutationIsEven
-            }
-            result + permutation.foldIndexed(one) { row, product, column -> product * this[rowIndices[row], columnIndices[column]] }.let { if (permutationIsEven) it else -it }
-        }
-    }

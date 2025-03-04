@@ -132,6 +132,19 @@ public class PlanimetricsCalculationSpace<Number>(
 }
 
 context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> origin: Point<Number> get() = planimetricsCalculationSpace.origin
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> xBasis: Point<Number> get() = planimetricsCalculationSpace.xBasis
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> yBasis: Point<Number> get() = planimetricsCalculationSpace.yBasis
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> xAxis: Line<Number> get() = planimetricsCalculationSpace.xAxis
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> yAxis: Line<Number> get() = planimetricsCalculationSpace.yAxis
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
+public val <Number> lineAtInfinity: Line<Number> get() = planimetricsCalculationSpace.lineAtInfinity
+
+context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
 public val <Number> Point: PlanimetricsCalculationSpace.PointDelegate<Number> get() = planimetricsCalculationSpace.Point
 context(planimetricsCalculationSpace: PlanimetricsCalculationSpace<Number>)
 public val <Number> Line: PlanimetricsCalculationSpace.LineDelegate<Number> get() = planimetricsCalculationSpace.Line

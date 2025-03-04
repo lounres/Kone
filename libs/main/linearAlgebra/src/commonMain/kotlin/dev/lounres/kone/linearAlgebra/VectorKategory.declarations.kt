@@ -168,21 +168,21 @@ internal class VectorKategoryWithNumberRing<N, out A: Ring<N>>(
     override operator fun Matrix<N>.times(other: Matrix<N>): Matrix<N> {
         require(this.columnNumber == other.rowNumber) { TODO("Error message is not specified") }
         val indexRange = this.columnNumber
-        return Matrix(mdList2Producer.produceBy(this.rowNumber, other.columnNumber) { row, column -> (0u..indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[row, index] * other[index, column] } } })
+        return Matrix(mdList2Producer.produceBy(this.rowNumber, other.columnNumber) { row, column -> (0u..<indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[row, index] * other[index, column] } } })
     }
     override operator fun Matrix<N>.times(other: ColumnVector<N>): ColumnVector<N> {
         require(this.columnNumber == other.size) { TODO("Error message is not specified") }
         val indexRange = this.columnNumber
-        return ColumnVector(mdList1Producer.produceBy(this.rowNumber) { row -> (0u..indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[row, index] * other[index] } } })
+        return ColumnVector(mdList1Producer.produceBy(this.rowNumber) { row -> (0u..<indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[row, index] * other[index] } } })
     }
     override operator fun RowVector<N>.times(other: Matrix<N>): RowVector<N> {
         require(this.size == other.rowNumber) { TODO("Error message is not specified") }
         val indexRange = this.size
-        return RowVector(mdList1Producer.produceBy(other.columnNumber) { column -> (0u..indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[index] * other[index, column] } } })
+        return RowVector(mdList1Producer.produceBy(other.columnNumber) { column -> (0u..<indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[index] * other[index, column] } } })
     }
     override operator fun RowVector<N>.times(other: ColumnVector<N>): N {
         require(this.size == other.size) { TODO("Error message is not specified") }
         val indexRange = this.size
-        return (0u..indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[index] * other[index] } }
+        return (0u..<indexRange).fold(numberRing.zero) { acc, index -> context(numberRing) { acc + this[index] * other[index] } }
     }
 }

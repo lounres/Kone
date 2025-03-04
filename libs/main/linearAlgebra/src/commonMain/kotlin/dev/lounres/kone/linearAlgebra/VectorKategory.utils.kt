@@ -17,16 +17,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public data class VectorKategoryScope<N, A: Ring<N>, V: VectorKategory<N>>(val numberRing: A, val vectorSpace: V)
-
-public inline operator fun <N, A: Ring<N>, V: VectorKategory<N>, R> VectorKategoryScope<N, A, V>.invoke(block: context(A, V) () -> R): R {
-//    FIXME: KT-32313
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//    }
-    return block(this.numberRing, this.vectorSpace)
-}
-
 public fun <N> Ring<N>.vectorKategory(
     mdList1Producer: MDList1Producer = ArrayMDList1Producer,
     mdList2Producer: MDList2Producer = ArrayMDList2Producer,
@@ -53,61 +43,16 @@ public fun <N> KoneContextRegistryBuilder.installVectorKategoryFor(
     contextsBuilder[VectorKategory.Key(numberType)] = vectorKategory
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <N, R> inVectorKategoryFor(numberType: SuppliedType<N>, block: context(VectorKategory<N>) () -> R): R {
+public fun <N, R> KoneContextRegistry.inVectorKategoryFor(numberType: SuppliedType<N>, block: context(VectorKategory<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(koneContextRegistry.contexts[VectorKategory.Key(numberType)])
+    return block(this.contexts[VectorKategory.Key(numberType)])
 }
 
-public fun <N, A: Ring<N>> A.vectorKategoryScope(
-    mdList1Producer: MDList1Producer = ArrayMDList1Producer,
-    mdList2Producer: MDList2Producer = ArrayMDList2Producer,
-): VectorKategoryScope<N, A, VectorKategory<N>> =
-    VectorKategoryScope(
-        this,
-        this.vectorKategory(
-            mdList1Producer = mdList1Producer,
-            mdList2Producer = mdList2Producer,
-        )
-    )
-
-public fun <N, A: Ring<N>> A.vectorKategoryScope(
-    mdListProducer: MDListProducer = ArrayMDListProducer,
-): VectorKategoryScope<N, A, VectorKategory<N>> =
-    VectorKategoryScope(
-        this,
-        this.vectorKategory(
-            mdListProducer = mdListProducer,
-        )
-    )
-
-public inline fun <N, A: Ring<N>, R> A.vectorKategoryScope(
-    mdList1Producer: MDList1Producer = ArrayMDList1Producer,
-    mdList2Producer: MDList2Producer = ArrayMDList2Producer,
-    block: context(A, VectorKategory<N>) () -> R
-): R {
+public fun <N, R> KoneContextRegistry.inVectorKategoryScopeFor(numberType: SuppliedType<N>, block: context(Ring<N>, VectorKategory<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return this.vectorKategoryScope(mdList1Producer, mdList2Producer).invoke(block)
-}
-
-public inline fun <N, A: Ring<N>, R> A.vectorKategoryScope(
-    mdListProducer: MDListProducer = ArrayMDListProducer,
-    block: context(A, VectorKategory<N>) () -> R
-): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    return this.vectorKategoryScope(mdListProducer).invoke(block)
-}
-
-context(koneContextRegistry: KoneContextRegistry)
-public fun <N, R> inVectorKategoryScopeFor(numberType: SuppliedType<N>, block: context(Ring<N>, VectorKategory<N>) () -> R): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    return block(koneContextRegistry.contexts[Ring.Key(numberType)], koneContextRegistry.contexts[VectorKategory.Key(numberType)])
+    return block(this.contexts[Ring.Key(numberType)], this.contexts[VectorKategory.Key(numberType)])
 }

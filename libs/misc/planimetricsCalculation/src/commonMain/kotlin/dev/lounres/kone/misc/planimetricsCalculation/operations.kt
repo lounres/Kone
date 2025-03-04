@@ -7,22 +7,16 @@
 
 package dev.lounres.kone.misc.planimetricsCalculation
 
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.linearAlgebra.times
-import dev.lounres.kone.polynomial.LabeledPolynomial
-import dev.lounres.kone.polynomial.LabeledVariable
-import dev.lounres.kone.polynomial.PolynomialSpace
-import dev.lounres.kone.polynomial.numberValue
-import dev.lounres.kone.polynomial.polynomialZero
-import dev.lounres.kone.polynomial.times
+import dev.lounres.kone.linearAlgebra.utils.adjugateViaLeibnizFormula
+import dev.lounres.kone.linearAlgebra.utils.determinantViaLeibnizFormula
+import dev.lounres.kone.linearAlgebra.utils.firstMinorViaLeibnizFormula
+import dev.lounres.kone.polynomial.*
 import kotlin.properties.ReadOnlyProperty
 
 
@@ -606,22 +600,45 @@ public fun <E> circleByDiameter(A: Point<E>, B: Point<E>): Quadric<E> = calculat
     )
 }
 
+// TODO: Docs
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
+    Matrix(
+        koneListOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
+        koneListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
+        koneListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
+        koneListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
+    ).determinantViaLeibnizFormula
+}
+
+//// TODO: Think about context-dependent implementation
 //// TODO: Docs
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
+//context(_: KoneContextRegistry, _: PlanimetricsCalculationSpace<E>)
+//public fun <E> cocyclicityCondition(numberType: SuppliedType<E>, A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
 //    Matrix(
 //        koneListOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
 //        koneListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
 //        koneListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
 //        koneListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
-//    ).det
+//    ).det(
+//        SuppliedType.Regular<LabeledPolynomial<E>>(
+//            kClass = LabeledPolynomial::class,
+//            typeArguments = listOf(
+//                SuppliedProjection.Regular(
+//                    variance = KVariance.INVARIANT,
+//                    type = numberType,
+//                )
+//            ),
+//            isNullable = false
+//        )
+//    )
 //}
-//
-//// TODO: Docs
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> cocyclicityTest(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): Boolean = calculate {
-//    cocyclicityCondition(A, B, C, D).isZero()
-//}
+
+// TODO: Docs
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> cocyclicityTest(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): Boolean = calculate {
+    cocyclicityCondition(A, B, C, D).isZero()
+}
 // endregion
 
 // region Points, lines and quadrics of triangle
@@ -758,11 +775,11 @@ public fun <E> eulerCircle(A: Point<E>, B: Point<E>, C: Point<E>): Quadric<E> = 
 context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> Point<E>.polarBy(q: Quadric<E>): Line<E> = calculate { Line(rowVector * q.matrix) }
 
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> Line<E>.poleBy(q: Quadric<E>): Point<E> = calculate { Point(rowVector * q.matrix.adjugate) }
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> Line<E>.poleBy(q: Quadric<E>): Point<E> = calculate { Point(rowVector * q.matrix.adjugateViaLeibnizFormula()) }
 
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> Quadric<E>.dualBy(q: Quadric<E>): Quadric<E> = calculate { with(q.matrix.adjugate) { Quadric(this * matrix * this) } }
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> Quadric<E>.dualBy(q: Quadric<E>): Quadric<E> = calculate { with(q.matrix.adjugateViaLeibnizFormula()) { Quadric(this * matrix * this) } }
 
 context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> Quadric<E>.center(): Point<E> = calculate {
@@ -775,31 +792,31 @@ public fun <E> Quadric<E>.center(): Point<E> = calculate {
 // endregion
 
 // region Quadrics
-///**
-// * See also: [wiki](https://en.wikipedia.org/wiki/Five_points_determine_a_conic#Construction)
-// */
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E>, T: Point<E>): Quadric<E> = calculate {
-//    with(
-//        Matrix(
-//            KoneList(6u) { zero },
-//            koneListOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
-//            koneListOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
-//            koneListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
-//            koneListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
-//            koneListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
-//        )
-//    ) {
-//        Quadric(
-//            xx = minor.first(0u, 0u),
-//            xy = -minor.first(0u, 1u),
-//            xz = minor.first(0u, 2u),
-//            yy = -minor.first(0u, 3u),
-//            yz = minor.first(0u, 4u),
-//            zz = -minor.first(0u, 5u),
-//        )
-//    }
-//}
+/**
+ * See also: [wiki](https://en.wikipedia.org/wiki/Five_points_determine_a_conic#Construction)
+ */
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E>, T: Point<E>): Quadric<E> = calculate {
+    with(
+        Matrix(
+            KoneList(6u) { polynomialZero },
+            koneListOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
+            koneListOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
+            koneListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
+            koneListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
+            koneListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
+        )
+    ) {
+        Quadric(
+            xx = firstMinorViaLeibnizFormula(0u, 0u),
+            xy = -firstMinorViaLeibnizFormula(0u, 1u),
+            xz = firstMinorViaLeibnizFormula(0u, 2u),
+            yy = -firstMinorViaLeibnizFormula(0u, 3u),
+            yz = firstMinorViaLeibnizFormula(0u, 4u),
+            zz = -firstMinorViaLeibnizFormula(0u, 5u),
+        )
+    }
+}
 
 context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> Line<E>.projectToQuadricBy(q: Quadric<E>, P: Point<E>): Point<E> =
@@ -861,7 +878,7 @@ public fun <E> involutionBy(A: Point<E>, l: Line<E>): Transformation<E> = calcul
 context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> involutionBy(A: Point<E>, q: Quadric<E>): Transformation<E> = involutionBy(A, A.polarBy(q))
 
-//context(_: PlanimetricsCalculationSpace<E>)
-//public fun <E> involutionBy(l: Line<E>, q: Quadric<E>): Transformation<E> = involutionBy(l.poleBy(q), l)
+context(_: PlanimetricsCalculationSpace<E>)
+public fun <E> involutionBy(l: Line<E>, q: Quadric<E>): Transformation<E> = involutionBy(l.poleBy(q), l)
 
 // endregion
