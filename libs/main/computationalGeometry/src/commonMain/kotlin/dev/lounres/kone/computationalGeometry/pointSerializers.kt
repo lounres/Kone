@@ -38,51 +38,46 @@ internal class PointSerializer<N>(
 }
 
 internal class Point2Serializer<N>(
-    private val numberSerializer: KSerializer<N>,
+    numberSerializer: KSerializer<N>,
 ) : KSerializer<Point2<N>> {
-    override val descriptor: SerialDescriptor =
-        SerialDescriptor(
-            serialName = "dev.lounres.kone.computationalGeometry.Point2",
-            original = ListSerializer(numberSerializer).descriptor
-        )
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Point2", columnVectorSerializer.descriptor)
     
     override fun serialize(encoder: Encoder, value: Point2<N>) {
-        encoder.encodeCollection(descriptor, 2) {
-            encodeSerializableElement(descriptor, 0, numberSerializer, value.x)
-            encodeSerializableElement(descriptor, 1, numberSerializer, value.y)
-        }
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
     }
     
     override fun deserialize(decoder: Decoder): Point2<N> =
-        decoder.decodeStructure(descriptor) {
-            if (decodeSequentially()) {
-                val size = decodeCollectionSize(descriptor)
-                check(size == 2) { "Cannot deserialize Point2: expected 2 element but got $size" }
-                Point2(
-                    decodeSerializableElement(descriptor, 0, numberSerializer),
-                    decodeSerializableElement(descriptor, 1, numberSerializer),
-                )
-            } else {
-                var x: Maybe<N> = None
-                var y: Maybe<N> = None
-                while (true) {
-                    val index = decodeElementIndex(descriptor)
-                    when (index) {
-                        CompositeDecoder.DECODE_DONE -> break
-                        0 -> {
-                            if (x != None) error("Cannot deserialize Point2: got several elements with index 0")
-                            x = Some(decodeSerializableElement(descriptor, index, numberSerializer))
-                        }
-                        1 -> {
-                            if (y != None) error("Cannot deserialize Point2: got several elements with index 0")
-                            y = Some(decodeSerializableElement(descriptor, index, numberSerializer))
-                        }
-                        else -> error("Cannot deserialize Point2: got index $index out of range [0; 2)")
-                    }
-                }
-                if (x == None) error("Cannot deserialize Point2: did not receive element with index 0")
-                if (y == None) error("Cannot deserialize Point2: did not receive element with index 1")
-                Point2((x as Some<N>).value, (y as Some<N>).value)
-            }
-        }
+        Point2(decoder.decodeSerializableValue(columnVectorSerializer))
+}
+
+internal class Point3Serializer<N>(
+    numberSerializer: KSerializer<N>,
+) : KSerializer<Point3<N>> {
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Point3", columnVectorSerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: Point3<N>) {
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
+    }
+    
+    override fun deserialize(decoder: Decoder): Point3<N> =
+        Point3(decoder.decodeSerializableValue(columnVectorSerializer))
+}
+
+internal class Point4Serializer<N>(
+    numberSerializer: KSerializer<N>,
+) : KSerializer<Point4<N>> {
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Point4", columnVectorSerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: Point4<N>) {
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
+    }
+    
+    override fun deserialize(decoder: Decoder): Point4<N> =
+        Point4(decoder.decodeSerializableValue(columnVectorSerializer))
 }

@@ -571,6 +571,10 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
     override val zero: Double get() = 0.0
     override val one: Double get() = 1.0
     // endregion
+    
+    // region Equality
+    override fun Double.isZero(): Boolean = this == 0.0 || this == -0.0
+    // endregion
 
     // region Conversion
     override fun valueOf(arg: Int): Double = arg.toDouble()

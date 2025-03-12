@@ -21,7 +21,7 @@ public interface PolytopicConstructionPolytope<
     public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = facesOfDimension(dim)
     public val vertices: KoneReifiedSet<Vertex>
     public val cofaces: KoneList<KoneReifiedSet<Polytope>>
-    public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = cofaces[dim]
+    public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = cofaces[dim - dimension - 1u]
 }
 
 public interface PolytopicConstructionVertex<

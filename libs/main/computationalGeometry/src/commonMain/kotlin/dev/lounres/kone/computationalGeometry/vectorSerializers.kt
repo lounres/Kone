@@ -27,7 +27,7 @@ internal class VectorSerializer<N>(
 ) : KSerializer<Vector<N>> {
     val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
     
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Point", columnVectorSerializer.descriptor)
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Vector", columnVectorSerializer.descriptor)
     
     override fun serialize(encoder: Encoder, value: Vector<N>) {
         encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
@@ -38,51 +38,46 @@ internal class VectorSerializer<N>(
 }
 
 internal class Vector2Serializer<N>(
-    private val numberSerializer: KSerializer<N>,
+    numberSerializer: KSerializer<N>,
 ) : KSerializer<Vector2<N>> {
-    override val descriptor: SerialDescriptor =
-        SerialDescriptor(
-            serialName = "dev.lounres.kone.computationalGeometry.Point2",
-            original = ListSerializer(numberSerializer).descriptor
-        )
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Vector2", columnVectorSerializer.descriptor)
     
     override fun serialize(encoder: Encoder, value: Vector2<N>) {
-        encoder.encodeCollection(descriptor, 2) {
-            encodeSerializableElement(descriptor, 0, numberSerializer, value.x)
-            encodeSerializableElement(descriptor, 1, numberSerializer, value.y)
-        }
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
     }
     
     override fun deserialize(decoder: Decoder): Vector2<N> =
-        decoder.decodeStructure(descriptor) {
-            if (decodeSequentially()) {
-                val size = decodeCollectionSize(descriptor)
-                check(size == 2) { "Cannot deserialize Point2: expected 2 element but got $size" }
-                Vector2(
-                    decodeSerializableElement(descriptor, 0, numberSerializer),
-                    decodeSerializableElement(descriptor, 1, numberSerializer),
-                )
-            } else {
-                var x: Maybe<N> = None
-                var y: Maybe<N> = None
-                while (true) {
-                    val index = decodeElementIndex(descriptor)
-                    when (index) {
-                        CompositeDecoder.DECODE_DONE -> break
-                        0 -> {
-                            if (x != None) error("Cannot deserialize Point2: got several elements with index 0")
-                            x = Some(decodeSerializableElement(descriptor, index, numberSerializer))
-                        }
-                        1 -> {
-                            if (y != None) error("Cannot deserialize Point2: got several elements with index 0")
-                            y = Some(decodeSerializableElement(descriptor, index, numberSerializer))
-                        }
-                        else -> error("Cannot deserialize Point2: got index $index out of range [0; 2)")
-                    }
-                }
-                if (x == None) error("Cannot deserialize Point2: did not receive element with index 0")
-                if (y == None) error("Cannot deserialize Point2: did not receive element with index 1")
-                Vector2((x as Some<N>).value, (y as Some<N>).value)
-            }
-        }
+        Vector2(decoder.decodeSerializableValue(columnVectorSerializer))
+}
+
+internal class Vector3Serializer<N>(
+    numberSerializer: KSerializer<N>,
+) : KSerializer<Vector3<N>> {
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Vector3", columnVectorSerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: Vector3<N>) {
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
+    }
+    
+    override fun deserialize(decoder: Decoder): Vector3<N> =
+        Vector3(decoder.decodeSerializableValue(columnVectorSerializer))
+}
+
+internal class Vector4Serializer<N>(
+    numberSerializer: KSerializer<N>,
+) : KSerializer<Vector4<N>> {
+    val columnVectorSerializer = ColumnVector.serializer(numberSerializer)
+    
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.computationalGeometry.Vector4", columnVectorSerializer.descriptor)
+    
+    override fun serialize(encoder: Encoder, value: Vector4<N>) {
+        encoder.encodeSerializableValue(columnVectorSerializer, value.coordinates)
+    }
+    
+    override fun deserialize(decoder: Decoder): Vector4<N> =
+        Vector4(decoder.decodeSerializableValue(columnVectorSerializer))
 }
