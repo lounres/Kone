@@ -18,9 +18,7 @@ import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.*
-import dev.lounres.kone.computationalGeometry.EuclideanKategory
-import dev.lounres.kone.computationalGeometry.Point
-import dev.lounres.kone.computationalGeometry.Point3
+import dev.lounres.kone.computationalGeometry.EuclideanKategory4
 import dev.lounres.kone.computationalGeometry.Point4
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.minus
@@ -31,7 +29,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList1
 
 // TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
 //   and that there are at least 2 triangles in the triangulation
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 public fun <
     Number,
     Polytope: PolytopicConstruction3Polytope<Number, Polytope, Vertex>,

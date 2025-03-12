@@ -45,15 +45,15 @@ import dev.lounres.kone.util.suppliedTypes.SuppliedType
 
 // TODO: There is a problem: some mandatory contexts are used as implicit contexts taken from `KoneContextRegistry`.
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 internal fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,
     Vertex: PolytopicConstruction4Vertex<Number, Polytope, Vertex>,
 > giftWrapping4Atom(
-    startPoint: Point<Number>,
-    normalGiftWrapping4Vector: Vector<Number>,
-    tangentGiftWrapping4Vector: Vector<Number>,
+    startPoint: Point4<Number>,
+    normalGiftWrapping4Vector: Vector4<Number>,
+    tangentGiftWrapping4Vector: Vector4<Number>,
     otherPoints: KoneIterable<Vertex>,
 ): KoneList<Vertex> {
     data class TangentFraction(val numerator: Number, val denominator: Number)
@@ -71,7 +71,7 @@ internal fun <
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 internal fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,
@@ -127,9 +127,9 @@ internal fun <
     while (facetsToProcess.isNotEmpty()) {
         val facet = facetsToProcess.popFirst()
         for (subfacet in facet.facesOfDimension(subspaceDimension - 2u)) if (subfacet in subfacetsToProcess) {
-            val startPoint: Point<Number>
-            val normalGiftWrapping4Vector: Vector<Number>
-            val tangentGiftWrapping4Vector: Vector<Number>
+            val startPoint: Point4<Number>
+            val normalGiftWrapping4Vector: Vector4<Number>
+            val tangentGiftWrapping4Vector: Vector4<Number>
             scope {
                 val facetFlag = KoneSettableList(subspaceDimension) { facet }
                 facetFlag[subspaceDimension - 2u] = subfacet
@@ -192,11 +192,11 @@ internal fun <
 internal data class Wrapping4Result<Number, Polytope, Vertex>(
     var polytope: Polytope,
     val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
-    val startPoint: Point<Number>,
-    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number>,
+    val startPoint: Point4<Number>,
+    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState4<Number>,
 )
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 internal fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,
@@ -212,7 +212,7 @@ internal fun <
     polytopeOrder: Order<Polytope>?,
     subspaceDimension: UInt,
     wrappingResult: Wrapping4Result<Number, Polytope, Vertex>,
-    normalVector: Vector<Number>,
+    normalVector: Vector4<Number>,
     otherPoints: KoneIterable<Vertex>,
 ) {
     if (otherPoints.isEmpty()) return
@@ -243,7 +243,7 @@ internal fun <
             return
         }
 
-        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone(subspaceDimension)
+        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone()
         extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
 
         val tangentVector = otherPoints.firstOfThatOrNull({
@@ -298,7 +298,7 @@ internal fun <
     }
 }
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 internal fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,
@@ -324,7 +324,7 @@ internal fun <
                 keyEquality = koneSetEquality(vertexEquality)
             ),
             startPoint = theOnlyVertex.position,
-            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
+            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState4(
                 orthogonalizedBasis = KoneArrayFixedCapacityList(4u),
                 product = one,
                 exclusiveProducts = KoneArrayFixedCapacityList(4u)
@@ -357,14 +357,14 @@ internal fun <
         polytopeOrder = polytopeOrder,
         subspaceDimension = subspaceDimension,
         wrappingResult = wrappingResult,
-        normalVector = Vector(ColumnVector(4u) { if (it == subspaceDimension - 1u) one else zero }),
+        normalVector = Vector4(ColumnVector(4u) { if (it == subspaceDimension - 1u) one else zero }),
         otherPoints = points.toKoneMutableSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder).apply { removeAllFrom(startPoints) },
     )
 
     return wrappingResult
 }
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 public fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,
@@ -395,7 +395,7 @@ public fun <
     ).polytope
 }
 
-context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory4<Number>)
 public fun <
     Number,
     Polytope: PolytopicConstruction4Polytope<Number, Polytope, Vertex>,

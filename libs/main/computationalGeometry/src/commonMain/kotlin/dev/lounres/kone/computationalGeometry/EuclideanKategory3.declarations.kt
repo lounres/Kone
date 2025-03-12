@@ -107,7 +107,7 @@ internal class EuclideanKategory3WithNumberRingAndVectorKategory<N>(
     override fun Vector3<N>.plus(other: Point3<N>): Point3<N> = Point3(context(vectorKategory) { this.coordinates + other.coordinates })
     override fun Point3<N>.minus(other: Point3<N>): Vector3<N> = Vector3(context(vectorKategory) { this.coordinates - other.coordinates })
     
-    override val Vector3<N>.lengthSquared: N get() = context(numberRing) { this.x * this.x + this.y * this.y }
+    override val Vector3<N>.lengthSquared: N get() = context(numberRing) { this.x * this.x + this.y * this.y + this.z * this.z }
     
-    override fun Vector3<N>.dot(other: Vector3<N>): N = context(numberRing) { this.x * other.x + this.y * other.y }
+    override fun Vector3<N>.dot(other: Vector3<N>): N = context(numberRing) { this.x * other.x + this.y * other.y + this.z * other.z }
 }
