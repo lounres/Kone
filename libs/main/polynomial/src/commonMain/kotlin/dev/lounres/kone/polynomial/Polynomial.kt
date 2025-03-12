@@ -110,7 +110,7 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
 context(polynomialSpace: PolynomialSpace<Number, *>)
 public val <Number> numberZero: Number get() = polynomialSpace.numberZero
 context(polynomialSpace: PolynomialSpace<Number, *>)
-public val <Number> numberOne: Number get() = polynomialSpace.numberZero
+public val <Number> numberOne: Number get() = polynomialSpace.numberOne
 // endregion
 
 // region Polynomial constants

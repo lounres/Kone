@@ -378,37 +378,38 @@ public open class ListPolynomialSpace<Number>(
         ListPolynomial(coefficients.map { -it })
     }
     final override operator fun ListPolynomial<Number>.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = context(numberContext) {
-        val thisDegree = degree
-        val otherDegree = other.degree
+        val thisSize = coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } } + 1u
+        val otherSize = other.coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } } + 1u
         ListPolynomial(
-            KoneList(max(thisDegree, otherDegree) + 1u) {
+            KoneList(max(thisSize, otherSize)) {
                 when {
-                    it > thisDegree -> other.coefficients[it]
-                    it > otherDegree -> coefficients[it]
+                    it >= thisSize -> other.coefficients[it]
+                    it >= otherSize -> coefficients[it]
                     else -> coefficients[it] + other.coefficients[it]
                 }
             }
         )
     }
     final override operator fun ListPolynomial<Number>.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = context(numberContext) {
-        val thisDegree = degree
-        val otherDegree = other.degree
+        val thisSize = coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } } + 1u
+        val otherSize = other.coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } } + 1u
         ListPolynomial(
-            KoneList(max(thisDegree, otherDegree) + 1u) {
+            KoneList(max(thisSize, otherSize)) {
                 when {
-                    it > thisDegree -> -other.coefficients[it]
-                    it > otherDegree -> coefficients[it]
+                    it >= thisSize -> -other.coefficients[it]
+                    it >= otherSize -> coefficients[it]
                     else -> coefficients[it] - other.coefficients[it]
                 }
             }
         )
     }
     final override operator fun ListPolynomial<Number>.times(other: ListPolynomial<Number>): ListPolynomial<Number> = context(numberContext) {
-        val thisDegree = degree
-        val otherDegree = other.degree
+        val thisDegree = coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } }
+        val otherDegree = other.coefficients.lastIndexThat { _, it -> context(numberContext) { it.isNotZero() } }
+        if (thisDegree == UInt.MAX_VALUE || otherDegree == UInt.MAX_VALUE) return zero
         ListPolynomial(
             KoneList(thisDegree + otherDegree + 1u) { d ->
-                (max(0u, d - otherDegree)..min(thisDegree, d))
+                (max(otherDegree, d) - otherDegree .. min(thisDegree, d))
                     .map { coefficients[it] * other.coefficients[d - it] }
                     .reduce { acc, rational -> acc + rational }
             }

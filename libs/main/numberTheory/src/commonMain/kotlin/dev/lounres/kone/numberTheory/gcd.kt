@@ -170,7 +170,7 @@ public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
 context(_: EuclideanRing<N>)
 @ExperimentalKoneAPI
 internal tailrec fun <N> bezoutIdentityWithGCDInternalLogic(a: N, b: N, m1: N, m2: N, m3: N, m4: N): BezoutCoefficientsWithGCD<N> =
-    if (b == 0L) BezoutCoefficientsWithGCD(m1, m3, a)
+    if (b.isZero()) BezoutCoefficientsWithGCD(m1, m3, a)
     else {
         val (quotient, remainder) = a divrem b
         bezoutIdentityWithGCDInternalLogic(b, remainder, m2, m1 - quotient * m2, m4, m3 - quotient * m4)

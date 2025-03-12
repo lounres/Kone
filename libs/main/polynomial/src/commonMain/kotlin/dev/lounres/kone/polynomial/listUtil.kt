@@ -69,7 +69,7 @@ context(_: Ring<Number>)
 public fun <Number> ListPolynomial<Number>.substitute(arg: Number): Number {
     if (coefficients.isEmpty()) return zero
     var result: Number = coefficients.last()
-    for (j in coefficients.size - 2u downTo 0u) {
+    if (coefficients.size >= 2u) for (j in coefficients.size - 2u downTo 0u) {
         result = (arg * result) + coefficients[j]
     }
     return result
@@ -84,7 +84,7 @@ context(_: ListPolynomialSpace<C>)
 public fun <C> ListPolynomial<C>.substitute(arg: ListPolynomial<C>) : ListPolynomial<C> {
     if (coefficients.isEmpty()) return zero
     var result: ListPolynomial<C> = coefficients.last().polynomialValue
-    for (j in coefficients.size - 2u downTo 0u) {
+    if (coefficients.size >= 2u) for (j in coefficients.size - 2u downTo 0u) {
         result = (arg * result) + coefficients[j]
     }
     return result
@@ -101,7 +101,7 @@ context(_: ListRationalFunctionSpace<Number>)
 public fun <Number> ListPolynomial<Number>.substitute(arg: ListRationalFunction<Number>) : ListRationalFunction<Number> {
     if (coefficients.isEmpty()) return zero
     var result: ListRationalFunction<Number> = coefficients.last().rationalFunctionValue
-    for (j in coefficients.size - 2u downTo 0u) {
+    if (coefficients.size >= 2u) for (j in coefficients.size - 2u downTo 0u) {
         result = (arg * result) + coefficients[j]
     }
     return result
