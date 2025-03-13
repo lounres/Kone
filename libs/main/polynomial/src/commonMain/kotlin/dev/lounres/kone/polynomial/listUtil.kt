@@ -7,18 +7,31 @@
 
 package dev.lounres.kone.polynomial
 
+import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.UnstableKoneAPI
 import dev.lounres.kone.algebraic.div
+import dev.lounres.kone.algebraic.isNotZero
+import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.rem
+import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.algebraic.zero
+import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.buildKoneList
+import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.utils.count
+import dev.lounres.kone.collections.utils.filter
 import dev.lounres.kone.collections.utils.last
+import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.collections.utils.mapIndexedTo
+import dev.lounres.kone.comparison.Order
 import dev.lounres.kone.repeat
 import dev.lounres.kone.context
 
@@ -186,4 +199,38 @@ public fun <C> ListPolynomial<C>.nthAntiderivative(order: UInt): ListPolynomial<
             coefficients.mapIndexedTo(this) { index, coef -> (1u..order).fold(coef) { acc, i -> acc / (index + i) } }
         }
     )
+}
+
+context(_: Field<Number>, _: ListPolynomialSpaceOverField<Number>)
+@ExperimentalKoneAPI
+internal fun <Number> ListPolynomial<Number>.sturmSeries(): KoneList<ListPolynomial<Number>> =
+    if (this.isZero()) emptyKoneList()
+    else buildKoneList {
+        add(this@sturmSeries)
+        var last = this@sturmSeries
+        var next = this@sturmSeries.derivative()
+        
+        while (next.isNotZero()) {
+            last = next.also { next = -(last % next) }
+            add(last)
+        }
+    }
+
+context(_: Field<Number>, _: Order<Number>, _: ListPolynomialSpaceOverField<Number>)
+@ExperimentalKoneAPI
+internal fun <Number> ListPolynomial<Number>.sturmNumberOfSignVariationsAt(point: Number): UInt {
+    val sturmSigns = sturmSeries().map { it.substitute(point).sign }.filter { it != 0 }
+    return (0u ..< sturmSigns.lastIndex).toKoneList().count { sturmSigns[it] != sturmSigns[it + 1u] }
+}
+
+// "from" excluded, "to" included
+context(_: Field<Number>, _: Order<Number>, _: ListPolynomialSpaceOverField<Number>)
+@ExperimentalKoneAPI
+public fun <Number> ListPolynomial<Number>.numberOfRootsBySturm(from: Number, to: Number): UInt {
+    val sturmSeries = sturmSeries()
+    val sturmSignsAtFromPoint = sturmSeries.map { it.substitute(from).sign }.filter { it != 0 }
+    val sturmSignsAtToPoint = sturmSeries.map { it.substitute(to).sign }.filter { it != 0 }
+    val sturmNumberOfSignVariationsAtFromPoint = (0u ..< sturmSignsAtFromPoint.lastIndex).toKoneList().count { sturmSignsAtFromPoint[it] != sturmSignsAtFromPoint[it + 1u] }
+    val sturmNumberOfSignVariationsAtToPoint = (0u ..< sturmSignsAtToPoint.lastIndex).toKoneList().count { sturmSignsAtToPoint[it] != sturmSignsAtToPoint[it + 1u] }
+    return sturmNumberOfSignVariationsAtFromPoint - sturmNumberOfSignVariationsAtToPoint
 }

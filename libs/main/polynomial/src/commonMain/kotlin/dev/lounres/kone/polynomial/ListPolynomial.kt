@@ -25,14 +25,14 @@ public data class ListPolynomial<Number>(
 
 public open class ListPolynomialSpace<Number>(
     protected open val numberContext: Ring<Number>,
-) : PolynomialSpace<Number, ListPolynomial<Number>> {
+) : UnivariatePolynomialSpace<Number, ListPolynomial<Number>> {
     final override val numberZero: Number get() = numberContext.zero
     final override val numberOne: Number get() = numberContext.one
     
-    final override fun numberValueOf(value: Int): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: UInt): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: Long): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: ULong): Number = numberContext.valueOf(value)
+    final override fun numberValueOf(arg: Int): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: UInt): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: Long): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: ULong): Number = numberContext.valueOf(arg)
     final override val Int.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     final override val UInt.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     final override val Long.numberValue: Number get() = with(numberContext) { this@numberValue.value }
@@ -40,7 +40,7 @@ public open class ListPolynomialSpace<Number>(
     
     final override val zero: ListPolynomial<Number> = ListPolynomial(emptyKoneList())
     final override val one: ListPolynomial<Number> by lazy { numberOne.asListPolynomial() }
-    public val freeVariable: ListPolynomial<Number> by lazy { ListPolynomial(numberZero, numberOne) }
+    override val variable: ListPolynomial<Number> by lazy { ListPolynomial(numberZero, numberOne) }
 
     final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = context(numberContext) {
         for (index in 0u .. max(this.coefficients.lastIndex, other.coefficients.lastIndex))
@@ -427,7 +427,7 @@ public open class ListPolynomialSpace<Number>(
 
 public class ListPolynomialSpaceOverField<Number>(
     override val numberContext: Field<Number>,
-) : ListPolynomialSpace<Number>(numberContext), PolynomialSpaceOverField<Number, ListPolynomial<Number>> {
+) : ListPolynomialSpace<Number>(numberContext), UnivariatePolynomialSpaceOverField<Number, ListPolynomial<Number>> {
     public override fun ListPolynomial<Number>.div(other: Int): ListPolynomial<Number> = context(numberContext) {
         ListPolynomial(coefficients.map { it / other })
     }
@@ -442,5 +442,75 @@ public class ListPolynomialSpaceOverField<Number>(
     }
     public override fun ListPolynomial<Number>.div(other: Number): ListPolynomial<Number> = context(numberContext) {
         ListPolynomial(coefficients.map { it / other })
+    }
+    
+    override fun ListPolynomial<Number>.divrem(other: ListPolynomial<Number>): EuclideanDivisionResult<ListPolynomial<Number>> = context(numberContext) {
+        val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
+        if (dividendDegree == UInt.MAX_VALUE) return EuclideanDivisionResult(
+            quotient = polynomialZero,
+            remainder = polynomialZero,
+        )
+        if (divisorDegree > dividendDegree) return EuclideanDivisionResult(
+            quotient = ListPolynomial(),
+            remainder = this,
+        )
+        
+        val divisorLeadingCoefficient = other.coefficients[divisorDegree]
+        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
+        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { numberZero }
+        
+        for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
+            val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
+            quotientRestCoefficients[divisionDegree] = quotientCoefficient
+            for (subtractionDegree in 0u .. divisorDegree)
+                dividendRestCoefficients[divisionDegree + subtractionDegree] -= quotientCoefficient * other.coefficients[subtractionDegree]
+        }
+        
+        EuclideanDivisionResult(
+            quotient = ListPolynomial(quotientRestCoefficients),
+            remainder = ListPolynomial(KoneList(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] }),
+        )
+    }
+    
+    override fun ListPolynomial<Number>.div(other: ListPolynomial<Number>): ListPolynomial<Number> = context(numberContext) {
+        val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
+        if (dividendDegree == UInt.MAX_VALUE) return polynomialZero
+        if (divisorDegree > dividendDegree) return polynomialZero
+        
+        val divisorLeadingCoefficient = other.coefficients[divisorDegree]
+        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
+        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { numberZero }
+        
+        for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
+            val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
+            quotientRestCoefficients[divisionDegree] = quotientCoefficient
+            for (subtractionDegree in 0u .. divisorDegree)
+                dividendRestCoefficients[divisionDegree + subtractionDegree] -= quotientCoefficient * other.coefficients[subtractionDegree]
+        }
+        
+        ListPolynomial(quotientRestCoefficients)
+    }
+    
+    override fun ListPolynomial<Number>.rem(other: ListPolynomial<Number>): ListPolynomial<Number> = context(numberContext) {
+        val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
+        if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
+        if (dividendDegree == UInt.MAX_VALUE) return polynomialZero
+        if (divisorDegree > dividendDegree) return this
+        
+        val divisorLeadingCoefficient = other.coefficients[divisorDegree]
+        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
+        
+        for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
+            val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
+            for (subtractionDegree in 0u .. divisorDegree)
+                dividendRestCoefficients[divisionDegree + subtractionDegree] -= quotientCoefficient * other.coefficients[subtractionDegree]
+        }
+        
+        ListPolynomial(KoneList(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] })
     }
 }

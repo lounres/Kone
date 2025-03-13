@@ -114,10 +114,10 @@ public open class LabeledPolynomialSpace<Number>(
     final override val numberZero: Number get() = numberContext.zero
     final override val numberOne: Number get() = numberContext.one
     
-    final override fun numberValueOf(value: Int): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: UInt): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: Long): Number = numberContext.valueOf(value)
-    final override fun numberValueOf(value: ULong): Number = numberContext.valueOf(value)
+    final override fun numberValueOf(arg: Int): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: UInt): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: Long): Number = numberContext.valueOf(arg)
+    final override fun numberValueOf(arg: ULong): Number = numberContext.valueOf(arg)
     final override val Int.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     final override val UInt.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     final override val Long.numberValue: Number get() = with(numberContext) { this@numberValue.value }

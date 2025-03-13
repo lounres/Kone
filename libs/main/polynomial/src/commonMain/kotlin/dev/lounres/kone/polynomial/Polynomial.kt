@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.polynomial
 
+import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.algebraic.EuclideanRing
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
@@ -30,10 +32,10 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
     // endregion
 
     // region Integer-to-Number conversion
-    public fun numberValueOf(value: Int): Number
-    public fun numberValueOf(value: UInt): Number
-    public fun numberValueOf(value: Long): Number
-    public fun numberValueOf(value: ULong): Number
+    public fun numberValueOf(arg: Int): Number
+    public fun numberValueOf(arg: UInt): Number
+    public fun numberValueOf(arg: Long): Number
+    public fun numberValueOf(arg: ULong): Number
     public val Int.numberValue: Number
     public val UInt.numberValue: Number
     public val Long.numberValue: Number
@@ -41,10 +43,10 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
     // endregion
 
     // region Integer-to-Polynomial conversion
-    override fun valueOf(value: Int): Polynomial = polynomialValueOf(numberValueOf(value))
-    override fun valueOf(value: UInt): Polynomial = polynomialValueOf(numberValueOf(value))
-    override fun valueOf(value: Long): Polynomial = polynomialValueOf(numberValueOf(value))
-    override fun valueOf(value: ULong): Polynomial = polynomialValueOf(numberValueOf(value))
+    override fun valueOf(arg: Int): Polynomial = polynomialValueOf(numberValueOf(arg))
+    override fun valueOf(arg: UInt): Polynomial = polynomialValueOf(numberValueOf(arg))
+    override fun valueOf(arg: Long): Polynomial = polynomialValueOf(numberValueOf(arg))
+    override fun valueOf(arg: ULong): Polynomial = polynomialValueOf(numberValueOf(arg))
     public fun polynomialValueOf(value: Int): Polynomial = valueOf(value)
     public fun polynomialValueOf(value: UInt): Polynomial = valueOf(value)
     public fun polynomialValueOf(value: Long): Polynomial = valueOf(value)
@@ -200,6 +202,35 @@ public operator fun <Number, Polynomial> Polynomial.times(other: Number): Polyno
 context(polynomialSpace: PolynomialSpace<*, Polynomial>)
 public val <Polynomial> Polynomial.degree: UInt get() = with(polynomialSpace) { this@degree.degree }
 // endregion
+
+@Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
+public interface UnivariatePolynomialSpace<Number, Polynomial> : PolynomialSpace<Number, Polynomial> {
+    public val variable: Polynomial
+    
+    public class Key<Number, Polynomial>(
+        numberType: SuppliedType<Number>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<UnivariatePolynomialSpace<Number, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<UnivariatePolynomialSpace<Number, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = UnivariatePolynomialSpace::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
+}
+
+context(polynomialSpace: UnivariatePolynomialSpace<*, Polynomial>)
+public val <Polynomial> variable: Polynomial get() = polynomialSpace.variable
 
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
 public interface MultivariatePolynomialSpace<Number, Variable, Polynomial> : PolynomialSpace<Number, Polynomial> {
@@ -635,8 +666,32 @@ context(polynomialSpace: PolynomialSpaceOverField<Number, Polynomial>)
 public operator fun <Number, Polynomial> Polynomial.div(other: Number): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
+@OptIn(ExperimentalKoneAPI::class)
+public interface UnivariatePolynomialSpaceOverField<Number, Polynomial> : PolynomialSpaceOverField<Number, Polynomial>, UnivariatePolynomialSpace<Number, Polynomial>, EuclideanRing<Polynomial> {
+    public class Key<Number, Polynomial>(
+        numberType: SuppliedType<Number>,
+        polynomialType: SuppliedType<Polynomial>
+    ) : RegistryKey<UnivariatePolynomialSpaceOverField<Number, Polynomial>> {
+        override val typeKey: SuppliedType.Regular<UnivariatePolynomialSpaceOverField<Number, Polynomial>> =
+            SuppliedType.Regular(
+                kClass = UnivariatePolynomialSpaceOverField::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        polynomialType
+                    )
+                ),
+                isNullable = false
+            )
+    }
+}
+
 @Suppress("INAPPLICABLE_JVM_NAME") // FIXME: Waiting for KT-31420
-public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>: PolynomialSpaceOverField<Number, Polynomial>, MultivariatePolynomialSpace<Number, Variable, Polynomial> {
+public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial> : PolynomialSpaceOverField<Number, Polynomial>, MultivariatePolynomialSpace<Number, Variable, Polynomial> {
     // region Variable-Int operations
     @JvmName("divVariableInt")
     public operator fun Variable.div(other: Int): Polynomial
