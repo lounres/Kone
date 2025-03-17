@@ -440,7 +440,6 @@ public fun KoneContextRegistryBuilder.installLongContext() {
     contextsBuilder[Hashing.Key(longSuppliedType)] = LongContext
 }
 
-// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, ExtendedSemiring<UByte>, Order<UByte>, Hashing<UByte> {
     // region Reification
@@ -516,7 +515,6 @@ public fun KoneContextRegistryBuilder.installUByteContext() {
     contextsBuilder[Hashing.Key(uByteSuppliedType)] = UByteContext
 }
 
-// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>, ExtendedSemiring<UShort>, Order<UShort>, Hashing<UShort> {
     // region Reification
@@ -592,7 +590,6 @@ public fun KoneContextRegistryBuilder.installUShortContext() {
     contextsBuilder[Hashing.Key(uShortSuppliedType)] = UShortContext
 }
 
-// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, ExtendedSemiring<UInt>, Order<UInt>, Hashing<UInt> {
     // region Reification
@@ -658,7 +655,6 @@ public fun KoneContextRegistryBuilder.installUIntContext() {
     contextsBuilder[Hashing.Key(uIntSuppliedType)] = UIntContext
 }
 
-// TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, ExtendedSemiring<ULong>, Order<ULong>, Hashing<ULong> {
     // region Reification
