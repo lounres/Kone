@@ -275,6 +275,8 @@ stal {
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
                                 optIn("kotlin.uuid.ExperimentalUuidApi")
+                                optIn("dev.lounres.kone.UnstableKoneAPI")
+                                optIn("dev.lounres.kone.ExperimentalKoneAPI")
                             }
                         }
                     }
