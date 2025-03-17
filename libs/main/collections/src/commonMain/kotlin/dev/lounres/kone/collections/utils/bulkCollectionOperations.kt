@@ -9,6 +9,7 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.iterables.*
 import dev.lounres.kone.collections.list.*
+import dev.lounres.kone.collections.list.addAllFrom
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.map.*
@@ -104,6 +105,12 @@ public fun <E> KoneList<E>.takeLast(n: UInt): KoneList<E> {
 public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
 public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
 public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - n)
+
+public fun <E> KoneList<E>.slice(fromIndex: UInt, toIndex: UInt): KoneList<E> {
+    if (toIndex < fromIndex) return emptyKoneList()
+    val iterator = iteratorFrom(fromIndex)
+    return KoneList(toIndex - fromIndex) { iterator.getAndMoveNext() }
+}
 
 public fun <E> KoneSettableList<E>.reverse() {
     if (size <= 1u) return
@@ -488,6 +495,37 @@ public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> =
 public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> =
     mapIndexedTo(koneMutableListOf(), transform)
 
+public fun <E> KoneIterable<KoneIterable<E>>.flatten(): KoneList<E> {
+    val result = koneMutableListOf<E>()
+    for (iterable in this) result.addAllFrom(iterable)
+    return result
+}
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
+    for (element in this) destination.addAllFrom(transform(element))
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
+    for (element in this) destination.addAllFrom(transform(element))
+    return destination
+}
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
+    var currentIndex = 0u
+    for (element in this) destination.addAllFrom(transform(currentIndex++, element))
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
+    var currentIndex = 0u
+    for (element in this) destination.addAllFrom(transform(currentIndex++, element))
+    return destination
+}
+
+public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(koneMutableListOf(), transform)
+
+public inline fun <E, R> KoneIterable<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterable<R>): KoneList<R> =
+    flatMapIndexedTo(koneMutableListOf(), transform)
+
 public inline fun <E, D: KoneMutableList<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
     return destination
@@ -636,22 +674,22 @@ public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index
 
 // TODO: Add summing and multiplying extensions for primitives. Maybe.
 
-context(_: Ring<E>)
+context(_: Semiring<E>)
 public fun <E> KoneIterable<E>.sum(): E = fold(zero) { acc, e -> acc + e }
 
-context(_: Ring<N>)
+context(_: Semiring<N>)
 public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
 
-context(_: Ring<N>)
+context(_: Semiring<N>)
 public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
-context(_: Ring<E>)
+context(_: Semiring<E>)
 public fun <E> KoneIterable<E>.product(): E = fold(one) { acc, e -> acc * e }
 
-context(_: Ring<N>)
+context(_: Semiring<N>)
 public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc * selector(e) }
 
-context(_: Ring<N>)
+context(_: Semiring<N>)
 public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc * selector(index, e) }
 
 public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K): D {

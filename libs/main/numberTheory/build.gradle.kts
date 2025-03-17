@@ -1,3 +1,7 @@
+plugins {
+    alias(versions.plugins.kotlinx.serialization)
+}
+
 kotlin {
     sourceSets {
         commonMain {
@@ -5,11 +9,13 @@ kotlin {
                 implementation(projects.libs.main.comparison)
                 implementation(projects.libs.main.algebraic)
                 implementation(projects.libs.main.collections)
+                implementation(versions.kotlinx.serialization.core)
             }
         }
         commonTest {
             dependencies {
-//                implementation(projects.libs.util.kotest)
+                implementation(projects.libs.util.kotest)
+                implementation(versions.kotlinx.serialization.json)
             }
         }
     }

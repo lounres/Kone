@@ -55,26 +55,28 @@ public fun KoneMutableUIntArray.asKoneUIntArray(): KoneUIntArray = KoneUIntArray
 public fun KoneMutableULongArray.asKoneULongArray(): KoneULongArray = KoneULongArray(array)
 
 // TODO: Wait for actual decision with equals operator
-public infix fun KoneByteArray.contentEquals(other: KoneByteArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneShortArray.contentEquals(other: KoneShortArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneIntArray.contentEquals(other: KoneIntArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneLongArray.contentEquals(other: KoneLongArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneFloatArray.contentEquals(other: KoneFloatArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneDoubleArray.contentEquals(other: KoneDoubleArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneUByteArray.contentEquals(other: KoneUByteArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneUShortArray.contentEquals(other: KoneUShortArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneUIntArray.contentEquals(other: KoneUIntArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
-public infix fun KoneULongArray.contentEquals(other: KoneULongArray): Boolean =
-    this.size == other.size && (0u ..< this.size).all { this[it] == other[it] }
+public infix fun KoneByteArray.contentEquals(other: KoneByteArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneShortArray.contentEquals(other: KoneShortArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneIntArray.contentEquals(other: KoneIntArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneLongArray.contentEquals(other: KoneLongArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneFloatArray.contentEquals(other: KoneFloatArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneDoubleArray.contentEquals(other: KoneDoubleArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneUByteArray.contentEquals(other: KoneUByteArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneUShortArray.contentEquals(other: KoneUShortArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneUIntArray.contentEquals(other: KoneUIntArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneULongArray.contentEquals(other: KoneULongArray): Boolean = this.array.contentEquals(other.array)
+
+// TODO: Wait for actual decision with hashCode operator
+public fun KoneByteArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneShortArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneIntArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneLongArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneFloatArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneDoubleArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneUByteArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneUShortArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneUIntArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneULongArray.contentHashCode(): Int = this.array.contentHashCode()
 
 public fun KoneArray<*>.isEmpty(): Boolean = size == 0u
 public fun KoneMutableArray<*>.isEmpty(): Boolean = size == 0u

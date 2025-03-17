@@ -33,7 +33,7 @@ public class Rational {
 
     internal constructor(numerator: Long, denominator: Long, toCheckInput: Boolean = true) {
         if (toCheckInput) {
-            if (denominator == 0L) throw ArithmeticException("/ by zero")
+            if (denominator == 0L) divisionByZero()
 
             val greatestCommonDivisor = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
 
@@ -46,7 +46,7 @@ public class Rational {
     }
 
     public constructor(numerator: Long, denominator: Long) {
-        if (denominator == 0L) throw ArithmeticException("/ by zero")
+        if (denominator == 0L) divisionByZero()
 
         val greatestCommonDivider = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
 
@@ -173,7 +173,7 @@ public data object RationalField : Reification<Rational>, Field<Rational>, Order
     }
     // endregion
     
-    // region Rational-Int operations
+    // region Rational-UInt operations
     public override operator fun Rational.plus(other: UInt): Rational =
         Rational(
             numerator + denominator * other.toLong(),
@@ -239,7 +239,7 @@ public data object RationalField : Reification<Rational>, Field<Rational>, Order
     }
     // endregion
     
-    // region Rational-Long operations
+    // region Rational-ULong operations
     public override operator fun Rational.plus(other: ULong): Rational =
         Rational(
             numerator + denominator * other.toLong(),
