@@ -7,3 +7,11 @@ package dev.lounres.kone.algebraic
 
 
 public fun divisionByZero(): Nothing = throw ArithmeticException("Division by zero")
+
+public fun negativeSubtractionResultInExtendedSemiring(): Nothing = throw ArithmeticException("Negative subtraction result in extended semiring")
+
+public object OverflowException : ArithmeticException("Overflow happened")
+
+public fun overflow(): Nothing = throw OverflowException
+
+public fun numberFormatException(input: String, radix: UInt): Nothing = throw NumberFormatException("For input string \"$input\" under radix $radix")

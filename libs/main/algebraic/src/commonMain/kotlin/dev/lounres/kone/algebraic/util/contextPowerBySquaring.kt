@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic.util
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.Semiring
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.plus
@@ -120,7 +121,7 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultip
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: UInt): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -164,7 +165,7 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
@@ -272,7 +273,7 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMulti
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: ULong): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -316,7 +317,7 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddM
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
@@ -423,7 +424,7 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultip
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> UInt.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -467,7 +468,7 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
@@ -574,7 +575,7 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMulti
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> ULong.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -618,7 +619,7 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddM
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
@@ -671,7 +672,7 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMul
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 @JvmName("squaringPowerUReceiver")
 public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 /**
@@ -722,7 +723,7 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMu
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Semiring<Number>)
 @JvmName("squaringPowerUReceiver")
 public infix fun <Number> Number.squaringPower(exponent: ULong): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 //endregion

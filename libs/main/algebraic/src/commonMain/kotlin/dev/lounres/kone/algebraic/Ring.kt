@@ -6,7 +6,6 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
-import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
@@ -35,39 +34,7 @@ import kotlin.reflect.KVariance
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Ring<Number> : Equality<Number> {
-    // region Constants
-    /**
-     * Represents zero element (a.k.a *neutral additive element*).
-     */
-    public val zero: Number
-    /**
-     * Represents unit element (a.k.a *neutral multiplicative element*).
-     */
-    public val one: Number
-    // endregion
-
-    // region Equality
-    /**
-     * Checks that [this] number is a zero in the context of the [Ring].
-     */
-    public fun Number.isZero(): Boolean = this equalsTo zero
-    /**
-     * Checks that [this] number is a one in the context of the [Ring].
-     */
-    public fun Number.isOne(): Boolean = this equalsTo one
-    /**
-     * Checks that [this] number is not a zero in the context of the [Ring].
-     */
-    // FIXME: KT-5351
-    public fun Number.isNotZero(): Boolean = !isZero()
-    /**
-     * Checks that [this] number is not a one in the context of the [Ring].
-     */
-    // FIXME: KT-5351
-    public fun Number.isNotOne(): Boolean = !isOne()
-    // endregion
-
+public interface Ring<Number> : Semiring<Number> {
     // region Integers conversion
     /**
      * Converts instance of [Int] to an element of the [Ring] it is equal to.
@@ -76,23 +43,11 @@ public interface Ring<Number> : Equality<Number> {
      */
     public fun valueOf(arg: Int): Number = one doublingTimes arg
     /**
-     * Converts instance of [UInt] to an element of the [Ring] it is equal to.
-     *
-     * The result is equal to sum of [arg] number of units.
-     */
-    public fun valueOf(arg: UInt): Number = one doublingTimes arg
-    /**
      * Converts instance of [Long] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [arg] number of units.
      */
     public fun valueOf(arg: Long): Number = one doublingTimes arg
-    /**
-     * Converts instance of [ULong] to an element of the [Ring] it is equal to.
-     *
-     * The result is equal to sum of [arg] number of units.
-     */
-    public fun valueOf(arg: ULong): Number = one doublingTimes arg
     /**
      * Converts instance of [Int] to an element of the [Ring] it is equal to.
      *
@@ -100,23 +55,11 @@ public interface Ring<Number> : Equality<Number> {
      */
     public val Int.value: Number get() = valueOf(this)
     /**
-     * Converts instance of [UInt] to an element of the [Ring] it is equal to.
-     *
-     * The result is equal to sum of [this] number of units.
-     */
-    public val UInt.value: Number get() = valueOf(this)
-    /**
      * Converts instance of [Long] to an element of the [Ring] it is equal to.
      *
      * The result is equal to sum of [this] number of units.
      */
     public val Long.value: Number get() = valueOf(this)
-    /**
-     * Converts instance of [ULong] to an element of the [Ring] it is equal to.
-     *
-     * The result is equal to sum of [this] number of units.
-     */
-    public val ULong.value: Number get() = valueOf(this)
     // endregion
 
     // region Number-Int operations
@@ -142,23 +85,11 @@ public interface Ring<Number> : Equality<Number> {
 
     // region Number-UInt operations
     /**
-     * Sums [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this + other.value`
-     */
-    public operator fun Number.plus(other: UInt): Number = this + other.value
-    /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
     public operator fun Number.minus(other: UInt): Number = this - other.value
-    /**
-     * Multiplies [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this * other.value`
-     */
-    public operator fun Number.times(other: UInt): Number = this * other.value
     // endregion
 
     // region Number-Long operations
@@ -184,23 +115,11 @@ public interface Ring<Number> : Equality<Number> {
 
     // region Number-ULong operations
     /**
-     * Sums [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this + other.value`
-     */
-    public operator fun Number.plus(other: ULong): Number = this + other.value
-    /**
      * Subtracts [this] number and the [other] integer as elements of the [Ring].
      *
      * The result is equal to `this - other.value`
      */
     public operator fun Number.minus(other: ULong): Number = this - other.value
-    /**
-     * Multiplies [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this * other.value`
-     */
-    public operator fun Number.times(other: ULong): Number = this * other.value
     // endregion
 
     // region Int-Number operations
@@ -228,21 +147,9 @@ public interface Ring<Number> : Equality<Number> {
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
-     * The result is equal to `this.value + other`
-     */
-    public operator fun UInt.plus(other: Number): Number = this.value + other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
      * The result is equal to `this.value - other`
      */
     public operator fun UInt.minus(other: Number): Number = this.value - other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `this.value * other`
-     */
-    public operator fun UInt.times(other: Number): Number = this.value * other
     // endregion
 
     // region Long-Number operations
@@ -270,21 +177,9 @@ public interface Ring<Number> : Equality<Number> {
     /**
      * Sums [this] integer and the [other] number as elements of the [Ring].
      *
-     * The result is equal to `this.value + other`
-     */
-    public operator fun ULong.plus(other: Number): Number = this.value + other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
      * The result is equal to `this.value - other`
      */
     public operator fun ULong.minus(other: Number): Number = this.value - other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `this.value * other`
-     */
-    public operator fun ULong.times(other: Number): Number = this.value * other
     // endregion
 
     // region Number-Number operations
@@ -293,41 +188,9 @@ public interface Ring<Number> : Equality<Number> {
      */
     public operator fun Number.unaryMinus(): Number
     /**
-     * Sums [this] and the [other] numbers in terms of the [Ring].
-     */
-    public operator fun Number.plus(other: Number): Number
-    /**
      * Subtracts [this] and the [other] numbers in terms of the [Ring].
      */
     public operator fun Number.minus(other: Number): Number
-    /**
-     * Multiplies [this] and the [other] numbers in terms of the [Ring].
-     */
-    public operator fun Number.times(other: Number): Number
-    /**
-     * Raises [base] number in the power of [exponent].
-     *
-     * The result is equal to product of [exponent] number of [base] copies.
-     */
-    public fun power(base: Number, exponent: UInt): Number = base squaringPower exponent
-    /**
-     * Raises [base] number in the power of [exponent].
-     *
-     * The result is equal to product of [exponent] number of [base] copies.
-     */
-    public fun power(base: Number, exponent: ULong): Number = base squaringPower exponent
-    /**
-     * Raises [this] number in the power of [exponent].
-     *
-     * The result is equal to product of [exponent] number of [this] copies.
-     */
-    public infix fun Number.pow(exponent: UInt): Number = power(this, exponent)
-    /**
-     * Raises [this] number in the power of [exponent].
-     *
-     * The result is equal to product of [exponent] number of [this] copies.
-     */
-    public infix fun Number.pow(exponent: ULong): Number = power(this, exponent)
     // endregion
     
     public class Key<Number>(
@@ -348,43 +211,15 @@ public interface Ring<Number> : Equality<Number> {
 }
 
 
-// region Constants
-context(ring: Ring<Number>)
-public val <Number> zero: Number get() = ring.zero
-context(ring: Ring<Number>)
-public val <Number> one: Number get() = ring.one
-// endregion
-
-// region Equality
-context(ring: Ring<Number>)
-public fun <Number> Number.isZero(): Boolean = with(ring) { this@isZero.isZero() }
-context(ring: Ring<Number>)
-public fun <Number> Number.isOne(): Boolean = with(ring) { this@isOne.isOne() }
-// FIXME: KT-5351
-context(ring: Ring<Number>)
-public fun <Number> Number.isNotZero(): Boolean = with(ring) { this@isNotZero.isNotZero() }
-// FIXME: KT-5351
-context(ring: Ring<Number>)
-public fun <Number> Number.isNotOne(): Boolean = with(ring) { this@isNotOne.isNotOne() }
-// endregion
-
 // region Integers conversion
 context(ring: Ring<Number>)
 public fun <Number> valueOf(arg: Int): Number = ring.valueOf(arg)
 context(ring: Ring<Number>)
-public fun <Number> valueOf(arg: UInt): Number = ring.valueOf(arg)
-context(ring: Ring<Number>)
 public fun <Number> valueOf(arg: Long): Number = ring.valueOf(arg)
-context(ring: Ring<Number>)
-public fun <Number> valueOf(arg: ULong): Number = ring.valueOf(arg)
 context(ring: Ring<Number>)
 public val <Number> Int.value: Number get() = with(ring) { this@value.value }
 context(ring: Ring<Number>)
-public val <Number> UInt.value: Number get() = with(ring) { this@value.value }
-context(ring: Ring<Number>)
 public val <Number> Long.value: Number get() = with(ring) { this@value.value }
-context(ring: Ring<Number>)
-public val <Number> ULong.value: Number get() = with(ring) { this@value.value }
 // endregion
 
 // region Number-Int operations
@@ -398,11 +233,7 @@ public operator fun <Number> Number.times(other: Int): Number = with(ring) { thi
 
 // region Number-UInt operations
 context(ring: Ring<Number>)
-public operator fun <Number> Number.plus(other: UInt): Number = with(ring) { this@plus + other }
-context(ring: Ring<Number>)
 public operator fun <Number> Number.minus(other: UInt): Number = with(ring) { this@minus - other }
-context(ring: Ring<Number>)
-public operator fun <Number> Number.times(other: UInt): Number = with(ring) { this@times * other }
 // endregion
 
 // region Number-Long operations
@@ -416,11 +247,7 @@ public operator fun <Number> Number.times(other: Long): Number = with(ring) { th
 
 // region Number-ULong operations
 context(ring: Ring<Number>)
-public operator fun <Number> Number.plus(other: ULong): Number = with(ring) { this@plus + other }
-context(ring: Ring<Number>)
 public operator fun <Number> Number.minus(other: ULong): Number = with(ring) { this@minus - other }
-context(ring: Ring<Number>)
-public operator fun <Number> Number.times(other: ULong): Number = with(ring) { this@times * other }
 // endregion
 
 // region Int-Number operations
@@ -434,11 +261,7 @@ public operator fun <Number> Int.times(other: Number): Number = with(ring) { thi
 
 // region UInt-Number operations
 context(ring: Ring<Number>)
-public operator fun <Number> UInt.plus(other: Number): Number = with(ring) { this@plus + other }
-context(ring: Ring<Number>)
 public operator fun <Number> UInt.minus(other: Number): Number = with(ring) { this@minus - other }
-context(ring: Ring<Number>)
-public operator fun <Number> UInt.times(other: Number): Number = with(ring) { this@times * other }
 // endregion
 
 // region Long-Number operations
@@ -452,28 +275,12 @@ public operator fun <Number> Long.times(other: Number): Number = with(ring) { th
 
 // region ULong-Number operations
 context(ring: Ring<Number>)
-public operator fun <Number> ULong.plus(other: Number): Number = with(ring) { this@plus + other }
-context(ring: Ring<Number>)
 public operator fun <Number> ULong.minus(other: Number): Number = with(ring) { this@minus - other }
-context(ring: Ring<Number>)
-public operator fun <Number> ULong.times(other: Number): Number = with(ring) { this@times * other }
 // endregion
 
 // region Number-Number operations
 context(ring: Ring<Number>)
 public operator fun <Number> Number.unaryMinus(): Number = with(ring) { -this@unaryMinus }
 context(ring: Ring<Number>)
-public operator fun <Number> Number.plus(other: Number): Number = with(ring) { this@plus + other }
-context(ring: Ring<Number>)
 public operator fun <Number> Number.minus(other: Number): Number = with(ring) { this@minus - other }
-context(ring: Ring<Number>)
-public operator fun <Number> Number.times(other: Number): Number = with(ring) { this@times * other }
-context(ring: Ring<Number>)
-public fun <Number> power(base: Number, exponent: UInt): Number = ring.power(base, exponent)
-context(ring: Ring<Number>)
-public fun <Number> power(base: Number, exponent: ULong): Number = ring.power(base, exponent)
-context(ring: Ring<Number>)
-public infix fun <Number> Number.pow(exponent: UInt): Number = with(ring) { this@pow pow exponent }
-context(ring: Ring<Number>)
-public infix fun <Number> Number.pow(exponent: ULong): Number = with(ring) { this@pow pow exponent }
 // endregion

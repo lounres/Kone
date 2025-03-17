@@ -9,6 +9,7 @@ import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.reflect.KVariance
 
@@ -17,10 +18,11 @@ import kotlin.reflect.KVariance
  * Wrapper class for result of Euclidean division (a.k.a. division with remainder). See [EuclideanRing] for more.
  */
 @ExperimentalKoneAPI
-@JvmInline
-public value class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
-    public operator fun component1(): Number = quotient
-    public operator fun component2(): Number = remainder
+@Serializable
+//@JvmInline // FIXME: Make it a value class when MFVC will be ready
+public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
+//    public operator fun component1(): Number = quotient
+//    public operator fun component2(): Number = remainder
 }
 
 /**
@@ -32,7 +34,7 @@ public value class EuclideanDivisionResult<Number>(public val quotient: Number, 
  * for a more thorough description of the Euclidean division and the Euclidean norm.
  */
 @ExperimentalKoneAPI
-public interface EuclideanRing<Number> : Ring<Number> {
+public interface EuclideanSemiring<Number> : Semiring<Number> {
     /**
      * Returns result of Euclidean division (a.k.a. division with remainder), both quotient and remainder.
      */
@@ -46,6 +48,35 @@ public interface EuclideanRing<Number> : Ring<Number> {
      */
     public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
     
+    public class Key<Number>(
+        elementType: SuppliedType<Number>,
+    ) : RegistryKey<EuclideanSemiring<Number>> {
+        override val typeKey: SuppliedType.Regular<EuclideanSemiring<Number>> =
+            SuppliedType.Regular(
+                kClass = EuclideanSemiring::class,
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        KVariance.INVARIANT,
+                        elementType
+                    )
+                ),
+                isNullable = false
+            )
+    }
+}
+
+context(ring: EuclideanSemiring<Number>)
+@ExperimentalKoneAPI
+public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<Number> = with(ring) { this@divrem divrem other }
+context(ring: EuclideanSemiring<Number>)
+@ExperimentalKoneAPI
+public operator fun <Number> Number.div(other: Number): Number = with(ring) { this@div / other }
+context(ring: EuclideanSemiring<Number>)
+@ExperimentalKoneAPI
+public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }
+
+@ExperimentalKoneAPI
+public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number> {
     public class Key<Number>(
         elementType: SuppliedType<Number>,
     ) : RegistryKey<EuclideanRing<Number>> {
@@ -62,13 +93,3 @@ public interface EuclideanRing<Number> : Ring<Number> {
             )
     }
 }
-
-context(ring: EuclideanRing<Number>)
-@ExperimentalKoneAPI
-public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<Number> = with(ring) { this@divrem divrem other }
-context(ring: EuclideanRing<Number>)
-@ExperimentalKoneAPI
-public operator fun <Number> Number.div(other: Number): Number = with(ring) { this@div / other }
-context(ring: EuclideanRing<Number>)
-@ExperimentalKoneAPI
-public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }

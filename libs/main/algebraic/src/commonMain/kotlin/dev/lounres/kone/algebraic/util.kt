@@ -17,29 +17,29 @@ import dev.lounres.kone.comparison.lt
 /**
  * Checks if [this] number is positive in the ordered ring.
  */
-context(_: Ring<Number>, _: Order<Number>)
+context(_: Semiring<Number>, _: Order<Number>)
 public fun <Number> Number.isPositive(): Boolean = this gt zero
 /**
  * Checks if [this] number is non-positive in the ordered ring.
  */
-context(_: Ring<Number>, _: Order<Number>)
+context(_: Semiring<Number>, _: Order<Number>)
 public fun <Number> Number.isNonPositive(): Boolean = this leq zero
 /**
  * Checks if [this] number is negative in the ordered ring.
  */
-context(_: Ring<Number>, _: Order<Number>)
+context(_: Semiring<Number>, _: Order<Number>)
 public fun <Number> Number.isNegative(): Boolean = this lt zero
 /**
  * Checks if [this] number is non-negative in the ordered ring.
  */
-context(_: Ring<Number>, _: Order<Number>)
+context(_: Semiring<Number>, _: Order<Number>)
 public fun <Number> Number.isNonNegative(): Boolean = this geq zero
 
 /**
  * Returns value of (mathematical) `sign` function. I.e. returns `1` if [this] number is positive,
  * `-1` if [this] number is negative, or `0` if [this] number is zero.
  */
-context(_: Ring<Number>, _: Order<Number>)
+context(_: Semiring<Number>, _: Order<Number>)
 public val <Number> Number.sign: Int
     get() = when(this.compareWith(zero)) {
         ComparisonResult.LeftIsGreaterThanRight -> 1

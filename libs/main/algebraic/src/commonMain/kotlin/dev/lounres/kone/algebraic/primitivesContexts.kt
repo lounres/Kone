@@ -8,6 +8,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.comparison.ComparisonResult
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Hashing
@@ -126,6 +127,7 @@ public fun KoneContextRegistryBuilder.installByteContext() {
     )
     contextsBuilder[Reification.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Equality.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[Semiring.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Ring.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[EuclideanRing.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Order.Key(byteSuppliedType)] = ByteContext
@@ -235,6 +237,7 @@ public fun KoneContextRegistryBuilder.installShortContext() {
     )
     contextsBuilder[Reification.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Equality.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[Semiring.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Ring.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[EuclideanRing.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Order.Key(shortSuppliedType)] = ShortContext
@@ -332,6 +335,7 @@ public fun KoneContextRegistryBuilder.installIntContext() {
     )
     contextsBuilder[Reification.Key(intSuppliedType)] = IntContext
     contextsBuilder[Equality.Key(intSuppliedType)] = IntContext
+    contextsBuilder[Semiring.Key(intSuppliedType)] = IntContext
     contextsBuilder[Ring.Key(intSuppliedType)] = IntContext
     contextsBuilder[EuclideanRing.Key(intSuppliedType)] = IntContext
     contextsBuilder[Order.Key(intSuppliedType)] = IntContext
@@ -429,6 +433,7 @@ public fun KoneContextRegistryBuilder.installLongContext() {
     )
     contextsBuilder[Reification.Key(longSuppliedType)] = LongContext
     contextsBuilder[Equality.Key(longSuppliedType)] = LongContext
+    contextsBuilder[Semiring.Key(longSuppliedType)] = LongContext
     contextsBuilder[Ring.Key(longSuppliedType)] = LongContext
     contextsBuilder[EuclideanRing.Key(longSuppliedType)] = LongContext
     contextsBuilder[Order.Key(longSuppliedType)] = LongContext
@@ -437,7 +442,7 @@ public fun KoneContextRegistryBuilder.installLongContext() {
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UByte>, Hashing<UByte> {
+public data object UByteContext: Reification<UByte>, Semiring<UByte>, Order<UByte>, Hashing<UByte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UByte
     override fun reifyMaybe(element: Any?): Maybe<UByte> = if (element is UByte) Some(element) else None
@@ -447,6 +452,45 @@ public data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UByt
     
     // region Order
     override fun UByte.compareWith(other: UByte): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+    
+    // region Constants
+    override val zero: UByte get() = 0.toUByte()
+    override val one: UByte get() = 1.toUByte()
+    // endregion
+    
+    // region Integers conversion
+    override fun valueOf(arg: UInt): UByte = arg.toUByte()
+    override fun valueOf(arg: ULong): UByte = arg.toUByte()
+    // endregion
+    
+    // region UByte-UInt operations
+    override operator fun UByte.plus(other: UInt): UByte = (this + other).toUByte()
+    override operator fun UByte.times(other: UInt): UByte = (this * other).toUByte()
+    // endregion
+    
+    // region UByte-ULong operations
+    override operator fun UByte.plus(other: ULong): UByte = (this + other).toUByte()
+    override operator fun UByte.times(other: ULong): UByte = (this * other).toUByte()
+    // endregion
+    
+    // region UInt-UByte operations
+    override operator fun UInt.plus(other: UByte): UByte = (this + other).toUByte()
+    override operator fun UInt.times(other: UByte): UByte = (this * other).toUByte()
+    // endregion
+    
+    // region ULong-UByte operations
+    override operator fun ULong.plus(other: UByte): UByte = (this + other).toUByte()
+    override operator fun ULong.times(other: UByte): UByte = (this * other).toUByte()
+    // endregion
+    
+    // region UByte-UByte operations
+    override operator fun UByte.plus(other: UByte): UByte = (this + other).toUByte()
+    override operator fun UByte.times(other: UByte): UByte = (this * other).toUByte()
+    override fun power(base: UByte, exponent: UInt): UByte = base squaringPower exponent
+    override fun power(base: UByte, exponent: ULong): UByte = base squaringPower exponent
+    override infix fun UByte.pow(exponent: UInt): UByte = power(this, exponent)
+    override infix fun UByte.pow(exponent: ULong): UByte = power(this, exponent)
     // endregion
 }
 
@@ -459,13 +503,14 @@ public fun KoneContextRegistryBuilder.installUByteContext() {
     )
     contextsBuilder[Reification.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Equality.Key(uByteSuppliedType)] = UByteContext
+    contextsBuilder[Semiring.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Order.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Hashing.Key(uByteSuppliedType)] = UByteContext
 }
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UShortContext: Reification<UShort>, Equality<UShort>, Order<UShort>, Hashing<UShort> {
+public data object UShortContext: Reification<UShort>, Semiring<UShort>, Order<UShort>, Hashing<UShort> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UShort
     override fun reifyMaybe(element: Any?): Maybe<UShort> = if (element is UShort) Some(element) else None
@@ -475,6 +520,45 @@ public data object UShortContext: Reification<UShort>, Equality<UShort>, Order<U
     
     // region Order
     override fun UShort.compareWith(other: UShort): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+    
+    // region Constants
+    override val zero: UShort get() = 0.toUShort()
+    override val one: UShort get() = 1.toUShort()
+    // endregion
+    
+    // region Integers conversion
+    override fun valueOf(arg: UInt): UShort = arg.toUShort()
+    override fun valueOf(arg: ULong): UShort = arg.toUShort()
+    // endregion
+    
+    // region UShort-UInt operations
+    override operator fun UShort.plus(other: UInt): UShort = (this + other).toUShort()
+    override operator fun UShort.times(other: UInt): UShort = (this * other).toUShort()
+    // endregion
+    
+    // region UShort-ULong operations
+    override operator fun UShort.plus(other: ULong): UShort = (this + other).toUShort()
+    override operator fun UShort.times(other: ULong): UShort = (this * other).toUShort()
+    // endregion
+    
+    // region UInt-UShort operations
+    override operator fun UInt.plus(other: UShort): UShort = (this + other).toUShort()
+    override operator fun UInt.times(other: UShort): UShort = (this * other).toUShort()
+    // endregion
+    
+    // region ULong-UShort operations
+    override operator fun ULong.plus(other: UShort): UShort = (this + other).toUShort()
+    override operator fun ULong.times(other: UShort): UShort = (this * other).toUShort()
+    // endregion
+    
+    // region UShort-UShort operations
+    override operator fun UShort.plus(other: UShort): UShort = (this + other).toUShort()
+    override operator fun UShort.times(other: UShort): UShort = (this * other).toUShort()
+    override fun power(base: UShort, exponent: UInt): UShort = base squaringPower exponent
+    override fun power(base: UShort, exponent: ULong): UShort = base squaringPower exponent
+    override infix fun UShort.pow(exponent: UInt): UShort = power(this, exponent)
+    override infix fun UShort.pow(exponent: ULong): UShort = power(this, exponent)
     // endregion
 }
 
@@ -487,13 +571,14 @@ public fun KoneContextRegistryBuilder.installUShortContext() {
     )
     contextsBuilder[Reification.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Equality.Key(uShortSuppliedType)] = UShortContext
+    contextsBuilder[Semiring.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Order.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Hashing.Key(uShortSuppliedType)] = UShortContext
 }
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>, Hashing<UInt> {
+public data object UIntContext: Reification<UInt>, Semiring<UInt>, Order<UInt>, Hashing<UInt> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UInt
     override fun reifyMaybe(element: Any?): Maybe<UInt> = if (element is UInt) Some(element) else None
@@ -503,6 +588,35 @@ public data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>, 
     
     // region Order
     override fun UInt.compareWith(other: UInt): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+    
+    // region Constants
+    override val zero: UInt get() = 0u
+    override val one: UInt get() = 1u
+    // endregion
+    
+    // region Integers conversion
+    override fun valueOf(arg: UInt): UInt = arg
+    override fun valueOf(arg: ULong): UInt = arg.toUInt()
+    // endregion
+    
+    // region UInt-ULong operations
+    override operator fun UInt.plus(other: ULong): UInt = (this + other).toUInt()
+    override operator fun UInt.times(other: ULong): UInt = (this * other).toUInt()
+    // endregion
+    
+    // region ULong-UInt operations
+    override operator fun ULong.plus(other: UInt): UInt = (this + other).toUInt()
+    override operator fun ULong.times(other: UInt): UInt = (this * other).toUInt()
+    // endregion
+    
+    // region UInt-UInt operations
+    override operator fun UInt.plus(other: UInt): UInt = this + other
+    override operator fun UInt.times(other: UInt): UInt = this * other
+    override fun power(base: UInt, exponent: UInt): UInt = base squaringPower exponent
+    override fun power(base: UInt, exponent: ULong): UInt = base squaringPower exponent
+    override infix fun UInt.pow(exponent: UInt): UInt = power(this, exponent)
+    override infix fun UInt.pow(exponent: ULong): UInt = power(this, exponent)
     // endregion
 }
 
@@ -515,13 +629,14 @@ public fun KoneContextRegistryBuilder.installUIntContext() {
     )
     contextsBuilder[Reification.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Equality.Key(uIntSuppliedType)] = UIntContext
+    contextsBuilder[Semiring.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Order.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Hashing.Key(uIntSuppliedType)] = UIntContext
 }
 
 // TODO: Make it a semiring
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-public data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULong>, Hashing<ULong> {
+public data object ULongContext: Reification<ULong>, Semiring<ULong>, Order<ULong>, Hashing<ULong> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is ULong
     override fun reifyMaybe(element: Any?): Maybe<ULong> = if (element is ULong) Some(element) else None
@@ -531,6 +646,35 @@ public data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULon
     
     // region Order
     override fun ULong.compareWith(other: ULong): ComparisonResult = this.compareTo(other).asComparisonResult()
+    // endregion
+    
+    // region Constants
+    override val zero: ULong get() = 0.toULong()
+    override val one: ULong get() = 1.toULong()
+    // endregion
+    
+    // region Integers conversion
+    override fun valueOf(arg: UInt): ULong = arg.toULong()
+    override fun valueOf(arg: ULong): ULong = arg
+    // endregion
+    
+    // region ULong-UInt operations
+    override operator fun ULong.plus(other: UInt): ULong = this + other
+    override operator fun ULong.times(other: UInt): ULong = this * other
+    // endregion
+    
+    // region UInt-ULong operations
+    override operator fun UInt.plus(other: ULong): ULong = this + other
+    override operator fun UInt.times(other: ULong): ULong = this * other
+    // endregion
+    
+    // region ULong-ULong operations
+    override operator fun ULong.plus(other: ULong): ULong = this + other
+    override operator fun ULong.times(other: ULong): ULong = this * other
+    override fun power(base: ULong, exponent: UInt): ULong = base squaringPower exponent
+    override fun power(base: ULong, exponent: ULong): ULong = base squaringPower exponent
+    override infix fun ULong.pow(exponent: UInt): ULong = power(this, exponent)
+    override infix fun ULong.pow(exponent: ULong): ULong = power(this, exponent)
     // endregion
 }
 
@@ -543,6 +687,7 @@ public fun KoneContextRegistryBuilder.installULongContext() {
     )
     contextsBuilder[Reification.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Equality.Key(uLongSuppliedType)] = ULongContext
+    contextsBuilder[Semiring.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Order.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Hashing.Key(uLongSuppliedType)] = ULongContext
 }
@@ -666,6 +811,7 @@ public fun KoneContextRegistryBuilder.installDoubleContext() {
     )
     contextsBuilder[Reification.Key(doubleSuppliedType)] = DoubleContext
     contextsBuilder[Equality.Key(doubleSuppliedType)] = DoubleContext
+    contextsBuilder[Semiring.Key(doubleSuppliedType)] = DoubleContext
     contextsBuilder[Ring.Key(doubleSuppliedType)] = DoubleContext
     contextsBuilder[Field.Key(doubleSuppliedType)] = DoubleContext
     contextsBuilder[Order.Key(doubleSuppliedType)] = DoubleContext
@@ -695,6 +841,10 @@ public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>,
     // region Constants
     override val zero: Float get() = 0f
     override val one: Float get() = 1f
+    // endregion
+    
+    // region Equality
+    override fun Float.isZero(): Boolean = this == 0.0f || this == -0.0f
     // endregion
 
     // region Conversion
@@ -787,6 +937,7 @@ public fun KoneContextRegistryBuilder.installFloatContext() {
     )
     contextsBuilder[Reification.Key(floatSuppliedType)] = FloatContext
     contextsBuilder[Equality.Key(floatSuppliedType)] = FloatContext
+    contextsBuilder[Semiring.Key(floatSuppliedType)] = FloatContext
     contextsBuilder[Ring.Key(floatSuppliedType)] = FloatContext
     contextsBuilder[Field.Key(floatSuppliedType)] = FloatContext
     contextsBuilder[Order.Key(floatSuppliedType)] = FloatContext
