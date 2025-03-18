@@ -7,6 +7,7 @@
 
 package dev.lounres.kone.comparison
 
+import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.context.load
@@ -21,7 +22,7 @@ import kotlin.reflect.KVariance
 
 /**
  * Describes a context that provides equality [equivalence relation](https://en.wikipedia.org/wiki/Equivalence_relation)
- * on the set of elements of type [Element]. The relation is described by [equalsTo] function.
+ * on the set of elements of type [Element] (or some subdomain). The relation is described by [equalsTo] function.
  *
  * Such contexts are used instead of usual [equals] overloading for several reasons. Some of them are:
  * - Following structural pattern, any behaviour *between* elements should not be a part of the elements' logic
@@ -30,12 +31,15 @@ import kotlin.reflect.KVariance
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Equality<in Element> {
+public interface Equality<in Element> : KoneContext {
     /**
      * Checks equality of [this] and [other] elements.
      */
     public infix fun Element.equalsTo(other: Element): Boolean = this == other
     
+    /**
+     * Registry key for [Equality] interface in [KoneContextRegistry].
+     */
     public class Key<Element>(
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Equality<Element>> {
@@ -53,14 +57,36 @@ public interface Equality<in Element> {
     }
 }
 
-public fun <Element> KoneContextRegistry.loadEqualityFor(elementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(elementType))
-public fun <Element> KoneContextRegistry.loadEqualityForOrNull(elementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(elementType))
-public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(elementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(elementType), default)
-public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(elementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(elementType), block)
+/**
+ * Shortcut for getting [Equality] context for the given [suppliedElementType].
+ * Throws if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadEqualityFor(suppliedElementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Equality] context for the given [suppliedElementType]
+ * or `null` if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadEqualityForOrNull(suppliedElementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Equality] context for the given [suppliedElementType]
+ * or [default] context if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(suppliedElementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(suppliedElementType), default)
+/**
+ * Shortcut for getting [Equality] context for the given [suppliedElementType]
+ * or compute [block] to get such context if there is no such context in the registry.
+ */
+public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(suppliedElementType), block)
 
+/**
+ * Installs default [Equality] context for the given [suppliedElementType] into context registry builder.
+ */
 public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType<Element>) {
     contextsBuilder[Equality.Key(suppliedElementType)] = defaultEquality<Element>()
 }
+/**
+ * Installs absolute [Equality] context for the given [suppliedElementType] into context registry builder.
+ */
 public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppliedElementType: SuppliedType<Element>) {
     contextsBuilder[Equality.Key(suppliedElementType)] = absoluteEquality<Element>()
 }
@@ -74,38 +100,56 @@ context(equality: Equality<Element>)
 public inline infix fun <Element> Element.equalsTo(other: Element): Boolean = with(equality) { this@equalsTo equalsTo other }
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for negation of [Equality.coincidesWith].
+ * A shortcut for negation of [equalsTo].
  */
 // FIXME: KT-5351
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean = !(this@notEqualsTo equalsTo other)
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for [Equality.coincidesWith].
+ * A shortcut for [equalsTo].
  */
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.eq(other: Element): Boolean = this equalsTo other
 /**
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
- * A shortcut for negation of [Equality.coincidesWith].
+ * A shortcut for negation of [equalsTo].
  */
 // FIXME: KT-5351
 context(_: Equality<Element>)
 public inline infix fun <Element> Element.neq(other: Element): Boolean = !(this equalsTo other)
 
+/**
+ * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
+ * and is equal to right-hand side.
+ */
 context(reification: Reification<Element>, _: Equality<Element>)
 @Suppress("UNCHECKED_CAST")
 public inline infix fun <Element> Any?.tryEqualsTo(other: Element): Boolean =
     if (this !in reification) false else (this as Element) equalsTo other
 
-context(_: Reification<Element>, _: Equality<Element>)
-public inline infix fun <Element> Any?.tryNotEqualsTo(other: Element): Boolean = !(this tryEqualsTo other)
+/**
+ * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
+ * and is not equal to right-hand side.
+ */
+context(reification: Reification<Element>, _: Equality<Element>)
+@Suppress("UNCHECKED_CAST")
+public inline infix fun <Element> Any?.tryNotEqualsTo(other: Element): Boolean =
+    if (this !in reification) false else (this as Element) notEqualsTo other
 
+/**
+ * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
+ * and is equal to right-hand side. A shortcut for [tryEqualsTo].
+ */
 context(_: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryEq(other: Element): Boolean = this tryEqualsTo other
 
+/**
+ * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
+ * and is not equal to right-hand side. A shortcut for [tryNotEqualsTo].
+ */
 context(_: Reification<Element>, _: Equality<Element>)
-public inline infix fun <Element> Any?.tryNeq(other: Element): Boolean = !(this tryEqualsTo other)
+public inline infix fun <Element> Any?.tryNeq(other: Element): Boolean = this tryNotEqualsTo other
 
 /**
  * [Equality] builder from an [equalizer] that checks equality of the `left` and `right` elements.
@@ -116,13 +160,10 @@ public inline fun <Element> Equality(crossinline equalizer: (left: Element, righ
     }
 
 /**
- * Returns [Equality] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value.
+ * Returns [Equality] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value.
  */
 public fun <Element> defaultEquality(): Equality<Element> = DefaultEquality
 /**
- * Returns [Equality] instance which [Equality.coincidesWith] operator just uses absolute equality `===` operator's result as a return value.
+ * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
 public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteEquality
-
-public inline fun <Element, Result> defaultEquality(block: context(Equality<Element>) () -> Result): Result = block(DefaultEquality)
-public inline fun <Element, Result> absoluteEquality(block: context(Equality<Element>) () -> Result): Result = block(AbsoluteEquality)

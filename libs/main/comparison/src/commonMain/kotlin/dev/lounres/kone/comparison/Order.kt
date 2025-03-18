@@ -7,6 +7,7 @@
 
 package dev.lounres.kone.comparison
 
+import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.load
 import dev.lounres.kone.context.loadOrDefault
@@ -29,8 +30,7 @@ public enum class ComparisonResult {
 }
 
 /**
- * Describes a context that provides [linear (total) order](https://en.wikipedia.org/wiki/Total_order) as a [compareTo]
- * besides inherited [coincidesWith] operator. This operator should return `0` iff [coincidesWith] returns `true`
+ * Describes a context that provides [linear (total) order](https://en.wikipedia.org/wiki/Total_order) as a [compareTo].
  *
  * Such contexts are used instead of usual [compareTo] operator defined right inside the [Element] type for several reasons.
  * Some of them are:
@@ -40,9 +40,15 @@ public enum class ComparisonResult {
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Order<in Element> {
+public interface Order<in Element> : KoneContext {
+    /**
+     * Compares [this] and [other] elements.
+     */
     public infix fun Element.compareWith(other: Element): ComparisonResult
     
+    /**
+     * Registry key for [Order] interface in [KoneContextRegistry].
+     */
     public class Key<Element>(
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Order<Element>> {
@@ -60,20 +66,39 @@ public interface Order<in Element> {
     }
 }
 
-public fun <Element> KoneContextRegistry.loadOrderFor(elementType: SuppliedType<Element>): Order<Element> = load(Order.Key(elementType))
-public fun <Element> KoneContextRegistry.loadOrderForOrNull(elementType: SuppliedType<Element>): Order<Element>? = loadOrNull(Order.Key(elementType))
-public fun <Element> KoneContextRegistry.loadOrderForOrDefault(elementType: SuppliedType<Element>, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(elementType), default)
-public inline fun <Element> KoneContextRegistry.loadOrderForOrElse(elementType: SuppliedType<Element>, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(elementType), block)
+/**
+ * Shortcut for getting [Order] context for the given [suppliedElementType].
+ * Throws if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadOrderFor(suppliedElementType: SuppliedType<Element>): Order<Element> = load(Order.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Order] context for the given [suppliedElementType]
+ * or `null` if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadOrderForOrNull(suppliedElementType: SuppliedType<Element>): Order<Element>? = loadOrNull(Order.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Order] context for the given [suppliedElementType]
+ * or [default] context if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadOrderForOrDefault(suppliedElementType: SuppliedType<Element>, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(suppliedElementType), default)
+/**
+ * Shortcut for getting [Order] context for the given [suppliedElementType]
+ * or compute [block] to get such context if there is no such context in the registry.
+ */
+public inline fun <Element> KoneContextRegistry.loadOrderForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(suppliedElementType), block)
 
 /**
- * Provides comparison of two elements. Alternative of [KotlinStdlibComparator] but with result of type [ComparisonResult].
+ * Provides comparison of two elements. Alternative of [Kotlin stlib Comparator][KotlinStdlibComparator] but with result of type [ComparisonResult].
  */
 public fun interface Comparator<in Element> {
+    /**
+     * Compares [left] and [right] elements.
+     */
     public fun compare(left: Element, right: Element): ComparisonResult
 }
 
 /**
- * Shortcut to convert comparison result from [Comparable]'s and [KotlinStdlibComparator]'s terms to
+ * Shortcut to convert comparison result from [Comparable]'s and [Kotlin stlib Comparator][KotlinStdlibComparator]'s terms to
  * [Order]'s and Kone [Comparator]'s terms.
  */
 public fun Int.asComparisonResult(): ComparisonResult =
@@ -85,7 +110,7 @@ public fun Int.asComparisonResult(): ComparisonResult =
 
 /**
  * Shortcut to convert comparison result from [Comparable]'s and [Order]'s terms to
- * [KotlinStdlibComparator]'s and Kone [Comparator]'s terms.
+ * [Kotlin stlib Comparator][KotlinStdlibComparator]'s and Kone [Comparator]'s terms.
  */
 public fun ComparisonResult.asKotlinComparisonResult(): Int =
     when (this) {
@@ -95,13 +120,13 @@ public fun ComparisonResult.asKotlinComparisonResult(): Int =
     }
 
 /**
- * Converts Kone [Comparator] to [Kotlin Comparator][KotlinStdlibComparator].
+ * Converts Kone [Comparator] to [Kotlin stlib Comparator][KotlinStdlibComparator].
  */
 public fun <Element> Comparator<Element>.asKotlinStdlib(): KotlinStdlibComparator<Element> =
     KotlinStdlibComparator { left, right -> compare(left, right).asKotlinComparisonResult() }
 
 /**
- * Converts [Kotlin Comparator][KotlinStdlibComparator] to Kone [Comparator].
+ * Converts [Kotlin stlib Comparator][KotlinStdlibComparator] to Kone [Comparator].
  */
 public fun <Element> KotlinStdlibComparator<Element>.asKotlinStdlib(): Comparator<Element> =
     Comparator { left, right -> compare(left, right).asComparisonResult() }
@@ -120,9 +145,14 @@ public infix fun <Element> Element.compareWith(other: Element): ComparisonResult
 context(_: Order<Element>)
 public operator fun <Element> Element.compareTo(other: Element): Int = this.compareWith(other).asKotlinComparisonResult()
 
-// FIXME: KT-5351
+/**
+ * Alternative notation to `==` operator that uses [Order.compareTo] for comparison.
+ */
 context(_: Order<Element>)
 public inline infix fun <Element> Element.coincidesWith(other: Element): Boolean = this.compareWith(other) == ComparisonResult.Equal
+/**
+ * Alternative notation to `!=` operator that uses [Order.compareTo] for comparison.
+ */
 // FIXME: KT-5351
 context(_: Order<Element>)
 public inline infix fun <Element> Element.notCoincidesWith(other: Element): Boolean = this.compareWith(other) != ComparisonResult.Equal
@@ -184,7 +214,7 @@ public fun <Element> max(a: Element, b: Element): Element = if (a geq b) a else 
  */
 context(_: Order<Element>)
 public fun <Element> min(vararg elements: Element): Element {
-    if (elements.isEmpty()) throw IllegalArgumentException("Cannot calculate minimum of an empty collection of elements")
+    require(elements.isNotEmpty()) { "Cannot calculate minimum of an empty collection of elements" }
     return elements.reduce { a, b -> min(a, b) }
 }
 /**
@@ -194,13 +224,12 @@ public fun <Element> min(vararg elements: Element): Element {
  */
 context(_: Order<Element>)
 public fun <Element> max(vararg elements: Element): Element {
-    if (elements.isEmpty()) throw IllegalArgumentException("Cannot calculate maximum of an empty collection of elements")
+    require(elements.isNotEmpty()) { "Cannot calculate maximum of an empty collection of elements" }
     return elements.reduce { a, b -> max(a, b) }
 }
 
 /**
- * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
- * that compares the `left` and `right` elements to each other.
+ * [Order] builder from a [comparator] that compares the `left` and `right` elements to each other.
  */
 public inline fun <Element> Order(crossinline comparator: (left: Element, right: Element) -> ComparisonResult): Order<Element> =
     object : Order<Element> {
@@ -208,8 +237,7 @@ public inline fun <Element> Order(crossinline comparator: (left: Element, right:
     }
 
 /**
- * [Order] builder from a [equalizer] that checks equality of the `left` and `right` elements and [comparator]
- * that compares the `left` and `right` elements to each other.
+ * [Order] builder from a [comparator] that compares the `left` and `right` elements to each other.
  */
 public inline fun <Element> Order(comparator: Comparator<Element>): Order<Element> =
     object : Order<Element> {
@@ -217,8 +245,7 @@ public inline fun <Element> Order(comparator: Comparator<Element>): Order<Elemen
     }
 
 /**
- * Returns [Order] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value
- * and which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
+ * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
 public fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
 /**

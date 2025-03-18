@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.comparison
 
+import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.context.load
@@ -28,9 +29,15 @@ import kotlin.reflect.KVariance
  * - Such separation of entities and operations over them brings modularity: you can change operations context
  *   leaving the entities the same.
  */
-public interface Hashing<in Element> {
+public interface Hashing<in Element> : KoneContext {
+    /**
+     * Computes hash code of [this] element.
+     */
     public fun Element.hash(): Int = this.hashCode()
     
+    /**
+     * Registry key for [Hashing] interface in [KoneContextRegistry].
+     */
     public class Key<Element>(
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Hashing<Element>> {
@@ -48,15 +55,38 @@ public interface Hashing<in Element> {
     }
 }
 
-public fun <Element> KoneContextRegistry.loadHashingFor(elementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(elementType))
-public fun <Element> KoneContextRegistry.loadHashingForOrNull(elementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(elementType))
-public fun <Element> KoneContextRegistry.loadHashingForOrDefault(elementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(elementType), default)
-public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(elementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(elementType), block)
+/**
+ * Shortcut for getting [Hashing] context for the given [suppliedElementType].
+ * Throws if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadHashingFor(suppliedElementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Hashing] context for the given [suppliedElementType]
+ * or `null` if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadHashingForOrNull(suppliedElementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Hashing] context for the given [suppliedElementType]
+ * or [default] context if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadHashingForOrDefault(suppliedElementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(suppliedElementType), default)
+/**
+ * Shortcut for getting [Hashing] context for the given [suppliedElementType]
+ * or compute [block] to get such context if there is no such context in the registry.
+ */
+public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(suppliedElementType), block)
 
+/**
+ * Installs default [Hashing] context for the given [suppliedElementType] into context registry builder.
+ */
 public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType<Element>) {
     contextsBuilder[Hashing.Key(suppliedElementType)] = defaultHashing<Element>()
 }
 
+/**
+ * Computes a hash code of [this] element in the provided [Hashing] context.
+ * A bridge contextual function for [Hashing.hash].
+ */
 context(hashing: Hashing<Element>)
 public fun <Element> Element.hash(): Int = with(hashing) { this@hash.hash() }
 
@@ -73,6 +103,3 @@ public inline fun <Element> Hashing(crossinline hasher: (Element) -> Int): Hashi
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
 public fun <Element> defaultHashing(): Hashing<Element> = DefaultHashing
-
-public inline fun <Element, Result> defaultHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultHashing)
-public inline fun <Element, Result> absoluteHashing(block: context(Hashing<Element>) () -> Result): Result = block(DefaultHashing)

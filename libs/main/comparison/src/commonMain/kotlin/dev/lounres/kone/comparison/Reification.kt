@@ -7,6 +7,7 @@
 
 package dev.lounres.kone.comparison
 
+import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.context.load
@@ -21,13 +22,43 @@ import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
-
-public interface Reification<out Element> {
+/**
+ * Describes a context that checks if the element lays in specific domain.
+ * It is usually used in pair with contexts like [Equality], [Order], or [Hashing]
+ * to check that the element lays in the second context's domain.
+ *
+ * For example, it is needed for covariant sets/maps.
+ * Without it, methods like `KoneSet.contains` cannot be covariant.
+ */
+public interface Reification<out Element> : KoneContext {
+    /**
+     * Checks if the [element] lays in described by this instance domain.
+     */
     public operator fun contains(element: Any?): Boolean
+    /**
+     * Checks if the [element] lays in described by this instance domain,
+     * and if the element does lay in the domain, returns [Some] of it,
+     * otherwise returns [None].
+     */
     public fun reifyMaybe(element: Any?): Maybe<Element>
+    /**
+     * Checks if the [element] lays in described by this instance domain,
+     * and if the element does lay in the domain, returns it,
+     * otherwise returns null.
+     */
     public fun reifyOrNull(element: Any?): Element?
+    /**
+     * Checks if the [element] lays in described by this instance domain,
+     * and if the element does lay in the domain, returns it,
+     * otherwise throws [ReificationException].
+     *
+     * @throws ReificationException
+     */
     public fun reify(element: Any?): Element
     
+    /**
+     * Registry key for [Reification] interface in [KoneContextRegistry].
+     */
     public class Key<Element>(
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Reification<Element>> {
@@ -45,23 +76,70 @@ public interface Reification<out Element> {
     }
 }
 
-public fun <Element> KoneContextRegistry.loadReificationFor(elementType: SuppliedType<Element>): Reification<Element> = load(Reification.Key(elementType))
-public fun <Element> KoneContextRegistry.loadReificationForOrNull(elementType: SuppliedType<Element>): Reification<Element>? = loadOrNull(Reification.Key(elementType))
-public fun <Element> KoneContextRegistry.loadReificationForOrDefault(elementType: SuppliedType<Element>, default: Reification<Element>): Reification<Element> = loadOrDefault(Reification.Key(elementType), default)
-public inline fun <Element> KoneContextRegistry.loadReificationForOrElse(elementType: SuppliedType<Element>, block: () -> Reification<Element>): Reification<Element> = loadOrElse(Reification.Key(elementType), block)
+/**
+ * Shortcut for getting [Reification] context for the given [suppliedElementType].
+ * Throws if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadReificationFor(suppliedElementType: SuppliedType<Element>): Reification<Element> = load(Reification.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Reification] context for the given [suppliedElementType]
+ * or `null` if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadReificationForOrNull(suppliedElementType: SuppliedType<Element>): Reification<Element>? = loadOrNull(Reification.Key(suppliedElementType))
+/**
+ * Shortcut for getting [Reification] context for the given [suppliedElementType]
+ * or [default] context if there is no such context in the registry.
+ */
+public fun <Element> KoneContextRegistry.loadReificationForOrDefault(suppliedElementType: SuppliedType<Element>, default: Reification<Element>): Reification<Element> = loadOrDefault(Reification.Key(suppliedElementType), default)
+/**
+ * Shortcut for getting [Reification] context for the given [suppliedElementType]
+ * or compute [block] to get such context if there is no such context in the registry.
+ */
+public inline fun <Element> KoneContextRegistry.loadReificationForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Reification<Element>): Reification<Element> = loadOrElse(Reification.Key(suppliedElementType), block)
 
-public inline fun <reified Element> KoneContextRegistryBuilder.installReificationFor(elementType: SuppliedType<Element>) {
-    contextsBuilder[Reification.Key(elementType)] = Reification()
+/**
+ * Installs [Reification] context for the given [suppliedElementType] into context registry builder.
+ * The installed reification just only checks that the element is of type [Element].
+ */
+public inline fun <reified Element> KoneContextRegistryBuilder.installReificationFor(suppliedElementType: SuppliedType<Element>) {
+    contextsBuilder[Reification.Key(suppliedElementType)] = Reification()
 }
 
+/**
+ * Describes that element was forcefully (via [Reification.reify]) checked on lying in the domain,
+ * and the check was unsuccessful.
+ */
 public class ReificationException(message: String) : RuntimeException(message)
 
+/**
+ * Throws [ReificationException] with the provided [message].
+ */
 public fun reificationException(message: String = "Value can not be reified"): Nothing = throw ReificationException(message)
 
+/**
+ * Checks if the [element] lays in described by this instance domain,
+ * and if the element does lay in the domain, returns [Some] of it,
+ * otherwise returns [None].
+ * A bridge contextual function for [Reification.reifyMaybe].
+ */
 context(reification: Reification<Element>)
 public fun <Element> reifyMaybe(element: Any?): Maybe<Element> = reification.reifyMaybe(element)
+/**
+ * Checks if the [element] lays in described by this instance domain,
+ * and if the element does lay in the domain, returns it,
+ * otherwise returns null.
+ * A bridge contextual function for [Reification.reifyOrNull].
+ */
 context(reification: Reification<Element>)
 public fun <Element> reifyOrNull(element: Any?): Element? = reification.reifyOrNull(element)
+/**
+ * Checks if the [element] lays in described by this instance domain,
+ * and if the element does lay in the domain, returns it,
+ * otherwise throws [ReificationException].
+ * A bridge contextual function for [Reification.reify].
+ *
+ * @throws ReificationException
+ */
 context(reification: Reification<Element>)
 public fun <Element> reify(element: Any?): Element = reification.reify(element)
 
@@ -89,6 +167,3 @@ public inline fun <reified Element> Reification(): Reification<Element> =
         override fun reifyOrNull(element: Any?): Element? = element as? Element
         override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
     }
-
-public inline fun <reified Element, Result> Reification(block: context(Reification<Element>) () -> Result): Result =
-    block(Reification())

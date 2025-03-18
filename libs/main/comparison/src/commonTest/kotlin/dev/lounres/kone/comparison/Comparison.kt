@@ -7,38 +7,30 @@ package dev.lounres.kone.comparison
 
 import dev.lounres.kone.context.invoke
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.withClue
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import io.kotest.property.checkAll
 
 
-class SomeClass
-
-class Comparison : StringSpec({
+class Comparison : FunSpec({
     
-    "test that the default and absolute equalities and hashings are the same instances`" {
+    test("test that the default equalities and hashings are the same instances`") {
         assertSoftly {
             defaultEquality<Int>() shouldBeSameInstanceAs defaultEquality<String>()
-            defaultEquality<Int>() shouldBeSameInstanceAs defaultHashing<String>()
-            absoluteEquality<Int>() shouldNotBeSameInstanceAs defaultEquality<String>()
-            absoluteEquality<Int>() shouldBeSameInstanceAs absoluteHashing<String>()
+            absoluteEquality<Int>() shouldNotBeSameInstanceAs absoluteEquality<String>()
+            defaultHashing<Int>() shouldBeSameInstanceAs defaultHashing<String>()
         }
     }
     
-    "test behaviours of the default and absolute equalities and hashings" {
+    test("test behaviours of the default equalities and hashings") {
         assertSoftly {
-            withClue("testing default equality/hashing") {
-                val defaultIntEquality = defaultEquality<Int>()
-                checkAll<Int, Int> { a, b ->
-                    (a == b) shouldBe defaultIntEquality { a eq b }
-                }
-                val defaultStringEquality = defaultEquality<String>()
-                checkAll<String, String> { a, b ->
-                    (a == b) shouldBe defaultStringEquality { a eq b }
-                }
+            checkAll<Int, Int> { a, b ->
+                (a == b) shouldBe (defaultEquality<Int>()) { a eq b }
+            }
+            checkAll<String, String> { a, b ->
+                (a == b) shouldBe (defaultEquality<String>()) { a eq b }
             }
         }
     }
