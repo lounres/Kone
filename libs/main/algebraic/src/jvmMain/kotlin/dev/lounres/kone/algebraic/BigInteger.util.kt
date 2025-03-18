@@ -8,19 +8,19 @@ package dev.lounres.kone.algebraic
 import java.math.BigInteger
 
 
-private val bigTwoIn32th: BigInteger = BigInteger.ONE shl 32
-private val bigTwoIn64th: BigInteger = BigInteger.ONE shl 64
+private val bigTwoIn31th: BigInteger = BigInteger.ONE shl 31
+private val bigTwoIn63th: BigInteger = BigInteger.ONE shl 63
 
 // TODO: Check correctness. The solution was made in a spur of time.
 /**
  * Converts [this] value to [BigInteger].
  */
 public fun UInt.toBigInteger(): BigInteger =
-    if (this xor 0b10000000000000000000000000000000u == 0u) BigInteger.valueOf(this.toLong())
-    else BigInteger.valueOf(this.toLong()) + bigTwoIn32th
+    if (this xor 0b10000000000000000000000000000000u == 0u) BigInteger.valueOf(this.toInt().toLong())
+    else BigInteger.valueOf(this.toInt().toLong()) + bigTwoIn31th
 /**
  * Converts [this] value to [BigInteger].
  */
 public fun ULong.toBigInteger(): BigInteger =
     if (this xor 0b1000000000000000000000000000000000000000000000000000000000000000u == 0uL) BigInteger.valueOf(this.toLong())
-    else BigInteger.valueOf(this.toLong()) + bigTwoIn64th
+    else BigInteger.valueOf(this.toLong()) + bigTwoIn63th
