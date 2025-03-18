@@ -52,7 +52,7 @@ public interface Reification<out Element> : KoneContext {
      * and if the element does lay in the domain, returns it,
      * otherwise throws [ReificationException].
      *
-     * @throws ReificationException
+     * @throws ReificationException iff the element is not a part of the described domain.
      */
     public fun reify(element: Any?): Element
     
@@ -120,6 +120,7 @@ public fun reificationException(message: String = "Value can not be reified"): N
  * Checks if the [element] lays in described by this instance domain,
  * and if the element does lay in the domain, returns [Some] of it,
  * otherwise returns [None].
+ *
  * A bridge contextual function for [Reification.reifyMaybe].
  */
 context(reification: Reification<Element>)
@@ -128,6 +129,7 @@ public fun <Element> reifyMaybe(element: Any?): Maybe<Element> = reification.rei
  * Checks if the [element] lays in described by this instance domain,
  * and if the element does lay in the domain, returns it,
  * otherwise returns null.
+ *
  * A bridge contextual function for [Reification.reifyOrNull].
  */
 context(reification: Reification<Element>)
@@ -136,9 +138,10 @@ public fun <Element> reifyOrNull(element: Any?): Element? = reification.reifyOrN
  * Checks if the [element] lays in described by this instance domain,
  * and if the element does lay in the domain, returns it,
  * otherwise throws [ReificationException].
+ *
  * A bridge contextual function for [Reification.reify].
  *
- * @throws ReificationException
+ * @throws ReificationException iff the element is not a part of the described domain.
  */
 context(reification: Reification<Element>)
 public fun <Element> reify(element: Any?): Element = reification.reify(element)

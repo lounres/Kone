@@ -132,7 +132,9 @@ public fun <Element> KotlinStdlibComparator<Element>.asKotlinStdlib(): Comparato
     Comparator { left, right -> compare(left, right).asComparisonResult() }
 
 /**
- * Compares [this] and [other] elements. Bridge contextual function for [Order.compareWith].
+ * Compares [this] and [other] elements.
+ *
+ * A bridge contextual function for [Order.compareWith].
  */
 context(order: Order<Element>)
 public infix fun <Element> Element.compareWith(other: Element): ComparisonResult = with(order) { this@compareWith.compareWith(other) }

@@ -21,7 +21,7 @@ import kotlin.jvm.JvmName
 // region Number-Int additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0`, the result is `this`.
@@ -39,7 +39,7 @@ import kotlin.jvm.JvmName
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -47,7 +47,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Int): Number = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [-other][other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0`, the result is `this`.
@@ -65,7 +65,7 @@ public infix fun <Number> Number.doublingPlus(other: Int): Number = rightAddMult
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -74,7 +74,7 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number = rightAddMul
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to multiply argument [this] by integer [other] if [other] is positive, multiply `-this` by [other]
- * if [other] is negative, or return [Ring.zero] if [other] is zero.
+ * if [other] is negative, or return [zero][Semiring.zero] if [other] is zero.
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0`, the result is `zero`.
@@ -92,7 +92,7 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number = rightAddMul
  * `(this + this) + (this + this)` actual computation is equivalent to
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -103,7 +103,7 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultip
 // region Number-UInt additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0`, the result is `this`.
@@ -117,7 +117,7 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultip
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -125,7 +125,7 @@ context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: UInt): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [-other][other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0u`, the result is `this`.
@@ -139,7 +139,7 @@ public infix fun <Number> Number.doublingPlus(other: UInt): Number = rightAddMul
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -147,7 +147,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to multiply argument [this] by integer [other] if [other] is positive, or return [Ring.zero] if [other] is zero.
+ * to multiply argument [this] by integer [other] if [other] is positive, or return [zero][Semiring.zero] if [other] is zero.
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0u`, the result is `zero`.
@@ -161,7 +161,7 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMu
  * `(this + this) + (this + this)` actual computation is equivalent to
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -173,7 +173,7 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMulti
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to multiply argument [this] by integer [other] if [other] is positive, multiply `-this` by [other]
- * if [other] is negative, or return [Ring.zero] if [other] is zero.
+ * if [other] is negative, or return [zero][Semiring.zero] if [other] is zero.
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0L`, the result is `this`.
@@ -191,7 +191,7 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMulti
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -199,7 +199,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Long): Number = rightAddMultipliedByDoubling(this, one, other, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [-other][other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0L`, the result is `this`.
@@ -217,7 +217,7 @@ public infix fun <Number> Number.doublingPlus(other: Long): Number = rightAddMul
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -226,7 +226,7 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number = rightAddMu
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to multiply argument [this] by integer [other] if [other] is positive, multiply `-this` by [other]
- * if [other] is negative, or return [Ring.zero] if [other] is zero.
+ * if [other] is negative, or return [zero][Semiring.zero] if [other] is zero.
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0L`, the result is `zero`.
@@ -244,7 +244,7 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number = rightAddMu
  * `(this + this) + (this + this)` actual computation is equivalent to
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -255,7 +255,7 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMulti
 // region Number-ULong additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0L`, the result is `this`.
@@ -269,7 +269,7 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMulti
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -277,7 +277,7 @@ context(_: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: ULong): Number = rightAddMultipliedByDoubling(this, one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [other] to the right of [this].
+ * to add [one][Semiring.one] multiplied by integer [-other][other] to the right of [this].
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0uL`, the result is `this`.
@@ -291,7 +291,7 @@ public infix fun <Number> Number.doublingPlus(other: ULong): Number = rightAddMu
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -299,7 +299,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddMultipliedByDoubling(this, -one, other) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to multiply argument [this] by integer [other] if [other] is positive, or return [Ring.zero] if [other] is zero.
+ * to multiply argument [this] by integer [other] if [other] is positive, or return [zero][Semiring.zero] if [other] is zero.
  *
  * For example here are resulting expressions for the following values of [other]:
  * - If `other == 0uL`, the result is `zero`.
@@ -313,7 +313,7 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddM
  * `(this + this) + (this + this)` actual computation is equivalent to
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
  * @usesMathJax
  */
@@ -324,7 +324,7 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMult
 // region Int-Number additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0`, the result is `other`.
@@ -342,7 +342,7 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMult
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -350,7 +350,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Int.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [-this][this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0`, the result is `other`.
@@ -368,7 +368,7 @@ public infix fun <Number> Int.doublingPlus(other: Number): Number = rightAddMult
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -377,7 +377,7 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number = rightAddMul
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to multiply argument [other] by integer [this] if [this] is positive, multiply `-other` by [this]
- * if [this] is negative, or return [Ring.zero] if [this] is zero.
+ * if [this] is negative, or return [zero][Semiring.zero] if [this] is zero.
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0`, the result is `zero`.
@@ -395,7 +395,7 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number = rightAddMul
  * `(other + other) + (other + other)` actual computation is equivalent to
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -406,7 +406,7 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultip
 // region UInt-Number additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0u`, the result is `other`.
@@ -420,7 +420,7 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultip
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -428,7 +428,7 @@ context(_: Semiring<Number>)
 public infix fun <Number> UInt.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [-this][this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0u`, the result is `other`.
@@ -442,7 +442,7 @@ public infix fun <Number> UInt.doublingPlus(other: Number): Number = rightAddMul
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -450,7 +450,7 @@ context(_: Ring<Number>)
 public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to multiply argument [other] by integer [this] if [this] is positive, or return [Ring.zero] if [this] is zero.
+ * to multiply argument [other] by integer [this] if [this] is positive, or return [zero][Semiring.zero] if [this] is zero.
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0u`, the result is `zero`.
@@ -464,7 +464,7 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMu
  * `(other + other) + (other + other)` actual computation is equivalent to
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -475,7 +475,7 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMulti
 // region Long-Number additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0L`, the result is `other`.
@@ -493,7 +493,7 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMulti
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -501,7 +501,7 @@ context(_: Ring<Number>)
 public infix fun <Number> Long.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this, { left, right -> left + right }, { left, right -> left - right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [-this][this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0L`, the result is `other`.
@@ -519,7 +519,7 @@ public infix fun <Number> Long.doublingPlus(other: Number): Number = rightAddMul
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -528,7 +528,7 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number = rightAddMu
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to multiply argument [other] by integer [this] if [this] is positive, multiply `-other` by [this]
- * if [this] is negative, or return [Ring.zero] if [this] is zero.
+ * if [this] is negative, or return [zero][Semiring.zero] if [this] is zero.
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0L`, the result is `zero`.
@@ -546,7 +546,7 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number = rightAddMu
  * `(other + other) + (other + other)` actual computation is equivalent to
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -557,7 +557,7 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMulti
 // region ULong-Number additive operations
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0uL`, the result is `other`.
@@ -571,7 +571,7 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMulti
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -579,7 +579,7 @@ context(_: Semiring<Number>)
 public infix fun <Number> ULong.doublingPlus(other: Number): Number = rightAddMultipliedByDoubling(other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to add [Ring.one] multiplied by integer [this] to the right of [other].
+ * to add [one][Semiring.one] multiplied by integer [-this][this] to the right of [other].
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0uL`, the result is `other`.
@@ -593,7 +593,7 @@ public infix fun <Number> ULong.doublingPlus(other: Number): Number = rightAddMu
  * `(one + one) + (one + one)` actual computation is equivalent to
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -601,7 +601,7 @@ context(_: Ring<Number>)
 public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddMultipliedByDoubling(-other, one, this) { left, right -> left + right }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to multiply argument [other] by integer [this] if [this] is positive, or return [Ring.zero] if [this] is zero.
+ * to multiply argument [other] by integer [this] if [this] is positive, or return [zero][Semiring.zero] if [this] is zero.
  *
  * For example here are resulting expressions for the following values of [this]:
  * - If `this == 0uL`, the result is `zero`.
@@ -615,7 +615,7 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddM
  * `(other + other) + (other + other)` actual computation is equivalent to
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
  * @usesMathJax
  */
@@ -627,7 +627,7 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMult
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, raise `this.reciprocal`
- * in the power of [exponent] if [exponent] is negative, or return [Ring.one] if [exponent] is zero.
+ * in the power of [exponent] if [exponent] is negative, or return [one][Semiring.one] if [exponent] is zero.
  *
  * For example here are resulting expressions for the following values of [exponent]:
  * - If `exponent == 0`, the result is `one`.
@@ -645,7 +645,7 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMult
  * `(this * this) * (this * this)` actual computation is equivalent to
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
  * @usesMathJax
  */
@@ -654,7 +654,7 @@ context(_: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [Ring.one] if [exponent] is zero.
+ * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [one][Semiring.one] if [exponent] is zero.
  *
  * For example here are resulting expressions for the following values of [exponent]:
  * - If `exponent == 0u`, the result is `one`.
@@ -668,7 +668,7 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMul
  * `(this * this) * (this * this)` actual computation is equivalent to
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
  * @usesMathJax
  */
@@ -678,7 +678,7 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMu
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, raise `this.reciprocal`
- * in the power of [exponent] if [exponent] is negative, or return [Ring.one] if [exponent] is zero.
+ * in the power of [exponent] if [exponent] is negative, or return [one][Semiring.one] if [exponent] is zero.
  *
  * For example here are resulting expressions for the following values of [exponent]:
  * - If `exponent == 0L`, the result is `one`.
@@ -696,7 +696,7 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMu
  * `(this * this) * (this * this)` actual computation is equivalent to
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
  * @usesMathJax
  */
@@ -705,7 +705,7 @@ context(_: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
- * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [Ring.one] if [exponent] is zero.
+ * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [one][Semiring.one] if [exponent] is zero.
  *
  * For example here are resulting expressions for the following values of [exponent]:
  * - If `exponent == 0uL`, the result is `one`.
@@ -719,7 +719,7 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMu
  * `(this * this) * (this * this)` actual computation is equivalent to
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
- * So one can say that [Ring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
  * @usesMathJax
  */

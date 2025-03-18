@@ -85,6 +85,7 @@ public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(supplie
 
 /**
  * Computes a hash code of [this] element in the provided [Hashing] context.
+ *
  * A bridge contextual function for [Hashing.hash].
  */
 context(hashing: Hashing<Element>)

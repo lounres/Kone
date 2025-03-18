@@ -25,10 +25,10 @@ import kotlin.math.pow as kpow
 
 
 /**
- * Default ring for [Byte] type which values are seen as integers and where overflows are ignored.
- * It also implements [Order] and [Hashing] interfaces in the default understanding.
+ * Default Euclidean ring for [Byte] type which values are seen as integers and where overflows are ignored.
+ * It also implements [Reification], [Order], and [Hashing] interfaces in the default understanding.
  *
- * Such ring is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<Byte>, Hashing<Byte> {
@@ -116,9 +116,22 @@ public data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<By
 }
 
 /**
- * Default ring of the [Byte] type. See [ByteContext] for more.
+ * Default context of the [Byte] type. See [ByteContext] for more.
  */
 public val Byte.Companion.context: ByteContext get() = ByteContext
+
+/**
+ * Installs default [Byte] context (see [ByteContext])
+ * as the following type of contexts with [Byte] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [EuclideanSemiring],
+ * - [EuclideanRing],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installByteContext() {
     val byteSuppliedType = SuppliedType.Regular<Byte>(
         kClass = Byte::class,
@@ -129,16 +142,17 @@ public fun KoneContextRegistryBuilder.installByteContext() {
     contextsBuilder[Equality.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Semiring.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Ring.Key(byteSuppliedType)] = ByteContext
+    contextsBuilder[EuclideanSemiring.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[EuclideanRing.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Order.Key(byteSuppliedType)] = ByteContext
     contextsBuilder[Hashing.Key(byteSuppliedType)] = ByteContext
 }
 
 /**
- * Default ring for [Short] type which values are seen as integers and where overflows are ignored.
- * It also implements [Order] and [Hashing] interfaces in the default understanding.
+ * Default Euclidean ring for [Short] type which values are seen as integers and where overflows are ignored.
+ * It also implements [Reification], [Order], and [Hashing] interfaces in the default understanding.
  *
- * Such ring is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order<Short>, Hashing<Short> {
@@ -226,9 +240,22 @@ public data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order
 }
 
 /**
- * Default ring of the [Short] type. See [ShortContext] for more.
+ * Default context of the [Short] type. See [ShortContext] for more.
  */
 public val Short.Companion.context: ShortContext get() = ShortContext
+
+/**
+ * Installs default [Short] context (see [ShortContext])
+ * as the following type of contexts with [Short] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [EuclideanSemiring],
+ * - [EuclideanRing],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installShortContext() {
     val shortSuppliedType = SuppliedType.Regular<Short>(
         kClass = Short::class,
@@ -245,10 +272,10 @@ public fun KoneContextRegistryBuilder.installShortContext() {
 }
 
 /**
- * Default ring for [Int] type which values are seen as integers and where overflows are ignored.
- * It also implements [Order] and [Hashing] interfaces in the default understanding.
+ * Default Euclidean ring for [Int] type which values are seen as integers and where overflows are ignored.
+ * It also implements [Reification], [Order], and [Hashing] interfaces in the default understanding.
  *
- * Such ring is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>, Hashing<Int> {
@@ -324,9 +351,22 @@ public data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>,
 }
 
 /**
- * Default ring of the [Int] type. See [IntContext] for more.
+ * Default context of the [Int] type. See [IntContext] for more.
  */
 public val Int.Companion.context: IntContext get() = IntContext
+
+/**
+ * Installs default [Int] context (see [IntContext])
+ * as the following type of contexts with [Int] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [EuclideanSemiring],
+ * - [EuclideanRing],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installIntContext() {
     val intSuppliedType = SuppliedType.Regular<Int>(
         kClass = Int::class,
@@ -343,10 +383,10 @@ public fun KoneContextRegistryBuilder.installIntContext() {
 }
 
 /**
- * Default ring for [Long] type which values are seen as integers and where overflows are ignored.
- * It also implements [Order] and [Hashing] interfaces in the default understanding.
+ * Default Euclidean ring for [Long] type which values are seen as integers and where overflows are ignored.
+ * It also implements [Reification], [Order], and [Hashing] interfaces in the default understanding.
  *
- * Such ring is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Long>, Hashing<Long> {
@@ -422,9 +462,22 @@ public data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Lo
 }
 
 /**
- * Default ring of the [Long] type. See [LongContext] for more.
+ * Default context of the [Long] type. See [LongContext] for more.
  */
 public val Long.Companion.context: LongContext get() = LongContext
+
+/**
+ * Installs default [Long] context (see [LongContext])
+ * as the following type of contexts with [Long] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [EuclideanSemiring],
+ * - [EuclideanRing],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installLongContext() {
     val longSuppliedType = SuppliedType.Regular<Long>(
         kClass = Long::class,
@@ -440,6 +493,12 @@ public fun KoneContextRegistryBuilder.installLongContext() {
     contextsBuilder[Hashing.Key(longSuppliedType)] = LongContext
 }
 
+/**
+ * Default Euclidean semiring for [UByte] type which values are seen as non-negative integers and where overflows are ignored.
+ * It also implements [Reification], [ExtendedSemiring], [Order], and [Hashing] interfaces in the default understanding.
+ *
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, ExtendedSemiring<UByte>, Order<UByte>, Hashing<UByte> {
     // region Reification
@@ -501,7 +560,21 @@ public data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, E
     // endregion
 }
 
+/**
+ * Default context of the [UByte] type. See [UByteContext] for more.
+ */
 public val UByte.Companion.context: UByteContext get() = UByteContext
+
+/**
+ * Installs default [UByte] context (see [UByteContext])
+ * as the following type of contexts with [UByte] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [EuclideanSemiring],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installUByteContext() {
     val uByteSuppliedType = SuppliedType.Regular<UByte>(
         kClass = UByte::class,
@@ -511,10 +584,17 @@ public fun KoneContextRegistryBuilder.installUByteContext() {
     contextsBuilder[Reification.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Equality.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Semiring.Key(uByteSuppliedType)] = UByteContext
+    contextsBuilder[EuclideanSemiring.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Order.Key(uByteSuppliedType)] = UByteContext
     contextsBuilder[Hashing.Key(uByteSuppliedType)] = UByteContext
 }
 
+/**
+ * Default Euclidean semiring for [UShort] type which values are seen as non-negative integers and where overflows are ignored.
+ * It also implements [Reification], [ExtendedSemiring], [Order], and [Hashing] interfaces in the default understanding.
+ *
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>, ExtendedSemiring<UShort>, Order<UShort>, Hashing<UShort> {
     // region Reification
@@ -576,7 +656,21 @@ public data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>
     // endregion
 }
 
+/**
+ * Default context of the [UShort] type. See [UShortContext] for more.
+ */
 public val UShort.Companion.context: UShortContext get() = UShortContext
+
+/**
+ * Installs default [UShort] context (see [UShortContext])
+ * as the following type of contexts with [UShort] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [EuclideanSemiring],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installUShortContext() {
     val uShortSuppliedType = SuppliedType.Regular<UShort>(
         kClass = UShort::class,
@@ -586,10 +680,17 @@ public fun KoneContextRegistryBuilder.installUShortContext() {
     contextsBuilder[Reification.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Equality.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Semiring.Key(uShortSuppliedType)] = UShortContext
+    contextsBuilder[EuclideanSemiring.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Order.Key(uShortSuppliedType)] = UShortContext
     contextsBuilder[Hashing.Key(uShortSuppliedType)] = UShortContext
 }
 
+/**
+ * Default Euclidean semiring for [UInt] type which values are seen as non-negative integers and where overflows are ignored.
+ * It also implements [Reification], [ExtendedSemiring], [Order], and [Hashing] interfaces in the default understanding.
+ *
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, ExtendedSemiring<UInt>, Order<UInt>, Hashing<UInt> {
     // region Reification
@@ -641,7 +742,21 @@ public data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Exte
     // endregion
 }
 
+/**
+ * Default context of the [UInt] type. See [UIntContext] for more.
+ */
 public val UInt.Companion.context: UIntContext get() = UIntContext
+
+/**
+ * Installs default [UInt] context (see [UIntContext])
+ * as the following type of contexts with [UInt] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [EuclideanSemiring],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installUIntContext() {
     val uIntSuppliedType = SuppliedType.Regular<UInt>(
         kClass = UInt::class,
@@ -651,10 +766,17 @@ public fun KoneContextRegistryBuilder.installUIntContext() {
     contextsBuilder[Reification.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Equality.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Semiring.Key(uIntSuppliedType)] = UIntContext
+    contextsBuilder[EuclideanSemiring.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Order.Key(uIntSuppliedType)] = UIntContext
     contextsBuilder[Hashing.Key(uIntSuppliedType)] = UIntContext
 }
 
+/**
+ * Default Euclidean semiring for [ULong] type which values are seen as non-negative integers and where overflows are ignored.
+ * It also implements [Reification], [ExtendedSemiring], [Order], and [Hashing] interfaces in the default understanding.
+ *
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
+ */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, ExtendedSemiring<ULong>, Order<ULong>, Hashing<ULong> {
     // region Reification
@@ -706,7 +828,21 @@ public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, E
     // endregion
 }
 
+/**
+ * Default context of the [ULong] type. See [ULongContext] for more.
+ */
 public val ULong.Companion.context: ULongContext get() = ULongContext
+
+/**
+ * Installs default [ULong] context (see [ULongContext])
+ * as the following type of contexts with [ULong] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [EuclideanSemiring],
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installULongContext() {
     val uLongSuppliedType = SuppliedType.Regular<ULong>(
         kClass = ULong::class,
@@ -716,6 +852,7 @@ public fun KoneContextRegistryBuilder.installULongContext() {
     contextsBuilder[Reification.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Equality.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Semiring.Key(uLongSuppliedType)] = ULongContext
+    contextsBuilder[EuclideanSemiring.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Order.Key(uLongSuppliedType)] = ULongContext
     contextsBuilder[Hashing.Key(uLongSuppliedType)] = ULongContext
 }
@@ -725,7 +862,7 @@ public fun KoneContextRegistryBuilder.installULongContext() {
  * [NaN][Double.NaN], [+INF][Double.POSITIVE_INFINITY], and [-INF][Double.NEGATIVE_INFINITY] are ignored.
  * It also implements [Order] and [Hashing] interfaces in the default understanding.
  *
- * Such field is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object DoubleContext: Reification<Double>, Field<Double>, Order<Double>, Hashing<Double> {
@@ -828,9 +965,21 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
 }
 
 /**
- * Default field of the [Double] type. See [DoubleContext] for more.
+ * Default context of the [Double] type. See [DoubleContext] for more.
  */
 public val Double.Companion.context: DoubleContext get() = DoubleContext
+
+/**
+ * Installs default [Double] context (see [DoubleContext])
+ * as the following type of contexts with [Double] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [Field]
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installDoubleContext() {
     val doubleSuppliedType = SuppliedType.Regular<Double>(
         kClass = Double::class,
@@ -851,7 +1000,7 @@ public fun KoneContextRegistryBuilder.installDoubleContext() {
  * [NaN][Float.NaN], [+INF][Float.POSITIVE_INFINITY], and [-INF][Float.NEGATIVE_INFINITY] are ignored.
  * It also implements [Order] and [Hashing] interfaces in the default understanding.
  *
- * Such field is useless when used as is, but useful when used in generalized algorithms.
+ * Such context is useless when used as is, but useful when used in generalised algorithms.
  */
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>, Hashing<Float> {
@@ -954,9 +1103,21 @@ public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>,
 }
 
 /**
- * Default field of the [Float] type. See [FloatContext] for more.
+ * Default context of the [Float] type. See [FloatContext] for more.
  */
 public val Float.Companion.context: FloatContext get() = FloatContext
+
+/**
+ * Installs default [Float] context (see [FloatContext])
+ * as the following type of contexts with [Float] as a type argument:
+ * - [Reification],
+ * - [Equality],
+ * - [Semiring],
+ * - [Ring],
+ * - [Field]
+ * - [Order],
+ * - [Hashing].
+ */
 public fun KoneContextRegistryBuilder.installFloatContext() {
     val floatSuppliedType = SuppliedType.Regular<Float>(
         kClass = Float::class,

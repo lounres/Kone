@@ -93,6 +93,7 @@ public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppl
 
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
+ *
  * A bridge contextual function for [Equality.equalsTo].
  */
 // FIXME: KT-5351
