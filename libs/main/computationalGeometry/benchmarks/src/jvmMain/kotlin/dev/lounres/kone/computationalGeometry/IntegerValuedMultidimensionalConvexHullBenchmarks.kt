@@ -6,7 +6,7 @@
 package dev.lounres.kone.computationalGeometry
 
 import com.charleskorn.kaml.Yaml
-import dev.lounres.kone.algebraic.BigIntegerRing
+import dev.lounres.kone.algebraic.BigIntegerContext
 import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.emptyKoneList
