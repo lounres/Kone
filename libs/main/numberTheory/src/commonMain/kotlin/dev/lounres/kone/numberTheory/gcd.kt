@@ -7,6 +7,7 @@ package dev.lounres.kone.numberTheory
 
 import dev.lounres.kone.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
+import dev.lounres.kone.algebraic.EuclideanSemiring
 import dev.lounres.kone.algebraic.divrem
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.minus
@@ -135,20 +136,20 @@ internal tailrec fun bezoutIdentityWithGCDInternalLogic(a: Long, b: Long, m1: Lo
  *
  * @usesMathJax
  */
-context(_: EuclideanRing<N>)
+context(_: EuclideanSemiring<N>)
 @ExperimentalKoneAPI
 public tailrec fun <N> gcd(a: N, b: N): N = if (a.isZero()) b else gcd(b % a, a)
 
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(_: EuclideanRing<N>)
+context(_: EuclideanSemiring<N>)
 @ExperimentalKoneAPI
 public fun <N> gcd(vararg values: N): N = if (values.isEmpty()) zero else values.reduce { a, b -> gcd(a, b) }
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(_: EuclideanRing<N>)
+context(_: EuclideanSemiring<N>)
 @ExperimentalKoneAPI
 public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else zero }
 
