@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.comparison.equalsTo
 import dev.lounres.kone.context
+import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope
 import kotlin.math.max
 import kotlin.math.min
@@ -42,7 +43,7 @@ public open class ListPolynomialSpace<Number>(
     final override val one: ListPolynomial<Number> by lazy { numberOne.asListPolynomial() }
     override val variable: ListPolynomial<Number> by lazy { ListPolynomial(numberZero, numberOne) }
 
-    final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = context(numberContext) {
+    final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = numberContext {
         for (index in 0u .. max(this.coefficients.lastIndex, other.coefficients.lastIndex))
             when (index) {
                 !in this.coefficients.indices -> if (other.coefficients[index].isNotZero()) return false
@@ -51,12 +52,12 @@ public open class ListPolynomialSpace<Number>(
             }
         return true
     }
-    final override fun ListPolynomial<Number>.isZero(): Boolean = context(numberContext) { coefficients.all { it.isZero() } }
-    final override fun ListPolynomial<Number>.isOne(): Boolean = context(numberContext) { coefficients.allIndexed { index, it -> index == 0u || it.isZero() } }
+    final override fun ListPolynomial<Number>.isZero(): Boolean = numberContext { coefficients.all { it.isZero() } }
+    final override fun ListPolynomial<Number>.isOne(): Boolean = numberContext { coefficients.allIndexed { index, it -> index == 0u || it.isZero() } }
 
     final override fun polynomialValueOf(value: Number): ListPolynomial<Number> = value.asListPolynomial()
 
-    final override operator fun ListPolynomial<Number>.plus(other: Int): ListPolynomial<Number> = context(numberContext) {
+    final override operator fun ListPolynomial<Number>.plus(other: Int): ListPolynomial<Number> = numberContext {
         if (other == 0) this
         else {
             val result = coefficients.getOrElse(0u) { numberOne } + other
@@ -66,7 +67,7 @@ public open class ListPolynomialSpace<Number>(
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: Int): ListPolynomial<Number> = context(numberContext) {
+    final override operator fun ListPolynomial<Number>.minus(other: Int): ListPolynomial<Number> = numberContext {
         if (other == 0) this
         else {
             val result = coefficients.getOrElse(0u) { numberOne } - other

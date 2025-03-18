@@ -20,7 +20,7 @@ import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.comparison.neq
 import dev.lounres.kone.repeat
-import dev.lounres.kone.context
+import dev.lounres.kone.context.invoke
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)
@@ -32,22 +32,22 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
     override val size: UInt
         get() = backingList.size
 
-    override fun contains(element: Element): Boolean = backingList.any { context(elementEquality) { it.element eq element } }
+    override fun contains(element: Element): Boolean = backingList.any { elementEquality { it.element eq element } }
     
     override fun nodeOfOrNull(element: Element): KoneMutableLinkedSetNode<Element>? =
-        backingList.firstThatOrNull { context(elementEquality) { it.element eq element } }
+        backingList.firstThatOrNull { elementEquality { it.element eq element } }
     override fun nodeOf(element: Element): KoneMutableLinkedSetNode<Element> =
-        backingList.firstThatOrNull { context(elementEquality) { it.element eq element } } ?: noCorrespondingSetNodeException()
+        backingList.firstThatOrNull { elementEquality { it.element eq element } } ?: noCorrespondingSetNodeException()
 
     override fun add(element: Element) {
-        if (backingList.all { context(elementEquality) { it.element neq element } }) {
+        if (backingList.all { elementEquality { it.element neq element } }) {
             val newNode = Node(element)
             val listNode = backingList.addNode(newNode)
             newNode.listNode = listNode
         }
     }
     override fun addNode(element: Element): KoneMutableLinkedSetNode<Element> {
-        val node = backingList.firstThatOrNull { context(elementEquality) { it.element eq element } }
+        val node = backingList.firstThatOrNull { elementEquality { it.element eq element } }
         return if (node == null) {
             val newNode = Node(element)
             val listNode = backingList.addNode(newNode)
@@ -64,7 +64,7 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
     }
 
     override fun remove(element: Element) {
-        val index = backingList.firstIndexThat { _, node -> context(elementEquality) { node.element eq element } }
+        val index = backingList.firstIndexThat { _, node -> elementEquality { node.element eq element } }
         if (index != backingList.size) backingList.removeAt(index)
     }
     override fun removeAllThat(predicate: (element: Element) -> Boolean) {

@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.context
+import dev.lounres.kone.context.invoke
 
 
 //@Serializable(with = KoneListBackedSetWithContextSerializer::class)
@@ -27,7 +27,7 @@ public open class KoneListBackedSet<Element> @PublishedApi internal constructor(
 ) : KoneSet<Element> {
     override val size: UInt get() = backingList.size
 
-    override fun contains(element: Element): Boolean = context(elementEquality) { element in backingList }
+    override fun contains(element: Element): Boolean = elementEquality { element in backingList }
 
     override fun iterator(): KoneIterator<Element> = backingList.iterator()
 

@@ -31,6 +31,7 @@ import dev.lounres.kone.collections.utils.sortedWith
 import dev.lounres.kone.collections.utils.withSetOrChangedReified
 import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
+import dev.lounres.kone.context.invoke
 import kotlin.jvm.JvmInline
 import kotlin.math.max
 import kotlin.reflect.KProperty
@@ -108,7 +109,7 @@ public open class LabeledPolynomialSpace<Number>(
 ) : MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>> {
     @PublishedApi
     internal fun KoneMutableReifiedMap<LabeledMonomialSignature, Number>.cleanZeroCoefficientsOut() {
-        removeAllThat { _, value -> context(numberContext) { value.isZero() } }
+        removeAllThat { _, value -> numberContext { value.isZero() } }
     }
     
     final override val numberZero: Number get() = numberContext.zero
@@ -127,7 +128,7 @@ public open class LabeledPolynomialSpace<Number>(
     override val one: LabeledPolynomial<Number> by lazy { numberOne.asLabeledPolynomial() }
 
     public override infix fun LabeledPolynomial<Number>.equalsTo(other: LabeledPolynomial<Number>): Boolean =
-        context(numberContext) { mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 eq c2 } }
+        numberContext { mergingAll(this.coefficients, other.coefficients, { it.value.isZero() }, { it.value.isZero() }) { _, c1, c2 -> c1 eq c2 } }
     public override fun LabeledPolynomial<Number>.isZero(): Boolean = coefficients.valuesView.all { context(numberContext) { it.isZero() } }
     public override fun LabeledPolynomial<Number>.isOne(): Boolean = coefficients.entriesView.all { it.key.isEmpty() || context(numberContext) { it.value.isZero() } }
 

@@ -18,7 +18,7 @@ import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.comparison.Equality
 import dev.lounres.kone.comparison.Reification
 import dev.lounres.kone.repeat
-import dev.lounres.kone.context
+import dev.lounres.kone.context.invoke
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)
@@ -30,10 +30,10 @@ public open class KoneListBackedMutableSet<Element> @PublishedApi internal const
     override val size: UInt
         get() = backingList.size
 
-    override fun contains(element: Element): Boolean = context(elementEquality) { element in backingList }
+    override fun contains(element: Element): Boolean = elementEquality { element in backingList }
 
     override fun add(element: Element) {
-        if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        if (elementEquality { element !in backingList }) backingList.add(element)
     }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         repeat(number) { add(builder(it)) }
@@ -44,7 +44,7 @@ public open class KoneListBackedMutableSet<Element> @PublishedApi internal const
     }
 
     override fun remove(element: Element) {
-        val index = context(elementEquality) { backingList.firstIndexOf(element) }
+        val index = elementEquality { backingList.firstIndexOf(element) }
         if (index != backingList.size) backingList.removeAt(index)
     }
     override fun removeAllThat(predicate: (element: Element) -> Boolean) {
