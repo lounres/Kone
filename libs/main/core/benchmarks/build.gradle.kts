@@ -1,0 +1,8 @@
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+            }
+        }
+    }
+}
