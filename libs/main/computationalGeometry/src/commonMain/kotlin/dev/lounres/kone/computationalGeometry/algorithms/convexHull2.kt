@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -20,9 +20,8 @@ import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.*
-import dev.lounres.kone.collections.set.comparison.koneSetEquality
+import dev.lounres.kone.collections.set.relations.koneSetEquality
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction2
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction2Polytope
@@ -32,6 +31,11 @@ import dev.lounres.kone.context
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.scope
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 

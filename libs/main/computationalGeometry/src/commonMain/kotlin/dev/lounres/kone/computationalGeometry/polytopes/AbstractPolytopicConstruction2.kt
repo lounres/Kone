@@ -15,9 +15,14 @@ import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableLinkedNoddedReifiedSet
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.installAbsoluteEqualityFor
+import dev.lounres.kone.relations.installDefaultHashingFor
+import dev.lounres.kone.relations.installReificationFor
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlinx.serialization.ExperimentalSerializationApi

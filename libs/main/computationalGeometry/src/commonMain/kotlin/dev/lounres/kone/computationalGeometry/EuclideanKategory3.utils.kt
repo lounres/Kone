@@ -1,12 +1,12 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory

@@ -10,9 +10,9 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.compareByOrdered
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.compareByOrdered
 import dev.lounres.kone.computationalGeometry.EuclideanKategory2
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.Point2

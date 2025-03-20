@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -20,10 +20,10 @@ import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.withIndex
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.compareTo
-import dev.lounres.kone.comparison.gt
-import dev.lounres.kone.comparison.lt
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.compareTo
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.lt
 import dev.lounres.kone.computationalGeometry.EuclideanKategory2
 import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.curves.Segment2

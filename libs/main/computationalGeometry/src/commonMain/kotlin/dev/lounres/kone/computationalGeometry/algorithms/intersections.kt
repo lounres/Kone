@@ -1,16 +1,21 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.curves.Line2
 import dev.lounres.kone.computationalGeometry.curves.Segment2
 import dev.lounres.kone.computationalGeometry.utils.cross
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.contains
+import dev.lounres.kone.relations.leq
+import dev.lounres.kone.relations.max
+import dev.lounres.kone.relations.min
+import dev.lounres.kone.relations.rangeTo
 
 
 public sealed interface Line2WithLine2IntersectionInSteps<out N> {
