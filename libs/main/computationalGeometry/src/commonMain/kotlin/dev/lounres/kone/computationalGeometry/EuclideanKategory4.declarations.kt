@@ -9,8 +9,8 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.computationalGeometry.comparison.pointEquality
-import dev.lounres.kone.computationalGeometry.comparison.vectorEquality
+import dev.lounres.kone.computationalGeometry.relations.pointEquality
+import dev.lounres.kone.computationalGeometry.relations.vectorEquality
 import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.minus
