@@ -7,10 +7,10 @@ package dev.lounres.kone.multidimensionalCollections.comparison
 
 import dev.lounres.kone.collections.array.contentEquals
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.hash
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.hash
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.context
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDShapeStrides

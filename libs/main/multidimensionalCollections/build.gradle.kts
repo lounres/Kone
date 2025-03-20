@@ -7,7 +7,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.libs.main.collections)
-                implementation(projects.libs.main.comparison)
+                implementation(projects.libs.main.relations)
                 implementation(projects.libs.main.algebraic)
                 
                 implementation(versions.kotlinx.serialization.core)

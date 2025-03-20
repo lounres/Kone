@@ -8,8 +8,8 @@
 package dev.lounres.kone.multidimensionalCollections.comparison
 
 import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.multidimensionalCollections.MDShape
 import dev.lounres.kone.repeat
 
