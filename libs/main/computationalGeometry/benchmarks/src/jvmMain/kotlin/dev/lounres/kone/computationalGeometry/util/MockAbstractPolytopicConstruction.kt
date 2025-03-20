@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -12,8 +12,8 @@ import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.koneSetOf
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.illegalCall
 
