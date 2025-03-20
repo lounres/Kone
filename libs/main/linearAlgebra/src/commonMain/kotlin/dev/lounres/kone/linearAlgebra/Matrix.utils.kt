@@ -9,8 +9,8 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.columnIndices
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2

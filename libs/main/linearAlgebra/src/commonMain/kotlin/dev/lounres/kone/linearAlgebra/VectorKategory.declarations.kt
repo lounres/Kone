@@ -6,7 +6,7 @@
 package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.comparison.MatrixEquality
 import dev.lounres.kone.linearAlgebra.comparison.columnVectorEquality

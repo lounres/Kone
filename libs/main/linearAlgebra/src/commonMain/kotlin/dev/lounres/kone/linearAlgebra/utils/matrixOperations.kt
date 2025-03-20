@@ -7,22 +7,10 @@ package dev.lounres.kone.linearAlgebra.utils
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
-import dev.lounres.kone.algebraic.zero
-import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.utils.foldIndexed
-import dev.lounres.kone.collections.utils.hasDuplicates
-import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.linearAlgebra.VectorKategory
-import dev.lounres.kone.scope
-import kotlin.sequences.fold
 
 
 context(_: Ring<N>)
