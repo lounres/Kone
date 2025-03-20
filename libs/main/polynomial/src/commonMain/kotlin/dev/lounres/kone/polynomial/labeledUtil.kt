@@ -10,7 +10,7 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.defaultHashing
 import kotlin.jvm.JvmName
 
 

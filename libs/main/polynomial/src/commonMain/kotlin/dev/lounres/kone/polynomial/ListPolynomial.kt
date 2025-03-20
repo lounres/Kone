@@ -10,7 +10,7 @@ package dev.lounres.kone.polynomial
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.equalsTo
+import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.context
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.scope

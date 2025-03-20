@@ -31,7 +31,7 @@ import dev.lounres.kone.collections.utils.filter
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.collections.utils.mapIndexedTo
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.repeat
 import dev.lounres.kone.context
 

@@ -10,8 +10,8 @@ package dev.lounres.kone.polynomial
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.*
-import dev.lounres.kone.collections.map.comparison.koneMapEquality
-import dev.lounres.kone.collections.map.comparison.koneMapHashing
+import dev.lounres.kone.collections.map.relations.koneMapEquality
+import dev.lounres.kone.collections.map.relations.koneMapHashing
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.buildKoneReifiedSet
@@ -29,9 +29,16 @@ import dev.lounres.kone.collections.utils.mergingAll
 import dev.lounres.kone.collections.utils.setOrChange
 import dev.lounres.kone.collections.utils.sortedWith
 import dev.lounres.kone.collections.utils.withSetOrChangedReified
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.defaultComparator
+import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.eq
 import kotlin.jvm.JvmInline
 import kotlin.math.max
 import kotlin.reflect.KProperty
@@ -71,20 +78,20 @@ internal constructor(
             Comparator { left: KoneMap<LabeledVariable, UInt>, right: KoneMap<LabeledVariable, UInt> ->
                 variableComparator
                 if (left === right) return@Comparator ComparisonResult.Equal
-
+                
                 val commonVariables =
                     buildKoneReifiedSet {
                         addAllFrom(left.keys)
                         addAllFrom(right.keys)
                     }.sortedWith(variableComparator)
-
+                
                 for (variable in commonVariables) {
                     val leftDeg = left.getOrElse(variable) { 0u }
                     val rightDeg = right.getOrElse(variable) { 0u }
                     val comparisonResult = defaultComparator<UInt>().compare(leftDeg, rightDeg)
                     if (comparisonResult != ComparisonResult.Equal) return@Comparator comparisonResult
                 }
-
+                
                 return@Comparator ComparisonResult.Equal
             }
         public val lex: Comparator<LabeledMonomialSignature> = lexBy { left: LabeledVariable, right: LabeledVariable -> defaultComparator<String>().compare(left.name, right.name) }

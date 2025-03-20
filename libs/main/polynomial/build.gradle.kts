@@ -8,7 +8,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.libs.main.core)
-                api(projects.libs.main.comparison) // TODO: Что-то транзитивность не сработала...
+                api(projects.libs.main.relations) // TODO: Что-то транзитивность не сработала...
                 api(projects.libs.main.algebraic)
                 api(projects.libs.main.collections)
             }

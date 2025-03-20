@@ -5,7 +5,7 @@ kotlin {
                 api(projects.libs.main.algebraic)
                 api(versions.kmath.core)
                 implementation(projects.libs.util.mapOperations)
-                implementation(projects.libs.main.comparison) // TODO: Что-то транзитивность не сработала...
+                implementation(projects.libs.main.relations) // TODO: Что-то транзитивность не сработала...
             }
         }
         commonTest {

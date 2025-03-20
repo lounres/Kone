@@ -19,7 +19,7 @@ import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.utils.associateBy
 import dev.lounres.kone.collections.utils.mapKeys
 import dev.lounres.kone.collections.utils.setOrChange
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.context
 
 
