@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -17,10 +17,10 @@ import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.map.getMaybe
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.geq
-import dev.lounres.kone.comparison.lt
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.geq
+import dev.lounres.kone.relations.lt
 import dev.lounres.kone.graphs.EdgeWeightedGraphEdge
 import dev.lounres.kone.graphs.EdgeWeightedGraphVertex
 import dev.lounres.kone.graphs.minus

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Gleb Minaev
+ * Copyright © 2025 Gleb Minaev
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
@@ -12,8 +12,8 @@ import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.defaultOrder
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.defaultOrder
 import dev.lounres.kone.graphs.Digraph
 import dev.lounres.kone.graphs.DigraphVertex
 
