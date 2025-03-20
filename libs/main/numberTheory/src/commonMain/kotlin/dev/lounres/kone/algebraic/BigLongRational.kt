@@ -6,12 +6,19 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.compareWith
+import dev.lounres.kone.relations.equalsTo
+import dev.lounres.kone.relations.hash
+import dev.lounres.kone.relations.reificationException
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.sign

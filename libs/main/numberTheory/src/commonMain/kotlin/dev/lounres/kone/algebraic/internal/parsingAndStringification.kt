@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.flatMap
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.context
 
 

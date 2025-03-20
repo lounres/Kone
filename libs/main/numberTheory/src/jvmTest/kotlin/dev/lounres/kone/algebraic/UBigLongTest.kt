@@ -7,15 +7,12 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.collections.array.isNotEmpty
 import dev.lounres.kone.collections.array.koneULongArrayOf
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.list.lastIndex
-import dev.lounres.kone.collections.utils.flatMap
 import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.comparison.ComparisonResult
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.equalsTo
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.equalsTo
+import dev.lounres.kone.relations.neq
 import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec

@@ -13,11 +13,17 @@ import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.slice
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.lt
+import dev.lounres.kone.relations.reificationException
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.max
@@ -55,7 +61,8 @@ internal val ULONG_BIT_SIZE = ULong.SIZE_BITS.toUInt()
 public fun UBigLong.Companion.from(array: KoneULongArray): UBigLong = UBigLong(array.removeLeadingZeros())
 public fun UBigLong.Companion.from(vararg array: ULong): UBigLong = UBigLong(KoneMutableULongArray(array).removeLeadingZeros())
 
-public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong>, ExtendedSemiring<UBigLong>, Order<UBigLong>, Hashing<UBigLong> {
+public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong>, ExtendedSemiring<UBigLong>,
+    Order<UBigLong>, Hashing<UBigLong> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UBigLong
     override fun reifyMaybe(element: Any?): Maybe<UBigLong> = if (element is UBigLong) Some(element) else None
