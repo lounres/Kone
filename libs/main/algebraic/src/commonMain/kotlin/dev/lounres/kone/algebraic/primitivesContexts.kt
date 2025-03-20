@@ -266,6 +266,7 @@ public fun KoneContextRegistryBuilder.installShortContext() {
     contextsBuilder[Equality.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Semiring.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Ring.Key(shortSuppliedType)] = ShortContext
+    contextsBuilder[EuclideanSemiring.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[EuclideanRing.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Order.Key(shortSuppliedType)] = ShortContext
     contextsBuilder[Hashing.Key(shortSuppliedType)] = ShortContext
@@ -377,6 +378,7 @@ public fun KoneContextRegistryBuilder.installIntContext() {
     contextsBuilder[Equality.Key(intSuppliedType)] = IntContext
     contextsBuilder[Semiring.Key(intSuppliedType)] = IntContext
     contextsBuilder[Ring.Key(intSuppliedType)] = IntContext
+    contextsBuilder[EuclideanSemiring.Key(intSuppliedType)] = IntContext
     contextsBuilder[EuclideanRing.Key(intSuppliedType)] = IntContext
     contextsBuilder[Order.Key(intSuppliedType)] = IntContext
     contextsBuilder[Hashing.Key(intSuppliedType)] = IntContext
@@ -488,6 +490,7 @@ public fun KoneContextRegistryBuilder.installLongContext() {
     contextsBuilder[Equality.Key(longSuppliedType)] = LongContext
     contextsBuilder[Semiring.Key(longSuppliedType)] = LongContext
     contextsBuilder[Ring.Key(longSuppliedType)] = LongContext
+    contextsBuilder[EuclideanSemiring.Key(longSuppliedType)] = LongContext
     contextsBuilder[EuclideanRing.Key(longSuppliedType)] = LongContext
     contextsBuilder[Order.Key(longSuppliedType)] = LongContext
     contextsBuilder[Hashing.Key(longSuppliedType)] = LongContext
@@ -883,6 +886,10 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
     // endregion
     
     // region Equality
+    // TODO: For now `0.0 != -0.0`, and there are other problems...
+//    override fun Double.equalsTo(other: Double): Boolean {
+//        TODO("Not yet implemented")
+//    }
     override fun Double.isZero(): Boolean = this == 0.0 || this == -0.0
     // endregion
 
