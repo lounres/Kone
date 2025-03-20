@@ -6,18 +6,9 @@
 package dev.lounres.kone.misc.composeCanvas
 
 import dev.lounres.kone.algebraic.installFloatContext
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.defaultHashing
-import dev.lounres.kone.comparison.installReificationFor
 import dev.lounres.kone.computationalGeometry.installEuclideanKategory2For
-import dev.lounres.kone.computationalGeometry.installEuclideanKategoryFor
-import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstruction
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex
-import dev.lounres.kone.computationalGeometry.polytopes.installAbstractPolytopicConstructionPropertiesFor
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.installVectorKategoryFor
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
