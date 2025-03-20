@@ -20,6 +20,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # External data
-inputData.js
+inputData.ts
 src/inputData.ts
 static/api
