@@ -20,9 +20,9 @@ import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.set.KoneLinkedSetIterator
 import dev.lounres.kone.collections.utils.forEach
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.gt
-import dev.lounres.kone.comparison.lt
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.lt
 import dev.lounres.kone.context
 
 

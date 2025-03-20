@@ -5,13 +5,13 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.collections.set.comparison
+package dev.lounres.kone.collections.set.relations
 
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.toKoneSet
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
+import dev.lounres.kone.relations.Equality
 
 
 internal open class KoneSetEquality<Element>(val elementEquality: Equality<Element>) : Equality<KoneSet<out Element>> {

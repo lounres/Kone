@@ -5,13 +5,13 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.collections.set.comparison
+package dev.lounres.kone.collections.set.relations
 
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.any
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some

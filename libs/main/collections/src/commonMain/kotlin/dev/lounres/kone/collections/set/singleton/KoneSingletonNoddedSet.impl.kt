@@ -12,9 +12,9 @@ import dev.lounres.kone.collections.set.KoneNoddedSetIterator
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.collections.set.KoneSetNode
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.context
 
 

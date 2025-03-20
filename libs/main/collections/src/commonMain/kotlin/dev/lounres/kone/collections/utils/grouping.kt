@@ -14,10 +14,10 @@ import dev.lounres.kone.collections.map.containsKey
 import dev.lounres.kone.collections.map.getMaybe
 import dev.lounres.kone.collections.map.koneContextualMutableMapOf
 import dev.lounres.kone.collections.map.koneMutableMapOf
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.isNone

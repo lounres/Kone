@@ -15,10 +15,10 @@ import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.list.toKoneSettableList
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.ComparisonResult
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.compareTo
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.compareTo
 import kotlin.jvm.JvmInline
 
 

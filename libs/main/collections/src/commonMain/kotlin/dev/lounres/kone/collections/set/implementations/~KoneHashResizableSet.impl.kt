@@ -18,11 +18,11 @@ import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstIndexThat
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.comparison.hash
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.hash
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import dev.lounres.kone.context

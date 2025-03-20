@@ -7,8 +7,8 @@ package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.Some

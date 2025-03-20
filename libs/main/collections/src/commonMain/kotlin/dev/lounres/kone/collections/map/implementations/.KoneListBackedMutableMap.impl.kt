@@ -22,10 +22,10 @@ import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
 import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.collections.set.toKoneSet
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.context
 
 

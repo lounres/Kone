@@ -15,10 +15,10 @@ import dev.lounres.kone.collections.noCorrespondingSetNodeException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.repeat
 import dev.lounres.kone.context.invoke
 

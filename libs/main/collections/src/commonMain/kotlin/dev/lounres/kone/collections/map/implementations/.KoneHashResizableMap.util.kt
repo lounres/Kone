@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.collections.map.implementations
 
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.defaultEquality
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultHashing
 
 
 public fun <Key, Value> KoneHashResizableMap(

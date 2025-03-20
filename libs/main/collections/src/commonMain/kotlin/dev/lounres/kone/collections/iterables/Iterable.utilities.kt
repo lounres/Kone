@@ -7,8 +7,8 @@ package dev.lounres.kone.collections.iterables
 
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.any
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.eq
 
 
 /**

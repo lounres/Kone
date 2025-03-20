@@ -8,8 +8,8 @@ package dev.lounres.kone.collections.set.implementations
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
 
 
 public fun <Element> KoneListBackedMutableSet(

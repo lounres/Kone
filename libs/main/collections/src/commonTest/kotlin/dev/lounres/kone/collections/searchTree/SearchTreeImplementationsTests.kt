@@ -11,8 +11,8 @@ import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.testEqualityByIteration
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultOrder
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.defaultOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs

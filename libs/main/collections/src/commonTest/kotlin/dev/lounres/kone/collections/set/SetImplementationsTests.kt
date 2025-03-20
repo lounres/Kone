@@ -5,10 +5,7 @@
 
 package dev.lounres.kone.collections.set
 
-import dev.lounres.kone.collections.list.KoneListValidator
-import dev.lounres.kone.collections.list.ListDisposabilityTest
-import dev.lounres.kone.collections.list.producers.KoneListProducer
-import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.relations.Equality
 import io.kotest.core.spec.style.FunSpec
 
 

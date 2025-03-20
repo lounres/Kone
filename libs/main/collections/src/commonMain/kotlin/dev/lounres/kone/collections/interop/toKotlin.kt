@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.context.invoke
 
 

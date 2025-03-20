@@ -5,15 +5,17 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.collections.map.comparison
+package dev.lounres.kone.collections.map.relations
 
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.map.iterator
 import dev.lounres.kone.collections.utils.copyTo
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
 import dev.lounres.kone.option.orElse
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.neq
 
 
 internal class KoneMapEntryEquality<Key, Value>(val keyEquality: Equality<Key>, val valueEquality: Equality<Value>) : Equality<KoneMapEntry<Key, Value>> {

@@ -15,8 +15,8 @@ import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.iterator
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Reification
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.repeat
 import dev.lounres.kone.context.invoke
 

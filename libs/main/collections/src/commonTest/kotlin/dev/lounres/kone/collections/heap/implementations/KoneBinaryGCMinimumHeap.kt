@@ -10,8 +10,8 @@ import dev.lounres.kone.collections.heap.MinimumHeapProducer
 import dev.lounres.kone.collections.heap.MinimumHeapImplementationDescription
 import dev.lounres.kone.collections.heap.MinimumHeapValidator
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.geq
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.geq
 import dev.lounres.kone.context
 import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse

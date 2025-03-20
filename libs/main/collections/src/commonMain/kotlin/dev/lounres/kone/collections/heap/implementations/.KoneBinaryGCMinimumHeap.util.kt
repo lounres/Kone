@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.collections.heap.HeapEntry
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Order
 
 
 public fun <Element, Priority> KoneBinaryGCMinimumHeap(priorityContext: Order<Priority>): KoneBinaryGCMinimumHeap<Element, Priority> =

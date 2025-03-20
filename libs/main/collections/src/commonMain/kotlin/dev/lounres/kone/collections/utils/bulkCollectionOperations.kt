@@ -32,11 +32,16 @@ import dev.lounres.kone.collections.utils.sorting.heapsortedWith
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithBy
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithByDescending
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithDescending
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.repeat
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.math.min

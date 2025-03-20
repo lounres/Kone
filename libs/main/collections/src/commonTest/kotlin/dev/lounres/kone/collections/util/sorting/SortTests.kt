@@ -13,10 +13,10 @@ import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.reverse
 import dev.lounres.kone.collections.utils.reversed
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultComparator
-import dev.lounres.kone.comparison.defaultOrder
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.defaultComparator
+import dev.lounres.kone.relations.defaultOrder
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec

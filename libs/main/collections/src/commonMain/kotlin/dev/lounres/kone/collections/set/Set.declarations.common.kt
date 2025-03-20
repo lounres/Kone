@@ -7,9 +7,9 @@ package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.defaultHashing
 
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)

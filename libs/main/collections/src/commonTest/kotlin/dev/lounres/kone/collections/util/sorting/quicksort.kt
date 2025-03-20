@@ -24,8 +24,8 @@ import dev.lounres.kone.collections.utils.sorting.quicksortedWith
 import dev.lounres.kone.collections.utils.sorting.quicksortedWithBy
 import dev.lounres.kone.collections.utils.sorting.quicksortedWithByDescending
 import dev.lounres.kone.collections.utils.sorting.quicksortedWithDescending
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.context
 
 

@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections.implementations
 
-import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.relations.Equality
 import kotlinx.benchmark.*
 
 

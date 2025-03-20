@@ -14,8 +14,8 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.defaultOrder
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.defaultOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs

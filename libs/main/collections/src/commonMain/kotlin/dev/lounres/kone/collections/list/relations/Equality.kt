@@ -5,12 +5,13 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.collections.list.comparison
+package dev.lounres.kone.collections.list.relations
 
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.comparison.*
 import dev.lounres.kone.context
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.neq
 
 
 internal open class KoneListEquality<Element>(open val elementEquality: Equality<Element>) : Equality<KoneList<Element>> {

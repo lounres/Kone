@@ -9,7 +9,11 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.toKoneSettableList
-import dev.lounres.kone.comparison.*
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.lt
 
 
 // TODO: Add outer variants: variants that create and use separate list for sorting and just assign result to target

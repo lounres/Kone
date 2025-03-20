@@ -13,8 +13,8 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityL
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableListProducer
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableListProducer
 import dev.lounres.kone.collections.list.indices
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.gt
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.gt
 import dev.lounres.kone.context
 import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse

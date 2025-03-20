@@ -24,8 +24,8 @@ import dev.lounres.kone.collections.utils.sorting.heapsortedWith
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithBy
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithByDescending
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithDescending
-import dev.lounres.kone.comparison.Comparator
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Comparator
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.context
 
 

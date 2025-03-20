@@ -10,9 +10,9 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.set.toKoneReifiedSet
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.absoluteEquality
-import dev.lounres.kone.comparison.defaultHashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.defaultHashing
 
 
 // TODO: Describe contracts on equals and hashCode.

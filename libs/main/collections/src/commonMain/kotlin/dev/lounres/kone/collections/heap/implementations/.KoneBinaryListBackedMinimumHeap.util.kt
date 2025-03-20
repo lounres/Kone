@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
-import dev.lounres.kone.comparison.Order
+import dev.lounres.kone.relations.Order
 
 
 public fun <Element, Priority> KoneBinaryListBackedMinimumHeap(

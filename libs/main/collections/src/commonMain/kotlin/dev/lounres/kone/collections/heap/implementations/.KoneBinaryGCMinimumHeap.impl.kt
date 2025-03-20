@@ -17,9 +17,9 @@ import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.indexOutOfBoundsException
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.gt
-import dev.lounres.kone.comparison.lt
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.lt
 import dev.lounres.kone.context
 
 

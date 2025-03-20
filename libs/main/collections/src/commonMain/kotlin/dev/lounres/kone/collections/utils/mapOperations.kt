@@ -8,11 +8,11 @@ package dev.lounres.kone.collections.utils
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.*
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.defaultEquality
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
