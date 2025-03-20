@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.comparison
+package dev.lounres.kone.relations
 
 import dev.lounres.kone.context.invoke
 import io.kotest.assertions.assertSoftly

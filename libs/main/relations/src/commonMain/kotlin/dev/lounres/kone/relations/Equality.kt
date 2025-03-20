@@ -5,7 +5,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package dev.lounres.kone.comparison
+package dev.lounres.kone.relations
 
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry

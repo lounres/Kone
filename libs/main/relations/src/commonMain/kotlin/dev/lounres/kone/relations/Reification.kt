@@ -5,7 +5,7 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.comparison
+package dev.lounres.kone.relations
 
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.KoneContextRegistry
