@@ -5,17 +5,17 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.compareTo
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.comparison.gt
-import dev.lounres.kone.comparison.hash
-import dev.lounres.kone.comparison.reify
-import dev.lounres.kone.comparison.reifyMaybe
-import dev.lounres.kone.comparison.reifyOrNull
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.compareTo
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.hash
+import dev.lounres.kone.relations.reify
+import dev.lounres.kone.relations.reifyMaybe
+import dev.lounres.kone.relations.reifyOrNull
 import dev.lounres.kone.context.invoke
 import kotlinx.benchmark.Blackhole
 

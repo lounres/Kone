@@ -5,13 +5,13 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.comparison.ComparisonResult
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.compareWith
-import dev.lounres.kone.comparison.geq
-import dev.lounres.kone.comparison.gt
-import dev.lounres.kone.comparison.leq
-import dev.lounres.kone.comparison.lt
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.compareWith
+import dev.lounres.kone.relations.geq
+import dev.lounres.kone.relations.gt
+import dev.lounres.kone.relations.leq
+import dev.lounres.kone.relations.lt
 
 
 /**

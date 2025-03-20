@@ -6,13 +6,13 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
-import dev.lounres.kone.comparison.ComparisonResult
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.Hashing
-import dev.lounres.kone.comparison.Order
-import dev.lounres.kone.comparison.Reification
-import dev.lounres.kone.comparison.asComparisonResult
-import dev.lounres.kone.comparison.reificationException
+import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.asComparisonResult
+import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None

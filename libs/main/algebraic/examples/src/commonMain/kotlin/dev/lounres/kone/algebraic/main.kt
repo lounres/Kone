@@ -6,9 +6,9 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.ExperimentalKoneAPI
-import dev.lounres.kone.comparison.eq
-import dev.lounres.kone.comparison.equalsTo
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.equalsTo
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.context.invoke
 import dev.lounres.kone.numberTheory.binomial
 

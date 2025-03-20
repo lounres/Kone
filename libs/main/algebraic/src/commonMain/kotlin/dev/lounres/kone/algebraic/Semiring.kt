@@ -7,8 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.equalsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
