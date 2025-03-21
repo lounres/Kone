@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(projects.libs.util.misc)
                 api(projects.libs.util.suppliedTypes)
                 api(projects.libs.util.typeSafeRegistry)
                 api(projects.libs.main.contexts)

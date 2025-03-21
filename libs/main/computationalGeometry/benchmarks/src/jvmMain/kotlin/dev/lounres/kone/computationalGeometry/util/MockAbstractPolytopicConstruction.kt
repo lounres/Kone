@@ -15,7 +15,6 @@ import dev.lounres.kone.collections.set.koneSetOf
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.computationalGeometry.*
-import dev.lounres.kone.illegalCall
 
 
 //@OptIn(DelicatePolytopicConstructionAPI::class)

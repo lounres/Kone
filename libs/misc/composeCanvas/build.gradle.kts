@@ -11,7 +11,6 @@ kotlin {
                 implementation(versions.kotlinx.serialization.json)
                 implementation(compose.foundation)
                 api(projects.libs.main.contexts)
-                api(projects.libs.main.core)
                 api(projects.libs.main.relations)
                 api(projects.libs.main.algebraic)
                 api(projects.libs.main.collections)

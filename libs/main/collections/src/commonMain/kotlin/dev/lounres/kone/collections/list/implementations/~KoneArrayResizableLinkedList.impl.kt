@@ -10,8 +10,6 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.POWERS_OF_2

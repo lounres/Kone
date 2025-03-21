@@ -6,7 +6,6 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
