@@ -7,6 +7,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.libs.main.contexts)
+                api(projects.libs.main.maybe)
                 api(projects.libs.main.annotations)
                 api(projects.libs.main.relations)
                 api(projects.libs.main.algebraic)
