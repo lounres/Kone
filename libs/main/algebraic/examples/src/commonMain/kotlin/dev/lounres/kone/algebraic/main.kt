@@ -9,7 +9,7 @@ import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.neq
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.numberTheory.binomial
 
 

@@ -7,13 +7,13 @@
 
 package dev.lounres.kone.relations
 
-import dev.lounres.kone.context.KoneContext
-import dev.lounres.kone.context.KoneContextRegistry
-import dev.lounres.kone.context.KoneContextRegistryBuilder
-import dev.lounres.kone.context.load
-import dev.lounres.kone.context.loadOrDefault
-import dev.lounres.kone.context.loadOrElse
-import dev.lounres.kone.context.loadOrNull
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.load
+import dev.lounres.kone.contexts.loadOrDefault
+import dev.lounres.kone.contexts.loadOrElse
+import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some

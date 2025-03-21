@@ -12,7 +12,7 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.asComparisonResult
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some

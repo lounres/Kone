@@ -16,7 +16,7 @@ import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.reify
 import dev.lounres.kone.relations.reifyMaybe
 import dev.lounres.kone.relations.reifyOrNull
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 import kotlinx.benchmark.Blackhole
 
 

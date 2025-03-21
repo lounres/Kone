@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.relations
 
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
