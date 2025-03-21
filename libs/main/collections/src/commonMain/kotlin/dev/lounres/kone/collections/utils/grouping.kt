@@ -19,9 +19,9 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.isNone
-import dev.lounres.kone.option.orThrow
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.isNone
+import dev.lounres.kone.maybe.orThrow
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 
 

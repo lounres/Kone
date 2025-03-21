@@ -9,8 +9,8 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.noMatchingKeyException
 import dev.lounres.kone.collections.utils.forEach
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.transformNotNullMaybe
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.transformNotNullMaybe
 import kotlin.jvm.JvmName
 
 

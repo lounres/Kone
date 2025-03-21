@@ -12,9 +12,9 @@ import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 
 
 internal class KoneMapEntryReification<Key, Value>(

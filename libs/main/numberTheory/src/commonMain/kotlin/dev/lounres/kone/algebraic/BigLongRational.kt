@@ -8,9 +8,9 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.context
 import dev.lounres.kone.numberTheory.gcd
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order

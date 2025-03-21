@@ -9,10 +9,10 @@ import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.Some
-import dev.lounres.kone.option.orElse
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.maybe.orElse
 import kotlinx.serialization.Serializable
 
 

@@ -33,9 +33,9 @@ import dev.lounres.kone.collections.utils.sorting.heapsortedWithBy
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithByDescending
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithDescending
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing

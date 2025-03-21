@@ -8,18 +8,11 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.linearAlgebra.ColumnVector
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.decodeStructure
-import kotlinx.serialization.encoding.encodeCollection
 
 
 internal class PointSerializer<N>(

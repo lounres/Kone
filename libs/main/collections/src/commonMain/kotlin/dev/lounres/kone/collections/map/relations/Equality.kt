@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.map.iterator
 import dev.lounres.kone.collections.utils.copyTo
 import dev.lounres.kone.context
-import dev.lounres.kone.option.orElse
+import dev.lounres.kone.maybe.orElse
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.neq

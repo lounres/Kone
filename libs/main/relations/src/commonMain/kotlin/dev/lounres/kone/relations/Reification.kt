@@ -14,9 +14,9 @@ import dev.lounres.kone.contexts.load
 import dev.lounres.kone.contexts.loadOrDefault
 import dev.lounres.kone.contexts.loadOrElse
 import dev.lounres.kone.contexts.loadOrNull
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType

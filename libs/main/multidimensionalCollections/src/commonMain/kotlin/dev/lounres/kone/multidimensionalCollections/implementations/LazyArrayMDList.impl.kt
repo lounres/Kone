@@ -13,10 +13,10 @@ import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.SettableMDList
 import dev.lounres.kone.multidimensionalCollections.SettableMDList1
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.Some
-import dev.lounres.kone.option.orElse
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.maybe.orElse
 
 
 public class LazyArrayMDList<E>(

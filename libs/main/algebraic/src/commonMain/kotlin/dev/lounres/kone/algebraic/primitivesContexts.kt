@@ -17,9 +17,9 @@ import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.asComparisonResult
 import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
-import dev.lounres.kone.option.Maybe
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
 
