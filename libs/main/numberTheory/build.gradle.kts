@@ -6,9 +6,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.annotations)
-                implementation(projects.libs.main.relations)
-                implementation(projects.libs.main.algebraic)
+                api(projects.libs.main.contexts)
+                api(projects.libs.main.annotations)
+                api(projects.libs.main.relations)
+                api(projects.libs.main.algebraic)
                 implementation(projects.libs.main.collections)
                 implementation(versions.kotlinx.serialization.core)
             }

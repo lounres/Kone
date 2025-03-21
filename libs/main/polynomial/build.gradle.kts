@@ -7,6 +7,7 @@ kotlin {
         }
         commonMain {
             dependencies {
+                api(projects.libs.main.contexts)
                 implementation(projects.libs.main.annotations)
                 api(projects.libs.main.relations) // TODO: Что-то транзитивность не сработала...
                 api(projects.libs.main.algebraic)

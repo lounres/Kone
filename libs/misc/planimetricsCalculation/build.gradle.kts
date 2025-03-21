@@ -2,6 +2,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(projects.libs.main.contexts)
                 api(projects.libs.main.core)
                 api(projects.libs.main.relations)
                 api(projects.libs.main.algebraic)
