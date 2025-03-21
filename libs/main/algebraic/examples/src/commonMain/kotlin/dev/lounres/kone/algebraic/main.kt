@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.neq

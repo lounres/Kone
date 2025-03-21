@@ -152,7 +152,8 @@ nexusPublishing {
 
 stal {
     action {
-        "uses libs main core" {
+        "uses libs main core".invoke {
+            if (project.name in listOf("annotations", "contexts", "maybe")) return@invoke
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
@@ -275,8 +276,8 @@ stal {
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
                                 optIn("kotlin.uuid.ExperimentalUuidApi")
-                                optIn("dev.lounres.kone.UnstableKoneAPI")
-                                optIn("dev.lounres.kone.ExperimentalKoneAPI")
+                                optIn("dev.lounres.kone.annotations.UnstableKoneAPI")
+                                optIn("dev.lounres.kone.annotations.ExperimentalKoneAPI")
                             }
                         }
                     }

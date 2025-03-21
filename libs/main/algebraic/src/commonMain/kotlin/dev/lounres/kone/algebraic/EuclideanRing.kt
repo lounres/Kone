@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.util.registry.RegistryKey
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.map.KoneMap

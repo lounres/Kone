@@ -7,10 +7,10 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.UnstableKoneAPI
+import dev.lounres.kone.annotations.UnstableKoneAPI
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.isZero

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.numberTheory
 
-import dev.lounres.kone.ExperimentalKoneAPI
+import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
 import dev.lounres.kone.algebraic.EuclideanSemiring
 import dev.lounres.kone.algebraic.divrem

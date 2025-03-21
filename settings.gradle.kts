@@ -44,7 +44,7 @@ stal {
                     "benchmarks"("libs main benchmarks")
                     "examples"("libs main examples")
                 }
-                subdirs("libs main", "libs non-core main", "uses libs main core", includeIf = { it.name !in listOf<String>("hooks", "computations") }) { // TODO: Enable the projects eventually
+                subdirs("libs main", "libs non-core main", "uses libs main core", includeIf = { it.name !in listOf<String>("graphs", "hooks", "computations") }) { // TODO: Enable the projects eventually
                     "algorithms"("libs main algorithms")
                     "benchmarks"("libs main benchmarks")
                     "examples"("libs main examples")
