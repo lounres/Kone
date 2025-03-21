@@ -17,7 +17,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(projects.libs.main.numberTheory)
+                implementation(projects.libs.main.algebraicExtra)
 //                implementation(projects.libs.util.kotest)
             }
         }

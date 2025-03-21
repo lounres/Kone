@@ -40,18 +40,14 @@ stal {
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
         "libs" {
             "main" {
-                "core"("libs main") {
-                    "benchmarks"("libs main benchmarks")
-                    "examples"("libs main examples")
-                }
-                subdirs("libs main", "libs non-core main", "uses libs main core", includeIf = { it.name !in listOf<String>("graphs", "hooks", "computations") }) { // TODO: Enable the projects eventually
+                subdirs("libs main", "libs non-core main", includeIf = { it.name !in listOf<String>("graphs", "hooks", "computations") }) { // TODO: Enable the projects eventually
                     "algorithms"("libs main algorithms")
                     "benchmarks"("libs main benchmarks")
                     "examples"("libs main examples")
                 }
             }
             "misc" {
-                subdirs("libs misc", "uses libs main core", includeIf = { it.name !in listOf("lattices") }) // TODO: Enable the projects eventually
+                subdirs("libs misc", includeIf = { it.name !in listOf("lattices") }) // TODO: Enable the projects eventually
             }
             "util" {
                 subdirs("libs util")

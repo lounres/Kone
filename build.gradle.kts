@@ -152,33 +152,6 @@ nexusPublishing {
 
 stal {
     action {
-        "uses libs main core".invoke {
-            if (project.name in listOf("annotations", "contexts", "maybe")) return@invoke
-            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        val main by getting {
-                            dependencies {
-                                api(projects.libs.main.core)
-                            }
-                        }
-                    }
-                }
-            }
-            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        commonMain {
-                            dependencies {
-                                api(projects.libs.main.core)
-                            }
-                        }
-                    }
-                }
-            }
-        }
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
