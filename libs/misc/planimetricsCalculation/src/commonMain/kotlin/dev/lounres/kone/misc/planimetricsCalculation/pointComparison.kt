@@ -7,8 +7,8 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.comparison.Equality
-import dev.lounres.kone.comparison.eq
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.context
 import dev.lounres.kone.polynomial.LabeledPolynomial
 

@@ -8,7 +8,7 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.comparison.neq
+import dev.lounres.kone.relations.neq
 import dev.lounres.kone.linearAlgebra.*
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import kotlin.jvm.JvmInline

@@ -9,7 +9,6 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.list.koneListOf
-import dev.lounres.kone.comparison.eq
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 

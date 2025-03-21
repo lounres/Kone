@@ -6,7 +6,7 @@
 package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.comparison.Equality
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.context.KoneContextRegistry
 import dev.lounres.kone.context.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
