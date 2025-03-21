@@ -16,7 +16,7 @@ import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 @ExperimentalKoneAPI

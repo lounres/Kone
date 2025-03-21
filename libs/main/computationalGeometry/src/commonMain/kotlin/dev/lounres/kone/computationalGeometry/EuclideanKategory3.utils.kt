@@ -11,7 +11,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 

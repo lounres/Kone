@@ -22,7 +22,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.isNone
 import dev.lounres.kone.maybe.orThrow
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 // TODO: Review grouping API

@@ -37,7 +37,7 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.scope
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 // TODO: There is a problem: some mandatory contexts are used as implicit contexts taken from `KoneContextRegistry`.

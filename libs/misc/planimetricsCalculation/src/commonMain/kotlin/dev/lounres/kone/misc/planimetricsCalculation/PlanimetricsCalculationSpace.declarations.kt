@@ -18,9 +18,9 @@ import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import dev.lounres.kone.polynomial.asLabeledPolynomial
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
 import dev.lounres.kone.polynomial.polynomialOne
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
 import kotlin.reflect.KProperty

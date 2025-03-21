@@ -17,9 +17,9 @@ import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 /**

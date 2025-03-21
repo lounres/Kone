@@ -9,9 +9,9 @@ import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 

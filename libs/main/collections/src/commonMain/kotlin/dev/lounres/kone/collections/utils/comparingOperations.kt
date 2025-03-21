@@ -26,7 +26,7 @@ import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 public fun <E, R : Comparable<R>> KoneIterable<E>.maxOfOrNull(selector: (E) -> R): R? {

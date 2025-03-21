@@ -12,7 +12,7 @@ import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDListProducer
 import dev.lounres.kone.multidimensionalCollections.producers.*
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 

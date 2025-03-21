@@ -23,8 +23,8 @@ import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.relations.installAbsoluteEqualityFor
 import dev.lounres.kone.relations.installDefaultHashingFor
 import dev.lounres.kone.relations.installReificationFor
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

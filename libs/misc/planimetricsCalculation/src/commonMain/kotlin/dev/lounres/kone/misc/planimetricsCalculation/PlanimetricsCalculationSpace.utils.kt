@@ -15,9 +15,9 @@ import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
-import dev.lounres.kone.util.registry.getOrNull
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.getOrNull
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.reflect.KVariance

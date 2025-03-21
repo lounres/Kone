@@ -11,8 +11,8 @@ import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstru
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.installVectorKategoryFor
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 

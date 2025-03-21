@@ -7,9 +7,9 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KVariance
 

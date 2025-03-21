@@ -43,7 +43,7 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.repeat
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.math.min
 import kotlin.random.Random
 import kotlin.random.nextUInt

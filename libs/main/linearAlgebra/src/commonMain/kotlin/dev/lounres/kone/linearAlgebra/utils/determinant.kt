@@ -22,9 +22,9 @@ import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 import kotlin.sequences.fold
 

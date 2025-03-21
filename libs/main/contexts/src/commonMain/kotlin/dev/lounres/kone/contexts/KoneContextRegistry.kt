@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.contexts
 
-import dev.lounres.kone.util.registry.Registry
-import dev.lounres.kone.util.registry.RegistryBuilder
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.registry.getOrDefault
-import dev.lounres.kone.util.registry.getOrElse
-import dev.lounres.kone.util.registry.getOrNull
+import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.getOrDefault
+import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.getOrNull
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmInline

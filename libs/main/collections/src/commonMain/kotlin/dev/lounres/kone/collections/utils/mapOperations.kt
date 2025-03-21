@@ -17,7 +17,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind.AT_MOST_ONCE
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 

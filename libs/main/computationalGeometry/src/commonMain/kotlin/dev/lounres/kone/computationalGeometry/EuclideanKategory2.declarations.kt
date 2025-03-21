@@ -18,9 +18,9 @@ import dev.lounres.kone.linearAlgebra.plus
 import dev.lounres.kone.linearAlgebra.times
 import dev.lounres.kone.linearAlgebra.unaryMinus
 import dev.lounres.kone.linearAlgebra.vectorKategory
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 

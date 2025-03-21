@@ -15,9 +15,9 @@ import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList2Producer
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 

@@ -11,9 +11,9 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
 import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.util.registry.RegistryKey
-import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.util.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 import kotlin.reflect.KVariance
