@@ -23,11 +23,9 @@ import dev.lounres.kone.collections.utils.lastThatOrNull
 import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.Vector2
 import dev.lounres.kone.computationalGeometry.inEuclideanKategoryScope2For
-import dev.lounres.kone.computationalGeometry.invoke
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.plus
 import dev.lounres.kone.computationalGeometry.times
-import dev.lounres.kone.context.invoke
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 

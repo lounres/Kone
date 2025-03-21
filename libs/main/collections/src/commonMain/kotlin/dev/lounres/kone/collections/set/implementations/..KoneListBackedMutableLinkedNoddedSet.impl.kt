@@ -20,7 +20,7 @@ import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.repeat
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)

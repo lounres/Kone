@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableLinkedNoddedReifiedSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.Point
-import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteEquality
 import dev.lounres.kone.relations.defaultHashing

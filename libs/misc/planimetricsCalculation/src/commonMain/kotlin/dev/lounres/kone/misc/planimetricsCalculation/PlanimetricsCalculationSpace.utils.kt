@@ -7,8 +7,8 @@ package dev.lounres.kone.misc.planimetricsCalculation
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.context.KoneContextRegistry
-import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial

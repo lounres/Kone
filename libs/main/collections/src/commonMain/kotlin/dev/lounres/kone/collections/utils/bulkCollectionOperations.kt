@@ -32,7 +32,7 @@ import dev.lounres.kone.collections.utils.sorting.heapsortedWith
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithBy
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithByDescending
 import dev.lounres.kone.collections.utils.sorting.heapsortedWithDescending
-import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some

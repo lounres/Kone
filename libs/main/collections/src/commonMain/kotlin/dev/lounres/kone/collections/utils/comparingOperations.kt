@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.list.koneListOf
 import dev.lounres.kone.collections.list.koneMutableListOf
 import dev.lounres.kone.collections.set.koneContextualMutableSetOf
 import dev.lounres.kone.collections.set.koneMutableSetOf
-import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality

@@ -13,7 +13,7 @@ import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.util.PointSetDescription
 import dev.lounres.kone.computationalGeometry.utils.map
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 import kotlinx.benchmark.*
 import kotlinx.serialization.decodeFromString
 import org.openjdk.jmh.annotations.Level

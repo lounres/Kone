@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 
 
 //@Serializable(with = KoneListBackedSetWithContextSerializer::class)

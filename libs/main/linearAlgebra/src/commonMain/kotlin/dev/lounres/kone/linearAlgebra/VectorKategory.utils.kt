@@ -6,8 +6,8 @@
 package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.context.KoneContextRegistry
-import dev.lounres.kone.context.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDListProducer

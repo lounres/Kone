@@ -33,8 +33,8 @@ import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction3Po
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction3Vertex
 import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.context
-import dev.lounres.kone.context.KoneContextRegistry
-import dev.lounres.kone.context.load
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.scope
 import dev.lounres.kone.util.suppliedTypes.SuppliedType

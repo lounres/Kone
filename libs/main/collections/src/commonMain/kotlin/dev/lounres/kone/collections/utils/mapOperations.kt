@@ -13,7 +13,7 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.option.Maybe
 import dev.lounres.kone.option.None
 import dev.lounres.kone.option.Some

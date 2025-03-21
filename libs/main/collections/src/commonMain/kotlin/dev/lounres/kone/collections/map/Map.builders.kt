@@ -29,7 +29,7 @@ import dev.lounres.kone.relations.loadEqualityFor
 import dev.lounres.kone.relations.loadHashingForOrNull
 import dev.lounres.kone.relations.loadOrderForOrNull
 import dev.lounres.kone.relations.loadReificationFor
-import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.util.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.experimental.ExperimentalTypeInference

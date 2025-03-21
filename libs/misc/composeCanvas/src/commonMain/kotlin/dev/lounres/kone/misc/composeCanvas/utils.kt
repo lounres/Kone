@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.installFloatContext
 import dev.lounres.kone.computationalGeometry.installEuclideanKategory2For
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex
-import dev.lounres.kone.context.KoneContextRegistry
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.installVectorKategoryFor
 import dev.lounres.kone.util.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.util.suppliedTypes.SuppliedType

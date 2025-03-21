@@ -30,7 +30,7 @@ import dev.lounres.kone.collections.utils.setOrChange
 import dev.lounres.kone.collections.utils.sortedWith
 import dev.lounres.kone.collections.utils.withSetOrChangedReified
 import dev.lounres.kone.context
-import dev.lounres.kone.context.invoke
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
