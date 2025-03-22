@@ -1,0 +1,40 @@
+---
+title: Maybe
+---
+
+import DependencyTabs from "../../src/components/DependencyTabs";
+import ApiLink from "../../src/components/ApiLink";
+
+# Kone: Maybe
+
+This module provides <ApiLink to="libs/main/maybe/dev.lounres.kone.maybe/-maybe/">`Maybe`</ApiLink> sealed hierarchy
+that describes optional values (a.k.a. [Maybe monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe)).
+
+## Applying the dependencies
+
+<DependencyTabs artifact="kone.maybe"/>
+
+# Understanding `Maybe`
+
+For any non-nullable type `T` there is nullable type `T?` that means there is either some value of type `T` or a `null`.
+It means that we have some representation of an optional value of type `T`.
+But do we do when `T` is already nullable? `Maybe` solves the problem!
+
+<ApiLink to="libs/main/maybe/dev.lounres.kone.maybe/-maybe/">`Maybe`</ApiLink> is a sealed interface
+which inheritors are data object `None` that describes value absence and data class `Some` that contain present value.
+
+For example, usually `Map` (and its analogues) can contain nullable values opposite to corresponding keys.
+But what happens when you access value of such `Map` (by some key)? What will access method (`get`) return?
+Usually, it returns `null` both when there is no corresponding value and when corresponding value is `null`.
+(Well, I think that it should throw exception if no corresponding value is present. But then there is the same question about `getOrNull`.)
+To resolve the problem there exist `Maybe` hierarchy and `getMaybe` method:
+```kotlin
+public fun <Key, Value> Map<Key, Value>.getMaybe(key: Key): Maybe<Value> =
+    if (containsKey(key)) Some(get(key))
+    else None
+```
+
+Usually `Monad` is useless, because nullable types exist. But in corner cases like the one above, `Maybe` exists.
+
+Further on, you will find a lot of functions named like `xxxMaybe` that are analogues for `xxxOrNull` functions.
+And there are several extension functions for different manipulations on `Maybe` values that may help you in future.

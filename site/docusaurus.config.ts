@@ -1,31 +1,24 @@
-// @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
-
 import {koneUrl, koneBaseUrl} from './inputData'
 const branch = "experiment"
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {themes} from 'prism-react-renderer'
-import math from 'remark-math'
-import katex from 'rehype-katex'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 
 const config: Config = {
     title: 'Kone',
     tagline: 'Making pure math computations available',
-    url: koneUrl,
-    baseUrl: koneBaseUrl,
-    onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
     favicon: '/img/logos/kone-mark-themed.svg',
 
-    // GitHub pages deployment config.
-    // If you aren't using GitHub pages, you don't need these.
-    // organizationName: 'facebook', // Usually your GitHub org/user name.
-    // projectName: 'docusaurus', // Usually your repo name.
+    url: koneUrl,
+    baseUrl: koneBaseUrl,
 
-    // Even if you don't use internalization, you can use this field to set useful
-    // metadata like html lang. For example, if your site is Chinese, you may want
-    // to replace "en" with "zh-Hans".
+    onBrokenLinks: 'warn',
+    onBrokenAnchors: 'warn',
+    onBrokenMarkdownLinks: 'warn',
+    onDuplicateRoutes: 'warn',
+
     i18n: {
         defaultLocale: 'en',
         locales: ['en', 'ru'],
@@ -47,21 +40,54 @@ const config: Config = {
         },
     },
 
+    plugins: [
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'tutorials',
+                path: 'tutorials',
+                routeBasePath: 'tutorials',
+                sidebarPath: './tutorialsSidebars.ts',
+                remarkPlugins: [remarkMath],
+                rehypePlugins: [rehypeKatex],
+            },
+        ],
+        [
+            '@docusaurus/plugin-content-docs',
+            {
+                id: 'algorithms',
+                path: 'algorithms',
+                routeBasePath: 'algorithms',
+                sidebarPath: './algorithmsSidebars.ts',
+                remarkPlugins: [remarkMath],
+                rehypePlugins: [rehypeKatex],
+            },
+        ],
+    ],
+
     presets: [
         [
             'classic',
             {
                 docs: {
+                    id: "docs",
                     path: "docs",
-                    sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl: `https://github.com/lounres/Kone/tree/${branch}/site/`,
-                    remarkPlugins: [math],
-                    rehypePlugins: [katex],
+                    routeBasePath: 'docs',
+                    sidebarPath: require.resolve('./docsSidebars.js'),
+                    remarkPlugins: [remarkMath],
+                    rehypePlugins: [rehypeKatex],
                 },
                 blog: {
                     showReadingTime: true,
-                    remarkPlugins: [math],
-                    rehypePlugins: [katex],
+                    feedOptions: {
+                        type: ['rss', 'atom'],
+                        xslt: true,
+                    },
+                    onInlineTags: 'warn',
+                    onInlineAuthors: 'warn',
+                    onUntruncatedBlogPosts: 'warn',
+                    remarkPlugins: [remarkMath],
+                    rehypePlugins: [rehypeKatex],
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
@@ -72,19 +98,17 @@ const config: Config = {
 
     stylesheets: [
         {
-            href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+            href: 'https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css',
             type: 'text/css',
-            integrity: 'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+            integrity: 'sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib',
             crossorigin: 'anonymous',
         },
     ],
 
     themeConfig: {
-        image: 'img/logos/kone-logo-full-colored.png',
+        image: 'img/logos/kone-logo-full-colored.png', // TODO: Add social card
         // metadata: [],
-        // announcementBar: {
-        //   content: "Here we are!"
-        // },
+        // announcementBar: {},
         docs: {
             sidebar: {
                 hideable: true,
@@ -93,22 +117,24 @@ const config: Config = {
         navbar: {
             title: 'Kone',
             logo: {
-                alt: 'Kone',
+                alt: 'Kone site logo',
                 src: 'img/logos/kone-mark-violet.svg',
                 srcDark: 'img/logos/kone-mark-orange.svg',
             },
             items: [
+                // {
+                //     type: 'docSidebar',
+                //     sidebarId: 'tutorials',
+                //     position: 'left',
+                //     label: 'Tutorials',
+                //     docsPluginId: 'tutorials',
+                // },
                 {
-                    type: 'doc',
-                    docId: 'tutorials/index',
-                    label: 'Tutorials',
-                    position: 'left'
-                },
-                {
-                    type: 'doc',
-                    docId: 'docs/index',
-                    label: 'Docs',
+                    type: 'docSidebar',
+                    sidebarId: 'docs',
                     position: 'left',
+                    label: 'Docs',
+                    docsPluginId: 'docs',
                 },
                 {
                     href: `${koneUrl}${koneBaseUrl}api`,
@@ -116,13 +142,20 @@ const config: Config = {
                     position: 'left',
                 },
                 {
+                    type: 'docSidebar',
+                    sidebarId: 'algorithms',
+                    position: 'left',
+                    label: 'Algorithms',
+                    docsPluginId: 'algorithms',
+                },
+                {
                     to: '/blog',
                     label: 'Blog',
                     position: 'left'
                 },
                 {
-                    href: 'https://github.com/lounres/math-kotlin-experiments', // Replace with 'https://lounres.github.io/math-kotlin-experiments',
-                    label: 'Math Kotlin Experiments',
+                    href: 'https://lounres.dev/MEDia', // Replace with 'https://lounres.github.io/math-kotlin-experiments',
+                    label: 'MEDia',
                     position: 'left'
                 },
                 // Right Side

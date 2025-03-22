@@ -8,7 +8,8 @@ package dev.lounres.kone.maybe
 
 /**
  * Container interface that is used to describe that there is either some value wrapped in the data class [Some]
- * or the [None] data object. It's a copy of `Option` from Rust stdlib.
+ * or the [None] data object.
+ * It's a copy of [`Option`](https://doc.rust-lang.org/std/option/index.html) from Rust stdlib.
  *
  * Why not just use `E?` instead of `Maybe<E>`? The reason is simple. If you `E` is nullable and you have possibility
  * of having either element of type `E` or a `null`, then you won't distinguish `null` as possible value and `null`

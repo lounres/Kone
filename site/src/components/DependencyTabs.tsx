@@ -10,7 +10,7 @@ interface Dependency {
     version: string
 }
 
-export default function DependencyTabs ({group=koneGroup, artifact, version=koneVersion}: Dependency): Element {
+export default function DependencyTabs ({group=koneGroup, artifact, version=koneVersion}: Dependency): React.ReactElement {
     return (
         <Tabs groupId="buildSystem">
             <TabItem value="gradle-kotlin" label="Gradle Kotlin DSL" default>

@@ -1,0 +1,29 @@
+---
+title: Annotations
+---
+
+import DependencyTabs from "../../src/components/DependencyTabs";
+import ApiLink from "../../src/components/ApiLink";
+
+# Kone: Annotations
+
+This module provides common annotations that are used all over Kone library.
+
+## Applying the dependencies
+
+<DependencyTabs artifact="kone.annotations"/>
+
+# API stability annotations
+
+There are two annotations specifically made for unstable and experimental APIs:
+1. <ApiLink to="libs/main/annotations/dev.lounres.kone.annotations/-unstable-kone-a-p-i/">`UnstableKoneAPI`</ApiLink>
+    is used to mark parts of Kone API that have more or less certain shape but which final form is not yet finished.
+2. <ApiLink to="libs/main/annotations/dev.lounres.kone.annotations/-experimental-kone-a-p-i/">`ExperimentalKoneAPI`</ApiLink>
+    is used to mark parts of Kone API that are just sketches of possible API.
+    Their main purpose is only to gather ideas of the API and check which parts of it should be rewritten from scratch.
+
+:::note
+
+For now, the annotations are not used, because none of Kone's modules are ready for the first public release.
+
+:::

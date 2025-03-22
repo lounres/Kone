@@ -48,7 +48,7 @@ allprojects {
 
 tasks.register("docusaurusGenerateInputData") {
     group = "site"
-    outputs.files("site/src/inputData.ts", "site/inputData.ts")
+    outputs.files("site/inputData.ts")
     doLast {
         val inputDataContent =
             """
@@ -57,14 +57,13 @@ tasks.register("docusaurusGenerateInputData") {
                 export const koneUrl = "$koneUrl"
                 export const koneBaseUrl = "$koneBaseUrl"
             """.trimIndent()
-        rootDir.resolve("site/src/inputData.ts").writer().use { it.write(inputDataContent) }
         rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
     }
 }
 
 tasks.register("docusaurusGenerateDevInputData") {
     group = "site"
-    outputs.files("site/src/inputData.ts", "site/inputData.ts")
+    outputs.files("site/inputData.ts")
     doLast {
         val inputDataContent =
             """
@@ -73,9 +72,16 @@ tasks.register("docusaurusGenerateDevInputData") {
                 export const koneUrl = "http://localhost:3000"
                 export const koneBaseUrl = "$koneBaseUrl"
             """.trimIndent()
-        rootDir.resolve("site/src/inputData.ts").writer().use { it.write(inputDataContent) }
         rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
     }
+}
+
+tasks.register<Copy>("docusaurusGenerateApi") {
+    group = "site"
+    val docsTask = tasks.getByPath(":docs:dokkaGeneratePublicationHtml")
+    dependsOn(docsTask)
+    from(docsTask)
+    into(rootDir.resolve("site/static/api/"))
 }
 
 allprojects {
