@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.collections.map.*
@@ -126,7 +125,6 @@ public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry
     this.substitute(koneMapOf(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
 
 context(numberContext: Ring<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(variable: LabeledVariable): LabeledPolynomial<C> =
     LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.keysView.count { it.getOrDefault(variable, 0u) >= 1u }) {
@@ -148,7 +146,6 @@ public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(variable: LabeledVar
     )
 
 context(numberContext: Ring<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     variable: LabeledVariable,
     order: UInt
@@ -176,7 +173,6 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     )
 
 context(numberContext: Ring<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     variablesAndOrders: Map<LabeledVariable, UInt>,
 ): LabeledPolynomial<C> {
@@ -215,7 +211,6 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
 }
 
 context(numberContext: Field<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     variable: LabeledVariable,
 ): LabeledPolynomial<C> =
@@ -232,7 +227,6 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
     )
 
 context(numberContext: Field<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     variable: LabeledVariable,
     order: UInt
@@ -254,7 +248,6 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     )
 
 context(numberContext: Field<C>)
-@ExperimentalKoneAPI
 public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     variablesAndOrders: KoneMap<LabeledVariable, UInt>,
 ): LabeledPolynomial<C> {

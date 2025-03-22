@@ -7,7 +7,6 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.one
@@ -83,10 +82,8 @@ context(_: Ring<C>)
 public inline fun <C> LabeledVariable.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(koneReifiedMapOf(koneReifiedMapOf(this mapsTo 1u) mapsTo one))
 
 @DslMarker
-@ExperimentalKoneAPI
 internal annotation class LabeledPolynomialConstructorDSL1
 
-@ExperimentalKoneAPI
 @LabeledPolynomialConstructorDSL1
 public class DSL1LabeledPolynomialTermSignatureBuilder {
     private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = koneMutableReifiedMapOf(keyHashing = defaultHashing())
@@ -103,7 +100,6 @@ public class DSL1LabeledPolynomialTermSignatureBuilder {
     public inline infix fun LabeledVariable.of(deg: UInt): Unit = this inPowerOf deg
 }
 
-@ExperimentalKoneAPI
 @LabeledPolynomialConstructorDSL1
 public class DSL1LabeledPolynomialBuilder<C>(
     private val add: (C, C) -> C,
@@ -137,7 +133,6 @@ public class DSL1LabeledPolynomialBuilder<C>(
 // * @usesMathJax
 // */
 context(_: Ring<C>)
-@ExperimentalKoneAPI
 public inline fun <C> LabeledPolynomialDSL1(initialCapacity: Int? = null, block: DSL1LabeledPolynomialBuilder<C>.() -> Unit) : LabeledPolynomial<C> =
     DSL1LabeledPolynomialBuilder({ left: C, right: C -> left + right }, initialCapacity).apply(block).build()
 

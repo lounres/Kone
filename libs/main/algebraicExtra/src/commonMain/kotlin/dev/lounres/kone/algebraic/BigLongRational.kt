@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.context
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
@@ -113,7 +112,6 @@ internal fun divideByGCD(first: UBigLong, second: UBigLong): UBigLongUBigLongQuo
 }
 
 // TODO: Check if GCDs really speed up the computations
-@ExperimentalKoneAPI
 public data object BigLongRationalContext : Reification<BigLongRational>, Field<BigLongRational>, Order<BigLongRational>, Hashing<BigLongRational> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is BigLongRational

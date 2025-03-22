@@ -7,7 +7,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -19,7 +18,6 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-@ExperimentalKoneAPI
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
 public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<Int> {
 
@@ -79,7 +77,6 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
     override operator fun ULong.times(other: Int): Int = ((this.toLong() * other) % modulus).toInt()
 }
 
-@OptIn(ExperimentalKoneAPI::class)
 public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
     val ring = IntModuloRing(modulus)
     val intModuloSuppliedType = SuppliedType.Regular<Int>(

@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -18,7 +17,6 @@ import kotlin.reflect.KVariance
  * Wrapper class for a result of Euclidean division (a.k.a. a division with remainder).
  * See [EuclideanSemiring]'s or [EuclideanRing]'s docs for more.
  */
-@ExperimentalKoneAPI
 @Serializable
 //@JvmInline // FIXME: Make it a value class when MFVC will be ready
 public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
@@ -41,7 +39,6 @@ public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient:
  * mentioning that *there is* some Euclidean norm, so that the operations satisfy conditions on it,
  * but no actual programming representation of the norm is not provided.
  */
-@ExperimentalKoneAPI
 public interface EuclideanSemiring<Number> : Semiring<Number> {
     /**
      * Returns result of Euclidean division (a.k.a. a division with remainder), both quotient and remainder.
@@ -82,7 +79,6 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
  * A bridge contextual function for [EuclideanSemiring.divrem].
  */
 context(ring: EuclideanSemiring<Number>)
-@ExperimentalKoneAPI
 public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<Number> = with(ring) { this@divrem divrem other }
 /**
  * Returns quotient of Euclidean division (a.k.a. a division with remainder).
@@ -90,7 +86,6 @@ public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<
  * A bridge contextual function for [EuclideanSemiring.div].
  */
 context(ring: EuclideanSemiring<Number>)
-@ExperimentalKoneAPI
 public operator fun <Number> Number.div(other: Number): Number = with(ring) { this@div / other }
 /**
  * Returns remainder of Euclidean division (a.k.a. a division with remainder).
@@ -98,7 +93,6 @@ public operator fun <Number> Number.div(other: Number): Number = with(ring) { th
  * A bridge contextual function for [EuclideanSemiring.rem].
  */
 context(ring: EuclideanSemiring<Number>)
-@ExperimentalKoneAPI
 public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }
 
 // TODO: Add a link to the interface's reasoning at the docs here at the end.
@@ -107,7 +101,6 @@ public operator fun <Number> Number.rem(other: Number): Number = with(ring) { th
  * It means that it extends both [Ring] and [EuclideanSemiring] interfaces without adding anything new to them.
  * Just a composition of this two.
  */
-@ExperimentalKoneAPI
 public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number> {
     /**
      * Registry key for [EuclideanRing] interface in [KoneContextRegistry].

@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.polynomial
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.EuclideanRing
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.collections.map.KoneMap
@@ -666,7 +665,6 @@ context(polynomialSpace: PolynomialSpaceOverField<Number, Polynomial>)
 public operator fun <Number, Polynomial> Polynomial.div(other: Number): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
-@OptIn(ExperimentalKoneAPI::class)
 public interface UnivariatePolynomialSpaceOverField<Number, Polynomial> : PolynomialSpaceOverField<Number, Polynomial>, UnivariatePolynomialSpace<Number, Polynomial>, EuclideanRing<Polynomial> {
     public class Key<Number, Polynomial>(
         numberType: SuppliedType<Number>,

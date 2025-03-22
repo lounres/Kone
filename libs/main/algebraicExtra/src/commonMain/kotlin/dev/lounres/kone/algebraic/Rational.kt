@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -24,7 +23,6 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
 
 
-@ExperimentalKoneAPI
 public class Rational {
     @JvmField
     public val numerator: Long
@@ -75,7 +73,6 @@ public class Rational {
     }
 }
 
-@OptIn(ExperimentalKoneAPI::class)
 public fun KoneContextRegistryBuilder.installRationalContext() {
     val rationalSuppliedType = SuppliedType.Regular<Rational>(
         kClass = Rational::class,
@@ -103,7 +100,6 @@ internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
 
 // TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
 
-@ExperimentalKoneAPI
 public data object RationalField : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Rational

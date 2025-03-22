@@ -5,13 +5,11 @@
 
 package dev.lounres.kone.polynomial.testUtils
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.Rational
 import space.kscience.kmath.expressions.Symbol
 import space.kscience.kmath.expressions.symbol
 
 
-@OptIn(ExperimentalKoneAPI::class)
 val o: Rational = Rational(22, 7)
 
 val x: Symbol by symbol

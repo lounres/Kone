@@ -3,11 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalKoneAPI::class)
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality

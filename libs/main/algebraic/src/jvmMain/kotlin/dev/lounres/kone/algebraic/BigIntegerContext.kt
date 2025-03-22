@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.annotations.ExperimentalKoneAPI
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -27,7 +26,6 @@ import java.math.BigInteger
  *
  * Such ring is useless when used as is, but useful when used in generalized algorithms.
  */
-@OptIn(ExperimentalKoneAPI::class)
 public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<BigInteger>, Order<BigInteger>, Hashing<BigInteger> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is BigInteger
