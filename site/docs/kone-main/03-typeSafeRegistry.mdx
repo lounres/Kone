@@ -2,14 +2,72 @@
 title: 🏗 Type-safe Registry
 ---
 
+import DependencyTabs from "../../src/components/DependencyTabs";
+import ApiLink from "../../src/components/ApiLink";
+
+:::warning
+Type-safe registries are currently unstable.
+API itself won't be changed a lot, but implementations will be changed in the future.
+:::
+
 # Kone: Type-safe Registry
 
-:::note
-Sorry, this page is currently under construction.
+This module provides a type-safe registry implementation.
+*Type-safe registry* is an analogue to map
+but that returns element of type `T` (if it is present) by a key of type `Key<T>` for an arbitrary type `T`.
 
-![Just funny todo notebook](/img/todo.jpg)
+:::warning[About learning order]
+This module uses the concept of "supplied types" that are defined in [the corresponding module](suppliedTypes).
 :::
 
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.typeSafeRegistry"/>
+
+## Description
+
+There are rare use cases when you need a map of type `Map<Key<*>, *>`
+where an element of type `Key<T>` should be associated with an element of type `T`.
+Usual map helps to store such associations but not retrieve them.
+You have to write your own extensions to preserve the type `T`,
+but still there is no simple way to make such keys that will distinguish, for example,
+`Key<List<Int>>` from `Key<List<Long>>` so that they could be used as different keys.
+
+This module provides such a map called <ApiLink to="libs/main/typeSafeRegistry/dev.lounres.kone.registry/-registry/">`Registry`</ApiLink>.
+It associates <ApiLink to="libs/main/typeSafeRegistry/dev.lounres.kone.registry/-registry-key/">`RegistryKey`</ApiLink>s
+with values of corresponding type (i.e. each key of type `RegistryKey<T>` is associated with a value of type `T`).
+
+To correctly distinguish keys,
+there is <ApiLink to="libs/main/typeSafeRegistry/dev.lounres.kone.registry/-registry-key-context/">`RegistryKeyContext`</ApiLink>
+that provides equality of registry keys and determines their hash code.
+Thus, two registry keys `key1` and `key2` are equal iff the following conditions are fulfilled.
+1. Their type keys are equal (i.e. `key1.typeKey == key2.typeKey`).
+2. Their contexts are the same object (i.e. `key1.context === key2.context`). Let the context instance be `context`.
+3. `context.checkEqualityOf(key1, key2)` is `true`.
+
+By default, `RegistryKey.context` provides `NaiveRegistryKeyContext` implementation that just checks keys classes equality.
+So usually you don't need any other implementation of the key's context.
+Almost all keys in Kone are implemented like this:
+```kotlin
+public class Key<Number>(
+    elementType: SuppliedType<Number>,
+) : RegistryKey<XXX<Number>> {
+    override val typeKey: SuppliedType.Regular<XXX<Number>> =
+        SuppliedType.Regular(
+            kClass = XXX::class,
+            typeArguments = listOf(
+                SuppliedProjection.Regular(
+                    KVariance.INVARIANT,
+                    elementType
+                )
+            ),
+            isNullable = false
+        )
+}
+```
+where `XXX` is interface's name (for example, <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-equality/">`Equality`</ApiLink>).
+It is cumbersome for now, but there is a plan to make a compiler plugin that simplifies work with supplied types.
+(This example should be simplified to the following one.)
+```kotlin
+public class Key<@Supplied Number> : RegistryKey<XXX<Number>>
+```

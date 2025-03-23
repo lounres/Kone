@@ -14,7 +14,7 @@ export default function DependencyTabs ({group=koneGroup, artifact, version=kone
     return (
         <Tabs groupId="buildSystem">
             <TabItem value="gradle-kotlin" label="Gradle Kotlin DSL" default>
-                <CodeBlock language="kotlin" title="build.gradle.kts" showLineNumbers>
+                <CodeBlock language="kotlin" title="build.gradle.kts">
                     {
                         `dependencies {
                         |    // highlight-next-line
@@ -24,7 +24,7 @@ export default function DependencyTabs ({group=koneGroup, artifact, version=kone
                 </CodeBlock>
             </TabItem>
             <TabItem value="gradle-groovy" label="Gradle Groovy DSL">
-                <CodeBlock language="groovy" title="build.gradle" showLineNumbers>
+                <CodeBlock language="groovy" title="build.gradle">
                     {
                         `dependencies {
                         |    // highlight-next-line
@@ -34,7 +34,7 @@ export default function DependencyTabs ({group=koneGroup, artifact, version=kone
                 </CodeBlock>
             </TabItem>
             <TabItem value="maven" label="Maven" default>
-                <CodeBlock language="xml" title="pom.xml" showLineNumbers>
+                <CodeBlock language="xml" title="pom.xml">
                 {
                     `<dependency>
                     |    <!-- highlight-start -->

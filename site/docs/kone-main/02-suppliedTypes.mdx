@@ -1,18 +1,81 @@
 ---
-title: 🏗 Supplied Types
+title: Supplied Types
 ---
 
 import DependencyTabs from "../../src/components/DependencyTabs";
 import ApiLink from "../../src/components/ApiLink";
 
+:::danger
+Supplied types are currently experimental.
+Everything may be changed a lot.
+:::
+
 # Kone: Supplied Types
 
-:::note
-Sorry, this page is currently under construction.
-
-![Just funny todo notebook](/img/todo.jpg)
-:::
+This module provides a way to express types which type arguments can take.
+The main use case of the module is a foundation for [type-safe registry's](typeSafeRegistry) polymorphic keys.
 
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.suppliedTypes"/>
+
+## Description
+
+Sometimes (in very, very rare times) you need to distinguish different types that are the same erased types.
+Like `List<Int>` and `List<String>`. Or `List<Int>` and `List<*>`.
+But there is no way to get those types in both compile-time and run-time.
+In compile-time it's NP-complete problem and in run-time the types are erased.
+So the only way is to store the types yourself.
+
+Thus, this module introduces "supplied types".
+They are usual type expressions that are passed along with their object representations.
+The representations are called "type suppliers".
+
+For example, you have usual class
+```kotlin
+class Fraction<T>(val numerator: T, val denominator: T)
+```
+and you want to associate different types with fractions of their types.
+It's a strange use case, but let's still consider it.
+So you create a map like `Map<KClass<*>, Fraction<*>>`
+where each `Fraction<T>` instance can be accessed via `KClass<T>` instance.
+But `List<Int>` and `List<Long>` are represented as the same keys.
+OK, let's use `KType`s instead.
+But the problem is the same: in a code like
+```kotlin
+fun <T> foo() {
+    println(typeOf<List<T>>())
+}
+```
+just `List<T>` will be printed because `T` will be erased,
+so there is no difference between `foo<Int>()` and `foo<Long>()`.
+
+Thus, we have to manually pass the representation as an argument of function/constructor.
+Like in the following snippet:
+```kotlin
+fun <T> foo(tSupplier: SuppliedType<T>) {
+    println(
+        SuppliedType.Regular<List<T>>(
+            kClass = List::class,
+            typeArguments = listOf(
+                SuppliedProjection.Regular(
+                    variance = KVariance.INVARIANT,
+                    type = tSupplier,
+                )
+            ),
+            isNullable = false,
+        )
+    )
+}
+```
+See <ApiLink to="libs/main/suppliedTypes/dev.lounres.kone.suppliedTypes/-supplied-type/">`SuppliedType`</ApiLink>
+and <ApiLink to="libs/main/suppliedTypes/dev.lounres.kone.suppliedTypes/-supplied-projection/">`SuppliedProjection`</ApiLink>
+references.
+
+Yeah, the manual type supplier construction is cumbersome.
+So there is a plan to make a compiler plugin that will create such code from
+```kotlin
+fun <@Supplied T> foo() {
+    println(suppliedTypeOf<List<T>>())
+}
+```
