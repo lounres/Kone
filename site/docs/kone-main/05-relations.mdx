@@ -3,12 +3,11 @@ title: 🏗 Relations
 ---
 
 import DependencyTabs from "../../src/components/DependencyTabs";
-
-:::danger
-Sorry, this page is currently under construction.
-:::
+import ApiLink from "../../src/components/ApiLink";
 
 # Kone: Relations
+
+This module provides contexts of basic relations between objects, their basic implementations, and basic utilities.
 
 :::warning[About learning order]
 This module introduces several "contexts".
@@ -18,3 +17,104 @@ The term "context" is described in [contexts module](contexts).
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.relations"/>
+
+## Relation contexts: <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-equality/">`Equality`</ApiLink>, <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-order/">`Order`</ApiLink>, <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-hashing/">`Hashing`</ApiLink>
+
+There are three basic contexts that are used a lot all over the Kone library:
+1. <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-equality/">`Equality`</ApiLink>
+    that checks equality between instances of some specified type.
+2. <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-order/">`Order`</ApiLink>
+    that compares instances of some specified type.
+3. <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-hashing/">`Hashing`</ApiLink>
+    that represents a hashing function on instances of specified type.
+
+:::info
+The contexts may be defined on subset of specified type that cannot be expressed as a type.
+
+For example, a context of type `Order<Int>` may be defined on all integers except for zero.
+Non-zero integers cannot be expressed as a type.
+But still, one can just mention this in the context's documentation.
+:::
+
+### `Equality`
+
+Regardless of all specialised implementations of `Equality` interface, there are two common implementations:
+1. "Default equality". It delegates equality to good old `equals` method.
+2. "Absolute equality". It delegates equality to reference equality operator.
+
+You can acquire the implementation via <ApiLink to="libs/main/relations/dev.lounres.kone.relations/default-equality.html">`defaultEquality<MyType>()`</ApiLink>
+and <ApiLink to="libs/main/relations/dev.lounres.kone.relations/absolute-equality.html">`absoluteEquality<MyType>()`</ApiLink>.
+But you also can create your own equality in place with <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-equality.html">`Equality { left, right -> ... }`</ApiLink>
+builder function.
+
+Also, there are contextual functions for the context's usage:
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/equals-to.html">`equalsTo`</ApiLink> and
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/eq.html">`eq`</ApiLink> for equality,
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/not-equals-to.html">`notEqualsTo`</ApiLink> and
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/neq.html">`neq`</ApiLink> for inequality.
+
+### `Hashing`
+
+Regardless of all specialised implementations of `Hashing` interface,
+there is one common implementation: "default hashing".
+It delegates hashing to good old `hashCode` method.
+
+You can acquire the implementation via <ApiLink to="libs/main/relations/dev.lounres.kone.relations/default-hashing.html">`defaultHashing<MyType>()`</ApiLink>.
+But you also can create your own hashing in place with <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-hashing.html">`Hashing { element -> ... }`</ApiLink>
+builder function.
+
+Also, there is a contextual function for the context's usage:
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/hash.html">`hash`</ApiLink>.
+
+### `Order`
+
+This context appears with its own <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-comparison-result/">`ComparisonResult`</ApiLink>
+(instead of `Int`)
+and <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-comparator/">`Comparator`</ApiLink>.
+
+Regardless of all specialised implementations of `Order` interface,
+there is one common implementation on self-comparable types: "default order".
+It delegates comparison to [`Comparable.compareTo`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-comparable/compare-to.html) method.
+
+You can acquire the implementation via <ApiLink to="libs/main/relations/dev.lounres.kone.relations/default-order.html">`defaultOrder<MyComparableType>()`</ApiLink>.
+But you also can create your own order in place with <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-order.html">`Order { left, right -> ... }`</ApiLink>
+builder function.
+
+Also, there are contextual functions for the context's usage like
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/greater-than.html">`greaterThan`</ApiLink> and
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/leq.html">`leq`</ApiLink>.
+
+## Domain context: <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-reification/">`Reification`</ApiLink>
+
+Sometimes there is a need to check that the argument lies in the domain of a context.
+(I.e. you can equate two elements via `Equality` and there won't be any error because of incompatibility of the elements and the `Equality` instance.)
+
+Very simple use case is set (or map).
+To define the uniqueness of the elements in the set we have to use some `Equality` instance.
+But `Equality` is contravariant.
+So there is no legitimate to make set interface covariant.
+
+But Kotlin stdlib's `Set<Element>` is covariant despite having contravariant method `contains`.
+How does this work?
+Well, the answer is simple.
+`contains` method's non-covariance is just suppressed by `@UnsafeVariance` annotation.
+So it can accidentally receive parameter not of the type `Element`.
+But regardless, this object has `equals` method (because `Any` is a supertype)
+that makes the `contains` method work even with wrong types.
+
+But in our case `Equality<Element>`'s `equalsTo` is used and it may throw exception due to failed cast to `Element` type.
+So what do we do?
+We somehow have to check that the element can be accepted by the `Equality` instance.
+That's why this module introduces `Reification` interface.
+The interface represents a checker that says if the element lies in other context's domain.
+So the set's `contains` method can now look like
+```kotlin
+override fun contains(element: Element): Boolean = element in elementReification && <checking if the element equals to some element of the set with respect to elementEquality>
+```
+A lot of real use-cases in Kone have a lot of duplicates of the same line
+```kotlin
+override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
+```
+
+That's why in [collections module](collections) there are separate interfaces `Set<Element>` and `ReifiedSet<out ELement> : Set<Element>`.
+The first one does not depend on `Reification` instance, while the second one depends.

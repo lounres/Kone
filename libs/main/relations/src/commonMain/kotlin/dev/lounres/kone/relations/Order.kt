@@ -128,7 +128,7 @@ public fun <Element> Comparator<Element>.asKotlinStdlib(): KotlinStdlibComparato
 /**
  * Converts [Kotlin stlib Comparator][KotlinStdlibComparator] to Kone [Comparator].
  */
-public fun <Element> KotlinStdlibComparator<Element>.asKotlinStdlib(): Comparator<Element> =
+public fun <Element> KotlinStdlibComparator<Element>.asKone(): Comparator<Element> =
     Comparator { left, right -> compare(left, right).asComparisonResult() }
 
 /**
