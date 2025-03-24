@@ -1,6 +1,6 @@
 import Link from "@docusaurus/Link";
 import React from "react";
-import {koneBaseUrl, koneUrl} from "@site/inputData"
+import {koneBaseUrl, koneUrl} from "@site/inputData";
 
 interface ApiLink {
     to: string

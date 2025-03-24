@@ -69,7 +69,7 @@ public class Rational {
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
 
     public companion object {
-        public val context: RationalField = RationalField
+        public val context: RationalContext = RationalContext
     }
 }
 
@@ -79,12 +79,12 @@ public fun KoneContextRegistryBuilder.installRationalContext() {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(rationalSuppliedType)] = RationalField
-    contextsBuilder[Equality.Key(rationalSuppliedType)] = RationalField
-    contextsBuilder[Ring.Key(rationalSuppliedType)] = RationalField
-    contextsBuilder[Field.Key(rationalSuppliedType)] = RationalField
-    contextsBuilder[Order.Key(rationalSuppliedType)] = RationalField
-    contextsBuilder[Hashing.Key(rationalSuppliedType)] = RationalField
+    contextsBuilder[Reification.Key(rationalSuppliedType)] = RationalContext
+    contextsBuilder[Equality.Key(rationalSuppliedType)] = RationalContext
+    contextsBuilder[Ring.Key(rationalSuppliedType)] = RationalContext
+    contextsBuilder[Field.Key(rationalSuppliedType)] = RationalContext
+    contextsBuilder[Order.Key(rationalSuppliedType)] = RationalContext
+    contextsBuilder[Hashing.Key(rationalSuppliedType)] = RationalContext
 }
 
 @JvmInline
@@ -100,7 +100,7 @@ internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
 
 // TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
 
-public data object RationalField : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
+public data object RationalContext : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Rational
     override fun reifyMaybe(element: Any?): Maybe<Rational> = if (element is Rational) Some(element) else None

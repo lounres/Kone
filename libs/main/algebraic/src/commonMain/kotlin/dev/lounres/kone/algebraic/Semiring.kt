@@ -28,17 +28,6 @@ import kotlin.reflect.KVariance
  *
  * Obviously, the [Semiring] interface extends the [Equality] interface because otherwise there is no understanding
  * of the mathematical operations.
- *
- * Such contexts are used instead of usual [plus], [times] and other overloads for several reasons.
- * Some of them are:
- * - Following the structural pattern, any behaviour *between* elements should not be a part of the elements' logic
- *   but a part of assumed context.
- *   (For example, summing two integers together, we assume that we are summing them as two integers,
- *   but not as residues of some modulo.
- *   It means that there is a context that says that for this moment we sum them in this way and not another.
- *   So it should not be part of the context entity (instance) then part of elements themselves.)
- * - Such separation of entities and operations over them brings modularity: you can change operations context
- *   leaving the entities the same.
  */
 public interface Semiring<Number> : Equality<Number> {
     // region Constants
@@ -464,17 +453,6 @@ public infix fun <Number> Number.pow(exponent: ULong): Number = with(ring) { thi
  *
  * Obviously, the [Semiring] interface extends the [Equality] interface because otherwise there is no understanding
  * of the mathematical operations.
- *
- * Such contexts are used instead of usual [plus], [times] and other overloads for several reasons.
- * Some of them are:
- * - Following the structural pattern, any behaviour *between* elements should not be a part of the elements' logic
- *   but a part of assumed context.
- *   (For example, summing two integers together, we assume that we are summing them as two integers,
- *   but not as residues of some modulo.
- *   It means that there is a context that says that for this moment we sum them in this way and not another.
- *   So it should not be part of the context entity (instance) then part of elements themselves.)
- * - Such separation of entities and operations over them brings modularity: you can change operations context
- *   leaving the entities the same.
  */
 public interface ExtendedSemiring<Number> : Semiring<Number> {
     // region Number-UInt operations

@@ -25,19 +25,8 @@ import kotlin.reflect.KVariance
  * It won't be true only the moment you introduce such structures as a ring of matrices 2⨯2 with usual operations
  * you learn on any course of linear algebra.
  *
- * Obviously, the [Ring] interface extends the [Equality] interface (via [Semiring] interface) because otherwise there is no understanding
- * of the mathematical operations.
- *
- * Such contexts are used instead of usual [plus], [minus], [times] and other overloads for several reasons.
- * Some of them are:
- * - Following the structural pattern, any behaviour *between* elements should not be a part of the elements' logic
- *   but a part of assumed context.
- *   (For example, summing two integers together, we assume that we are summing them as two integers,
- *   but not as residues of some modulo.
- *   It means that there is a context that says that for this moment we sum them in this way and not another.
- *   So it should not be part of the context entity (instance) then part of elements themselves.)
- * - Such separation of entities and operations over them brings modularity: you can change operations context
- *   leaving the entities the same.
+ * Obviously, the [Ring] interface extends the [Equality] interface (via [Semiring] interface)
+ * because otherwise there is no understanding of the mathematical operations.
  */
 public interface Ring<Number> : Semiring<Number> {
     // region Integers conversion

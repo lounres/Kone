@@ -1,140 +1,83 @@
 ---
-title: 🏗 Algebraic
+title: Algebraic
 ---
 
-import DependencyTabs from '@site/src/components/DependencyTabs';
-
-:::danger
-Sorry, this page is currently under construction.
-:::
+import DependencyTabs from "../../src/components/DependencyTabs";
+import ApiLink from "../../src/components/ApiLink";
 
 # Kone: Algebraic
 
-This module provides the basic concept of working with algebraic structures and their implementations.
+This module provides contexts of basic algebraic structures, their basic implementations, and basic utilities.
+
+:::warning[About learning order]
+The main topic of the module is about algebraic "contexts".
+The term "context" is described in ["Contexts" module](contexts).
+Also, it depends on contexts from ["Relations" module](relations).
+:::
 
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.algebraic"/>
 
-## Concept
+## Concept of algebraic contexts (a.k.a. algebraic structures)
 
-Do you remember what is [*ring in algebra*](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition)? It's a tuple $\langle R; +^2, -^1, \cdot^2; 0, 1 \rangle$ satisfying ring axioms. In detail, it's
-1. some set $R$, which elements we call "elements" or "numbers" of the ring, and we work with,
-2. binary operations $+$ and $\cdot$ on $R$ that we call "addition" and "multiplication" respectively,
-3. unary operation $-$ on $R$ that we call "additive inversion" or "getting opposite element", and
-4. constants $0$ and $1$ from $R$ that we call "additive identity" and "multiplicative identity" respectively or "zero" and "unit" respectively
+In the same way any context exists to bring operations we could use further,
+there are algebraic contexts that describe how to manipulate with numbers.
+In mathematics, they are called algebraic structures.
 
-that satisfies some axioms that [you can find in Wikipedia](https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition). But note that in real life we also always use "subtraction" operation. But if you think about more programmatic approach, then you'll find out you forgot to name equality predicate, and also you will need conversion of integers to your ring elements and also duplications of algebraic operations with some parameters substituted with integers.
+The problem is that there are a lot of different kinds of "numbers".
+At first, we could be working with integers,
+then we could switch to rational numbers,
+then we could use matrices or polynomials and so on.
+There is a whole zoo of such constructions and there is no end to them.
+But if we want to use them interchangeably, we have to provide interface (abstraction) that characterises them.
+That's how terms like
+[ring](https://en.wikipedia.org/wiki/Ring_(mathematics)),
+[field](https://en.wikipedia.org/wiki/Field_(mathematics)),
+[semiring](https://en.wikipedia.org/wiki/Semiring),
+[Euclidean ring](https://en.wikipedia.org/wiki/Euclidean_domain)
+and so on appeared.
+And the structures are represented in Kone library as corresponding interfaces.
 
-<!-- TODO: hyperlink to API -->
-So in Kone any ring is implemented as an object that holds all the operations of the ring, so it can be used as an algebraic context. For example, there `kone.numberTheory` provides class of Rational numbers and field context for them:
-```kotlin
-// Simplified definition. See actual API in API reference
-data class Rational(val numerator: Long, val denumerator: Long)
+## Comment on the interfaces' declarations
 
-public data object RationalField : Field<Rational> /* Field is an extension interface of Ring */ {
-    // Constants of the field
-    public override val zero: Rational = Rational(0L)
-    public override val one: Rational = Rational(1L)
+Let's consider ring definition.
+Despite it consisting of only three operators
+(binary "plus", unary "minus", and binary "times", all of which operate on the underlying set of numbers)
+there are other frequent operations:
+1. addition, subtraction, and multiplication of a number (of the ring) and integer,
+2. positive integer power of a number (of the ring),
+3. checks in equality to zero and one.
 
-    // The context's equality checkers
-    public override infix fun Rational.equalsTo(other: Rational): Boolean = this == other
-    public override fun Rational.isZero(): Boolean = numerator == 0L
-    public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1L
+These operations could be implemented outside the interface via extension functions.
+For example, multiplication of a number and integer can be achieved via [exponentiation by squaring algorithm](https://en.wikipedia.org/wiki/Exponentiation_by_squaring).
+But this algorithm takes unnecessary time when there are a lot of cases when this operation could be replaced with native one.
+For example, in ring of integers that uses `Int` as an integer representative,
+one could delegate multiplication of two integers to built-in operation instead of exponentiation by squaring algorithm.
+That's why these interfaces actually consist of a lot of similar operations.
+But just in case, most of these operations have default implementations via, yet again, exponentiation by squaring algorithm.
 
-    // Integers conversion
-    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
-    public override fun valueOf(arg: Long): Rational = Rational(arg)
+So if you need to implement one of these contexts, don't be scared!
+There are actually not so many operations to implement!
 
-    // Main algebraic operations of the ring
-    public override operator fun Rational.unaryMinus(): Rational = ...
-    public override operator fun Rational.plus(other: Rational): Rational = ...
-    public override operator fun Rational.minus(other: Rational): Rational = ...
-    public override operator fun Rational.times(other: Rational): Rational = ...
-    // It's an operation from Field interface
-    public override operator fun Rational.div(other: Rational): Rational = ...
+## Default contexts
 
-    // And copies of the operation with the second argument as Int
-    public override operator fun Rational.plus(other: Int): Rational = ...
-    public override operator fun Rational.minus(other: Int): Rational = ...
-    public override operator fun Rational.times(other: Int): Rational = ...
-    // It's an operation from Field interface
-    public override operator fun Rational.div(other: Int): Rational = ...
+This module also already provides default contexts for basic interpretations of basic number types:
+1. <ApiLink to="libs/main/algebraic/dev.lounres.kone.algebraic/-int-context/">`IntContext`</ApiLink>,
+    <ApiLink to="libs/main/algebraic/dev.lounres.kone.algebraic/-u-int-context/">`UIntContext`</ApiLink>,
+    <ApiLink to="libs/main/algebraic/dev.lounres.kone.algebraic/-double-context/">`DoubleContext`</ApiLink>,
+    and so on for primitive types.
+2. <ApiLink to="libs/main/algebraic/dev.lounres.kone.algebraic/-big-integer-context/">`BigIntegerContext`</ApiLink>
+    for [`java.math.BigInteger`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigInteger.html).
 
-    // There are also similar operations but with Long instead of Int and/or
-    // the first argument to be substituted instead of the first
+Several more contexts are placed in ["Algebraic Extra" module](algebraicExtra).
 
-    // Also some operations comes from Ring/Field interface as derived from the operations above
-}
-```
+:::info
+There are plans for implementing "safe" contexts for primitive types.
+They are going to throw exceptions on overflows, appearences of NaNs and other unfavourable situations.
+:::
 
 ## Examples
-Here is an example of standard way to use context of rational numbers:
-<!-- TODO: examples for signed integer power -->
-```kotlin showLineNumbers
-import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.numberTheory.*
 
-// highlight-start
-Rational.field /* It's another reference to RationalField */ {
-    val a = Rational(1, 2)
-    val b = Rational(1, 3)
-
-    // Operations with Rationals
-    println(+a)
-//  >>> 1/2
-    println(-b)
-//  >>> -1/3
-    println(a + b)
-//  >>> 5/6
-    println(a - b)
-//  >>> 1/6
-    println(a * b)
-//  >>> 1/6
-    println(a / b)
-//  >>> 3/2
-
-    // Operations with Rationals and integers
-    println(b - 1)
-//  >>> -2/3
-    println(34 * a)
-//  >>> 17
-
-    // Operations with only integers are not supported! Kotlin built-in operations are used
-    println((5 * 7)::class.simpleName)
-//  >>> Int
-
-    // Context equality checkers does not support default Kotlin `equals` operator.
-    // Instead, there are `equalsTo`, `notEqualsTo`, `eq`, `neq` infix operations.
-    println(a equalsTo b)
-//  >>> false
-    println(a * 2 eq b * 3)
-//  >>> true
-    println(a * b neq b * a)
-//  >>> false
-
-    // Also, there are other equality checkers and operations defined in Ring and Field interfaces.
-    // See API reference for the details.
-}
-// highlight-end
-
-// highlight-start
-// Contexts can also be used to return result of computation inside them
-fun bernoulliNumber(n: Int): Rational = Rational.field {
-    // Initialise a list for storing the recursively computed Bernoulli numbers
-    val bernoulliNumbers = Array<Rational?>(n + 1) { null }
-    bernoulliNumbers[0] = one
-
-    // Compute the numbers with recurrent formula
-    for (i in 1..n) bernoulliNumbers[i] =
-        (1..i)
-            .map { k -> binomial(i + 1, k + 1) * bernoulliNumbers[i - k]!! }
-            .reduce { acc, r -> acc + r } / -(i + 1)
-
-    // Return result
-    bernoulliNumbers[n]!!
-}
-println(bernoulliNumber(14))
-// >>> 7/6
-// highlight-end
-```
+<!-- TODO: Replace the link with branch-depending one -->
+Examples are available [here](https://github.com/lounres/Kone/tree/experiment/libs/main/algebraic/examples).

@@ -1,5 +1,5 @@
 ---
-title: 🏗 Relations
+title: Relations
 ---
 
 import DependencyTabs from "../../src/components/DependencyTabs";
@@ -11,7 +11,7 @@ This module provides contexts of basic relations between objects, their basic im
 
 :::warning[About learning order]
 This module introduces several "contexts".
-The term "context" is described in [contexts module](contexts).
+The term "context" is described in ["Contexts" module](contexts).
 :::
 
 ## Applying the dependencies
@@ -102,7 +102,8 @@ So it can accidentally receive parameter not of the type `Element`.
 But regardless, this object has `equals` method (because `Any` is a supertype)
 that makes the `contains` method work even with wrong types.
 
-But in our case `Equality<Element>`'s `equalsTo` is used and it may throw exception due to failed cast to `Element` type.
+But in our case `Equality<Element>`'s `equalsTo` is used,
+and it may throw exception due to failed cast to `Element` type.
 So what do we do?
 We somehow have to check that the element can be accepted by the `Equality` instance.
 That's why this module introduces `Reification` interface.

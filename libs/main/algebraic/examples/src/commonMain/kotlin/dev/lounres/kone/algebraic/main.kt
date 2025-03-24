@@ -5,6 +5,9 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.collections.interop.toKoneList
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
+import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.neq
@@ -13,7 +16,7 @@ import dev.lounres.kone.numberTheory.binomial
 
 
 fun main() {
-    Rational.context /* It's another reference to RationalField */ {
+    Rational.context /* It's another reference to RationalContext */ {
         val a = Rational(1, 2)
         val b = Rational(1, 3)
 
@@ -48,25 +51,25 @@ fun main() {
         println(a * b neq b * a)
 //      >>> false
 
-        // Also, there are other equality checkers and operations defined in Ring and Field interfaces.
+        // Also, there are other equality checkers and operations defined in Reification, Order, Hashing, Semiring, Ring, and Field interfaces.
         // See API reference for the details.
     }
 
     // Contexts can also be used to return a result of computation inside them
-    fun bernoulliNumber(n: Int): Rational = Rational.context {
+    fun bernoulliNumber(n: UInt): Rational = Rational.context {
         // Initialise a list for storing the recursively computed Bernoulli numbers
-        val bernoulliNumbers = Array<Rational?>(n + 1) { null }
-        bernoulliNumbers[0] = one
+        val bernoulliNumbers = KoneArrayFixedCapacityList<Rational>(n + 1u)
+        bernoulliNumbers.add(one)
 
         // Compute the numbers with recurrent formula
-        for (i in 1..n) bernoulliNumbers[i] =
-            (1..i)
-                .map { k -> binomial(i + 1, k + 1) * bernoulliNumbers[i - k]!! }
-                .reduce { acc, r -> acc + r } / -(i + 1)
+        for (i in 1u..n)
+            bernoulliNumbers.add(
+                (1u..i).toKoneList().sumOf { k -> binomial(i + 1u, k + 1u) * bernoulliNumbers[i - k] } * -1 / (i + 1u)
+            )
 
         // Return result
-        bernoulliNumbers[n]!!
+        bernoulliNumbers[n]
     }
-    println(bernoulliNumber(14))
+    println(bernoulliNumber(14u))
 //  >>> 7/6
 }

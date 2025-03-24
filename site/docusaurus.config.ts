@@ -154,7 +154,7 @@ const config: Config = {
                     position: 'left'
                 },
                 {
-                    href: 'https://lounres.dev/MEDia', // Replace with 'https://lounres.github.io/math-kotlin-experiments',
+                    href: 'https://lounres.dev/MEDia',
                     label: 'MEDia',
                     position: 'left'
                 },
