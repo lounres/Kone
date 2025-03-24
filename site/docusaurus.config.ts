@@ -137,7 +137,7 @@ const config: Config = {
                     docsPluginId: 'docs',
                 },
                 {
-                    href: `${koneUrl}${koneBaseUrl}api`,
+                    href: `${koneUrl}${koneBaseUrl}api/`,
                     label: 'API',
                     position: 'left',
                 },

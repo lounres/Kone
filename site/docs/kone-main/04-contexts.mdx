@@ -1,15 +1,162 @@
 ---
-title: 🏗 Contexts
+title: Contexts
 ---
 
 import DependencyTabs from "../../src/components/DependencyTabs";
-
-:::danger
-Sorry, this page is currently under construction.
-:::
+import ApiLink from "../../src/components/ApiLink";
 
 # Kone: Contexts
+
+This module provides default definitions for the concept of "contexts" that are used all over the Kone library.
+It also provides special "context registries" to simplify interaction with them.
+
+:::warning[About learning order]
+The second part of the module describes contexts' registry
+that is a wrapper for type-safe registry described in [eponymous module](typeSafeRegistry).
+:::
 
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.contexts"/>
+
+## Concept of "contexts"
+
+We live in a wonderful world where we can unite data structures with their "behaviours".
+Such unions are called "instances".
+And their abstractions are called "classes" and "interfaces".
+That's how so-called object-oriented programming (a.k.a. OOP) was born.
+But each feature is followed with a problem of its misuse.
+And unfortunately, the ability of uniting data and behaviours is no exception.
+The most frequent problem is attaching actions that are not behaviours of the data but actions
+that appeared from different approaches to the data.
+
+For example, consider the most ordinary list of some objects.
+The way how we should iterate over it or the way how we can insert an element into it
+is described by the list's implementation.
+Thus, it is behaviour.
+
+But consider equality of two lists.
+Yeah, the way we equate two lists does depend on the way we iterate the lists.
+But it does not depend on the lists' implementations, because it depends on the behaviour of iteration over them.
+Even more so, it depends on the way how we equate two elements (that are placed at the same index in the lists).
+Thus, lists' equality should not be behaviour **of** any of the lists but behaviour **between** the lists.
+And it is behaviour of some sort of "context" in which we assumed some equality of the lists' elements.
+
+But why did we say "some sort of context"? It **is** actually a context!
+Just like in dialogue, we assume that right now we are talking about something (for example, about integers).
+And we use those assumptions to form further discussion without the need to repeat each time that we are talking about integers.
+It is what we call "context of the dialogue".
+And it is what we have in programming too!
+
+But how do we express such contexts?
+Well, in Kotlin we can provide extension functions.
+For example, like this.
+```kotlin
+public fun List<Int>.equalsTo(other: List<Int>): Boolean {
+    if (this.size != other.size) return false
+
+    val thisIterator = this.iterator()
+    val otherIterator = other.iterator()
+
+    while(thisIterator.hasNext()) {
+        val thisNextElement = thisIterator.next()
+        val otherNextElement = otherIterator.next()
+        if (thisNextElement != otherNextElement) return false
+    }
+
+    return true
+}
+```
+And yeah, extension functions are some sort of logic that is placed **between** the lists as we wanted.
+So formally, the answer is that static functions are an example of static context.
+
+But what do we do if we need to depend on different contexts?
+What if we want to equate lists depending on different integers equality.
+Then we need an abstraction of such context.
+That's how context-oriented programming appears.
+For example, we need an interface like
+```kotlin
+public interface Equality<Element> {
+    infix fun Element.equalsTo(other: Element): Boolean
+}
+```
+So we can write
+```kotlin
+context(equality: Equality<Int>)
+public fun List<Int>.equalsTo(other: List<Int>): Boolean {
+    if (this.size != other.size) return false
+
+    val thisIterator = this.iterator()
+    val otherIterator = other.iterator()
+
+    while(thisIterator.hasNext()) {
+        val thisNextElement = thisIterator.next()
+        val otherNextElement = otherIterator.next()
+        // highlight-next-line
+        if (with(equality) { !(thisNextElement equalsTo otherNextElement) }) return false
+    }
+
+    return true
+}
+```
+That's how we welcome our first "context" (as both a term of context-oriented programming and a context parameter in Kotlin).
+
+:::warning
+For now, Kotlin has only experimental support for context parameters.
+:::
+
+## <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/-kone-context/">`KoneContext`</ApiLink> marker
+
+There are a lot of different contexts in Kone.
+To simplify their usage,
+there are marker interface <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/-kone-context/">`KoneContext`</ApiLink>
+and <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/invoke.html">`invoke`</ApiLink> operator on it.
+So each context is marked as `KoneContext` and can be called like this
+```kotlin
+if (equality { !(thisNextElement equalsTo otherNextElement) }) return false
+```
+
+## <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/-kone-context-registry/">`KoneContextRegistry`</ApiLink>
+
+:::danger
+Kone context registries are currently experimental.
+They may be changed a lot or even be removed.
+:::
+
+Another complicated use case for such contexts as
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/-equality/">`Equality`</ApiLink>,
+<ApiLink to="libs/main/relations/dev.lounres.kone.relations/-order/">`Order`</ApiLink>,
+and <ApiLink to="libs/main/relations/dev.lounres.kone.relations/-hashing/">`Hashing`</ApiLink>
+are sets (and maps).
+
+First, let's remind what a set is.
+A set is an unordered collection of elements where each element is unique.
+But what does this word "unique" mean?
+It means that there is some equality on elements and no other element is equal to this one.
+So data structure that implements the set should use provided `Equality` to equate its elements.
+In the same way self-balancing tree and hash table that implement the set should also use provided `Order` and `Hashing` correspondingly.
+Thus, depending on what contexts on the elements you have, you can choose different data structures to use as a set.
+
+But choosing the right implementation of a set manually each time is such a boilerplate.
+So it makes sense to make a function like
+```kotlin
+public fun <Element> koneSetOf(
+    vararg elements: Element,
+    elementEquality: Equality<Element>,
+    elementOrder: Order<Element>? = null,
+    elementHashing: Hashing<Element>? = null,
+): KoneSet<Element> = TODO()
+```
+that has optional parameters for order and hashing.
+But it means that if you use this function in some generic algorithm,
+you have to propagate such parameters up to the parameters of the algorithm.
+It would be nice to have a way to check the existence of optional contexts dynamically.
+
+For now this problem is unsolved.
+But a partial solution for now is to use type-safe registry for contexts.
+So one could check the presence of sought context in a centralised way via this registry.
+That's why there is an unstable API for such registries:
+value class <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/-kone-context-registry/">`KoneContextRegistry`</ApiLink> (to store contexts),
+functions `loadXXX` (to retrieve sought contexts (or default values like `null`) from the registry),
+value class <ApiLink to="libs/main/contexts/dev.lounres.kone.contexts/-kone-context-registry-builder/">`KoneContextRegistryBuilder`</ApiLink> (to build context registries),
+and functions `installXXX` (to put keys with corresponding contexts into the builder).
