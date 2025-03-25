@@ -40,31 +40,6 @@ const config: Config = {
         },
     },
 
-    plugins: [
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'tutorials',
-                path: 'tutorials',
-                routeBasePath: 'tutorials',
-                sidebarPath: './tutorialsSidebars.ts',
-                remarkPlugins: [remarkMath],
-                rehypePlugins: [rehypeKatex],
-            },
-        ],
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'algorithms',
-                path: 'algorithms',
-                routeBasePath: 'algorithms',
-                sidebarPath: './algorithmsSidebars.ts',
-                remarkPlugins: [remarkMath],
-                rehypePlugins: [rehypeKatex],
-            },
-        ],
-    ],
-
     presets: [
         [
             'classic',
@@ -72,7 +47,7 @@ const config: Config = {
                 docs: {
                     id: "docs",
                     path: "docs",
-                    routeBasePath: 'docs',
+                    routeBasePath: '/',
                     sidebarPath: require.resolve('./docsSidebars.js'),
                     remarkPlugins: [remarkMath],
                     rehypePlugins: [rehypeKatex],
@@ -127,7 +102,7 @@ const config: Config = {
                 //     sidebarId: 'tutorials',
                 //     position: 'left',
                 //     label: 'Tutorials',
-                //     docsPluginId: 'tutorials',
+                //     docsPluginId: 'docs',
                 // },
                 {
                     type: 'docSidebar',
@@ -146,7 +121,7 @@ const config: Config = {
                     sidebarId: 'algorithms',
                     position: 'left',
                     label: 'Algorithms',
-                    docsPluginId: 'algorithms',
+                    docsPluginId: 'docs',
                 },
                 {
                     to: '/blog',
