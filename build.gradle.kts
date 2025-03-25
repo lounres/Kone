@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import java.time.LocalDate
 import java.time.ZoneId
+import kotlin.text.replace
 
 
 plugins {
@@ -533,6 +534,21 @@ stal {
                 moduleName = "${project.extra["artifactPrefix"]}${project.name}"
                 // DOKKA-3885
                 dokkaGeneratorIsolation = ClassLoaderIsolation()
+                
+                dokkaSourceSets.all {
+//                    reportUndocumented = true
+                    
+                    sourceLink {
+                        val relativePathToSourceRoot = project.projectDir.toRelativeString(rootDir).replace('\\', '/')
+                        remoteUrl("https://github.com/lounres/Kone/tree/experiment/$relativePathToSourceRoot")
+                    }
+                }
+                
+                pluginsConfiguration.html {
+                    customAssets.from(docsProject.projectDir.resolve("images/logo-icon.svg"), docsProject.projectDir.resolve("images/favicon.svg"))
+                    footerMessage = "Copyright © 2025 Gleb Minaev<br>All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE"
+                    templatesDir = docsProject.projectDir.resolve("templates")
+                }
             }
 
             tasks.register<Jar>("dokkaJar") {

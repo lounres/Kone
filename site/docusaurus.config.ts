@@ -116,13 +116,13 @@ const config: Config = {
                     label: 'API',
                     position: 'left',
                 },
-                {
-                    type: 'docSidebar',
-                    sidebarId: 'algorithms',
-                    position: 'left',
-                    label: 'Algorithms',
-                    docsPluginId: 'docs',
-                },
+                // {
+                //     type: 'docSidebar',
+                //     sidebarId: 'algorithms',
+                //     position: 'left',
+                //     label: 'Algorithms',
+                //     docsPluginId: 'docs',
+                // },
                 {
                     to: '/blog',
                     label: 'Blog',
