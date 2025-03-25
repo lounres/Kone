@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 import React from 'react';
-import {koneGroup, koneVersion} from '@site/src/inputData';
+import {koneGroup, koneVersion} from '@site/inputData';
 
 interface Dependency {
     group: string

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Kone:docs [dokkaGenerate]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Kone:docs [dokkaGeneratePublicationHtml]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/docs" />
@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="dokkaGenerate" />
+          <option value="dokkaGeneratePublicationHtml" />
         </list>
       </option>
       <option name="vmOptions" />
