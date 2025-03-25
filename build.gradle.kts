@@ -29,6 +29,7 @@ plugins {
     alias(versions.plugins.kotlinx.benchmark) apply false
     alias(versions.plugins.kotest.multiplatform) apply false
     alias(versions.plugins.kotlinx.kover) apply false
+    id("org.ajoberstar.grgit") version "5.3.0"
     alias(versions.plugins.dokka)
     `version-catalog`
     `maven-publish`
@@ -39,6 +40,7 @@ plugins {
 
 val today: LocalDate = LocalDate.now(ZoneId.of("UTC"))
 val koneVersion = "0.0.0-experiment-${today.year}.${today.month.value}.${today.dayOfMonth}"
+val koneBranch: String = grgit.branch.current().name
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
@@ -53,6 +55,7 @@ tasks.register("docusaurusGenerateInputData") {
     doLast {
         val inputDataContent =
             """
+                export const koneBranch = "$koneBranch"
                 export const koneGroup = "$koneGroup"
                 export const koneVersion = "$koneVersion"
                 export const koneUrl = "$koneUrl"
@@ -68,6 +71,7 @@ tasks.register("docusaurusGenerateDevInputData") {
     doLast {
         val inputDataContent =
             """
+                export const koneBranch = "$koneBranch"
                 export const koneGroup = "$koneGroup"
                 export const koneVersion = "$koneVersion"
                 export const koneUrl = "http://localhost:3000"
@@ -75,14 +79,6 @@ tasks.register("docusaurusGenerateDevInputData") {
             """.trimIndent()
         rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
     }
-}
-
-tasks.register<Copy>("docusaurusGenerateApi") {
-    group = "site"
-    val docsTask = tasks.getByPath(":docs:dokkaGeneratePublicationHtml")
-    dependsOn(docsTask)
-    from(docsTask)
-    into(rootDir.resolve("site/static/api/"))
 }
 
 allprojects {
