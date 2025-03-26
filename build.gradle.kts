@@ -38,9 +38,10 @@ plugins {
 }
 
 
+val koneBranch: String = grgit.branch.current().name
 val today: LocalDate = LocalDate.now(ZoneId.of("UTC"))
 val koneVersion = "0.0.0-experiment-${today.year}.${today.month.value}.${today.dayOfMonth}"
-val koneBranch: String = grgit.branch.current().name
+//val koneVersion = "0.0.0-experiment"
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
@@ -603,6 +604,9 @@ stal {
                 }
             }
             configure<SigningExtension> {
+                val signingKey: String? by project
+                val signingPassword: String? by project
+                useInMemoryPgpKeys(signingKey, signingPassword)
                 sign(the<PublishingExtension>().publications)
             }
         }
