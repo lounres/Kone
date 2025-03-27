@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Создано Microsoft Visio, экспорт SVG 07-lists-hierarchy.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="11.3933in" height="4.33626in"
+		viewBox="0 0 820.321 312.211" xml:space="preserve" color-interpolation-filters="sRGB" class="st7">
+	<v:documentProperties v:langID="1049" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvSubprocessMaster" v:prompt="" v:val="VT4(Rectangle)"/>
+			<v:ud v:nameU="msvNoAutoConnect" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#ffea00;stroke-dasharray:7,5;stroke-width:1}
+		.st2 {fill:#ffea00;font-family:JetBrains Mono;font-size:0.833336em}
+		.st3 {fill:#ffea00;stroke:#ffea00;stroke-width:0.25}
+		.st4 {fill:#000000;font-family:JetBrains Mono;font-size:0.833336em}
+		.st5 {marker-end:url(#mrkr4-39);stroke:#ffea00;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st6 {fill:#ffea00;fill-opacity:1;stroke:#ffea00;stroke-opacity:1;stroke-width:0.28409090909091}
+		.st7 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-39" class="st6" v:arrowType="4" v:arrowSize="2" v:setback="7.04" refX="-7.04" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-3.52,-3.52) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<v:userDefs>
+			<v:ud v:nameU="msvThemeOrder" v:val="VT0(0):26"/>
+		</v:userDefs>
+		<title>Страница-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="Соединительная линия" v:index="0"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(19,-256.36)">
+			<title>Прямоугольник</title>
+			<desc>KoneLinearIterable</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<path d="M0 312.21 L201.97 312.21 L201.97 275.36 L0 275.36 L0 312.21 Z" class="st1"/>
+			<text x="46.99" y="296.79" class="st2" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneLinearIterable</text>		</g>
+		<g id="shape2-4" v:mID="2" v:groupContext="shape" transform="translate(309.551,-256.36)">
+			<title>Прямоугольник.2</title>
+			<desc>KoneList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="76.98" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneList</text>		</g>
+		<g id="shape11-7" v:mID="11" v:groupContext="shape" transform="translate(19,-176.99)">
+			<title>Прямоугольник.11</title>
+			<desc>KoneSettableLinearIterable</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<path d="M0 312.21 L201.97 312.21 L201.97 275.36 L0 275.36 L0 312.21 Z" class="st1"/>
+			<text x="22.99" y="296.79" class="st2" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneSettableLinearIterable</text>		</g>
+		<g id="shape12-10" v:mID="12" v:groupContext="shape" transform="translate(309.551,-176.99)">
+			<title>Прямоугольник.12</title>
+			<desc>KoneSettableList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="52.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneSettableList</text>		</g>
+		<g id="shape16-13" v:mID="16" v:groupContext="shape" transform="translate(19,-97.6201)">
+			<title>Прямоугольник.16</title>
+			<desc>KoneMutableLinearIterable</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<path d="M0 312.21 L201.97 312.21 L201.97 275.36 L0 275.36 L0 312.21 Z" class="st1"/>
+			<text x="25.99" y="296.79" class="st2" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneMutableLinearIterable</text>		</g>
+		<g id="shape17-16" v:mID="17" v:groupContext="shape" transform="translate(309.551,-97.6201)">
+			<title>Прямоугольник.17</title>
+			<desc>KoneMutableList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="55.98" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneMutableList</text>		</g>
+		<g id="shape22-19" v:mID="22" v:groupContext="shape" transform="translate(309.551,-18.25)">
+			<title>Прямоугольник.22</title>
+			<desc>KoneGrowableMutableList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="31.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneGrowableMutableList</text>		</g>
+		<g id="shape44-22" v:mID="44" v:groupContext="shape" transform="translate(600.102,-256.36)">
+			<title>Прямоугольник.44</title>
+			<desc>KoneNoddedList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="58.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneNoddedList</text>		</g>
+		<g id="shape45-25" v:mID="45" v:groupContext="shape" transform="translate(600.102,-176.99)">
+			<title>Прямоугольник.45</title>
+			<desc>KoneSettableNoddedList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="34.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneSettableNoddedList</text>		</g>
+		<g id="shape46-28" v:mID="46" v:groupContext="shape" transform="translate(600.102,-97.6201)">
+			<title>Прямоугольник.46</title>
+			<desc>KoneMutableNoddedList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="37.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneMutableNoddedList</text>		</g>
+		<g id="shape47-31" v:mID="47" v:groupContext="shape" transform="translate(600.102,-18.25)">
+			<title>Прямоугольник.47</title>
+			<desc>KoneGrowableMutableNoddedList</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+				<v:ud v:nameU="visMasterStencil" v:prompt="" v:val="VT4(Basic_M.vssx)"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="100.984" cy="293.785" width="201.97" height="36.8504"/>
+			<rect x="0" y="275.36" width="201.968" height="36.8504" class="st3"/>
+			<text x="13.99" y="296.79" class="st4" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>KoneGrowableMutableNoddedList</text>		</g>
+		<g id="shape48-34" v:mID="48" v:groupContext="shape" v:layerMember="0" transform="translate(309.551,-267.699)">
+			<title>Динамическая соединительная линия</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape49-40" v:mID="49" v:groupContext="shape" v:layerMember="0" transform="translate(309.551,-188.329)">
+			<title>Динамическая соединительная линия.49</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape50-45" v:mID="50" v:groupContext="shape" v:layerMember="0" transform="translate(309.551,-108.959)">
+			<title>Динамическая соединительная линия.50</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape51-50" v:mID="51" v:groupContext="shape" v:layerMember="0" transform="translate(600.102,-267.699)">
+			<title>Динамическая соединительная линия.51</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape52-55" v:mID="52" v:groupContext="shape" v:layerMember="0" transform="translate(600.102,-188.329)">
+			<title>Динамическая соединительная линия.52</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape53-60" v:mID="53" v:groupContext="shape" v:layerMember="0" transform="translate(600.102,-108.959)">
+			<title>Динамическая соединительная линия.53</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+		<g id="shape54-65" v:mID="54" v:groupContext="shape" v:layerMember="0" transform="translate(403.449,-213.841)">
+			<title>Динамическая соединительная линия.54</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape55-70" v:mID="55" v:groupContext="shape" v:layerMember="0" transform="translate(112.898,-213.841)">
+			<title>Динамическая соединительная линия.55</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape56-75" v:mID="56" v:groupContext="shape" v:layerMember="0" transform="translate(112.898,-134.47)">
+			<title>Динамическая соединительная линия.56</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape57-80" v:mID="57" v:groupContext="shape" v:layerMember="0" transform="translate(403.449,-134.47)">
+			<title>Динамическая соединительная линия.57</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape58-85" v:mID="58" v:groupContext="shape" v:layerMember="0" transform="translate(403.449,-55.1004)">
+			<title>Динамическая соединительная линия.58</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape59-90" v:mID="59" v:groupContext="shape" v:layerMember="0" transform="translate(694,-55.1004)">
+			<title>Динамическая соединительная линия.59</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape60-95" v:mID="60" v:groupContext="shape" v:layerMember="0" transform="translate(694,-134.47)">
+			<title>Динамическая соединительная линия.60</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape61-100" v:mID="61" v:groupContext="shape" v:layerMember="0" transform="translate(694,-213.841)">
+			<title>Динамическая соединительная линия.61</title>
+			<path d="M7.09 312.21 C7.09 303.59 7.09 287.99 7.09 276.73" class="st5"/>
+		</g>
+		<g id="shape62-105" v:mID="62" v:groupContext="shape" v:layerMember="0" transform="translate(600.102,-29.5886)">
+			<title>Динамическая соединительная линия.62</title>
+			<path d="M0 305.12 C-19.99 305.12 -58.04 305.12 -81.54 305.12" class="st5"/>
+		</g>
+	</g>
+</svg>

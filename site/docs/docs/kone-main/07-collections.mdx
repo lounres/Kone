@@ -1,5 +1,5 @@
 ---
-title: 🏗 Collections
+title: 🏗 Collections 🔴
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
@@ -8,7 +8,20 @@ import ThemedImage from '@theme/ThemedImage';
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
 :::danger
-Sorry, this page is currently under construction.
+Sorry, some sections of this page are currently under construction.
+Here is a checklist of sections:
+- [x] Iterators and iterables API
+- [x] Concept: "nodes" and "nodded" collection
+- [ ] Lists and arrays API
+    - [x] Nodes API
+    - [x] List iterators API
+    - [ ] Lists API
+    - [x] Arrays API
+- [ ] Deques API
+- [ ] Sets API 🔴
+- [ ] Maps API 🔴
+- [ ] Heaps API
+- [ ] Search trees API
 :::
 
 :::danger
@@ -33,7 +46,9 @@ There are several problems with Kotlin stdlib's collections:
 2. Arrays are always mutable and there are no immutable alternatives.
 3. Iterators API is minimalistic and glues together getting next element and moving forward,
     which is not that flexible for fine-tuned behaviours.
-4. Etc.
+4. Maps have no throwing method of getting a value by key in the way lists have it.
+    It's a problem because you have to trace over map's structure twice just to retrieve a value.
+5. Etc.
 
 So there was a decision to revise ~everything~ collections API and their implementations.
 
@@ -78,7 +93,7 @@ Mutating operations are:
 
 Iterators form an inheritance hierarchy below.
 <ThemedImage
-    alt="Docusaurus themed image"
+    alt="Common iterators hierrarchy"
     sources={{
         light: useBaseUrl('/docs/kone-main/07-iterators-hierarchy-light-theme.svg'),
         dark: useBaseUrl('/docs/kone-main/07-iterators-hierarchy-dark-theme.svg'),
@@ -99,5 +114,194 @@ But some structures can guarantee the safety of their iterators (for example, al
 Also, be aware that there are a bit more kinds of iterators that are made especially for other APIs.
 For example, there are other iterator types for lists and for sets.
 
+## Concept: "nodes" and "nodded" collections
+
+As you know, there are several kinds of lists.
+Let's consider a (doubly) linked list.
+It has a great performance of insertion in the middle.
+But there is one nuance: it is that performant only in cases you have a pointer to this middle.
+So we have to somehow have a pointer to internal parts of the structure.
+And it's not the only case where we need such pointers.
+That's why there are nodes and nodded structures in Kone.
+
+Node is a pointer to part of the collection's inner structure where the element is stored.
+Nodded collection is a collection that provides a node for each of its elements.
+In particular, one can get element's node the moment it added the element into the collection via specific addition method.
+For example of the methods,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-nodded-list/add-node.html">`KoneMutableNoddedList.addNode`</ApiLink>
+or <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-nodded-set/add-node.html">`KoneMutableNoddedSet.addNode`</ApiLink>.
+
+:::warning
+Collections return (should return) the same node instance on any request for the same element's node.
+I.e. there aren't (should not be) two different instances that are nodes of the same element.
+:::
+
+All nodes provide API to get their element,
+`isDetached` property to know if the node is no longer part of corresponding structure,
+and other methods.
+
 ## Lists and arrays API
 
+Lists are finite sequences of elements with indices from zero to its size exclusively.
+There are different kinds of lists: immutable, settable, mutable, and growable mutable.
+Each kind has two variants: usual and nodded.
+
+### Nodes API
+
+There are three kinds of nodes:
+immutable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/">`KoneListNode`</ApiLink>,
+settable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list-node/">`KoneSettableListNode`</ApiLink>,
+and mutable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list-node/">`KoneMutableListNode`</ApiLink>.
+<ThemedImage
+    alt="List nodes hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-list-nodes-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-list-nodes-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+Immutable node provides:
+1. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/element.html">`element`</ApiLink>
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/--index--.html">`index`</ApiLink>
+    properties to get an element at specified place and the place's index.
+    (In particular, the `element` and `index` properties may return different values.
+    And `index` property may throw exception if the node was detached.)
+2. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/is-detached.html">`isDetached`</ApiLink>
+    property that indicates that the node is detached and is no longer part of the list's structure.
+3. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/next-node.html">`nextNode`</ApiLink>
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/previous-node.html">`previousNode`</ApiLink>
+    properties to get next and previous nodes (or `null` if there is no one).
+4. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/iterator-from-after-here.html">`iteratorFromAfterHere`</ApiLink>
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/iterator-from-before-here.html">`iteratorFromBeforeHere`</ApiLink>
+    methods that create iterators with cursors pointing on a space after and before the node respectively.
+
+Settable node also provides a mutable version of
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list-node/element.html">`element`</ApiLink>
+property that allows changing element at the corresponding place in the list.
+Mutable node also provides
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list-node/remove.html">`remove`</ApiLink>
+method that allows to detach the node from the structure removing its element from the list.
+
+### List iterators API
+
+List iterators form a hierarchy below.
+<ThemedImage
+    alt="List nodes hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-list-iterators-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-list-iterators-hierarchy-dark-theme.svg'),
+    }}
+/>
+The three interfaces
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-iterator/">`KoneListIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list-iterator/">`KoneSettableListIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list-iterator/">`KoneMutableListIterator`</ApiLink>
+are actually type aliases to
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/">`KoneLinearIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-settable-linear-iterator/">`KoneSettableLinearIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-mutable-linear-iterator/">`KoneMutableLinearIterator`</ApiLink>.
+The bottom three interface
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-nodded-list-iterator/">`KoneNoddedListIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-nodded-list-iterator/">`KoneSettableNoddedListIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-nodded-list-iterator/">`KoneMutableNoddedListIterator`</ApiLink>
+inherit the interfaces above correspondingly and introduce methods
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-nodded-list-iterator/get-next-node.html">`getNextNode`</ApiLink>
+and
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-nodded-list-iterator/get-previous-node.html">`getPreviousNode`</ApiLink>
+to get nodes of next and previous elements.
+
+:::info
+When iterator of a list is constructed, the iteration sequence is the list itself.
+And there is a guarantee that mutable iterator operations would leave iterator still usable.
+(But there is no guarantee that mutable list operations and other iterators operations would leave iterator still usable.)
+:::
+
+### 🏗 Lists API
+
+There are several kinds of lists that are presented in Kone:
+1. **Immutable lists** &mdash lists which are read-only.
+2. **Settable lists** &mdash; lists of fixed size that can only accept new elements instead old ones.
+    Cannot be extended nor reduced.
+3. **Fixed capacity lists** &mdash; mutable lists that are backed by fixed arrays of fixed size.
+    Thus, they can be mutated but with a condition that at each moment number of elements won't be higher than specified capacity.
+4. **Resizable lists** &mdash; mutable lists that are backed by array
+    that will be expanded or shrunk (i.e. reinitialised with new capacity higher or lower than the previous one)
+    depending on the current number of elements.
+    Usually their capacity is a power of two.
+5. **Growable lists** &mdash; mutable lists that are backed by array
+    that will be expanded (i.e. reinitialised with new capacity higher than the previous one)
+    depending on the current number of elements.
+    Usually their capacity is a power of two.
+6. **GC-backed lists** &mdash; mutable lists that do not contain any array in their structure.
+    Thus, they are equivalent to (doubly) linked lists.
+
+Each kind has two variants: usual and nodded.
+But on the level of interfaces, fixed capacity, resizable lists, and GC-backed lists have no differences,
+so they are represented with just
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list/">`KoneMutableList`</ApiLink>.
+And growable lists introduce only
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-growable-mutable-list/ensure-capacity.html">`ensureCapacity`</ApiLink>
+method, so they are represented with
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-growable-mutable-list/">`KoneGrowableMutableList`</ApiLink>.
+<ThemedImage
+    alt="List nodes hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-lists-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-lists-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+:::danger
+This "Lists API" section is not yet finished, but you can look at API reference.
+:::
+
+### Arrays API
+
+In Kone, arrays are just value classes that wrap Kotlin stdlib arrays. But they have a bit of advantage:
+1. There are
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/-kone-array/">`KoneArray`</ApiLink>
+    and `KoneXXXArray`s variants (`XXX` is a name of primitive type) that are immutable.
+    It allows one to use performant arrays on JVM while providing safe API.
+    Of course, there are mutable
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/-kone-mutable-array/">`KoneArray`</ApiLink>
+    and `KoneMutableXXXArray`s variants.
+2. They inherit `KoneList` and `KoneSettableList` interfaces which makes their usage a bit more flexible.
+
+:::info
+Unfortunately, there is no way to inherit `KoneArray` by `KoneMutableArray` for now.
+(See [KT-42977](https://youtrack.jetbrains.com/issue/KT-42977/Allow-inheritance-between-inline-classes) for more.)
+So for corner cases when you want to convert a mutable array into an immutable array without extra allocations,
+there are
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/as-kone-array.html">`asKoneArray`</ApiLink>
+and `asKoneXXXArray` extensions.
+:::
+
+## 🏗 Deques API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+## 🏗 Sets API 🔴
+
+:::danger
+This part of the documentation is planned.
+:::
+
+## 🏗 Maps API 🔴
+
+:::danger
+This part of the documentation is planned.
+:::
+
+## 🏗 Heaps API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+## 🏗 Search trees API
+
+:::danger
+This part of the documentation is planned.
+:::

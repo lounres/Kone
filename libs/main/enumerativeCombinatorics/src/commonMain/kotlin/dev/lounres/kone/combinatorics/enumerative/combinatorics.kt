@@ -6,6 +6,7 @@
 package dev.lounres.kone.combinatorics.enumerative
 
 import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
@@ -70,6 +71,7 @@ public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<Ko
     }
 }
 
+@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <E> cartesianProduct(vararg collections: KoneList<E>): Sequence<KoneList<E>> = cartesianProduct(KoneArray(collections))
 
 public infix fun <E> KoneList<E>.cartesianPower(power: UInt): Sequence<KoneList<E>> {
