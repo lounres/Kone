@@ -16,8 +16,6 @@ import kotlin.contracts.contract
 import kotlin.jvm.JvmInline
 
 
-// TODO: Docs in progress.
-
 /**
  * Type-safe registry (a.k.a. type-safe map) made especially for contexts in Kone.
  */

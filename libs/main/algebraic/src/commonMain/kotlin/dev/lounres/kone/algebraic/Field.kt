@@ -12,7 +12,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-// TODO: Add a link to the interface's reasoning at the docs here at the end.
 /**
  * Describes a context that represents [mathematical field](https://en.wikipedia.org/wiki/Field_(mathematics)).
  * It means that it is an extension of [Ring] interface that also provides division and exponentiation to the negative

@@ -24,7 +24,6 @@ public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient:
 //    public operator fun component2(): Number = remainder
 }
 
-// TODO: Add a link to the interface's reasoning at the docs here at the end.
 /**
  * Describes a context that represents Euclidean semiring
  * (i.e. [Euclidean ring (a.k.a. Euclidean domain)](https://en.wikipedia.org/wiki/Euclidean_domain) but without subtraction).
@@ -95,7 +94,6 @@ public operator fun <Number> Number.div(other: Number): Number = with(ring) { th
 context(ring: EuclideanSemiring<Number>)
 public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }
 
-// TODO: Add a link to the interface's reasoning at the docs here at the end.
 /**
  * Describes a context that represents [Euclidean ring (a.k.a. Euclidean domain)](https://en.wikipedia.org/wiki/Euclidean_domain).
  * It means that it extends both [Ring] and [EuclideanSemiring] interfaces without adding anything new to them.

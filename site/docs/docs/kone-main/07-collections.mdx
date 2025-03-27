@@ -3,6 +3,9 @@ title: 🏗 Collections
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
+import ApiLink from "@site/src/components/ApiLink";
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 :::danger
 Sorry, this page is currently under construction.
@@ -14,6 +17,87 @@ This module's API is not yet ready.
 
 # Kone: Collections
 
+This module provides revised collections API and their different fine-tuned implementations.
+The collections may be helpful in the implementation of more demanding algorithms.
+All further modules are based on the collections.
+
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.collections"/>
+
+## Instead of introduction
+
+There are several problems with Kotlin stdlib's collections:
+1. Such collections like set or map are fixed of the default equality and hashing
+    (and assume that the later one is always available and efficient).
+2. Arrays are always mutable and there are no immutable alternatives.
+3. Iterators API is minimalistic and glues together getting next element and moving forward,
+    which is not that flexible for fine-tuned behaviours.
+4. Etc.
+
+So there was a decision to revise ~everything~ collections API and their implementations.
+
+## Iterators and iterables API
+
+Iterators in Kone can be used to iterate over different kinds of structures in different ways.
+They may iterate over finite or infinite number of elements.
+They may change the structure.
+They may interact with the elements in two ways, forward and backward.
+
+Iterator assumes that some set of elements is represented as a linear sequence of elements that is used to iterate over them.
+This sequence may be finite or infinite (it may have no first element, no last element, or both).
+In each moment (when it does not perform some operation) it has a cursor that points either between two elements, before the first one, or after the last one.
+(If there are no elements in the collection, the pointer just points nowhere.)
+There are 2 types of operations that iterators can perform: non-mutating and mutating ones.
+Non-mutating operations are:
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/has-next.html">`hasNext`</ApiLink>
+    &mdash; checks if there is next element in the sequence,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/get-next.html">`getNext`</ApiLink>
+    &mdash; returns the next element if there is one,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/move-next.html">`moveNext`</ApiLink>
+    &mdash; makes cursor jump over the next element if there is one,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/next-index.html">`nextIndex`</ApiLink>
+    &mdash; returns index of the next element if the sequence is indexed (in the way that each next element has index one more then previous element) and there is next element,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/has-previous.html">`hasPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/get-previous.html">`getPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/move-previous.html">`movePrevious`</ApiLink>,
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/previous-index.html">`previousIndex`</ApiLink>
+    &mdash; like the three above but in the opposite direction.
+
+Mutating operations are:
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-extendable-iterator/add-next.html">`addNext`</ApiLink>
+    &mdash; adds new element in the space the cursor is pointing on and puts cursor before the new element,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-settable-iterator/set-next.html">`setNext`</ApiLink>
+    &mdash; changes the next element if there is one,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-removable-iterator/remove-next.html">`removeNext`</ApiLink>
+    &mdash; removes the next element if there is one, preserves previous element, and makes next element after the next one the next element,
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-extendable-iterator/add-previous.html">`addPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-settable-iterator/set-previous.html">`setPrevious`</ApiLink>,
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-removable-iterator/remove-previous.html">`removePrevious`</ApiLink>
+    &mdash; like the three above but in the opposite direction.
+
+Iterators form an inheritance hierarchy below.
+<ThemedImage
+    alt="Docusaurus themed image"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-iterators-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-iterators-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+Iterables are finite structures of certain size that can be iterated using iterators mentioned above.
+It means that their elements can form a finite sequence that can be iterated using the rules above.
+
+:::warning
+It is guaranteed that after non-mutating operations, the iterator is still usable.
+However, there is no such guarantee for mutating operations.
+It means that the inner structure of the iterable may be changed in a such way that state of the iterator may be undefined.
+For example, adding an element to a hashtable can provoke hashtable reconstruction that changes the sequence of elements to iterate undefinedly.
+But some structures can guarantee the safety of their iterators (for example, all lists can).
+:::
+
+Also, be aware that there are a bit more kinds of iterators that are made especially for other APIs.
+For example, there are other iterator types for lists and for sets.
+
+## Lists and arrays API
+

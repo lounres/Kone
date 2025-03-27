@@ -14,7 +14,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-// TODO: Move the reasoning of the interface to docs and leave only a link to it here at the end.
 /**
  * Describes a context that represents [mathematical commutative ring](https://en.wikipedia.org/wiki/Ring_(mathematics)).
  * It means that it provides operations like `+`, `-` (both unary and binary), `*`, `power`,

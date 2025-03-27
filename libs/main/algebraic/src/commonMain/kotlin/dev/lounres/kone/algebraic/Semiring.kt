@@ -15,7 +15,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-// TODO: Move the reasoning of the interface to docs and leave only a link to it here at the end.
 /**
  * Describes a context that represents [mathematical commutative semiring](https://en.wikipedia.org/wiki/Semiring).
  * It means that it provides operations like `+`, `*`, `power`,
@@ -432,7 +431,6 @@ public infix fun <Number> Number.pow(exponent: ULong): Number = with(ring) { thi
 // endregion
 
 
-// TODO: Move the reasoning of the interface to docs and leave only a link to it here at the end.
 /**
  * Describes a context that represents "extended" [mathematical commutative semiring](https://en.wikipedia.org/wiki/Semiring).
  * It means that it provides operations like `+`, `*`, `power`,

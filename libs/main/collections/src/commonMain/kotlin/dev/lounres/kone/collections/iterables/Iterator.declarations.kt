@@ -11,8 +11,8 @@ import dev.lounres.kone.collections.NoFollowingElementInIteratorException
 /**
  * Represents an iterator over some elements (maybe even infinite number of elements) in some (maybe temporary) order.
  *
- * In each moment it has cursor pointing either between two elements, before the first one, or after the last one.
- * If there are no elements in the collection the pointer just points nowhere.
+ * In each moment it has a cursor pointing either between two elements, before the first one, or after the last one.
+ * If there are no elements in the collection, the pointer just points nowhere.
  * All operations are made either before or after the cursor with previous or next element correspondingly.
  */
 public interface KoneIterator<out Element> {
