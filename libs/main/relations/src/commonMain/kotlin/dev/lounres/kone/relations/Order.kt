@@ -145,7 +145,7 @@ public infix fun <Element> Element.compareWith(other: Element): ComparisonResult
  * The only usage is to import to make `<`, `<=`, `>`, and `>=` work in [Order] context.
  */
 context(_: Order<Element>)
-public operator fun <Element> Element.compareTo(other: Element): Int = this.compareWith(other).asKotlinComparisonResult()
+public infix operator fun <Element> Element.compareTo(other: Element): Int = this.compareWith(other).asKotlinComparisonResult()
 
 /**
  * Alternative notation to `==` operator that uses [Order.compareTo] for comparison.
