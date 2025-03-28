@@ -48,7 +48,7 @@ const config: Config = {
                     id: "docs",
                     path: "docs",
                     routeBasePath: '/',
-                    sidebarPath: require.resolve('./docsSidebars.js'),
+                    sidebarPath: './docsSidebars.ts',
                     remarkPlugins: [remarkMath],
                     rehypePlugins: [rehypeKatex],
                 },
@@ -65,7 +65,7 @@ const config: Config = {
                     rehypePlugins: [rehypeKatex],
                 },
                 theme: {
-                    customCss: require.resolve('./src/css/custom.css'),
+                    customCss: './src/css/custom.css',
                 },
             } satisfies Preset.Options,
         ],
