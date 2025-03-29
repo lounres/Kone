@@ -12,20 +12,16 @@ Sorry, some sections of this page are currently under construction.
 Here is a checklist of sections:
 - [x] Iterators and iterables API
 - [x] Concept: "nodes" and "nodded" collection
-- [ ] Lists and arrays API
+- [x] Lists and arrays API
     - [x] Nodes API
     - [x] List iterators API
-    - [ ] Lists API
+    - [x] Lists API
     - [x] Arrays API
-- [ ] Deques API
+- [x] Deques API
 - [ ] Sets API 🔴
 - [ ] Maps API 🔴
-- [ ] Heaps API
-- [ ] Search trees API
-:::
-
-:::danger
-This module's API is not yet ready.
+- [x] Heaps API 🟡
+- [x] Search trees API
 :::
 
 # Kone: Collections
@@ -143,7 +139,7 @@ and other methods.
 ## Lists and arrays API
 
 Lists are finite sequences of elements with indices from zero to its size exclusively.
-There are different kinds of lists: immutable, settable, mutable, and growable mutable.
+There are different kinds of lists: immutable, settable, mutable, growable mutable, and more.
 Each kind has two variants: usual and nodded.
 
 ### Nodes API
@@ -200,7 +196,7 @@ are actually type aliases to
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/">`KoneLinearIterator`</ApiLink>,
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-settable-linear-iterator/">`KoneSettableLinearIterator`</ApiLink>,
 and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-mutable-linear-iterator/">`KoneMutableLinearIterator`</ApiLink>.
-The bottom three interface
+The bottom three interfaces
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-nodded-list-iterator/">`KoneNoddedListIterator`</ApiLink>,
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-nodded-list-iterator/">`KoneSettableNoddedListIterator`</ApiLink>,
 and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-nodded-list-iterator/">`KoneMutableNoddedListIterator`</ApiLink>
@@ -251,9 +247,16 @@ method, so they are represented with
     }}
 />
 
-:::danger
-This "Lists API" section is not yet finished, but you can look at API reference.
-:::
+We are not going to discuss the list interfaces in details, because you can find all specific moments in API reference.
+But here is a short overview of the API:
+1. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list/">`KoneList`</ApiLink>
+    only provides access to elements by index and via iterators.
+2. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list/">`KoneSettableList`</ApiLink>
+    also lets to replace element by index and via iterators.
+3. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list/">`KoneMutableList`</ApiLink>
+    also lets to extend (by putting more elements) and reduce (by removing elements) it.
+4. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-growable-mutable-list/">`KoneGrowableMutableList`</ApiLink>
+    also lets to inform it that user is going to use corresponding capacity.
 
 ### Arrays API
 
@@ -279,10 +282,25 @@ and `asKoneXXXArray` extensions.
 ## 🏗 Deques API
 
 :::danger
-This part of the documentation is planned.
+Deques API reference is missing.
 :::
 
+Deques are list-like structures that allow to get, put, and remove elements from either its beginning or its end.
+They are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.deque/-kone-deque/">`KoneDeque`</ApiLink>
+interface.
+There is nothing special here.
+See API reference for details.
+
 ## 🏗 Sets API 🔴
+
+:::danger
+Sets API is experimental.
+:::
+
+:::danger
+Sets API reference is missing.
+:::
 
 :::danger
 This part of the documentation is planned.
@@ -291,17 +309,97 @@ This part of the documentation is planned.
 ## 🏗 Maps API 🔴
 
 :::danger
-This part of the documentation is planned.
+Maps API is experimental.
 :::
 
-## 🏗 Heaps API
+:::danger
+Maps API reference is missing.
+:::
 
 :::danger
 This part of the documentation is planned.
 :::
 
-## 🏗 Search trees API
+## 🏗 Heaps API 🟡
 
 :::danger
-This part of the documentation is planned.
+Heaps API reference is missing.
 :::
+
+In Kone, minimum/maximum heaps are structures that consist of:
+1. an order on values called "priorities"
+2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
+    that holds one priority value and one "element" value in each its vertex and satisfies *heap property*:
+    for any given vertex $C$, if $P$ is the parent vertex of $C$, then the priority of $P$ is less/greater than or equal to the priority of $C$.
+
+Heap is a nodded structure where each node points to a vertex of the tree.
+Nodes are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-heap-node/">`HeapNode`</ApiLink>
+interface.
+Notice that you can you can change the nodes priority
+that will change priority of the corresponding vertex and update the tree to satisfy the heap property.
+Minimum/maximum heap is represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-minimum-heap/">`MinimumHeap`</ApiLink>/<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-maximum-heap/">`MaximumHeap`</ApiLink>
+interface.
+
+To construct a heap, heap implementations use
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-heap-entry/">`HeapEntry`</ApiLink>
+data class to represent a pair of corresponding element and priority.
+
+Also, some heaps may also include a structure of linked lists to be iterated over.
+Such heaps are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-linked-minimum-heap/">`LinkedMinimumHeap`</ApiLink>/<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-linked-maximum-heap/">`LinkedMaximumHeap`</ApiLink>
+interface
+and which nodes are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-linked-heap-node/">`LinkedHeapNode`</ApiLink>
+interface.
+
+:::warning
+This linked heap API is unstable.
+The formal contracts are not formulated at the moment.
+:::
+
+## 🏗 Search trees API 🔴
+
+:::danger
+Search trees API is experimental.
+Maybe it will also store priority elements that are actually used for comparison.
+:::
+
+:::danger
+Search trees API reference is missing.
+:::
+
+In Kone, search trees are structures that consist of:
+1. an order on values called "elements"
+2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
+    that holds one element value in each its vertex and satisfies *search tree property*:
+        - each vertex's children are linearly ordered,
+        - each non-leaf vertex contains one element less than the number of its children,
+        - for any given non-leaf vertex $P$,
+            if $C_0$, ..., $C_n$ are children of $P$ sorted increasingly and $E_1$, ..., $E_n$ are its elements sorted increasingly as well,
+            then $C_0 \leqslant E_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant E_n \leqslant C_n$
+            where $C \leqslant E$ ($E \leqslant C$) means that all the elements in a subtree with root $C$ are less (greater) or equal to $E$.
+
+Search tree is a nodded structure where each node points to a stored in the tree element.
+Nodes are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-tree-node/">`SearchTreeNode`</ApiLink>
+interface.
+Search tree is represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-tree/">`MinimumHeap`</ApiLink>
+interface.
+
+In case you search for an element in the tree that equals to some specified element $E$,
+you may either find the equal element or find two elements $X$ and $Y$ that $X < E < Y$.
+Formally, there are several more cases.
+But all of them are represented via sealed hierarchy of interface
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-segment-result/">`SearchSegmentResult`</ApiLink>.
+
+Also, obviously, the elements of search tree form a sorted list.
+So one may want to make a search tree to contain a structure of linked list.
+Such search trees are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-linked-search-tree/">`LinkedSearchTree`</ApiLink>
+interface
+and which nodes are represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-linked-search-tree-node/">`LinkedSearchTreeNode`</ApiLink>
+interface.

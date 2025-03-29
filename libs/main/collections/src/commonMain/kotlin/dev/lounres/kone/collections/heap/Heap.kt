@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 
 
+// TODO: Maybe make `HeapEntry` an interface that `HeapNode` can inherit?
 public data class HeapEntry<out Element, out Priority>(public val element: Element, public val priority: Priority)
 
 public interface HeapNode<Element, Priority> {

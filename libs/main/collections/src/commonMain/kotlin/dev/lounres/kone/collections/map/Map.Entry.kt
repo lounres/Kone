@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.map
 
 
+// TODO: Maybe make `KoneMapEntry` an interface that `KoneMapNode` can inherit?
 // TODO: Describe contracts on equals and hashCode.
 
 public data class KoneMapEntry<out Key, out Value>(public val key: Key, public val value: Value) {

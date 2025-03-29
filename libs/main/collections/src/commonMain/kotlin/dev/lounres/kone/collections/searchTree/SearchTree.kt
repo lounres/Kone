@@ -11,6 +11,9 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 
 
+// TODO: Think about separating `element` from `priority.
+//  I.e. add priority element that would actually is used for comparison.
+
 public interface SearchTreeNode<out Element> {
     public val isDetached: Boolean
     
@@ -38,7 +41,7 @@ public interface SearchTree<Element> {
     
     public fun add(element: Element): SearchTreeNode<Element>
     public fun find(element: Element): SearchTreeNode<Element>?
-    public fun findSegmentFor(element: Element): SearchSegmentResult<SearchTreeNode<Element>>?
+    public fun findSegmentFor(element: Element): SearchSegmentResult<SearchTreeNode<Element>>
     
     public operator fun contains(element: Element): Boolean = find(element) != null
 }
