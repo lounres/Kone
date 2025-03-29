@@ -26,7 +26,7 @@ import dev.lounres.kone.contexts.invoke
 public open class KoneListBackedMutableSet<Element> @PublishedApi internal constructor(
     public val elementEquality: Equality<Element>,
     internal val backingList: KoneMutableList<Element>,
-) : KoneMutableSet<Element> {
+) : KoneMutableSet<Element> { // TODO: Make it `KoneMutableLinkedSet`
     override val size: UInt
         get() = backingList.size
 

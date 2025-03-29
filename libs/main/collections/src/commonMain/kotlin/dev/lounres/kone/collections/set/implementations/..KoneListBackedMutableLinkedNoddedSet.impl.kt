@@ -13,6 +13,7 @@ import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
 import dev.lounres.kone.collections.noCorrespondingSetNodeException
 import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.relations.Equality
@@ -136,16 +137,20 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
         
         override fun hasPrevious(): Boolean = listIterator.hasPrevious()
         override fun getPrevious(): Element {
-            if (!hasPrevious()) noNextElementInIteratorException()
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             return listIterator.getPrevious().element
         }
         override fun getPreviousNode(): KoneMutableLinkedSetNode<Element> {
-            if (!hasPrevious()) noNextElementInIteratorException()
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             return listIterator.getPrevious()
         }
         override fun movePrevious() {
-            if (!hasPrevious()) noNextElementInIteratorException()
+            if (!hasPrevious()) noPreviousElementInIteratorException()
             listIterator.movePrevious()
+        }
+        override fun removePrevious() {
+            if (!hasPrevious()) noPreviousElementInIteratorException()
+            listIterator.removePrevious()
         }
     }
     

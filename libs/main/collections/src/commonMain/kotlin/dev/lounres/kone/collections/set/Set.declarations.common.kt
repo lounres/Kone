@@ -7,6 +7,9 @@ package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneRemovableIterable
+import dev.lounres.kone.collections.iterables.KoneReversibleIterable
+import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterable
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteEquality
 import dev.lounres.kone.relations.defaultHashing
@@ -20,7 +23,7 @@ public interface KoneSet<Element> : KoneIterable<Element> {
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableSet<Element> : KoneSet<Element> {
+public interface KoneMutableSet<Element> : KoneSet<Element>, KoneRemovableIterable<Element> {
     public fun add(element: Element)
     public fun addSeveral(number: UInt, builder: (index: UInt) -> Element)
     
@@ -57,12 +60,12 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneLinkedSet<Element> : KoneSet<Element> {
+public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneReversibleIterable<Element> {
     override fun iterator(): KoneLinkedSetIterator<Element>
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMutableSet<Element> {
+public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMutableSet<Element>, KoneReversibleRemovableIterable<Element> {
     override fun iterator(): KoneMutableLinkedSetIterator<Element>
 }
 

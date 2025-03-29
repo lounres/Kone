@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.set
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.KoneRemovableIterator
 import dev.lounres.kone.collections.iterables.KoneReversibleIterator
+import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterator
 
 
 public typealias KoneSetIterator<Element> = KoneIterator<Element>
@@ -24,7 +25,7 @@ public interface KoneMutableNoddedSetIterator<out Element> : KoneNoddedSetIterat
 
 public typealias KoneLinkedSetIterator<Element> = KoneReversibleIterator<Element>
 
-public typealias KoneMutableLinkedSetIterator<Element> = KoneReversibleIterator<Element>
+public typealias KoneMutableLinkedSetIterator<Element> = KoneReversibleRemovableIterator<Element>
 
 public interface KoneLinkedNoddedSetIterator<out Element> : KoneLinkedSetIterator<Element>, KoneNoddedSetIterator<Element> {
     override fun getNextNode(): KoneLinkedSetNode<Element>
