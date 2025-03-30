@@ -13,15 +13,20 @@ Here is a checklist of sections:
 - [x] Iterators and iterables API
 - [x] Concept: "nodes" and "nodded" collection
 - [x] Lists and arrays API
-    - [x] Nodes API
+    - [x] List nodes API
     - [x] List iterators API
     - [x] Lists API
     - [x] Arrays API
 - [x] Deques API
-- [ ] Sets API 🔴
-- [ ] Maps API 🔴
+- [x] Concept: "contextful" collections
 - [x] Heaps API 🟡
 - [x] Search trees API
+- [x] Concept: "reified" collections
+- [ ] Sets API 🔴
+    - [ ] Set nodes API
+    - [ ] Set iterators API
+    - [ ] Sets API
+- [ ] Maps API 🔴
 :::
 
 # Kone: Collections
@@ -89,6 +94,9 @@ Mutating operations are:
 
 Iterators form an inheritance hierarchy below.
 <ThemedImage
+    style={{
+        width: "100%"
+    }}
     alt="Common iterators hierrarchy"
     sources={{
         light: useBaseUrl('/docs/kone-main/07-iterators-hierarchy-light-theme.svg'),
@@ -102,7 +110,7 @@ It means that their elements can form a finite sequence that can be iterated usi
 :::warning
 It is guaranteed that after non-mutating operations, the iterator is still usable.
 However, there is no such guarantee for mutating operations.
-It means that the inner structure of the iterable may be changed in a such way that state of the iterator may be undefined.
+It means that the inner structure of the iterable may be changed in a such way that the state of the iterator may be undefined.
 For example, adding an element to a hashtable can provoke hashtable reconstruction that changes the sequence of elements to iterate undefinedly.
 But some structures can guarantee the safety of their iterators (for example, all lists can).
 :::
@@ -142,13 +150,16 @@ Lists are finite sequences of elements with indices from zero to its size exclus
 There are different kinds of lists: immutable, settable, mutable, growable mutable, and more.
 Each kind has two variants: usual and nodded.
 
-### Nodes API
+### List nodes API
 
 There are three kinds of nodes:
 immutable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/">`KoneListNode`</ApiLink>,
 settable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list-node/">`KoneSettableListNode`</ApiLink>,
 and mutable <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list-node/">`KoneMutableListNode`</ApiLink>.
 <ThemedImage
+    style={{
+        width: "100%"
+    }}
     alt="List nodes hierrarchy"
     sources={{
         light: useBaseUrl('/docs/kone-main/07-list-nodes-hierarchy-light-theme.svg'),
@@ -182,7 +193,10 @@ method that allows to detach the node from the structure removing its element fr
 
 List iterators form a hierarchy below.
 <ThemedImage
-    alt="List nodes hierrarchy"
+    style={{
+        width: "100%"
+    }}
+    alt="List iterators hierrarchy"
     sources={{
         light: useBaseUrl('/docs/kone-main/07-list-iterators-hierarchy-light-theme.svg'),
         dark: useBaseUrl('/docs/kone-main/07-list-iterators-hierarchy-dark-theme.svg'),
@@ -212,11 +226,11 @@ And there is a guarantee that mutable iterator operations would leave iterator s
 (But there is no guarantee that mutable list operations and other iterators operations would leave iterator still usable.)
 :::
 
-### 🏗 Lists API
+### Lists API
 
 There are several kinds of lists that are presented in Kone:
 1. **Immutable lists** &mdash lists which are read-only.
-2. **Settable lists** &mdash; lists of fixed size that can only accept new elements instead old ones.
+2. **Settable lists** &mdash; lists of fixed size that can only accept new elements instead of old ones.
     Cannot be extended nor reduced.
 3. **Fixed capacity lists** &mdash; mutable lists that are backed by fixed arrays of fixed size.
     Thus, they can be mutated but with a condition that at each moment number of elements won't be higher than specified capacity.
@@ -240,7 +254,10 @@ And growable lists introduce only
 method, so they are represented with
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-growable-mutable-list/">`KoneGrowableMutableList`</ApiLink>.
 <ThemedImage
-    alt="List nodes hierrarchy"
+    style={{
+        width: "100%"
+    }}
+    alt="Lists hierrarchy"
     sources={{
         light: useBaseUrl('/docs/kone-main/07-lists-hierarchy-light-theme.svg'),
         dark: useBaseUrl('/docs/kone-main/07-lists-hierarchy-dark-theme.svg'),
@@ -266,7 +283,7 @@ In Kone, arrays are just value classes that wrap Kotlin stdlib arrays. But they 
     and `KoneXXXArray`s variants (`XXX` is a name of primitive type) that are immutable.
     It allows one to use performant arrays on JVM while providing safe API.
     Of course, there are mutable
-    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/-kone-mutable-array/">`KoneArray`</ApiLink>
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/-kone-mutable-array/">`KoneMutableArray`</ApiLink>
     and `KoneMutableXXXArray`s variants.
 2. They inherit `KoneList` and `KoneSettableList` interfaces which makes their usage a bit more flexible.
 
@@ -279,7 +296,7 @@ there are
 and `asKoneXXXArray` extensions.
 :::
 
-## 🏗 Deques API
+## Deques API
 
 :::danger
 Deques API reference is missing.
@@ -292,42 +309,55 @@ interface.
 There is nothing special here.
 See API reference for details.
 
-## 🏗 Sets API 🔴
+## Concept: "contextful" collections
 
-:::danger
-Sets API is experimental.
+Let's notice one more time that "equality" is a contextual concept.
+Thus, the concept "belonging to the collection" is contextual as well, because it uses the equality context.
+That's why "belonging to the list" concept is implemented as
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/contains.html">the following extension function</ApiLink>:
+
+```kotlin
+context(_: Equality<Element>)
+public operator fun <Element> KoneIterable<Element>.contains(element: Element): Boolean = any { it eq element }
+```
+
+But what about collections like sets and maps for what `contains` method is a part of their nature?
+They have to declare the function as a method, not as an extension function.
+So should they have context parameter of `Equality` type?
+Well, it looks good that the method is also contextual.
+In that case, its logic assumes that equality is part of the context, but not part of the instance.
+
+But do the inner structures of sets and maps think the same?
+Should the equality be really independent of the collection instance?
+If you think from collection's point of view,
+different equality instances can say absolutely different things about the collection's elements.
+There is no interrelation between the equalities.
+Any attempt to structure the collection in any way that would optimise the time needed to find an equal element
+would lead to a complete failure.
+So the only way to find an equal element is just to iterate over all elements of the collection one by one.
+
+But if we want to implement some structure (a hash table or a search tree),
+we have to fix some equality (and maybe some other contexts).
+The fixed contexts should be coordinated with each other and with data structure.
+It means data structure does contain this context.
+Hence, some collections use inner equality and other contexts instead of contextual ones
+and require them while being constructed.
+Such collections are called "contextful" in Kone.
+
+:::info
+Unfortunately, there is no simple way to serialise contextful collections,
+because there is no simple way to serialise contexts.
+Thus, lists and arrays are serialisable whereas sets and maps are not.
 :::
 
-:::danger
-Sets API reference is missing.
-:::
-
-:::danger
-This part of the documentation is planned.
-:::
-
-## 🏗 Maps API 🔴
-
-:::danger
-Maps API is experimental.
-:::
-
-:::danger
-Maps API reference is missing.
-:::
-
-:::danger
-This part of the documentation is planned.
-:::
-
-## 🏗 Heaps API 🟡
+## Heaps API 🟡
 
 :::danger
 Heaps API reference is missing.
 :::
 
 In Kone, minimum/maximum heaps are structures that consist of:
-1. an order on values called "priorities"
+1. an order on values called "priorities" (thus, heap is contextful)
 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
     that holds one priority value and one "element" value in each its vertex and satisfies *heap property*:
     for any given vertex $C$, if $P$ is the parent vertex of $C$, then the priority of $P$ is less/greater than or equal to the priority of $C$.
@@ -359,7 +389,7 @@ This linked heap API is unstable.
 The formal contracts are not formulated at the moment.
 :::
 
-## 🏗 Search trees API 🔴
+## Search trees API 🔴
 
 :::danger
 Search trees API is experimental.
@@ -371,7 +401,7 @@ Search trees API reference is missing.
 :::
 
 In Kone, search trees are structures that consist of:
-1. an order on values called "elements"
+1. an order on values called "elements" (thus, search tree is contextful)
 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
     that holds one element value in each its vertex and satisfies *search tree property*:
         - each vertex's children are linearly ordered,
@@ -403,3 +433,130 @@ interface
 and which nodes are represented via
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-linked-search-tree-node/">`LinkedSearchTreeNode`</ApiLink>
 interface.
+
+## Concept: "reified" collections
+
+Let there be some set (in computer science sense of the word) `S` of elements.
+The main characteristic of the set is that we can check if some object is an element of the set or not.
+So it makes sense to declare method like
+```kotlin
+public operator fun contains(element: Element): Boolean
+```
+inside interface like
+```kotlin
+public interface Set<Element>
+```
+that would represent sets.
+And we want to make the `Set` interface covariant (after all, a set of dogs is a set of animals and so on).
+But `contains` method is not covariant as a declaration, it's contravariant.
+What do we do?
+Well, in case of Kotlin (and Java) stdlib `Set`,
+the problem [is just suppressed](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/contains.html) with `@UnsafeVariance` annotation.
+And everything works as intended, right?
+Yeah, everything works fine.
+But how?!
+The answer is that under the hood `contains` method uses only `equals` and `hashCode` methods
+that are defined in all objects (because they are methods of `Any` after all).
+
+But Kone's approach is that the logic of element equality and hashing should be injected in set instance.
+In other words, set instance should not use `equals` and `hashCode` methods of elements
+but `equalsTo` and `hash` of received `Equality` and `Hashing` instances.
+Will that work with our broken covariance?
+Usually no, it won't work!
+Because usually `Equality<Element>` uses that the received elements are of type `Element` by calling its unique methods.
+But objects that are not instances of `Element` cannot use these methods.
+
+What do we do?
+We need to somehow say
+that the elements can be accepted by the `Equality` instance and return default value if they are not.
+That's... exactly [the `Reification`'s job](relations#domain-context-reification)!
+So the cost of covariance is actually a need in a `Reification`'s instance.
+
+Because of that, there are two types of potentially covariant types:
+invariant ones and covariant ones that require `Reification` instance on initialisation.
+The second ones are called "reified types" in Kone.
+
+## 🏗 Sets API 🔴
+
+:::danger
+Sets API is experimental.
+:::
+
+:::danger
+Sets API reference is missing.
+:::
+
+In Kone, sets are compositions of equality context
+and an unordered collection of elements without repetitions with respect to the equality context.
+There are four features that sets in Kone may have or have not:
+1. mutability &mdash; ability to add or remove elements from the set,
+2. being linked &mdash; feature of containing an extra structure of a linked list,
+3. being nodded,
+4. and being reified.
+
+The features are independent. That's why sets hierarchy contains $2^4 = 16$ interfaces.
+
+### Set nodes API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Set nodes hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-set-nodes-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-set-nodes-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+### Set iterators API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Set iterators hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-set-iterators-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-set-iterators-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+### Sets API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Sets hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-sets-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-sets-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+## 🏗 Maps API 🔴
+
+:::danger
+Maps API is experimental.
+:::
+
+:::danger
+Maps API reference is missing.
+:::
+
+:::danger
+This part of the documentation is planned.
+:::
