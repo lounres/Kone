@@ -5,7 +5,7 @@
 
 @file:Suppress("FunctionName")
 
-package dev.lounres.kone.misc.planimetricsCalculation
+package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.linearAlgebra.isSymmetric

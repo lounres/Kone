@@ -1,5 +1,11 @@
 lounres:
   name: Gleb Minaev
-  title: "Author of Kone, math student @ SPbU"
+  title: Author of Kone, math student @ SPbU
   url: https://github.com/lounres
+  email: minaevgleb@yandex.ru
   image_url: https://github.com/lounres.png
+  socials:
+#    x: lounres
+    github: lounres
+#    vk: lounres
+#    telegram: lounres

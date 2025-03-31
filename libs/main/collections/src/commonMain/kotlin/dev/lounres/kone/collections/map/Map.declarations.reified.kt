@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 // TODO: Describe contracts on equals and hashCode.
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneReifiedMap<out Key, out Value> : KoneMap<@UnsafeVariance Key, @UnsafeVariance Value> {
+public interface KoneReifiedMap<out Key, out Value> : KoneMap<@UnsafeVariance Key, Value> {
     override val keysView: KoneReifiedSet<Key>
     override val keys: KoneReifiedSet<Key> get() = keysView
     

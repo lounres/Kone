@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.misc.planimetricsCalculation
+package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.times

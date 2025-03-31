@@ -22,11 +22,13 @@ Here is a checklist of sections:
 - [x] Heaps API 🟡
 - [x] Search trees API
 - [x] Concept: "reified" collections
-- [ ] Sets API 🔴
-    - [ ] Set nodes API
-    - [ ] Set iterators API
-    - [ ] Sets API
+- [x] Sets API 🔴
+    - [x] Set nodes API
+    - [x] Set iterators API
+    - [x] Sets API
 - [ ] Maps API 🔴
+    - [ ] Map entries and map nodes API
+    - [ ] Maps API
 :::
 
 # Kone: Collections
@@ -118,7 +120,7 @@ But some structures can guarantee the safety of their iterators (for example, al
 Also, be aware that there are a bit more kinds of iterators that are made especially for other APIs.
 For example, there are other iterator types for lists and for sets.
 
-## Concept: "nodes" and "nodded" collections
+## 💭 Concept: "nodes" and "nodded" collections
 
 As you know, there are several kinds of lists.
 Let's consider a (doubly) linked list.
@@ -171,8 +173,8 @@ Immutable node provides:
 1. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/element.html">`element`</ApiLink>
     and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/--index--.html">`index`</ApiLink>
     properties to get an element at specified place and the place's index.
-    (In particular, the `element` and `index` properties may return different values.
-    And `index` property may throw exception if the node was detached.)
+    (In particular, the `element` and `index` properties may return new values each time they are accessed.
+    And `index` property may throw exception if the node is detached.)
 2. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/is-detached.html">`isDetached`</ApiLink>
     property that indicates that the node is detached and is no longer part of the list's structure.
 3. <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-list-node/next-node.html">`nextNode`</ApiLink>
@@ -223,7 +225,7 @@ to get nodes of next and previous elements.
 :::info
 When iterator of a list is constructed, the iteration sequence is the list itself.
 And there is a guarantee that mutable iterator operations would leave iterator still usable.
-(But there is no guarantee that mutable list operations and other iterators operations would leave iterator still usable.)
+(But there is no guarantee that mutable list operations and other iterators operations would leave the iterator still usable.)
 :::
 
 ### Lists API
@@ -309,7 +311,7 @@ interface.
 There is nothing special here.
 See API reference for details.
 
-## Concept: "contextful" collections
+## 💭 Concept: "contextful" collections
 
 Let's notice one more time that "equality" is a contextual concept.
 Thus, the concept "belonging to the collection" is contextual as well, because it uses the equality context.
@@ -434,7 +436,7 @@ and which nodes are represented via
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-linked-search-tree-node/">`LinkedSearchTreeNode`</ApiLink>
 interface.
 
-## Concept: "reified" collections
+## 💭 Concept: "reified" collections
 
 Let there be some set (in computer science sense of the word) `S` of elements.
 The main characteristic of the set is that we can check if some object is an element of the set or not.
@@ -476,7 +478,7 @@ Because of that, there are two types of potentially covariant types:
 invariant ones and covariant ones that require `Reification` instance on initialisation.
 The second ones are called "reified types" in Kone.
 
-## 🏗 Sets API 🔴
+## Sets API 🔴
 
 :::danger
 Sets API is experimental.
@@ -498,10 +500,6 @@ The features are independent. That's why sets hierarchy contains $2^4 = 16$ inte
 
 ### Set nodes API
 
-:::danger
-This part of the documentation is planned.
-:::
-
 <ThemedImage
     style={{
         width: "100%"
@@ -513,11 +511,27 @@ This part of the documentation is planned.
     }}
 />
 
+The common API that set node provides is represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/">`KoneSetNode`</ApiLink>.
+It provides <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/element.html">`element`</ApiLink> property
+that returns corresponding element
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/is-detached.html">`isDetached`</ApiLink> property
+that indicates that the node is detached and is no longer part of the list's structure.
+There is mutable variant of set nodes,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-set-node/">`KoneMutableSetNode`</ApiLink>,
+that also lets you <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-set-node/remove.html">remove</ApiLink> the node
+removing corresponding element from the set.
+On top of that, there are
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-linked-set-node/">`KoneLinkedSetNode`</ApiLink>
+and
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-linked-set-node/">`KoneMutableLinkedSetNode`</ApiLink>
+that describe nodes of linked sets and
+allow you to get next and previous nodes (if they are present) and iterators from after and from before the node.
+Just like in lists.
+
 ### Set iterators API
 
-:::danger
-This part of the documentation is planned.
-:::
+Set iterators form a hierarchy below.
 
 <ThemedImage
     style={{
@@ -530,11 +544,41 @@ This part of the documentation is planned.
     }}
 />
 
+The four interfaces
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-iterator/">`KoneSetIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-linked-set-iterator/">`KoneLinkedSetIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-list-iterator/">`KoneMutableSetIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-linked-list-iterator/">`KoneMutableLinkedSetIterator`</ApiLink>
+are actually type aliases to
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/">`KoneIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/">`KoneReversibleIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-removable-iterator/">`KoneRemovableIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-removable-iterator/">`KoneReversibleRemovableIterator`</ApiLink>.
+The bottom four interfaces
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-nodded-set-iterator/">`KoneNoddedSetIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-linked-nodded-set-iterator/">`KoneLinkedNoddedSetIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-nodded-list-iterator/">`KoneMutableNoddedSetIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-linked-nodded-list-iterator/">`KoneMutableLinkedNoddedSetIterator`</ApiLink>
+inherit the interfaces above correspondingly and introduce methods
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-nodded-set-iterator/get-next-node.html">`getNextNode`</ApiLink>
+and
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-linked-nodded-set-iterator/get-previous-node.html">`getPreviousNode`</ApiLink>
+to get nodes of next and previous elements.
+
+:::info
+When iterator of a linked set is constructed, the iteration sequence is the inner linked list structure itself.
+And there is a guarantee that removable iterator operations would leave the iterator still usable.
+(But there is no guarantee that mutable set operations and other iterators operations would leave the iterator still usable.)
+:::
+
 ### Sets API
 
-:::danger
-This part of the documentation is planned.
-:::
+Again, there are four features that sets in Kone may have or have not:
+1. mutability,
+2. being linked,
+3. being nodded,
+4. and being reified.
+The interfaces containing some of the features are named correspondingly and inherit interfaces of the feature subsets.
 
 <ThemedImage
     style={{
@@ -547,6 +591,8 @@ This part of the documentation is planned.
     }}
 />
 
+We are not going to discuss the list interfaces in details, because you can find all specific moments in API reference.
+
 ## 🏗 Maps API 🔴
 
 :::danger
@@ -556,6 +602,18 @@ Maps API is experimental.
 :::danger
 Maps API reference is missing.
 :::
+
+:::danger
+This part of the documentation is planned.
+:::
+
+### 🏗 Map entries and map nodes API
+
+:::danger
+This part of the documentation is planned.
+:::
+
+### 🏗 Maps API
 
 :::danger
 This part of the documentation is planned.

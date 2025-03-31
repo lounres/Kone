@@ -5,7 +5,7 @@
 
 @file:Suppress("LocalVariableName", "NOTHING_TO_INLINE")
 
-package dev.lounres.kone.misc.planimetricsCalculation
+package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.times

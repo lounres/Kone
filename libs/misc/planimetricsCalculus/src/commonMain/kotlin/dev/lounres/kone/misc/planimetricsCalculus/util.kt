@@ -5,7 +5,7 @@
 
 @file:OptIn(DelicatePolynomialAPI::class)
 
-package dev.lounres.kone.misc.planimetricsCalculation
+package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.polynomial.*

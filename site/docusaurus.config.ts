@@ -1,5 +1,4 @@
 import {koneUrl, koneBaseUrl} from './inputData'
-const branch = "experiment"
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {themes} from 'prism-react-renderer'
@@ -45,12 +44,16 @@ const config: Config = {
             'classic',
             {
                 docs: {
-                    id: "docs",
                     path: "docs",
                     routeBasePath: '/',
                     sidebarPath: './docsSidebars.ts',
                     remarkPlugins: [remarkMath],
                     rehypePlugins: [rehypeKatex],
+                    versions: {
+                        current: {
+                            label: '🏗 Experiment'
+                        }
+                    }
                 },
                 blog: {
                     showReadingTime: true,
@@ -102,14 +105,12 @@ const config: Config = {
                 //     sidebarId: 'tutorials',
                 //     position: 'left',
                 //     label: 'Tutorials',
-                //     docsPluginId: 'docs',
                 // },
                 {
                     type: 'docSidebar',
                     sidebarId: 'docs',
                     position: 'left',
                     label: 'Docs',
-                    docsPluginId: 'docs',
                 },
                 {
                     href: `${koneUrl}${koneBaseUrl}api/`,
@@ -121,7 +122,6 @@ const config: Config = {
                 //     sidebarId: 'algorithms',
                 //     position: 'left',
                 //     label: 'Algorithms',
-                //     docsPluginId: 'docs',
                 // },
                 {
                     to: '/blog',
@@ -135,8 +135,8 @@ const config: Config = {
                 },
                 // Right Side
                 // { // TODO
-                //   type: 'docsVersionDropdown',
-                //   position: 'right',
+                //     type: 'docsVersionDropdown',
+                //     position: 'right',
                 // },
                 // { // TODO
                 //   type: 'localeDropdown',
