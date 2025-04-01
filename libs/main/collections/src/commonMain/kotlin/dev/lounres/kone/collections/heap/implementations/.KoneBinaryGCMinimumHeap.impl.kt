@@ -248,9 +248,8 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
         
         override var priority: Priority = priority
             set(value) {
-                if (isDetached) detachedNodeException()
                 field = value
-                _holder!!.updatePlacement()
+                if (!isDetached) _holder!!.updatePlacement()
             }
         
         fun detach() {

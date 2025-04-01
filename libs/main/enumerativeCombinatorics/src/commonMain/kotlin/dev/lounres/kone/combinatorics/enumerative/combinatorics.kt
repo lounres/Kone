@@ -25,7 +25,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.koneMutableListOf
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.list.toKoneList
-import dev.lounres.kone.collections.list.toKoneMutableList
+import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.scope
 
@@ -53,7 +53,7 @@ public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<Ko
     val lastIndices = KoneUIntArray(size) { collections[it].lastIndex }
     val firstElements = KoneList(size) { collections[it].first() }
     val currentIndices = KoneMutableUIntArray(size) { 0u }
-    val currentElements = firstElements.toKoneMutableList()
+    val currentElements = firstElements.toKoneSettableList()
 
     while (true) {
         yield(currentElements.toKoneList())
@@ -112,7 +112,7 @@ public fun <E> KoneList<E>.selectiveCartesianPower(power: UInt, testPrefix: (Kon
         val lastIndex = collection.size - 1u
         var currentSize = 0u
         val currentIndices = KoneMutableUIntArray(power)
-        val currentElements = KoneMutableArray<Any?>(power) { null }
+        val currentElements = KoneMutableArray<Any?>(power) { null } // TODO: Replace with `KoneArrayFixedCapacityList`
         while (true) {
             if (testPrefix(KoneList(currentSize) { currentElements[it] as E })) {
                 if (currentSize < power) {

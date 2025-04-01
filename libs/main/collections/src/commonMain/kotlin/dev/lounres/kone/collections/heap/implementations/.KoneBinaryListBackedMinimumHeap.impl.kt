@@ -144,9 +144,8 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
         
         override var priority: Priority = priority
             set(value) {
-                if (isDetached) detachedNodeException()
                 field = value
-                heap.updatePlacement(index)
+                if (!isDetached) heap.updatePlacement(index)
             }
         
         fun detach() {

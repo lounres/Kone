@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.DetachedNodeException
  * Represents a node in the inner structure of a [KoneNoddedList].
  * See [KoneNoddedList] and [KoneList] for more.
  *
- * The node can be detached by removing corresponding place from the collection it was defined in.
+ * The node can be detached by removing the corresponding place from the collection it was defined in.
  * In that case only its element is preserved and other methods and properties throw [DetachedNodeException].
  *
  * @see KoneNoddedList
@@ -20,14 +20,14 @@ import dev.lounres.kone.collections.DetachedNodeException
  */
 public interface KoneListNode<out Element> {
     /**
-     * Indicates if the node is detached from structure it was a part of.
+     * Indicates if the node is detached from the structure it was a part of.
      */
     public val isDetached: Boolean
     /**
      * Returns element corresponding to that node.
      *
      * When detached (that happens only when the corresponding place is removed)
-     * returns last value that was in the removed place.
+     * returns the last value in the removed place.
      */
     public val element: Element
     /**
@@ -129,9 +129,10 @@ public interface KoneSettableListNode<Element> : KoneListNode<Element> {
  */
 public interface KoneMutableListNode<Element> : KoneSettableListNode<Element> {
     /**
-     * Removes corresponding place from the list and detaches the node.
+     * Removes the corresponding place from the list and detaches the node.
      *
-     * The operation must be idempotent. It means that calling this function again must not do anything at all.
+     * The operation must be idempotent.
+     * It means that calling this function again must not do anything at all.
      */
     public fun remove()
     

@@ -5,9 +5,33 @@
 
 package dev.lounres.kone.collections.deque
 
+import dev.lounres.kone.collections.EmptyDequeAccessException
 
+
+/**
+ * Checks if the collection is empty.
+ */
 public fun KoneDeque<*>.isEmpty(): Boolean = size == 0u
+/**
+ * Checks if the collection is not empty.
+ */
 public fun KoneDeque<*>.isNotEmpty(): Boolean = !isEmpty()
 
+/**
+ * Returns and removes the first element.
+ * The element was placed at the beginning of the sequence.
+ *
+ * If there is no element in the collection, [EmptyDequeAccessException] is thrown.
+ *
+ * @throws EmptyDequeAccessException when the collection is empty.
+ */
 public fun <Element> KoneDeque<out Element>.popFirst(): Element = getFirst().also { removeFirst() }
+/**
+ * Returns and removes the last element.
+ * The element was placed at the end of the sequence.
+ *
+ * If there is no element in the collection, [EmptyDequeAccessException] is thrown.
+ *
+ * @throws EmptyDequeAccessException when the collection is empty.
+ */
 public fun <Element> KoneDeque<out Element>.popLast(): Element = getLast().also { removeLast() }
