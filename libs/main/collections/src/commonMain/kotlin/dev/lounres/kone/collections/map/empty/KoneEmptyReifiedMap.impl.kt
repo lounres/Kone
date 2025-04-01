@@ -24,7 +24,6 @@ internal open class KoneEmptyMapReifiedTemplate<Key, Value> : KoneReifiedMap<Key
     override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> get() = KoneEmptyNoddedReifiedSet
     override val keysView: KoneReifiedSet<Key> get() = KoneEmptyNoddedReifiedSet
     override val valuesView: KoneIterable<Value> get() = KoneEmptySettableLinearIterable
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> get() = KoneEmptySettableLinearIterable
 
     override fun toString(): String = "{}"
     override fun hashCode(): Int = 0

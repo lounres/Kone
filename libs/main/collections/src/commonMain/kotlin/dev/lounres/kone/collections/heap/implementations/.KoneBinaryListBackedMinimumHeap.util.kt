@@ -54,7 +54,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = KoneArrayResizableList(size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,
@@ -111,7 +113,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = listProducer.produceBy(size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,
@@ -168,7 +172,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = listProducer.produceBy(size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,
@@ -228,7 +234,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = listProducer.produceBy(initialCapacity = initialCapacity, number = size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,
@@ -286,7 +294,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = listProducer.produceBy(number = size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,
@@ -336,7 +346,9 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         data = null,
     )
     val data = listProducer.produceBy(capacity = capacity, number = size) {
-        val (element, priority) = heapEntryInitializer(it)
+        val entry = heapEntryInitializer(it)
+        val element = entry.element
+        val priority = entry.priority
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = element,
             priority = priority,

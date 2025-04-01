@@ -651,7 +651,7 @@ public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(
     )
 
 public inline fun <K, V, W, D : KoneMutableMap<in K, in W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W): D =
-    entriesView.associateByTo(destination, { it.key }, transform)
+    nodesView.associateByTo(destination, { it.key }, transform)
 
 public inline fun <Key, V, W> KoneMap<out Key, V>.mapValues(
     keyEquality: Equality<Key> = defaultEquality(),
@@ -700,7 +700,7 @@ public inline fun <Key, V, W> KoneMap<out Key, V>.mapValuesReified(
     )
 
 public inline fun <K, V, L, D : KoneMutableMap<in L, in V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L): D =
-    entriesView.associateByTo(destination = destination, keySelector = transform, valueTransform = { it.value })
+    nodesView.associateByTo(destination = destination, keySelector = transform, valueTransform = { it.value })
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
     keyEquality: Equality<L> = defaultEquality(),
@@ -750,7 +750,7 @@ public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(
     )
 
 public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterKeysTo(destination: D, predicate: (K) -> Boolean): D {
-    for ((key, value) in this) if (predicate(key)) destination[key] = value
+    for (entry in this) if (predicate(entry.key)) destination[entry.key] = entry.value
     return destination
 }
 
@@ -801,7 +801,7 @@ public inline fun <Key, V> KoneMap<out Key, V>.filterKeysReified(
     )
 
 public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filterValuesTo(destination: D, predicate: (V) -> Boolean): D {
-    for ((key, value) in this) if (predicate(value)) destination[key] = value
+    for (entry in this) if (predicate(entry.value)) destination[entry.key] = entry.value
     return destination
 }
 

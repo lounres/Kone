@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.KoneMapNode
 import dev.lounres.kone.collections.map.KoneReifiedMap
 import dev.lounres.kone.collections.set.KoneReifiedSet
@@ -38,7 +37,6 @@ public open class KoneListBackedMap<Key, Value> @PublishedApi internal construct
     override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> = backingList.toKoneReifiedSet(elementEquality = absoluteEquality())
     override val keysView: KoneSet<Key> = KoneListBackedSet(keyEquality, backingList.map { it.key })
     override val valuesView: KoneIterable<Value> = backingList.map { it.value }
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = backingList.map { KoneMapEntry(it.key, it.value) }
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { context(keyEquality) { it.key eq key } }
     

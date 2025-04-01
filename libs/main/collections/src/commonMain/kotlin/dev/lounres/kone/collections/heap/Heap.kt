@@ -13,22 +13,32 @@ import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 import dev.lounres.kone.relations.Order
 
 
-// TODO: Maybe make `HeapEntry` an interface that `HeapNode` can inherit?
 /**
  * Represents a pair of an element and its (future) priority in the heap.
  *
  * This class is used to represent entries for a heap when the heap is being constructed.
  */
-public data class HeapEntry<out Element, out Priority>(
+public interface HeapEntry<out Element, out Priority> {
     /**
      * Returns the corresponding element of the entry.
      */
-    public val element: Element,
+    public val element: Element
     /**
      * Returns the corresponding priority of the entry.
      */
     public val priority: Priority
-)
+}
+
+/**
+ * Returns simple [HeapEntry] instance that has the specified [element] and [priority].
+ */
+public fun <Element, Priority> HeapEntry(element: Element, priority: Priority): HeapEntry<Element, Priority> =
+    HeapEntryImpl(element, priority)
+
+internal data class HeapEntryImpl<out Element, out Priority>(
+    override val element: Element,
+    override val priority: Priority,
+) : HeapEntry<Element, Priority>
 
 /**
  * Represents a node in the inner structure of [MinimumHeap]/[MaximumHeap].
@@ -40,7 +50,7 @@ public data class HeapEntry<out Element, out Priority>(
  * @see MinimumHeap
  * @see MaximumHeap
  */
-public interface HeapNode<Element, Priority> {
+public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
     /**
      * Indicates if the node is detached from the structure it was a part of.
      */
@@ -55,7 +65,7 @@ public interface HeapNode<Element, Priority> {
      * After detaching, the node just stores the element that can be changed.
      * And the changing won't modify the structure the node was detached from.
      */
-    public var element: Element
+    override var element: Element
     /**
      * Returns priority corresponding to that node.
      * Change of the priority changes the corresponding priority in the structure
@@ -66,7 +76,7 @@ public interface HeapNode<Element, Priority> {
      * After detaching, the node just stores the element that can be changed.
      * And the changing won't modify the structure the node was detached from.
      */
-    public var priority: Priority
+    override var priority: Priority
     /**
      * Removes the corresponding place from the heap and detaches the node.
      *
@@ -207,7 +217,6 @@ public interface LinkedHeapNode<Element, Priority> : HeapNode<Element, Priority>
  * See implementations' documentations to get the behaviour you need.
  */
 public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Priority> {
-    // TODO: Think about this view: it breaks contract of `KoneLinkedReifiedSet` that removal does not change order of other elements.
     /**
      * Linked reified set that is a view on nodes of that heap.
      *
@@ -253,7 +262,6 @@ public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Pri
      * Because there is exactly one instance of heap node corresponding to each entry in the heap,
      * the collection is a reified set which equality is the absolute equality.
      */
-    // TODO: Think about this view: it breaks contract of `KoneLinkedReifiedSet` that removal does not change order of other elements.
     override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
     /**
      * Reversible iterable that is a view on elements of that heap.

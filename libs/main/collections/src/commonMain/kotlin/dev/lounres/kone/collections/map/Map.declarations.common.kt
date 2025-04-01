@@ -26,7 +26,6 @@ public interface KoneMap<Key, out Value> {
     public val keysView: KoneSet<Key>
     public val keys: KoneSet<Key> get() = keysView
     public val valuesView: KoneIterable<Value>
-    public val entriesView: KoneIterable<KoneMapEntry<Key, Value>>
 
     public fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>?
 }

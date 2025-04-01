@@ -45,9 +45,13 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
     if (coefficients.isEmpty()) this@substitute
     else LabeledPolynomial<C>(
         buildKoneReifiedMap {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
-                val newC = args.entriesView.fold(c) { product, (variable, substitution) ->
+                val newC = args.nodesView.fold(c) { product, subEntry ->
+                    val variable = subEntry.key
+                    val substitution = subEntry.value
                     val deg = degs.getOrDefault(variable, 0u)
                     if (deg == 0u) product else product * power(substitution, deg)
                 }
@@ -64,9 +68,13 @@ public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<Label
 context(_: LabeledPolynomialSpace<C>)
 @JvmName("substitutePolynomial")
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledPolynomial<C>>) : LabeledPolynomial<C> =
-    coefficients.entriesView.fold(polynomialZero) { acc, (degs, c) ->
+    coefficients.nodesView.fold(polynomialZero) { acc, entry ->
+        val degs = entry.key
+        val c = entry.value
         val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
-        acc + args.entriesView.fold(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing))) { product, (variable, substitution) ->
+        acc + args.nodesView.fold(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing))) { product, subEntry ->
+            val variable = subEntry.key
+            val substitution = subEntry.value
             val deg = degs.getOrDefault(variable, 0u)
             if (deg == 0u) product else product * power(substitution, deg)
         }
@@ -81,9 +89,13 @@ public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<Label
 context(_: LabeledPolynomialSpace<C>, rationalFunctionSpace: LabeledRationalFunctionSpace<C>)
 @JvmName("substituteRationalFunction")
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
-    coefficients.entriesView.fold(rationalFunctionZero) { acc, (degs, c) ->
+    coefficients.nodesView.fold(rationalFunctionZero) { acc, entry ->
+        val degs = entry.key
+        val c = entry.value
         val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
-        acc + args.entriesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, (variable, substitution) ->
+        acc + args.nodesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(koneReifiedMapOf(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, subEntry ->
+            val variable = subEntry.key
+            val substitution = subEntry.value
             val deg = degs.getOrDefault(variable, 0u)
             if (deg == 0u) product else product * rationalFunctionSpace.power(substitution, deg)
         }
@@ -128,11 +140,15 @@ context(numberContext: Ring<C>)
 public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(variable: LabeledVariable): LabeledPolynomial<C> =
     LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.keysView.count { it.getOrDefault(variable, 0u) >= 1u }) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 if (variable !in degs.keysView) return@forEach
                 set(
                     buildKoneReifiedMap {
-                        degs.entriesView.forEach { (vari, deg) ->
+                        degs.nodesView.forEach { subEntry ->
+                            val vari = subEntry.key
+                            val deg = subEntry.value
                             when {
                                 vari != variable -> set(vari, deg)
                                 deg > 1u -> set(vari, deg - 1u)
@@ -153,11 +169,15 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
     if (order == 0u) this@nthDerivativeWithRespectTo
     else LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.keysView.count { it.getOrDefault(variable, 0u) >= order }) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 if (degs.getOrDefault(variable, 0u) < order) return@forEach
                 set(
                     buildKoneReifiedMap {
-                        degs.entriesView.forEach { (vari, deg) ->
+                        degs.nodesView.forEach { subEntry ->
+                            val vari = subEntry.key
+                            val deg = subEntry.value
                             when {
                                 vari != variable -> set(vari, deg)
                                 deg > order -> set(vari, deg - order)
@@ -186,11 +206,15 @@ public fun <C> LabeledPolynomial<C>.nthDerivativeWithRespectTo(
                 }
             }
         ) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 if (filteredVariablesAndOrders.any { (variable, order) -> degs.getOrDefault(variable, 0u) < order }) return@forEach
                 set(
                     buildKoneReifiedMap {
-                        degs.entriesView.forEach { (vari, deg) ->
+                        degs.nodesView.forEach { subEntry ->
+                            val vari = subEntry.key
+                            val deg = subEntry.value
                             if (vari !in filteredVariablesAndOrders) set(vari, deg)
                             else {
                                 val order = filteredVariablesAndOrders[vari]!!
@@ -216,7 +240,9 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
 ): LabeledPolynomial<C> =
     LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { 1u }, transformOnChange = { it + 1u }) // FIXME
                 set(
                     newDegs,
@@ -234,7 +260,9 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     if (order == 0u) this@nthAntiderivativeWithRespectTo
     else LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { order }, transformOnChange = { it + order }) // FIXME
                 set(
                     newDegs,
@@ -255,11 +283,15 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
     if (filteredVariablesAndOrders.isEmpty()) return this@nthAntiderivativeWithRespectTo
     return LabeledPolynomial<C>(
         buildKoneReifiedMap(coefficients.size) {
-            coefficients.entriesView.forEach { (degs, c) ->
+            coefficients.nodesView.forEach { entry ->
+                val degs = entry.key
+                val c = entry.value
                 val newDegs = mergeByReified(degs, filteredVariablesAndOrders, /*defaultReifiedHashing()*/) { _, deg, order -> deg + order } // FIXME
                 set(
                     newDegs,
-                    filteredVariablesAndOrders.entriesView.fold(c) { acc1, (index, order) ->
+                    filteredVariablesAndOrders.nodesView.fold(c) { acc1, subEntry ->
+                        val index = subEntry.key
+                        val order = subEntry.value
                         newDegs[index].let { deg ->
                             (deg downTo deg - order + 1u).fold(acc1) { acc2, ord -> acc2 / (one doublingTimes ord) }
                         }

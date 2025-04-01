@@ -234,7 +234,7 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         if (this.size != other.size) return false
         if (this.hashCode() != other.hashCode()) return false
 
-        return this.entriesView == other.entriesView
+        return this.nodesView == other.nodesView
     }
     
     override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
@@ -246,9 +246,6 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementEquality = keyEquality, elementHashing = keyHashing)
     override val valuesView: KoneIterable<Value>
         field = ValueIterable(this)
-        get() = if (isDisposed) disposedInstanceException() else field
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>>
-        field = EntriesIterable(this)
         get() = if (isDisposed) disposedInstanceException() else field
     
     internal class Node<Key, Value>(
@@ -369,36 +366,6 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
             }
         }
     }
-
-    internal class EntryIterator<Key, Value>(
-        val map: KoneHashResizableMap<Key, Value>
-    ) : KoneIterator<KoneMapEntry<Key, Value>> {
-        private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
-
-        override fun hasNext(): Boolean =
-            if (map.isDisposed) disposedInstanceException()
-            else currentIterator.hasNext() || map.data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
-        override fun getNext(): KoneMapEntry<Key, Value> {
-            if (!hasNext()) noNextElementInIteratorException()
-            return if (currentIterator.hasNext()) currentIterator.getNext()
-            else {
-                val nextIndex = map.data.firstIndexThat { index, list -> index > currentBucket && list.isNotEmpty() }
-                currentBucket = nextIndex
-                currentIterator = map.data[nextIndex].iterator()
-                currentIterator.getNext()
-            }.toKoneMapEntry()
-        }
-        override fun moveNext() {
-            if (!hasNext()) noNextElementInIteratorException()
-            if (currentIterator.hasNext()) currentIterator.moveNext()
-            else {
-                val nextIndex = map.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                currentBucket = nextIndex
-                currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
-            }
-        }
-    }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class NodesSet<Key, Value>(
@@ -439,16 +406,6 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         override fun iterator(): KoneIterator<Value> =
             if (map.isDisposed) disposedInstanceException()
             else ValueIterator(map)
-        // TODO: Override `toString`.
-    }
-
-    internal class EntriesIterable<Key, Value>(
-        val map: KoneHashResizableMap<Key, Value>,
-    ) : KoneIterable<KoneMapEntry<Key, Value>> {
-        override val size: UInt get() = map.size
-        override fun iterator(): KoneIterator<KoneMapEntry<Key, Value>> =
-            if (map.isDisposed) disposedInstanceException()
-            else EntryIterator(map)
         // TODO: Override `toString`.
     }
 }

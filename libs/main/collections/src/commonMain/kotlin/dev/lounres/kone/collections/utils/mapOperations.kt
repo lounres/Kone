@@ -155,15 +155,15 @@ public inline fun <reified K, V> KoneMap<out K, V>.withSetOrChangedReified(
     )
 
 public fun <K, V, D: KoneMutableMap<K, V>> KoneMap<out K, V>.copyTo(destination: D): D {
-    for ((key, value) in this) {
-        destination[key] = value
+    for (entry in this) {
+        destination[entry.key] = entry.value
     }
     return destination
 }
 
 public inline fun <K, V: W, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
-    for ((key, value) in this) {
-        destination.setOrChange(key, { value }, { resolve(key, it, value) })
+    for (entry in this) {
+        destination.setOrChange(entry.key, { entry.value }, { resolve(entry.key, it, entry.value) })
     }
     return destination
 }
@@ -177,18 +177,17 @@ public inline fun <K, V, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyMapTo
 
 public inline fun <K, V, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyMapToBy(destination: D, transform: (KoneMapEntry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
-        val (key, value) = entry
-        destination.setOrChange(key, { transform(entry) }, { resolve(key, it, value) })
+        destination.setOrChange(entry.key, { transform(entry) }, { resolve(entry.key, it, entry.value) })
     }
     return destination
 }
 
 public fun <K, V, D: KoneMutableMap<in K, in V>> mergeTo(map1: KoneMap<out K, V>, map2: KoneMap<out K, V>, destination: D): D {
-    for ((key, value) in map1) {
-        destination.set(key, value)
+    for (entry in map1) {
+        destination.set(entry.key, entry.value)
     }
-    for ((key, value) in map2) {
-        destination.set(key, value)
+    for (entry in map2) {
+        destination.set(entry.key, entry.value)
     }
     return destination
 }
@@ -197,12 +196,12 @@ public inline fun <K, V1: W, V2: W, W, D: KoneMutableMap<K, W>> mergeToBy(map1: 
     for (key in map2.keysView) {
         destination.remove(key)
     }
-    for ((key, value) in map1) {
-        destination.set(key, value)
+    for (entry in map1) {
+        destination.set(entry.key, entry.value)
     }
-    for ((key, value) in map2) {
+    for (entry in map2) {
         @Suppress("UNCHECKED_CAST")
-        destination.setOrChange(key, { value }, { resolve(key, it as V1, value) })
+        destination.setOrChange(entry.key, { entry.value }, { resolve(entry.key, it as V1, entry.value) })
     }
     return destination
 }
@@ -471,10 +470,10 @@ public inline fun <T, reified K> KoneIterable<T>.associateByReified(
     )
 
 public inline fun <K, V, W, D : KoneMutableMap<in K, W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: W) -> W): D =
-    entriesView.associateByTo(destination, { it.key }, transform, resolve)
+    nodesView.associateByTo(destination, { it.key }, transform, resolve)
 
 public inline fun <K, V, L, D : KoneMutableMap<in L, V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): D =
-    entriesView.associateByTo(destination, transform, { it.value }, resolve)
+    nodesView.associateByTo(destination, transform, { it.value }, resolve)
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
     keyEquality: Equality<L> = defaultEquality(),

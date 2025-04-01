@@ -44,7 +44,7 @@ public fun <Number> LabeledPolynomialAsIs(vararg entries: KoneMapEntry<LabeledMo
 public inline fun <Number> LabeledPolynomial(coefs: LabeledPolynomialCoefficients<Number>, add: (Number, Number) -> Number, isZero: (Number) -> Boolean) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
         coefs
-            .mapKeys(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, transform = { (key, _) -> key.cleanUp() }, resolve = { _, c1, c2 -> add(c1, c2) })
+            .mapKeys(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, transform = { entry -> entry.key.cleanUp() }, resolve = { _, c1, c2 -> add(c1, c2) })
             .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = { !isZero(it) })
     )
 

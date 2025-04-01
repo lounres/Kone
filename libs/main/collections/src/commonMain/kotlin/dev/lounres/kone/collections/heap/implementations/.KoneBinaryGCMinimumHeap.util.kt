@@ -95,7 +95,9 @@ public inline fun <Element, Priority> KoneBinaryGCMinimumHeap(
         size = size,
     )
     
-    val (rootElement, rootPriority) = heapEntryInitializer(0u)
+    val rootEntry = heapEntryInitializer(0u)
+    val rootElement = rootEntry.element
+    val rootPriority = rootEntry.priority
     val rootHolder = KoneBinaryGCMinimumHeap.NodeHolder<Element, Priority>(
         heap = result,
         index = 0u,
@@ -108,7 +110,9 @@ public inline fun <Element, Priority> KoneBinaryGCMinimumHeap(
     var currentParentHolder = rootHolder
     var currentLastHolder = rootHolder
     while (currentIndex < size) {
-        val (element, priority) = heapEntryInitializer(currentIndex)
+        val entry = heapEntryInitializer(currentIndex)
+        val element = entry.element
+        val priority = entry.priority
         val holder = KoneBinaryGCMinimumHeap.NodeHolder<Element, Priority>(
             heap = result,
             index = currentIndex,

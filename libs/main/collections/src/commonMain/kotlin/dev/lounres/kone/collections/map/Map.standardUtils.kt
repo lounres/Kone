@@ -48,4 +48,4 @@ public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(map: KoneMap<out K
 
 public fun <Key> KoneMutableMap<in Key, *>.remove(key: Key) { getNode(key).remove() }
 
-public operator fun <Key, Value> KoneMap<out Key, Value>.iterator(): KoneIterator<KoneMapEntry<Key, Value>> = entriesView.iterator()
+public operator fun <Key, Value> KoneMap<out Key, Value>.iterator(): KoneIterator<KoneMapEntry<Key, Value>> = nodesView.iterator()

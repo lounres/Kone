@@ -28,8 +28,8 @@ internal open class KoneMapHashing<Key, Value>(open val keyHashing: Hashing<Key>
         val thisIterator = this.iterator()
         var hash = 0
         while (thisIterator.hasNext()) {
-            val (key, value) = thisIterator.getAndMoveNext()
-            hash += context(keyHashing) { key.hash() } xor context(valueHashing) { value.hash() }
+            val entry = thisIterator.getAndMoveNext()
+            hash += context(keyHashing) { entry.key.hash() } xor context(valueHashing) { entry.value.hash() }
         }
         return hash
     }

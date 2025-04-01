@@ -47,7 +47,6 @@ internal open class KoneSingletonMap<Key, Value>(
             elementEquality = keyEquality
         )
     override val valuesView: KoneIterable<Value> = Values(this)
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = Entries(this)
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (context(keyEquality) { key eq singleKey }) singleNode else null
     
@@ -58,9 +57,9 @@ internal open class KoneSingletonMap<Key, Value>(
         if (other !is KoneMap<*, *>) return false
         if (other.size != 1u) return false
 
-        val (otherKey, otherValue) = other.entriesView.first()
+        val otherEntry = other.nodesView.first()
 
-        return singleKey == otherKey && singleValue == otherValue
+        return singleKey == otherEntry.key && singleValue == otherEntry.value
     }
     
     internal class Node<Key, Value>(

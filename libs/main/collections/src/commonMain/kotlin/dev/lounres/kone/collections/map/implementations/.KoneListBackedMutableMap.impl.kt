@@ -40,7 +40,6 @@ public open class KoneListBackedMutableMap<Key, Value> @PublishedApi internal co
     override val keysView: KoneSet<Key> = KeysView()
     override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementEquality = keyEquality)
     override val valuesView: KoneIterable<Value> = ValuesView()
-    override val entriesView: KoneIterable<KoneMapEntry<Key, Value>> = EntriesView()
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>? =
         backingList.firstThatOrNull { context(keyEquality) { it.key eq key } }

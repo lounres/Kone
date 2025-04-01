@@ -11,19 +11,17 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 
 
-// TODO: Think about separating `element` from `priority.
-//  I.e. add priority element that would actually is used for comparison.
-
-public interface SearchTreeNode<out Element> {
+public interface SearchTreeNode<Element, out Priority> {
     public val isDetached: Boolean
     
-    public val element: Element
+    public var element: Element
+    public val priority: Priority
     public fun remove()
 }
 
-public interface LinkedSearchTreeNode<out Element> : SearchTreeNode<Element> {
-    public val nextNode: LinkedSearchTreeNode<Element>?
-    public val previousNode: LinkedSearchTreeNode<Element>?
+public interface LinkedSearchTreeNode<Element, out Priority> : SearchTreeNode<Element, Priority> {
+    public val nextNode: LinkedSearchTreeNode<Element, Priority>?
+    public val previousNode: LinkedSearchTreeNode<Element, Priority>?
 }
 
 public sealed interface SearchSegmentResult<out SearchTreeNode> {
@@ -34,23 +32,23 @@ public sealed interface SearchSegmentResult<out SearchTreeNode> {
     public data class GreaterThanMaximum<out SearchTreeNode>(val maximum: SearchTreeNode) : SearchSegmentResult<SearchTreeNode>
 }
 
-public interface SearchTree<Element> {
+public interface SearchTree<Element, Priority> {
     public val size: UInt
-    public val nodesView: KoneReifiedSet<SearchTreeNode<Element>>
+    public val nodesView: KoneReifiedSet<SearchTreeNode<Element, Priority>>
     public val elementsView: KoneSet<Element>
     
-    public fun add(element: Element): SearchTreeNode<Element>
-    public fun find(element: Element): SearchTreeNode<Element>?
-    public fun findSegmentFor(element: Element): SearchSegmentResult<SearchTreeNode<Element>>
+    public fun add(element: Element, priority: Priority): SearchTreeNode<Element, Priority>
+    public fun find(priority: Priority): SearchTreeNode<Element, Priority>?
+    public fun findSegmentFor(priority: Priority): SearchSegmentResult<SearchTreeNode<Element, Priority>>
     
-    public operator fun contains(element: Element): Boolean = find(element) != null
+    public operator fun contains(priority: Priority): Boolean = find(priority) != null
 }
 
-public interface LinkedSearchTree<Element> : SearchTree<Element> {
-    override val nodesView: KoneLinkedReifiedSet<LinkedSearchTreeNode<Element>>
+public interface LinkedSearchTree<Element, Priority> : SearchTree<Element, Priority> {
+    override val nodesView: KoneLinkedReifiedSet<LinkedSearchTreeNode<Element, Priority>>
     override val elementsView: KoneLinkedSet<Element>
 
-    override fun add(element: Element): LinkedSearchTreeNode<Element>
-    override fun find(element: Element): LinkedSearchTreeNode<Element>?
-    override fun findSegmentFor(element: Element): SearchSegmentResult<LinkedSearchTreeNode<Element>>
+    override fun add(element: Element, priority: Priority): LinkedSearchTreeNode<Element, Priority>
+    override fun find(priority: Priority): LinkedSearchTreeNode<Element, Priority>?
+    override fun findSegmentFor(priority: Priority): SearchSegmentResult<LinkedSearchTreeNode<Element, Priority>>
 }
