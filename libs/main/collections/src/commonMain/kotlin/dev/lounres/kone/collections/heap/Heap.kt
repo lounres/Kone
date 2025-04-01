@@ -72,8 +72,8 @@ public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
      * and changes the inner structure to satisfy the heap property.
      *
      * When detached (that happens only when the corresponding place is removed)
-     * holds the last element it was holding.
-     * After detaching, the node just stores the element that can be changed.
+     * holds the last priority it was holding.
+     * After detaching, the node just stores the priority that can be changed.
      * And the changing won't modify the structure the node was detached from.
      */
     override var priority: Priority
@@ -179,8 +179,8 @@ public interface MaximumHeap<Element, Priority> {
  * See [HeapNode] for general definition.
  *
  * @see HeapNode
- * @see MinimumHeap
- * @see MaximumHeap
+ * @see LinkedMinimumHeap
+ * @see LinkedMaximumHeap
  */
 public interface LinkedHeapNode<Element, Priority> : HeapNode<Element, Priority> {
     /**

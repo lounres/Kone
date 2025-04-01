@@ -65,3 +65,5 @@ public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
 //        repeat(number) { set(builder(it)) }
 //    }
 }
+
+// TODO: Design linked versions

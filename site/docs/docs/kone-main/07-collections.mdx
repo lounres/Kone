@@ -378,27 +378,18 @@ and which nodes are represented via
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.heap/-linked-heap-node/">`LinkedHeapNode`</ApiLink>
 interface.
 
-## Search trees API 🔴
-
-:::danger
-Search trees API is experimental.
-Maybe it will also store priority elements that are actually used for comparison.
-:::
-
-:::danger
-Search trees API reference is missing.
-:::
+## Search trees API
 
 In Kone, search trees are structures that consist of:
 1. an order on values called "elements" (thus, search tree is contextful)
 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
     that holds one element value in each its vertex and satisfies *search tree property*:
-        - each vertex's children are linearly ordered,
-        - each non-leaf vertex contains one element less than the number of its children,
-        - for any given non-leaf vertex $P$,
-            if $C_0$, ..., $C_n$ are children of $P$ sorted increasingly and $E_1$, ..., $E_n$ are its elements sorted increasingly as well,
-            then $C_0 \leqslant E_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant E_n \leqslant C_n$
-            where $C \leqslant E$ ($E \leqslant C$) means that all the elements in a subtree with root $C$ are less (greater) or equal to $E$.
+    - each vertex's children are linearly ordered,
+    - each non-leaf vertex contains one element less than the number of its children,
+    - for any given non-leaf vertex $P$,
+        if $C_0$, ..., $C_n$ are children of $P$ sorted increasingly and $E_1$, ..., $E_n$ are its elements sorted increasingly as well,
+        then $C_0 \leqslant E_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant E_n \leqslant C_n$
+        where $C \leqslant E$ ($E \leqslant C$) means that all the elements in a subtree with root $C$ are less (greater) or equal to $E$.
 
 Search tree is a nodded structure where each node points to a stored in the tree element.
 Nodes are represented via
