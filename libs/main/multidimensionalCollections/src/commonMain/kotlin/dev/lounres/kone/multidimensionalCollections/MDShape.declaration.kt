@@ -50,14 +50,14 @@ public interface MDShapeIndexer : KoneIterable<KoneUIntArray> {
 
     public fun asSequence(): Sequence<KoneUIntArray> = sequence {
         if (shape.any { it == 0u }) return@sequence
-        var index = KoneUIntArray(shape.size) { 0u }
+        var index = KoneUIntArray(shape.size) { 0u } // TODO: Think about moving starting index to the interface level
         while (true) {
             yield(index)
             if (!index.hasNext()) break
             index = index.next()
         }
     }
-    public override operator fun iterator(): KoneIterator<KoneUIntArray> = MDShapeIndexerIterator(asSequence().iterator()) // TODO: Reimplement `iterator { ... }` builder for Kone
+    public override fun iterator(): KoneIterator<KoneUIntArray> = MDShapeIndexerIterator(asSequence().iterator()) // TODO: Reimplement `iterator { ... }` builder for Kone
 }
 
 context(indexer: MDShapeIndexer)

@@ -5,7 +5,7 @@
 
 @file:OptIn(DelicateImmutableArrayConstructor::class)
 
-package dev.lounres.kone.multidimensionalCollections.comparison
+package dev.lounres.kone.multidimensionalCollections.relations
 
 import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.relations.Equality

@@ -9,8 +9,8 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.map.getOrSet
 import dev.lounres.kone.collections.map.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.utils.anyIndexed
-import dev.lounres.kone.multidimensionalCollections.comparison.MDShapeEquality
-import dev.lounres.kone.multidimensionalCollections.comparison.MDShapeHashing
+import dev.lounres.kone.multidimensionalCollections.relations.MDShapeEquality
+import dev.lounres.kone.multidimensionalCollections.relations.MDShapeHashing
 
 
 @Suppress("FunctionName")

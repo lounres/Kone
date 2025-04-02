@@ -12,8 +12,8 @@ import dev.lounres.kone.relations.hash
 import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.RowVector
 import dev.lounres.kone.multidimensionalCollections.MDList1
-import dev.lounres.kone.multidimensionalCollections.comparison.mdListEquality
-import dev.lounres.kone.multidimensionalCollections.comparison.mdListHashing
+import dev.lounres.kone.multidimensionalCollections.relations.mdListEquality
+import dev.lounres.kone.multidimensionalCollections.relations.mdListHashing
 
 
 internal class RowVectorEquality<N>(elementEquality: Equality<N>) : Equality<RowVector<N>> {

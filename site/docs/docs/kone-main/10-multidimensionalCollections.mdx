@@ -1,20 +1,121 @@
 ---
-title: 🏗 Multidimensional Collections 🟡
+title: Multidimensional Collections 🔴
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
+import ApiLink from "@site/src/components/ApiLink";
+import ThemedImage from "@theme/ThemedImage";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 :::danger
 Sorry, this page is currently under construction.
 :::
 
-:::warning
-This module's API is unstable.
-The main idea is good, but there may be corrections in the future.
+:::danger
+This module's API is experimental.
+The main idea is good, but there are still a lot of things to think about.
 :::
 
 # Kone: Multidimensional Collections
 
+This module provides an API for multidimensional lists.
+They are used to represent matrices (and are useful in case you need tensors).
+
+:::warning[About learning order]
+This module is based on [Kone's own iterables](collections).
+:::
+
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.multidimensionalCollections"/>
+
+## Multidimensional shapes API
+
+To work with a multidimensional list, you need to know its dimension and size in each dimension.
+One can represent such information as an array of positive (non-negative) integers.
+That's why there is type alias
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape/">`MDShape`</ApiLink>
+for
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.array/-kone-u-int-array/">`KoneUIntArray`</ApiLink>.
+For example, usual list, row vector, and column vector have shape `[n]`, whereas matrix has shape `[n, m]`.
+It's also obvious that each cell in the multidimensional list of shape $[n_1, \dots, n_k]$ has index
+that looks like $[m_1, \dots, m_k]$ where $0 \leqslant m_i < n_i$ for each $i$ from $1$ to $k$.
+
+How do we iterate over them?
+Well, you can iterate in any order you want.
+But in Kone, there is an interface
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape-indexer/">`MDShapeIndexer`</ApiLink>
+that describes any iterator over the multidimensional list's indices.
+
+## 💭 Concept: multidimensional list "linearisation"
+
+Say, you want to store a multidimensional list in one place of your memory
+instead of a lot of different places linked with each other.
+Then you have to somehow store it in one array.
+It means there should be mapping of multidimensional indices to usual ("linear") array indices and vice versa.
+Such representation of multidimensional list as an array is called *linearisation* of the list.
+Also, indices in the array are called *offsets* of the indices
+(and vice versa, the indices of multidimensional list are called indices of the offsets).
+
+## Linearising indexers API
+
+There is a special interface
+<ApiLink to = "libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape-offsetting/">`MDShapeOffsetting`</ApiLink>
+that also provides conversions of offsets into indices and vice versa.
+See
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape-offsetting/--index--.html">`index`</ApiLink>
+and
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape-offsetting/offset.html">`offset`</ApiLink>
+functions.
+
+Also, there is
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-shape-strides/index.html">`MDShapeStrides`</ApiLink>
+class that implements `MDShapeOffsetting` that receives an order of dimensions in the shape
+and iterates in them by the first dimension in the order, then by the second one, and so on.
+For example, for shape `[2, 3, 4]` and order of dimensions `[1, 0, 2]` the order of indices will be
+`[0, 0, 0]`, `[0, 1, 0]`, `[0, 2, 0]`, `[1, 0, 0]`, `[1, 1, 0]`, `[1, 2, 0]`, `[0, 0, 1]`, `[0, 1, 1]`, and so on.
+
+And default orders for the class are
+"column" order from the first to the last and "row" order from the last to the first.
+Corresponding strides can be obtained via
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-column-m-d-shape-strides.html">`ColumnMDShapeStrides`</ApiLink>
+and
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-row-m-d-shape-strides.html">`RowMDShapeStrides`</ApiLink>
+functions.
+
+## Multidimensional list API
+
+In Kone, multidimensional lists are structures that consist of:
+1. a multidimensional shape,
+2. and a collection of elements
+    where each corresponding to the shape index is associated with its own element from the collection
+    and all elements from the collections are associated with.
+
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Sets hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/10-mdlists-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/10-mdlists-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+Multidimensional lists are represented via
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-list/">`MDList`</ApiLink>
+interface. There is a settable version
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-settable-m-d-list/">`SettableMDList`</ApiLink>
+of it that lets to change its elements preserving shape and indices.
+
+Also, there are special inheritors
+(<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-list1/">`MDList1`</ApiLink>
+and
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-settable-m-d-list1/">`SettableMDList1`</ApiLink>
+for dimension 1,
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-m-d-list2/">`MDList2`</ApiLink>
+and
+<ApiLink to="libs/main/multidimensionalCollections/dev.lounres.kone.multidimensionalCollections/-settable-m-d-list2/">`SettableMDList2`</ApiLink>
+for dimension 2) that represent 1-dimensional and 2-dimensional immutable and settable lists.
+
+See API reference for other declarations.

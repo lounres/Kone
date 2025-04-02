@@ -10,6 +10,8 @@ import dev.lounres.kone.collections.utils.fold
 import kotlinx.serialization.Serializable
 
 
+// TODO: Maybe `MDShapeIndexer` should be part of the structure?..
+
 @Serializable(with = MDListSerializer::class)
 public interface MDList<out E> {
     public val shape: MDShape
