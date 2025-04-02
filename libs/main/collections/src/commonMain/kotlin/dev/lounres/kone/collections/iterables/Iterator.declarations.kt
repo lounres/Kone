@@ -147,7 +147,7 @@ public interface KoneMutableIterator<Element>: KoneSettableIterator<Element>, Ko
 public interface KoneReversibleMutableIterator<Element>: KoneMutableIterator<Element>, KoneReversibleSettableIterator<Element>, KoneReversibleExtendableIterator<Element>, KoneReversibleRemovableIterator<Element>
 
 /**
- * Represents a [KoneReversibleIterator] over some set of elements that has permanent order on the elements and permanent indices of the elements.
+ * Represents a [KoneReversibleIterator] over some collection of elements that has permanent order on the elements and permanent indices of the elements.
  *
  * In such iterators the next element is the next element in the order that has the next index among all indices of the elements.
  */

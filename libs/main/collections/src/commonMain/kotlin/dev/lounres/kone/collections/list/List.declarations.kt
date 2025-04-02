@@ -7,7 +7,6 @@ package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.iterables.KoneLinearIterable
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterable
 import dev.lounres.kone.collections.iterables.KoneSettableLinearIterable
 import dev.lounres.kone.collections.list.serializers.DefaultKoneGrowableMutableListSerializer
@@ -54,7 +53,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
-    public fun iteratorFrom(index: UInt): KoneLinearIterator<Element>
+    public fun iteratorFrom(index: UInt): KoneListIterator<Element>
     /**
      * Initiates an iterator over the collection's elements
      * with pointer before the first element.

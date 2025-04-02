@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.DetachedNodeException
  * Represents a node in the inner structure of a [KoneNoddedList].
  * See [KoneNoddedList] and [KoneList] for more.
  *
- * The node can be detached by removing the corresponding place from the collection it was defined in.
+ * The node can be detached by removing the corresponding place from the list it was defined in.
  * In that case only its element is preserved and other methods and properties throw [DetachedNodeException].
  *
  * @see KoneNoddedList

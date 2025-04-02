@@ -1,5 +1,5 @@
 ---
-title: 🏗 Collections 🔴
+title: 🏗 Collections 🟡
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
@@ -19,16 +19,21 @@ Here is a checklist of sections:
     - [x] Arrays API
 - [x] Deques API
 - [x] Concept: "contextful" collections
-- [x] Heaps API 🟡
+- [x] Heaps API
 - [x] Search trees API
 - [x] Concept: "reified" collections
-- [x] Sets API 🔴
+- [x] Sets API
     - [x] Set nodes API
     - [x] Set iterators API
     - [x] Sets API
-- [ ] Maps API 🔴
+- [ ] Maps API
     - [ ] Map entries and map nodes API
     - [ ] Maps API
+:::
+
+:::warning
+This module is unstable.
+Main API is formed, but it may change a bit in the future.
 :::
 
 # Kone: Collections
@@ -456,15 +461,7 @@ Because of that, there are two types of potentially covariant types:
 invariant ones and covariant ones that require `Reification` instance on initialisation.
 The second ones are called "reified types" in Kone.
 
-## Sets API 🔴
-
-:::danger
-Sets API is experimental.
-:::
-
-:::danger
-Sets API reference is missing.
-:::
+## Sets API
 
 In Kone, sets are compositions of equality context
 and an unordered collection of elements without repetitions with respect to the equality context.
@@ -571,7 +568,7 @@ The interfaces containing some of the features are named correspondingly and inh
 
 We are not going to discuss the list interfaces in details, because you can find all specific moments in API reference.
 
-## 🏗 Maps API 🔴
+## 🏗 Maps API
 
 :::danger
 Maps API is experimental.
