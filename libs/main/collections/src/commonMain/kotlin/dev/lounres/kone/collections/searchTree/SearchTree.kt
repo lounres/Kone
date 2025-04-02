@@ -52,7 +52,7 @@ public interface SearchTreeNode<Element, out Priority> {
      * Removes the corresponding place from the search tree and detaches the node.
      *
      * The operation must be idempotent.
-     * It means that calling this function again must not do anything at all.
+     * It means that calling this function again must do nothing at all.
      */
     public fun remove()
 }
@@ -88,7 +88,7 @@ public interface LinkedSearchTreeNode<Element, out Priority> : SearchTreeNode<El
 /**
  * Represents a result of search for specified priority in a search tree.
  * There are exactly five possible outcomes of the operation:
- * 1. There is no element in the search tree.
+ * 1. The search tree is empty.
  *   In that case, the [Empty] object is returned.
  * 2. The priority coincides with some node's priority.
  *   In that case, the [Coincidence] instance with the node is returned.
@@ -101,7 +101,7 @@ public interface LinkedSearchTreeNode<Element, out Priority> : SearchTreeNode<El
  */
 public sealed interface SearchSegmentResult<out SearchTreeNode> {
     /**
-     * Represents a case when there is no element in the search tree.
+     * Represents a case when the search tree is empty.
      * In that case, the object is returned.
      */
     public data object Empty : SearchSegmentResult<Nothing>
@@ -129,15 +129,16 @@ public sealed interface SearchSegmentResult<out SearchTreeNode> {
 
 /**
  * In Kone, search trees are structures that consist of:
- * 1. an order on values called "elements" (thus, search tree is contextful)
+ * 1. an order on values called "priorities" (thus, search tree is contextful)
  * 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
- *     that holds one element value in each its vertex and satisfies *search tree property*:
+ *     that holds several pairs of one priority value and one corresponding element in each its vertex
+ *     and satisfies *search tree property*:
  *     - each vertex's children are linearly ordered,
- *     - each non-leaf vertex contains one element less than the number of its children,
- *     - for any given non-leaf vertex \(P\),
- *         if \(C_0\), ..., \(C_n\) are children of \(P\) sorted increasingly and \(E_1\), ..., \(E_n\) are its elements sorted increasingly as well,
- *         then \(C_0 \leqslant E_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant E_n \leqslant C_n\)
- *         where \(C \leqslant E\) (\(E \leqslant C\)) means that all the elements in a subtree with root \(C\) are less (greater) or equal to \(E\).
+ *     - each non-leaf vertex contains one pair less than the number of its children,
+ *     - for any given non-leaf vertex \(A\),
+ *         if \(C_0\), ..., \(C_n\) are children of \(A\) sorted increasingly and \(P_1\), ..., \(P_n\) are \(A\)'s priorities sorted increasingly as well,
+ *         then \(C_0 \leqslant P_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant P_n \leqslant C_n\)
+ *         where \(C \leqslant P\) (\(P \leqslant C\)) means that all the priorities in a subtree with root \(C\) are less (greater) or equal to \(P\).
  *
  * This interface's inheritors must have some specific structure that provides optimised search.
  * Without it (or with bad time complexity like \(O(n)\)) the interface should not be used.

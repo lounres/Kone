@@ -7,30 +7,6 @@ import ApiLink from "@site/src/components/ApiLink";
 import ThemedImage from '@theme/ThemedImage';
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
-:::danger
-Sorry, some sections of this page are currently under construction.
-Here is a checklist of sections:
-- [x] Iterators and iterables API
-- [x] Concept: "nodes" and "nodded" collection
-- [x] Lists and arrays API
-    - [x] List nodes API
-    - [x] List iterators API
-    - [x] Lists API
-    - [x] Arrays API
-- [x] Deques API
-- [x] Concept: "contextful" collections
-- [x] Heaps API
-- [x] Search trees API
-- [x] Concept: "reified" collections
-- [x] Sets API
-    - [x] Set nodes API
-    - [x] Set iterators API
-    - [x] Sets API
-- [ ] Maps API
-    - [ ] Map entries and map nodes API
-    - [ ] Maps API
-:::
-
 :::warning
 This module is unstable.
 Main API is formed, but it may change a bit in the future.
@@ -358,7 +334,7 @@ Thus, lists and arrays are serialisable whereas sets and maps are not.
 In Kone, minimum/maximum heaps are structures that consist of:
 1. an order on values called "priorities" (thus, heap is contextful)
 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
-    that holds one priority value and one "element" value in each its vertex and satisfies *heap property*:
+    that holds a pair of one priority value and one "element" value in each its vertex and satisfies *heap property*:
     for any given vertex $C$, if $P$ is the parent vertex of $C$, then the priority of $P$ is less/greater than or equal to the priority of $C$.
 
 Heap is a nodded structure where each node points to a vertex of the tree.
@@ -386,22 +362,23 @@ interface.
 ## Search trees API
 
 In Kone, search trees are structures that consist of:
-1. an order on values called "elements" (thus, search tree is contextful)
+1. an order on values called "priorities" (thus, search tree is contextful)
 2. and a tree (in [computer science sense of the word](https://en.wikipedia.org/wiki/Tree_(abstract_data_type)))
-    that holds one element value in each its vertex and satisfies *search tree property*:
+    that holds several pairs of one priority value and one corresponding element in each its vertex
+    and satisfies *search tree property*:
     - each vertex's children are linearly ordered,
-    - each non-leaf vertex contains one element less than the number of its children,
-    - for any given non-leaf vertex $P$,
-        if $C_0$, ..., $C_n$ are children of $P$ sorted increasingly and $E_1$, ..., $E_n$ are its elements sorted increasingly as well,
-        then $C_0 \leqslant E_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant E_n \leqslant C_n$
-        where $C \leqslant E$ ($E \leqslant C$) means that all the elements in a subtree with root $C$ are less (greater) or equal to $E$.
+    - each non-leaf vertex contains one pair less than the number of its children,
+    - for any given non-leaf vertex $A$,
+        if $C_0$, ..., $C_n$ are children of $A$ sorted increasingly and $P_1$, ..., $P_n$ are $A$'s priorities sorted increasingly as well,
+        then $C_0 \leqslant P_1 \leqslant C_1 \leqslant ... \leqslant C_{n-1} \leqslant P_n \leqslant C_n$
+        where $C \leqslant P$ ($P \leqslant C$) means that all the priorities in a subtree with root $C$ are less (greater) or equal to $P$.
 
-Search tree is a nodded structure where each node points to a stored in the tree element.
+Search tree is a nodded structure where each node points to a stored in the tree pair of a priority and an element.
 Nodes are represented via
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-tree-node/">`SearchTreeNode`</ApiLink>
 interface.
 Search tree is represented via
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-tree/">`MinimumHeap`</ApiLink>
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.searchTree/-search-tree/">`SearchTree`</ApiLink>
 interface.
 
 In case you search for an element in the tree that equals to some specified element $E$,
@@ -463,7 +440,7 @@ The second ones are called "reified types" in Kone.
 
 ## Sets API
 
-In Kone, sets are compositions of equality context
+In Kone, sets are compositions of equality context on values called "elements" (thus, sets are contextful)
 and an unordered collection of elements without repetitions with respect to the equality context.
 There are four features that sets in Kone may have or have not:
 1. mutability &mdash; ability to add or remove elements from the set,
@@ -491,7 +468,7 @@ The common API that set node provides is represented via
 It provides <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/element.html">`element`</ApiLink> property
 that returns corresponding element
 and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/is-detached.html">`isDetached`</ApiLink> property
-that indicates that the node is detached and is no longer part of the list's structure.
+that indicates that the node is detached and is no longer part of the set's structure.
 There is mutable variant of set nodes,
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-set-node/">`KoneMutableSetNode`</ApiLink>,
 that also lets you <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-set-node/remove.html">remove</ApiLink> the node
@@ -553,6 +530,7 @@ Again, there are four features that sets in Kone may have or have not:
 2. being linked,
 3. being nodded,
 4. and being reified.
+
 The interfaces containing some of the features are named correspondingly and inherit interfaces of the feature subsets.
 
 <ThemedImage
@@ -568,28 +546,88 @@ The interfaces containing some of the features are named correspondingly and inh
 
 We are not going to discuss the list interfaces in details, because you can find all specific moments in API reference.
 
-## 🏗 Maps API
+## Maps API
 
-:::danger
-Maps API is experimental.
+In Kone, maps are compositions of equality context on so-called "keys" (thus, maps are contextful)
+and an unordered collection of pairs consisting of a "key" and a "value"
+which has no repetition of keys with respect to the equality context.
+Maps in Kone are always nodded.
+There are two features that maps in Kone may have or have not:
+1. mutability &mdash; ability to add or remove pairs found by the key from the map and change value of a present pair,
+2. and being reified.
+
+:::note
+Most likely, there will be also "being linked" feature like in maps soon.
 :::
 
-:::danger
-Maps API reference is missing.
-:::
+The features are independent. That's why maps hierarchy contains $2^2 = 4$ interfaces.
 
-:::danger
-This part of the documentation is planned.
-:::
+### Map entries and map nodes API
 
-### 🏗 Map entries and map nodes API
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Set nodes hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-map-nodes-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-map-nodes-hierarchy-dark-theme.svg'),
+    }}
+/>
 
-:::danger
-This part of the documentation is planned.
-:::
+To construct a map, you have to use builder functions like
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/kone-map-of.html">`koneMapOf`</ApiLink>.
+And to provide "key-value" pairs to it there is specific interface
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-map-entry/">`KoneMapEntry`</ApiLink>
+that can be instantiated with either
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-map-entry.html">`KoneMapEntry`</ApiLink>
+fake constructor or
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/maps-to.html">`mapsTo`</ApiLink>
+infix function (that is just like `to` from Kotlin stdlib).
+The interface is inherited by all nodes as well, so you can provide existing node to the builder functions as well.
 
-### 🏗 Maps API
+The common API that map node provides is represented via
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-map-node/">`KoneMapNode`</ApiLink>.
+It provides
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-map-node/key.html">`key`</ApiLink>
+and
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-map-node/value.html">`value`</ApiLink>
+properties
+that return corresponding key and value
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-set-node/is-detached.html">`isDetached`</ApiLink> property
+that indicates that the node is detached and is no longer part of the map's structure.
+There is mutable variant of set nodes,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-set-node/">`KoneMutableSetNode`</ApiLink>,
+that also lets you to change the `value` and to
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-mutable-map-node/remove.html">remove</ApiLink>
+the node removing corresponding "key-value" pair from the map.
+<!---
+On top of that, there are
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-linked-map-node/">`KoneLinkedMapNode`</ApiLink>
+and
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.map/-kone-mutable-linked-map-node/">`KoneMutableLinkedMapNode`</ApiLink>
+that describe nodes of linked maps and
+allow you to get next and previous nodes (if they are present).
+Just like in lists.
+-->
 
-:::danger
-This part of the documentation is planned.
-:::
+### Maps API
+
+Again, there are two features that maps in Kone may have or have not:
+1. mutability &mdash; ability to add or remove pairs found by the key from the map and change value of a present pair,
+2. and being reified.
+
+The interfaces containing some of the features are named correspondingly and inherit interfaces of the feature subsets.
+
+<ThemedImage
+    style={{
+        width: "100%"
+    }}
+    alt="Sets hierrarchy"
+    sources={{
+        light: useBaseUrl('/docs/kone-main/07-maps-hierarchy-light-theme.svg'),
+        dark: useBaseUrl('/docs/kone-main/07-maps-hierarchy-dark-theme.svg'),
+    }}
+/>
+
+We are not going to discuss the list interfaces in details, because you can find all specific moments in API reference.

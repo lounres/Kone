@@ -16,7 +16,7 @@ import dev.lounres.kone.relations.Order
 /**
  * Represents a pair of an element and its (future) priority in the heap.
  *
- * This class is used to represent entries for a heap when the heap is being constructed.
+ * This interface is used to represent entries for a heap when the heap is being constructed.
  */
 public interface HeapEntry<out Element, out Priority> {
     /**
@@ -81,7 +81,7 @@ public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
      * Removes the corresponding place from the heap and detaches the node.
      *
      * The operation must be idempotent.
-     * It means that calling this function again must not do anything at all.
+     * It means that calling this function again must do nothing at all.
      */
     public fun remove()
 }
