@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra.comparison
+package dev.lounres.kone.linearAlgebra.relations
 
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing

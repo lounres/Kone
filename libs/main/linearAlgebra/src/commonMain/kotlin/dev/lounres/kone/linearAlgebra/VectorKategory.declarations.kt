@@ -8,9 +8,9 @@ package dev.lounres.kone.linearAlgebra
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.context
-import dev.lounres.kone.linearAlgebra.comparison.MatrixEquality
-import dev.lounres.kone.linearAlgebra.comparison.columnVectorEquality
-import dev.lounres.kone.linearAlgebra.comparison.rowVectorEquality
+import dev.lounres.kone.linearAlgebra.relations.MatrixEquality
+import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
+import dev.lounres.kone.linearAlgebra.relations.rowVectorEquality
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer

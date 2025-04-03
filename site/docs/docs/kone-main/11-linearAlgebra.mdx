@@ -1,19 +1,65 @@
 ---
-title: 🏗 Linear Algebra 🔴
+title: Linear Algebra 🔴
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
+import ApiLink from "@site/src/components/ApiLink";
 
 :::danger
-Sorry, this page is currently under construction.
-:::
-
-:::danger
-This module's API is not yet ready.
+This module's API reference is not yet ready.
 :::
 
 # Kone: Linear Algebra
 
+This module provides an API for linear algebra.
+It includes API for manipulation with vectors and matrices as well as
+API for different algorithms like computation of matrix's determinant.
+
+:::warning[About learning order]
+This module is based on [Kone's own multidimensional collections](multidimensionalCollections)
+and [Kone's algebraic contexts](algebraic).
+:::
+
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.linearAlgebra"/>
+
+## Vectors and matrices API
+
+Linear algebra operates on vectors of vector spaces and linear operators from vector spaces to vector spaces.
+But in the case of specified bases, vectors and matrices can be represented as rectangular tables called "matrices".
+(Vectors are represented as tables with either column number one or row number one.)
+So there are interfaces
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-matrix/">`Matrix`</ApiLink>,
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-row-vector">`RowVector`</ApiLink>
+and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-column-vector/">`ColumnVector`</ApiLink>
+that represent matrices, row vectors (one column tables), and column vectors (one row tables).
+Also, all of them have settable variants:
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-settable-matrix/">`SettableMatrix`</ApiLink>,
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-settable-row-vector">`SettableRowVector`</ApiLink>
+and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-settable-column-vector/">`SettableColumnVector`</ApiLink>.
+
+:::note
+The classes are intended to be value classes.
+But for now inheritance between value classes is [prohibited](https://youtrack.jetbrains.com/issue/KT-42977).
+:::
+
+## Algebraic operations API
+
+Now, the main reason this module exists is our wish to perform algebraic operations on matrices and vectors.
+That's why we have interface
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.linearAlgebra/-vector-kategory/">`VectorKategory`</ApiLink>
+that represents the context for the operations.
+See its API reference for details about its operations.
+
+Well, those operations work only in case of compatible shapes.
+Hence, they throw exceptions otherwise.
+So this context is called "vector category" instead of "vector space".
+
+## Algorithms API
+
+:::danger
+The main idea of the API is to provide different algorithms
+like square matrix determinant computation as universal blocks.
+But it is just an idea and is not even tried to be prototyped.
+:::
