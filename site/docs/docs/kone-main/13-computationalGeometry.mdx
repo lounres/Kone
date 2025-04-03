@@ -1,12 +1,9 @@
 ---
-title: 🏗 Computational Geometry 🟡
+title: Computational Geometry 🟡
 ---
 
 import DependencyTabs from "@site/src/components/DependencyTabs";
-
-:::danger
-Sorry, this page is currently under construction.
-:::
+import ApiLink from "@site/src/components/ApiLink";
 
 :::warning
 This module's API is unstable.
@@ -19,6 +16,73 @@ This module's API reference is not yet ready.
 
 # Kone: Computational Geometry
 
+This module provides an API of working with Euclidean geometry in $R^n$ affine spaces for any ordered ring $R$,
+geometric entities in the geometry, and operations on the entities.
+
+:::warning[About learning order]
+This module is based on [Kone's own multidimensional collections](multidimensionalCollections)
+and [Kone's "Linear ALgebra" module](linearAlgebra).
+:::
+
 ## Applying the dependencies
 
 <DependencyTabs artifact="kone.computationalGeometry"/>
+
+## 💭 Concept: "points" and "vectors"
+
+When you are working with Euclidean geometry,
+the first things you explore are points, lines (also, rays and segments), and angles.
+But points and angles are more fundamental, because lines, rays, and segments are figures that consist of points.
+Points define a particular place in the space.
+But the things that define its structure as of Euclidean space are vectors.
+They define relations between the points like what translation (of a space) is
+and the fact that such translations commutate with each other.
+Without them, we cannot distinguish points in Euclidean space from points on some surface with non-Euclidean geometry.
+(Hi, hyperbolic and elliptic geometries!)
+
+It's obvious that the moment we introduce some orthonormalised coordinates in the Euclidean space
+we can represent both points and vectors as a list of coordinates (of size equal to the space dimension).
+But points and vectors are still different entities.
+
+## Points and vectors API
+
+Because of the differences in roles, both of them are represented as two different classes in Kone.
+The classes are
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-point/">`Point`</ApiLink>
+and
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-vector/">`Vector`</ApiLink>.
+They are just wrappers over column vectors from Kone's "Linear Algebra" module.
+Because they are always represented like that in geometry (as well as in differential geometry)
+so that any square matrices could be applied to them from the left to get new column vectors.
+
+For cases of dimensions 2, 3, and 4, there are also their specialised inheritors:
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-point2/">`Point2`</ApiLink>
+and
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-vector2/">`Vector2`</ApiLink>
+for dimension 2,
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-point3/">`Point3`</ApiLink>
+and
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-vector3/">`Vector3`</ApiLink>
+for dimension 3,
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-point4/">`Point4`</ApiLink>
+and
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-vector4/">`Vector4`</ApiLink>
+for dimension 4.
+
+## Euclidean category API
+
+For operations on points and vectors, there is a Euclidean category context
+represented via
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-euclidean-kategory/">`EuclideanKategory`</ApiLink>.
+And for cases of dimensions 2, 3, and 4, there are analogues
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-euclidean-kategory2/">`EuclideanKategory2`</ApiLink>,
+<ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-euclidean-kategory3/">`EuclideanKategory3`</ApiLink>,
+and <ApiLink to="libs/main/computationalGeometry/dev.lounres.kone.computationalGeometry/-euclidean-kategory4/">`EuclideanKategory4`</ApiLink>
+respectively.
+See API references for full details on provided operations.
+
+## Polytopic constructions API
+
+:::danger
+Sorry, the section is currently under construction.
+:::
