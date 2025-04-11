@@ -84,7 +84,7 @@ const config: Config = {
     ],
 
     themeConfig: {
-        image: 'img/logos/kone-logo-full-colored.png', // TODO: Add social card
+        image: 'img/logos/kone-logo-colored.png',
         // metadata: [],
         // announcementBar: {},
         docs: {
