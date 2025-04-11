@@ -36,7 +36,7 @@ plugins {
 
 stal {
     structure {
-        taggedWith("publishing")
+        taggedWith("publishing", "version catalog")
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
         "libs" {
             "main" {
@@ -73,8 +73,8 @@ stal {
         // Extra
         "kotest" since { has("libs public") }
         "kover" since { has("libs public") }
-        "publication" since { hasAnyOf("libs") }
-        "publishing" since { has("publication") }
+        "kotlin multiplatform publication" since { hasAnyOf("libs") }
+        "publishing" since { has("libs") }
         "dokka" since { has("libs") }
         "versionCatalog bundle main" since { hasAllOf("publication", "libs main") }
         "versionCatalog bundle misc" since { hasAllOf("publication", "libs misc") }
@@ -83,20 +83,27 @@ stal {
 
     action {
         gradle.allprojects {
-            extra["artifactPrefix"] = ""
-            extra["aliasPrefix"] = ""
+            extra["artifactId"] = ""
+            extra["alias"] = ""
+            extra["isDokkaConfigured"] = false
         }
         "libs main" {
-            extra["artifactPrefix"] = "kone."
-            extra["aliasPrefix"] = ""
+            extra["artifactId"] = "kone.${project.name}"
+            extra["alias"] = project.name
         }
         "libs misc" {
-            extra["artifactPrefix"] = "kone.misc."
-            extra["aliasPrefix"] = "misc-"
+            extra["artifactId"] = "kone.misc.${project.name}"
+            extra["alias"] = "misc-${project.name}"
         }
         "libs util" {
-            extra["artifactPrefix"] = "kone.util."
-            extra["aliasPrefix"] = "util-"
+            extra["artifactId"] = "kone.util.${project.name}"
+            extra["alias"] = "util-${project.name}"
+        }
+        "version catalog" {
+            extra["artifactId"] = "kone.versionCatalog"
+        }
+        "dokka" {
+            extra["isDokkaConfigured"] = true
         }
     }
 }

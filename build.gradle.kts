@@ -1,6 +1,10 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SonatypeHost
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -32,9 +36,7 @@ plugins {
     id("org.ajoberstar.grgit") version "5.3.0"
     alias(versions.plugins.dokka)
     `version-catalog`
-    `maven-publish`
-    signing
-    alias(versions.plugins.nexus.publish.plugin)
+    id("com.vanniktech.maven.publish") version "0.31.0"
 }
 
 
@@ -109,8 +111,8 @@ fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: Applie
 fun PluginManager.withPlugins(vararg pluginDeps: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
 inline fun <T> Iterable<T>.withEach(action: T.() -> Unit) = forEach { it.action() }
 
-val Project.artifact: String get() = "${extra["artifactPrefix"]}${project.name}"
-val Project.alias: String get() = "${extra["aliasPrefix"]}${project.name}"
+val Project.artifact: String get() = extra["artifactId"] as String
+val Project.alias: String get() = extra["alias"] as String
 
 catalog.versionCatalog {
     version("kone", koneVersion)
@@ -133,24 +135,6 @@ gradle.projectsEvaluated {
         bundle("util", bundleUtilAliases)
         bundle("public", bundleMainAliases + bundleMiscAliases)
         bundle("all", bundleMainAliases + bundleMiscAliases + bundleUtilAliases)
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("versionCatalog") {
-            artifactId = "kone.versionCatalog"
-            from(components["versionCatalog"])
-        }
-    }
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-        }
     }
 }
 
@@ -528,7 +512,7 @@ stal {
             }
             
             configure<DokkaExtension> {
-                moduleName = "${project.extra["artifactPrefix"]}${project.name}"
+                moduleName = project.artifact
                 // DOKKA-3885
                 dokkaGeneratorIsolation = ClassLoaderIsolation()
                 
@@ -547,74 +531,50 @@ stal {
                     templatesDir = docsProject.projectDir.resolve("templates")
                 }
             }
-
-            tasks.register<Jar>("dokkaJar") {
-                group = "dokka"
-                description = "Assembles Kotlin docs with Dokka into a javadoc JAR"
-                archiveClassifier = "javadoc"
-                val dokkaGeneratePublicationHtml by tasks.getting
-                dependsOn(dokkaGeneratePublicationHtml)
-                from(dokkaGeneratePublicationHtml)
-            }
         }
-        "publication" {
-            pluginManager.withPlugin("org.gradle.maven-publish") {
-                afterEvaluate {
-                    configure<PublishingExtension> {
-                        publications.withType<MavenPublication> {
-                            artifactId = "${extra["artifactPrefix"]}$artifactId"
-                        }
-                    }
+        "kotlin multiplatform publication" {
+            pluginManager.withPlugin("com.vanniktech.maven.publish") {
+                configure<MavenPublishBaseExtension> {
+                    configure(
+                        KotlinMultiplatform(
+                            javadocJar =
+                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
+                                else JavadocJar.Empty(),
+                            sourcesJar = true,
+                        )
+                    )
                 }
             }
         }
         "publishing" {
-            apply(plugin = "org.gradle.maven-publish")
-            apply(plugin = "org.gradle.signing")
-            afterEvaluate {
-                configure<PublishingExtension> {
-                    publications.withType<MavenPublication> {
-                        pom {
-                            name = "Kone library"
-                            description = "Set of libraries for experimental mathematics"
-                            url = "https://github.com/lounres/Kone"
-                            
-                            licenses {
-                                license {
-                                    name = "Apache License, Version 2.0"
-                                    url = "https://opensource.org/license/apache-2-0/"
-                                }
-                            }
-                            developers {
-                                developer {
-                                    id = "lounres"
-                                    name = "Gleb Minaev"
-                                    email = "minaevgleb@yandex.ru"
-                                }
-                            }
-                            scm {
-                                url = "https://github.com/lounres/Kone"
-                            }
+            apply(plugin = "com.vanniktech.maven.publish")
+            configure<MavenPublishBaseExtension> {
+                publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+                
+                signAllPublications()
+                
+                coordinates(groupId = project.group as String, artifactId = project.artifact, version = project.version as String)
+
+                pom {
+                    name = "Kone library"
+                    description = "Set of libraries for experimental mathematics"
+                    url = "https://github.com/lounres/Kone"
+    
+                    licenses {
+                        license {
+                            name = "Apache License, Version 2.0"
+                            url = "https://opensource.org/license/apache-2-0/"
                         }
                     }
-                }
-                tasks.withType<AbstractPublishToMaven>().configureEach {
-                    val signingTasks = tasks.withType<Sign>()
-                    mustRunAfter(signingTasks)
-                }
-            }
-            configure<SigningExtension> {
-                val signingKey: String? by project
-                val signingPassword: String? by project
-                useInMemoryPgpKeys(signingKey, signingPassword)
-                sign(the<PublishingExtension>().publications)
-            }
-        }
-        case { hasAllOf("dokka", "publishing") } implies {
-            afterEvaluate {
-                configure<PublishingExtension> {
-                    publications.withType<MavenPublication> {
-                        artifact(tasks.named<Jar>("dokkaJar"))
+                    developers {
+                        developer {
+                            id = "lounres"
+                            name = "Gleb Minaev"
+                            email = "minaevgleb@yandex.ru"
+                        }
+                    }
+                    scm {
+                        url = "https://github.com/lounres/Kone"
                     }
                 }
             }
