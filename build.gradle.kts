@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.text.replace
 
@@ -41,8 +41,8 @@ plugins {
 
 
 val koneBranch: String = grgit.branch.current().name
-val today: LocalDate = LocalDate.now(ZoneId.of("UTC"))
-val koneVersion = "0.0.0-experiment-${today.year}.${today.month.value}.${today.dayOfMonth}"
+val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
+val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
 //val koneVersion = "0.0.0-experiment"
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
