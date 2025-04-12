@@ -76,9 +76,6 @@ stal {
         "kotlin multiplatform publication" since { hasAnyOf("libs") }
         "publishing" since { has("libs") }
         "dokka" since { has("libs") }
-        "versionCatalog bundle main" since { hasAllOf("publication", "libs main") }
-        "versionCatalog bundle misc" since { hasAllOf("publication", "libs misc") }
-        "versionCatalog bundle util" since { hasAllOf("publication", "libs util") }
     }
 
     action {

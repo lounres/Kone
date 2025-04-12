@@ -119,9 +119,9 @@ catalog.versionCatalog {
 }
 
 gradle.projectsEvaluated {
-    val bundleMainProjects = stal.lookUp.projectsThat { has("versionCatalog bundle main") }
-    val bundleMiscProjects = stal.lookUp.projectsThat { has("versionCatalog bundle misc") }
-    val bundleUtilProjects = stal.lookUp.projectsThat { has("versionCatalog bundle util") }
+    val bundleMainProjects = stal.lookUp.projectsThat { has("libs main") }
+    val bundleMiscProjects = stal.lookUp.projectsThat { has("libs misc") }
+    val bundleUtilProjects = stal.lookUp.projectsThat { has("libs util") }
     val bundleProjects = bundleMainProjects + bundleMiscProjects + bundleUtilProjects
     val bundleMainAliases = bundleMainProjects.map { it.alias }
     val bundleMiscAliases = bundleMiscProjects.map { it.alias }
