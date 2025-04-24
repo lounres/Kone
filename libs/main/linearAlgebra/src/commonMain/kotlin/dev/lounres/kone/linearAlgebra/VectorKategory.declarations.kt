@@ -8,6 +8,7 @@ package dev.lounres.kone.linearAlgebra
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.linearAlgebra.relations.MatrixEquality
 import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.relations.rowVectorEquality
@@ -21,7 +22,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-public interface VectorKategory<N> {
+public interface VectorKategory<N> : KoneContext {
     public val rowVectorEquality: Equality<RowVector<N>>
     public val columnVectorEquality: Equality<ColumnVector<N>>
     public val matrixEquality: Equality<Matrix<N>>

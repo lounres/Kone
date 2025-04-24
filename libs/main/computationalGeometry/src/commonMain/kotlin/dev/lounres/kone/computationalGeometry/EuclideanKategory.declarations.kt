@@ -13,6 +13,7 @@ import dev.lounres.kone.computationalGeometry.relations.pointEquality
 import dev.lounres.kone.computationalGeometry.relations.vectorEquality
 import dev.lounres.kone.computationalGeometry.utils.fold
 import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.linearAlgebra.*
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -20,7 +21,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-public interface EuclideanKategory<N> {
+public interface EuclideanKategory<N> : KoneContext {
     public val pointEquality: Equality<Point<N>>
     public val vectorEquality: Equality<Vector<N>>
     
