@@ -70,7 +70,7 @@ internal value class UBigLongBigLongQuotientsByGCD(val first: UBigLong, val seco
 }
 
 internal fun divideByGCD(first: UBigLong, second: BigLong): UBigLongBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
-    val gcd = context(UBigLong.context) /* FIXME: KT-75150 */ { gcd(first, second.absoluteValue) }
+    val gcd = gcd(first, second.absoluteValue)
     
     if (gcd.isZero()) UBigLongBigLongQuotientsByGCD(UBigLong.context.zero, BigLong.context.zero)
     else UBigLongBigLongQuotientsByGCD(
@@ -86,7 +86,7 @@ internal value class BigLongUBigLongQuotientsByGCD(val first: BigLong, val secon
 }
 
 internal fun divideByGCD(first: BigLong, second: UBigLong): BigLongUBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
-    val gcd = context(UBigLong.context) /* FIXME: KT-75150 */ { gcd(first.absoluteValue, second) }
+    val gcd = gcd(first.absoluteValue, second)
     
     if (gcd.isZero()) BigLongUBigLongQuotientsByGCD(BigLong.context.zero, UBigLong.context.zero)
     else BigLongUBigLongQuotientsByGCD(
@@ -407,7 +407,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
             denominator = denominator,
         )
     override fun BigLongRational.plus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        val denominatorsGcd = context(UBigLong.context) /* FIXME: KT-75150 */ { gcd(denominator, other.denominator) }
+        val denominatorsGcd = gcd(denominator, other.denominator)
         val reducedThisDenominator = denominator / denominatorsGcd
         val reducedOtherDenominator = other.denominator / denominatorsGcd
         val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
@@ -418,7 +418,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.minus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        val denominatorsGcd = context(UBigLong.context) /* FIXME: KT-75150 */ { gcd(denominator, other.denominator) }
+        val denominatorsGcd = gcd(denominator, other.denominator)
         val reducedThisDenominator = denominator / denominatorsGcd
         val reducedOtherDenominator = other.denominator / denominatorsGcd
         val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator

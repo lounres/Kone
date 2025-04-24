@@ -124,8 +124,8 @@ public inline infix fun <Element> Element.neq(other: Element): Boolean = !(this 
  * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
  * and is equal to right-hand side.
  */
-context(reification: Reification<Element>, _: Equality<Element>)
 @Suppress("UNCHECKED_CAST")
+context(reification: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryEqualsTo(other: Element): Boolean =
     if (this !in reification) false else (this as Element) equalsTo other
 
@@ -133,8 +133,8 @@ public inline infix fun <Element> Any?.tryEqualsTo(other: Element): Boolean =
  * Check that the left-hand side lies in domain of provided [Equality] (via provided [Reification])
  * and is not equal to right-hand side.
  */
-context(reification: Reification<Element>, _: Equality<Element>)
 @Suppress("UNCHECKED_CAST")
+context(reification: Reification<Element>, _: Equality<Element>)
 public inline infix fun <Element> Any?.tryNotEqualsTo(other: Element): Boolean =
     if (this !in reification) false else (this as Element) notEqualsTo other
 

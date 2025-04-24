@@ -650,7 +650,6 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMult
  * @usesMathJax
  */
 context(_: Field<Number>)
-@JvmName("squaringPowerReceiver")
 public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -673,7 +672,6 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMul
  * @usesMathJax
  */
 context(_: Semiring<Number>)
-@JvmName("squaringPowerUReceiver")
 public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -701,7 +699,6 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMu
  * @usesMathJax
  */
 context(_: Field<Number>)
-@JvmName("squaringPowerReceiver")
 public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -724,6 +721,5 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMu
  * @usesMathJax
  */
 context(_: Semiring<Number>)
-@JvmName("squaringPowerUReceiver")
 public infix fun <Number> Number.squaringPower(exponent: ULong): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right })
 //endregion

@@ -269,8 +269,8 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortBy(selector:
     }
 }
 
-context(order: Order<R>)
 @PublishedApi
+context(order: Order<R>)
 internal inline fun <E, R> KoneSettableList<E>.heapsortBySiftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt, selector: (E) -> R) {
     var index = index
     while (true) {
@@ -408,8 +408,8 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortByDescending
     }
 }
 
-context(order: Order<R>)
 @PublishedApi
+context(order: Order<R>)
 internal inline fun <E, R> KoneSettableList<E>.heapsortByDescendingSiftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt, selector: (E) -> R) {
     var index = index
     while (true) {

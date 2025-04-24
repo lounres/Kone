@@ -228,8 +228,8 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.quicksortBy(selector
     }
 }
 // TODO: Move inside the following `sortBy` function when local inline functions will be ready
-context(_: Order<R>)
 @PublishedApi
+context(_: Order<R>)
 internal inline fun <E, R> KoneSettableList<E>.quicksortDivide(from: UInt, to: UInt, selector: (E) -> R): UInt {
     var i = from
     var j = to
@@ -312,8 +312,8 @@ public inline fun <E, R: Comparable<R>> KoneSettableList<E>.quicksortByDescendin
     }
 }
 // TODO: Move inside the following `sortByDescending` function when local inline functions will be ready
-context(_: Order<R>)
 @PublishedApi
+context(_: Order<R>)
 internal inline fun <E, R> KoneSettableList<E>.quicksortDivideDescending(from: UInt, to: UInt, selector: (E) -> R): UInt {
     var i = from
     var j = to

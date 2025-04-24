@@ -23,8 +23,8 @@ import dev.lounres.kone.computationalGeometry.minus
 context(_: Ring<N>)
 public infix fun <N> Vector2<N>.cross(other: Vector2<N>): N = this.x * other.y - this.y * other.x
 
-context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
 @Suppress("LocalVariableName")
+context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N>)
 public fun <N> Point2<N>.inTriangle(P: Point2<N>, Q: Point2<N>, R: Point2<N>): Boolean {
     val a = ((this - P) cross (Q - P)).sign
     val b = ((this - Q) cross (R - Q)).sign

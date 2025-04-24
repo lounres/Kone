@@ -478,8 +478,8 @@ public inline fun <Element> buildKoneSet(
     return result.apply(builderAction)
 }
 
-context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> buildKoneContextualSet(
     elementType: SuppliedType<Element>,
     @BuilderInference builderAction: KoneMutableSet<Element>.() -> Unit,
@@ -522,8 +522,8 @@ public inline fun <Element> buildKoneReifiedSet(
     return result.apply(builderAction)
 }
 
-context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> buildKoneContextualReifiedSet(
     elementType: SuppliedType<Element>,
     @BuilderInference builderAction: KoneMutableReifiedSet<Element>.() -> Unit,
@@ -552,8 +552,8 @@ public inline fun <Element> buildKoneSet(
     return result.apply(builderAction)
 }
 
-context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> buildKoneContextualSet(
     initialCapacity: UInt,
     elementType: SuppliedType<Element>,
@@ -601,8 +601,8 @@ public inline fun <Element> buildKoneReifiedSet(
     return result.apply(builderAction)
 }
 
-context(koneContextRegistry: KoneContextRegistry)
 @OptIn(ExperimentalTypeInference::class)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> buildKoneContextualReifiedSet(
     initialCapacity: UInt,
     elementType: SuppliedType<Element>,

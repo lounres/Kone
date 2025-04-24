@@ -884,11 +884,7 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
     // endregion
     
     // region Equality
-    // TODO: For now `0.0 != -0.0`, and there are other problems...
-//    override fun Double.equalsTo(other: Double): Boolean {
-//        TODO("Not yet implemented")
-//    }
-    override fun Double.isZero(): Boolean = this == 0.0 || this == -0.0
+    override fun Double.equalsTo(other: Double): Boolean = this == other
     // endregion
 
     // region Conversion
@@ -1026,7 +1022,7 @@ public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>,
     // endregion
     
     // region Equality
-    override fun Float.isZero(): Boolean = this == 0.0f || this == -0.0f
+    override fun Float.equalsTo(other: Float): Boolean = this == other
     // endregion
 
     // region Conversion

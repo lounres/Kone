@@ -11,6 +11,6 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.polynomial.*
 
 
-context(_: Ring<C>)
 @OptIn(DelicatePolynomialAPI::class)
+context(_: Ring<C>)
 internal fun <C> String.convert(): LabeledPolynomial<C> = LabeledVariable(this).asLabeledPolynomial()

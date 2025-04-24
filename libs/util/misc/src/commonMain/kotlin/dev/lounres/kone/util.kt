@@ -29,6 +29,14 @@ public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
 }
 
 /**
+ * Runs the [block].
+ *
+ * It's an analogue to [with] but for context parameter.
+ */
+public inline fun <Result> context(block: () -> Result): Result =
+    block()
+
+/**
  * Runs the [block] with the provided context parameter [context1].
  *
  * It's an analogue to [with] but for context parameter.

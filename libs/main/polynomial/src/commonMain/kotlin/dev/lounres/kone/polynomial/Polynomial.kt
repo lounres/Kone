@@ -168,11 +168,11 @@ public val <Polynomial> ULong.polynomialValue: Polynomial get() = with(polynomia
 // endregion
 
 // region Number-to-Polynomial conversion
-context(polynomialSpace: PolynomialSpace<Number, Polynomial>)
 @JvmName("polynomialValueOfNumber")
-public fun <Number, Polynomial> polynomialValueOf(value: Number): Polynomial = polynomialSpace.polynomialValueOf(value)
 context(polynomialSpace: PolynomialSpace<Number, Polynomial>)
+public fun <Number, Polynomial> polynomialValueOf(value: Number): Polynomial = polynomialSpace.polynomialValueOf(value)
 @get:JvmName("polynomialValueNumber")
+context(polynomialSpace: PolynomialSpace<Number, Polynomial>)
 public val <Number, Polynomial> Number.polynomialValue: Polynomial get() = with(polynomialSpace) { this@polynomialValue.polynomialValue }
 // endregion
 
@@ -395,8 +395,8 @@ public interface MultivariatePolynomialSpace<Number, Variable, Polynomial> : Pol
 }
 
 // region Variable-to-Polynomial conversion
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("polynomialValueOfVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public fun <Variable, Polynomial> polynomialValueOf(variable: Variable): Polynomial = polynomialSpace.polynomialValueOf(variable)
 // FIXME: KT-74730
 //context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
@@ -405,161 +405,161 @@ public fun <Variable, Polynomial> polynomialValueOf(variable: Variable): Polynom
 // endregion
 
 // region Variable-Int operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariableInt")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: Int): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariableInt")
-public operator fun <Variable, Polynomial> Variable.minus(other: Int): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: Int): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableInt")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: Int): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-UInt operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariableUInt")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: UInt): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariableUInt")
-public operator fun <Variable, Polynomial> Variable.minus(other: UInt): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: UInt): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableUInt")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: UInt): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-Long operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariableLong")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: Long): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariableLong")
-public operator fun <Variable, Polynomial> Variable.minus(other: Long): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: Long): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableLong")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: Long): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-ULong operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariableULong")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: ULong): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariableULong")
-public operator fun <Variable, Polynomial> Variable.minus(other: ULong): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: ULong): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableULong")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: ULong): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Int-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusIntVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Int.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusIntVariable")
-public operator fun <Variable, Polynomial> Int.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Int.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesIntVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Int.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region UInt-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusUIntVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> UInt.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusUIntVariable")
-public operator fun <Variable, Polynomial> UInt.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> UInt.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesUIntVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> UInt.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Long-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusLongVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Long.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusLongVariable")
-public operator fun <Variable, Polynomial> Long.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Long.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesLongVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Long.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region ULong-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusULongVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> ULong.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusULongVariable")
-public operator fun <Variable, Polynomial> ULong.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> ULong.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesULongVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> ULong.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-Number operations
-context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 @JvmName("plusVariableNumber")
+context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 public operator fun <Number, Variable, Polynomial> Variable.plus(other: Number): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 @JvmName("minusVariableNumber")
-public operator fun <Number, Variable, Polynomial> Variable.minus(other: Number): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
+public operator fun <Number, Variable, Polynomial> Variable.minus(other: Number): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableNumber")
+context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 public operator fun <Number, Variable, Polynomial> Variable.times(other: Number): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Number-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 @JvmName("plusNumberVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 public operator fun <Number, Variable, Polynomial> Number.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 @JvmName("minusNumberVariable")
-public operator fun <Number, Variable, Polynomial> Number.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
+public operator fun <Number, Variable, Polynomial> Number.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesNumberVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<Number, Variable, Polynomial>)
 public operator fun <Number, Variable, Polynomial> Number.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("unaryMinusVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.unaryMinus(): Polynomial = with(polynomialSpace) { -this@unaryMinus }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariableVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariableVariable")
-public operator fun <Variable, Polynomial> Variable.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariableVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Variable-Polynomial operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusVariablePolynomial")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.plus(other: Polynomial): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusVariablePolynomial")
-public operator fun <Variable, Polynomial> Variable.minus(other: Polynomial): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Variable.minus(other: Polynomial): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesVariablePolynomial")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.times(other: Polynomial): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
 // region Polynomial-Variable operations
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("plusPolynomialVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Polynomial.plus(other: Variable): Polynomial = with(polynomialSpace) { this@plus + other }
-context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 @JvmName("minusPolynomialVariable")
-public operator fun <Variable, Polynomial> Polynomial.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
+public operator fun <Variable, Polynomial> Polynomial.minus(other: Variable): Polynomial = with(polynomialSpace) { this@minus - other }
 @JvmName("timesPolynomialVariable")
+context(polynomialSpace: MultivariatePolynomialSpace<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Polynomial.times(other: Variable): Polynomial = with(polynomialSpace) { this@times * other }
 // endregion
 
@@ -631,37 +631,37 @@ public interface PolynomialSpaceOverField<Number, Polynomial> : PolynomialSpace<
 }
 
 // region Number-Int operations
-context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 @JvmName("divPolynomialInt")
 @JsName("divPolynomialInt")
+context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 public operator fun <Polynomial> Polynomial.div(other: Int): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Number-UInt operations
-context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 @JvmName("divPolynomialUInt")
 @JsName("divPolynomialUInt")
+context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 public operator fun <Polynomial> Polynomial.div(other: UInt): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Number-Long operations
-context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 @JvmName("divPolynomialLong")
 @JsName("divPolynomialLong")
+context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 public operator fun <Polynomial> Polynomial.div(other: Long): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Number-ULong operations
-context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 @JvmName("divPolynomialULong")
 @JsName("divPolynomialULong")
+context(polynomialSpace: PolynomialSpaceOverField<*, Polynomial>)
 public operator fun <Polynomial> Polynomial.div(other: ULong): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Polynomial-Number operations
-context(polynomialSpace: PolynomialSpaceOverField<Number, Polynomial>)
 @JvmName("divPolynomialNumber")
 @JsName("divPolynomialNumber")
+context(polynomialSpace: PolynomialSpaceOverField<Number, Polynomial>)
 public operator fun <Number, Polynomial> Polynomial.div(other: Number): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
@@ -743,31 +743,31 @@ public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomi
 }
 
 // region Variable-Int operations
-context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 @JvmName("divVariableInt")
+context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.div(other: Int): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Variable-UInt operations
-context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 @JvmName("divVariableUInt")
+context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.div(other: UInt): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Variable-Long operations
-context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 @JvmName("divVariableLong")
+context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.div(other: Long): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Variable-ULong operations
-context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 @JvmName("divVariableULong")
+context(polynomialSpace: MultivariatePolynomialSpaceOverField<*, Variable, Polynomial>)
 public operator fun <Variable, Polynomial> Variable.div(other: ULong): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion
 
 // region Variable-Number operations
-context(polynomialSpace: MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>)
 @JvmName("divVariableNumber")
+context(polynomialSpace: MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>)
 public operator fun <Number, Variable, Polynomial> Variable.div(other: Number): Polynomial = with(polynomialSpace) { this@div / other }
 // endregion

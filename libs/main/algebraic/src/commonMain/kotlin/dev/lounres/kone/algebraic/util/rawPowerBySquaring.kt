@@ -133,7 +133,7 @@ public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: UInt
 //    return if (multiplier == 0u) lazyZero() else theLogic(arg, multiplier)
     // Next is manually inlined code
 
-    if (multiplier == 0u) lazyZero()
+    if (multiplier == 0u) return lazyZero()
     var arg = arg
     var multiplier = multiplier
     while (true) {
@@ -344,7 +344,7 @@ public inline fun <Number> rightMultiplyByDoubling(arg: Number, multiplier: ULon
 //    return if (multiplier == 0uL) lazyZero() else theLogic(arg, multiplier)
     // Next is manually inlined code
 
-    if (multiplier == 0uL) lazyZero()
+    if (multiplier == 0uL) return lazyZero()
     var arg = arg
     var multiplier = multiplier
     while (true) {

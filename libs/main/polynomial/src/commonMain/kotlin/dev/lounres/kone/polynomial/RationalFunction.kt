@@ -138,80 +138,80 @@ public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> ULon
 // endregion
 
 // region Number-to-Rational-Function conversion
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("rationalFunctionValueOfNumber")
-public fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Number): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
 context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+public fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Number): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
 @get:JvmName("rationalFunctionValueNumber")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public val <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
 // endregion
 
 // region Polynomial-to-Rational-Function conversion
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("rationalFunctionValueOfPolynomial")
-public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
 context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(value: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { rationalFunctionValueOf(value) }
 @get:JvmName("rationalFunctionValuePolynomial")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public val <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.rationalFunctionValue: RationalFunctionType get() = with(rationalFunctionSpace) { this@rationalFunctionValue.rationalFunctionValue }
 // endregion
 
 // region Number-Rational-Function operations
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("plusNumberRational")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("minusNumberRational")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("timesNumberRational")
-public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divNumberRational")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Number.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
 // region Rational-Function-Number operations
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("plusRationalNumber")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("minusRationalNumber")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 @JvmName("timesRationalNumber")
-public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
+public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divRationalNumber")
+context(rationalFunctionSpace: RationalFunctionSpace<Number, Polynomial, RationalFunctionType>)
 public operator fun <Number, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Number): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
 // region Polynomial-Rational-Function operations
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("plusPolynomialRational")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("minusPolynomialRational")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("timesPolynomialRational")
-public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divPolynomialRational")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Polynomial.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
 // region Rational-Function-Polynomial operations
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("plusRationalPolynomial")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("minusRationalPolynomial")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 @JvmName("timesRationalPolynomial")
-public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
+public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divRationalPolynomial")
+context(rationalFunctionSpace: RationalFunctionSpace<*, Polynomial, RationalFunctionType>)
 public operator fun <Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Polynomial): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
@@ -645,8 +645,8 @@ public interface MultivariateRationalFunctionSpace<
 }
 
 // region Variable-to-Rational-Function conversion
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("rationalFunctionValueOfVariable")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> rationalFunctionValueOf(variable: Variable): RationalFunctionType = rationalFunctionSpace.rationalFunctionValueOf(variable)
 //context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 //@get:JvmName("rationalFunctionValueVariable")
@@ -654,32 +654,32 @@ public fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynom
 // endregion
 
 // region Variable-Rational-Function operations
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("plusVariableRational")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.plus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("minusVariableRational")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.minus(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("timesVariableRational")
-public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.times(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divVariableRational")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> Variable.div(other: RationalFunctionType): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
 // region Rational-Function-Variable operations
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("plusRationalVariable")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.plus(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@plus + other }
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("minusRationalVariable")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.minus(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@minus - other }
-context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 @JvmName("timesRationalVariable")
-public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
+public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.times(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@times * other }
 @JvmName("divRationalVariable")
+context(rationalFunctionSpace: MultivariateRationalFunctionSpace<*, Variable, Polynomial, RationalFunctionType>)
 public operator fun <Variable, Polynomial, RationalFunctionType: RationalFunction<Polynomial>> RationalFunctionType.div(other: Variable): RationalFunctionType = with(rationalFunctionSpace) { this@div / other }
 // endregion
 
