@@ -21,53 +21,24 @@ import kotlinx.benchmark.Blackhole
 
 
 // region Reification
-fun tryReificationContains(element: Any?, reification: Reification<*>, blackhole: Blackhole) {
-    blackhole.consume(element in reification)
-}
-
-fun tryReificationReifyMaybe(element: Any?, reification: Reification<*>, blackhole: Blackhole) {
-    blackhole.consume(reification { reifyMaybe(element) })
-}
-
-fun tryReificationReifyOrNull(element: Any?, reification: Reification<*>, blackhole: Blackhole) {
-    blackhole.consume(reification { reifyOrNull(element) })
-}
-
-fun tryReificationReify(element: Any?, reification: Reification<*>, blackhole: Blackhole) {
-    blackhole.consume(reification { reify(element) })
-}
+fun tryReificationContains(element: Any?, reification: Reification<*>) = element in reification
+fun tryReificationReifyMaybe(element: Any?, reification: Reification<*>) = reification.reifyMaybe(element)
+fun tryReificationReifyOrNull(element: Any?, reification: Reification<*>) = reification.reifyOrNull(element)
+fun tryReificationReify(element: Any?, reification: Reification<*>) = reification.reify(element)
 // endregion
 
 // region Equality
-fun <T> tryAnyEquals(left: T, right: T, blackhole: Blackhole) {
-    blackhole.consume(left == right)
-}
-
-fun <T> tryEqualityEqualsTo(left: T, right: T, equality: Equality<T>, blackhole: Blackhole) {
-    blackhole.consume(equality { left eq right })
-}
+fun <T> tryAnyEquals(left: T, right: T) = left == right
+fun <T> tryEqualityEqualsTo(left: T, right: T, equality: Equality<T>) = equality { left eq right }
 // endregion
 
 // region Order
-fun <T: Comparable<T>> tryComparableCompareTo(left: T, right: T, blackhole: Blackhole) {
-    blackhole.consume(left > right)
-}
-
-fun <T> tryOrderCompareTo(left: T, right: T, order: Order<T>, blackhole: Blackhole) {
-    blackhole.consume(order { left > right })
-}
-
-fun <T> tryOrderCompareWith(left: T, right: T, order: Order<T>, blackhole: Blackhole) {
-    blackhole.consume(order { left gt right })
-}
+fun <T: Comparable<T>> tryComparableCompareTo(left: T, right: T) = left > right
+fun <T> tryOrderCompareTo(left: T, right: T, order: Order<T>) = order { left > right }
+fun <T> tryOrderCompareWith(left: T, right: T, order: Order<T>) = order { left gt right }
 // endregion
 
 // region Hashing
-fun <T> tryAnyHashCode(element: T, blackhole: Blackhole) {
-    blackhole.consume(element.hashCode())
-}
-
-fun <T> tryHashingHash(element: T, hashing: Hashing<T>, blackhole: Blackhole) {
-    blackhole.consume(hashing { element.hash() })
-}
+fun <T> tryAnyHashCode(element: T) = element.hashCode()
+fun <T> tryHashingHash(element: T, hashing: Hashing<T>) = hashing { element.hash() }
 //endregion

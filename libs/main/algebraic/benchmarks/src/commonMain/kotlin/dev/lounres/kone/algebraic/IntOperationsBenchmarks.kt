@@ -29,7 +29,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Reification_contains_for_generic_Int(blackhole: Blackhole) {
-        tryReificationContains(a, Int.context, blackhole)
+        blackhole.consume(tryReificationContains(a, Int.context))
     }
     
     @Benchmark
@@ -39,7 +39,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Reification_reifyMaybe_for_generic_Int(blackhole: Blackhole) {
-        tryReificationReifyMaybe(a, Int.context, blackhole)
+        blackhole.consume(tryReificationReifyMaybe(a, Int.context))
     }
     
     @Benchmark
@@ -49,7 +49,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Reification_reifyOrNull_for_generic_Int(blackhole: Blackhole) {
-        tryReificationReifyOrNull(a, Int.context, blackhole)
+        blackhole.consume(tryReificationReifyOrNull(a, Int.context))
     }
     
     @Benchmark
@@ -59,7 +59,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Reification_reify_for_generic_Int(blackhole: Blackhole) {
-        tryReificationReify(a, Int.context, blackhole)
+        blackhole.consume(tryReificationReify(a, Int.context))
     }
     // endregion
     
@@ -71,7 +71,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Any_equals_for_generic_Int(blackhole: Blackhole) {
-        tryAnyEquals(a, b, blackhole)
+        blackhole.consume(tryAnyEquals(a, b))
     }
     
     @Benchmark
@@ -81,7 +81,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Equality_equalsTo_for_generic_Int(blackhole: Blackhole) {
-        tryEqualityEqualsTo(a, b, Int.context, blackhole)
+        blackhole.consume(tryEqualityEqualsTo(a, b, Int.context))
     }
     // endregion
     
@@ -93,12 +93,12 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Comparable_compareTo_for_generic_Int(blackhole: Blackhole) {
-        tryComparableCompareTo(a, b, blackhole)
+        blackhole.consume(tryComparableCompareTo(a, b))
     }
     
     @Benchmark
     fun Order_compareTo_for_generic_Int(blackhole: Blackhole) {
-        tryOrderCompareTo(a, b, Int.context, blackhole)
+        blackhole.consume(tryOrderCompareTo(a, b, Int.context))
     }
     
     @Benchmark
@@ -108,7 +108,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Order_compareWith_for_generic_Int(blackhole: Blackhole) {
-        tryOrderCompareWith(a, b, Int.context, blackhole)
+        blackhole.consume(tryOrderCompareWith(a, b, Int.context))
     }
     // endregion
     
@@ -120,7 +120,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Any_hashCode_for_generic_Int(blackhole: Blackhole) {
-        tryAnyHashCode(a, blackhole)
+        blackhole.consume(tryAnyHashCode(a))
     }
     
     @Benchmark
@@ -130,7 +130,7 @@ class IntOperationsBenchmarks {
     
     @Benchmark
     fun Hashing_hash_for_generic_Int(blackhole: Blackhole) {
-        tryHashingHash(a, Int.context, blackhole)
+        blackhole.consume(tryHashingHash(a, Int.context))
     }
     // endregion
     

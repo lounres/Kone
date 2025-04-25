@@ -16,6 +16,7 @@ import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.jvm.JvmField
 import kotlin.reflect.KVariance
 import kotlin.Comparator as KotlinStdlibComparator
 
@@ -25,8 +26,8 @@ import kotlin.Comparator as KotlinStdlibComparator
  *
  * Names of the enumerated elements say for themselves.
  */
-public enum class ComparisonResult {
-    LeftIsGreaterThanRight, LeftIsLessThanRight, Equal;
+public enum class ComparisonResult(@JvmField internal val asKotlinComparisonResult: Int) {
+    LeftIsGreaterThanRight(1), LeftIsLessThanRight(-1), Equal(0);
 }
 
 /**
@@ -112,12 +113,7 @@ public fun Int.asComparisonResult(): ComparisonResult =
  * Shortcut to convert comparison result from [Comparable]'s and [Order]'s terms to
  * [Kotlin stlib Comparator][KotlinStdlibComparator]'s and Kone [Comparator]'s terms.
  */
-public fun ComparisonResult.asKotlinComparisonResult(): Int =
-    when (this) {
-        ComparisonResult.LeftIsGreaterThanRight -> 1
-        ComparisonResult.LeftIsLessThanRight -> -1
-        ComparisonResult.Equal -> 0
-    }
+public fun ComparisonResult.asKotlinComparisonResult(): Int = asKotlinComparisonResult
 
 /**
  * Converts Kone [Comparator] to [Kotlin stlib Comparator][KotlinStdlibComparator].
