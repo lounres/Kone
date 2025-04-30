@@ -6,7 +6,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.libs.main.algebraic)
                 implementation(versions.kotlinx.serialization.json)
             }
         }

@@ -26,7 +26,7 @@ import kotlin.Comparator as KotlinStdlibComparator
  *
  * Names of the enumerated elements say for themselves.
  */
-public enum class ComparisonResult(@JvmField internal val asKotlinComparisonResult: Int) {
+public enum class ComparisonResult(@JvmField internal val kotlinComparisonResult: Int) {
     LeftIsGreaterThanRight(1), LeftIsLessThanRight(-1), Equal(0);
 }
 
@@ -113,7 +113,7 @@ public fun Int.asComparisonResult(): ComparisonResult =
  * Shortcut to convert comparison result from [Comparable]'s and [Order]'s terms to
  * [Kotlin stlib Comparator][KotlinStdlibComparator]'s and Kone [Comparator]'s terms.
  */
-public fun ComparisonResult.asKotlinComparisonResult(): Int = asKotlinComparisonResult
+public fun ComparisonResult.asKotlinComparisonResult(): Int = kotlinComparisonResult
 
 /**
  * Converts Kone [Comparator] to [Kotlin stlib Comparator][KotlinStdlibComparator].
