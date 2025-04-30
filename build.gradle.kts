@@ -168,7 +168,10 @@ stal {
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
                 
-                jvmToolchain(jvmTargetVersion.toInt())
+                jvmToolchain {
+                    languageVersion = JavaLanguageVersion.of(jvmTargetVersion.toInt())
+                    vendor = JvmVendorSpec.GRAAL_VM
+                }
                 
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
@@ -237,6 +240,7 @@ stal {
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
                                 optIn("kotlin.uuid.ExperimentalUuidApi")
+                                optIn("kotlinx.serialization.ExperimentalSerializationApi")
                                 optIn("dev.lounres.kone.annotations.UnstableKoneAPI")
                                 optIn("dev.lounres.kone.annotations.ExperimentalKoneAPI")
                             }
