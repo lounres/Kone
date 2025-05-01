@@ -31,48 +31,66 @@ import java.io.File
 
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
 @State(Scope.Benchmark)
-class IntDefaultImplementationsBenchmarks {
+class IntDefaultEqualityImplementationsBenchmarks {
     @Param("0", "1")
     var a: Int = 0
     @Param("0", "1")
     var b: Int = 0
+    
     val structuralEquality = defaultEquality<Int>()
     val referencesEquality = absoluteEquality<Int>()
-    val order = defaultOrder<Int>()
-    val hashing = defaultHashing<Int>()
-    val reification = Reification<Int>()
-
+    
     @Benchmark
     fun structural_equality_via_primitives() = a == b
-
+    
     @Benchmark
     fun structural_equality_via_generics() = (a as Any) == (b as Any)
-
+    
     @Benchmark
     fun structural_equality_via_defaultEquality() = structuralEquality { a eq b }
-
+    
     @Benchmark
     fun reference_equality_via_generics() = (a as Any) === (b as Any)
-
+    
     @Benchmark
     fun reference_equality_via_absoluteEquality() = referencesEquality { a eq b }
+}
 
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntDefaultOrderImplementationsBenchmarks {
+    @Param("0", "1")
+    var a: Int = 0
+    @Param("0", "1")
+    var b: Int = 0
+    
+    val order = defaultOrder<Int>()
+    
     @Benchmark
     fun comparison_via_primitives() = a < b
-
+    
     fun <T: Comparable<T>> compare_via_comparability(a: T, b: T): Boolean = a < b
-
+    
     @Benchmark
     fun comparison_via_comparability() = compare_via_comparability(a, b)
-
+    
     context(_: Order<T>)
     fun <T> compare_via_defaultOrder_compareTo(a: T, b: T): Boolean = a < b
-
+    
     @Benchmark
     fun comparison_via_defaultOrder_compareTo() = order { compare_via_defaultOrder_compareTo(a, b) }
-
+    
     @Benchmark
     fun comparison_via_defaultOrder_compareWith() = order { a lt b }
+}
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntDefaultHashingImplementationsBenchmarks {
+    @Param("0", "1")
+    var a: Int = 0
+    
+    val hashing = defaultHashing<Int>()
     
     @Benchmark
     fun hash_via_primitives() = a.hashCode()
@@ -82,6 +100,15 @@ class IntDefaultImplementationsBenchmarks {
     
     @Benchmark
     fun hash_via_defaultHashing() = hashing { a.hash() }
+}
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntDefaultReificationImplementationsBenchmarks {
+    @Param("0", "1")
+    var a: Int = 0
+    
+    val reification = Reification<Int>()
     
     @Benchmark
     fun reifibility_successful() = a in reification
@@ -118,17 +145,25 @@ class IntDefaultImplementationsBulkBenchmarks {
     val reification = Reification<Int>()
 
     lateinit var inputs: Array<Array<Int>>
+    lateinit var reificationInputs: Array<Int?>
 
     @Setup
     fun setup() {
         inputs = Json.decodeFromStream(File("src/jvmMain/resources/defaultImplementationsArguments.json").inputStream())
+        reificationInputs = inputs.map { if (it[0] == 0) 57 else null }.toTypedArray()
     }
 
     final var index: Int = 0
 
     @Benchmark
-    fun Blackhole.idle() {
+    fun Blackhole.idle_on_inputs() {
         consume(inputs[index])
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.idle_on_reificationInputs() {
+        consume(reificationInputs[index])
         index = (index + 1) % inputs.size
     }
 
@@ -197,6 +232,55 @@ class IntDefaultImplementationsBulkBenchmarks {
     fun Blackhole.comparison_via_defaultOrder_compareWith() {
         val (a, b) = inputs[index]
         consume(order { a lt b })
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.hash_via_primitives() {
+        val (a) = inputs[index]
+        consume(a.hashCode())
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.hash_via_generics() {
+        val (a) = inputs[index]
+        consume((a as Any).hashCode())
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.hash_via_defaultHashing() {
+        val (a) = inputs[index]
+        consume(hashing { a.hash() })
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.reifibility() {
+        val a = reificationInputs[index]
+        consume(a in reification)
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.reification() {
+        val a = reificationInputs[index]
+        consume(runCatching { reification.reify(a) })
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.reificationNullable() {
+        val a = reificationInputs[index]
+        consume(reification.reifyOrNull(a))
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.reificationMaybe() {
+        val a = reificationInputs[index]
+        consume(reification.reifyMaybe(a))
         index = (index + 1) % inputs.size
     }
 }
