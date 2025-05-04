@@ -83,6 +83,8 @@ stal {
             extra["artifactId"] = ""
             extra["alias"] = ""
             extra["isDokkaConfigured"] = false
+            extra["jvmTargetVersion"] = settings.extra["jvmTargetVersion"]
+            extra["jvmVendor"] = settings.extra["jvmVendor"]
         }
         "libs main" {
             extra["artifactId"] = "kone.${project.name}"
@@ -98,6 +100,10 @@ stal {
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"
+        }
+        "benchmarks" {
+            extra["jvmTargetVersion"] = settings.extra["benchmatrksJvmTargetVersion"]
+            extra["jvmVendor"] = settings.extra["benchmatrksJvmVendor"]
         }
         "dokka" {
             extra["isDokkaConfigured"] = true

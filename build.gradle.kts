@@ -97,7 +97,6 @@ allprojects {
 }
 
 
-val jvmTargetVersion : String by properties
 val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
 
 val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByName<LibrariesForVersions>("versions")
@@ -143,8 +142,6 @@ stal {
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
-                jvmToolchain(jvmTargetVersion.toInt())
-                
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
                         "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
@@ -167,11 +164,6 @@ stal {
             apply(versions.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
-                
-                jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(jvmTargetVersion.toInt())
-                    vendor = JvmVendorSpec.GRAAL_VM
-                }
                 
                 compilerOptions {
                     freeCompilerArgs = freeCompilerArgs.get() + listOf(
@@ -227,6 +219,11 @@ stal {
         "kotlin common settings" {
             pluginManager.withPlugins(versions.plugins.kotlin.jvm, versions.plugins.kotlin.multiplatform) {
                 configure<KotlinProjectExtension> {
+                    jvmToolchain {
+                        languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
+                        vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                    }
+                    
                     sourceSets {
                         all {
                             languageSettings {
