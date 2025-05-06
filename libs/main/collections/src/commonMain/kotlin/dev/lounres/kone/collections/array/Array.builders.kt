@@ -34,10 +34,10 @@ public inline fun <reified Element> KoneMutableArray(size: UInt, initializer: (U
 public inline fun <reified Element> KoneArray(size: UInt, initializer: (UInt) -> Element): KoneArray<Element> =
     KoneArray(Array(size.toInt()) { initializer(it.toUInt()) })
 
-public inline fun <reified Element> koneMutableArrayOf(vararg elements: Element): KoneMutableArray<Element> =
+public inline fun <reified Element> KoneMutableArray.Companion.of(vararg elements: Element): KoneMutableArray<Element> =
     KoneMutableArray(elements as Array<Element>)
 
-public inline fun <reified Element> koneArrayOf(vararg elements: Element): KoneArray<Element> =
+public inline fun <reified Element> KoneArray.Companion.of(vararg elements: Element): KoneArray<Element> =
     KoneArray(elements as Array<Element>)
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
@@ -86,10 +86,10 @@ public inline fun KoneByteArray(size: UInt, initializer: (UInt) -> Byte): KoneBy
 public fun KoneByteArray(size: UInt): KoneByteArray =
     KoneByteArray(ByteArray(size.toInt()))
 
-public fun koneMutableByteArrayOf(vararg elements: Byte): KoneMutableByteArray =
+public fun KoneMutableByteArray.Companion.of(vararg elements: Byte): KoneMutableByteArray =
     KoneMutableByteArray(elements)
 
-public fun koneByteArrayOf(vararg elements: Byte): KoneByteArray =
+public fun KoneByteArray.Companion.of(vararg elements: Byte): KoneByteArray =
     KoneByteArray(elements)
 
 public fun KoneIterable<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
@@ -138,10 +138,10 @@ public inline fun KoneShortArray(size: UInt, initializer: (UInt) -> Short): Kone
 public fun KoneShortArray(size: UInt): KoneShortArray =
     KoneShortArray(ShortArray(size.toInt()))
 
-public fun koneMutableShortArrayOf(vararg elements: Short): KoneMutableShortArray =
+public fun KoneMutableShortArray.Companion.of(vararg elements: Short): KoneMutableShortArray =
     KoneMutableShortArray(elements)
 
-public fun koneShortArrayOf(vararg elements: Short): KoneShortArray =
+public fun KoneShortArray.Companion.of(vararg elements: Short): KoneShortArray =
     KoneShortArray(elements)
 
 public fun KoneIterable<Short>.toKoneMutableShortArray(): KoneMutableShortArray {
@@ -190,10 +190,10 @@ public inline fun KoneIntArray(size: UInt, initializer: (UInt) -> Int): KoneIntA
 public fun KoneIntArray(size: UInt): KoneIntArray =
     KoneIntArray(IntArray(size.toInt()))
 
-public fun koneMutableIntArrayOf(vararg elements: Int): KoneMutableIntArray =
+public fun KoneMutableIntArray.Companion.of(vararg elements: Int): KoneMutableIntArray =
     KoneMutableIntArray(elements)
 
-public fun koneIntArrayOf(vararg elements: Int): KoneIntArray =
+public fun KoneIntArray.Companion.of(vararg elements: Int): KoneIntArray =
     KoneIntArray(elements)
 
 public fun KoneIterable<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
@@ -242,10 +242,10 @@ public inline fun KoneLongArray(size: UInt, initializer: (UInt) -> Long): KoneLo
 public fun KoneLongArray(size: UInt): KoneLongArray =
     KoneLongArray(LongArray(size.toInt()))
 
-public fun koneMutableLongArrayOf(vararg elements: Long): KoneMutableLongArray =
+public fun KoneMutableLongArray.Companion.of(vararg elements: Long): KoneMutableLongArray =
     KoneMutableLongArray(elements)
 
-public fun koneLongArrayOf(vararg elements: Long): KoneLongArray =
+public fun KoneLongArray.Companion.of(vararg elements: Long): KoneLongArray =
     KoneLongArray(elements)
 
 public fun KoneIterable<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
@@ -294,10 +294,10 @@ public inline fun KoneFloatArray(size: UInt, initializer: (UInt) -> Float): Kone
 public fun KoneFloatArray(size: UInt): KoneFloatArray =
     KoneFloatArray(FloatArray(size.toInt()))
 
-public fun koneMutableFloatArrayOf(vararg elements: Float): KoneMutableFloatArray =
+public fun KoneMutableFloatArray.Companion.of(vararg elements: Float): KoneMutableFloatArray =
     KoneMutableFloatArray(elements)
 
-public fun koneFloatArrayOf(vararg elements: Float): KoneFloatArray =
+public fun KoneFloatArray.Companion.of(vararg elements: Float): KoneFloatArray =
     KoneFloatArray(elements)
 
 public fun KoneIterable<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray {
@@ -346,10 +346,10 @@ public inline fun KoneDoubleArray(size: UInt, initializer: (UInt) -> Double): Ko
 public fun KoneDoubleArray(size: UInt): KoneDoubleArray =
     KoneDoubleArray(DoubleArray(size.toInt()))
 
-public fun koneMutableDoubleArrayOf(vararg elements: Double): KoneMutableDoubleArray =
+public fun KoneMutableDoubleArray.Companion.of(vararg elements: Double): KoneMutableDoubleArray =
     KoneMutableDoubleArray(elements)
 
-public fun koneDoubleArrayOf(vararg elements: Double): KoneDoubleArray =
+public fun KoneDoubleArray.Companion.of(vararg elements: Double): KoneDoubleArray =
     KoneDoubleArray(elements)
 
 public fun KoneIterable<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArray {
@@ -398,10 +398,10 @@ public inline fun KoneUByteArray(size: UInt, initializer: (UInt) -> UByte): Kone
 public fun KoneUByteArray(size: UInt): KoneUByteArray =
     KoneUByteArray(UByteArray(size.toInt()))
 
-public fun koneMutableUByteArrayOf(vararg elements: UByte): KoneMutableUByteArray =
+public fun KoneMutableUByteArray.Companion.of(vararg elements: UByte): KoneMutableUByteArray =
     KoneMutableUByteArray(elements)
 
-public fun koneUByteArrayOf(vararg elements: UByte): KoneUByteArray =
+public fun KoneUByteArray.Companion.of(vararg elements: UByte): KoneUByteArray =
     KoneUByteArray(elements)
 
 public fun KoneIterable<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray {
@@ -450,10 +450,10 @@ public inline fun KoneUShortArray(size: UInt, initializer: (UInt) -> UShort): Ko
 public fun KoneUShortArray(size: UInt): KoneUShortArray =
     KoneUShortArray(UShortArray(size.toInt()))
 
-public fun koneMutableUShortArrayOf(vararg elements: UShort): KoneMutableUShortArray =
+public fun KoneMutableUShortArray.Companion.of(vararg elements: UShort): KoneMutableUShortArray =
     KoneMutableUShortArray(elements)
 
-public fun koneUShortArrayOf(vararg elements: UShort): KoneUShortArray =
+public fun KoneUShortArray.Companion.of(vararg elements: UShort): KoneUShortArray =
     KoneUShortArray(elements)
 
 public fun KoneIterable<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArray {
@@ -502,10 +502,10 @@ public inline fun KoneUIntArray(size: UInt, initializer: (UInt) -> UInt): KoneUI
 public fun KoneUIntArray(size: UInt): KoneUIntArray =
     KoneUIntArray(UIntArray(size.toInt()))
 
-public fun koneMutableUIntArrayOf(vararg elements: UInt): KoneMutableUIntArray =
+public fun KoneMutableUIntArray.Companion.of(vararg elements: UInt): KoneMutableUIntArray =
     KoneMutableUIntArray(elements)
 
-public fun koneUIntArrayOf(vararg elements: UInt): KoneUIntArray =
+public fun KoneUIntArray.Companion.of(vararg elements: UInt): KoneUIntArray =
     KoneUIntArray(elements)
 
 public fun KoneIterable<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
@@ -554,10 +554,10 @@ public inline fun KoneULongArray(size: UInt, initializer: (UInt) -> ULong): Kone
 public fun KoneULongArray(size: UInt): KoneULongArray =
     KoneULongArray(ULongArray(size.toInt()))
 
-public fun koneMutableULongArrayOf(vararg elements: ULong): KoneMutableULongArray =
+public fun KoneMutableULongArray.Companion.of(vararg elements: ULong): KoneMutableULongArray =
     KoneMutableULongArray(elements)
 
-public fun koneULongArrayOf(vararg elements: ULong): KoneULongArray =
+public fun KoneULongArray.Companion.of(vararg elements: ULong): KoneULongArray =
     KoneULongArray(elements)
 
 public fun KoneIterable<ULong>.toKoneMutableULongArray(): KoneMutableULongArray {

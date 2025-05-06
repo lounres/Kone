@@ -39,7 +39,7 @@ public open class ListPolynomialSpace<Number>(
     final override val Long.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     final override val ULong.numberValue: Number get() = with(numberContext) { this@numberValue.value }
     
-    final override val zero: ListPolynomial<Number> = ListPolynomial(emptyKoneList())
+    final override val zero: ListPolynomial<Number> = ListPolynomial(KoneList.empty())
     final override val one: ListPolynomial<Number> by lazy { numberOne.asListPolynomial() }
     override val variable: ListPolynomial<Number> by lazy { ListPolynomial(numberZero, numberOne) }
 

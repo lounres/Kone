@@ -35,5 +35,5 @@ internal open class KoneMapHashing<Key, Value>(open val keyHashing: Hashing<Key>
     }
 }
 
-public fun <Key, Value> koneMapHashing(keyHashing: Hashing<Key>, valueHashing: Hashing<Value>): Hashing<KoneMap<out Key, Value>> =
+public fun <Key, Value> KoneMap.Companion.hashing(keyHashing: Hashing<Key>, valueHashing: Hashing<Value>): Hashing<KoneMap<out Key, Value>> =
     KoneMapHashing(keyHashing = keyHashing, valueHashing = valueHashing)

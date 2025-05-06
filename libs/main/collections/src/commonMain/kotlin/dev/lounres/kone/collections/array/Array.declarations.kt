@@ -61,6 +61,8 @@ public value class KoneArray<out Element> @DelicateImmutableArrayConstructor con
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -106,6 +108,8 @@ public value class KoneMutableArray<Element>(internal val array: Array<Element>)
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -155,6 +159,8 @@ public value class KoneByteArray @DelicateImmutableArrayConstructor constructor(
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -200,6 +206,8 @@ public value class KoneMutableByteArray(internal val array: ByteArray): KoneSett
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -249,6 +257,8 @@ public value class KoneShortArray @DelicateImmutableArrayConstructor constructor
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -294,6 +304,8 @@ public value class KoneMutableShortArray(internal val array: ShortArray): KoneSe
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -343,6 +355,8 @@ public value class KoneIntArray @DelicateImmutableArrayConstructor constructor(i
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -388,6 +402,8 @@ public value class KoneMutableIntArray(internal val array: IntArray): KoneSettab
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -437,6 +453,8 @@ public value class KoneLongArray @DelicateImmutableArrayConstructor constructor(
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -482,6 +500,8 @@ public value class KoneMutableLongArray(internal val array: LongArray): KoneSett
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -531,6 +551,8 @@ public value class KoneFloatArray @DelicateImmutableArrayConstructor constructor
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -576,6 +598,8 @@ public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSe
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -625,6 +649,8 @@ public value class KoneDoubleArray @DelicateImmutableArrayConstructor constructo
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -670,6 +696,8 @@ public value class KoneMutableDoubleArray(internal val array: DoubleArray): Kone
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -719,6 +747,8 @@ public value class KoneUByteArray @DelicateImmutableArrayConstructor constructor
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -764,6 +794,8 @@ public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSe
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -813,6 +845,8 @@ public value class KoneUShortArray @DelicateImmutableArrayConstructor constructo
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -858,6 +892,8 @@ public value class KoneMutableUShortArray(internal val array: UShortArray): Kone
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -907,6 +943,8 @@ public value class KoneUIntArray @DelicateImmutableArrayConstructor constructor(
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -960,6 +998,8 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }
 
 // FIXME: KT-42977
@@ -1009,6 +1049,8 @@ public value class KoneULongArray @DelicateImmutableArrayConstructor constructor
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
     }
+    
+    public companion object
 }
 
 /**
@@ -1054,4 +1096,6 @@ public value class KoneMutableULongArray(internal val array: ULongArray): KoneSe
             array[index - 1] = element
         }
     }
+    
+    public companion object
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.toSize
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.utils.lastThatOrNull
 import dev.lounres.kone.computationalGeometry.Point2
@@ -53,7 +53,7 @@ public fun KoneCanvasWithLayers(
     modifier: Modifier = Modifier,
     koneCanvasState: KoneCanvasState,
     clip: Boolean = true,
-    layers: KoneList<KoneCanvasLayer> = emptyKoneList(),
+    layers: KoneList<KoneCanvasLayer> = KoneList.empty(),
 ) {
     KoneCanvas(
         modifier = modifier,
@@ -162,7 +162,7 @@ public fun KoneDefaultCanvasWithLayers(
     modifier: Modifier = Modifier,
     koneCanvasStateState: MutableState<KoneCanvasState> = remember { mutableStateOf(KoneCanvasState()) },
     clip: Boolean = true,
-    layers: KoneList<KoneDraggableCanvasLayer> = emptyKoneList(),
+    layers: KoneList<KoneDraggableCanvasLayer> = KoneList.empty(),
 ) {
     KoneCanvasWithLayers(
         modifier = modifier.defaultKoneCanvasWithLayersPointerInput(koneCanvasStateState, layers),

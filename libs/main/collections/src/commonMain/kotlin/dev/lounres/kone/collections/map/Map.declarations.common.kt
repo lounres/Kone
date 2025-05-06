@@ -28,6 +28,8 @@ public interface KoneMap<Key, out Value> {
     public val valuesView: KoneIterable<Value>
 
     public fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>?
+    
+    public companion object
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
@@ -64,6 +66,8 @@ public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
 //    public fun setSeveral(number: UInt, builder: (UInt) -> KoneMapNode<K, V>) {
 //        repeat(number) { set(builder(it)) }
 //    }
+    
+    public companion object
 }
 
 // TODO: Design linked versions

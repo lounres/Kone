@@ -20,7 +20,7 @@ import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.*
-import dev.lounres.kone.collections.set.relations.koneSetEquality
+import dev.lounres.kone.collections.set.relations.equality
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction2
@@ -318,7 +318,7 @@ internal fun <
         return Wrapping2Result(
             polytope = theOnlyVertex.asPolytope(),
             computedFacesRegistry = koneMutableMapOf(
-                keyEquality = koneSetEquality(vertexEquality)
+                keyEquality = KoneSet.equality(vertexEquality)
             ),
             startPoint = theOnlyVertex.position,
             orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState2(

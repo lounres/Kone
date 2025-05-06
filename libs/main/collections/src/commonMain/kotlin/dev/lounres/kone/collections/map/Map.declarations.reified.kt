@@ -17,10 +17,14 @@ public interface KoneReifiedMap<out Key, out Value> : KoneMap<@UnsafeVariance Ke
     override val keys: KoneReifiedSet<Key> get() = keysView
     
     override fun getNodeOrNull(key: @UnsafeVariance Key): KoneMapNode<Key, Value>?
+    
+    public companion object
 }
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableReifiedMap<Key, Value> : KoneReifiedMap<Key, Value>, KoneMutableMap<Key, Value> {
     override val keysView: KoneReifiedSet<Key>
     override val keys: KoneReifiedSet<Key>
+    
+    public companion object
 }

@@ -31,6 +31,8 @@ public interface KoneSet<Element> : KoneIterable<Element> {
     public operator fun contains(element: Element): Boolean
     
     override fun iterator(): KoneSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -63,6 +65,8 @@ public interface KoneMutableSet<Element> : KoneSet<Element>, KoneRemovableIterab
      * Removes all elements from the collection.
      */
     public fun removeAll()
+    
+    public companion object
 }
 
 /**
@@ -105,6 +109,8 @@ public interface KoneNoddedSet<Element> : KoneSet<Element> {
     public fun nodeOf(element: @UnsafeVariance Element): KoneSetNode<Element>
     
     override fun iterator(): KoneNoddedSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -132,6 +138,8 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
     override fun add(element: Element) { addNode(element) }
     
     override fun iterator(): KoneMutableNoddedSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -150,6 +158,8 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneReversibleIterable<Element> {
     override fun iterator(): KoneLinkedSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -169,6 +179,8 @@ public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneReversibleIterab
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMutableSet<Element>, KoneReversibleRemovableIterable<Element> {
     override fun iterator(): KoneMutableLinkedSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -189,6 +201,8 @@ public interface KoneLinkedNoddedSet<Element> : KoneNoddedSet<Element>, KoneLink
     override fun nodeOf(element: @UnsafeVariance Element): KoneLinkedSetNode<Element>
     
     override fun iterator(): KoneLinkedNoddedSetIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -215,4 +229,6 @@ public interface KoneMutableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Eleme
     override fun addNode(element: Element): KoneMutableLinkedSetNode<Element>
     
     override fun iterator(): KoneMutableLinkedNoddedSetIterator<Element>
+    
+    public companion object
 }

@@ -63,6 +63,8 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
     override fun iterator(): KoneListIterator<Element> = iteratorFrom(0u)
+    
+    public companion object
 }
 
 /**
@@ -92,6 +94,8 @@ public interface KoneSettableList<Element> : KoneList<Element>, KoneSettableLine
     
     override fun iteratorFrom(index: UInt): KoneSettableListIterator<Element>
     override fun iterator(): KoneSettableListIterator<Element> = iteratorFrom(0u)
+    
+    public companion object
 }
 
 /**
@@ -238,6 +242,8 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
      */
     override fun iterator(): KoneMutableListIterator<Element> = iteratorFrom(0u)
+    
+    public companion object
 }
 
 /**
@@ -251,6 +257,8 @@ public interface KoneGrowableMutableList<Element> : KoneMutableList<Element> {
      * without reinitialization of the capacity.
      */
     public fun ensureCapacity(minimalCapacity: UInt)
+    
+    public companion object
 }
 
 /**
@@ -274,6 +282,8 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
     
     override fun iterator(): KoneNoddedListIterator<Element>
     override fun iteratorFrom(index: UInt): KoneNoddedListIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -291,6 +301,8 @@ public interface KoneSettableNoddedList<Element> : KoneNoddedList<Element>, Kone
     
     override fun iterator(): KoneSettableNoddedListIterator<Element>
     override fun iteratorFrom(index: UInt): KoneSettableNoddedListIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -336,6 +348,8 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
     
     override fun iterator(): KoneMutableNoddedListIterator<Element>
     override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element>
+    
+    public companion object
 }
 
 /**
@@ -348,4 +362,6 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 @Serializable(with = DefaultKoneGrowableMutableNoddedListSerializer::class)
-public interface KoneGrowableMutableNoddedList<Element> : KoneMutableNoddedList<Element>, KoneGrowableMutableList<Element>
+public interface KoneGrowableMutableNoddedList<Element> : KoneMutableNoddedList<Element>, KoneGrowableMutableList<Element> {
+    public companion object
+}

@@ -6,7 +6,8 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.array.koneUIntArrayOf
+import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneVirtualList
@@ -46,7 +47,7 @@ internal open /*value*/ class MDList2Wrapper<E>(open val list: MDList<E>): MDLis
     override val rowNumber: UInt get() = list.shape[0u]
     override val columnNumber: UInt get() = list.shape[1u]
     override val shape: MDShape get() = list.shape
-    override fun get(rowIndex: UInt, columnIndex: UInt): E = list[koneUIntArrayOf(rowIndex, columnIndex)]
+    override fun get(rowIndex: UInt, columnIndex: UInt): E = list[KoneUIntArray.of(rowIndex, columnIndex)]
 }
 
 /*@JvmInline*/
@@ -55,7 +56,7 @@ internal /*value*/ class SettableMDList2Wrapper<E>(override val list: SettableMD
     // FIXME: KT-65793
     override val shape: MDShape get() = list.shape
     override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
-        list[koneUIntArrayOf(rowIndex, columnIndex)] = element
+        list[KoneUIntArray.of(rowIndex, columnIndex)] = element
     }
 }
 

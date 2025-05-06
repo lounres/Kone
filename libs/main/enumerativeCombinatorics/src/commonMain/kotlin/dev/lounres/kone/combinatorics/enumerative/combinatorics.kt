@@ -20,7 +20,7 @@ import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.addAllFrom
 import dev.lounres.kone.collections.list.buildKoneList
-import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.koneMutableListOf
 import dev.lounres.kone.collections.list.lastIndex
@@ -165,7 +165,7 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
     return sequence {
         val size = collection.size
         val currentState = KoneMutableUIntArray(size) { 0u }
-        var currentElements = emptyKoneList<E>()
+        var currentElements = KoneList.empty<E>()
 
         while (true) {
             yield(currentElements)
@@ -328,7 +328,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equali
     return sequence {
         if (collection.size < k) return@sequence
         if (collection.size == 0u) {
-            yield(emptyKoneList())
+            yield(KoneList.empty())
             return@sequence
         }
 
@@ -435,7 +435,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
 
     return sequence {
         if (collection.size == 0u) {
-            yield(emptyKoneList())
+            yield(KoneList.empty())
             return@sequence
         }
 

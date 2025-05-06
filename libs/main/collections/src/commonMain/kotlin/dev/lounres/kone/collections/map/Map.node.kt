@@ -23,6 +23,8 @@ public interface KoneMapEntry<out Key, out Value> {
      * Returns the corresponding value of the entry.
      */
     public val value: Value
+    
+    public companion object
 }
 
 internal data class KoneMapEntryImpl<out Key, out Value>(

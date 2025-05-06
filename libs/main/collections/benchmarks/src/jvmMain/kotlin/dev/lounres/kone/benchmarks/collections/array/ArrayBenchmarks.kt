@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.array.KoneUByteArray
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.array.KoneUShortArray
-import dev.lounres.kone.collections.array.koneArrayOf
+import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.array.serializers.KoneArraySerializer
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkTimeUnit
@@ -243,7 +243,7 @@ class ArrayAccessBenchmarks {
     final var size: UInt = 0u
     
     class KoneArrayHolder(val array: KoneArray<Int>)
-    final var arrayHolder: KoneArrayHolder = KoneArrayHolder(koneArrayOf())
+    final var arrayHolder: KoneArrayHolder = KoneArrayHolder(KoneArray.of())
     
     final var middleIndex: UInt = 0u
     final var lastIndex: UInt = 0u

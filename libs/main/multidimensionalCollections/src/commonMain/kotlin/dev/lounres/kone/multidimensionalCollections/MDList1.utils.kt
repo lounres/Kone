@@ -5,7 +5,8 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.koneUIntArrayOf
+import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 
 
@@ -31,13 +32,13 @@ internal open /*value*/ class MDList1Wrapper<out E>(open val list: MDList<E>): M
     
     override val size: UInt get() = list.shape[0u]
     override val shape: MDShape get() = list.shape
-    override fun get(index: UInt): E = list[koneUIntArrayOf(index)]
+    override fun get(index: UInt): E = list[KoneUIntArray.of(index)]
 }
 
 /*@JvmInline*/
 internal /*value*/ class SettableMDList1Wrapper<E>(override val list: SettableMDList<E>): MDList1Wrapper<E>(list), SettableMDList1<E> {
     override fun set(index: UInt, element: E) {
-        list[koneUIntArrayOf(index)] = element
+        list[KoneUIntArray.of(index)] = element
     }
 }
 

@@ -29,5 +29,5 @@ internal open class KoneSetEquality<Element>(val elementEquality: Equality<Eleme
     }
 }
 
-public fun <Element> koneSetEquality(elementEquality: Equality<Element>): Equality<KoneSet<out Element>> =
+public fun <Element> KoneSet.Companion.equality(elementEquality: Equality<Element>): Equality<KoneSet<out Element>> =
     KoneSetEquality(elementEquality)

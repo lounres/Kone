@@ -7,7 +7,6 @@ package dev.lounres.kone.computationalGeometry.util
 
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.KoneSet

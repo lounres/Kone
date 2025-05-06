@@ -32,5 +32,9 @@ internal class KoneListReification<Element>(
         else reificationException()
 }
 
+@Deprecated("", replaceWith = ReplaceWith("KoneList.reification<Element>(elementEquality)", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.reification"))
 public fun <Element> koneListReification(elementReification: Reification<Element>): Reification<KoneList<Element>> =
+    KoneListReification(elementReification)
+
+public fun <Element> KoneList.Companion.reification(elementReification: Reification<Element>): Reification<KoneList<Element>> =
     KoneListReification(elementReification)

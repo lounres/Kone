@@ -13,7 +13,7 @@ kotlin {
                 api(projects.libs.main.maybe)
                 api(projects.libs.main.relations)
                 implementation(projects.libs.main.algebraic)
-                implementation(versions.kotlinx.serialization.core)
+                api(versions.kotlinx.serialization.core)
             }
         }
         commonTest {

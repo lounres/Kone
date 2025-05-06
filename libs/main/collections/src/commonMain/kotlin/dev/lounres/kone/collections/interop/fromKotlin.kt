@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.utils.toOptimizedList
@@ -311,7 +311,7 @@ public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =
     else this.toKoneMutableList()
 
 public fun <Element> Collection<Element>.toKoneList(): KoneList<Element> =
-    if (isEmpty()) emptyKoneList()
+    if (isEmpty()) KoneList.empty()
     else this.toKoneMutableList().toOptimizedList()
 
 // TODO: Review the following converters

@@ -38,12 +38,8 @@ public inline fun <Key, Value> KoneMutableMap<in Key, Value>.getOrSet(key: Key, 
     getNodeOrNull(key).let { node -> if (node == null) default().also { this[key] = it } else node.value }
 
 public fun <Key, Value> KoneMutableMap<Key, Value>.set(entry: KoneMapEntry<Key, Value>): KoneMutableMapNode<Key, Value> = set(entry.key, entry.value)
-public fun <Key, Value> KoneMutableMap<Key, Value>.set(node: KoneMapNode<Key, Value>): KoneMutableMapNode<Key, Value> = set(node.key, node.value)
 
-@JvmName("setAllEntriesFrom")
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(entries: KoneIterable<KoneMapEntry<Key, Value>>) { entries.forEach { set(it) } }
-@JvmName("setAllNodesFrom")
-public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(nodes: KoneIterable<KoneMapNode<Key, Value>>) { nodes.forEach { set(it) } }
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(map: KoneMap<out Key, Value>) { map.nodesView.forEach { set(it) } }
 
 public fun <Key> KoneMutableMap<in Key, *>.remove(key: Key) { getNode(key).remove() }

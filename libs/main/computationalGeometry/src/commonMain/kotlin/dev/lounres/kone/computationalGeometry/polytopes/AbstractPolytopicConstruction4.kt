@@ -90,7 +90,7 @@ public class AbstractPolytopicConstruction4Vertex<Number> internal constructor(
             polytopicConstruction = polytopicConstruction,
             dimension = 0u,
             vertices = koneReifiedSetOf(this),
-            faces = emptyKoneList(),
+            faces = KoneList.empty(),
             correspondingVertex = this,
         )
     override fun asPolytope(): AbstractPolytopicConstruction4Polytope<Number> = backingPolytope
@@ -179,7 +179,7 @@ internal class AbstractPolytopicConstruction4Serializer<Number>(
         }
         val polytopes = value.polytopes.mapIndexed { dimension, polytopesOfDimension ->
             if (dimension == 0u) {
-                vertices.indices.toKoneList().map { PolytopeDescription(vertices = koneListOf(it), faces = emptyKoneList()) }
+                vertices.indices.toKoneList().map { PolytopeDescription(vertices = koneListOf(it), faces = KoneList.empty()) }
             } else {
                 polytopesOfDimension.map { polytope ->
                     PolytopeDescription(

@@ -8,7 +8,6 @@ package dev.lounres.kone.computationalGeometry
 import com.charleskorn.kaml.Yaml
 import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.util.PointSetDescription
 import dev.lounres.kone.contexts.invoke

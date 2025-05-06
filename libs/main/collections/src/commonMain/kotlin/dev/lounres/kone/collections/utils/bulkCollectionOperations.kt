@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.iterables.*
 import dev.lounres.kone.collections.list.*
-import dev.lounres.kone.collections.list.addAllFrom
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.map.*
@@ -80,14 +79,14 @@ public operator fun <E> KoneMutableSet<E>.plusAssign(element: E) {
 
 public fun <E> KoneIterable<E>.take(n: UInt): KoneList<E> {
     val newSize = min(size, n)
-    if (newSize == 0u) return emptyKoneList()
+    if (newSize == 0u) return KoneList.empty()
     val iterator = iterator()
     return KoneList(newSize) { iterator.getAndMoveNext() }
 }
 
 public fun <E> KoneIterable<E>.takeLast(n: UInt): KoneList<E> {
     val newSize = min(size, n)
-    if (newSize == 0u) return emptyKoneList()
+    if (newSize == 0u) return KoneList.empty()
     val iterator = iterator()
     repeat(size - newSize) { iterator.moveNext() }
     return KoneList(newSize) { iterator.getAndMoveNext() }
@@ -95,7 +94,7 @@ public fun <E> KoneIterable<E>.takeLast(n: UInt): KoneList<E> {
 
 public fun <E> KoneList<E>.takeLast(n: UInt): KoneList<E> {
     val newSize = min(size, n)
-    if (newSize == 0u) return emptyKoneList()
+    if (newSize == 0u) return KoneList.empty()
     val result = KoneMutableArray<Any?>(newSize) { null }
     var currentIndex = newSize - 1u
     val iterator = iteratorFrom(size)
@@ -112,7 +111,7 @@ public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
 public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - n)
 
 public fun <E> KoneList<E>.slice(fromIndex: UInt, toIndex: UInt): KoneList<E> {
-    if (toIndex < fromIndex) return emptyKoneList()
+    if (toIndex < fromIndex) return KoneList.empty()
     val iterator = iteratorFrom(fromIndex)
     return KoneList(toIndex - fromIndex) { iterator.getAndMoveNext() }
 }
@@ -133,7 +132,7 @@ public fun <E> KoneSettableList<E>.reverse() {
 }
 
 public fun <E> KoneIterable<E>.reversed(): KoneList<E> {
-    if (isEmpty()) return emptyKoneList()
+    if (isEmpty()) return KoneList.empty()
     
     val result = KoneMutableArray<Any?>(size) { null }
     var currentIndex = size - 1u

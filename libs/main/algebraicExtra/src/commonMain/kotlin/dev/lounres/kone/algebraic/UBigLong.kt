@@ -91,8 +91,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     // endregion
     
     // region Constants
-    override val zero: UBigLong = UBigLong(koneULongArrayOf())
-    override val one: UBigLong = UBigLong(koneULongArrayOf(1uL))
+    override val zero: UBigLong = UBigLong(KoneULongArray.of())
+    override val one: UBigLong = UBigLong(KoneULongArray.of(1uL))
     // endregion
     
     // region Equality
@@ -102,8 +102,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     // endregion
     
     // region Conversion
-    override fun valueOf(arg: UInt): UBigLong = if (arg == 0u) UBigLong(koneULongArrayOf()) else UBigLong(koneULongArrayOf(arg.toULong()))
-    override fun valueOf(arg: ULong): UBigLong = if (arg == 0uL) UBigLong(koneULongArrayOf()) else UBigLong(koneULongArrayOf(arg))
+    override fun valueOf(arg: UInt): UBigLong = if (arg == 0u) UBigLong(KoneULongArray.of()) else UBigLong(KoneULongArray.of(arg.toULong()))
+    override fun valueOf(arg: ULong): UBigLong = if (arg == 0uL) UBigLong(KoneULongArray.of()) else UBigLong(KoneULongArray.of(arg))
     // endregion
     
     // region UBigLong-UInt operations

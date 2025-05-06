@@ -25,5 +25,5 @@ internal open class KoneSetHashing<Element>(open val elementHashing: Hashing<Ele
     }
 }
 
-public fun <Element> koneSetHashing(elementContext: Hashing<Element>): Hashing<KoneSet<out Element>> =
+public fun <Element> KoneSet.Companion.hashing(elementContext: Hashing<Element>): Hashing<KoneSet<out Element>> =
     KoneSetHashing(elementContext)

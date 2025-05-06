@@ -38,7 +38,9 @@ public fun <Element, Priority> HeapEntry(element: Element, priority: Priority): 
 internal data class HeapEntryImpl<out Element, out Priority>(
     override val element: Element,
     override val priority: Priority,
-) : HeapEntry<Element, Priority>
+) : HeapEntry<Element, Priority> {
+    override fun toString(): String = "HeapEntry(element=$element, priority=$priority)"
+}
 
 /**
  * Represents a node in the inner structure of [MinimumHeap]/[MaximumHeap].

@@ -41,5 +41,5 @@ internal class KoneSetReification<Element>(
         }
 }
 
-public fun <Element> koneSetReification(elementReification: Reification<Element>): Reification<KoneSet<out Element>> =
+public fun <Element> KoneSet.Companion.reification(elementReification: Reification<Element>): Reification<KoneSet<out Element>> =
     KoneSetReification(elementReification)

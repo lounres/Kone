@@ -15,6 +15,10 @@ import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.map.*
+import dev.lounres.kone.collections.map.KoneMutableReifiedMap
+import dev.lounres.kone.collections.map.KoneReifiedMap
+import dev.lounres.kone.collections.map.empty
+import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.utils.associateBy
 import dev.lounres.kone.collections.utils.mapKeys
 import dev.lounres.kone.collections.utils.setOrChange
@@ -73,20 +77,20 @@ public fun <C> LabeledPolynomial(entries: KoneIterable<KoneMapEntry<LabeledMonom
 context(_: Ring<C>)
 public fun <C> LabeledPolynomial(vararg entries: KoneMapEntry<LabeledMonomialSignature, C>) : LabeledPolynomial<C> = LabeledPolynomial(entries = entries, add = { left: C, right: C -> left + right }, isZero = { it.isZero() })
 
-public fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomialAsIs(koneReifiedMapOf(emptyKoneReifiedMap<LabeledVariable, UInt>() mapsTo this))
+public fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomialAsIs(KoneReifiedMap.of(KoneReifiedMap.empty<LabeledVariable, UInt>() mapsTo this))
 
 /**
-// * Converts [this] variable to [LabeledPolynomial].
-// */
+ * Converts [this] variable to [LabeledPolynomial].
+ */
 context(_: Ring<C>)
-public inline fun <C> LabeledVariable.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(koneReifiedMapOf(koneReifiedMapOf(this mapsTo 1u) mapsTo one))
+public inline fun <C> LabeledVariable.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(KoneReifiedMap.of(KoneReifiedMap.of(this mapsTo 1u) mapsTo one))
 
 @DslMarker
 internal annotation class LabeledPolynomialConstructorDSL1
 
 @LabeledPolynomialConstructorDSL1
 public class DSL1LabeledPolynomialTermSignatureBuilder {
-    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = koneMutableReifiedMapOf(keyHashing = defaultHashing())
+    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = KoneMutableReifiedMap.of(keyHashing = defaultHashing())
 
     @PublishedApi
     internal fun build(): LabeledMonomialSignature = signature
@@ -105,7 +109,7 @@ public class DSL1LabeledPolynomialBuilder<C>(
     private val add: (C, C) -> C,
     initialCapacity: Int? = null
 ) {
-    private val coefficients: KoneMutableReifiedMap<LabeledMonomialSignature, C> = koneMutableReifiedMapOf(keyHashing = labeledMonomialSignatureHashing) // TODO: Use `initialCapacity` eventually
+    private val coefficients: KoneMutableReifiedMap<LabeledMonomialSignature, C> = KoneMutableReifiedMap.of(keyHashing = labeledMonomialSignatureHashing) // TODO: Use `initialCapacity` eventually
 
     @PublishedApi
     internal fun build(): LabeledPolynomial<C> = LabeledPolynomial<C>(coefficients)

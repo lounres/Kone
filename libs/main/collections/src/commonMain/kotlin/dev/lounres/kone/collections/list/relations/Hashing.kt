@@ -25,5 +25,9 @@ internal open class KoneListHashing<Element>(open val elementHashing: Hashing<El
     }
 }
 
+@Deprecated("", replaceWith = ReplaceWith("KoneList.hashing<Element>(elementEquality)", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.hashing"))
 public fun <Element> koneListHashing(elementHashing: Hashing<Element>): Hashing<KoneList<Element>> =
+    KoneListHashing(elementHashing)
+
+public fun <Element> KoneList.Companion.hashing(elementHashing: Hashing<Element>): Hashing<KoneList<Element>> =
     KoneListHashing(elementHashing)

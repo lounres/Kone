@@ -44,5 +44,5 @@ internal open class KoneMapEquality<Key, Value>(open val keyEquality: Equality<K
     }
 }
 
-public fun <Key, Value> koneMapEquality(keyEquality: Equality<Key>, valueEquality: Equality<Value>): Equality<KoneMap<out Key, Value>> =
+public fun <Key, Value> KoneMap.Companion.equality(keyEquality: Equality<Key>, valueEquality: Equality<Value>): Equality<KoneMap<out Key, Value>> =
     KoneMapEquality(keyEquality, valueEquality)

@@ -22,7 +22,7 @@ import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.buildKoneList
-import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.count
 import dev.lounres.kone.collections.utils.filter
@@ -197,7 +197,7 @@ public fun <C> ListPolynomial<C>.nthAntiderivative(order: UInt): ListPolynomial<
 
 context(_: Field<Number>, _: ListPolynomialSpaceOverField<Number>)
 internal fun <Number> ListPolynomial<Number>.sturmSeries(): KoneList<ListPolynomial<Number>> =
-    if (this.isZero()) emptyKoneList()
+    if (this.isZero()) KoneList.empty()
     else buildKoneList {
         add(this@sturmSeries)
         var last = this@sturmSeries

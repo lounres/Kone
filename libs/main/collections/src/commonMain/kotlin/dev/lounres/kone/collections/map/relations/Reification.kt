@@ -34,7 +34,7 @@ internal class KoneMapEntryReification<Key, Value>(
         else reificationException()
 }
 
-public fun <Key, Value> koneMapEntryReification(keyContext: Reification<Key>, valueContext: Reification<Value>): Reification<KoneMapEntry<Key, Value>> =
+public fun <Key, Value> KoneMapEntry.Companion.reification(keyContext: Reification<Key>, valueContext: Reification<Value>): Reification<KoneMapEntry<Key, Value>> =
     KoneMapEntryReification(keyContext, valueContext)
 
 internal class KoneMapReification<Key, Value>(
@@ -54,5 +54,5 @@ internal class KoneMapReification<Key, Value>(
         else reificationException()
 }
 
-public fun <Key, Value> koneMapReification(keyReification: Reification<Key>, valueReification: Reification<Value>): Reification<KoneMap<out Key, Value>> =
+public fun <Key, Value> KoneMap.Companion.reification(keyReification: Reification<Key>, valueReification: Reification<Value>): Reification<KoneMap<out Key, Value>> =
     KoneMapReification(keyReification, valueReification)

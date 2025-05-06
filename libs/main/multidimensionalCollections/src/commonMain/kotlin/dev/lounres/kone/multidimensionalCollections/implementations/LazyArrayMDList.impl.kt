@@ -7,7 +7,7 @@ package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.koneUIntArrayOf
+import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.SettableMDList
@@ -45,12 +45,12 @@ public class LazyArrayMDList1<E>(
     private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(size) { None }
 
     override fun get(index: UInt): E {
-        if (index >= size) indexOutOfShapeException(shape = shape, index = koneUIntArrayOf(index))
+        if (index >= size) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(index))
         return buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
     }
 
     override fun set(index: UInt, element: E) {
-        if (index >= size) indexOutOfShapeException(shape = shape, index = koneUIntArrayOf(index))
+        if (index >= size) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(index))
         buffer[index] = Some(element)
     }
 }
@@ -64,13 +64,13 @@ public class LazyArrayMDList2<E>(
     private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(size) { None }
 
     override fun get(rowIndex: UInt, columnIndex: UInt): E {
-        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = koneUIntArrayOf(rowIndex, columnIndex))
+        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(rowIndex, columnIndex))
         val offset = rowIndex + columnIndex * rowNumber
         return buffer[offset].orElse { generator(rowIndex, columnIndex).also { buffer[offset] = Some(it) } }
     }
 
     override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
-        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = koneUIntArrayOf(rowIndex, columnIndex))
+        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(rowIndex, columnIndex))
         buffer[rowIndex + columnIndex * rowNumber] = Some(element)
     }
 }
