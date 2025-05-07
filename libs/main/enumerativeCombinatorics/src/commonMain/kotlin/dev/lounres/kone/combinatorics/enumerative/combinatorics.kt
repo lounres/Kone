@@ -21,8 +21,8 @@ import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.build
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.koneMutableListOf
 import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.*
@@ -444,7 +444,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
         val groupStarts: KoneUIntArray
         scope {
             val references = KoneMutableUIntArray(size + 1u) { size + 1u }
-            val countsBuilder = koneMutableListOf<UInt>()
+            val countsBuilder = KoneMutableList.of<UInt>()
             scope {
                 val countIndices = KoneMutableUIntArray(size)
                 var indexOfLastElement = 0u

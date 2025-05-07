@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.util.sorting
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.reverse
 import dev.lounres.kone.collections.utils.reversed
@@ -88,7 +88,7 @@ fun <Element> testEquality(list1: KoneList<Element>, list2: KoneList<Element>) {
 }
 
 class SortTests : FunSpec({
-    val listsToShuffle = Exhaustive.of(koneListOf(0u, 0u, 2u, 4u, 4u, 4u), koneListOf(0u, 1u, 2u, 3u), koneListOf(0u, 1u, 2u, 3u, 4u))
+    val listsToShuffle = Exhaustive.of(KoneList.of(0u, 0u, 2u, 4u, 4u, 4u), KoneList.of(0u, 1u, 2u, 3u), KoneList.of(0u, 1u, 2u, 3u, 4u))
     
     for (desc in sortings) context(desc.name) {
         

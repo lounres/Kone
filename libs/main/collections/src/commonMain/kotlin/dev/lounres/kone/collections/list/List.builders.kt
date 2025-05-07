@@ -59,39 +59,18 @@ public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UIn
 
 public fun <Element> KoneList.Companion.of(): KoneList<Element> = KoneList.empty()
 
-@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.of"))
-public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
-
 public fun <Element> KoneList.Companion.of(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
-
-@Suppress("UNCHECKED_CAST")
-@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.of"))
-public fun <Element> koneListOf(vararg elements: Element): KoneList<Element> =
-    KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneList.Companion.of(vararg elements: Element): KoneList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 @Suppress("UNCHECKED_CAST")
-@Deprecated("", replaceWith = ReplaceWith("KoneSettableList.of()", "dev.lounres.kone.collections.KoneSettableList", "dev.lounres.kone.collections.list.of"))
-public fun <Element> koneSettableListOf(vararg elements: Element): KoneSettableList<Element> =
-    KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
-
-@Suppress("UNCHECKED_CAST")
 public fun <Element> KoneSettableList.Companion.of(vararg elements: Element): KoneSettableList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.list.of"))
-public fun <Element> koneMutableListOf(): KoneMutableList<Element> =
-    KoneArrayResizableList()
-
 public fun <Element> KoneMutableList.Companion.of(): KoneMutableList<Element> =
     KoneArrayResizableList()
-
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.list.of"))
-public fun <Element> koneMutableListOf(vararg elements: Element): KoneMutableList<Element> =
-    KoneArrayResizableList(elements.size.toUInt()) { elements[it.toInt()] }
 
 public fun <Element> KoneMutableList.Companion.of(vararg elements: Element): KoneMutableList<Element> =
     KoneArrayResizableList(elements.size.toUInt()) { elements[it.toInt()] }

@@ -184,7 +184,7 @@ internal class AbstractPolytopicConstructionSerializer<Number>(
         }
         val polytopes = value.polytopes.mapIndexed { dimension, polytopesOfDimension ->
             if (dimension == 0u) {
-                vertices.indices.toKoneList().map { PolytopeDescription(vertices = koneListOf(it), faces = KoneList.empty()) }
+                vertices.indices.toKoneList().map { PolytopeDescription(vertices = KoneList.of(it), faces = KoneList.empty()) }
             } else {
                 polytopesOfDimension.map { polytope ->
                     PolytopeDescription(

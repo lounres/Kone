@@ -6,8 +6,6 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.context
-import dev.lounres.kone.collections.list.koneListOf
-import dev.lounres.kone.collections.set.koneSetOf
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

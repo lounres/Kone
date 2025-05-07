@@ -11,9 +11,9 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.empty
-import dev.lounres.kone.collections.list.koneListOf
-import dev.lounres.kone.collections.list.koneMutableListOf
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.set.koneContextualMutableSetOf
 import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -65,8 +65,8 @@ public fun <E : Comparable<E>> KoneIterable<E>.minList(): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
-    val minList = koneMutableListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -101,8 +101,8 @@ public fun <E : Comparable<E>> KoneIterable<E>.maxList(): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -139,8 +139,8 @@ public fun <E> KoneIterable<E>.minList(): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
-    val minList = koneMutableListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -177,8 +177,8 @@ public fun <E> KoneIterable<E>.maxList(): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -213,8 +213,8 @@ public fun <E> KoneIterable<E>.minListWith(comparator: Comparator<E>): KoneList<
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
-    val minList = koneMutableListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -249,8 +249,8 @@ public fun <E> KoneIterable<E>.maxListWith(comparator: Comparator<E>): KoneList<
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     var maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
 
@@ -287,9 +287,9 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.minListOf(selector: (E) -> R):
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(minElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(minElement))
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minValue)
+    val minList = KoneMutableList.of(minValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -327,9 +327,9 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.maxListOf(selector: (E) -> R):
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(maxElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(maxElement))
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxValue)
+    val maxList = KoneMutableList.of(maxValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -369,9 +369,9 @@ public fun <E, R> KoneIterable<E>.minListOf(selector: (E) -> R): KoneList<R> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(minElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(minElement))
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minValue)
+    val minList = KoneMutableList.of(minValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -411,9 +411,9 @@ public fun <E, R> KoneIterable<E>.maxListOf(selector: (E) -> R): KoneList<R> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(maxElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(maxElement))
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxValue)
+    val maxList = KoneMutableList.of(maxValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -451,9 +451,9 @@ public fun <E, R> KoneIterable<E>.minListWithOf(comparator: Comparator<R>, selec
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(minElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(minElement))
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minValue)
+    val minList = KoneMutableList.of(minValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -491,9 +491,9 @@ public fun <E, R> KoneIterable<E>.maxListWithOf(comparator: Comparator<R>, selec
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(selector(maxElement))
+    if (!iterator.hasNext()) return KoneList.of(selector(maxElement))
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxValue)
+    val maxList = KoneMutableList.of(maxValue)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -532,9 +532,9 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.minListBy(selector: (E) -> R):
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -573,9 +573,9 @@ public fun <E, R : Comparable<R>> KoneIterable<E>.maxListBy(selector: (E) -> R):
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -616,9 +616,9 @@ public fun <E, R> KoneIterable<E>.minListBy(selector: (E) -> R): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -659,9 +659,9 @@ public fun <E, R> KoneIterable<E>.maxListBy(selector: (E) -> R): KoneList<E> {
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -700,9 +700,9 @@ public fun <E, R> KoneIterable<E>.minListWithBy(comparator: Comparator<R>, selec
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val minElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(minElement)
+    if (!iterator.hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = koneMutableListOf(minElement)
+    val minList = KoneMutableList.of(minElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -741,9 +741,9 @@ public fun <E, R> KoneIterable<E>.maxListWithBy(comparator: Comparator<R>, selec
     val iterator = iterator()
     if (!iterator.hasNext()) return KoneList.empty()
     val maxElement = iterator.getAndMoveNext()
-    if (!iterator.hasNext()) return koneListOf(maxElement)
+    if (!iterator.hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = koneMutableListOf(maxElement)
+    val maxList = KoneMutableList.of(maxElement)
     do {
         val nextElement = iterator.getAndMoveNext()
         val nextValue = selector(nextElement)

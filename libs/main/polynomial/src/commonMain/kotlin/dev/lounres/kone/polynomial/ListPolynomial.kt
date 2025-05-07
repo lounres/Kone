@@ -62,7 +62,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } + other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -72,7 +72,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } - other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -92,7 +92,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } + other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -102,7 +102,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } - other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -122,7 +122,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } + other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -132,7 +132,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } - other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -152,7 +152,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } + other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -162,7 +162,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberOne } - other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -182,7 +182,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
             ListPolynomial(
-                if (other.coefficients.size == 0u) koneListOf(result)
+                if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -194,7 +194,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
                     
-                    if (other.coefficients.size == 0u) koneListOf(result)
+                    if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }
@@ -215,7 +215,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
             ListPolynomial(
-                if (other.coefficients.size == 0u) koneListOf(result)
+                if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -227,7 +227,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
                     
-                    if (other.coefficients.size == 0u) koneListOf(result)
+                    if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }
@@ -248,7 +248,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
             ListPolynomial(
-                if (other.coefficients.size == 0u) koneListOf(result)
+                if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -260,7 +260,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
                     
-                    if (other.coefficients.size == 0u) koneListOf(result)
+                    if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }
@@ -281,7 +281,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
             ListPolynomial(
-                if (other.coefficients.size == 0u) koneListOf(result)
+                if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -293,7 +293,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
                     
-                    if (other.coefficients.size == 0u) koneListOf(result)
+                    if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }
@@ -314,7 +314,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
             ListPolynomial(
-                if (other.coefficients.size == 0u) koneListOf(result)
+                if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -326,7 +326,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
                     
-                    if (other.coefficients.size == 0u) koneListOf(result)
+                    if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }
@@ -347,7 +347,7 @@ public open class ListPolynomialSpace<Number>(
         else {
             val result = coefficients.getOrElse(0u) { numberZero } + other
             ListPolynomial(
-                if (coefficients.size == 0u) koneListOf(result)
+                if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
@@ -359,7 +359,7 @@ public open class ListPolynomialSpace<Number>(
                 else {
                     val result = coefficients.getOrElse(0u) { numberZero } - other
                     
-                    if (coefficients.size == 0u) koneListOf(result)
+                    if (coefficients.size == 0u) KoneList.of(result)
                     else coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
                 }
             }

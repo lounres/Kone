@@ -10,7 +10,7 @@ package dev.lounres.kone.misc.planimetricsCalculus
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.linearAlgebra.times
 import dev.lounres.kone.linearAlgebra.utils.adjugateViaLeibnizFormula
@@ -500,9 +500,9 @@ context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> reflectionThrough(l: Line<E>): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneListOf(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
-            koneListOf(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
-            koneListOf(polynomialZero, polynomialZero, -(l.x * l.x + l.y * l.y)),
+            KoneList.of(l.x * l.x - l.y * l.y, 2 * l.x * l.y, 2 * l.z * l.x),
+            KoneList.of(2 * l.x * l.y, l.y * l.y - l.x * l.x, 2 * l.z * l.y),
+            KoneList.of(polynomialZero, polynomialZero, -(l.x * l.x + l.y * l.y)),
         )
     )
 }
@@ -522,9 +522,9 @@ context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> reflectionThrough(P: Point<E>): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneListOf(-P.z, polynomialZero, 2 * P.x),
-            koneListOf(polynomialZero, -P.z, 2 * P.y),
-            koneListOf(polynomialZero, polynomialZero, P.z),
+            KoneList.of(-P.z, polynomialZero, 2 * P.x),
+            KoneList.of(polynomialZero, -P.z, 2 * P.y),
+            KoneList.of(polynomialZero, polynomialZero, P.z),
         )
     )
 }
@@ -534,9 +534,9 @@ context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> homothetyBy(P: Point<E>, k: E): Transformation<E> = calculate {
     Transformation(
         Matrix(
-            koneListOf(k * P.z, polynomialZero, (1.numberValue /* FIXME: Remove the `.numberValue` eventually */ - k) * P.x),
-            koneListOf(polynomialZero, k * P.z, (1.numberValue /* FIXME: Remove the `.numberValue` eventually */ - k) * P.y),
-            koneListOf(polynomialZero, polynomialZero, P.z),
+            KoneList.of(k * P.z, polynomialZero, (1.numberValue /* FIXME: Remove the `.numberValue` eventually */ - k) * P.x),
+            KoneList.of(polynomialZero, k * P.z, (1.numberValue /* FIXME: Remove the `.numberValue` eventually */ - k) * P.y),
+            KoneList.of(polynomialZero, polynomialZero, P.z),
         )
     )
 }
@@ -604,10 +604,10 @@ public fun <E> circleByDiameter(A: Point<E>, B: Point<E>): Quadric<E> = calculat
 context(_: PlanimetricsCalculationSpace<E>)
 public fun <E> cocyclicityCondition(A: Point<E>, B: Point<E>, C: Point<E>, D: Point<E>): LabeledPolynomial<E> = calculate {
     Matrix(
-        koneListOf(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
-        koneListOf(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
-        koneListOf(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
-        koneListOf(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
+        KoneList.of(A.x * A.x + A.y * A.y, A.x * A.z, A.y * A.z, A.z * A.z),
+        KoneList.of(B.x * B.x + B.y * B.y, B.x * B.z, B.y * B.z, B.z * B.z),
+        KoneList.of(C.x * C.x + C.y * C.y, C.x * C.z, C.y * C.z, C.z * C.z),
+        KoneList.of(D.x * D.x + D.y * D.y, D.x * D.z, D.y * D.z, D.z * D.z),
     ).determinantViaLeibnizFormula
 }
 
@@ -800,11 +800,11 @@ public fun <E> quadricByPoints(P: Point<E>, Q: Point<E>, R: Point<E>, S: Point<E
     with(
         Matrix(
             KoneList(6u) { polynomialZero },
-            koneListOf(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
-            koneListOf(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
-            koneListOf(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
-            koneListOf(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
-            koneListOf(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
+            KoneList.of(P.x * P.x, P.x * P.y, P.x * P.z, P.y * P.y, P.y * P.z, P.z * P.z),
+            KoneList.of(Q.x * Q.x, Q.x * Q.y, Q.x * Q.z, Q.y * Q.y, Q.y * Q.z, Q.z * Q.z),
+            KoneList.of(R.x * R.x, R.x * R.y, R.x * R.z, R.y * R.y, R.y * R.z, R.z * R.z),
+            KoneList.of(S.x * S.x, S.x * S.y, S.x * S.z, S.y * S.y, S.y * S.z, S.z * S.z),
+            KoneList.of(T.x * T.x, T.x * T.y, T.x * T.z, T.y * T.y, T.y * T.z, T.z * T.z),
         )
     ) {
         Quadric(

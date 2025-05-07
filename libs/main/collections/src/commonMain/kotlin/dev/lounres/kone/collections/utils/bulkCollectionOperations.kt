@@ -494,13 +494,13 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(d
 }
 
 // TODO: Reimplement using just KoneArraySettableList
-public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> = mapTo(koneMutableListOf(), transform)
+public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> = mapTo(KoneMutableList.of(), transform)
 
 public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> =
-    mapIndexedTo(koneMutableListOf(), transform)
+    mapIndexedTo(KoneMutableList.of(), transform)
 
 public fun <E> KoneIterable<KoneIterable<E>>.flatten(): KoneList<E> {
-    val result = koneMutableListOf<E>()
+    val result = KoneMutableList.of<E>()
     for (iterable in this) result.addAllFrom(iterable)
     return result
 }
@@ -525,10 +525,10 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexed
     return destination
 }
 
-public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(koneMutableListOf(), transform)
+public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(KoneMutableList.of(), transform)
 
 public inline fun <E, R> KoneIterable<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterable<R>): KoneList<R> =
-    flatMapIndexedTo(koneMutableListOf(), transform)
+    flatMapIndexedTo(KoneMutableList.of(), transform)
 
 public inline fun <E, D: KoneMutableList<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
@@ -540,7 +540,7 @@ public inline fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.filterTo(destinat
 }
 
 public inline fun <E> KoneIterable<E>.filter(predicate: (E) -> Boolean): KoneList<E> =
-    filterTo(koneMutableListOf(), predicate)
+    filterTo(KoneMutableList.of(), predicate)
 
 public inline fun <E, R> KoneIterator<E>.fold(initial: R, operation: (acc: R, E) -> R): R {
     var accumulator = initial

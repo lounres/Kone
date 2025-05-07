@@ -7,7 +7,7 @@ package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.reversed
 
 
@@ -28,7 +28,7 @@ public fun <C> ListPolynomial(vararg coefficients: C, reverse: Boolean = false):
 /**
  * Represents [this] constant as a [ListPolynomial].
  */
-public fun <C> C.asListPolynomial() : ListPolynomial<C> = ListPolynomial(koneListOf(this))
+public fun <C> C.asListPolynomial() : ListPolynomial<C> = ListPolynomial(KoneList.of(this))
 
 
 // Waiting for context receivers :( FIXME: Replace with context receivers when they will be available

@@ -8,7 +8,8 @@
 package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.polynomial.LabeledPolynomial
 
@@ -31,8 +32,8 @@ context(_: PlanimetricsCalculationSpace<E>)
 public val <E> Quadric<E>.matrix: Matrix<LabeledPolynomial<E>>
     get() = calculate {
         Matrix(
-            koneListOf(2 * xx, xy, xz),
-            koneListOf(xy, 2 * yy, yz),
-            koneListOf(xz, yz, 2 * zz),
+            KoneList.of(2 * xx, xy, xz),
+            KoneList.of(xy, 2 * yy, yz),
+            KoneList.of(xz, yz, 2 * zz),
         )
     }

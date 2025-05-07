@@ -6,13 +6,14 @@
 package dev.lounres.kone.algebraic.internal
 
 import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.flatMap
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.context
 
 
-internal val possibleDigits = koneListOf('0'..'9', 'A'..'Z').flatMap { it.toKoneList() }
+internal val possibleDigits = KoneList.of('0'..'9', 'A'..'Z').flatMap { it.toKoneList() }
 
 internal fun Char.asDigit(): UInt = context(defaultEquality<Char>()) { possibleDigits.firstIndexOf(this.uppercaseChar()) }

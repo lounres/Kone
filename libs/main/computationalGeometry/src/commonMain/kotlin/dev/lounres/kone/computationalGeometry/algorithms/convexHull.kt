@@ -15,7 +15,7 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
-import dev.lounres.kone.collections.list.koneListOf
+import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.koneMutableMapOf
@@ -105,7 +105,7 @@ internal fun <
         return addPolytope(
             subspaceDimension,
             vertices,
-            koneListOf(vertices.mapTo(koneMutableReifiedSetOf(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)) { it.asPolytope() }),
+            KoneList.of(vertices.mapTo(koneMutableReifiedSetOf(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)) { it.asPolytope() }),
         ).also { computedFacesRegistry[vertices] = it }
     }
 
