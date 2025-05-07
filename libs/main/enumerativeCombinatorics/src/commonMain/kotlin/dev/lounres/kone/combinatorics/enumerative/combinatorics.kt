@@ -18,8 +18,7 @@ import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.addAllFrom
-import dev.lounres.kone.collections.list.buildKoneList
+import dev.lounres.kone.collections.list.build
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.koneMutableListOf
@@ -175,9 +174,9 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
 
             currentState[firstToIncrease] = 1u
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
-            currentElements = buildKoneList {
-                add(collection[firstToIncrease])
-                addAllFrom(currentElements.drop(firstToIncrease))
+            currentElements = KoneList.build {
+                +collection[firstToIncrease]
+                +currentElements.drop(firstToIncrease)
             }
         }
     }

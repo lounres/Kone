@@ -18,7 +18,6 @@ import dev.lounres.kone.collections.utils.toOptimizedList
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.experimental.ExperimentalTypeInference
-import kotlin.jvm.JvmName
 
 
 // TODO: Add builders for nodded lists
@@ -60,13 +59,13 @@ public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UIn
 
 public fun <Element> KoneList.Companion.of(): KoneList<Element> = KoneList.empty()
 
-@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.KoneList", "dev.lounres.kone.collections.of"))
+@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.of"))
 public fun <Element> koneListOf(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
 
 public fun <Element> KoneList.Companion.of(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
 
 @Suppress("UNCHECKED_CAST")
-@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.KoneList", "dev.lounres.kone.collections.of"))
+@Deprecated("", replaceWith = ReplaceWith("KoneList.of()", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.of"))
 public fun <Element> koneListOf(vararg elements: Element): KoneList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
@@ -75,7 +74,7 @@ public fun <Element> KoneList.Companion.of(vararg elements: Element): KoneList<E
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
 @Suppress("UNCHECKED_CAST")
-@Deprecated("", replaceWith = ReplaceWith("KoneSettableList.of()", "dev.lounres.kone.collections.KoneSettableList", "dev.lounres.kone.collections.of"))
+@Deprecated("", replaceWith = ReplaceWith("KoneSettableList.of()", "dev.lounres.kone.collections.KoneSettableList", "dev.lounres.kone.collections.list.of"))
 public fun <Element> koneSettableListOf(vararg elements: Element): KoneSettableList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
@@ -83,14 +82,14 @@ public fun <Element> koneSettableListOf(vararg elements: Element): KoneSettableL
 public fun <Element> KoneSettableList.Companion.of(vararg elements: Element): KoneSettableList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.of"))
+@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.list.of"))
 public fun <Element> koneMutableListOf(): KoneMutableList<Element> =
     KoneArrayResizableList()
 
 public fun <Element> KoneMutableList.Companion.of(): KoneMutableList<Element> =
     KoneArrayResizableList()
 
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.of"))
+@Deprecated("", replaceWith = ReplaceWith("KoneMutableList.of()", "dev.lounres.kone.collections.KoneMutableList", "dev.lounres.kone.collections.list.of"))
 public fun <Element> koneMutableListOf(vararg elements: Element): KoneMutableList<Element> =
     KoneArrayResizableList(elements.size.toUInt()) { elements[it.toInt()] }
 
@@ -214,39 +213,9 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
 }
 
 @OptIn(ExperimentalTypeInference::class)
-@Deprecated("", replaceWith = ReplaceWith("KoneList.build(builderAction)", "dev.lounres.kone.collections.KoneList", "dev.lounres.kone.collections.build"))
-public inline fun <Element> buildKoneList(@BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneMutableList.of<Element>().apply(builderAction).toOptimizedList()
-}
-
-@OptIn(ExperimentalTypeInference::class)
-@Deprecated("")
-@JvmName("buildOld")
-public inline fun <Element> KoneList.Companion.build(@BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneMutableList.of<Element>().apply(builderAction).toOptimizedList()
-}
-
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> KoneList.Companion.build(@BuilderInference builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneListBuilder(KoneMutableList.of<Element>()).apply(builderAction).build().toOptimizedList()
-}
-
-@OptIn(ExperimentalTypeInference::class)
-@Deprecated("", replaceWith = ReplaceWith("KoneList.build(initialCapacity, builderAction)", "dev.lounres.kone.collections.KoneList", "dev.lounres.kone.collections.build"))
-public inline fun <Element> buildKoneList(initialCapacity: UInt, @BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneArrayGrowableList<Element>(initialCapacity).apply(builderAction).toOptimizedList()
-}
-
-@OptIn(ExperimentalTypeInference::class)
-@Deprecated("")
-@JvmName("buildOld")
-public inline fun <Element> KoneList.Companion.build(initialCapacity: UInt, @BuilderInference builderAction: KoneMutableList<Element>.() -> Unit): KoneList<Element> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
-    return KoneArrayGrowableList<Element>(initialCapacity).apply(builderAction).toOptimizedList()
 }
 
 @OptIn(ExperimentalTypeInference::class)

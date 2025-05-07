@@ -21,7 +21,7 @@ import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.buildKoneList
+import dev.lounres.kone.collections.list.build
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.count
@@ -31,7 +31,6 @@ import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.collections.utils.mapIndexedTo
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.repeat
-import dev.lounres.kone.context
 
 
 /**
@@ -147,12 +146,12 @@ public fun <Number> ListRationalFunction<Number>.substitute(arg: ListRationalFun
 /**
  * Returns algebraic derivative of received polynomial.
  */
-context(numberContext: Ring<C>, _: ListPolynomialSpace<C>)
+context(_: Ring<C>, _: ListPolynomialSpace<C>)
 public fun <C> ListPolynomial<C>.derivative(): ListPolynomial<C> =
     if (coefficients.isEmpty()) polynomialZero
     else ListPolynomial(
-        buildKoneList(coefficients.size - 1u) {
-            for (deg in 1u .. coefficients.lastIndex) context(numberContext) { add(deg * coefficients[deg]) }
+        KoneList.build(coefficients.size - 1u) {
+            for (deg in 1u .. coefficients.lastIndex) +(deg * coefficients[deg])
         }
     )
 
@@ -163,9 +162,9 @@ context(_: Ring<C>, _: ListPolynomialSpace<C>)
 public fun <C> ListPolynomial<C>.nthDerivative(order: UInt): ListPolynomial<C> {
     if (coefficients.size < order) return polynomialZero
     return ListPolynomial(
-        buildKoneList(coefficients.size - order) {
+        KoneList.build(coefficients.size - order) {
             for (deg in order.. coefficients.lastIndex)
-                add((deg - order + 1u .. deg).fold(coefficients[deg]) { acc, d -> acc * d })
+                +(deg - order + 1u .. deg).fold(coefficients[deg]) { acc, d -> acc * d }
         }
     )
 }
@@ -176,8 +175,8 @@ public fun <C> ListPolynomial<C>.nthDerivative(order: UInt): ListPolynomial<C> {
 context(_: Field<C>)
 public fun <C> ListPolynomial<C>.antiderivative(): ListPolynomial<C> =
     ListPolynomial(
-        buildKoneList(coefficients.size + 1u) {
-            add(zero)
+        KoneList.build(coefficients.size + 1u) {
+            +zero
             coefficients.mapIndexedTo(this) { index, t -> t / (index + 1u) }
         }
     )
@@ -188,8 +187,8 @@ public fun <C> ListPolynomial<C>.antiderivative(): ListPolynomial<C> =
 context(_: Field<C>)
 public fun <C> ListPolynomial<C>.nthAntiderivative(order: UInt): ListPolynomial<C> {
     return ListPolynomial(
-        buildKoneList(coefficients.size + order) {
-            repeat(order) { add(zero) }
+        KoneList.build(coefficients.size + order) {
+            repeat(order) { +zero }
             coefficients.mapIndexedTo(this) { index, coef -> (1u..order).fold(coef) { acc, i -> acc / (index + i) } }
         }
     )
@@ -198,14 +197,14 @@ public fun <C> ListPolynomial<C>.nthAntiderivative(order: UInt): ListPolynomial<
 context(_: Field<Number>, _: ListPolynomialSpaceOverField<Number>)
 internal fun <Number> ListPolynomial<Number>.sturmSeries(): KoneList<ListPolynomial<Number>> =
     if (this.isZero()) KoneList.empty()
-    else buildKoneList {
-        add(this@sturmSeries)
+    else KoneList.build {
+        +this@sturmSeries
         var last = this@sturmSeries
         var next = this@sturmSeries.derivative()
         
         while (next.isNotZero()) {
             last = next.also { next = -(last % next) }
-            add(last)
+            +last
         }
     }
 
