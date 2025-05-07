@@ -391,7 +391,7 @@ public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(resul
     @PublishedApi
     internal fun build(): KoneMap<Key, Value> {
         val result = result
-        if (result == null) error("This KoneList builder is already used")
+        if (result == null) error("This KoneMap builder is already used")
         return result.also { this.result = null }
     }
 }
@@ -402,98 +402,98 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
     
     override val size: UInt get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.size
     }
     
     override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.nodesView
     }
     
     override val nodes: KoneReifiedSet<KoneMutableMapNode<Key, Value>> get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.nodes
     }
     
     override val keysView: KoneReifiedSet<Key> get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.keysView
     }
     
     override val keys: KoneReifiedSet<Key> get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.keys
     }
     
     override val valuesView: KoneIterable<Value> get() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.valuesView
     }
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>? {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.getNodeOrNull(key)
     }
     
     override fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value> {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.set(key, value)
     }
     
     override fun remove(key: Key) {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.remove(key)
     }
     
     override fun removeAll() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.removeAll()
     }
     
     override fun removeAllThat(predicate: (Key, Value) -> Boolean) {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.removeAllThat(predicate)
     }
     
     override fun removeAllNodesThat(predicate: (KoneMutableMapNode<Key, Value>) -> Boolean) {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.removeAllNodesThat(predicate)
     }
     
     public operator fun KoneMapEntry<Key, Value>.unaryPlus() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.set(this)
     }
     
     public operator fun KoneIterable<KoneMapEntry<Key, Value>>.unaryPlus() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.setAllFrom(this)
     }
     
     public operator fun KoneMap<out Key, Value>.unaryPlus() {
         val result = result
-        if (result == null) error("This KoneMap builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         result.setAllFrom(this)
     }
     
     @PublishedApi
     internal fun build(): KoneReifiedMap<Key, Value> {
         val result = result
-        if (result == null) error("This KoneList builder is already used")
+        if (result == null) error("This KoneReifiedMap builder is already used")
         return result.also { this.result = null }
     }
 }

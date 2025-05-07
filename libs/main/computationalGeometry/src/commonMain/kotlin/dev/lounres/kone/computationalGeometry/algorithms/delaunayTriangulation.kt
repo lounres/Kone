@@ -16,7 +16,8 @@ import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.associateBy
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.of
-import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
+import dev.lounres.kone.collections.set.KoneMutableReifiedSet
+import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
 import dev.lounres.kone.computationalGeometry.Point
@@ -97,7 +98,7 @@ public fun <
             simplicesMapping[face] = this.addPolytope(
                 dim,
                 face.vertices.mapTo(
-                    koneMutableReifiedSetOf(
+                    KoneMutableReifiedSet.of(
                         elementReification = vertexReification,
                         elementEquality = vertexEquality,
                         elementHashing = vertexHashing,
@@ -108,7 +109,7 @@ public fun <
                 },
                 face.faces.map { dimFaces ->
                     dimFaces.mapTo(
-                        koneMutableReifiedSetOf(
+                        KoneMutableReifiedSet.of(
                             elementReification = polytopeReification,
                             elementEquality = polytopeEquality,
                             elementHashing = polytopeHashing,
@@ -120,7 +121,7 @@ public fun <
         simplicesMapping[simplex] = this.addPolytope(
             simplex.dimension,
             simplex.vertices.mapTo(
-                koneMutableReifiedSetOf(
+                KoneMutableReifiedSet.of(
                     elementReification = vertexReification,
                     elementEquality = vertexEquality,
                     elementHashing = vertexHashing,
@@ -131,7 +132,7 @@ public fun <
             },
             simplex.faces.map { dimFaces ->
                 dimFaces.mapTo(
-                    koneMutableReifiedSetOf(
+                    KoneMutableReifiedSet.of(
                         elementReification = polytopeReification,
                         elementEquality = polytopeEquality,
                         elementHashing = polytopeHashing,

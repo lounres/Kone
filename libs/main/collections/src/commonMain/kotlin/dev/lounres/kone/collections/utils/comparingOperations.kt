@@ -14,8 +14,9 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.collections.set.koneContextualMutableSetOf
-import dev.lounres.kone.collections.set.koneMutableSetOf
+import dev.lounres.kone.collections.set.KoneMutableSet
+import dev.lounres.kone.collections.set.contextualOf
+import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.ComparisonResult
@@ -766,7 +767,7 @@ public fun <E> KoneIterable<E>.hasDuplicates(
     elementHashing: Hashing<E>? = null,
     elementOrder: Order<E>? = null,
 ): Boolean {
-    val setOfElements = koneMutableSetOf(
+    val setOfElements = KoneMutableSet.of(
         elementEquality = elementEquality,
         elementHashing = elementHashing,
         elementOrder = elementOrder,
@@ -780,7 +781,7 @@ public fun <E> KoneIterable<E>.hasDuplicates(
 
 context(_: KoneContextRegistry)
 public fun <E> KoneIterable<E>.hasDuplicatesContextual(elementType: SuppliedType<E>): Boolean {
-    val setOfElements = koneContextualMutableSetOf(elementType)
+    val setOfElements = KoneMutableSet.contextualOf(elementType)
     for (element in this) {
         if (element in setOfElements) return true
         setOfElements.add(element)

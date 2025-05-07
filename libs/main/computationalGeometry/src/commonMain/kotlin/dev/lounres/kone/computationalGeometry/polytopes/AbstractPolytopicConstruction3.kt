@@ -89,7 +89,7 @@ public class AbstractPolytopicConstruction3Vertex<Number> internal constructor(
         AbstractPolytopicConstruction3Polytope(
             polytopicConstruction = polytopicConstruction,
             dimension = 0u,
-            vertices = koneReifiedSetOf(this),
+            vertices = KoneReifiedSet.of(this),
             faces = KoneList.empty(),
             correspondingVertex = this,
         )
@@ -233,9 +233,9 @@ internal class AbstractPolytopicConstruction3Serializer<Number>(
                     polytopeDescriptions[dimension].map { polytopeDescription ->
                         polytopicConstruction.addPolytope(
                             dimension = dimension,
-                            vertices = polytopeDescription.vertices.mapTo(koneMutableReifiedSetOf(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { vertices[it] },
+                            vertices = polytopeDescription.vertices.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { vertices[it] },
                             faces = polytopeDescription.faces.mapIndexed { subdimension, polytopesOfSubDimension ->
-                                polytopesOfSubDimension.mapTo(koneMutableReifiedSetOf(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { polytopes[subdimension][it] }
+                                polytopesOfSubDimension.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { polytopes[subdimension][it] }
                             },
                         )
                     }

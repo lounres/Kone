@@ -100,23 +100,23 @@ internal fun <
             val radiusVector = it.position - startPoint
             radiusVector dot radiusVector
         }
-        val vertices = koneReifiedSetOf(startKoneVertex, endVertex, elementReification = vertexReification, elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder)
+        val vertices = KoneReifiedSet.of(startKoneVertex, endVertex, elementReification = vertexReification, elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder)
         return addPolytope(
             subspaceDimension,
             vertices,
-            KoneList.of(vertices.mapTo(koneMutableReifiedSetOf(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)) { it.asPolytope() }),
+            KoneList.of(vertices.mapTo(KoneMutableReifiedSet.of(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)) { it.asPolytope() }),
         ).also { computedFacesRegistry[vertices] = it }
     }
 
     val restConvexHullFaces = KoneList(subspaceDimension) {
-        koneMutableReifiedSetOf(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)
+        KoneMutableReifiedSet.of(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)
     }
 
     for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(startFacet.facesOfDimension(dim))
     restConvexHullFaces[subspaceDimension-1u].add(startFacet)
 
     val facetsToProcess: KoneDeque<Polytope> = KoneListBackedDeque(KoneArrayResizableLinkedList())
-    val subfacetsToProcess = koneMutableSetOf(elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)
+    val subfacetsToProcess = KoneMutableSet.of(elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)
 
     facetsToProcess.addLast(startFacet)
     subfacetsToProcess.addAllFrom(startFacet.facesOfDimension(subspaceDimension - 2u))
@@ -147,9 +147,9 @@ internal fun <
                 startPoint = startPoint,
                 normalGiftWrapping4Vector = normalGiftWrapping4Vector,
                 tangentGiftWrapping4Vector = tangentGiftWrapping4Vector,
-                otherPoints = buildKoneSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder) {
-                    addAllFrom(allVertices)
-                    removeAllFrom(subfacet.vertices)
+                otherPoints = KoneSet.build(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder) {
+                    +allVertices
+                    -subfacet.vertices
                 }
             )
 

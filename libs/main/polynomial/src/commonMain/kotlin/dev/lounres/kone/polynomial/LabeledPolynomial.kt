@@ -16,10 +16,9 @@ import dev.lounres.kone.collections.map.empty
 import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.map.relations.equality
 import dev.lounres.kone.collections.map.relations.hashing
+import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.collections.set.addAllFrom
-import dev.lounres.kone.collections.set.buildKoneReifiedSet
-import dev.lounres.kone.collections.set.buildKoneSet
+import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.computeOnOrElse
 import dev.lounres.kone.collections.utils.copyMapToBy
@@ -84,9 +83,9 @@ internal constructor(
                 if (left === right) return@Comparator ComparisonResult.Equal
                 
                 val commonVariables =
-                    buildKoneReifiedSet {
-                        addAllFrom(left.keys)
-                        addAllFrom(right.keys)
+                    KoneReifiedSet.build<LabeledVariable> {
+                        +left.keys
+                        +right.keys
                     }.sortedWith(variableComparator)
                 
                 for (variable in commonVariables) {
@@ -937,11 +936,11 @@ public open class LabeledPolynomialSpace<Number>(
     }
     public override val LabeledPolynomial<Number>.variables: KoneSet<LabeledVariable>
         get() =
-            buildKoneSet {
+            KoneSet.build {
                 coefficients.nodesView.forEach { entry ->
                     val degs = entry.key
                     val coef = entry.value
-                    if (context(numberContext) { coef.isNotZero() }) addAllFrom(degs.keys)
+                    if (context(numberContext) { coef.isNotZero() }) +degs.keys
                 }
             }
     public override val LabeledPolynomial<Number>.numberOfVariables: UInt get() = variables.size

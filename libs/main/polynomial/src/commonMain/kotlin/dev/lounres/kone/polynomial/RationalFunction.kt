@@ -8,7 +8,7 @@ package dev.lounres.kone.polynomial
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
-import dev.lounres.kone.collections.set.buildKoneSet
+import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.context
 import kotlin.jvm.JvmName
@@ -763,9 +763,9 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
     // region Rational Function properties
     final override val RationalFunctionType.variables: KoneSet<Variable>
         get() = context(polynomialSpace) {
-            buildKoneSet {
-                addAllFrom(numerator.variables)
-                addAllFrom(denominator.variables)
+            KoneSet.build {
+                +numerator.variables
+                +denominator.variables
             }
         }
     // endregion
