@@ -12,8 +12,6 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.containsKey
 import dev.lounres.kone.collections.map.getMaybe
-import dev.lounres.kone.collections.map.koneContextualMutableMapOf
-import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order

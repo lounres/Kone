@@ -18,7 +18,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinke
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
-import dev.lounres.kone.collections.map.koneMutableMapOf
+import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.relations.equality
@@ -318,7 +318,7 @@ internal fun <
         val theOnlyVertex = points.single()
         return WrappingResult(
             polytope = theOnlyVertex.asPolytope(),
-            computedFacesRegistry = koneMutableMapOf(
+            computedFacesRegistry = KoneMutableMap.of(
                 keyEquality = KoneSet.equality(vertexEquality)
             ),
             startPoint = theOnlyVertex.position,

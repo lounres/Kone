@@ -12,9 +12,10 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.associateBy
 import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.map.koneMutableMapOf
+import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.EuclideanKategory
@@ -54,7 +55,7 @@ public fun <
     
     val paraboloidPolytopicConstruction = AbstractPolytopicConstruction<Number>(paraboloidDimension)
     
-    val simplicesMapping = koneMutableMapOf<AbstractPolytopicConstructionPolytope<Number>, Polytope>(keyEquality = absoluteEquality(), keyHashing = defaultHashing())
+    val simplicesMapping = KoneMutableMap.of<AbstractPolytopicConstructionPolytope<Number>, Polytope>(keyEquality = absoluteEquality(), keyHashing = defaultHashing())
     val verticesMapping = vertices.associateBy(
         keyEquality = absoluteEquality(),
         keyHashing = defaultHashing(),

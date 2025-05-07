@@ -31,9 +31,9 @@ internal open class KoneMapEquality<Key, Value>(open val keyEquality: Equality<K
         if (this === other) return true
         if (this.size != other.size) return false
         
-        val thisCopied: KoneMap<Key, Value> = this.copyTo(koneMutableMapOf(keyEquality = keyEquality))
+        val thisCopied: KoneMap<Key, Value> = this.copyTo(KoneMutableMap.of(keyEquality = keyEquality))
         if (this.size != thisCopied.size) return false
-        val otherCopied: KoneMap<Key, Value> = other.copyTo(koneMutableMapOf(keyEquality = keyEquality))
+        val otherCopied: KoneMap<Key, Value> = other.copyTo(KoneMutableMap.of(keyEquality = keyEquality))
         if (other.size != otherCopied.size) return false
         for (entry in thisCopied) {
             val otherValue = otherCopied.getMaybe(entry.key).orElse { return false }

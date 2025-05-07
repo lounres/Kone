@@ -12,10 +12,12 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.associateBy
 import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.map.koneMutableMapOf
-import dev.lounres.kone.collections.set.koneMutableReifiedSetOf
+import dev.lounres.kone.collections.map.of
+import dev.lounres.kone.collections.set.KoneMutableReifiedSet
+import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.EuclideanKategory3
 import dev.lounres.kone.computationalGeometry.Point3
@@ -54,7 +56,7 @@ public fun <
     
     val paraboloidPolytopicConstruction = AbstractPolytopicConstruction3<Number>()
     
-    val simplicesMapping = koneMutableMapOf<AbstractPolytopicConstruction3Polytope<Number>, Polytope>(keyEquality = absoluteEquality(), keyHashing = defaultHashing())
+    val simplicesMapping = KoneMutableMap.of<AbstractPolytopicConstruction3Polytope<Number>, Polytope>(keyEquality = absoluteEquality(), keyHashing = defaultHashing())
     val verticesMapping = vertices.associateBy(
         keyEquality = absoluteEquality(),
         keyHashing = defaultHashing(),
@@ -96,7 +98,7 @@ public fun <
             simplicesMapping[face] = this.addPolytope(
                 dim,
                 face.vertices.mapTo(
-                    koneMutableReifiedSetOf(
+                    KoneMutableReifiedSet.of(
                         elementReification = vertexReification,
                         elementEquality = vertexEquality,
                         elementHashing = vertexHashing,
@@ -107,7 +109,7 @@ public fun <
                 },
                 face.faces.map { dimFaces ->
                     dimFaces.mapTo(
-                        koneMutableReifiedSetOf(
+                        KoneMutableReifiedSet.of(
                             elementReification = polytopeReification,
                             elementEquality = polytopeEquality,
                             elementHashing = polytopeHashing,
@@ -119,7 +121,7 @@ public fun <
         simplicesMapping[simplex] = this.addPolytope(
             simplex.dimension,
             simplex.vertices.mapTo(
-                koneMutableReifiedSetOf(
+                KoneMutableReifiedSet.of(
                     elementReification = vertexReification,
                     elementEquality = vertexEquality,
                     elementHashing = vertexHashing,
@@ -130,7 +132,7 @@ public fun <
             },
             simplex.faces.map { dimFaces ->
                 dimFaces.mapTo(
-                    koneMutableReifiedSetOf(
+                    KoneMutableReifiedSet.of(
                         elementReification = polytopeReification,
                         elementEquality = polytopeEquality,
                         elementHashing = polytopeHashing,

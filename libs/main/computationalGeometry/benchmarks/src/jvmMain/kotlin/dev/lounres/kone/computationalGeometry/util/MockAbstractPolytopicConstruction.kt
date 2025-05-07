@@ -8,9 +8,7 @@ package dev.lounres.kone.computationalGeometry.util
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.collections.set.koneSetOf
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.computationalGeometry.*

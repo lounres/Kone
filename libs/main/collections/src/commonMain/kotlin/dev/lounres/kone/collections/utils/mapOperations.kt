@@ -53,7 +53,7 @@ public inline fun <K, V> KoneMap<K, V>.withChanged(
     keyOrder: Order<K>? = null,
     transform: (currentValue: V) -> V
 ): KoneMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    buildKoneMap(size, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
+    KoneMap.build(initialCapacity = size, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
         setAllFrom(this@withChanged)
         change(key, transform)
     }
@@ -64,8 +64,8 @@ public inline fun <K, V> KoneMap<K, V>.withChangedContextual(
     keyType: SuppliedType<K>,
     transform: (currentValue: V) -> V
 ): KoneMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    buildKoneContextualMap(size, keyType = keyType) {
-        setAllFrom(this@withChangedContextual)
+    KoneMap.buildContextual(initialCapacity = size, keyType = keyType) {
+        +this@withChangedContextual
         change(key, transform)
     }
 
@@ -77,7 +77,7 @@ public inline fun <K, V> KoneMap<K, V>.withChangedReified(
     keyOrder: Order<K>? = null,
     transform: (currentValue: V) -> V
 ): KoneReifiedMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    buildKoneReifiedMap(size, keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
+    KoneReifiedMap.build(initialCapacity = size, keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
         setAllFrom(this@withChangedReified)
         change(key, transform)
     }
@@ -104,7 +104,7 @@ public inline fun <K, V> KoneMap<K, V>.withChangedContextualReified(
     keyType: SuppliedType<K>,
     transform: (currentValue: V) -> V
 ): KoneReifiedMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    buildKoneContextualReifiedMap(size, keyType = keyType) {
+    KoneReifiedMap.buildContextual(initialCapacity = size, keyType = keyType) {
         setAllFrom(this@withChangedContextualReified)
         change(key, transform)
     }
@@ -117,7 +117,7 @@ public inline fun <K, V> KoneMap<out K, V>.withSetOrChanged(
     valueOnSet: () -> V,
     transformOnChange: (currentValue: V) -> V
 ): KoneMap<K, V> contract [ callsInPlace(valueOnPut, AT_MOST_ONCE), callsInPlace(transformOnChange, AT_MOST_ONCE) ] =
-    buildKoneMap(size + 1u, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
+    KoneMap.build(initialCapacity = size + 1u, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
         setAllFrom(this@withSetOrChanged)
         setOrChange(key, valueOnSet, transformOnChange)
     }
@@ -131,7 +131,7 @@ public inline fun <K, V> KoneMap<out K, V>.withSetOrChangedReified(
     valueOnSet: () -> V,
     transformOnChange: (currentValue: V) -> V
 ): KoneReifiedMap<K, V> contract [ callsInPlace(valueOnPut, AT_MOST_ONCE), callsInPlace(transformOnChange, AT_MOST_ONCE) ] =
-    buildKoneReifiedMap(size + 1u, keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
+    KoneReifiedMap.build(initialCapacity = size + 1u, keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder) {
         setAllFrom(this@withSetOrChangedReified)
         setOrChange(key, valueOnSet, transformOnChange)
     }
@@ -213,7 +213,7 @@ public fun <K, V1: W, V2: W, W> merge(
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
 ) : KoneMap<K, W> =
-    mergeTo(map1, map2, koneMutableMapOf(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder))
+    mergeTo(map1, map2, KoneMutableMap.of(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder))
 
 public fun <K, V1: W, V2: W, W> mergeReified(
     map1: KoneMap<out K, V1>,
@@ -223,7 +223,7 @@ public fun <K, V1: W, V2: W, W> mergeReified(
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
 ): KoneReifiedMap<K, W> =
-    mergeTo(map1, map2, koneMutableReifiedMapOf(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder))
+    mergeTo(map1, map2, KoneMutableReifiedMap.of(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder))
 
 public inline fun <reified K, V1: W, V2: W, W> mergeReified(
     map1: KoneMap<out K, V1>,
@@ -252,7 +252,7 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(
     mergeToBy(
         map1,
         map2,
-        koneMutableMapOf(
+        KoneMutableMap.of(
             keyEquality = keyEquality,
             keyHashing = keyHashing,
             keyOrder = keyOrder,
@@ -272,7 +272,7 @@ public inline fun <K, V1: W, V2: W, W> mergeByReified(
     mergeToBy(
         map1,
         map2,
-        koneMutableReifiedMapOf(
+        KoneMutableReifiedMap.of(
             keyReification = keyReification,
             keyEquality = keyEquality,
             keyHashing = keyHashing,
@@ -331,7 +331,7 @@ public inline fun <T, K, V> KoneIterable<T>.associate(
     transform: (T) -> Pair<K, V>,
     resolve: (key: K, currentValue: V, newValue: V) -> V
 ): KoneMap<K, V> =
-    associateTo(koneMutableMapOf(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
+    associateTo(KoneMutableMap.of(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
 
 public inline fun <T, K, V> KoneIterable<T>.associateReified(
     keyReification: Reification<K>,
@@ -341,7 +341,7 @@ public inline fun <T, K, V> KoneIterable<T>.associateReified(
     transform: (T) -> Pair<K, V>,
     resolve: (key: K, currentValue: V, newValue: V) -> V
 ): KoneReifiedMap<K, V> =
-    associateTo(koneMutableReifiedMapOf(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
+    associateTo(KoneMutableReifiedMap.of(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
 
 public inline fun <T, reified K, V> KoneIterable<T>.associateReified(
     keyEquality: Equality<K> = defaultEquality(),
@@ -368,7 +368,7 @@ public inline fun <T, K, V> KoneIterable<T>.associateBy(
     resolve: (key: K, currentValue: V, newValue: V) -> V
 ): KoneMap<K, V> =
     associateByTo(
-        koneMutableMapOf(
+        KoneMutableMap.of(
             keyEquality = keyEquality,
             keyHashing = keyHashing,
             keyOrder = keyOrder,
@@ -388,7 +388,7 @@ public inline fun <T, K, V> KoneIterable<T>.associateByReified(
     resolve: (key: K, currentValue: V, newValue: V) -> V,
 ): KoneReifiedMap<K, V> =
     associateByTo(
-        koneMutableReifiedMapOf(
+        KoneMutableReifiedMap.of(
             keyReification = keyReification,
             keyEquality = keyEquality,
             keyHashing = keyHashing,
@@ -425,7 +425,7 @@ public inline fun <T, K> KoneIterable<T>.associateBy(
     resolve: (key: K, currentValue: T, newValue: T) -> T
 ): KoneMap<K, T> =
     associateByTo(
-        koneMutableMapOf(
+        KoneMutableMap.of(
             keyEquality = keyEquality,
             keyHashing = keyHashing,
             keyOrder = keyOrder,
@@ -443,7 +443,7 @@ public inline fun <T, K> KoneIterable<T>.associateByReified(
     resolve: (key: K, currentValue: T, newValue: T) -> T
 ): KoneReifiedMap<K, T> =
     associateByTo(
-        koneMutableReifiedMapOf(
+        KoneMutableReifiedMap.of(
             keyReification = keyReification,
             keyEquality = keyEquality,
             keyHashing = keyHashing,
@@ -482,7 +482,7 @@ public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
     transform: (KoneMapEntry<K, V>) -> L,
     resolve: (key: L, currentValue: V, newValue: V) -> V
 ): KoneMap<L, V> =
-    mapKeysTo(koneMutableMapOf(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
+    mapKeysTo(KoneMutableMap.of(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(
     keyReification: Reification<L>,
@@ -493,7 +493,7 @@ public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(
     resolve: (key: L, currentValue: V, newValue: V) -> V,
 ): KoneReifiedMap<L, V> =
     mapKeysTo(
-        koneMutableReifiedMapOf(
+        KoneMutableReifiedMap.of(
             keyReification = keyReification,
             keyEquality = keyEquality,
             keyHashing = keyHashing,

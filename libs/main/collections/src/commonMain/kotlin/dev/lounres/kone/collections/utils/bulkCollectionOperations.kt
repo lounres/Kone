@@ -721,7 +721,7 @@ public inline fun <E, K> KoneIterable<E>.groupBy(
     keySelector: (E) -> K
 ): KoneMap<K, KoneList<E>> =
     groupByTo(
-        destination = koneMutableMapOf(
+        destination = KoneMutableMap.of(
             keyEquality = keyEquality,
             keyHashing = keyHashing,
             keyOrder = keyOrder,
@@ -735,7 +735,7 @@ public inline fun <E, K> KoneIterable<E>.groupContextualBy(
     keySelector: (E) -> K
 ): KoneMap<K, KoneList<E>> =
     groupByTo(
-        destination = koneContextualMutableMapOf(
+        destination = KoneMutableMap.contextualOf(
             keyType = keyType,
         ),
         keySelector = keySelector
@@ -749,7 +749,7 @@ public inline fun <E, K, V> KoneIterable<E>.groupBy(
     valueTransform: (E) -> V,
 ): KoneMap<K, KoneList<V>> =
     groupByTo(
-        destination = koneMutableMapOf(
+        destination = KoneMutableMap.of(
             keyEquality = keyEquality,
             keyHashing = keyHashing,
             keyOrder = keyOrder,
@@ -765,7 +765,7 @@ public inline fun <E, K, V> KoneIterable<E>.groupContextualBy(
     valueTransform: (E) -> V,
 ): KoneMap<K, KoneList<V>> =
     groupByTo(
-        destination = koneContextualMutableMapOf(
+        destination = KoneMutableMap.contextualOf(
             keyType = keyType,
         ),
         keySelector = keySelector,
