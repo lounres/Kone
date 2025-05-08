@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 
@@ -19,10 +18,8 @@ public fun <E> MDList(
 
 public val MDList<*>.dimension: UInt get() = shape.size
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public operator fun <E> MDList<E>.get(vararg index: UInt): E = get(KoneUIntArray(index))
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public operator fun <E> SettableMDList<E>.set(vararg index: UInt, element: E) {
     set(KoneUIntArray(index), element)
 }

@@ -3,12 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(DelicateImmutableArrayConstructor::class)
-
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.asKoneUIntArray
@@ -21,7 +18,6 @@ import dev.lounres.kone.collections.utils.*
 
 public typealias MDShape = KoneUIntArray
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun MDShape(vararg dims: UInt): MDShape = KoneUIntArray(dims)
 
 // TODO: Move to `collections` module

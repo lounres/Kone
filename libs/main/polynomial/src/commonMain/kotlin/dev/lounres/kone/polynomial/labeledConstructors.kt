@@ -11,7 +11,6 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.map.*
@@ -41,7 +40,6 @@ public fun <Number> LabeledPolynomialAsIs(entries: KoneIterable<KoneMapEntry<Lab
     LabeledPolynomial<Number>(entries.associateReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing) { it })
 
 @DelicatePolynomialAPI
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Number> LabeledPolynomialAsIs(vararg entries: KoneMapEntry<LabeledMonomialSignature, Number>) : LabeledPolynomial<Number> =
     LabeledPolynomial<Number>(KoneArray(entries).associateReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing) { it })
 
@@ -59,7 +57,6 @@ public inline fun <Number> LabeledPolynomial(entries: KoneIterable<KoneMapEntry<
             .filterValuesReified(keyEquality = labeledMonomialSignatureEquality, keyHashing = labeledMonomialSignatureHashing, predicate = { !isZero(it) })
     )
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public inline fun <Number> LabeledPolynomial(vararg entries: KoneMapEntry<LabeledMonomialSignature, Number>, add: (Number, Number) -> Number, isZero: (Number) -> Boolean) : LabeledPolynomial<Number> =
     LabeledPolynomialAsIs(
         KoneArray(entries)

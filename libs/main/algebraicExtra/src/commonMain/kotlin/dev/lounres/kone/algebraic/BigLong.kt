@@ -7,7 +7,6 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.internal.asDigit
 import dev.lounres.kone.algebraic.internal.possibleDigits
-import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.utils.all
@@ -52,7 +51,6 @@ public fun BigLong.Companion.from(sign: Int, array: KoneULongArray): BigLong {
     require((sign == 0) == array.all { it == 0uL }) { "sign must be 0 iff magnitude does not contain non-zero elements" }
     return BigLong(sign, UBigLong.from(array))
 }
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun BigLong.Companion.from(sign: Int, vararg array: ULong): BigLong {
     require(sign == 0 || sign == 1 || sign == -1) { "sign must be 0, or 1, or -1" }
     require((sign == 0) == array.isEmpty()) { "sign must be 0 iff magnitude does not contain non-zero elements" }
