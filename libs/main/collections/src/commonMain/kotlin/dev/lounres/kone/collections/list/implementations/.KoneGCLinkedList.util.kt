@@ -31,10 +31,12 @@ public inline fun <Element> KoneGCLinkedList(size: UInt, initializer: (index: UI
     return result
 }
 
-public object KoneGCLinkedListProducer : KoneResizableMutableNoddedListProducer {
+internal object KoneGCLinkedListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneGCLinkedList<Element> = KoneGCLinkedList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedList(number, builder)
 }
+
+public fun KoneGCLinkedList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneGCLinkedListProducer
 
 internal class KoneGCLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

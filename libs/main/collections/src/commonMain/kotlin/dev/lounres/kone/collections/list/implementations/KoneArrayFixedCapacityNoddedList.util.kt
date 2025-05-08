@@ -54,12 +54,14 @@ public inline fun <Element> KoneArrayFixedCapacityNoddedList(size: UInt, capacit
 /**
  * Producer of [KoneArrayFixedCapacityNoddedList].
  */
-public object KoneArrayFixedCapacityNoddedListProducer : KoneFixedCapacityMutableNoddedListProducer {
+internal object KoneArrayFixedCapacityNoddedListProducer : KoneFixedCapacityMutableNoddedListProducer {
     override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityNoddedList<Element> =
         KoneArrayFixedCapacityNoddedList(capacity)
     override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> =
         KoneArrayFixedCapacityNoddedList(capacity = initialCapacity, size = number, initializer = builder)
 }
+
+public fun KoneArrayFixedCapacityNoddedList.Companion.producer(): KoneFixedCapacityMutableNoddedListProducer = KoneArrayFixedCapacityNoddedListProducer
 
 internal class KoneArrayFixedCapacityNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

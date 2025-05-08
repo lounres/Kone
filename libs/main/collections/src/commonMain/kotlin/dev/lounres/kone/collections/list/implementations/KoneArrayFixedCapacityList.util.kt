@@ -55,11 +55,13 @@ public inline fun <Element> KoneArrayFixedCapacityList(capacity: UInt, size: UIn
 /**
  * Producer of [KoneArrayFixedCapacityList].
  */
-public object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListProducer {
+internal object KoneArrayFixedCapacityListProducer : KoneFixedCapacityMutableListProducer {
     override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityList<Element> = KoneArrayFixedCapacityList(capacity)
     override fun <Element> produceBy(capacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
         KoneArrayFixedCapacityList(capacity, number, builder)
 }
+
+public fun KoneArrayFixedCapacityList.Companion.producer(): KoneFixedCapacityMutableListProducer = KoneArrayFixedCapacityListProducer
 
 internal class KoneArrayFixedCapacityListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

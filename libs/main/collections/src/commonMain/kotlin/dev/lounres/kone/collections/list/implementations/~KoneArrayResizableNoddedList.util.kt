@@ -34,11 +34,13 @@ public inline fun <Element> KoneArrayResizableNoddedList(size: UInt, initializer
     )
 }
 
-public object KoneArrayResizableNoddedListProducer : KoneResizableMutableNoddedListProducer {
+internal object KoneArrayResizableNoddedListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneArrayResizableNoddedList<Element> = KoneArrayResizableNoddedList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArrayResizableNoddedList<Element> =
         KoneArrayResizableNoddedList(size = number, initializer = builder)
 }
+
+public fun KoneArrayResizableNoddedList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneArrayResizableNoddedListProducer
 
 internal class KoneArrayResizableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

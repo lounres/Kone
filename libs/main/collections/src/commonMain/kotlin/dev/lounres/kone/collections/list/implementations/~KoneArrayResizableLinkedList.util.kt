@@ -32,11 +32,13 @@ public inline fun <Element> KoneArrayResizableLinkedList(size: UInt, initializer
     )
 }
 
-public object KoneArrayResizableLinkedListProducer : KoneResizableMutableListProducer {
-    override fun <Element> produce(): KoneMutableList<Element> = KoneArrayResizableLinkedList()
-    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> =
+internal object KoneArrayResizableLinkedListProducer : KoneResizableMutableListProducer {
+    override fun <Element> produce(): KoneArrayResizableLinkedList<Element> = KoneArrayResizableLinkedList()
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArrayResizableLinkedList<Element> =
         KoneArrayResizableLinkedList(number, builder)
 }
+
+public fun KoneArrayResizableLinkedList.Companion.producer(): KoneResizableMutableListProducer = KoneArrayResizableLinkedListProducer
 
 internal class KoneArrayResizableLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

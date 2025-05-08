@@ -41,11 +41,13 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
 public inline fun <Element> KoneTwoThreeTreeList(size: UInt, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
     KoneTwoThreeTreeList(KoneArraySettableList(size) { initializer(it) })
 
-public object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProducer {
+internal object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneTwoThreeTreeList<Element> = KoneTwoThreeTreeList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneTwoThreeTreeList<Element> =
         KoneTwoThreeTreeList(size = number, initializer = builder)
 }
+
+public fun KoneTwoThreeTreeList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneTwoThreeTreeListProducer
 
 internal class KoneTwoThreeTreeListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

@@ -502,4 +502,6 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
             _nextIndex = _nextIndex?.let { it - 1u }
         }
     }
+    
+    public companion object
 }

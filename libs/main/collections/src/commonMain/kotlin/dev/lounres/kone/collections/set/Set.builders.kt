@@ -21,8 +21,6 @@ import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
-import dev.lounres.kone.collections.set.KoneReifiedSet
-import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order

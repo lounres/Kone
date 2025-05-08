@@ -45,12 +45,14 @@ public inline fun <Element> KoneArrayGrowableNoddedList(size: UInt, capacity: UI
     )
 }
 
-public object KoneArrayGrowableNoddedListProducer : KoneGrowableMutableNoddedListProducer {
+internal object KoneArrayGrowableNoddedListProducer : KoneGrowableMutableNoddedListProducer {
     override fun <Element> produce(initialCapacity: UInt): KoneArrayGrowableNoddedList<Element> =
         KoneArrayGrowableNoddedList(initialCapacity)
     override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneArrayGrowableNoddedList<Element> =
         KoneArrayGrowableNoddedList(size = number, capacity = initialCapacity, initializer = builder)
 }
+
+public fun KoneArrayGrowableNoddedList.Companion.producer(): KoneGrowableMutableNoddedListProducer = KoneArrayGrowableNoddedListProducer
 
 internal class KoneArrayGrowableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,

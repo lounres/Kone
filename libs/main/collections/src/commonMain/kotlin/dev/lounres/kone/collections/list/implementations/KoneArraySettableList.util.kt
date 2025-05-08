@@ -29,9 +29,11 @@ public inline fun <Element> KoneArraySettableList(size: UInt, initializer: (inde
 /**
  * Producer of [KoneArraySettableList].
  */
-public object KoneArraySettableListProducer : KoneSettableListProducer {
+internal object KoneArraySettableListProducer : KoneSettableListProducer {
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableList<Element> = KoneArraySettableList(number, builder)
 }
+
+public fun KoneArraySettableList.Companion.producer(): KoneSettableListProducer = KoneArraySettableListProducer
 
 internal class KoneArraySettableListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
