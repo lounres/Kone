@@ -21,7 +21,7 @@ import kotlin.jvm.JvmInline
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @JvmInline
-public value class KoneArray<out Element> @DelicateImmutableArrayConstructor constructor(internal val array: Array<out Element>): KoneList<Element> {
+public value class KoneArray<out Element>(internal val array: Array<out Element>): KoneList<Element> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -119,7 +119,7 @@ public value class KoneMutableArray<Element>(internal val array: Array<Element>)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneByteArray @DelicateImmutableArrayConstructor constructor(internal val array: ByteArray): KoneList<Byte> {
+public value class KoneByteArray(internal val array: ByteArray): KoneList<Byte> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -217,7 +217,7 @@ public value class KoneMutableByteArray(internal val array: ByteArray): KoneSett
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneShortArray @DelicateImmutableArrayConstructor constructor(internal val array: ShortArray): KoneList<Short> {
+public value class KoneShortArray(internal val array: ShortArray): KoneList<Short> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
 
@@ -315,7 +315,7 @@ public value class KoneMutableShortArray(internal val array: ShortArray): KoneSe
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneIntArray @DelicateImmutableArrayConstructor constructor(internal val array: IntArray): KoneList<Int> {
+public value class KoneIntArray(internal val array: IntArray): KoneList<Int> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -413,7 +413,7 @@ public value class KoneMutableIntArray(internal val array: IntArray): KoneSettab
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneLongArray @DelicateImmutableArrayConstructor constructor(internal val array: LongArray): KoneList<Long> {
+public value class KoneLongArray(internal val array: LongArray): KoneList<Long> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -511,7 +511,7 @@ public value class KoneMutableLongArray(internal val array: LongArray): KoneSett
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneFloatArray @DelicateImmutableArrayConstructor constructor(internal val array: FloatArray): KoneList<Float> {
+public value class KoneFloatArray(internal val array: FloatArray): KoneList<Float> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -609,7 +609,7 @@ public value class KoneMutableFloatArray(internal val array: FloatArray): KoneSe
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneDoubleArray @DelicateImmutableArrayConstructor constructor(internal val array: DoubleArray): KoneList<Double> {
+public value class KoneDoubleArray(internal val array: DoubleArray): KoneList<Double> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -707,7 +707,7 @@ public value class KoneMutableDoubleArray(internal val array: DoubleArray): Kone
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneUByteArray @DelicateImmutableArrayConstructor constructor(internal val array: UByteArray): KoneList<UByte> {
+public value class KoneUByteArray(internal val array: UByteArray): KoneList<UByte> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -805,7 +805,7 @@ public value class KoneMutableUByteArray(internal val array: UByteArray): KoneSe
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneUShortArray @DelicateImmutableArrayConstructor constructor(internal val array: UShortArray): KoneList<UShort> {
+public value class KoneUShortArray(internal val array: UShortArray): KoneList<UShort> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -903,7 +903,7 @@ public value class KoneMutableUShortArray(internal val array: UShortArray): Kone
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneUIntArray @DelicateImmutableArrayConstructor constructor(internal val array: UIntArray): KoneList<UInt> {
+public value class KoneUIntArray(internal val array: UIntArray): KoneList<UInt> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     
@@ -1009,7 +1009,7 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
 @JvmInline
-public value class KoneULongArray @DelicateImmutableArrayConstructor constructor(internal val array: ULongArray): KoneList<ULong> {
+public value class KoneULongArray(internal val array: ULongArray): KoneList<ULong> {
     // FIXME: KT-30915
 //    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
     

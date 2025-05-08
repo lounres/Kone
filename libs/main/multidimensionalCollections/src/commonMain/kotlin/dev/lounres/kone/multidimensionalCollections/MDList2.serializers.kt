@@ -9,7 +9,7 @@ package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.serializers.KoneMutableArraySerializer
+import dev.lounres.kone.collections.array.serializers.serializer
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
@@ -30,7 +30,7 @@ internal class MDList2Serializer<E>(
     private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
         KoneArraySettableList.serializer(elementSerializer)
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
-        @Suppress("UNCHECKED_CAST") KoneMutableArraySerializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
+        @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
     
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList") {
         element("shape", shapeSerializer.descriptor)
@@ -92,7 +92,7 @@ internal class SettableMDList2Serializer<E>(
     private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
         KoneArraySettableList.serializer(elementSerializer)
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
-        @Suppress("UNCHECKED_CAST") KoneMutableArraySerializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
+        @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
     
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList") {
         element("shape", shapeSerializer.descriptor)

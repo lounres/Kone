@@ -8,50 +8,28 @@ package dev.lounres.kone.collections.array
 
 // TODO: Think about what to add for Kone arrays
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Element> KoneMutableArray<Element>.toKoneArray(): KoneArray<Element> = KoneArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableByteArray.toKoneByteArray(): KoneByteArray = KoneByteArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableShortArray.toKoneShortArray(): KoneShortArray = KoneShortArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableIntArray.toKoneIntArray(): KoneIntArray = KoneIntArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableLongArray.toKoneLongArray(): KoneLongArray = KoneLongArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableFloatArray.toKoneFloatArray(): KoneFloatArray = KoneFloatArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableDoubleArray.toKoneDoubleArray(): KoneDoubleArray = KoneDoubleArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableUByteArray.toKoneUByteArray(): KoneUByteArray = KoneUByteArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableUShortArray.toKoneUShortArray(): KoneUShortArray = KoneUShortArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableUIntArray.toKoneUIntArray(): KoneUIntArray = KoneUIntArray(array.copyOf())
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun KoneMutableULongArray.toKoneULongArray(): KoneULongArray = KoneULongArray(array.copyOf())
 
-@DelicateImmutableArrayConstructor
 public fun <Element> KoneMutableArray<Element>.asKoneArray(): KoneArray<Element> = KoneArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableByteArray.asKoneByteArray(): KoneByteArray = KoneByteArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableShortArray.asKoneShortArray(): KoneShortArray = KoneShortArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableIntArray.asKoneIntArray(): KoneIntArray = KoneIntArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableLongArray.asKoneLongArray(): KoneLongArray = KoneLongArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableFloatArray.asKoneFloatArray(): KoneFloatArray = KoneFloatArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableDoubleArray.asKoneDoubleArray(): KoneDoubleArray = KoneDoubleArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableUByteArray.asKoneUByteArray(): KoneUByteArray = KoneUByteArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableUShortArray.asKoneUShortArray(): KoneUShortArray = KoneUShortArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableUIntArray.asKoneUIntArray(): KoneUIntArray = KoneUIntArray(array)
-@DelicateImmutableArrayConstructor
 public fun KoneMutableULongArray.asKoneULongArray(): KoneULongArray = KoneULongArray(array)
 
 // TODO: Wait for actual decision with equals operator

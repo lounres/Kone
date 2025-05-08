@@ -37,18 +37,8 @@ internal class DefaultKoneArraySerializer<ElementKlass : Any, Element : ElementK
         KoneArray(decoder.decodeSerializableValue(arraySerializer))
 }
 
-@Deprecated("", replaceWith = ReplaceWith("KoneArray.serializer<T, E>(elementSerializer)", "dev.lounres.kone.collections.KoneArray", "dev.lounres.kone.collections.serializer"))
-public inline fun <reified T : Any, reified E : T?> KoneArraySerializer(elementSerializer: KSerializer<E>): KSerializer<KoneArray<E>> =
-    KoneArraySerializer<T, E>(T::class, elementSerializer)
-
 public inline fun <reified T : Any, reified E : T?> KoneArray.Companion.serializer(elementSerializer: KSerializer<E>): KSerializer<KoneArray<E>> =
-    KoneArraySerializer<T, E>(T::class, elementSerializer)
-
-@Deprecated("", replaceWith = ReplaceWith("KoneArray.serializer<T, E>(kClass, elementSerializer)", "dev.lounres.kone.collections.KoneArray", "dev.lounres.kone.collections.serializer"))
-public fun <T : Any, E : T?> KoneArraySerializer(
-    kClass: KClass<T>,
-    elementSerializer: KSerializer<E>
-): KSerializer<KoneArray<E>> = DefaultKoneArraySerializer<T, E>(kClass, elementSerializer)
+    KoneArray.serializer<T, E>(T::class, elementSerializer)
 
 public fun <T : Any, E : T?> KoneArray.Companion.serializer(
     kClass: KClass<T>,
@@ -71,18 +61,8 @@ internal class DefaultKoneMutableArraySerializer<ElementKlass : Any, Element : E
         KoneMutableArray(decoder.decodeSerializableValue(arraySerializer))
 }
 
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableArray.serializer<T, E>(elementSerializer)", "dev.lounres.kone.collections.KoneMutableArray", "dev.lounres.kone.collections.serializer"))
-public inline fun <reified T : Any, reified E : T?> KoneMutableArraySerializer(elementSerializer: KSerializer<E>): KSerializer<KoneMutableArray<E>> =
-    KoneMutableArraySerializer<T, E>(T::class, elementSerializer)
-
 public inline fun <reified T : Any, reified E : T?> KoneMutableArray.Companion.serializer(elementSerializer: KSerializer<E>): KSerializer<KoneMutableArray<E>> =
-    KoneMutableArraySerializer<T, E>(T::class, elementSerializer)
-
-@Deprecated("", replaceWith = ReplaceWith("KoneMutableArray.serializer<T, E>(kClass, elementSerializer)", "dev.lounres.kone.collections.KoneMutableArray", "dev.lounres.kone.collections.serializer"))
-public fun <T : Any, E : T?> KoneMutableArraySerializer(
-    kClass: KClass<T>,
-    elementSerializer: KSerializer<E>
-): KSerializer<KoneMutableArray<E>> = DefaultKoneMutableArraySerializer<T, E>(kClass, elementSerializer)
+    KoneMutableArray.serializer<T, E>(T::class, elementSerializer)
 
 public fun <T : Any, E : T?> KoneMutableArray.Companion.serializer(
     kClass: KClass<T>,

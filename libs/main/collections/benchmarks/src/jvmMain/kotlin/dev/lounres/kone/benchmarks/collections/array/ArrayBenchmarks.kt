@@ -17,7 +17,7 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.array.KoneUShortArray
 import dev.lounres.kone.collections.array.of
-import dev.lounres.kone.collections.array.serializers.KoneArraySerializer
+import dev.lounres.kone.collections.array.serializers.serializer
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkTimeUnit
 import kotlinx.benchmark.Blackhole
@@ -250,7 +250,7 @@ class ArrayAccessBenchmarks {
     
     @Setup
     fun setup() {
-        arrayHolder = KoneArrayHolder(Json.decodeFromStream(KoneArraySerializer(serializer()), File("src/jvmMain/resources/array/$size.json").inputStream()))
+        arrayHolder = KoneArrayHolder(Json.decodeFromStream(KoneArray.serializer<Int, Int>(serializer()), File("src/jvmMain/resources/array/$size.json").inputStream()))
         check(arrayHolder.array.size == size)
         middleIndex = size / 2u
         lastIndex = size - 1u

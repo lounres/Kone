@@ -8,7 +8,6 @@
 package dev.lounres.kone.collections.map
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.array.DelicateImmutableArrayConstructor
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
@@ -132,7 +131,6 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
         keyEquality = keyEquality,
     )
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> KoneMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyEquality: Equality<Key> = defaultEquality(),
@@ -176,7 +174,6 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
         keyOrder = keyOrder,
     )
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> KoneReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
@@ -234,7 +231,6 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     if (keyHashing != null) KoneHashResizableReifiedMap(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
     else KoneListBackedMutableReifiedMap(keyReification = keyReification, keyEquality = keyEquality)
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> KoneMutableMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyEquality: Equality<Key> = defaultEquality(),
@@ -270,7 +266,6 @@ public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
         keyOrder = keyOrder,
     )
 
-@OptIn(DelicateImmutableArrayConstructor::class)
 public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,

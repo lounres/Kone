@@ -29,9 +29,5 @@ internal open class KoneListEquality<Element>(open val elementEquality: Equality
     }
 }
 
-@Deprecated("", replaceWith = ReplaceWith("KoneList.equality<Element>(elementEquality)", "dev.lounres.kone.collections.list.KoneList", "dev.lounres.kone.collections.list.equality"))
-public fun <Element> koneListEquality(elementEquality: Equality<Element>): Equality<KoneList<Element>> =
-    KoneListEquality(elementEquality)
-
 public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element>): Equality<KoneList<Element>> =
     KoneListEquality(elementEquality)
