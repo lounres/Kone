@@ -99,16 +99,6 @@ class IntDefaultEqualityImplementationsBulkBenchmarks {
         consume(inputsBoxed[index])
         index = (index + 1) % inputs.size
     }
-    
-    // TODO: What about the following?
-//    @Benchmark
-//    fun structural_equality_via_primitives(): Boolean {
-//        val (a, b) = inputs[index]
-//        val result = a == b
-//        index = (index + 1) % inputs.size
-//        return result
-//    }
-    // And so on...
 
     @Benchmark
     fun Blackhole.structural_equality_via_primitives() {
