@@ -12,8 +12,8 @@ import java.io.FilenameFilter
 
 class PluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurator(testServices) {
     companion object {
-        private const val RUNTIME_JAR_DIR = "../plugin-runtime/build/libs/"
-        private val RUNTIME_JAR_FILTER = FilenameFilter { _, name -> name.startsWith("plugin-runtime") && name.endsWith(".jar") }
+        private const val RUNTIME_JAR_DIR = "../../libs/main/suppliedTypes/build/libs/"
+        private val RUNTIME_JAR_FILTER = FilenameFilter { _, name -> name.startsWith("suppliedTypes") && name.endsWith(".jar") }
     }
 
     override fun configureCompilerConfiguration(configuration: CompilerConfiguration, module: TestModule) {
@@ -23,5 +23,5 @@ class PluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurato
         configuration.addJvmClasspathRoot(jar)
     }
 
-    private val failMessage = { "Jar with annotations does not exist. Please run :plugin-annotations:jar" }
+    private val failMessage = { "Jar with plugin runtime does not exist." }
 }

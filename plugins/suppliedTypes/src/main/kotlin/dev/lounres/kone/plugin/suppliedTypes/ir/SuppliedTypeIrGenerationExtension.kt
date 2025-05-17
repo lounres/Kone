@@ -50,7 +50,6 @@ import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.Variance
-import java.io.File
 import kotlin.collections.iterator
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.AT_MOST_ONCE
@@ -72,31 +71,34 @@ val IrTypeParameter.isSupplied: Boolean get() = hasAnnotation(suppliedClassId)
 val IrTypeParameter.providedSupplierParameterName: Name?
     get() {
         val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == suppliedClassId }
-        val theOnlyArgumentOrNull = supplyingAnnotationConstructorCallOrNull.let { it.arguments[0] as IrConst? }
+        val theOnlyArgumentOrNull = supplyingAnnotationConstructorCallOrNull.arguments[0] as IrConst?
         val suppliedParameterName = (theOnlyArgumentOrNull?.value as? String?)?.takeIf { it.isNotEmpty() }
         return suppliedParameterName?.let { Name.identifier(it) }
     }
 val IrTypeParameter.internalSupplierPropertyName: Name get() = Name.special("<supplied-type-variable-for-${parent.kotlinFqName}-${name}>")
 val IrTypeParameter.internalSupplierParameterName: Name get() = Name.special("<supplied-type-argument-for-${name}>")
-val IrTypeParameter.supplierParameterName: Name get() = providedSupplierParameterName ?: internalSupplierParameterName
+val IrTypeParameter.supplierParameterName: Name get() = /*providedSupplierParameterName ?:*/ internalSupplierParameterName
+
+class IrRuntimeReferences(pluginContext: IrPluginContext) {
+    val suppliedTypeIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeClassId)
+    val suppliedTypeRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeRegularClassId)
+    val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeDynamicClassId)
+    val suppliedProjectionIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionClassId)
+    val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionRegularClassId)
+    val suppliedProjectionStarIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionStarClassId)
+    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = pluginContext.referenceFunctionThatOrFail(suppliedTypeOfCallableId)
+}
 
 class SuppliedTypeIrGenerationExtension(
     private val messageCollector: MessageCollector,
 ) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-        val suppliedTypeIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeClassId)
-        val suppliedTypeRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeRegularClassId)
-        val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeDynamicClassId)
-        val suppliedProjectionIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionClassId)
-        val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionRegularClassId)
-        val suppliedProjectionStarIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionStarClassId)
-        val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = pluginContext.referenceFunctionThatOrFail(suppliedTypeOfCallableId)
+        val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
 
         moduleFragment.transform(
             ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                 pluginContext = pluginContext,
-                suppliedTypeIrClassSymbol = suppliedTypeIrClassSymbol,
-                suppliedTypeOfIrSimpleFunctionSymbol = suppliedTypeOfIrSimpleFunctionSymbol,
+                irRuntimeReferences = irRuntimeReferences,
             ),
             null
         )
@@ -104,8 +106,7 @@ class SuppliedTypeIrGenerationExtension(
         moduleFragment.transform(
             ClassSuppliedTypeParametersOverridesGenerationTransformer(
                 pluginContext = pluginContext,
-                suppliedTypeIrClassSymbol = suppliedTypeIrClassSymbol,
-                suppliedTypeOfIrSimpleFunctionSymbol = suppliedTypeOfIrSimpleFunctionSymbol,
+                irRuntimeReferences = irRuntimeReferences,
             ),
             null
         )
@@ -113,8 +114,7 @@ class SuppliedTypeIrGenerationExtension(
         moduleFragment.transform(
             FunctionsWithSuppliedTypeParametersModificationTransformer(
                 pluginContext = pluginContext,
-                suppliedTypeIrClassSymbol = suppliedTypeIrClassSymbol,
-                suppliedTypeOfIrSimpleFunctionSymbol = suppliedTypeOfIrSimpleFunctionSymbol,
+                irRuntimeReferences = irRuntimeReferences,
             ),
             null
         )
@@ -122,8 +122,7 @@ class SuppliedTypeIrGenerationExtension(
         moduleFragment.transform(
             FunctionsWithSuppliedTypeParametersUsageTransformer(
                 pluginContext = pluginContext,
-                suppliedTypeIrClassSymbol = suppliedTypeIrClassSymbol,
-                suppliedTypeOfIrSimpleFunctionSymbol = suppliedTypeOfIrSimpleFunctionSymbol,
+                irRuntimeReferences = irRuntimeReferences,
             ),
             null
         )
@@ -131,11 +130,7 @@ class SuppliedTypeIrGenerationExtension(
         moduleFragment.transform(
             SuppliedTypeOfSubstitutionTransformer(
                 pluginContext = pluginContext,
-                suppliedTypeRegularIrClassSymbol = suppliedTypeRegularIrClassSymbol,
-                suppliedTypeDynamicIrClassSymbol = suppliedTypeDynamicIrClassSymbol,
-                suppliedProjectionIrClassSymbol = suppliedProjectionIrClassSymbol,
-                suppliedProjectionRegularIrClassSymbol = suppliedProjectionRegularIrClassSymbol,
-                suppliedProjectionStarIrClassSymbol = suppliedProjectionStarIrClassSymbol,
+                irRuntimeReferences = irRuntimeReferences,
             ),
             emptyMap()
         )
@@ -144,8 +139,7 @@ class SuppliedTypeIrGenerationExtension(
 
 class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
     val pluginContext: IrPluginContext,
-    val suppliedTypeIrClassSymbol: IrClassSymbol,
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol,
+    val irRuntimeReferences: IrRuntimeReferences,
 ) : IrElementTransformerVoid() {
     private val CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN by IrDeclarationOriginImpl
     private val CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN by IrStatementOriginImpl
@@ -160,7 +154,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     }
                     val getter = property.addGetter {
                         modality = Modality.ABSTRACT
-                        returnType = suppliedTypeIrClassSymbol.createType(
+                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(typeParameter.defaultType),
                         )
@@ -183,7 +177,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     }
                     val backingField = property.addBackingField {
                         name = typeParameter.internalSupplierPropertyName
-                        type = suppliedTypeIrClassSymbol.createType(
+                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(typeParameter.defaultType),
                         )
@@ -192,14 +186,14 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
                         irExprBody(
                             irCallWithSubstitutedType(
-                                suppliedTypeOfIrSimpleFunctionSymbol,
+                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                                 listOf(typeParameter.defaultType)
                             ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN }
                         )
                     }
                     val getter = property.addGetter {
                         modality = Modality.ABSTRACT
-                        returnType = suppliedTypeIrClassSymbol.createType(
+                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(typeParameter.defaultType),
                         )
@@ -270,8 +264,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
 
 class ClassSuppliedTypeParametersOverridesGenerationTransformer(
     val pluginContext: IrPluginContext,
-    val suppliedTypeIrClassSymbol: IrClassSymbol,
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol,
+    val irRuntimeReferences: IrRuntimeReferences,
 ) : IrElementTransformerVoid() {
     private val CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN by IrDeclarationOriginImpl
     private val CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN by IrStatementOriginImpl
@@ -343,7 +336,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     property.overriddenSymbols = overriddenProperties.map { it.symbol }
                     val getter = property.addGetter {
                         modality = Modality.OPEN
-                        returnType = suppliedTypeIrClassSymbol.createType(
+                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(info.type),
                         )
@@ -358,7 +351,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
                         irExprBody(
                             irCallWithSubstitutedType(
-                                suppliedTypeOfIrSimpleFunctionSymbol,
+                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                                 listOf(info.type)
                             ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
                         )
@@ -384,7 +377,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     property.overriddenSymbols = overriddenProperties.map { it.symbol }
                     val backingField = property.addBackingField {
                         name = typeParameter.internalSupplierPropertyName
-                        type = suppliedTypeIrClassSymbol.createType(
+                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(info.type),
                         )
@@ -393,14 +386,14 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
                         irExprBody(
                             irCallWithSubstitutedType(
-                                suppliedTypeOfIrSimpleFunctionSymbol,
+                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                                 listOf(info.type)
                             ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
                         )
                     }
                     val getter = property.addGetter {
                         modality = Modality.FINAL
-                        returnType = suppliedTypeIrClassSymbol.createType(
+                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(info.type),
                         )
@@ -430,8 +423,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
 
 class FunctionsWithSuppliedTypeParametersModificationTransformer(
     val pluginContext: IrPluginContext,
-    val suppliedTypeIrClassSymbol: IrClassSymbol,
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol,
+    val irRuntimeReferences: IrRuntimeReferences,
 ) : IrElementTransformerVoid() {
     private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN by IrDeclarationOriginImpl
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
@@ -444,7 +436,7 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
                         name = it.supplierParameterName
                         // TODO
 //                        isHidden = true
-                        type = suppliedTypeIrClassSymbol.createType(
+                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(it.defaultType)
                         )
@@ -463,7 +455,7 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
                         kind = IrParameterKind.Regular
                         name = it.supplierParameterName
 //                        isHidden = true
-                        type = suppliedTypeIrClassSymbol.createType(
+                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
                             hasQuestionMark = false,
                             arguments = listOf(it.defaultType)
                         )
@@ -477,8 +469,7 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
 
 class FunctionsWithSuppliedTypeParametersUsageTransformer(
     val pluginContext: IrPluginContext,
-    val suppliedTypeIrClassSymbol: IrClassSymbol,
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol,
+    val irRuntimeReferences: IrRuntimeReferences,
 ) : IrElementTransformerVoid() {
     private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_ORIGIN by IrDeclarationOriginImpl
     private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN by IrStatementOriginImpl
@@ -496,7 +487,7 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
                     .map { (_, typeArgument) ->
                         DeclarationIrBuilder(pluginContext, declaration.symbol)
                             .irCallWithSubstitutedType(
-                                suppliedTypeOfIrSimpleFunctionSymbol,
+                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                                 listOf(typeArgument)
                             ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
                     }
@@ -513,7 +504,7 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
                 .map { (_, typeArgument) ->
                     DeclarationIrBuilder(pluginContext, declaration.symbol)
                         .irCallWithSubstitutedType(
-                            suppliedTypeOfIrSimpleFunctionSymbol,
+                            irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                             listOf(typeArgument)
                         ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
                 }
@@ -529,7 +520,7 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
                 .map { (_, typeArgument) ->
                     DeclarationIrBuilder(pluginContext, declaration.symbol)
                         .irCallWithSubstitutedType(
-                            suppliedTypeOfIrSimpleFunctionSymbol,
+                            irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                             listOf(typeArgument)
                         ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
                 }
@@ -546,11 +537,7 @@ fun IrBuilderWithScope.irGetEnumEntry(enumEntry: IrEnumEntry) =
 
 class SuppliedTypeOfSubstitutionTransformer(
     val pluginContext: IrPluginContext,
-    val suppliedTypeRegularIrClassSymbol: IrClassSymbol,
-    val suppliedTypeDynamicIrClassSymbol: IrClassSymbol,
-    val suppliedProjectionIrClassSymbol: IrClassSymbol,
-    val suppliedProjectionRegularIrClassSymbol: IrClassSymbol,
-    val suppliedProjectionStarIrClassSymbol: IrClassSymbol,
+    val irRuntimeReferences: IrRuntimeReferences,
 ) : IrTransformer<Map<IrTypeParameter, DeclarationIrBuilder.(isNullable: Boolean) -> IrExpression>>() {
     private val SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN by IrDeclarationOriginImpl
     private val SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN by IrStatementOriginImpl
@@ -564,13 +551,13 @@ class SuppliedTypeOfSubstitutionTransformer(
     private val kVarianceINVARIANTIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("INVARIANT") }
     private val kVarianceINIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("IN") }
     private val kVarianceOUTIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("OUT") }
-    private val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
+    private val suppliedProjectionIrType: IrSimpleType = irRuntimeReferences.suppliedProjectionIrClassSymbol.createType(false, emptyList())
     private fun DeclarationIrBuilder.suppliedTypeExpressionFor(
         type: IrType,
         typeParametersMapping: Map<IrTypeParameter, DeclarationIrBuilder.(isNullable: Boolean) -> IrExpression>
     ): IrExpression =
         when(type) {
-            is IrDynamicType -> irGetObject(suppliedTypeDynamicIrClassSymbol)
+            is IrDynamicType -> irGetObject(irRuntimeReferences.suppliedTypeDynamicIrClassSymbol)
             is IrErrorType -> TODO()
             is IrSimpleType -> {
                 when (val classifier = type.classifier) {
@@ -579,7 +566,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         val fullyQualifiedName: String = irClass.fqName.toString()
                         val typeArguments: List<IrExpression> = type.arguments.map {
                             when (it) {
-                                is IrStarProjection -> irGetObject(suppliedProjectionStarIrClassSymbol)
+                                is IrStarProjection -> irGetObject(irRuntimeReferences.suppliedProjectionStarIrClassSymbol)
                                 is IrTypeProjection -> {
                                     val variance = when (it.variance) {
                                         Variance.INVARIANT -> irGetEnumEntry(kVarianceINVARIANTIrEnumEntry)
@@ -588,7 +575,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                                     }
                                     val type = suppliedTypeExpressionFor(it.type, typeParametersMapping)
                                     irCallConstructor(
-                                        suppliedProjectionRegularIrClassSymbol.constructors.single { it.owner.parameters.size == 2 },
+                                        irRuntimeReferences.suppliedProjectionRegularIrClassSymbol.constructors.single { it.owner.parameters.size == 2 },
                                         emptyList()
                                     ).apply {
                                         arguments.clear()
@@ -601,7 +588,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         }
                         val isNullable: Boolean = type.nullability == SimpleTypeNullability.MARKED_NULLABLE
                         irCallConstructor(
-                            suppliedTypeRegularIrClassSymbol.constructors.single { it.owner.parameters.size == 3 },
+                            irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single { it.owner.parameters.size == 3 },
                             listOf(type),
                         ).apply {
                             arguments.clear()
@@ -624,7 +611,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         val fullyQualifiedName: String = irClass.fqName.toString()
                         val typeArguments: List<IrExpression> = type.arguments.map {
                             when (it) {
-                                is IrStarProjection -> irGetObject(suppliedProjectionStarIrClassSymbol)
+                                is IrStarProjection -> irGetObject(irRuntimeReferences.suppliedProjectionStarIrClassSymbol)
                                 is IrTypeProjection -> {
                                     val variance = when (it.variance) {
                                         Variance.INVARIANT -> irGetEnumEntry(kVarianceINVARIANTIrEnumEntry)
@@ -633,7 +620,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                                     }
                                     val type = suppliedTypeExpressionFor(it.type, typeParametersMapping)
                                     irCallConstructor(
-                                        suppliedProjectionRegularIrClassSymbol.constructors.single(),
+                                        irRuntimeReferences.suppliedProjectionRegularIrClassSymbol.constructors.single(),
                                         emptyList()
                                     ).apply {
                                         arguments.clear()
@@ -646,7 +633,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         }
                         val isNullable: Boolean = type.nullability == SimpleTypeNullability.MARKED_NULLABLE
                         irCallConstructor(
-                            suppliedTypeRegularIrClassSymbol.constructors.single(),
+                            irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single(),
                             listOf(type),
                         ).apply {
                             arguments.clear()
@@ -723,8 +710,17 @@ class SuppliedTypeOfSubstitutionTransformer(
         expression: IrInstanceInitializerCall,
         data: Map<IrTypeParameter, DeclarationIrBuilder.(Boolean) -> IrExpression>
     ): IrExpression {
-        TODO()
-        return super.visitInstanceInitializerCall(expression, data)
+        val irClass = expression.classSymbol.owner
+        val newData = buildMap {
+            putAll(data)
+            for (typeParameter in irClass.typeParameters) if (typeParameter.isSupplied) {
+                put(typeParameter) { isNullable: Boolean ->
+                    val valueParameter = irClass.primaryConstructor!!.parameters.first { it.name == typeParameter.supplierParameterName }
+                    irGet(valueParameter).also { it.origin = SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN }
+                }
+            }
+        }
+        return super.visitInstanceInitializerCall(expression, newData)
     }
     override fun visitClass(
         declaration: IrClass,

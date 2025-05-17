@@ -48,7 +48,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 val generateTests by tasks.registering(JavaExec::class) {
     classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("dev.lounres.pluginTest.plugin.GenerateTestsKt")
+    mainClass.set("dev.lounres.kone.plugin.suppliedTypes.GenerateTestsKt")
 }
 
 val compileTestKotlin by tasks.getting {

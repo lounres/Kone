@@ -1,6 +1,11 @@
 package dev.lounres.kone.plugin.suppliedTypes.services
 
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
+import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension1
+import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension2
+import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension3
+import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension4
+import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension5
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -20,5 +25,65 @@ class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentCo
         
 //        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypeIrGenerationExtension(messageCollector))
+    }
+}
+
+class IrPartialExtensionRegistrarConfigurator1(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+
+//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension1(messageCollector))
+    }
+}
+
+class IrPartialExtensionRegistrarConfigurator2(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+
+//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension2(messageCollector))
+    }
+}
+
+class IrPartialExtensionRegistrarConfigurator3(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+
+//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension3(messageCollector))
+    }
+}
+
+class IrPartialExtensionRegistrarConfigurator4(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+
+//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension4(messageCollector))
+    }
+}
+
+class IrPartialExtensionRegistrarConfigurator5(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+
+//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension5(messageCollector))
     }
 }

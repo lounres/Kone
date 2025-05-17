@@ -1,5 +1,10 @@
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
+import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator1
+import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator2
+import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator3
+import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator4
+import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator5
 import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.test.FirParser
 import org.jetbrains.kotlin.test.TargetBackend
@@ -57,5 +62,40 @@ open class AbstractBoxTest : BaseTestRunner(), RunnerWithTargetBackendForTestGen
         }
         
         useAfterAnalysisCheckers(::BlackBoxCodegenSuppressor)
+    }
+}
+
+open class AbstractBoxTestForPhase1 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator1)
+    }
+}
+
+open class AbstractBoxTestForPhase2 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator2)
+    }
+}
+
+open class AbstractBoxTestForPhase3 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator3)
+    }
+}
+
+open class AbstractBoxTestForPhase4 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator4)
+    }
+}
+
+open class AbstractBoxTestForPhase5 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator5)
     }
 }
