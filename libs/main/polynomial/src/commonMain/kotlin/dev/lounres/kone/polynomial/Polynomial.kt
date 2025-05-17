@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.js.JsName
@@ -90,8 +91,9 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<PolynomialSpace<Number, Polynomial>> {
         override val typeKey: SuppliedType.Regular<PolynomialSpace<Number, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = PolynomialSpace::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.PolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -211,8 +213,9 @@ public interface UnivariatePolynomialSpace<Number, Polynomial> : PolynomialSpace
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<UnivariatePolynomialSpace<Number, Polynomial>> {
         override val typeKey: SuppliedType.Regular<UnivariatePolynomialSpace<Number, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = UnivariatePolynomialSpace::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.UnivariatePolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -373,8 +376,9 @@ public interface MultivariatePolynomialSpace<Number, Variable, Polynomial> : Pol
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<MultivariatePolynomialSpace<Number, Variable, Polynomial>> {
         override val typeKey: SuppliedType.Regular<MultivariatePolynomialSpace<Number, Variable, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = MultivariatePolynomialSpace::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.MultivariatePolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -613,8 +617,9 @@ public interface PolynomialSpaceOverField<Number, Polynomial> : PolynomialSpace<
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<PolynomialSpaceOverField<Number, Polynomial>> {
         override val typeKey: SuppliedType.Regular<PolynomialSpaceOverField<Number, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = PolynomialSpaceOverField::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.PolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -671,8 +676,9 @@ public interface UnivariatePolynomialSpaceOverField<Number, Polynomial> : Polyno
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<UnivariatePolynomialSpaceOverField<Number, Polynomial>> {
         override val typeKey: SuppliedType.Regular<UnivariatePolynomialSpaceOverField<Number, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = UnivariatePolynomialSpaceOverField::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.UnivariatePolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -721,8 +727,9 @@ public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomi
         polynomialType: SuppliedType<Polynomial>
     ) : RegistryKey<MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>> {
         override val typeKey: SuppliedType.Regular<MultivariatePolynomialSpaceOverField<Number, Variable, Polynomial>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = MultivariatePolynomialSpaceOverField::class,
+                fullyQualifiedName = "dev.lounres.kone.polynomial.MultivariatePolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

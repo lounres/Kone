@@ -23,6 +23,7 @@ import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -36,8 +37,9 @@ public interface DeterminantComputer<Number> {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<DeterminantComputer<Number>> {
         override val typeKey: SuppliedType.Regular<DeterminantComputer<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = DeterminantComputer::class,
+                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.utils.DeterminantComputer",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

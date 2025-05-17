@@ -18,6 +18,7 @@ import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
 
@@ -131,8 +132,9 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installByteContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val byteSuppliedType = SuppliedType.Regular<Byte>(
-        kClass = Byte::class,
+        fullyQualifiedName = "kotlin.Byte",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -255,8 +257,9 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installShortContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val shortSuppliedType = SuppliedType.Regular<Short>(
-        kClass = Short::class,
+        fullyQualifiedName = "kotlin.Short",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -367,8 +370,9 @@ public val Int.Companion.context: IntContext get() = IntContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installIntContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val intSuppliedType = SuppliedType.Regular<Int>(
-        kClass = Int::class,
+        fullyQualifiedName = "kotlin.Int",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -479,8 +483,9 @@ public val Long.Companion.context: LongContext get() = LongContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installLongContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular<Long>(
-        kClass = Long::class,
+        fullyQualifiedName = "kotlin.Long",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -577,8 +582,9 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installUByteContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val uByteSuppliedType = SuppliedType.Regular<UByte>(
-        kClass = UByte::class,
+        fullyQualifiedName = "kotlin.UByte",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -673,8 +679,9 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installUShortContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val uShortSuppliedType = SuppliedType.Regular<UShort>(
-        kClass = UShort::class,
+        fullyQualifiedName = "kotlin.UShort",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -759,8 +766,9 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installUIntContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val uIntSuppliedType = SuppliedType.Regular<UInt>(
-        kClass = UInt::class,
+        fullyQualifiedName = "kotlin.UInt",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -845,8 +853,9 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installULongContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val uLongSuppliedType = SuppliedType.Regular<ULong>(
-        kClass = ULong::class,
+        fullyQualifiedName = "kotlin.ULong",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -982,8 +991,9 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installDoubleContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val doubleSuppliedType = SuppliedType.Regular<Double>(
-        kClass = Double::class,
+        fullyQualifiedName = "kotlin.Double",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -1120,8 +1130,9 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installFloatContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val floatSuppliedType = SuppliedType.Regular<Float>(
-        kClass = Float::class,
+        fullyQualifiedName = "kotlin.Float",
         typeArguments = emptyList(),
         isNullable = false,
     )

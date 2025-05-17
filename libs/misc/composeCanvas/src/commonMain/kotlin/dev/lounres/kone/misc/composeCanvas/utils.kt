@@ -11,21 +11,24 @@ import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstru
 import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.installVectorKategoryFor
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
 public val floatSuppliedType: SuppliedType<Float> =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<Float>(
-        kClass = Float::class,
+        fullyQualifiedName = "kotlin.Float",
         typeArguments = emptyList(),
         isNullable = false,
     )
 
 public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType<AbstractPolytopicConstructionPolytope<Float>> =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<AbstractPolytopicConstructionPolytope<Float>>(
-        kClass = AbstractPolytopicConstructionPolytope::class,
+        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,
@@ -36,8 +39,9 @@ public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType<Abstr
     )
 
 public val abstractPolytopicConstructionVertexSuppliedType: SuppliedType<AbstractPolytopicConstructionVertex<Float>> =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<AbstractPolytopicConstructionVertex<Float>>(
-        kClass = AbstractPolytopicConstructionVertex::class,
+        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,

@@ -18,6 +18,7 @@ import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
@@ -74,8 +75,9 @@ public class Rational {
 }
 
 public fun KoneContextRegistryBuilder.installRationalContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val rationalSuppliedType = SuppliedType.Regular<Rational>(
-        kClass = Rational::class,
+        fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
         typeArguments = emptyList(),
         isNullable = false,
     )

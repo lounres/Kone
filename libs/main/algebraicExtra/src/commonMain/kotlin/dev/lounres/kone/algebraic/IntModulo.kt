@@ -15,6 +15,7 @@ import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
@@ -79,8 +80,9 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
 
 public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
     val ring = IntModuloRing(modulus)
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val intModuloSuppliedType = SuppliedType.Regular<Int>(
-        kClass = Int::class,
+        fullyQualifiedName = "kotlin.Int",
         typeArguments = emptyList(),
         isNullable = false,
     )

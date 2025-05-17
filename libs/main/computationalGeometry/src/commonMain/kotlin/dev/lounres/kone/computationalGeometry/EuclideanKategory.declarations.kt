@@ -16,6 +16,7 @@ import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.linearAlgebra.*
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -57,8 +58,9 @@ public interface EuclideanKategory<N> : KoneContext {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<EuclideanKategory<Number>> {
         override val typeKey: SuppliedType.Regular<EuclideanKategory<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = EuclideanKategory::class,
+                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanKategory",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

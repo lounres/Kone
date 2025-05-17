@@ -16,6 +16,7 @@ import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
 import dev.lounres.kone.registry.getOrNull
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
@@ -24,15 +25,17 @@ import kotlin.reflect.KVariance
 
 
 internal val labeledVariableType =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<LabeledVariable>(
-        kClass = LabeledVariable::class,
+        fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledVariable",
         typeArguments = listOf(),
         isNullable = false,
     )
 
 public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor(numberType: SuppliedType<N>) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val polynomialType = SuppliedType.Regular<LabeledPolynomial<N>>(
-        kClass = LabeledPolynomial::class,
+        fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledPolynomial",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -41,8 +44,9 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         ),
         isNullable = false,
     )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val pointType = SuppliedType.Regular<Point<N>>(
-        kClass = Point::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -51,8 +55,9 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         ),
         isNullable = false,
     )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val lineType = SuppliedType.Regular<Line<N>>(
-        kClass = Line::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -61,8 +66,9 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         ),
         isNullable = false,
     )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val quadricType = SuppliedType.Regular<Quadric<N>>(
-        kClass = Quadric::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -95,8 +101,9 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val pointType = SuppliedType.Regular<Point<N>>(
-        kClass = Point::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -105,8 +112,9 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         ),
         isNullable = false,
     )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val lineType = SuppliedType.Regular<Line<N>>(
-        kClass = Line::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
@@ -115,8 +123,9 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         ),
         isNullable = false,
     )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val quadricType = SuppliedType.Regular<Quadric<N>>(
-        kClass = Quadric::class,
+        fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,

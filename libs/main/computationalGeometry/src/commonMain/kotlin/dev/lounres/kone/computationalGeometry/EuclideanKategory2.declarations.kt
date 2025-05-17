@@ -20,6 +20,7 @@ import dev.lounres.kone.linearAlgebra.times
 import dev.lounres.kone.linearAlgebra.unaryMinus
 import dev.lounres.kone.linearAlgebra.vectorKategory
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -49,8 +50,9 @@ public interface EuclideanKategory2<N> : KoneContext {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<EuclideanKategory2<Number>> {
         override val typeKey: SuppliedType.Regular<EuclideanKategory2<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = EuclideanKategory2::class,
+                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanKategory2",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

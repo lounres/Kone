@@ -23,6 +23,7 @@ import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.relations.installAbsoluteEqualityFor
 import dev.lounres.kone.relations.installDefaultHashingFor
 import dev.lounres.kone.relations.installReificationFor
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -256,8 +257,9 @@ internal class AbstractPolytopicConstructionSerializer<Number>(
 }
 
 internal fun <Number> abstractPolytopicConstructionPolytopeSuppliedTypeFor(numberSuppliedType: SuppliedType<Number>): SuppliedType<AbstractPolytopicConstructionPolytope<Number>> =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<AbstractPolytopicConstructionPolytope<Number>>(
-        kClass = AbstractPolytopicConstructionPolytope::class,
+        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,
@@ -268,8 +270,9 @@ internal fun <Number> abstractPolytopicConstructionPolytopeSuppliedTypeFor(numbe
     )
 
 internal fun <Number> abstractPolytopicConstructionVertexSuppliedTypeFor(numberSuppliedType: SuppliedType<Number>): SuppliedType<AbstractPolytopicConstructionVertex<Number>> =
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular<AbstractPolytopicConstructionVertex<Number>>(
-        kClass = AbstractPolytopicConstructionVertex::class,
+        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,

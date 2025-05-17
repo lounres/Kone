@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -115,9 +116,10 @@ public interface Field<Number> : Ring<Number> {
     public class Key<Number>(
         elementType: SuppliedType<Number>,
     ) : RegistryKey<Field<Number>> {
+        @OptIn(DelicateSuppliedTypeConstructor::class)
         override val typeKey: SuppliedType.Regular<Field<Number>> =
             SuppliedType.Regular(
-                kClass = Field::class,
+                fullyQualifiedName = "dev.lounres.kone.algebraic.Field",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

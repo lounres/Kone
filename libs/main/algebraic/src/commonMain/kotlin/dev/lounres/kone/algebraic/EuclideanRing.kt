@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
@@ -58,9 +59,10 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
     public class Key<Number>(
         elementType: SuppliedType<Number>,
     ) : RegistryKey<EuclideanSemiring<Number>> {
+        @OptIn(DelicateSuppliedTypeConstructor::class)
         override val typeKey: SuppliedType.Regular<EuclideanSemiring<Number>> =
             SuppliedType.Regular(
-                kClass = EuclideanSemiring::class,
+                fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanSemiring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -106,9 +108,10 @@ public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number>
     public class Key<Number>(
         elementType: SuppliedType<Number>,
     ) : RegistryKey<EuclideanRing<Number>> {
+        @OptIn(DelicateSuppliedTypeConstructor::class)
         override val typeKey: SuppliedType.Regular<EuclideanRing<Number>> =
             SuppliedType.Regular(
-                kClass = EuclideanRing::class,
+                fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanRing",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

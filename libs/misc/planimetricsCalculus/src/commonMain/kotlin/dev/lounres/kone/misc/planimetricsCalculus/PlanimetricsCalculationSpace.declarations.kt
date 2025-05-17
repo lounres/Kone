@@ -19,6 +19,7 @@ import dev.lounres.kone.polynomial.asLabeledPolynomial
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
 import dev.lounres.kone.polynomial.polynomialOne
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
@@ -118,8 +119,9 @@ public class PlanimetricsCalculationSpace<Number>(
         elementType: SuppliedType<Number>,
     ) : RegistryKey<PlanimetricsCalculationSpace<Number>> {
         override val typeKey: SuppliedType.Regular<PlanimetricsCalculationSpace<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = PlanimetricsCalculationSpace::class,
+                fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.PlanimetricsCalculationSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

@@ -9,6 +9,7 @@ import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -193,8 +194,9 @@ public interface Ring<Number> : Semiring<Number> {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<Ring<Number>> {
         override val typeKey: SuppliedType.Regular<Ring<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = Ring::class,
+                fullyQualifiedName = "dev.lounres.kone.algebraic.Ring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

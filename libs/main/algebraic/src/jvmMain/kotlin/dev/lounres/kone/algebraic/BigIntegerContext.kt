@@ -16,6 +16,7 @@ import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import java.math.BigInteger
 
@@ -107,8 +108,9 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  * - [Hashing].
  */
 public fun KoneContextRegistryBuilder.installBigIntegerContext() {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigIntegerSuppliedType = SuppliedType.Regular<BigInteger>(
-        kClass = BigInteger::class,
+        fullyQualifiedName = "java.math.BigInteger",
         typeArguments = emptyList(),
         isNullable = false,
     )

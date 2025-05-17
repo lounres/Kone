@@ -15,6 +15,7 @@ import dev.lounres.kone.contexts.loadOrDefault
 import dev.lounres.kone.contexts.loadOrElse
 import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -44,8 +45,9 @@ public interface Equality<in Element> : KoneContext {
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Equality<Element>> {
         override val typeKey: SuppliedType.Regular<Equality<Element>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = Equality::class,
+                fullyQualifiedName = "dev.lounres.kone.relations.Equality",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

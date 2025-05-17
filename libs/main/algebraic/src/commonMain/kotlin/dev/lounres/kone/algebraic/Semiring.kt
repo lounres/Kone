@@ -10,6 +10,7 @@ import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -190,8 +191,9 @@ public interface Semiring<Number> : Equality<Number> {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<Semiring<Number>> {
         override val typeKey: SuppliedType.Regular<Semiring<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = Semiring::class,
+                fullyQualifiedName = "dev.lounres.kone.algebraic.Semiring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

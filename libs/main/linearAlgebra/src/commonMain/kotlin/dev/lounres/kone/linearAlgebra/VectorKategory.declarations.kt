@@ -17,6 +17,7 @@ import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList2Producer
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -55,8 +56,9 @@ public interface VectorKategory<N> : KoneContext {
         elementType: SuppliedType<Number>,
     ) : RegistryKey<VectorKategory<Number>> {
         override val typeKey: SuppliedType.Regular<VectorKategory<Number>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = VectorKategory::class,
+                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.VectorKategory",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,

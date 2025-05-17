@@ -18,6 +18,7 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
@@ -63,8 +64,9 @@ public interface Reification<out Element> : KoneContext {
         elementType: SuppliedType<Element>,
     ) : RegistryKey<Reification<Element>> {
         override val typeKey: SuppliedType.Regular<Reification<Element>> =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                kClass = Reification::class,
+                fullyQualifiedName = "dev.lounres.kone.relations.Equality",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
