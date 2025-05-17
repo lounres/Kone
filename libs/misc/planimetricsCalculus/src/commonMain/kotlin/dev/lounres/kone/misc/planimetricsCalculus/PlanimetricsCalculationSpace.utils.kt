@@ -26,15 +26,15 @@ import kotlin.reflect.KVariance
 
 internal val labeledVariableType =
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular<LabeledVariable>(
+    SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledVariable",
         typeArguments = listOf(),
         isNullable = false,
     )
 
-public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor(numberType: SuppliedType<N>) {
+public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val polynomialType = SuppliedType.Regular<LabeledPolynomial<N>>(
+    val polynomialType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledPolynomial",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -45,7 +45,7 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         isNullable = false,
     )
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val pointType = SuppliedType.Regular<Point<N>>(
+    val pointType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -56,7 +56,7 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         isNullable = false,
     )
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val lineType = SuppliedType.Regular<Line<N>>(
+    val lineType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -67,7 +67,7 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         isNullable = false,
     )
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val quadricType = SuppliedType.Regular<Quadric<N>>(
+    val quadricType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -77,32 +77,32 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         ),
         isNullable = false,
     )
-    val numberRing = contextsBuilder[Ring.Key(numberType)]
-    val polynomialSpace = contextsBuilder.getOrNull(MultivariatePolynomialSpace.Key(numberType, labeledVariableType, polynomialType)) ?: numberRing.labeledPolynomialSpace
-    val polynomialVectorKategory = contextsBuilder.getOrNull(VectorKategory.Key(polynomialType)) ?: polynomialSpace.vectorKategory()
+    val numberRing = contextsBuilder[Ring.Key<N>(numberType)]
+    val polynomialSpace = contextsBuilder.getOrNull(MultivariatePolynomialSpace.Key<N, LabeledVariable, LabeledPolynomial<N>>(numberType, labeledVariableType, polynomialType)) ?: numberRing.labeledPolynomialSpace
+    val polynomialVectorKategory = contextsBuilder.getOrNull(VectorKategory.Key<LabeledPolynomial<N>>(polynomialType)) ?: polynomialSpace.vectorKategory()
     val planimetricsCalculationSpace = PlanimetricsCalculationSpace(numberRing, polynomialSpace, polynomialVectorKategory)
     val pointEquality = pointEquality(polynomialSpace)
     val lineEquality = lineEquality(polynomialSpace)
     val quadricEquality = quadricEquality(polynomialSpace)
-    contextsBuilder[PlanimetricsCalculationSpace.Key(numberType)] = planimetricsCalculationSpace
-    contextsBuilder[Equality.Key(pointType)] = pointEquality
-    contextsBuilder[Equality.Key(lineType)] = lineEquality
-    contextsBuilder[Equality.Key(quadricType)] = quadricEquality
+    contextsBuilder[PlanimetricsCalculationSpace.Key<N>(numberType)] = planimetricsCalculationSpace
+    contextsBuilder[Equality.Key<Point<N>>(pointType)] = pointEquality
+    contextsBuilder[Equality.Key<Line<N>>(lineType)] = lineEquality
+    contextsBuilder[Equality.Key<Quadric<N>>(quadricType)] = quadricEquality
 }
 
-public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceFor(numberType: SuppliedType<N>, block: context(PlanimetricsCalculationSpace<N>) () -> R): R {
+public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceFor(numberType: SuppliedType, block: context(PlanimetricsCalculationSpace<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(this.contexts[PlanimetricsCalculationSpace.Key(numberType)])
+    return block(this.contexts[PlanimetricsCalculationSpace.Key<N>(numberType)])
 }
 
-public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(numberType: SuppliedType<N>, block: context(PlanimetricsCalculationSpace<N>, Equality<Point<N>>, Equality<Line<N>>, Equality<Quadric<N>>) () -> R): R {
+public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(numberType: SuppliedType, block: context(PlanimetricsCalculationSpace<N>, Equality<Point<N>>, Equality<Line<N>>, Equality<Quadric<N>>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val pointType = SuppliedType.Regular<Point<N>>(
+    val pointType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -113,7 +113,7 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         isNullable = false,
     )
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val lineType = SuppliedType.Regular<Line<N>>(
+    val lineType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -124,7 +124,7 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         isNullable = false,
     )
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val quadricType = SuppliedType.Regular<Quadric<N>>(
+    val quadricType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -135,9 +135,9 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         isNullable = false,
     )
     return block(
-        this.contexts[PlanimetricsCalculationSpace.Key(numberType)],
-        this.contexts[Equality.Key(pointType)],
-        this.contexts[Equality.Key(lineType)],
-        this.contexts[Equality.Key(quadricType)],
+        this.contexts[PlanimetricsCalculationSpace.Key<N>(numberType)],
+        this.contexts[Equality.Key<Point<N>>(pointType)],
+        this.contexts[Equality.Key<Line<N>>(lineType)],
+        this.contexts[Equality.Key<Quadric<N>>(quadricType)],
     )
 }

@@ -114,10 +114,10 @@ public interface Field<Number> : Ring<Number> {
      * Registry key for [Field] interface in [KoneContextRegistry].
      */
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<Field<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular<Field<Number>> =
+        override val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Field",
                 typeArguments = listOf(

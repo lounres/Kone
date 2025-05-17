@@ -144,7 +144,7 @@ internal fun <
                 normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
             }
 
-            val newVertices: KoneList<Vertex> = giftWrappingAtom(
+            val newVertices: KoneList<Vertex> = giftWrappingAtom<Number, Polytope, Vertex>(
                 startPoint = startPoint,
                 normalGiftWrappingVector = normalGiftWrappingVector,
                 tangentGiftWrappingVector = tangentGiftWrappingVector,
@@ -399,8 +399,8 @@ public fun <
     Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
     Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
 > ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
-    vertexSuppliedType: SuppliedType<Vertex>,
-    polytopeSuppliedType: SuppliedType<Polytope>,
+    vertexSuppliedType: SuppliedType,
+    polytopeSuppliedType: SuppliedType,
     vertexReification: Reification<Vertex>,
     vertexEquality: Equality<Vertex>,
     polytopeReification: Reification<Polytope>,
@@ -411,12 +411,12 @@ public fun <
     return giftWrappingFull(
         vertexReification = vertexReification,
         vertexEquality = vertexEquality,
-        vertexHashing = koneContextRegistry.load(Hashing.Key(vertexSuppliedType)),
-        vertexOrder = koneContextRegistry.load(Order.Key(vertexSuppliedType)),
+        vertexHashing = koneContextRegistry.load(Hashing.Key<Vertex>(vertexSuppliedType)),
+        vertexOrder = koneContextRegistry.load(Order.Key<Vertex>(vertexSuppliedType)),
         polytopeReification = polytopeReification,
         polytopeEquality = polytopeEquality,
-        polytopeHashing = koneContextRegistry.load(Hashing.Key(polytopeSuppliedType)),
-        polytopeOrder = koneContextRegistry.load(Order.Key(polytopeSuppliedType)),
+        polytopeHashing = koneContextRegistry.load(Hashing.Key<Polytope>(polytopeSuppliedType)),
+        polytopeOrder = koneContextRegistry.load(Order.Key<Polytope>(polytopeSuppliedType)),
         subspaceDimension = spaceDimension,
         points = vertices,
     ).polytope

@@ -47,7 +47,7 @@ public fun <Key, Value> KoneMap.Companion.of(
 @Suppress("unused")
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMap.Companion.contextualOf(
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMap<Key, Value> = KoneMap.empty()
 
 @Suppress("unused")
@@ -67,7 +67,7 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneReifiedMap.Companion.contextualOf(
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneReifiedMap<Key, Value> =
     KoneReifiedMap.of(
         keyReification = koneContextRegistry.loadReificationFor(keyType),
@@ -92,7 +92,7 @@ public fun <Key, Value> KoneMap.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMap.Companion.contextualOf(
     entry: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entry = entry,
@@ -151,7 +151,7 @@ public fun <Key, Value> KoneMap.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMap.Companion.contextualOf(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entries = entries,
@@ -202,7 +202,7 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
         keyEquality = koneContextRegistry.loadEqualityFor(keyType),
@@ -243,7 +243,7 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
         entries = entries,
@@ -279,7 +279,7 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
 ): KoneMutableReifiedMap<Key, Value> =
     KoneMutableReifiedMap.of(
         entries = entries,
@@ -507,7 +507,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
 
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneMap.Companion.buildContextual(
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
@@ -546,7 +546,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
 
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
@@ -573,7 +573,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneMap.Companion.buildContextual(
     initialCapacity: UInt,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
@@ -617,7 +617,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
     initialCapacity: UInt,
-    keyType: SuppliedType<Key>,
+    keyType: SuppliedType,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(

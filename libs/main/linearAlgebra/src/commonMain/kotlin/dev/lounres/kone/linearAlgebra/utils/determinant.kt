@@ -34,9 +34,9 @@ public interface DeterminantComputer<Number> {
     public val Matrix<Number>.det: Number
     
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<DeterminantComputer<Number>> {
-        override val typeKey: SuppliedType.Regular<DeterminantComputer<Number>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.linearAlgebra.utils.DeterminantComputer",
@@ -77,9 +77,9 @@ public val <Number> Ring<Number>.determinantViaLeibnizFormulaComputer: Determina
     get() = DeterminantViaLeibnizFormulaComputer(this)
 
 public fun <Number> KoneContextRegistryBuilder.installDeterminantViaLeibnizFormulaComputer(
-    numberType: SuppliedType<Number>,
+    numberType: SuppliedType,
 ) {
-    contextsBuilder[DeterminantComputer.Key(numberType)] = contextsBuilder[Ring.Key(numberType)].determinantViaLeibnizFormulaComputer
+    contextsBuilder[DeterminantComputer.Key<Number>(numberType)] = contextsBuilder[Ring.Key<Number>(numberType)].determinantViaLeibnizFormulaComputer
 }
 
 context(_: Field<Number>)
@@ -130,9 +130,9 @@ public val <Number> Field<Number>.determinantViaGaussianEliminationComputer: Det
     get() = DeterminantViaGaussianEliminationComputer(this)
 
 public fun <Number> KoneContextRegistryBuilder.installDeterminantViaGaussianEliminationComputer(
-    numberType: SuppliedType<Number>,
+    numberType: SuppliedType,
 ) {
-    contextsBuilder[DeterminantComputer.Key(numberType)] = contextsBuilder[Field.Key(numberType)].determinantViaGaussianEliminationComputer
+    contextsBuilder[DeterminantComputer.Key<Number>(numberType)] = contextsBuilder[Field.Key<Number>(numberType)].determinantViaGaussianEliminationComputer
 }
 
 //context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>)

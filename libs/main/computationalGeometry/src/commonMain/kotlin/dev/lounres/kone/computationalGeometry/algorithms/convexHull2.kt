@@ -143,7 +143,7 @@ internal fun <
                 normalGiftWrapping2Vector = orthogonalizedBasis[subspaceDimension-1u]
             }
 
-            val newVertices: KoneList<Vertex> = giftWrapping2Atom(
+            val newVertices: KoneList<Vertex> = giftWrapping2Atom<Number, Polytope, Vertex>(
                 startPoint = startPoint,
                 normalGiftWrapping2Vector = normalGiftWrapping2Vector,
                 tangentGiftWrapping2Vector = tangentGiftWrapping2Vector,
@@ -398,8 +398,8 @@ public fun <
     Polytope: PolytopicConstruction2Polytope<Number, Polytope, Vertex>,
     Vertex: PolytopicConstruction2Vertex<Number, Polytope, Vertex>,
 > ExtendablePolytopicConstruction2<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping2(
-    vertexSuppliedType: SuppliedType<Vertex>,
-    polytopeSuppliedType: SuppliedType<Polytope>,
+    vertexSuppliedType: SuppliedType,
+    polytopeSuppliedType: SuppliedType,
     vertexReification: Reification<Vertex>,
     vertexEquality: Equality<Vertex>,
     polytopeReification: Reification<Polytope>,
@@ -410,12 +410,12 @@ public fun <
     return giftWrapping2Full(
         vertexReification = vertexReification,
         vertexEquality = vertexEquality,
-        vertexHashing = koneContextRegistry.load(Hashing.Key(vertexSuppliedType)),
-        vertexOrder = koneContextRegistry.load(Order.Key(vertexSuppliedType)),
+        vertexHashing = koneContextRegistry.load(Hashing.Key<Vertex>(vertexSuppliedType)),
+        vertexOrder = koneContextRegistry.load(Order.Key<Vertex>(vertexSuppliedType)),
         polytopeReification = polytopeReification,
         polytopeEquality = polytopeEquality,
-        polytopeHashing = koneContextRegistry.load(Hashing.Key(polytopeSuppliedType)),
-        polytopeOrder = koneContextRegistry.load(Order.Key(polytopeSuppliedType)),
+        polytopeHashing = koneContextRegistry.load(Hashing.Key<Polytope>(polytopeSuppliedType)),
+        polytopeOrder = koneContextRegistry.load(Order.Key<Polytope>(polytopeSuppliedType)),
         subspaceDimension = 2u,
         points = vertices,
     ).polytope

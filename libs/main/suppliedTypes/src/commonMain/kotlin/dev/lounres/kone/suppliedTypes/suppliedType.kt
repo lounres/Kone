@@ -20,7 +20,7 @@ public annotation class DelicateSuppliedTypeConstructor
  * Represents a fully defined type expression. Its instances are called "type suppliers".
  */
 @Serializable
-public sealed interface SuppliedType<T> {
+public sealed interface SuppliedType {
     /**
      * Represents a regular type expression that is a classifier (class or interface) with type arguments.
      *
@@ -32,11 +32,11 @@ public sealed interface SuppliedType<T> {
      * @param isNullable defines if the type supplier describes nullable type.
      */
     @Serializable
-    public class Regular<T> @DelicateSuppliedTypeConstructor constructor(
+    public class Regular @DelicateSuppliedTypeConstructor constructor(
         public val fullyQualifiedName: String,
         public val typeArguments: List<SuppliedProjection>,
         public val isNullable: Boolean,
-    ) : SuppliedType<T> {
+    ) : SuppliedType {
         override fun toString(): String =
             "$fullyQualifiedName${
                 if (typeArguments.isEmpty()) ""
@@ -44,7 +44,7 @@ public sealed interface SuppliedType<T> {
             }${if (isNullable) "?" else ""}"
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Regular<*>) return false
+            if (other !is Regular) return false
             
             if (fullyQualifiedName != other.fullyQualifiedName) return false
             if (typeArguments != other.typeArguments) return false
@@ -58,7 +58,7 @@ public sealed interface SuppliedType<T> {
      * Represents dynamic type expression.
      */
     @Serializable
-    public data object Dynamic : SuppliedType<Nothing> {
+    public data object Dynamic : SuppliedType {
         override fun toString(): String = "dynamic"
     }
 }
@@ -78,7 +78,7 @@ public sealed interface SuppliedProjection {
      * @param type ia a backing type supplier.
      */
     @Serializable
-    public data class Regular(val variance: KVariance, val type: SuppliedType<*>) : SuppliedProjection {
+    public data class Regular(val variance: KVariance, val type: SuppliedType) : SuppliedProjection {
         override fun toString(): String =
             "${
                 when (variance) {
@@ -101,5 +101,5 @@ public sealed interface SuppliedProjection {
 @Target(AnnotationTarget.TYPE_PARAMETER)
 public annotation class Supplied(/*val parameterName: String = ""*/)
 
-public fun <@Supplied T> suppliedTypeOf(): SuppliedType<T> =
+public fun <@Supplied T> suppliedTypeOf(): SuppliedType =
     error("Intrinsic function call was not substituted. Be sure to apply supplied types compiler plugin.")

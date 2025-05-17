@@ -55,9 +55,9 @@ public interface EuclideanKategory<N> : KoneContext {
     public infix fun Vector<N>.dot(other: Vector<N>): N
     
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<EuclideanKategory<Number>> {
-        override val typeKey: SuppliedType.Regular<EuclideanKategory<Number>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanKategory",

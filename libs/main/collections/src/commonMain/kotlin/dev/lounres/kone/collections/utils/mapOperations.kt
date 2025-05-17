@@ -61,7 +61,7 @@ public inline fun <K, V> KoneMap<K, V>.withChanged(
 context(_: KoneContextRegistry)
 public inline fun <K, V> KoneMap<K, V>.withChangedContextual(
     key: K,
-    keyType: SuppliedType<K>,
+    keyType: SuppliedType,
     transform: (currentValue: V) -> V
 ): KoneMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
     KoneMap.buildContextual(initialCapacity = size, keyType = keyType) {
@@ -101,7 +101,7 @@ public inline fun <reified K, V> KoneMap<K, V>.withChangedReified(
 context(_: KoneContextRegistry)
 public inline fun <K, V> KoneMap<K, V>.withChangedContextualReified(
     key: K,
-    keyType: SuppliedType<K>,
+    keyType: SuppliedType,
     transform: (currentValue: V) -> V
 ): KoneReifiedMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
     KoneReifiedMap.buildContextual(initialCapacity = size, keyType = keyType) {

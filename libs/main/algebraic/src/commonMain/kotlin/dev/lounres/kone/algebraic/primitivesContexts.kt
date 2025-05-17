@@ -133,7 +133,7 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  */
 public fun KoneContextRegistryBuilder.installByteContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val byteSuppliedType = SuppliedType.Regular<Byte>(
+    val byteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Byte",
         typeArguments = emptyList(),
         isNullable = false,
@@ -258,7 +258,7 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  */
 public fun KoneContextRegistryBuilder.installShortContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val shortSuppliedType = SuppliedType.Regular<Short>(
+    val shortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Short",
         typeArguments = emptyList(),
         isNullable = false,
@@ -371,7 +371,7 @@ public val Int.Companion.context: IntContext get() = IntContext
  */
 public fun KoneContextRegistryBuilder.installIntContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val intSuppliedType = SuppliedType.Regular<Int>(
+    val intSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Int",
         typeArguments = emptyList(),
         isNullable = false,
@@ -484,7 +484,7 @@ public val Long.Companion.context: LongContext get() = LongContext
  */
 public fun KoneContextRegistryBuilder.installLongContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val longSuppliedType = SuppliedType.Regular<Long>(
+    val longSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Long",
         typeArguments = emptyList(),
         isNullable = false,
@@ -583,7 +583,7 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  */
 public fun KoneContextRegistryBuilder.installUByteContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uByteSuppliedType = SuppliedType.Regular<UByte>(
+    val uByteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UByte",
         typeArguments = emptyList(),
         isNullable = false,
@@ -680,7 +680,7 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  */
 public fun KoneContextRegistryBuilder.installUShortContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uShortSuppliedType = SuppliedType.Regular<UShort>(
+    val uShortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UShort",
         typeArguments = emptyList(),
         isNullable = false,
@@ -767,7 +767,7 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  */
 public fun KoneContextRegistryBuilder.installUIntContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uIntSuppliedType = SuppliedType.Regular<UInt>(
+    val uIntSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UInt",
         typeArguments = emptyList(),
         isNullable = false,
@@ -854,7 +854,7 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  */
 public fun KoneContextRegistryBuilder.installULongContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uLongSuppliedType = SuppliedType.Regular<ULong>(
+    val uLongSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.ULong",
         typeArguments = emptyList(),
         isNullable = false,
@@ -992,7 +992,7 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  */
 public fun KoneContextRegistryBuilder.installDoubleContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val doubleSuppliedType = SuppliedType.Regular<Double>(
+    val doubleSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Double",
         typeArguments = emptyList(),
         isNullable = false,
@@ -1131,7 +1131,7 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  */
 public fun KoneContextRegistryBuilder.installFloatContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val floatSuppliedType = SuppliedType.Regular<Float>(
+    val floatSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Float",
         typeArguments = emptyList(),
         isNullable = false,

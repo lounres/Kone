@@ -57,10 +57,10 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
      * Registry key for [EuclideanSemiring] interface in [KoneContextRegistry].
      */
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<EuclideanSemiring<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular<EuclideanSemiring<Number>> =
+        override val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanSemiring",
                 typeArguments = listOf(
@@ -106,10 +106,10 @@ public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number>
      * Registry key for [EuclideanRing] interface in [KoneContextRegistry].
      */
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<EuclideanRing<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular<EuclideanRing<Number>> =
+        override val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanRing",
                 typeArguments = listOf(

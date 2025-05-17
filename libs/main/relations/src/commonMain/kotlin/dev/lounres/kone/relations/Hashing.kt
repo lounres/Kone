@@ -40,9 +40,9 @@ public interface Hashing<in Element> : KoneContext {
      * Registry key for [Hashing] interface in [KoneContextRegistry].
      */
     public class Key<Element>(
-        elementType: SuppliedType<Element>,
+        elementType: SuppliedType,
     ) : RegistryKey<Hashing<Element>> {
-        override val typeKey: SuppliedType.Regular<Hashing<Element>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.relations.Equality",
@@ -61,27 +61,27 @@ public interface Hashing<in Element> : KoneContext {
  * Shortcut for getting [Hashing] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingFor(suppliedElementType: SuppliedType<Element>): Hashing<Element> = load(Hashing.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.loadHashingFor(suppliedElementType: SuppliedType): Hashing<Element> = load(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingForOrNull(suppliedElementType: SuppliedType<Element>): Hashing<Element>? = loadOrNull(Hashing.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.loadHashingForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? = loadOrNull(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingForOrDefault(suppliedElementType: SuppliedType<Element>, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.loadHashingForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(suppliedElementType), block)
 
 /**
  * Installs default [Hashing] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType<Element>) {
+public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType) {
     contextsBuilder[Hashing.Key(suppliedElementType)] = defaultHashing<Element>()
 }
 

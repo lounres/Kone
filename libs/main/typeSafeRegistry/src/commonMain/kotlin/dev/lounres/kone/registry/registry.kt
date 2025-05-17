@@ -26,7 +26,7 @@ public interface RegistryKeyContext {
      *
      * This hash code is used by [Registry] to decide how the keys are stored and what value to retrieve by the key.
      */
-    public fun hashCodeOf(any: RegistryKey<*>): Int
+    public fun hashCodeOf(key: RegistryKey<*>): Int
 }
 
 /**
@@ -45,7 +45,7 @@ public interface RegistryKey<T> {
     /**
      * Type supplier that describes type argument [T] to distinguish similar keys of different type argument.
      */
-    public val typeKey: SuppliedType.Regular<T>
+    public val typeKey: SuppliedType.Regular
     
     /**
      * Key context that describes equality between this key and the others.
@@ -118,7 +118,7 @@ public inline fun Registry(block: RegistryBuilder.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return RegistryImpl(RegistryBuilder().apply(block).toMap())
+    return RegistryBuilder().apply(block).build()
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -135,15 +135,22 @@ internal class RegistryImpl(private val content: Map<RegistryKeyMapWrapper<*>, A
  */
 @Suppress("UNCHECKED_CAST")
 public class RegistryBuilder @PublishedApi internal constructor() : Registry {
-    private val content: MutableMap<RegistryKeyMapWrapper<*>, Any?> = mutableMapOf()
+    private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
     
-    override operator fun <T> contains(registryKey: RegistryKey<T>): Boolean = RegistryKeyMapWrapper(registryKey) in content
-    override operator fun <T> get(registryKey: RegistryKey<T>): T =  content[RegistryKeyMapWrapper(registryKey)] as T
+    override operator fun <T> contains(registryKey: RegistryKey<T>): Boolean {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return RegistryKeyMapWrapper(registryKey) in content
+    }
+    override operator fun <T> get(registryKey: RegistryKey<T>): T {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content[RegistryKeyMapWrapper(registryKey)] as T
+    }
     
     /**
      * Associates provided [registryKey] with provided [value] overriding existing association of the [registryKey].
      */
     public operator fun <T> set(registryKey: RegistryKey<T>, value: T) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         content[RegistryKeyMapWrapper(registryKey)] = value
     }
     
@@ -151,6 +158,7 @@ public class RegistryBuilder @PublishedApi internal constructor() : Registry {
      * Associates [this] registry key with provided [value] overriding existing association of [this] registry key.
      */
     public infix fun <T> RegistryKey<T>.correspondsTo(value: T) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         content[RegistryKeyMapWrapper(this)] = value
     }
     
@@ -158,9 +166,21 @@ public class RegistryBuilder @PublishedApi internal constructor() : Registry {
      * Copies associations from the [from] registry overriding existing ones if needed.
      */
     public fun setFrom(from: Registry) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         content.putAll(from.toMap())
     }
     
-    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = content.toMap()
+    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content.toMap()
+    }
+    
+    @PublishedApi
+    internal fun build(): Registry {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        val result = RegistryImpl(content)
+        this.content = null
+        return result
+    }
 }
 

@@ -109,7 +109,7 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  */
 public fun KoneContextRegistryBuilder.installBigIntegerContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val bigIntegerSuppliedType = SuppliedType.Regular<BigInteger>(
+    val bigIntegerSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "java.math.BigInteger",
         typeArguments = emptyList(),
         isNullable = false,

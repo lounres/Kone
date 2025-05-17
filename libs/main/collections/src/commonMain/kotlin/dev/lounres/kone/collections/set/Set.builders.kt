@@ -55,7 +55,7 @@ public fun <Element> KoneSet.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneSet.Companion.contextualOf(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneSet<Element> =
     KoneSet.of(
         elementEquality = koneContextRegistry.loadEqualityFor(elementType),
@@ -80,7 +80,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneReifiedSet.Companion.contextualOf(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
         elementReification = koneContextRegistry.loadReificationFor(elementType),
@@ -100,7 +100,7 @@ public fun <Element> KoneSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneSet.Companion.contextualOf(
     element: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneSet<Element> =
     KoneSet.of(
         element = element,
@@ -130,7 +130,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneReifiedSet.Companion.contextualOf(
     element: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
         element = element,
@@ -158,7 +158,7 @@ public fun <Element> KoneSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneSet.Companion.contextualOf(
     vararg elements: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneSet<Element> =
     KoneSet.of(
         elements = elements,
@@ -202,7 +202,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneReifiedSet.Companion.contextualOf(
     vararg elements: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
         elements = elements,
@@ -222,7 +222,7 @@ public fun <Element> KoneMutableSet.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneMutableSet.Companion.contextualOf(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableSet<Element> =
     KoneMutableSet.of(
         elementEquality = koneContextRegistry.loadEqualityFor(elementType),
@@ -252,7 +252,7 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableReifiedSet<Element> =
     KoneMutableReifiedSet.of(
         elementReification = koneContextRegistry.loadReificationFor(elementType),
@@ -279,7 +279,7 @@ public fun <Element> KoneMutableSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneMutableSet.Companion.contextualOf(
     vararg elements: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableSet<Element> =
     KoneMutableSet.of(
         elements = elements,
@@ -328,7 +328,7 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
     vararg elements: Element,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableReifiedSet<Element> =
     KoneMutableReifiedSet.of(
         elements = elements,
@@ -354,7 +354,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualMutableSet(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableSet<Element> =
     toKoneMutableSet(
         elementEquality = koneContextRegistry.loadEqualityFor(elementType),
@@ -391,7 +391,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableReifiedSet(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneMutableReifiedSet<Element> =
     toKoneMutableReifiedSet(
         elementReification = koneContextRegistry.loadReificationFor(elementType),
@@ -413,7 +413,7 @@ public fun <Element> KoneIterable<Element>.toKoneSet(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualSet(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneSet<Element> =
     toKoneSet(
         elementEquality = koneContextRegistry.loadEqualityFor(elementType),
@@ -456,7 +456,7 @@ public fun <Element> KoneIterable<Element>.toKoneReifiedSet(
 
 context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> KoneIterable<Element>.toKoneContextualReifiedSet(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     toKoneReifiedSet(
         elementReification = koneContextRegistry.loadReificationFor(elementType),
@@ -651,7 +651,7 @@ public inline fun <Element> KoneSet.Companion.build(
 @OptIn(ExperimentalTypeInference::class)
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneSet.Companion.buildContextual(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
     @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> =
     KoneSet.build(
@@ -695,7 +695,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
 @OptIn(ExperimentalTypeInference::class)
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
     @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
@@ -726,7 +726,7 @@ public inline fun <Element> KoneSet.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneSet.Companion.buildContextual(
     initialCapacity: UInt,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
     @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> =
     KoneSet.build(
@@ -775,7 +775,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
     initialCapacity: UInt,
-    elementType: SuppliedType<Element>,
+    elementType: SuppliedType,
     @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(

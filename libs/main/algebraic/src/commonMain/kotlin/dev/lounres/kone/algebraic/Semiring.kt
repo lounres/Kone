@@ -188,9 +188,9 @@ public interface Semiring<Number> : Equality<Number> {
      * Registry key for [Semiring] interface in [KoneContextRegistry].
      */
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<Semiring<Number>> {
-        override val typeKey: SuppliedType.Regular<Semiring<Number>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Semiring",

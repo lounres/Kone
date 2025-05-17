@@ -35,25 +35,25 @@ public fun <N> Ring<N>.euclideanKategory2(
 ): EuclideanKategory2<N> =
     EuclideanKategory2WithNumberRingAndVectorKategory(this, vectorKategory)
 
-public fun <N> KoneContextRegistryBuilder.installEuclideanKategory2For(numberType: SuppliedType<N>) {
-    val euclideanKategory2 = contextsBuilder[Ring.Key(numberType)].euclideanKategory2(contextsBuilder[VectorKategory.Key(numberType)])
-    contextsBuilder[EuclideanKategory2.Key(numberType)] = euclideanKategory2
+public fun <N> KoneContextRegistryBuilder.installEuclideanKategory2For(numberType: SuppliedType) {
+    val euclideanKategory2 = contextsBuilder[Ring.Key<N>(numberType)].euclideanKategory2(contextsBuilder[VectorKategory.Key<N>(numberType)])
+    contextsBuilder[EuclideanKategory2.Key<N>(numberType)] = euclideanKategory2
 }
 
-public inline fun <N, R> KoneContextRegistry.inEuclideanKategory2For(numberType: SuppliedType<N>, block: context(EuclideanKategory2<N>) () -> R): R {
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategory2For(numberType: SuppliedType, block: context(EuclideanKategory2<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(contexts[EuclideanKategory2.Key(numberType)])
+    return block(contexts[EuclideanKategory2.Key<N>(numberType)])
 }
 
-public inline fun <N, R> KoneContextRegistry.inEuclideanKategoryScope2For(numberType: SuppliedType<N>, block: context(Ring<N>, Order<N>, EuclideanKategory2<N>) () -> R): R {
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategoryScope2For(numberType: SuppliedType, block: context(Ring<N>, Order<N>, EuclideanKategory2<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     return block(
         contexts[Ring.Key(numberType)],
         contexts[Order.Key(numberType)],
-        contexts[EuclideanKategory2.Key(numberType)]
+        contexts[EuclideanKategory2.Key<N>(numberType)]
     )
 }

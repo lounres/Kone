@@ -731,7 +731,7 @@ public inline fun <E, K> KoneIterable<E>.groupBy(
 
 context(_: KoneContextRegistry)
 public inline fun <E, K> KoneIterable<E>.groupContextualBy(
-    keyType: SuppliedType<K>,
+    keyType: SuppliedType,
     keySelector: (E) -> K
 ): KoneMap<K, KoneList<E>> =
     groupByTo(
@@ -760,7 +760,7 @@ public inline fun <E, K, V> KoneIterable<E>.groupBy(
 
 context(_: KoneContextRegistry)
 public inline fun <E, K, V> KoneIterable<E>.groupContextualBy(
-    keyType: SuppliedType<K>,
+    keyType: SuppliedType,
     keySelector: (E) -> K,
     valueTransform: (E) -> V,
 ): KoneMap<K, KoneList<V>> =

@@ -76,7 +76,7 @@ public class Rational {
 
 public fun KoneContextRegistryBuilder.installRationalContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val rationalSuppliedType = SuppliedType.Regular<Rational>(
+    val rationalSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
         typeArguments = emptyList(),
         isNullable = false,

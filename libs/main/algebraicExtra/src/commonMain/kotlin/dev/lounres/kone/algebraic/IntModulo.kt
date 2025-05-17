@@ -81,7 +81,7 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
 public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
     val ring = IntModuloRing(modulus)
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val intModuloSuppliedType = SuppliedType.Regular<Int>(
+    val intModuloSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Int",
         typeArguments = emptyList(),
         isNullable = false,

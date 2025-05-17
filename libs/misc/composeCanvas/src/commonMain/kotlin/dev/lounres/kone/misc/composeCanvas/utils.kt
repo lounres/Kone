@@ -17,17 +17,17 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-public val floatSuppliedType: SuppliedType<Float> =
+public val floatSuppliedType: SuppliedType =
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular<Float>(
+    SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Float",
         typeArguments = emptyList(),
         isNullable = false,
     )
 
-public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType<AbstractPolytopicConstructionPolytope<Float>> =
+public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType =
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular<AbstractPolytopicConstructionPolytope<Float>>(
+    SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -38,9 +38,9 @@ public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType<Abstr
         isNullable = false,
     )
 
-public val abstractPolytopicConstructionVertexSuppliedType: SuppliedType<AbstractPolytopicConstructionVertex<Float>> =
+public val abstractPolytopicConstructionVertexSuppliedType: SuppliedType =
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular<AbstractPolytopicConstructionVertex<Float>>(
+    SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex",
         typeArguments = listOf(
             SuppliedProjection.Regular(
@@ -53,6 +53,6 @@ public val abstractPolytopicConstructionVertexSuppliedType: SuppliedType<Abstrac
 
 public val koneCanvasContextRegistry: KoneContextRegistry = KoneContextRegistry {
     installFloatContext()
-    installVectorKategoryFor(floatSuppliedType)
-    installEuclideanKategory2For(floatSuppliedType)
+    installVectorKategoryFor<Float>(floatSuppliedType)
+    installEuclideanKategory2For<Float>(floatSuppliedType)
 }

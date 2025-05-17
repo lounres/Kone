@@ -72,11 +72,7 @@ public inline fun KoneContextRegistry(block: KoneContextRegistryBuilder.() -> Un
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return KoneContextRegistry(
-        Registry {
-            KoneContextRegistryBuilder(this).block()
-        }
-    )
+    return KoneContextRegistry(Registry { KoneContextRegistryBuilder(this).block() })
 }
 
 /**

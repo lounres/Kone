@@ -27,32 +27,32 @@ public fun <N> Ring<N>.vectorKategory(
 ): VectorKategory<N> = VectorKategoryWithNumberRing(this, mdListProducer.as1D(), mdListProducer.as2D())
 
 public fun <N> KoneContextRegistryBuilder.installVectorKategoryFor(
-    numberType: SuppliedType<N>,
+    numberType: SuppliedType,
     mdList1Producer: MDList1Producer = ArrayMDList1Producer,
     mdList2Producer: MDList2Producer = ArrayMDList2Producer,
 ) {
-    val vectorKategory = contextsBuilder[Ring.Key(numberType)].vectorKategory(mdList1Producer, mdList2Producer)
-    contextsBuilder[VectorKategory.Key(numberType)] = vectorKategory
+    val vectorKategory = contextsBuilder[Ring.Key<N>(numberType)].vectorKategory(mdList1Producer, mdList2Producer)
+    contextsBuilder[VectorKategory.Key<N>(numberType)] = vectorKategory
 }
 
 public fun <N> KoneContextRegistryBuilder.installVectorKategoryFor(
-    numberType: SuppliedType<N>,
+    numberType: SuppliedType,
     mdListProducer: MDListProducer = ArrayMDListProducer,
 ) {
-    val vectorKategory = contextsBuilder[Ring.Key(numberType)].vectorKategory(mdListProducer)
-    contextsBuilder[VectorKategory.Key(numberType)] = vectorKategory
+    val vectorKategory = contextsBuilder[Ring.Key<N>(numberType)].vectorKategory(mdListProducer)
+    contextsBuilder[VectorKategory.Key<N>(numberType)] = vectorKategory
 }
 
-public fun <N, R> KoneContextRegistry.inVectorKategoryFor(numberType: SuppliedType<N>, block: context(VectorKategory<N>) () -> R): R {
+public fun <N, R> KoneContextRegistry.inVectorKategoryFor(numberType: SuppliedType, block: context(VectorKategory<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(this.contexts[VectorKategory.Key(numberType)])
+    return block(this.contexts[VectorKategory.Key<N>(numberType)])
 }
 
-public fun <N, R> KoneContextRegistry.inVectorKategoryScopeFor(numberType: SuppliedType<N>, block: context(Ring<N>, VectorKategory<N>) () -> R): R {
+public fun <N, R> KoneContextRegistry.inVectorKategoryScopeFor(numberType: SuppliedType, block: context(Ring<N>, VectorKategory<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(this.contexts[Ring.Key(numberType)], this.contexts[VectorKategory.Key(numberType)])
+    return block(this.contexts[Ring.Key<N>(numberType)], this.contexts[VectorKategory.Key<N>(numberType)])
 }

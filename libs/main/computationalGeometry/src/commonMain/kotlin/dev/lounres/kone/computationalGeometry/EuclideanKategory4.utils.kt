@@ -35,25 +35,25 @@ public fun <N> Ring<N>.euclideanKategory4(
 ): EuclideanKategory4<N> =
     EuclideanKategory4WithNumberRingAndVectorKategory(this, vectorKategory)
 
-public fun <N> KoneContextRegistryBuilder.installEuclideanKategory4For(numberType: SuppliedType<N>) {
-    val euclideanKategory4 = contextsBuilder[Ring.Key(numberType)].euclideanKategory4(contextsBuilder[VectorKategory.Key(numberType)])
-    contextsBuilder[EuclideanKategory4.Key(numberType)] = euclideanKategory4
+public fun <N> KoneContextRegistryBuilder.installEuclideanKategory4For(numberType: SuppliedType) {
+    val euclideanKategory4 = contextsBuilder[Ring.Key<N>(numberType)].euclideanKategory4(contextsBuilder[VectorKategory.Key<N>(numberType)])
+    contextsBuilder[EuclideanKategory4.Key<N>(numberType)] = euclideanKategory4
 }
 
-public inline fun <N, R> KoneContextRegistry.inEuclideanKategory4For(numberType: SuppliedType<N>, block: context(EuclideanKategory4<N>) () -> R): R {
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategory4For(numberType: SuppliedType, block: context(EuclideanKategory4<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return block(contexts[EuclideanKategory4.Key(numberType)])
+    return block(contexts[EuclideanKategory4.Key<N>(numberType)])
 }
 
-public inline fun <N, R> KoneContextRegistry.inEuclideanKategoryScope4For(numberType: SuppliedType<N>, block: context(Ring<N>, Order<N>, EuclideanKategory4<N>) () -> R): R {
+public inline fun <N, R> KoneContextRegistry.inEuclideanKategoryScope4For(numberType: SuppliedType, block: context(Ring<N>, Order<N>, EuclideanKategory4<N>) () -> R): R {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     return block(
-        contexts[Ring.Key(numberType)],
-        contexts[Order.Key(numberType)],
-        contexts[EuclideanKategory4.Key(numberType)]
+        contexts[Ring.Key<N>(numberType)],
+        contexts[Order.Key<N>(numberType)],
+        contexts[EuclideanKategory4.Key<N>(numberType)]
     )
 }

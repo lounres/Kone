@@ -33,7 +33,7 @@ internal class MDListSerializer<E>(
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
     
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList") {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList", elementSerializer.descriptor) {
         element("shape", shapeSerializer.descriptor)
         element("content", contentDeserializationStrategy.descriptor)
     }
@@ -94,7 +94,7 @@ internal class SettableMDListSerializer<E>(
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
     
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList") {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList", elementSerializer.descriptor) {
         element("shape", shapeSerializer.descriptor)
         element("content", contentDeserializationStrategy.descriptor)
     }

@@ -53,9 +53,9 @@ public interface VectorKategory<N> : KoneContext {
     public operator fun RowVector<N>.times(other: ColumnVector<N>): N
     
     public class Key<Number>(
-        elementType: SuppliedType<Number>,
+        elementType: SuppliedType,
     ) : RegistryKey<VectorKategory<Number>> {
-        override val typeKey: SuppliedType.Regular<VectorKategory<Number>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.linearAlgebra.VectorKategory",

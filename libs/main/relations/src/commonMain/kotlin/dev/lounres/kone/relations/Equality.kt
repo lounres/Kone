@@ -42,9 +42,9 @@ public interface Equality<in Element> : KoneContext {
      * Registry key for [Equality] interface in [KoneContextRegistry].
      */
     public class Key<Element>(
-        elementType: SuppliedType<Element>,
+        elementType: SuppliedType,
     ) : RegistryKey<Equality<Element>> {
-        override val typeKey: SuppliedType.Regular<Equality<Element>> =
+        override val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.relations.Equality",
@@ -63,33 +63,33 @@ public interface Equality<in Element> : KoneContext {
  * Shortcut for getting [Equality] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityFor(suppliedElementType: SuppliedType<Element>): Equality<Element> = load(Equality.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.loadEqualityFor(suppliedElementType: SuppliedType): Equality<Element> = load(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityForOrNull(suppliedElementType: SuppliedType<Element>): Equality<Element>? = loadOrNull(Equality.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.loadEqualityForOrNull(suppliedElementType: SuppliedType): Equality<Element>? = loadOrNull(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(suppliedElementType: SuppliedType<Element>, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(suppliedElementType: SuppliedType<Element>, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(suppliedElementType), block)
 
 /**
  * Installs default [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType<Element>) {
+public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType) {
     contextsBuilder[Equality.Key(suppliedElementType)] = defaultEquality<Element>()
 }
 /**
  * Installs absolute [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppliedElementType: SuppliedType<Element>) {
+public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppliedElementType: SuppliedType) {
     contextsBuilder[Equality.Key(suppliedElementType)] = absoluteEquality<Element>()
 }
 

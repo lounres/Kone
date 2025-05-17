@@ -780,8 +780,8 @@ public fun <E> KoneIterable<E>.hasDuplicates(
 }
 
 context(_: KoneContextRegistry)
-public fun <E> KoneIterable<E>.hasDuplicatesContextual(elementType: SuppliedType<E>): Boolean {
-    val setOfElements = KoneMutableSet.contextualOf(elementType)
+public fun <E> KoneIterable<E>.hasDuplicatesContextual(elementType: SuppliedType): Boolean {
+    val setOfElements = KoneMutableSet.contextualOf<E>(elementType)
     for (element in this) {
         if (element in setOfElements) return true
         setOfElements.add(element)
