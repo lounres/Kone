@@ -40,7 +40,7 @@ stal {
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
         "libs" {
             "main" {
-                subdirs("libs main", "libs non-core main", includeIf = { it.name !in listOf<String>("graphs", "hooks", "computations") }) { // TODO: Enable the projects eventually
+                subdirs("libs main", includeIf = { it.name !in listOf<String>("graphs", "hooks", "computations") }) { // TODO: Enable the projects eventually
                     "algorithms"("libs main algorithms")
                     "benchmarks"("libs main benchmarks")
                     "examples"("libs main examples")
@@ -51,6 +51,11 @@ stal {
             }
             "util" {
                 subdirs("libs util")
+            }
+        }
+        "plugins" {
+            subdirs("kotlin compiler plugin") {
+//                "gradleWrapper"()
             }
         }
         "docs"()
@@ -68,11 +73,13 @@ stal {
         "examples" since { has("libs main examples") }
         // Kotlin set up
         "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra") }
+        "kotlin jvm" since { has("kotlin compiler plugin") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
         "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
         // Extra
         "kotest" since { has("libs public") }
         "kover" since { has("libs public") }
+        "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
         "kotlin multiplatform publication" since { hasAnyOf("libs") }
         "publishing" since { has("libs") }
         "dokka" since { has("libs") }
@@ -97,6 +104,10 @@ stal {
         "libs util" {
             extra["artifactId"] = "kone.util.${project.name}"
             extra["alias"] = "util-${project.name}"
+        }
+        "plugin" {
+            extra["artifactId"] = "kone.plugin.${project.name}"
+            extra["alias"] = "plugin-${project.name}"
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"

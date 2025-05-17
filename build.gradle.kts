@@ -2,6 +2,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
 import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
@@ -256,6 +257,19 @@ stal {
                 explicitApi = Warning
             }
         }
+        "kotlin compiler plugin" {
+            apply(plugin = "org.gradle.java")
+            configure<SourceSetContainer> {
+                named<SourceSet>("test") {
+                    java.setSrcDirs(listOf("src/test/java", "build/generated/kotlinCompilerPluginTestGenerator/test"))
+                }
+            }
+            configure<KotlinJvmProjectExtension> {
+                sourceSets {
+                
+                }
+            }
+        }
         "atomicfu" {
             apply(versions.plugins.kotlinx.atomicfu)
             configure<AtomicFUPluginExtension> {
@@ -455,9 +469,10 @@ stal {
         }
         "examples" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                
-                }
+                logger.error("examples are not yet implemented for Kotlin/JVM plug-in")
+//                configure<KotlinJvmProjectExtension> {
+//
+//                }
             }
             pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
                 configure<KotlinMultiplatformExtension> {
@@ -469,28 +484,6 @@ stal {
 
                                 val parentProject = project.parent
                                 if (parentProject != null) implementation(project(parentProject.path))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        "libs non-core main" {
-            val algorithmsSubproject = project("${project.path}:algorithms")
-            project("${project.path}:benchmarks") {
-                pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-//                configure<KotlinJvmProjectExtension> {
-//                    // ...
-//                }
-                }
-                pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                    @Suppress("UNUSED_VARIABLE")
-                    configure<KotlinMultiplatformExtension> {
-                        sourceSets {
-                            commonMain {
-                                dependencies {
-                                    implementation(project(algorithmsSubproject.path))
-                                }
                             }
                         }
                     }
@@ -530,6 +523,18 @@ stal {
                     customAssets.from(docsProject.projectDir.resolve("images/logo-icon.svg"), docsProject.projectDir.resolve("images/favicon.svg"))
                     footerMessage = "Copyright © 2025 Gleb Minaev<br>All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE"
                     templatesDir = docsProject.projectDir.resolve("templates")
+                }
+            }
+        }
+        "kotlin jvm publication" {
+            pluginManager.withPlugin("com.vanniktech.maven.publish") {
+                configure<MavenPublishBaseExtension> {
+                    configure(
+                        KotlinJvm(
+                            javadocJar = JavadocJar.Empty(),
+                            sourcesJar = true,
+                        )
+                    )
                 }
             }
         }
