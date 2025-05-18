@@ -21,9 +21,9 @@ FILE fqName:<root> fileName:/interfaceWithSuppliedTypeAndInnerAccess.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
       BLOCK_BODY
         TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType<T of dev.lounres.kone.suppliedTypes.suppliedTypeOf> declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType<kotlin.collections.List<T of <root>.Foo>> origin=null
+          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
             TYPE_ARG T: kotlin.collections.List<T of <root>.Foo>
     PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType<T of <root>.Foo>
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
         correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]

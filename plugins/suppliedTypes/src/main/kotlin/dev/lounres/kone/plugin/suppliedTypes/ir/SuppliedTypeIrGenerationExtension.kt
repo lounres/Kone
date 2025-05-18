@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:OptIn(UnsafeDuringIrConstructionAPI::class)
+
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.suppliedClassId
@@ -41,6 +43,7 @@ import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
@@ -81,6 +84,7 @@ val IrTypeParameter.supplierParameterName: Name get() = /*providedSupplierParame
 
 class IrRuntimeReferences(pluginContext: IrPluginContext) {
     val suppliedTypeIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeClassId)
+    val suppliedTypeIrType: IrType = suppliedTypeIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
     val suppliedTypeRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeRegularClassId)
     val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeDynamicClassId)
     val suppliedProjectionIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionClassId)
@@ -137,6 +141,7 @@ class SuppliedTypeIrGenerationExtension(
     }
 }
 
+// region Phase 1
 class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
@@ -154,10 +159,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     }
                     val getter = property.addGetter {
                         modality = Modality.ABSTRACT
-                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(typeParameter.defaultType),
-                        )
+                        returnType = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
                     }
                     val getterDispatchReceiver = getter.buildReceiverParameter {
@@ -177,10 +179,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     }
                     val backingField = property.addBackingField {
                         name = typeParameter.internalSupplierPropertyName
-                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(typeParameter.defaultType),
-                        )
+                        type = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
                     }
                     backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
@@ -193,10 +192,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
                     }
                     val getter = property.addGetter {
                         modality = Modality.ABSTRACT
-                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(typeParameter.defaultType),
-                        )
+                        returnType = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
                     }
                     val getterDispatchReceiver = getter.buildReceiverParameter {
@@ -222,7 +218,9 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
         return super.visitClass(declaration)
     }
 }
+// endregion
 
+// region Phase 2
 val IrType.arguments
     get() =
         (this as? IrSimpleType ?: error("Super type\n${this.dumpKotlinLike()}\nis not IrSimpleType"))
@@ -336,10 +334,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     property.overriddenSymbols = overriddenProperties.map { it.symbol }
                     val getter = property.addGetter {
                         modality = Modality.OPEN
-                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(info.type),
-                        )
+                        returnType = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
                     }
                     val getterDispatchReceiver = getter.buildReceiverParameter {
@@ -377,10 +372,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     property.overriddenSymbols = overriddenProperties.map { it.symbol }
                     val backingField = property.addBackingField {
                         name = typeParameter.internalSupplierPropertyName
-                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(info.type),
-                        )
+                        type = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
                     }
                     backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
@@ -393,10 +385,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     }
                     val getter = property.addGetter {
                         modality = Modality.FINAL
-                        returnType = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(info.type),
-                        )
+                        returnType = irRuntimeReferences.suppliedTypeIrType
                         origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
                     }
                     getter.overriddenSymbols = overriddenProperties.map { it.getter!!.symbol }
@@ -420,7 +409,9 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
         return super.visitClass(declaration)
     }
 }
+// endregion
 
+// region Phase 3
 class FunctionsWithSuppliedTypeParametersModificationTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
@@ -436,10 +427,7 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
                         name = it.supplierParameterName
                         // TODO
 //                        isHidden = true
-                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(it.defaultType)
-                        )
+                        type = irRuntimeReferences.suppliedTypeIrType
                         origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN
                     }
                 }
@@ -455,10 +443,7 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
                         kind = IrParameterKind.Regular
                         name = it.supplierParameterName
 //                        isHidden = true
-                        type = irRuntimeReferences.suppliedTypeIrClassSymbol.createType(
-                            hasQuestionMark = false,
-                            arguments = listOf(it.defaultType)
-                        )
+                        type = irRuntimeReferences.suppliedTypeIrType
                         origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN
                     }
                 }
@@ -466,7 +451,9 @@ class FunctionsWithSuppliedTypeParametersModificationTransformer(
         return super.visitConstructor(declaration)
     }
 }
+// endregion
 
+// region Phase 4
 class FunctionsWithSuppliedTypeParametersUsageTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
@@ -531,7 +518,9 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
         return super.visitEnumConstructorCall(expression)
     }
 }
+// endregion
 
+// region Phase 5
 fun IrBuilderWithScope.irGetEnumEntry(enumEntry: IrEnumEntry) =
     IrGetEnumValueImpl(startOffset, endOffset, enumEntry.parentAsClass.defaultType, enumEntry.symbol)
 
@@ -589,7 +578,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         val isNullable: Boolean = type.nullability == SimpleTypeNullability.MARKED_NULLABLE
                         irCallConstructor(
                             irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single { it.owner.parameters.size == 3 },
-                            listOf(type),
+                            emptyList(),
                         ).apply {
                             arguments.clear()
                             arguments.add(irString(fullyQualifiedName))
@@ -634,7 +623,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         val isNullable: Boolean = type.nullability == SimpleTypeNullability.MARKED_NULLABLE
                         irCallConstructor(
                             irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single(),
-                            listOf(type),
+                            emptyList(),
                         ).apply {
                             arguments.clear()
                             arguments.add(irString(fullyQualifiedName))
@@ -738,3 +727,4 @@ class SuppliedTypeOfSubstitutionTransformer(
         return super.visitClass(declaration, newData)
     }
 }
+// endregion

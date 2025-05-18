@@ -1,0 +1,56 @@
+FILE fqName:<root> fileName:/inheritance2.kt
+  CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out U of <root>.Bar, *>>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Bar<U of <root>.Bar>
+    TYPE_PARAMETER name:U index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supplied
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
+      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
+        EXPRESSION_BODY
+          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
+            TYPE_ARG T: U of <root>.Bar
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Bar-U>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
+        EXPRESSION_BODY
+          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
+            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-<supplied-type-variable-for-Bar-U>>' type=<root>.Bar<U of <root>.Bar> origin=null
+    CONSTRUCTOR visibility:public returnType:<root>.Bar<U of <root>.Bar> [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out U of <root>.Bar, *>>]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in <root>.Foo
+  CLASS INTERFACE name:Foo modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo<T of <root>.Foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supplied
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
