@@ -65,6 +65,8 @@ open class AbstractBoxTest : BaseTestRunner(), RunnerWithTargetBackendForTestGen
     }
 }
 
+open class AbstractBoxTestWithoutPlugin : AbstractBoxTest()
+
 open class AbstractBoxTestForPhase1 : AbstractBoxTest() {
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)

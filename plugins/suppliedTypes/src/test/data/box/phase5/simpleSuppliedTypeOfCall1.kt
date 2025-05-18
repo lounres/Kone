@@ -8,17 +8,17 @@ fun box() {
     val st1 = suppliedTypeOf<List<Map<out Int, String>>>()
     
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    val st2 = SuppliedType.Regular<List<Map<out Int, String>>>(
+    val st2 = SuppliedType.Regular(
         fullyQualifiedName = List::class.qualifiedName!!,
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 KVariance.INVARIANT,
-                SuppliedType.Regular<Map<out Int, String>>(
+                SuppliedType.Regular(
                     fullyQualifiedName = Map::class.qualifiedName!!,
                     typeArguments = listOf(
                         SuppliedProjection.Regular(
                             KVariance.OUT,
-                            SuppliedType.Regular<Int>(
+                            SuppliedType.Regular(
                                 fullyQualifiedName = Int::class.qualifiedName!!,
                                 typeArguments = listOf(),
                                 isNullable = false,
@@ -26,7 +26,7 @@ fun box() {
                         ),
                         SuppliedProjection.Regular(
                             KVariance.INVARIANT,
-                            SuppliedType.Regular<String>(
+                            SuppliedType.Regular(
                                 fullyQualifiedName = String::class.qualifiedName!!,
                                 typeArguments = listOf(),
                                 isNullable = false,

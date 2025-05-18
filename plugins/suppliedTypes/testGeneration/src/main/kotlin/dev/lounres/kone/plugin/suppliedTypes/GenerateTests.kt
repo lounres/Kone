@@ -6,6 +6,7 @@ import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase2
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase3
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase4
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase5
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestWithoutPlugin
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDiagnosticTest
 import testDataPath
 
@@ -30,6 +31,10 @@ fun main() {
             }
             testClass<AbstractBoxTestForPhase5> {
                 model("box/phase5")
+            }
+            
+            testClass<AbstractBoxTestWithoutPlugin> {
+                model("box/test")
             }
         }
     }

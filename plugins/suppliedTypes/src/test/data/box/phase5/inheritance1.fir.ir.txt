@@ -33,7 +33,31 @@ FILE fqName:<root> fileName:/inheritance1.kt
               ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
                 CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                   ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:OUT' type=kotlin.reflect.KVariance
-                  ARG type: CALL 'public abstract fun <get-<supplied-type-variable-for-Bar-U>> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                  ARG type: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                    VAR SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN name:tmp0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+                      CALL 'public abstract fun <get-<supplied-type-variable-for-Bar-U>> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                        ARG <this>: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=<root>.Bar<U of <root>.Bar> origin=null
+                    WHEN type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                      BRANCH
+                        if: TYPE_OP type=kotlin.Boolean origin=INSTANCEOF typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Regular
+                          GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                        then: CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                          ARG fullyQualifiedName: CALL 'public final fun <get-fullyQualifiedName> (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=kotlin.String origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                            ARG <this>: TYPE_OP type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=IMPLICIT_CAST typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Regular
+                              GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                          ARG typeArguments: CALL 'public final fun <get-typeArguments> (): kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection> declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection> origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                            ARG <this>: TYPE_OP type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=IMPLICIT_CAST typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Regular
+                              GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                          ARG isNullable: CALL 'public final fun <get-isNullable> (): kotlin.Boolean declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=kotlin.Boolean origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                            ARG <this>: TYPE_OP type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=IMPLICIT_CAST typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Regular
+                              GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                      BRANCH
+                        if: TYPE_OP type=kotlin.Boolean origin=INSTANCEOF typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Dynamic
+                          GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                        then: GET_VAR 'val tmp0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                      BRANCH
+                        if: CONST Boolean type=kotlin.Boolean value=true
+                        then: CALL 'public final fun noWhenBranchMatchedException (): kotlin.Nothing declared in kotlin.internal.ir' type=kotlin.Nothing origin=null
                 GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Star modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.suppliedTypes.SuppliedProjection]' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Star
             ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
     PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:ABSTRACT [val]

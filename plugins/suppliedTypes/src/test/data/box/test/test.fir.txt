@@ -1,0 +1,10 @@
+FILE: test.kt
+    public final class Foo : R|kotlin/Any| {
+        public constructor(): R|Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val a: R|kotlin/Unit| = R|kotlin/io/println|(Int(57))
+            public get(): R|kotlin/Unit|
+
+    }

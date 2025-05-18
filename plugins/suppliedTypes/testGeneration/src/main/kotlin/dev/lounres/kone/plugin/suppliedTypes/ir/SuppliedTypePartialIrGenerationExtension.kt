@@ -57,7 +57,7 @@ fun phase5(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext, irR
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
         ),
-        emptyMap()
+        SuppliedTypeOfSubstitutionTransformer.TransformationContext(emptyMap(), emptyMap(), null)
     )
 }
 
