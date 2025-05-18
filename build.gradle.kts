@@ -38,6 +38,7 @@ plugins {
     alias(versions.plugins.dokka)
     `version-catalog`
     id("com.vanniktech.maven.publish") version "0.31.0"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 }
 
 
@@ -260,7 +261,7 @@ stal {
         "kotlin compiler plugin" {
             apply(plugin = "org.gradle.java")
             configure<SourceSetContainer> {
-                named<SourceSet>("test") {
+                named("test") {
                     java.setSrcDirs(listOf("src/test/java", "build/generated/kotlinCompilerPluginTestGenerator/test"))
                 }
             }
@@ -269,6 +270,9 @@ stal {
                 
                 }
             }
+        }
+        "kotlin compiler plugin test generator" {
+        
         }
         "atomicfu" {
             apply(versions.plugins.kotlinx.atomicfu)

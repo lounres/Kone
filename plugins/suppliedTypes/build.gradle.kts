@@ -1,7 +1,3 @@
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-
 dependencies {
     val kotlinVersion = versions.versions.kotlin.asProvider().get()
     
@@ -24,37 +20,12 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.platform:junit-platform-runner")
     testImplementation("org.junit.platform:junit-platform-suite-api")
+    
+    testImplementation(project.childProjects["testGeneration"]!!)
 }
 
-tasks.test {
-    dependsOn(project(projects.libs.main.suppliedTypes.targetProjectIdentity.projectPath.path).tasks.getByName("jvmJar"))
-    useJUnitPlatform()
-    doFirst {
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
-        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
-    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        optIn.add("org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
-        optIn.add("org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI")
-    }
-}
-
-val generateTests by tasks.registering(JavaExec::class) {
-    classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("dev.lounres.kone.plugin.suppliedTypes.GenerateTestsKt")
-}
-
-val compileTestKotlin by tasks.getting {
-    doLast {
-        generateTests.get().exec()
-    }
+tasks.compileTestKotlin {
+    dependsOn("${project.path}:testGeneration:generateTests")
 }
 
 fun Test.setLibraryProperty(propName: String, jarName: String) {
@@ -65,4 +36,17 @@ fun Test.setLibraryProperty(propName: String, jarName: String) {
         ?.absolutePath
         ?: return
     systemProperty(propName, path)
+}
+
+tasks.test {
+    dependsOn("${projects.libs.main.suppliedTypes.path}:jvmJar")
+    useJUnitPlatform()
+    doFirst {
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
+        setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
+    }
 }

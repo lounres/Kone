@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCompilerApi::class)
+
 package dev.lounres.kone.plugin.suppliedTypes.services
 
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
@@ -13,6 +15,7 @@ import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
 import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 
 

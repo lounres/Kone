@@ -55,6 +55,7 @@ stal {
         }
         "plugins" {
             subdirs("kotlin compiler plugin") {
+                "testGeneration"("kotlin compiler plugin test generator")
 //                "gradleWrapper"()
             }
         }
@@ -73,7 +74,7 @@ stal {
         "examples" since { has("libs main examples") }
         // Kotlin set up
         "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra") }
-        "kotlin jvm" since { has("kotlin compiler plugin") }
+        "kotlin jvm" since { hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
         "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
         // Extra
