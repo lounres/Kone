@@ -2,9 +2,9 @@ FILE fqName:<root> fileName:/simpleSuppliedTypeOfCall2.kt
   FUN name:box visibility:public modality:FINAL returnType:kotlin.Unit
     BLOCK_BODY
       VAR name:st1 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
-        CALL 'public final fun foo <T> (<supplied-type-argument-for-T>: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+        CALL 'public final fun foo <T> ($supplied_type_argument_for_T: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
           TYPE_ARG T: kotlin.collections.Map<out kotlin.Int, kotlin.String>
-          ARG <supplied-type-argument-for-T>: CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+          ARG $supplied_type_argument_for_T: CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
             ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.collections.Map"
             ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
               TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -32,9 +32,9 @@ FILE fqName:<root> fileName:/simpleSuppliedTypeOfCall2.kt
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supplied
-    VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:<supplied-type-argument-for-T> index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+    VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:$supplied_type_argument_for_T index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
     BLOCK_BODY
-      RETURN type=kotlin.Nothing from='public final fun foo <T> (<supplied-type-argument-for-T>: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>'
+      RETURN type=kotlin.Nothing from='public final fun foo <T> ($supplied_type_argument_for_T: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>'
         CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
           ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.collections.List"
           ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
@@ -44,7 +44,7 @@ FILE fqName:<root> fileName:/simpleSuppliedTypeOfCall2.kt
                 ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:INVARIANT' type=kotlin.reflect.KVariance
                 ARG type: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                   VAR SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN name:tmp0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
-                    GET_VAR '<supplied-type-argument-for-T>: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                    GET_VAR '$supplied_type_argument_for_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                   WHEN type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                     BRANCH
                       if: TYPE_OP type=kotlin.Boolean origin=INSTANCEOF typeOperand=dev.lounres.kone.suppliedTypes.SuppliedType.Regular

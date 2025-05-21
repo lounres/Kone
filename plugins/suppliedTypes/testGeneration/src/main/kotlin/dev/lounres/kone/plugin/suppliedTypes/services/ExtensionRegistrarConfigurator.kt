@@ -2,6 +2,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.services
 
+import dev.lounres.kone.plugin.suppliedTypes.fir.FirSuppliedTypeExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension1
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension2
@@ -17,6 +18,7 @@ import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
+import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 
 class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
@@ -26,7 +28,7 @@ class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentCo
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypeIrGenerationExtension(messageCollector))
     }
 }
@@ -38,7 +40,7 @@ class IrPartialExtensionRegistrarConfigurator1(testServices: TestServices) : Env
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension1(messageCollector))
     }
 }
@@ -50,7 +52,7 @@ class IrPartialExtensionRegistrarConfigurator2(testServices: TestServices) : Env
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension2(messageCollector))
     }
 }
@@ -62,7 +64,7 @@ class IrPartialExtensionRegistrarConfigurator3(testServices: TestServices) : Env
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension3(messageCollector))
     }
 }
@@ -74,7 +76,7 @@ class IrPartialExtensionRegistrarConfigurator4(testServices: TestServices) : Env
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension4(messageCollector))
     }
 }
@@ -86,7 +88,7 @@ class IrPartialExtensionRegistrarConfigurator5(testServices: TestServices) : Env
     ) {
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-//        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
-        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension5(messageCollector))
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+//        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension5(messageCollector))
     }
 }

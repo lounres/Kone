@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 
-const val koneRegistryPackageFQNameString = "dev.lounres.kone.suppliedTypes"
+const val koneSuppliedTypesPackageFQNameString = "dev.lounres.kone.suppliedTypes"
 const val suppliedTypeShortNameString = "SuppliedType"
 const val suppliedTypeRegularShortNameString = "Regular"
 const val suppliedTypeDynamicShortNameString = "Dynamic"
@@ -21,7 +21,7 @@ const val suppliedProjectionStarShortNameString = "Star"
 const val suppliedShortNameString = "Supplied"
 const val suppliedTypeOfShortNameString = "suppliedTypeOf"
 
-val koneRegistryPackageFQName = FqName(koneRegistryPackageFQNameString)
+val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString)
 val suppliedTypeShortName = FqName(suppliedTypeShortNameString)
 val suppliedTypeRegularShortName = FqName("$suppliedTypeShortNameString.$suppliedTypeRegularShortNameString")
 val suppliedTypeDynamicShortName = FqName("$suppliedTypeShortNameString.$suppliedTypeDynamicShortNameString")
@@ -32,38 +32,38 @@ val suppliedShortName = FqName(suppliedShortNameString)
 val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
 
 val suppliedTypeClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedTypeShortName,
     isLocal = false
 )
 val suppliedTypeRegularClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedTypeRegularShortName,
     isLocal = false
 )
 val suppliedTypeDynamicClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedTypeDynamicShortName,
     isLocal = false
 )
 val suppliedProjectionClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedProjectionShortName,
     isLocal = false,
 )
 val suppliedProjectionRegularClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedProjectionRegularShortName,
     isLocal = false,
 )
 val suppliedProjectionStarClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedProjectionStarShortName,
     isLocal = false,
 )
 val suppliedClassId = ClassId(
-    packageFqName = koneRegistryPackageFQName,
+    packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedShortName,
     isLocal = false
 )
-val suppliedTypeOfCallableId = CallableId(packageName = koneRegistryPackageFQName, className = null, callableName = suppliedTypeOfName)
+val suppliedTypeOfCallableId = CallableId(packageName = koneSuppliedTypesPackageFQName, className = null, callableName = suppliedTypeOfName)

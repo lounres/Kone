@@ -38,7 +38,6 @@ plugins {
     alias(versions.plugins.dokka)
     `version-catalog`
     id("com.vanniktech.maven.publish") version "0.31.0"
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 }
 
 

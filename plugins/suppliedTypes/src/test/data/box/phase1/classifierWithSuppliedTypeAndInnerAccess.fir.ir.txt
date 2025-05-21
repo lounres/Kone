@@ -1,4 +1,4 @@
-FILE fqName:<root> fileName:/interfaceWithSuppliedTypeAndInnerAccess.kt
+FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
   CLASS INTERFACE name:Foo modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo<T of <root>.Foo>
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
@@ -23,7 +23,7 @@ FILE fqName:<root> fileName:/interfaceWithSuppliedTypeAndInnerAccess.kt
         TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
           CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
             TYPE_ARG T: kotlin.collections.List<T of <root>.Foo>
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]

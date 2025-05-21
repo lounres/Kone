@@ -4,17 +4,17 @@ FILE fqName:<root> fileName:/inheritance2.kt
     TYPE_PARAMETER name:U index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supplied
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
-      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U visibility:public modality:FINAL [val]
+      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
         EXPRESSION_BODY
           CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
             TYPE_ARG T: U of <root>.Bar
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Bar-U>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Bar_U> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U visibility:public modality:FINAL [val]
         EXPRESSION_BODY
-          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
-            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-<supplied-type-variable-for-Bar-U>>' type=<root>.Bar<U of <root>.Bar> origin=null
+          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
+            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-$supplied_type_variable_for_Bar_U>' type=<root>.Bar<U of <root>.Bar> origin=null
     CONSTRUCTOR visibility:public returnType:<root>.Bar<U of <root>.Bar> [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
@@ -50,7 +50,7 @@ FILE fqName:<root> fileName:/inheritance2.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
         public open fun toString (): kotlin.String declared in kotlin.Any
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]

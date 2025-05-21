@@ -30,7 +30,7 @@ FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
                   ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:INVARIANT' type=kotlin.reflect.KVariance
                   ARG type: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                     VAR SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN name:tmp0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
-                      CALL 'public abstract fun <get-<supplied-type-variable-for-Foo-T>> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
+                      CALL 'public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                         ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.foo' type=<root>.Foo<T of <root>.Foo> origin=null
                     WHEN type=dev.lounres.kone.suppliedTypes.SuppliedType origin=SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN
                       BRANCH
@@ -54,7 +54,7 @@ FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
                         if: CONST Boolean type=kotlin.Boolean value=true
                         then: CALL 'public final fun noWhenBranchMatchedException (): kotlin.Nothing declared in kotlin.internal.ir' type=kotlin.Nothing origin=null
             ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:ABSTRACT [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]

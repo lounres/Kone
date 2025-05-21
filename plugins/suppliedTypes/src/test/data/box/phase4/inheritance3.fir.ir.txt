@@ -4,38 +4,38 @@ FILE fqName:<root> fileName:/inheritance3.kt
     TYPE_PARAMETER name:U index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supplied
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
-      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U visibility:public modality:FINAL [val]
+      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
         EXPRESSION_BODY
           CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
             TYPE_ARG T: U of <root>.Bar
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Bar-U>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Bar_U> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> visibility:public modality:FINAL [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U visibility:public modality:FINAL [val]
         EXPRESSION_BODY
-          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Bar-U> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
-            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-<supplied-type-variable-for-Bar-U>>' type=<root>.Bar<U of <root>.Bar> origin=null
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:FINAL [val]
+          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Bar_U type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
+            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-$supplied_type_variable_for_Bar_U>' type=<root>.Bar<U of <root>.Bar> origin=null
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:FINAL [val]
       overridden:
-        public final <supplied-type-variable-for-Foo-T>: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
-      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
+        public final $supplied_type_variable_for_Foo_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
         EXPRESSION_BODY
           CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN
             TYPE_ARG T: kotlin.collections.Map<out U of <root>.Bar, *>
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:FINAL [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:FINAL [val]
         overridden:
-          public abstract fun <get-<supplied-type-variable-for-Foo-T>> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+          public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
         EXPRESSION_BODY
-          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN
-            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-<supplied-type-variable-for-Foo-T>>' type=<root>.Bar<U of <root>.Bar> origin=null
+          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Bar' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN
+            receiver: GET_VAR '<this>: <root>.Bar<U of <root>.Bar> declared in <root>.Bar.<get-$supplied_type_variable_for_Foo_T>' type=<root>.Bar<U of <root>.Bar> origin=null
     CONSTRUCTOR visibility:public returnType:<root>.Bar<U of <root>.Bar> [primary]
-      VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:<supplied-type-argument-for-U> index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+      VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:$supplied_type_argument_for_U index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
       BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (<supplied-type-argument-for-T>: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo'
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> ($supplied_type_argument_for_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo'
           TYPE_ARG T: kotlin.collections.Map<out U of <root>.Bar, *>
-          ARG <supplied-type-argument-for-T>: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN
+          ARG $supplied_type_argument_for_T: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN
             TYPE_ARG T: kotlin.collections.Map<out U of <root>.Bar, *>
         INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out U of <root>.Bar, *>>]' type=kotlin.Unit
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
@@ -56,19 +56,19 @@ FILE fqName:<root> fileName:/inheritance3.kt
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supplied
-    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:FINAL [val]
-      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
+    PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:FINAL [val]
+      FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private
         EXPRESSION_BODY
           CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
             TYPE_ARG T: T of <root>.Foo
-      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-<supplied-type-variable-for-Foo-T>> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+      FUN CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
         VALUE_PARAMETER CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
-        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> visibility:public modality:FINAL [val]
+        correspondingProperty: PROPERTY CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T visibility:public modality:FINAL [val]
         EXPRESSION_BODY
-          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:<supplied-type-variable-for-Foo-T> type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
-            receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-<supplied-type-variable-for-Foo-T>>' type=<root>.Foo<T of <root>.Foo> origin=null
+          GET_FIELD 'FIELD CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN name:$supplied_type_variable_for_Foo_T type:dev.lounres.kone.suppliedTypes.SuppliedType visibility:private declared in <root>.Foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN
+            receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-$supplied_type_variable_for_Foo_T>' type=<root>.Foo<T of <root>.Foo> origin=null
     CONSTRUCTOR visibility:public returnType:<root>.Foo<T of <root>.Foo> [primary]
-      VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:<supplied-type-argument-for-T> index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+      VALUE_PARAMETER FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN kind:Regular name:$supplied_type_argument_for_T index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
         INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:OPEN visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit

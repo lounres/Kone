@@ -1,10 +1,3 @@
-import org.jetbrains.gradle.ext.settings
-import org.jetbrains.gradle.ext.taskTriggers
-
-plugins {
-    id("org.jetbrains.gradle.plugin.idea-ext")
-}
-
 dependencies {
     val kotlinVersion = versions.versions.kotlin.asProvider().get()
     
@@ -28,30 +21,24 @@ dependencies {
     implementation(project.parent!!)
 }
 
-val testDataPathSourceSet = "build/generated/testDataPath/main"
+val testDataPathSourceSet = "build/generated/paths/main"
 
 sourceSets.main {
     java.srcDirs(testDataPathSourceSet)
 }
 
-val writeTestDataPath by tasks.registering {
+val writePaths by tasks.registering {
     doFirst {
-        projectDir.resolve(testDataPathSourceSet).also { it.mkdirs() }.resolve("TestDataPath.kt").writeText(
+        projectDir.resolve(testDataPathSourceSet).also { it.mkdirs() }.resolve("Paths.kt").writeText(
             """
-                val testDataPath: String = "${project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")}"
+                internal val testDataPath: String = "${project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")}"
             """.trimIndent()
         )
     }
 }
 
 tasks.compileKotlin {
-    dependsOn(writeTestDataPath)
-}
-
-rootProject.idea.project.settings {
-    taskTriggers {
-        afterSync(writeTestDataPath)
-    }
+    dependsOn(writePaths)
 }
 
 tasks.register("generateTests", JavaExec::class) {

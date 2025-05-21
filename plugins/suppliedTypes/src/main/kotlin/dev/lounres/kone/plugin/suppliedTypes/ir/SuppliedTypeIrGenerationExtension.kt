@@ -7,6 +7,8 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
+import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
+import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
 import dev.lounres.kone.plugin.suppliedTypes.suppliedClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionRegularClassId
@@ -80,8 +82,8 @@ val IrTypeParameter.providedSupplierParameterName: Name?
         val suppliedParameterName = (theOnlyArgumentOrNull?.value as? String?)?.takeIf { it.isNotEmpty() }
         return suppliedParameterName?.let { Name.identifier(it) }
     }
-val IrTypeParameter.internalSupplierPropertyName: Name get() = Name.special("<supplied-type-variable-for-${parent.kotlinFqName}-${name}>")
-val IrTypeParameter.internalSupplierParameterName: Name get() = Name.special("<supplied-type-argument-for-${name}>")
+val IrTypeParameter.internalSupplierPropertyName: Name get() = internalSupplierPropertyName(parent.kotlinFqName, name)
+val IrTypeParameter.internalSupplierParameterName: Name get() = internalSupplierParameterName(name)
 val IrTypeParameter.supplierParameterName: Name get() = /*providedSupplierParameterName ?:*/ internalSupplierParameterName
 
 class IrRuntimeReferences(pluginContext: IrPluginContext) {
@@ -801,6 +803,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     }
     override fun visitField(declaration: IrField, data: TransformationContext): IrStatement {
         val irClass = declaration.parentAsClass
+        println(irClass.dump())
         val primaryConstructor = irClass.primaryConstructor!! // TODO: Может не быть первичного конструктора!!!
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
