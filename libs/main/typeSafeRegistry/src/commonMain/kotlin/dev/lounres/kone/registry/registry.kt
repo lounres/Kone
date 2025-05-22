@@ -45,7 +45,7 @@ public interface RegistryKey<T> {
     /**
      * Type supplier that describes type argument [T] to distinguish similar keys of different type argument.
      */
-    public val typeKey: SuppliedType.Regular
+    public val typeKey: SuppliedType
     
     /**
      * Key context that describes equality between this key and the others.
