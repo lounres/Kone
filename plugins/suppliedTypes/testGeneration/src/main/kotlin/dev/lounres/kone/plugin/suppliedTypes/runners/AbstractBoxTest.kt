@@ -1,5 +1,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
+import dev.lounres.kone.plugin.suppliedTypes.services.ExtensionRegistrarConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.FirSuppliedTypeCompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator1
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator2
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator3
@@ -9,8 +11,10 @@ import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.test.FirParser
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.backend.BlackBoxCodegenSuppressor
+import org.jetbrains.kotlin.test.backend.handlers.BytecodeListingHandler
 import org.jetbrains.kotlin.test.backend.handlers.IrTextDumpHandler
 import org.jetbrains.kotlin.test.backend.handlers.IrTreeVerifierHandler
+import org.jetbrains.kotlin.test.backend.handlers.JvmBoxRunner
 import org.jetbrains.kotlin.test.backend.ir.JvmIrBackendFacade
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.builders.irHandlersStep
@@ -57,15 +61,19 @@ open class AbstractBoxTest : BaseTestRunner(), RunnerWithTargetBackendForTestGen
             )
         }
         facadeStep(::JvmIrBackendFacade)
-        jvmArtifactsHandlersStep {
-//            useHandlers(::JvmBoxRunner)
-        }
         
         useAfterAnalysisCheckers(::BlackBoxCodegenSuppressor)
     }
 }
 
 open class AbstractBoxTestWithoutPlugin : AbstractBoxTest()
+
+open class AbstractBoxTestForPhase0 : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.useConfigurators(::FirSuppliedTypeCompleteExtensionRegistrarConfigurator)
+    }
+}
 
 open class AbstractBoxTestForPhase1 : AbstractBoxTest() {
     override fun configure(builder: TestConfigurationBuilder) {
@@ -99,5 +107,15 @@ open class AbstractBoxTestForPhase5 : AbstractBoxTest() {
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
         builder.useConfigurators(::IrPartialExtensionRegistrarConfigurator5)
+    }
+}
+
+open class AbstractBoxTestComplete : AbstractBoxTest() {
+    override fun configure(builder: TestConfigurationBuilder) {
+        super.configure(builder)
+        builder.jvmArtifactsHandlersStep {
+            useHandlers(::JvmBoxRunner)
+        }
+        builder.useConfigurators(::ExtensionRegistrarConfigurator)
     }
 }

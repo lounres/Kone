@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
-        +::SuppliedTypeArgumentsFirResolveExtension
-        +::SuppliedTypeFirAdditionalCheckersExtension
+        +::ClassSuppliedTypeParametersPropertiesGenerationExtension
+        +::SuppliedTypeCheckersExtension
     }
 }

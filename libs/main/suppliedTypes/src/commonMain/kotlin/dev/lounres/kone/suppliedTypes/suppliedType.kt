@@ -101,5 +101,12 @@ public sealed interface SuppliedProjection {
 @Target(AnnotationTarget.TYPE_PARAMETER)
 public annotation class Supplied(/*val parameterName: String = ""*/)
 
+@Target(
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+)
+public annotation class SuppliedTarget
+
+@SuppliedTarget
 public fun <@Supplied T> suppliedTypeOf(): SuppliedType =
     error("Intrinsic function call was not substituted. Be sure to apply supplied types compiler plugin.")

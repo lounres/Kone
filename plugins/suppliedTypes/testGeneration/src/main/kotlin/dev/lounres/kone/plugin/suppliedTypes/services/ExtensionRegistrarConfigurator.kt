@@ -2,7 +2,9 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.services
 
+import dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.fir.FirSuppliedTypeExtensionRegistrar
+import dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypeCheckersExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension1
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension2
@@ -21,7 +23,29 @@ import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 
-class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+class FirClassSuppliedTypeParametersPropertiesGenerationExtensionConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+        
+        FirExtensionRegistrarAdapter.registerExtension(ClassSuppliedTypeParametersPropertiesGenerationExtensionRegistrar())
+    }
+}
+
+class FirSuppliedTypeCheckersExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+        
+        FirExtensionRegistrarAdapter.registerExtension(SuppliedTypeCheckersExtensionRegistrar())
+    }
+}
+
+class FirSuppliedTypeCompleteExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
     override fun ExtensionStorage.registerCompilerExtensions(
         module: TestModule,
         configuration: CompilerConfiguration
@@ -29,7 +53,6 @@ class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentCo
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
-        IrGenerationExtension.registerExtension(SuppliedTypeIrGenerationExtension(messageCollector))
     }
 }
 
@@ -89,6 +112,18 @@ class IrPartialExtensionRegistrarConfigurator5(testServices: TestServices) : Env
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
         FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
-//        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension5(messageCollector))
+        IrGenerationExtension.registerExtension(SuppliedTypePartialIrGenerationExtension5(messageCollector))
+    }
+}
+
+class ExtensionRegistrarConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+    override fun ExtensionStorage.registerCompilerExtensions(
+        module: TestModule,
+        configuration: CompilerConfiguration
+    ) {
+        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+        
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        IrGenerationExtension.registerExtension(SuppliedTypeIrGenerationExtension(messageCollector))
     }
 }

@@ -1,9 +1,0 @@
-FILE: inheritance2.kt
-    public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supplied|() T> : R|kotlin/Any| {
-    }
-    public final class Bar<@R|dev/lounres/kone/suppliedTypes/Supplied|() U> : R|Foo<kotlin/collections/Map<out U, *>>| {
-        public constructor<@R|dev/lounres/kone/suppliedTypes/Supplied|() U>(): R|Bar<U>| {
-            super<R|kotlin/Any|>()
-        }
-
-    }

@@ -22,14 +22,11 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
+import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addBackingField
-import org.jetbrains.kotlin.ir.builders.declarations.addGetter
-import org.jetbrains.kotlin.ir.builders.declarations.addProperty
-import org.jetbrains.kotlin.ir.builders.declarations.buildReceiverParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildValueParameter
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrCall
@@ -38,11 +35,11 @@ import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrDelegatingConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrEnumConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
-import org.jetbrains.kotlin.ir.expressions.IrInstanceInitializerCall
 import org.jetbrains.kotlin.ir.expressions.IrStatementOriginImpl
 import org.jetbrains.kotlin.ir.expressions.IrTypeOperator
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetEnumValueImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
@@ -159,59 +156,19 @@ class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
         when (declaration.kind) {
             ClassKind.INTERFACE -> {
                 for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
-                    val property = declaration.addProperty {
-                        name = typeParameter.internalSupplierPropertyName
-                        modality = Modality.ABSTRACT
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    val getter = property.addGetter {
-                        modality = Modality.ABSTRACT
-                        returnType = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    val getterDispatchReceiver = getter.buildReceiverParameter {
-                        type = declaration.defaultType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    getter.parameters = listOf(getterDispatchReceiver)
+                    check(declaration.properties.count { it.name == typeParameter.internalSupplierPropertyName } == 1)
                 }
             }
             ClassKind.CLASS -> {
                 check(!(declaration.isValue && declaration.typeParameters.any { it.isSupplied })) { "Found IrClass with `isValue = true` that unexpectedly has supplied type parameters:\n${declaration.symbol}" }
                 for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
-                    val property = declaration.addProperty {
-                        name = typeParameter.internalSupplierPropertyName
-                        modality = Modality.FINAL
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    val backingField = property.addBackingField {
-                        name = typeParameter.internalSupplierPropertyName
-                        type = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
+                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
+                    val backingField = property.backingField!!
                     backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
                         irExprBody(
                             irCallWithSubstitutedType(
                                 irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
                                 listOf(typeParameter.defaultType)
-                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN }
-                        )
-                    }
-                    val getter = property.addGetter {
-                        modality = Modality.ABSTRACT
-                        returnType = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    val getterDispatchReceiver = getter.buildReceiverParameter {
-                        type = declaration.defaultType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN
-                    }
-                    getter.parameters = listOf(getterDispatchReceiver)
-                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
-                        irExprBody(
-                            irGetField(
-                                irGet(getterDispatchReceiver),
-                                backingField,
                             ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN }
                         )
                     }
@@ -332,32 +289,16 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
             ClassKind.INTERFACE -> {
                 val suppliedTypeParametersToOverride = declaration.allSuperClassesSuppliedTypeParametersInfo
                 for ((typeParameter, info) in suppliedTypeParametersToOverride) {
-                    val overriddenProperties = info.appearances.map { it.properties.single { it.name == typeParameter.internalSupplierPropertyName } }
-                    val property = declaration.addProperty {
-                        name = typeParameter.internalSupplierPropertyName
-                        modality = Modality.OPEN
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    property.overriddenSymbols = overriddenProperties.map { it.symbol }
-                    val getter = property.addGetter {
-                        modality = Modality.OPEN
-                        returnType = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    val getterDispatchReceiver = getter.buildReceiverParameter {
-                        type = declaration.defaultType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    getter.parameters = listOf(getterDispatchReceiver)
-                    getter.overriddenSymbols = overriddenProperties.map { it.getter!!.symbol }
-                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
-                        irExprBody(
-                            irCallWithSubstitutedType(
-                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                                listOf(info.type)
-                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
-                        )
-                    }
+                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
+                    val getter = property.getter!!
+//                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
+//                        irExprBody(
+//                            irCallWithSubstitutedType(
+//                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
+//                                listOf(info.type)
+//                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
+//                        )
+//                    }
                 }
             }
             ClassKind.CLASS,
@@ -370,13 +311,7 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                     if (superClass == null) declaration.allSuperClassesSuppliedTypeParametersInfo
                     else declaration.allSuperClassesSuppliedTypeParametersInfo.filterKeys { it !in superClass.allSuperClassesSuppliedTypeParametersInfo }
                 for ((typeParameter, info) in suppliedTypeParametersToOverride) {
-                    val overriddenProperties = info.appearances.map { it.properties.single { it.name == typeParameter.internalSupplierPropertyName } }
-                    val property = declaration.addProperty {
-                        name = typeParameter.internalSupplierPropertyName
-                        modality = Modality.FINAL
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    property.overriddenSymbols = overriddenProperties.map { it.symbol }
+                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
                     val backingField = property.addBackingField {
                         name = typeParameter.internalSupplierPropertyName
                         type = irRuntimeReferences.suppliedTypeIrType
@@ -390,25 +325,16 @@ class ClassSuppliedTypeParametersOverridesGenerationTransformer(
                             ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
                         )
                     }
-                    val getter = property.addGetter {
-                        modality = Modality.FINAL
-                        returnType = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    getter.overriddenSymbols = overriddenProperties.map { it.getter!!.symbol }
-                    val getterDispatchReceiver = getter.buildReceiverParameter {
-                        type = declaration.defaultType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    getter.parameters = listOf(getterDispatchReceiver)
-                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
-                        irExprBody(
-                            irGetField(
-                                irGet(getterDispatchReceiver),
-                                backingField,
-                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
-                        )
-                    }
+//                    val getter = property.getter!!
+//                    val getterDispatchReceiver = getter.dispatchReceiverParameter!!
+//                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
+//                        irExprBody(
+//                            irGetField(
+//                                irGet(getterDispatchReceiver),
+//                                backingField,
+//                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
+//                        )
+//                    }
                 }
             }
             ClassKind.ANNOTATION_CLASS -> {}
@@ -490,6 +416,7 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
         return super.visitCall(expression)
     }
     override fun visitConstructorCall(expression: IrConstructorCall): IrExpression {
+        val constructorSymbol = expression.symbol
         val declaration = expression.symbol.owner.parentAsClass
         val suppliedValueArguments =
             declaration.typeParameters
@@ -503,7 +430,16 @@ class FunctionsWithSuppliedTypeParametersUsageTransformer(
                         ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
                 }
         expression.arguments.addAll(0, suppliedValueArguments)
-        return super.visitConstructorCall(expression)
+        println(declaration.dump())
+        val newExpression = DeclarationIrBuilder(pluginContext, declaration.symbol)
+            .irCallConstructor(
+                callee = constructorSymbol,
+                typeArguments = expression.typeArguments.map { it!! },
+            ).also {
+                it.arguments.addAll(suppliedValueArguments + expression.arguments)
+            }
+//        return super.visitConstructorCall(expression)
+        return super.visitConstructorCall(newExpression)
     }
     override fun visitDelegatingConstructorCall(expression: IrDelegatingConstructorCall): IrExpression {
         val declaration = expression.symbol.owner.parentAsClass
@@ -803,8 +739,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     }
     override fun visitField(declaration: IrField, data: TransformationContext): IrStatement {
         val irClass = declaration.parentAsClass
-        println(irClass.dump())
-        val primaryConstructor = irClass.primaryConstructor!! // TODO: Может не быть первичного конструктора!!!
+        val primaryConstructor = irClass.primaryConstructor ?: return super.visitField(declaration, data)
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
             for (typeParameter in irClass.typeParameters) if (typeParameter.isSupplied) {
