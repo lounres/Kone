@@ -1,0 +1,8 @@
+FILE: simpleSuppliedTypeOfCall2.kt
+    public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() T> foo(): R|dev/lounres/kone/suppliedTypes/SuppliedType| {
+        ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>()
+    }
+    public final fun box(): R|kotlin/Unit| {
+        lval st1: R|dev/lounres/kone/suppliedTypes/SuppliedType| = R|/foo|<R|kotlin/collections/Map<out kotlin/Int, kotlin/String>|>()
+        R|kotlin/io/println|(R|<local>/st1|)
+    }

@@ -1,0 +1,143 @@
+FILE fqName:<root> fileName:/inheritance4.kt
+  CLASS INTERFACE name:Bar modality:ABSTRACT visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out U of <root>.Bar, kotlin.String>>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Bar<U of <root>.Bar>
+    TYPE_PARAMETER name:U index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supplied
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in <root>.Foo
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Bar_U visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Bar_U> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Bar_U visibility:public modality:ABSTRACT [val]
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract $supplied_type_variable_for_Foo_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Bar<U of <root>.Bar>
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+        overridden:
+          public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+  CLASS INTERFACE name:Baz modality:ABSTRACT visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out kotlin.Int, V of <root>.Baz>>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Baz<V of <root>.Baz>
+    TYPE_PARAMETER name:V index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supplied
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in <root>.Foo
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in <root>.Foo
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Baz_V visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Baz_V> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Baz<V of <root>.Baz>
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Baz_V visibility:public modality:ABSTRACT [val]
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract $supplied_type_variable_for_Foo_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Baz<V of <root>.Baz>
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+        overridden:
+          public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo
+  CLASS INTERFACE name:Foo modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo<T of <root>.Foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supplied
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+  CLASS INTERFACE name:Gee modality:ABSTRACT visibility:public superTypes:[<root>.Bar<kotlin.Int>; <root>.Baz<kotlin.String>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Gee
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Bar
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Baz
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in <root>.Bar
+        public open fun hashCode (): kotlin.Int declared in <root>.Baz
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in <root>.Bar
+        public open fun toString (): kotlin.String declared in <root>.Baz
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Bar_U visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract $supplied_type_variable_for_Bar_U: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Bar_U> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Gee
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Bar_U visibility:public modality:ABSTRACT [val]
+        overridden:
+          public abstract fun <get-$supplied_type_variable_for_Bar_U> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Baz_V visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract $supplied_type_variable_for_Baz_V: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Baz
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Baz_V> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Gee
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Baz_V visibility:public modality:ABSTRACT [val]
+        overridden:
+          public abstract fun <get-$supplied_type_variable_for_Baz_V> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Baz
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+      annotations:
+        Deprecated(message = "Supplied type internal property", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract $supplied_type_variable_for_Foo_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar
+        public abstract $supplied_type_variable_for_Foo_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Baz
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-$supplied_type_variable_for_Foo_T> visibility:public modality:ABSTRACT returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Gee
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.ClassSuppliedTypeParametersPropertiesGenerationExtension.Key] name:$supplied_type_variable_for_Foo_T visibility:public modality:ABSTRACT [val]
+        overridden:
+          public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Bar
+          public abstract fun <get-$supplied_type_variable_for_Foo_T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Baz
