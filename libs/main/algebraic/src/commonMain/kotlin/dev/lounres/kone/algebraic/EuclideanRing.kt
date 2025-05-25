@@ -60,7 +60,7 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
         elementType: SuppliedType,
     ) : RegistryKey<EuclideanSemiring<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanSemiring",
                 typeArguments = listOf(
@@ -71,6 +71,8 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 
@@ -109,7 +111,7 @@ public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number>
         elementType: SuppliedType,
     ) : RegistryKey<EuclideanRing<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanRing",
                 typeArguments = listOf(
@@ -120,5 +122,7 @@ public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number>
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }

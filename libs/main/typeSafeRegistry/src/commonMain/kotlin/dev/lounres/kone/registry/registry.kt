@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.registry
 
-import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -34,19 +33,14 @@ public interface RegistryKeyContext {
  */
 // TODO: Review `NaiveRegistryKeyContext` and all `RegistryKey` implementations
 public object NaiveRegistryKeyContext : RegistryKeyContext {
-    override fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean = left::class == right::class /*&& left == right*/
-    override fun hashCodeOf(key: RegistryKey<*>): Int = 0 /*key.hashCode()*/
+    override fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean = left::class == right::class && left == right
+    override fun hashCodeOf(key: RegistryKey<*>): Int = key.hashCode()
 }
 
 /**
  * A key that is used to retrieve a value of type [T] from [Registry].
  */
 public interface RegistryKey<T> {
-    /**
-     * Type supplier that describes type argument [T] to distinguish similar keys of different type argument.
-     */
-    public val typeKey: SuppliedType
-    
     /**
      * Key context that describes equality between this key and the others.
      */
@@ -61,14 +55,13 @@ public class RegistryKeyMapWrapper<T> internal constructor(public val key: Regis
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RegistryKeyMapWrapper<*>) return false
-        if (this.key.typeKey != other.key.typeKey) return false
         val thisEquality = this.key.context
         val otherEquality = other.key.context
         if (thisEquality !== otherEquality) return false
         
         return thisEquality.checkEqualityOf(this.key, other.key)
     }
-    override fun hashCode(): Int = key.typeKey.hashCode() * 31 + key.context.hashCodeOf(key)
+    override fun hashCode(): Int = key.context.hashCodeOf(key)
 }
 
 /**

@@ -117,7 +117,7 @@ public interface Field<Number> : Ring<Number> {
         elementType: SuppliedType,
     ) : RegistryKey<Field<Number>> {
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Field",
                 typeArguments = listOf(
@@ -128,6 +128,8 @@ public interface Field<Number> : Ring<Number> {
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 

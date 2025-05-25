@@ -118,7 +118,7 @@ public class PlanimetricsCalculationSpace<Number>(
     public class Key<Number>(
         elementType: SuppliedType,
     ) : RegistryKey<PlanimetricsCalculationSpace<Number>> {
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.PlanimetricsCalculationSpace",
@@ -130,6 +130,8 @@ public class PlanimetricsCalculationSpace<Number>(
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 

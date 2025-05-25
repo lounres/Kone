@@ -57,7 +57,7 @@ public interface EuclideanKategory<N> : KoneContext {
     public class Key<Number>(
         elementType: SuppliedType,
     ) : RegistryKey<EuclideanKategory<Number>> {
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
                 fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanKategory",
@@ -69,6 +69,8 @@ public interface EuclideanKategory<N> : KoneContext {
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 

@@ -63,10 +63,10 @@ public interface Reification<out Element> : KoneContext {
     public class Key<Element>(
         elementType: SuppliedType,
     ) : RegistryKey<Reification<Element>> {
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Equality",
+                fullyQualifiedName = "dev.lounres.kone.relations.Reification",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -75,6 +75,8 @@ public interface Reification<out Element> : KoneContext {
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 

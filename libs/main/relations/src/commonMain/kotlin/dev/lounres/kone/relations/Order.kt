@@ -54,10 +54,10 @@ public interface Order<in Element> : KoneContext {
     public class Key<Element>(
         elementType: SuppliedType,
     ) : RegistryKey<Order<Element>> {
-        override val typeKey: SuppliedType.Regular =
+        public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Equality",
+                fullyQualifiedName = "dev.lounres.kone.relations.Order",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         KVariance.INVARIANT,
@@ -66,6 +66,8 @@ public interface Order<in Element> : KoneContext {
                 ),
                 isNullable = false
             )
+        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 
