@@ -13,6 +13,7 @@ import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
 //import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
+import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -30,6 +31,8 @@ import kotlin.text.replace
 plugins {
     alias(versions.plugins.kotlin.multiplatform) apply false
     alias(versions.plugins.kotlinx.atomicfu) apply false
+    alias(versions.plugins.kotlin.compose) apply false
+    alias(versions.plugins.compose.multiplatform) apply false
     alias(versions.plugins.kotlin.allopen) apply false
     alias(versions.plugins.kotlinx.benchmark) apply false
     alias(versions.plugins.kotest.multiplatform) apply false
@@ -105,6 +108,7 @@ val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByN
 val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
 fun PluginAware.apply(pluginDependency: PluginDependency) = apply(plugin = pluginDependency.pluginId)
 fun PluginAware.apply(pluginDependency: Provider<PluginDependency>) = apply(plugin = pluginDependency.get().pluginId)
+fun PluginAware.apply(pluginDependency: ProviderConvertible<PluginDependency>) = apply(plugin = pluginDependency.asProvider().get().pluginId)
 fun PluginManager.withPlugin(pluginDep: PluginDependency, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDep.pluginId, block)
 fun PluginManager.withPlugin(pluginDepProvider: Provider<PluginDependency>, block: AppliedPlugin.() -> Unit) = withPlugin(pluginDepProvider.get().pluginId, block)
 fun PluginManager.withPlugins(vararg pluginDeps: PluginDependency, block: AppliedPlugin.() -> Unit) = pluginDeps.forEach { withPlugin(it, block) }
@@ -238,6 +242,7 @@ stal {
                                 optIn("kotlin.ExperimentalSubclassOptIn")
                                 optIn("kotlin.ExperimentalUnsignedTypes")
                                 optIn("kotlin.uuid.ExperimentalUuidApi")
+                                optIn("kotlin.concurrent.atomics.ExperimentalAtomicApi")
                                 optIn("kotlinx.serialization.ExperimentalSerializationApi")
                                 optIn("dev.lounres.kone.annotations.UnstableKoneAPI")
                                 optIn("dev.lounres.kone.annotations.ExperimentalKoneAPI")
@@ -279,6 +284,10 @@ stal {
                 transformJvm = true
                 jvmVariant = "VH"
             }
+        }
+        "compose" {
+            apply(versions.plugins.kotlin.compose)
+            apply(versions.plugins.compose.multiplatform)
         }
         "kotest" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
