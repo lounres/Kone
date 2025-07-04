@@ -11,10 +11,10 @@ import dev.lounres.kone.collections.noMatchingKeyException
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.transformNotNullMaybe
-import kotlin.jvm.JvmName
 
 
-public fun <Key, Value> KoneMapNode<Key, Value>.toKoneMapEntry(): KoneMapEntry<Key, Value> = KoneMapEntry(key = key, value = value)
+public operator fun <Key> KoneMapEntry<Key, *>.component1(): Key = this.key
+public operator fun <Value> KoneMapEntry<*, Value>.component2(): Value = this.value
 
 public fun KoneMap<*, *>.isEmpty(): Boolean = size == 0u
 public fun KoneMap<*, *>.isNotEmpty(): Boolean = !isEmpty()

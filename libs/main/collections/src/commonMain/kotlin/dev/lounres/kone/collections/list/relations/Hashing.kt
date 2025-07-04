@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.context
+import dev.lounres.kone.relations.defaultHashing
 
 
 internal open class KoneListHashing<Element>(open val elementHashing: Hashing<Element>) : Hashing<KoneList<Element>> {
@@ -25,5 +26,5 @@ internal open class KoneListHashing<Element>(open val elementHashing: Hashing<El
     }
 }
 
-public fun <Element> KoneList.Companion.hashing(elementHashing: Hashing<Element>): Hashing<KoneList<Element>> =
+public fun <Element> KoneList.Companion.hashing(elementHashing: Hashing<Element> = defaultHashing()): Hashing<KoneList<Element>> =
     KoneListHashing(elementHashing)

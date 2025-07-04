@@ -51,6 +51,58 @@ public inline fun <reified Element> KoneIterable<Element>.toKoneArray(): KoneArr
 
 // endregion
 
+// region Boolean
+
+/**
+ * Returns a [KoneMutableBooleanArray] of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
+public inline fun KoneMutableBooleanArray(size: UInt, initializer: (UInt) -> Boolean): KoneMutableBooleanArray =
+    KoneMutableBooleanArray(BooleanArray(size.toInt()) { initializer(it.toUInt()) })
+
+/**
+ * Returns a [KoneMutableBooleanArray] of provided [size] of `false`s.
+ */
+public fun KoneMutableBooleanArray(size: UInt): KoneMutableBooleanArray =
+    KoneMutableBooleanArray(BooleanArray(size.toInt()))
+
+/**
+ * Returns a [KoneBooleanArray] of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
+public inline fun KoneBooleanArray(size: UInt, initializer: (UInt) -> Boolean): KoneBooleanArray =
+    KoneBooleanArray(BooleanArray(size.toInt()) { initializer(it.toUInt()) })
+
+/**
+ * Returns a [KoneBooleanArray] of provided [size] of `false`s.
+ */
+public fun KoneBooleanArray(size: UInt): KoneBooleanArray =
+    KoneBooleanArray(BooleanArray(size.toInt()))
+
+public fun KoneMutableBooleanArray.Companion.of(vararg elements: Boolean): KoneMutableBooleanArray =
+    KoneMutableBooleanArray(elements)
+
+public fun KoneBooleanArray.Companion.of(vararg elements: Boolean): KoneBooleanArray =
+    KoneBooleanArray(elements)
+
+public fun KoneIterable<Boolean>.toKoneMutableBooleanArray(): KoneMutableBooleanArray {
+    val iterator = iterator()
+    return KoneMutableBooleanArray(size) { iterator.getAndMoveNext() }
+}
+
+public fun KoneIterable<Boolean>.toKoneBooleanArray(): KoneBooleanArray {
+    val iterator = iterator()
+    return KoneBooleanArray(size) { iterator.getAndMoveNext() }
+}
+
+// endregion
+
 // region Byte
 
 /**

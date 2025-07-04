@@ -114,6 +114,104 @@ public value class KoneMutableArray<Element>(internal val array: Array<Element>)
 
 // FIXME: KT-42977
 /**
+ * An immutable wrapper for standard [BooleanArray] with unsigned indexation that also implements [KoneList].
+ */
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
+@JvmInline
+public value class KoneBooleanArray(internal val array: BooleanArray): KoneList<Boolean> {
+    // FIXME: KT-30915
+//    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
+    
+    public override val size: UInt get() = array.size.toUInt()
+    public override operator fun get(index: UInt): Boolean =
+        if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
+        else indexOutOfBoundsException(index, array.size.toUInt())
+    public override operator fun iterator(): KoneLinearIterator<Boolean> = Iterator(array)
+    public override fun iteratorFrom(index: UInt): KoneLinearIterator<Boolean> {
+        require(index <= size)
+        return Iterator(array, index.toInt())
+    }
+    
+    override fun toString(): String = array.contentToString()
+    
+    // FIXME: KT-24874
+//    override fun hashCode(): Int = array.contentHashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (other !is KoneUIntArray<*>) return false
+//        return array.contentEquals(other.array)
+//    }
+    
+    internal open class Iterator(val array: BooleanArray, protected var index: Int = 0): KoneLinearIterator<Boolean> {
+        override fun hasNext(): Boolean = index < array.size
+        override fun getNext(): Boolean = if (hasNext()) array[index] else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        override fun moveNext() {
+            if (!hasNext()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            index++
+        }
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        
+        override fun hasPrevious(): Boolean = index > 0
+        override fun getPrevious(): Boolean = if (hasPrevious()) array[index - 1] else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        override fun movePrevious() {
+            if (!hasPrevious()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            index--
+        }
+        override fun previousIndex(): UInt = (index - 1).toUInt()
+    }
+    
+    public companion object
+}
+
+/**
+ * A wrapper for standard [BooleanArray] with unsigned indexation that also implements [KoneSettableList].
+ */
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
+@JvmInline
+public value class KoneMutableBooleanArray(internal val array: BooleanArray): KoneSettableList<Boolean> {
+    // FIXME: KT-30915
+//    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
+    
+    public override val size: UInt get() = array.size.toUInt()
+    public override operator fun get(index: UInt): Boolean =
+        if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
+        else indexOutOfBoundsException(index, array.size.toUInt())
+    public override operator fun set(index: UInt, element: Boolean) {
+        if (index !in 0u ..< array.size.toUInt()) indexOutOfBoundsException(index, array.size.toUInt())
+        array[index.toInt()] = element
+    }
+    public override operator fun iterator(): KoneSettableLinearIterator<Boolean> = Iterator(array)
+    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Boolean> {
+        require(index <= size)
+        return Iterator(array, index.toInt())
+    }
+    
+    override fun toString(): String = array.contentToString()
+    
+    // FIXME: KT-24874
+//    override fun hashCode(): Int = array.contentHashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (other !is KoneMutableUIntArray<*>) return false
+//        return array.contentEquals(other.array)
+//    }
+    
+    internal class Iterator(array: BooleanArray, index: Int = 0): KoneBooleanArray.Iterator(array, index), KoneSettableLinearIterator<Boolean> {
+        override fun setNext(element: Boolean) {
+            if (!hasNext()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            array[index] = element
+        }
+        override fun setPrevious(element: Boolean) {
+            if (!hasPrevious()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            array[index - 1] = element
+        }
+    }
+    
+    public companion object
+}
+
+// FIXME: KT-42977
+/**
  * An immutable wrapper for standard [ByteArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)

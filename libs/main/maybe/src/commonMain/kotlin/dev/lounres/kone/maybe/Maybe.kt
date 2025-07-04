@@ -72,7 +72,7 @@ public inline fun <Element> Maybe<Element>.orElse(default: () -> Element): Eleme
  * Computes the [compute] on the value and returns it wrapped in [Some] if the value is present
  * or just returns `None` otherwise.
  */
-public inline fun <Element, Result> Maybe<Element>.computeOn(compute: (Element) -> Result): Maybe<Result> =
+public inline fun <Element, Result> Maybe<Element>.map(compute: (Element) -> Result): Maybe<Result> =
     when(this) {
         None -> None
         is Some -> Some(compute(value))
@@ -80,23 +80,33 @@ public inline fun <Element, Result> Maybe<Element>.computeOn(compute: (Element) 
 
 /**
  * Computes the [compute] on the value and returns it if the value is present
- * or just returns [default] one otherwise.
+ * or just returns [default] result otherwise.
  */
-public inline fun <Element, Result> Maybe<Element>.computeOnOrDefault(default: Result, compute: (Element) -> Result): Result =
+public inline fun <Element, Result> Maybe<Element>.mapOrDefault(default: Result, compute: (Element) -> Result): Result =
     when(this) {
         None -> default
         is Some -> compute(value)
     }
 
 /**
- * Computes the [compute] on the value and returns it if the value is present
- * or just computes and returns [default] one otherwise.
+ * Computes the [compute] on the value and returns result of the computation if the value is present
+ * or just computes and returns [default] result otherwise.
  */
-public inline fun <Element, Result> Maybe<Element>.computeOnOrElse(default: () -> Result, compute: (Element) -> Result): Result =
+public inline fun <Element, Result> Maybe<Element>.mapOrElse(default: () -> Result, compute: (Element) -> Result): Result =
     when(this) {
         None -> default()
         is Some -> compute(value)
     }
+
+/**
+ * Runs the [block] on the value if it is present.
+ */
+public inline fun <Element> Maybe<Element>.ifSome(block: (Element) -> Unit) {
+    when (this) {
+        None -> {}
+        is Some<Element> -> block(this.value)
+    }
+}
 
 /**
  * Wraps [this] value in [Some] if it is not null or returns [None] otherwise.

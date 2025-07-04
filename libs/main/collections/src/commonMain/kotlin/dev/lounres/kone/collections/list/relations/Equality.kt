@@ -11,10 +11,11 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.context
 import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.neq
 
 
-internal open class KoneListEquality<Element>(open val elementEquality: Equality<Element>) : Equality<KoneList<Element>> {
+internal class KoneListEquality<Element>(val elementEquality: Equality<Element>) : Equality<KoneList<Element>> {
     override fun KoneList<Element>.equalsTo(other: KoneList<Element>): Boolean {
         if (this === other) return true
         if (this.size != other.size) return false
@@ -29,5 +30,5 @@ internal open class KoneListEquality<Element>(open val elementEquality: Equality
     }
 }
 
-public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element>): Equality<KoneList<Element>> =
+public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element> = defaultEquality()): Equality<KoneList<Element>> =
     KoneListEquality(elementEquality)
