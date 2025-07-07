@@ -10,6 +10,8 @@ import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
 import kotlinx.benchmark.gradle.internal.KotlinxBenchmarkPluginInternalApi
+import net.schmizz.sshj.SSHClient
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 //import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
@@ -23,6 +25,7 @@ import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
+import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.text.replace
@@ -40,7 +43,13 @@ plugins {
     id("org.ajoberstar.grgit") version "5.3.0"
     alias(versions.plugins.dokka)
     `version-catalog`
-    id("com.vanniktech.maven.publish") version "0.31.0"
+    alias(versions.plugins.gradle.maven.publish.plugin)
+}
+
+buildscript {
+    dependencies {
+        classpath("com.hierynomus:sshj:0.40.0")
+    }
 }
 
 
@@ -56,7 +65,7 @@ allprojects {
     version = koneVersion
 }
 
-tasks.register("docusaurusGenerateInputData") {
+val docusaurusGenerateInputData by tasks.registering {
     group = "site"
     outputs.files("site/inputData.ts")
     doLast {
@@ -85,6 +94,89 @@ tasks.register("docusaurusGenerateDevInputData") {
                 export const koneBaseUrl = "$koneBaseUrl"
             """.trimIndent()
         rootDir.resolve("site/inputData.ts").writer().use { it.write(inputDataContent) }
+    }
+}
+
+val buildSite by tasks.registering(Exec::class) {
+    group = "site"
+    description = "Build docs site"
+    
+    dependsOn(docusaurusGenerateInputData)
+
+    workingDir = rootDir.resolve("site")
+    
+    standardOutput = ByteArrayOutputStream()
+    errorOutput = ByteArrayOutputStream()
+    
+    commandLine("node", "--run", "build")
+}
+
+tasks.register("publishApiToProduction") {
+    group = "publishing"
+    description = "Publish the API reference to production server"
+    
+    val docsProject = project(":docs")
+    val dokkaGeneratePublicationHtml by docsProject.tasks
+    
+    dependsOn(dokkaGeneratePublicationHtml)
+    
+    doLast {
+        val hostname = project.properties["kone.publishing.hostname"] as String
+        val username = project.properties["kone.publishing.ssh.username"] as String
+        val password = project.properties["kone.publishing.ssh.password"] as String
+        val destination = project.properties["kone.publishing.destination.api"] as String
+        
+        val ssh = SSHClient()
+        ssh.addHostKeyVerifier(PromiscuousVerifier())
+        ssh.use {
+            ssh.connect(hostname)
+            ssh.authPassword(username, password)
+            ssh.use {
+                val session = ssh.startSession()
+                val command = session.exec("rm -rf $destination/*")
+                println(command.inputStream.bufferedReader().use { it.readText() })
+                command.join()
+                val scpFileTransfer = ssh.newSCPFileTransfer()
+                val sources = dokkaGeneratePublicationHtml.outputs.files
+                val directory = docsProject.layout.buildDirectory.asFile.get().resolve("dokka/html")
+                check(directory in sources.files) { "Irrelevant API HTML directory" }
+                directory.listFiles()!!.forEach { file ->
+                    scpFileTransfer.upload(file.absolutePath, destination)
+                }
+            }
+        }
+    }
+}
+
+tasks.register("publishSiteToProduction") {
+    group = "publishing"
+    description = "Publish the docs site to production server"
+    
+    dependsOn(buildSite)
+    
+    doLast {
+        val hostname = project.properties["kone.publishing.hostname"] as String
+        val username = project.properties["kone.publishing.ssh.username"] as String
+        val password = project.properties["kone.publishing.ssh.password"] as String
+        val destination = project.properties["kone.publishing.destination.site"] as String
+        
+        val ssh = SSHClient()
+        ssh.addHostKeyVerifier(PromiscuousVerifier())
+        ssh.use {
+            ssh.connect(hostname)
+            ssh.authPassword(username, password)
+            ssh.use {
+                val session = ssh.startSession()
+                val command = session.exec("rm -rf $destination/*")
+                println(command.inputStream.bufferedReader().use { it.readText() })
+                command.join()
+                val scpFileTransfer = ssh.newSCPFileTransfer()
+                val directory = rootDir.resolve("site/build")
+                directory.listFiles()!!.forEach { file ->
+                    scpFileTransfer.upload(file.absolutePath, destination)
+                }
+            }
+        }
     }
 }
 
