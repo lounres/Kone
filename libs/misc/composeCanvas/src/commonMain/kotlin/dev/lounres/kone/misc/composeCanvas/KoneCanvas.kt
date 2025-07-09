@@ -6,148 +6,226 @@
 package dev.lounres.kone.misc.composeCanvas
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Matrix
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Vector2
-import dev.lounres.kone.computationalGeometry.inEuclideanKategoryScope2For
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.times
+import androidx.compose.ui.unit.Density
+import dev.lounres.kone.collections.array.KoneDoubleArray
+import dev.lounres.kone.collections.array.of
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.computationalGeometry.*
+import dev.lounres.kone.computationalGeometry.angles.cos
+import dev.lounres.kone.computationalGeometry.angles.degrees
+import dev.lounres.kone.computationalGeometry.angles.plus
+import dev.lounres.kone.computationalGeometry.angles.sin
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.Serializable
 import kotlin.math.exp
 
 
-// TODO: Add rotation to parameters.
-@Serializable
-public data class KoneCanvasState(
-    val offset: Point2<Float> = Point2(0f, 0f),
-    val zoom: Float = 1.0f,
-)
-
 public data class ViewRegion(
-    val xMin: Float,
-    val xMax: Float,
-    val yMin: Float,
-    val yMax: Float,
+    val xMin: Double,
+    val xMax: Double,
+    val yMin: Double,
+    val yMax: Double,
 )
 
-context(drawScope: DrawScope)
+context(koneCanvasSize: KoneCanvasSize)
 public val KoneCanvasState.viewRegion: ViewRegion
     get() = ViewRegion(
-        xMin = offset.x - drawScope.size.width / 2 * zoom,
-        xMax = offset.x + drawScope.size.width / 2 * zoom,
-        yMin = offset.y - drawScope.size.height / 2 * zoom,
-        yMax = offset.y + drawScope.size.height / 2 * zoom,
+        xMin = offset.x - koneCanvasSize.width / 2 * zoom,
+        xMax = offset.x + koneCanvasSize.width / 2 * zoom,
+        yMin = offset.y - koneCanvasSize.height / 2 * zoom,
+        yMax = offset.y + koneCanvasSize.height / 2 * zoom,
     )
 
-public val ViewRegion.leftBottom: Offset
-    get() = Offset(xMin, yMin)
-public val ViewRegion.leftTop: Offset
-    get() = Offset(xMin, yMax)
-public val ViewRegion.rightBottom: Offset
-    get() = Offset(xMax, yMin)
-public val ViewRegion.rightTop: Offset
-    get() = Offset(xMax, yMax)
+public val ViewRegion.leftBottomOffset: Offset
+    get() = Offset(xMin.toFloat(), yMin.toFloat())
+public val ViewRegion.leftTopOffset: Offset
+    get() = Offset(xMin.toFloat(), yMax.toFloat())
+public val ViewRegion.rightBottomOffset: Offset
+    get() = Offset(xMax.toFloat(), yMin.toFloat())
+public val ViewRegion.rightTopOffset: Offset
+    get() = Offset(xMax.toFloat(), yMax.toFloat())
 
 @Composable
 public fun KoneCanvas(
     modifier: Modifier = Modifier,
     koneCanvasState: KoneCanvasState,
     clip: Boolean = true,
-    onDraw: DrawScope.() -> Unit,
+    onDraw: context(KoneCanvasSize, Density) KoneCanvasScope.() -> Unit,
 ) {
     Canvas(
         modifier = modifier,
     ) {
+        val koneCanvasScope = CollectingKoneCanvasScope()
+        val cos = cos(koneCanvasState.rotation)
+        val sin = sin(koneCanvasState.rotation)
+        koneCanvasScope.transform(
+            transformation = KoneCanvasTransformationMatrix(
+                KoneDoubleArray.of(
+                    cos, -sin, -koneCanvasState.offset.x * cos + koneCanvasState.offset.y * sin + size.width / 2 * koneCanvasState.zoom,
+                    -sin, -cos, koneCanvasState.offset.x * sin + koneCanvasState.offset.y * cos + size.height / 2 * koneCanvasState.zoom,
+                    0.0, 0.0, koneCanvasState.zoom,
+                )
+            )
+        ) {
+            onDraw(KoneCanvasSize(height = size.height.toDouble(), width = size.width.toDouble()), this@Canvas, this)
+        }
         withTransform(
             {
-                if (clip) clipRect(0.0f, 0.0f, size.width, size.height, ClipOp.Intersect)
-                transform(
-                    Matrix(
-                        floatArrayOf(
-                            1f, 0f, 0f, 0f,
-                            0f, -1f, 0f, 0f,
-                            0f, 0f, 1f, 0f,
-                            size.width / 2 * koneCanvasState.zoom - koneCanvasState.offset.x, size.height / 2 * koneCanvasState.zoom + koneCanvasState.offset.y, 0f, koneCanvasState.zoom
+                if (clip) clipRect()
+            }
+        ) {
+            for (pathToDraw in koneCanvasScope.paths)
+                when (pathToDraw) {
+                    is CollectingKoneCanvasScope.PathToDraw.Brushed ->
+                        drawPath(
+                            path = pathToDraw.path.toComposePath(),
+                            brush = pathToDraw.brush,
+                            alpha = pathToDraw.alpha,
+                            style = pathToDraw.style,
+                            colorFilter = pathToDraw.colorFilter,
+                            blendMode = pathToDraw.blendMode,
                         )
-                    )
-                )
-            },
-            onDraw
-        )
+                    is CollectingKoneCanvasScope.PathToDraw.Colored ->
+                        drawPath(
+                            path = pathToDraw.path.toComposePath(),
+                            color = pathToDraw.color,
+                            alpha = pathToDraw.alpha,
+                            style = pathToDraw.style,
+                            colorFilter = pathToDraw.colorFilter,
+                            blendMode = pathToDraw.blendMode,
+                        )
+                }
+        }
     }
 }
 
+@Composable
 public inline fun Modifier.defaultKoneCanvasPointerInput(
     crossinline getKoneCanvasState: () -> KoneCanvasState,
     crossinline setKoneCanvasState: (KoneCanvasState) -> Unit,
-): Modifier =
-    pointerInput(Unit) {
-        koneCanvasContextRegistry.inEuclideanKategoryScope2For(floatSuppliedType) {
-            awaitPointerEventScope {
-                var currentPressPosition: Offset? = null
-                while (true) {
-                    val event = awaitPointerEvent()
-                    when (event.type) {
-                        PointerEventType.Press -> {
-                            currentPressPosition = event.changes.last().position
-                        }
-                        
-                        PointerEventType.Release -> {
-                            currentPressPosition = null
-                        }
-                        
-                        PointerEventType.Move -> {
-                            if (currentPressPosition != null) {
-                                val (oldOffset, oldZoom) = getKoneCanvasState()
-                                val lastPosition = event.changes.last().position
-                                val offset = lastPosition - currentPressPosition
-                                currentPressPosition = lastPosition
-                                setKoneCanvasState(
-                                    KoneCanvasState(
-                                        offset = oldOffset - Vector2(offset.x, -offset.y) * oldZoom,
-                                        zoom = oldZoom
-                                    )
-                                )
+): Modifier {
+    var isCtrlPressed by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+    
+    return this
+        .focusRequester(focusRequester)
+        .focusable()
+        .onKeyEvent {
+            isCtrlPressed = it.isCtrlPressed
+            true
+        }
+        .pointerInput(Unit) {
+            koneCanvasContextRegistry.inEuclideanKategoryScope2For<Double, _>(doubleSuppliedType) {
+                awaitPointerEventScope {
+                    var currentPressPosition: Offset? = null
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        when (event.type) {
+                            PointerEventType.Press -> {
+                                currentPressPosition = event.changes.last().position
                             }
-                        }
-                        
-                        PointerEventType.Scroll -> {
-                            val lastChange = event.changes.last()
-                            val zoomDelta = exp(lastChange.scrollDelta.y / 10)
-                            
-                            val (oldOffset, oldZoom) = getKoneCanvasState()
-                            val newZoom = oldZoom * zoomDelta
-                            val pointerOffset =
-                                lastChange.position.let { Vector2(-size.width / 2 + it.x, size.height / 2 - it.y) }
-                            
-                            setKoneCanvasState(
-                                KoneCanvasState(
-                                    offset = oldOffset + pointerOffset * (oldZoom - newZoom),
-                                    zoom = newZoom
-                                )
-                            )
+
+                            PointerEventType.Release -> {
+                                currentPressPosition = null
+                            }
+
+                            PointerEventType.Move -> {
+                                if (currentPressPosition != null) {
+                                    val (oldOffset, oldZoom, oldRotation) = getKoneCanvasState()
+                                    val lastPosition = event.changes.last().position
+                                    val offset = lastPosition - currentPressPosition
+                                    currentPressPosition = lastPosition
+                                    setKoneCanvasState(
+                                        KoneCanvasState(
+                                            offset = oldOffset - Vector2(
+                                                offset.x.toDouble(),
+                                                -offset.y.toDouble()
+                                            ) * oldZoom,
+                                            zoom = oldZoom,
+                                            rotation = oldRotation,
+                                        )
+                                    )
+                                }
+                            }
+
+                            PointerEventType.Scroll -> {
+                                val lastChange = event.changes.last()
+
+                                val (oldOffset, oldZoom, oldRotation) = getKoneCanvasState()
+
+                                val pointerOffset =
+                                    lastChange.position.let {
+                                        Vector2(
+                                            (-size.width / 2 + it.x).toDouble(),
+                                            (size.height / 2 - it.y).toDouble()
+                                        )
+                                    }
+
+                                if (!isCtrlPressed) {
+                                    val zoomDelta = exp(lastChange.scrollDelta.y / 10)
+
+                                    val newZoom = oldZoom * zoomDelta
+                                    val cos = cos(oldRotation)
+                                    val sin = sin(oldRotation)
+
+                                    setKoneCanvasState(
+                                        KoneCanvasState(
+                                            offset = oldOffset + pointerOffset.let {
+                                                Vector2(
+                                                    it.x * cos + it.y * sin,
+                                                    -it.x * sin + it.y * cos
+                                                )
+                                            } * (oldZoom - newZoom),
+                                            zoom = newZoom,
+                                            rotation = oldRotation,
+                                        )
+                                    )
+                                } else {
+                                    val angleDelta = lastChange.scrollDelta.y.toDouble().degrees
+
+                                    setKoneCanvasState(
+                                        KoneCanvasState(
+                                            offset = oldOffset
+                                                    + pointerOffset.let {
+                                                        val cos = cos(oldRotation)
+                                                        val sin = sin(oldRotation)
+                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                    }
+                                                    - pointerOffset.let {
+                                                        val cos = cos(oldRotation + angleDelta)
+                                                        val sin = sin(oldRotation + angleDelta)
+                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                    },
+                                            zoom = oldZoom,
+                                            rotation = oldRotation + angleDelta,
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-    }
+}
 
+@Composable
 public fun Modifier.defaultKoneCanvasPointerInput(
     koneCanvasState: MutableState<KoneCanvasState>,
 ): Modifier = defaultKoneCanvasPointerInput(
@@ -155,6 +233,7 @@ public fun Modifier.defaultKoneCanvasPointerInput(
     setKoneCanvasState = { koneCanvasState.value = it },
 )
 
+@Composable
 public fun Modifier.defaultKoneCanvasPointerInput(
     koneCanvasState: MutableStateFlow<KoneCanvasState>,
 ): Modifier = defaultKoneCanvasPointerInput(
@@ -167,7 +246,7 @@ public fun KoneDefaultCanvas(
     modifier: Modifier = Modifier,
     koneCanvasStateState: MutableState<KoneCanvasState> = remember { mutableStateOf(KoneCanvasState()) },
     clip: Boolean = true,
-    onDraw: DrawScope.(KoneCanvasState) -> Unit,
+    onDraw: context(KoneCanvasSize, Density) KoneCanvasScope.(KoneCanvasState) -> Unit,
 ) {
     var canvasState by koneCanvasStateState
     KoneCanvas(

@@ -15,6 +15,7 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         mavenCentral()
         maven("https://repo.kotlin.link")
+        mavenLocal()
     }
     
     versionCatalogs {

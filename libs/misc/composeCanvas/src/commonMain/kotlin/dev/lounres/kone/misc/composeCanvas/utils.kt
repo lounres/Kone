@@ -5,10 +5,8 @@
 
 package dev.lounres.kone.misc.composeCanvas
 
-import dev.lounres.kone.algebraic.installFloatContext
+import dev.lounres.kone.algebraic.installDoubleContext
 import dev.lounres.kone.computationalGeometry.installEuclideanKategory2For
-import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionPolytope
-import dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstructionVertex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.installVectorKategoryFor
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
@@ -17,10 +15,10 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
 
 
-public val floatSuppliedType: SuppliedType =
+public val doubleSuppliedType: SuppliedType =
     @OptIn(DelicateSuppliedTypeConstructor::class)
     SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Float",
+        fullyQualifiedName = "kotlin.Double",
         typeArguments = emptyList(),
         isNullable = false,
     )
@@ -32,7 +30,7 @@ public val abstractPolytopicConstructionPolytopeSuppliedType: SuppliedType =
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,
-                type = floatSuppliedType,
+                type = doubleSuppliedType,
             )
         ),
         isNullable = false,
@@ -45,14 +43,14 @@ public val abstractPolytopicConstructionVertexSuppliedType: SuppliedType =
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = KVariance.INVARIANT,
-                type = floatSuppliedType,
+                type = doubleSuppliedType,
             )
         ),
         isNullable = false,
     )
 
 public val koneCanvasContextRegistry: KoneContextRegistry = KoneContextRegistry {
-    installFloatContext()
-    installVectorKategoryFor<Float>(floatSuppliedType)
-    installEuclideanKategory2For<Float>(floatSuppliedType)
+    installDoubleContext()
+    installVectorKategoryFor<Double>(doubleSuppliedType)
+    installEuclideanKategory2For<Double>(doubleSuppliedType)
 }
