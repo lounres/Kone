@@ -51,8 +51,7 @@ public value class KoneCanvasPath internal constructor(
     internal sealed interface Part {
         val end: Point2<Double>
         
-        class LineTo(override val end: Point2<Double>) : Part
-        class Arc
+        data class LineTo(override val end: Point2<Double>) : Part
     }
     
     @JvmInline
