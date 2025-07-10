@@ -119,7 +119,7 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
     var isCtrlPressed by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     
-    LaunchedEffect(Unit) {
+    SideEffect {
         focusRequester.requestFocus()
     }
     
