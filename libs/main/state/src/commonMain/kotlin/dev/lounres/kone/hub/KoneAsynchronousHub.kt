@@ -19,19 +19,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlin.jvm.JvmInline
 
 
 public abstract class KoneAsynchronousHub<out Value> internal constructor() {
     public abstract val value: Value
-    
+
     @PublishedApi
     internal val callbacksLock: ReentrantLock = ReentrantLock()
     @PublishedApi
     internal abstract val callbacksValue: Value
     internal val callbacks: KoneMutableNoddedList<suspend (@UnsafeVariance Value) -> Unit> = KoneGCLinkedList() // TODO: Replace with concurrent queue
-    
+
     public fun interface Subscription {
         public fun cancel()
     }
@@ -47,7 +46,8 @@ public fun <Value> KoneAsynchronousHub<Value>.subscribe(callback: suspend (Value
         }
     }
 
-public class KoneAsynchronousHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneAsynchronousHub<Value>) {
+@JvmInline
+public value class KoneAsynchronousHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneAsynchronousHub<Value>) {
     public fun subscribe(callback: suspend (Value) -> Unit): KoneAsynchronousHub.Subscription {
         val node = hub.callbacks.addNode(callback)
         return KoneAsynchronousHub.Subscription {
@@ -65,10 +65,10 @@ public inline fun <Value, Result> KoneAsynchronousHub<Value>.buildSubscription(b
 
 public class KoneMutableAsynchronousHub<Value>(
     initialValue: Value,
-    private val elementEquality: Equality<Value>,
+    private val elementEquality: Equality<Value> = defaultEquality(),
 ) : KoneAsynchronousHub<Value>() {
     override var callbacksValue: Value = initialValue
-    
+
     @PublishedApi
     internal val automaton: AsynchronousAutomaton<Value, Value, Nothing?> =
         AsynchronousAutomaton(
@@ -89,7 +89,7 @@ public class KoneMutableAsynchronousHub<Value>(
                 }
             }
         )
-    
+
     override val value: Value
         get() = automaton.state
 }
@@ -115,16 +115,12 @@ public suspend inline fun <Value> KoneMutableAsynchronousHub<Value>.updateAndGet
 public suspend inline fun <Value> KoneMutableAsynchronousHub<Value>.getAndUpdate(transform: (Value) -> Value): Value =
     automaton.move { previousValue -> transform(previousValue) }.previousState
 
-public suspend fun <Value, Result> KoneAsynchronousHub<Value>.map(elementEquality: Equality<Result> = defaultEquality(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> {
-    val temporaryMutex = Mutex()
-    temporaryMutex.withLock {
-        val temporarySubscription = subscribe { temporaryMutex.withLock {  } }
-        val result = KoneMutableAsynchronousHub(transform(value), elementEquality)
-        subscribe { result.set(transform(it)) }
-        temporarySubscription.cancel()
-        return result
+public fun <Value, Result> KoneAsynchronousHub<Value>.map(elementEquality: Equality<Result> = defaultEquality(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> =
+    buildSubscription { initialValue ->
+        val hub = KoneMutableAsynchronousHub(transform(initialValue), elementEquality)
+        subscribe { hub.set(transform(it)) }
+        hub
     }
-}
 
 public fun <Value> KoneAsynchronousHub<Value>.toStateFlow(): StateFlow<Value> =
     buildSubscription { initialValue ->

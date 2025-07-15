@@ -73,7 +73,7 @@ fabric.properties
 
 ### Lounres's template
 # IntelliJ project files
-.idea
+.idea/*
 !.idea/icon.svg
 !.idea/scopes
 !.idea/copyright
