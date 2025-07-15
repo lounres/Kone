@@ -38,8 +38,11 @@ public inline fun <
                 is CheckResult.Success<State> -> it.nextState
             }
         }
-        onTransition(previousState, transition, nextState)
-        _state = nextState
+        try {
+            onTransition(previousState, transition, nextState)
+        } finally {
+            _state = nextState
+        }
         MovementMaybeResult.Success(previousState, transition, nextState)
     }
 
@@ -59,8 +62,11 @@ public inline fun <
                 is CheckResult.Success<State> -> it.nextState
             }
         }
-        onTransition(previousState, transition, nextState)
-        _state = nextState
+        try {
+            onTransition(previousState, transition, nextState)
+        } finally {
+            _state = nextState
+        }
         MovementResult.Success(previousState, transition, nextState)
     }
 

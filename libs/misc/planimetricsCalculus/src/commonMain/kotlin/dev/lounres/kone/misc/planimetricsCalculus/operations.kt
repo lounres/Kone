@@ -216,11 +216,14 @@ public fun <Number> lineThrough(P: Point<Number>): ReadOnlyProperty<Any?, Line<N
     val yParameter = LabeledVariable("${prop.name}\$param_y")
     val zParameter = LabeledVariable("${prop.name}\$param_z")
     calculate {
-        Line(
-            P.y * zParameter - P.z * yParameter,
-            P.z * xParameter - P.x * zParameter,
-            P.x * yParameter - P.y * xParameter,
-        )
+        // FIXME: KT-79139
+        with(contextOf<MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>>>()) {
+            Line(
+                P.y * zParameter - P.z * yParameter,
+                P.z * xParameter - P.x * zParameter,
+                P.x * yParameter - P.y * xParameter,
+            )
+        }
     }
 }
 context(_: PlanimetricsCalculationSpace<Number>)
@@ -229,11 +232,14 @@ public fun <Number> pointOn(L: Line<Number>): ReadOnlyProperty<Any?, Point<Numbe
     val yParameter = LabeledVariable("${prop.name}\$param_y")
     val zParameter = LabeledVariable("${prop.name}\$param_z")
     calculate {
-        Point(
-            L.y * zParameter - L.z * yParameter,
-            L.z * xParameter - L.x * zParameter,
-            L.x * yParameter - L.y * xParameter,
-        )
+        // FIXME: KT-79139
+        with(contextOf<MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>>>()) {
+            Point(
+                L.y * zParameter - L.z * yParameter,
+                L.z * xParameter - L.x * zParameter,
+                L.x * yParameter - L.y * xParameter,
+            )
+        }
     }
 }
 // endregion

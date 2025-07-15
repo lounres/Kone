@@ -11,13 +11,13 @@ import kotlinx.serialization.Serializable
 
 
 // FIXME: KT-42977
-@Serializable(with = VectorSerializer::class)
+//@Serializable(with = VectorSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public open /*value*/ class Vector<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Vector${coordinates.coefficients}"
 }
 
-@Serializable(with = Vector2Serializer::class)
+//@Serializable(with = Vector2Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
@@ -29,7 +29,7 @@ public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(c
     override fun toString(): String = "Vector2${coordinates.coefficients}"
 }
 
-@Serializable(with = Vector3Serializer::class)
+//@Serializable(with = Vector3Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Vector3<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
@@ -42,7 +42,7 @@ public /*value*/ class Vector3<out N>(coordinates: ColumnVector<N>): Vector<N>(c
     override fun toString(): String = "Vector3${coordinates.coefficients}"
 }
 
-@Serializable(with = Vector4Serializer::class)
+//@Serializable(with = Vector4Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Vector4<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {

@@ -5,6 +5,9 @@
 
 package dev.lounres.kone
 
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -28,38 +31,8 @@ public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
     for (index in 0u ..< times) action(index)
 }
 
-/**
- * Runs the [block].
- *
- * It's an analogue to [with] but for context parameter.
- */
-public inline fun <Result> context(block: () -> Result): Result =
-    block()
+public inline fun <reified T> Any?.cast(): T = this as T
 
-/**
- * Runs the [block] with the provided context parameter [context1].
- *
- * It's an analogue to [with] but for context parameter.
- */
-public inline fun <Context1, Result> context(context1: Context1, block: context(Context1) () -> Result): Result =
-    block(context1)
+public inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
-/**
- * Runs the [block] with the provided context parameters [context1], [context2].
- *
- * It's an analogue to [with] but for context parameters.
- */
-public inline fun <Context1, Context2, Result> context(context1: Context1, context2: Context2, block: context(Context1, Context2) () -> Result): Result =
-    block(context1, context2)
-
-/**
- * Runs the [block] with the provided context parameters [context1], [context2], [context3].
- *
- * It's an analogue to [with] but for context parameters.
- */
-public inline fun <Context1, Context2, Context3, Result> context(context1: Context1, context2: Context2, context3: Context3, block: context(Context1, Context2, Context3) () -> Result): Result =
-    block(context1, context2, context3)
-
-//context(context: Context)
-//@Suppress("NOTHING_TO_INLINE")
-//public inline fun <Context> inline(): Context = context
+public inline fun <reified T> Any?.castMaybe(): Maybe<T> = if (this is T) Some(this) else None

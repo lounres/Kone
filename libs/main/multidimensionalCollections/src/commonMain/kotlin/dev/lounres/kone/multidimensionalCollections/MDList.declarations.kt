@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 // TODO: Maybe `MDShapeIndexer` should be part of the structure?..
 
-@Serializable(with = MDListSerializer::class)
+//@Serializable(with = MDListSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 public interface MDList<out E> {
     public val shape: MDShape
     public val size: UInt get() = shape.fold(1u) { acc, dim -> acc * dim }
@@ -20,7 +20,7 @@ public interface MDList<out E> {
     public operator fun get(index: KoneUIntArray): E
 }
 
-@Serializable(with = SettableMDListSerializer::class)
+//@Serializable(with = SettableMDListSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 public interface SettableMDList<E>: MDList<E> {
     public operator fun set(index: KoneUIntArray, element: E)
 }

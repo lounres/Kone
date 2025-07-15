@@ -27,12 +27,14 @@ public fun <E> MDList2(vararg elements: KoneList<E>): MDList2<E> {
 
 public val <E> MDList2<E>.rowsView: KoneList<KoneList<E>>
     get() = KoneVirtualList(rowNumber) { row -> KoneVirtualList(columnNumber) { column -> get(row, column) } }
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 public val <E> MDList2<E>.rows: KoneList<KoneList<E>>
-    get() = KoneArray(rowNumber) { row -> KoneArraySettableList(columnNumber) { column -> get(row, column) } }
+    get() = KoneList/*KoneArray*/(rowNumber) { row -> KoneList/*KoneArraySettableList*/(columnNumber) { column -> get(row, column) } }
 public val <E> MDList2<E>.columnsView: KoneList<KoneList<E>>
     get() = KoneVirtualList(columnNumber) { column -> KoneVirtualList(rowNumber) { row -> get(row, column) } }
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 public val <E> MDList2<E>.columns: KoneList<KoneList<E>>
-    get() = KoneArray(columnNumber) { column -> KoneArraySettableList(rowNumber) { row -> get(row, column) } }
+    get() = KoneList/*KoneArray*/(columnNumber) { column -> KoneList/*KoneArraySettableList*/(rowNumber) { row -> get(row, column) } }
 
 public inline val MDList2<*>.rowIndices: UIntRange get() = 0u ..< rowNumber
 public inline val MDList2<*>.columnIndices: UIntRange get() = 0u ..< columnNumber

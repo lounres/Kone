@@ -11,13 +11,13 @@ import kotlinx.serialization.Serializable
 
 
 // FIXME: KT-42977
-@Serializable(with = PointSerializer::class)
+//@Serializable(with = PointSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public open /*value*/ class Point<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Point${coordinates.coefficients}"
 }
 
-@Serializable(with = Point2Serializer::class)
+//@Serializable(with = Point2Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
@@ -29,7 +29,7 @@ public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coo
     override fun toString(): String = "Point2${coordinates.coefficients}"
 }
 
-@Serializable(with = Point3Serializer::class)
+//@Serializable(with = Point3Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Point3<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
@@ -42,7 +42,7 @@ public /*value*/ class Point3<out N>(coordinates: ColumnVector<N>): Point<N>(coo
     override fun toString(): String = "Point3${coordinates.coefficients}"
 }
 
-@Serializable(with = Point4Serializer::class)
+//@Serializable(with = Point4Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 //@JvmInline
 public /*value*/ class Point4<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {

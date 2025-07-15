@@ -707,56 +707,64 @@ public abstract class MultivariatePolynomialSpaceOfFractions<
     // endregion
 
     // region Variable-Rational-Function operations
+    // FIXME: KT-79139
     @JvmName("plusVariableRational")
     final override operator fun Variable.plus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { this * other.denominator + other.numerator },
+            with(polynomialSpace) { this@plus * other.denominator + other.numerator },
             other.denominator
         )
+    // FIXME: KT-79139
     @JvmName("minusVariableRational")
     final override operator fun Variable.minus(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { this * other.denominator - other.numerator },
+            with(polynomialSpace) { this@minus * other.denominator - other.numerator },
             other.denominator
         )
+    // FIXME: KT-79139
     @JvmName("timesVariableRational")
     final override operator fun Variable.times(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { this * other.numerator },
+            with(polynomialSpace) { this@times * other.numerator },
             other.denominator
         )
+    // FIXME: KT-79139
     @JvmName("divVariableRational")
     final override operator fun Variable.div(other: RationalFunctionType): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { this * other.denominator },
+            with(polynomialSpace) { this@div * other.denominator },
             other.numerator
         )
     // endregion
 
     // region Rational-Function-Variable operations
+    // FIXME: KT-79139
     @JvmName("plusRationalVariable")
     final override operator fun RationalFunctionType.plus(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { numerator + denominator * other },
+            with(polynomialSpace) { numerator + denominator * other },
             denominator
         )
+    // FIXME: KT-79139
     @JvmName("minusRationalVariable")
     final override operator fun RationalFunctionType.minus(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { numerator - denominator * other },
+            with(polynomialSpace) { numerator - denominator * other },
             denominator
         )
+    // FIXME: KT-79139
     @JvmName("timesRationalVariable")
     final override operator fun RationalFunctionType.times(other: Variable): RationalFunctionType =
         constructRationalFunction(
-            context(polynomialSpace) { numerator * other },
+            with(polynomialSpace) { numerator * other },
             denominator
         )
+    // FIXME: KT-79139
     @JvmName("divRationalVariable")
     final override operator fun RationalFunctionType.div(other: Variable): RationalFunctionType =
         constructRationalFunction(
             numerator,
-            context(polynomialSpace) { denominator * other }
+            with(polynomialSpace) { denominator * other }
         )
     // endregion
     

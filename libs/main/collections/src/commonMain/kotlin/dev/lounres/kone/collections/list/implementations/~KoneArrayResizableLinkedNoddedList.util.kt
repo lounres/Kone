@@ -31,6 +31,7 @@ public inline fun <Element> KoneArrayResizableLinkedNoddedList(size: UInt, initi
     )
 }
 
+@PublishedApi
 internal object KoneArrayResizableLinkedNoddedListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneArrayResizableLinkedNoddedList<Element> = KoneArrayResizableLinkedNoddedList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArrayResizableLinkedNoddedList<Element> =

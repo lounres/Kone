@@ -34,8 +34,11 @@ public suspend inline fun <
             is CheckResult.Success<State> -> it.nextState
         }
     }
-    onTransition(previousState, transition, nextState)
-    _state = nextState
+    try {
+        onTransition(previousState, transition, nextState)
+    } finally {
+        _state = nextState
+    }
     return MovementMaybeResult.Success(previousState, transition, nextState)
 }
 
@@ -54,8 +57,11 @@ public suspend inline fun <
             is CheckResult.Success<State> -> it.nextState
         }
     }
-    onTransition(previousState, transition, nextState)
-    _state = nextState
+    try {
+        onTransition(previousState, transition, nextState)
+    } finally {
+        _state = nextState
+    }
     return MovementResult.Success(previousState, transition, nextState)
 }
 
@@ -103,8 +109,11 @@ public suspend inline fun <
             is CheckResult.Success<State> -> it.nextState
         }
     }
-    onTransition(previousState, transition, nextState)
-    _state = nextState
+    try {
+        onTransition(previousState, transition, nextState)
+    } finally {
+        _state = nextState
+    }
     return MovementMaybeAndComputationResult.Success(previousState, transition, nextState, computation)
 }
 
@@ -126,7 +135,10 @@ public suspend inline fun <
             is CheckResult.Success<State> -> it.nextState
         }
     }
-    onTransition(previousState, transition, nextState)
-    _state = nextState
+    try {
+        onTransition(previousState, transition, nextState)
+    } finally {
+        _state = nextState
+    }
     return MovementAndComputationResult.Success(previousState, transition, nextState, computation)
 }

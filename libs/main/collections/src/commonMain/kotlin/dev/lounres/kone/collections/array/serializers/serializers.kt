@@ -30,6 +30,7 @@ internal class DefaultKoneArraySerializer<ElementKlass : Any, Element : ElementK
     override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.collections.array.KoneArray", arraySerializer.descriptor)
     
     override fun serialize(encoder: Encoder, value: KoneArray<Element>) {
+        @Suppress("UNCHECKED_CAST")
         encoder.encodeSerializableValue(arraySerializer, value.array as Array<Element>)
     }
     

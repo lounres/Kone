@@ -24,14 +24,16 @@ public fun <Element> KoneTwoThreeTreeList(): KoneTwoThreeTreeList<Element> =
 @PublishedApi
 internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Element>): KoneTwoThreeTreeList<Element> {
     if (elements.size == 0u) return KoneTwoThreeTreeList()
-    
+
     val result = KoneTwoThreeTreeList<Element>(size = elements.size)
-    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
+    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
+    val nodes = Array(elements.size.toInt()) { KoneTwoThreeTreeList.Node(elements[it.toUInt()]) }
     for (i in nodes.indices) {
-        if (i > 0u) nodes[i].previousNode = nodes[i-1u]
-        if (i < nodes.lastIndex) nodes[i].nextNode = nodes[i+1u]
+        if (i > 0) nodes[i].previousNode = nodes[i-1]
+        if (i < nodes.lastIndex) nodes[i].nextNode = nodes[i+1]
     }
-    val tree = result.createTree(nodes)
+    val tree = result.createTree(KoneArray(nodes))
     result.rootHolder = tree
     result.firstNode = nodes.first()
     result.lastNode = nodes.last()

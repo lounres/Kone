@@ -16,32 +16,34 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-internal class MatrixSerializer<E>(
-    elementSerializer: KSerializer<E>,
-) : KSerializer<Matrix<E>> {
-    private val mdList1Serializer = MDList2.serializer(elementSerializer)
-    
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.Matrix", mdList1Serializer.descriptor)
-    
-    override fun serialize(encoder: Encoder, value: Matrix<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
-    }
-    
-    override fun deserialize(decoder: Decoder): Matrix<E> =
-        Matrix(decoder.decodeSerializableValue(mdList1Serializer))
-}
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//internal class MatrixSerializer<E>(
+//    elementSerializer: KSerializer<E>,
+//) : KSerializer<Matrix<E>> {
+//    private val mdList1Serializer = MDList2.serializer(elementSerializer)
+//
+//    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.Matrix", mdList1Serializer.descriptor)
+//
+//    override fun serialize(encoder: Encoder, value: Matrix<E>) {
+//        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+//    }
+//
+//    override fun deserialize(decoder: Decoder): Matrix<E> =
+//        Matrix(decoder.decodeSerializableValue(mdList1Serializer))
+//}
 
-internal class SettableMatrixSerializer<E>(
-    elementSerializer: KSerializer<E>,
-) : KSerializer<SettableMatrix<E>> {
-    private val mdList1Serializer = SettableMDList2.serializer(elementSerializer)
-    
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableMatrix", mdList1Serializer.descriptor)
-    
-    override fun serialize(encoder: Encoder, value: SettableMatrix<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
-    }
-    
-    override fun deserialize(decoder: Decoder): SettableMatrix<E> =
-        SettableMatrix(decoder.decodeSerializableValue(mdList1Serializer))
-}
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//internal class SettableMatrixSerializer<E>(
+//    elementSerializer: KSerializer<E>,
+//) : KSerializer<SettableMatrix<E>> {
+//    private val mdList1Serializer = SettableMDList2.serializer(elementSerializer)
+//
+//    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableMatrix", mdList1Serializer.descriptor)
+//
+//    override fun serialize(encoder: Encoder, value: SettableMatrix<E>) {
+//        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+//    }
+//
+//    override fun deserialize(decoder: Decoder): SettableMatrix<E> =
+//        SettableMatrix(decoder.decodeSerializableValue(mdList1Serializer))
+//}

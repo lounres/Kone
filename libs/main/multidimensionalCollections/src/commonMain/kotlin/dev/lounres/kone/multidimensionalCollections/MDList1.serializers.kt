@@ -17,38 +17,40 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-internal class MDList1Serializer<E>(
-    elementSerializer: KSerializer<E>,
-) : KSerializer<MDList1<E>> {
-    private val settableListSerializer = KoneArraySettableList.serializer(elementSerializer)
-    
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList1Serializer", settableListSerializer.descriptor)
-    
-    override fun serialize(encoder: Encoder, value: MDList1<E>) {
-        val content = KoneArraySettableList(value.size) { value[it] }
-        encoder.encodeSerializableValue(settableListSerializer, content)
-    }
-    
-    override fun deserialize(decoder: Decoder): MDList1<E> {
-        val content = decoder.decodeSerializableValue(settableListSerializer)
-        return ArrayMDList1(content.size) { content[it] }
-    }
-}
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//internal class MDList1Serializer<E>(
+//    elementSerializer: KSerializer<E>,
+//) : KSerializer<MDList1<E>> {
+//    private val settableListSerializer = KoneArraySettableList.serializer(elementSerializer)
+//
+//    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList1Serializer", settableListSerializer.descriptor)
+//
+//    override fun serialize(encoder: Encoder, value: MDList1<E>) {
+//        val content = KoneArraySettableList(value.size) { value[it] }
+//        encoder.encodeSerializableValue(settableListSerializer, content)
+//    }
+//
+//    override fun deserialize(decoder: Decoder): MDList1<E> {
+//        val content = decoder.decodeSerializableValue(settableListSerializer)
+//        return ArrayMDList1(content.size) { content[it] }
+//    }
+//}
 
-internal class SettableMDList1Serializer<E>(
-    elementSerializer: KSerializer<E>,
-) : KSerializer<SettableMDList1<E>> {
-    private val settableListSerializer = KoneArraySettableList.serializer(elementSerializer)
-    
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList1Serializer", settableListSerializer.descriptor)
-    
-    override fun serialize(encoder: Encoder, value: SettableMDList1<E>) {
-        val content = KoneArraySettableList(value.size) { value[it] }
-        encoder.encodeSerializableValue(settableListSerializer, content)
-    }
-    
-    override fun deserialize(decoder: Decoder): SettableMDList1<E> {
-        val content = decoder.decodeSerializableValue(settableListSerializer)
-        return ArrayMDList1(content.size) { content[it] }
-    }
-}
+// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//internal class SettableMDList1Serializer<E>(
+//    elementSerializer: KSerializer<E>,
+//) : KSerializer<SettableMDList1<E>> {
+//    private val settableListSerializer = KoneArraySettableList.serializer(elementSerializer)
+//
+//    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList1Serializer", settableListSerializer.descriptor)
+//
+//    override fun serialize(encoder: Encoder, value: SettableMDList1<E>) {
+//        val content = KoneArraySettableList(value.size) { value[it] }
+//        encoder.encodeSerializableValue(settableListSerializer, content)
+//    }
+//
+//    override fun deserialize(decoder: Decoder): SettableMDList1<E> {
+//        val content = decoder.decodeSerializableValue(settableListSerializer)
+//        return ArrayMDList1(content.size) { content[it] }
+//    }
+//}

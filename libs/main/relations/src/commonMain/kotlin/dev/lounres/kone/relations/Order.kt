@@ -249,7 +249,7 @@ public inline fun <Element> Order(comparator: Comparator<Element>): Order<Elemen
 /**
  * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
-public fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
+public inline fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */

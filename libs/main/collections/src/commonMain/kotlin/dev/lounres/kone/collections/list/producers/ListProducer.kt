@@ -89,17 +89,17 @@ public interface KoneFixedCapacityMutableListProducer : KoneSettableListProducer
     public fun <Element> produce(capacity: UInt): KoneMutableList<Element>
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableList<Element> = produceBy(number, number, builder)
     /**
-     * Produces this type list of provided [capacity] and [number] size
+     * Produces this type list of provided [initialCapacity] and [number] size
      * and initialises the elements with the provided [builder].
      *
-     * [number] must be not greater than [capacity]. Otherwise [IllegalArgumentException] is thrown.
+     * [number] must be not greater than [initialCapacity]. Otherwise [IllegalArgumentException] is thrown.
      * `i`th element of the list is set to `builder(i)`.
      * All [builder] invocations are computed consecutively on values from `0` to [number] exclusive
      * in their order starting with `0`.
      *
-     * @throws IllegalArgumentException when [number] is greater than [capacity]
+     * @throws IllegalArgumentException when [number] is greater than [initialCapacity]
      */
-    public fun <Element> produceBy(capacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element>
+    public fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneMutableList<Element>
 }
 
 /**

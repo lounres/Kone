@@ -67,16 +67,17 @@ public value class KoneArraySettableList<Element> @PublishedApi internal constru
 
     override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(data)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(data, index)
-
-    override fun toString(): String = buildString {
-        append('[')
-        if (size > 0u) append(data[0u])
-        for (i in 1u..<size) {
-            append(", ")
-            append(data[i])
-        }
-        append(']')
-    }
+    
+    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+//    override fun toString(): String = buildString {
+//        append('[')
+//        if (size > 0u) append(data[0u])
+//        for (i in 1u..<size) {
+//            append(", ")
+//            append(data[i])
+//        }
+//        append(']')
+//    }
     
     // FIXME: Await support of `equals` and `hashCode` methods support in value classes and multifield value classes to make the class be value class
 //    override fun hashCode(): Int {

@@ -19,12 +19,14 @@ internal object DefaultHashing: Hashing<Any?> {
 }
 
 @Suppress("UNCHECKED_CAST")
+@PublishedApi
 internal object DefaultOrderOnComparables: Order<Any?> {
     override fun Any?.compareWith(other: Any?): ComparisonResult =
         (this as Comparable<Any?>).compareTo(other).asComparisonResult()
 }
 
 @Suppress("UNCHECKED_CAST")
+@PublishedApi
 internal object DefaultComparatorOnComparables: Comparator<Any?> {
     override fun compare(left: Any?, right: Any?): ComparisonResult =
         (left as Comparable<Any?>).compareTo(right).asComparisonResult()

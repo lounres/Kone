@@ -43,6 +43,7 @@ public fun <Element> KoneArrayGrowableLinkedNoddedList(size: UInt, capacity: UIn
     )
 }
 
+@PublishedApi
 internal object KoneArrayGrowableLinkedNoddedListProducer : KoneGrowableMutableNoddedListProducer {
     override fun <Element> produce(initialCapacity: UInt): KoneArrayGrowableLinkedNoddedList<Element> =
         KoneArrayGrowableLinkedNoddedList(initialCapacity)
