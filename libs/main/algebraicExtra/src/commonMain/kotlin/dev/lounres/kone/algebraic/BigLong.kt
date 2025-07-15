@@ -20,7 +20,6 @@ import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.context
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some

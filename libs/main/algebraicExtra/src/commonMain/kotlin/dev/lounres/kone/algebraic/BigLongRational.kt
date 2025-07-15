@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.context
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None

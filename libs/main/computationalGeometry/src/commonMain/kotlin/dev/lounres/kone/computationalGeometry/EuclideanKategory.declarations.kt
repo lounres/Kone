@@ -12,7 +12,6 @@ import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.computationalGeometry.relations.pointEquality
 import dev.lounres.kone.computationalGeometry.relations.vectorEquality
 import dev.lounres.kone.computationalGeometry.utils.fold
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.linearAlgebra.*
 import dev.lounres.kone.registry.RegistryKey

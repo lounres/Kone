@@ -29,7 +29,6 @@ import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.curves.Segment2
 import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.utils.lexicographic2DOrder
-import dev.lounres.kone.context
 
 
 public data class Intersection<I>(public val index1: UInt, public val index2: UInt, public val intersection: I)

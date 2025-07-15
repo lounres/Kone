@@ -9,7 +9,6 @@ package dev.lounres.kone.collections.list.relations
 
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.context
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.neq

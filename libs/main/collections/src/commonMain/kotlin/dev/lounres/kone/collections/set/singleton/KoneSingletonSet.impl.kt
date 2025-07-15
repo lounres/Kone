@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.context
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)

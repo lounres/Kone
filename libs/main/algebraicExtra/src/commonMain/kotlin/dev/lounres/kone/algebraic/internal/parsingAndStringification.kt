@@ -11,7 +11,6 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.flatMap
 import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.context
 
 
 internal val possibleDigits = KoneList.of('0'..'9', 'A'..'Z').flatMap { it.toKoneList() }

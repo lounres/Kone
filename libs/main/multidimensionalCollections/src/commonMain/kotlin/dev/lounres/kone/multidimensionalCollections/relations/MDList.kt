@@ -11,7 +11,6 @@ import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.neq
-import dev.lounres.kone.context
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDShapeStrides
 import dev.lounres.kone.multidimensionalCollections.utils.fold

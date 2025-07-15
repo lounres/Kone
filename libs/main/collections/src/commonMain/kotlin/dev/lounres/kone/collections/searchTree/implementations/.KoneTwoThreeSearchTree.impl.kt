@@ -18,7 +18,6 @@ import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.coincidesWith
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.context
 
 
 //public class KoneTwoThreeSearchTree<Element, Priority> /*internal*/ constructor(

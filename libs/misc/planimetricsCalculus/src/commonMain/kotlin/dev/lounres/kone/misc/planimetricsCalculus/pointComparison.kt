@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.context
 import dev.lounres.kone.polynomial.LabeledPolynomial
 
 

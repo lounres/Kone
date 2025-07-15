@@ -23,7 +23,6 @@ import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.context
 
 
 public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi internal constructor(

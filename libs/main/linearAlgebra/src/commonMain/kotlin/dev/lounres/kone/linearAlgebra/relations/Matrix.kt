@@ -9,7 +9,6 @@ import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
-import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.relations.mdListEquality

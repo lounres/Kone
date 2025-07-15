@@ -18,7 +18,6 @@ import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2

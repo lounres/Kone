@@ -32,7 +32,6 @@ import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConst
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction3Polytope
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction3Vertex
 import dev.lounres.kone.computationalGeometry.utils.any
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.load
 import dev.lounres.kone.linearAlgebra.ColumnVector

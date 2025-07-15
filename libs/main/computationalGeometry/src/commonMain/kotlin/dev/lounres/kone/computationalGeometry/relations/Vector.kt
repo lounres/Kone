@@ -10,7 +10,6 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.computationalGeometry.Vector
-import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.relations.columnVectorHashing

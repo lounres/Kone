@@ -9,7 +9,6 @@ package dev.lounres.kone.misc.planimetricsCalculus
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.zero
-import dev.lounres.kone.context
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial

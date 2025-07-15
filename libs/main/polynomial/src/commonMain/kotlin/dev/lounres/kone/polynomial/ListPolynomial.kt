@@ -11,7 +11,6 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.relations.equalsTo
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.scope
 import kotlin.math.max

@@ -12,7 +12,6 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe

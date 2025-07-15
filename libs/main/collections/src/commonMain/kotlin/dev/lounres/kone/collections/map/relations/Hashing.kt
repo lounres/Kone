@@ -13,7 +13,6 @@ import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.iterator
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
-import dev.lounres.kone.context
 
 
 internal open class KoneMapEntryHashing<Key, Value>(open val keyHashing: Hashing<Key>, open val valueHashing: Hashing<Value>) : Hashing<KoneMapEntry<Key, Value>> {

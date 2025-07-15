@@ -23,7 +23,6 @@ import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThatOrNull
-import dev.lounres.kone.context
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
