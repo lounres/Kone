@@ -163,6 +163,11 @@ public class RegistryBuilder @PublishedApi internal constructor() : Registry {
         content.putAll(from.toMap())
     }
     
+    public fun remove(registryKey: RegistryKey<*>) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        content.remove(RegistryKeyMapWrapper(registryKey))
+    }
+    
     override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         return content.toMap()
