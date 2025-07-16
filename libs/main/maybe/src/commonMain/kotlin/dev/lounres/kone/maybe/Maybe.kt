@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.maybe
 
+import kotlinx.serialization.Serializable
+
 
 /**
  * Container interface that is used to describe that there is either some value wrapped in the data class [Some]
@@ -15,16 +17,19 @@ package dev.lounres.kone.maybe
  * of having either element of type `E` or a `null`, then you won't distinguish `null` as possible value and `null`
  * as absence of such value. That's why you should write `Maybe<E>` and then you'll be able to distinguish `null` from `None`.
  */
+@Serializable
 public sealed interface Maybe<out Element>
 
 /**
  * Just a simple value container that is a part of [Maybe] purpose. See its docs for more.
  */
+@Serializable
 public data class Some<out Element>(val value: Element): Maybe<Element>
 
 /**
  * Just a simple marker of a value absence that is a part of [Maybe] purpose. See its docs for more.
  */
+@Serializable
 public data object None: Maybe<Nothing>
 
 /**

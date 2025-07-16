@@ -45,7 +45,7 @@ public inline fun <Value, Result> KoneSynchronousHub<Value>.buildSubscription(bu
 
 public class KoneMutableSynchronousHub<Value>(
     initialElement: Value,
-    private val elementEquality: Equality<Value>
+    private val elementEquality: Equality<Value> = defaultEquality(),
 ) : KoneSynchronousHub<Value>() {
     override var callbacksValue: Value = initialElement
     

@@ -8,12 +8,16 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.eq
+import kotlinx.atomicfu.locks.ReentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.jvm.JvmInline
 
 
 public abstract class KoneBlockingHub<out Value> internal constructor() {
+    @PublishedApi
+    internal val callbacksLock: ReentrantLock = ReentrantLock()
     @PublishedApi
     internal abstract val callbacksValue: Value
     internal val callbacks: KoneMutableNoddedList<(@UnsafeVariance Value) -> Unit> = KoneGCLinkedList() // TODO: Replace with concurrent queue
@@ -27,25 +31,36 @@ public abstract class KoneBlockingHub<out Value> internal constructor() {
 
 public val <Value> KoneBlockingHub<Value>.value: Value get() = automaton.state
 
-public fun <Value> KoneBlockingHub<Value>.subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription {
-    val node = callbacks.addNode(callback)
-    return KoneBlockingHub.Subscription { node.remove() }
-}
+public fun <Value> KoneBlockingHub<Value>.subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription =
+    callbacksLock.withLock {
+        val node = callbacks.addNode(callback)
+        KoneBlockingHub.Subscription {
+            callbacksLock.withLock {
+                node.remove()
+            }
+        }
+    }
 
 @JvmInline
 public value class KoneBlockingHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHub<Value>) {
     public fun subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription {
         val node = hub.callbacks.addNode(callback)
-        return KoneBlockingHub.Subscription { node.remove() }
+        return KoneBlockingHub.Subscription {
+            hub.callbacksLock.withLock {
+                node.remove()
+            }
+        }
     }
 }
 
 public inline fun <Value, Result> KoneBlockingHub<Value>.buildSubscription(builder: KoneBlockingHubSubscriptionScope<Value>.(Value) -> Result): Result =
-    KoneBlockingHubSubscriptionScope(this).builder(callbacksValue)
+    callbacksLock.withLock {
+        KoneBlockingHubSubscriptionScope(this).builder(callbacksValue)
+    }
 
 public class KoneMutableBlockingHub<Value>(
     initialElement: Value,
-    private val elementEquality: Equality<Value>
+    private val elementEquality: Equality<Value> = defaultEquality(),
 ) : KoneBlockingHub<Value>() {
     override var callbacksValue: Value = initialElement
     
