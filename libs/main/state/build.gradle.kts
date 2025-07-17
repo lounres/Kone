@@ -4,7 +4,7 @@ kotlin {
             dependencies {
                 implementation(projects.libs.util.misc)
                 implementation(projects.libs.main.automata)
-                api(versions.kone.collections)
+                api(projects.libs.main.collections)
                 api(versions.kotlinx.coroutines.core)
             }
         }
