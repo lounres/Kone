@@ -308,11 +308,11 @@ public fun <Element> Collection<Element>.toKoneSettableList(): KoneSettableList<
 
 public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =
     if(this is Collection<Element>) this.toKoneList()
-    else this.toKoneMutableList()
+    else this.toKoneMutableList().toOptimizedList()
 
 public fun <Element> Collection<Element>.toKoneList(): KoneList<Element> =
     if (isEmpty()) KoneList.empty()
-    else this.toKoneMutableList().toOptimizedList()
+    else this.toKoneMutableList()
 
 // TODO: Review the following converters
 

@@ -5,17 +5,295 @@
 
 package dev.lounres.kone.collections.array.relations
 
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.contentHashCode
+import dev.lounres.kone.collections.array.*
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.hash
 
 
-// TODO: Add Hashings for other types of Kone arrays
+internal class KoneMutableArrayHashing<Element>(val elementHashing: Hashing<Element>) : Hashing<KoneMutableArray<Element>> {
+    override fun KoneMutableArray<Element>.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun <Element> KoneMutableArray.Companion.hashing(elementHashing: Hashing<Element> = defaultHashing()): Hashing<KoneMutableArray<Element>> =
+    KoneMutableArrayHashing(elementHashing)
+
+internal class KoneArrayHashing<Element>(val elementHashing: Hashing<Element>) : Hashing<KoneArray<Element>> {
+    override fun KoneArray<Element>.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun <Element> KoneArray.Companion.hashing(elementHashing: Hashing<Element> = defaultHashing()): Hashing<KoneArray<Element>> =
+    KoneArrayHashing(elementHashing)
+
+internal class KoneMutableBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : Hashing<KoneMutableBooleanArray> {
+    override fun KoneMutableBooleanArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = defaultHashing()): Hashing<KoneMutableBooleanArray> =
+    KoneMutableBooleanArrayHashing(elementHashing)
+
+internal class KoneBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : Hashing<KoneBooleanArray> {
+    override fun KoneBooleanArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = defaultHashing()): Hashing<KoneBooleanArray> =
+    KoneBooleanArrayHashing(elementHashing)
+
+internal class KoneMutableByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing<KoneMutableByteArray> {
+    override fun KoneMutableByteArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableByteArray.Companion.hashing(elementHashing: Hashing<Byte> = defaultHashing()): Hashing<KoneMutableByteArray> =
+    KoneMutableByteArrayHashing(elementHashing)
+
+internal class KoneByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing<KoneByteArray> {
+    override fun KoneByteArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneByteArray.Companion.hashing(elementHashing: Hashing<Byte> = defaultHashing()): Hashing<KoneByteArray> =
+    KoneByteArrayHashing(elementHashing)
+
+internal class KoneMutableIntArrayHashing(val elementHashing: Hashing<Int>) : Hashing<KoneMutableIntArray> {
+    override fun KoneMutableIntArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableIntArray.Companion.hashing(elementHashing: Hashing<Int> = defaultHashing()): Hashing<KoneMutableIntArray> =
+    KoneMutableIntArrayHashing(elementHashing)
+
+internal class KoneIntArrayHashing(val elementHashing: Hashing<Int>) : Hashing<KoneIntArray> {
+    override fun KoneIntArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneIntArray.Companion.hashing(elementHashing: Hashing<Int> = defaultHashing()): Hashing<KoneIntArray> =
+    KoneIntArrayHashing(elementHashing)
+
+internal class KoneMutableLongArrayHashing(val elementHashing: Hashing<Long>) : Hashing<KoneMutableLongArray> {
+    override fun KoneMutableLongArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableLongArray.Companion.hashing(elementHashing: Hashing<Long> = defaultHashing()): Hashing<KoneMutableLongArray> =
+    KoneMutableLongArrayHashing(elementHashing)
+
+internal class KoneLongArrayHashing(val elementHashing: Hashing<Long>) : Hashing<KoneLongArray> {
+    override fun KoneLongArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneLongArray.Companion.hashing(elementHashing: Hashing<Long> = defaultHashing()): Hashing<KoneLongArray> =
+    KoneLongArrayHashing(elementHashing)
+
+internal class KoneMutableFloatArrayHashing(val elementHashing: Hashing<Float>) : Hashing<KoneMutableFloatArray> {
+    override fun KoneMutableFloatArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableFloatArray.Companion.hashing(elementHashing: Hashing<Float> = defaultHashing()): Hashing<KoneMutableFloatArray> =
+    KoneMutableFloatArrayHashing(elementHashing)
+
+internal class KoneFloatArrayHashing(val elementHashing: Hashing<Float>) : Hashing<KoneFloatArray> {
+    override fun KoneFloatArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneFloatArray.Companion.hashing(elementHashing: Hashing<Float> = defaultHashing()): Hashing<KoneFloatArray> =
+    KoneFloatArrayHashing(elementHashing)
+
+internal class KoneMutableDoubleArrayHashing(val elementHashing: Hashing<Double>) : Hashing<KoneMutableDoubleArray> {
+    override fun KoneMutableDoubleArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = defaultHashing()): Hashing<KoneMutableDoubleArray> =
+    KoneMutableDoubleArrayHashing(elementHashing)
+
+internal class KoneDoubleArrayHashing(val elementHashing: Hashing<Double>) : Hashing<KoneDoubleArray> {
+    override fun KoneDoubleArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = defaultHashing()): Hashing<KoneDoubleArray> =
+    KoneDoubleArrayHashing(elementHashing)
+
+internal class KoneMutableUByteArrayHashing(val elementHashing: Hashing<UByte>) : Hashing<KoneMutableUByteArray> {
+    override fun KoneMutableUByteArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = defaultHashing()): Hashing<KoneMutableUByteArray> =
+    KoneMutableUByteArrayHashing(elementHashing)
+
+internal class KoneUByteArrayHashing(val elementHashing: Hashing<UByte>) : Hashing<KoneUByteArray> {
+    override fun KoneUByteArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = defaultHashing()): Hashing<KoneUByteArray> =
+    KoneUByteArrayHashing(elementHashing)
+
+internal class KoneMutableUShortArrayHashing(val elementHashing: Hashing<UShort>) : Hashing<KoneMutableUShortArray> {
+    override fun KoneMutableUShortArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = defaultHashing()): Hashing<KoneMutableUShortArray> =
+    KoneMutableUShortArrayHashing(elementHashing)
+
+internal class KoneUShortArrayHashing(val elementHashing: Hashing<UShort>) : Hashing<KoneUShortArray> {
+    override fun KoneUShortArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = defaultHashing()): Hashing<KoneUShortArray> =
+    KoneUShortArrayHashing(elementHashing)
+
+internal class KoneMutableUIntArrayHashing(val elementHashing: Hashing<UInt>) : Hashing<KoneMutableUIntArray> {
+    override fun KoneMutableUIntArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = defaultHashing()): Hashing<KoneMutableUIntArray> =
+    KoneMutableUIntArrayHashing(elementHashing)
 
 internal class KoneUIntArrayHashing(val elementHashing: Hashing<UInt>) : Hashing<KoneUIntArray> {
-    override fun KoneUIntArray.hash(): Int = contentHashCode()
+    override fun KoneUIntArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
 }
 
 public fun KoneUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = defaultHashing()): Hashing<KoneUIntArray> =
     KoneUIntArrayHashing(elementHashing)
+
+internal class KoneMutableULongArrayHashing(val elementHashing: Hashing<ULong>) : Hashing<KoneMutableULongArray> {
+    override fun KoneMutableULongArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableULongArray.Companion.hashing(elementHashing: Hashing<ULong> = defaultHashing()): Hashing<KoneMutableULongArray> =
+    KoneMutableULongArrayHashing(elementHashing)
+
+internal class KoneULongArrayHashing(val elementHashing: Hashing<ULong>) : Hashing<KoneULongArray> {
+    override fun KoneULongArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneULongArray.Companion.hashing(elementHashing: Hashing<ULong> = defaultHashing()): Hashing<KoneULongArray> =
+    KoneULongArrayHashing(elementHashing)
