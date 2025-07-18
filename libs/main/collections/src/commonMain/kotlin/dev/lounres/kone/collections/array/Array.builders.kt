@@ -103,6 +103,58 @@ public fun KoneIterable<Boolean>.toKoneBooleanArray(): KoneBooleanArray {
 
 // endregion
 
+// region Char
+
+/**
+ * Returns a [KoneMutableCharArray] of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
+public inline fun KoneMutableCharArray(size: UInt, initializer: (UInt) -> Char): KoneMutableCharArray =
+    KoneMutableCharArray(CharArray(size.toInt()) { initializer(it.toUInt()) })
+
+/**
+ * Returns a [KoneMutableCharArray] of provided [size] of `false`s.
+ */
+public fun KoneMutableCharArray(size: UInt): KoneMutableCharArray =
+    KoneMutableCharArray(CharArray(size.toInt()))
+
+/**
+ * Returns a [KoneCharArray] of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
+public inline fun KoneCharArray(size: UInt, initializer: (UInt) -> Char): KoneCharArray =
+    KoneCharArray(CharArray(size.toInt()) { initializer(it.toUInt()) })
+
+/**
+ * Returns a [KoneCharArray] of provided [size] of `false`s.
+ */
+public fun KoneCharArray(size: UInt): KoneCharArray =
+    KoneCharArray(CharArray(size.toInt()))
+
+public fun KoneMutableCharArray.Companion.of(vararg elements: Char): KoneMutableCharArray =
+    KoneMutableCharArray(elements)
+
+public fun KoneCharArray.Companion.of(vararg elements: Char): KoneCharArray =
+    KoneCharArray(elements)
+
+public fun KoneIterable<Char>.toKoneMutableCharArray(): KoneMutableCharArray {
+    val iterator = iterator()
+    return KoneMutableCharArray(size) { iterator.getAndMoveNext() }
+}
+
+public fun KoneIterable<Char>.toKoneCharArray(): KoneCharArray {
+    val iterator = iterator()
+    return KoneCharArray(size) { iterator.getAndMoveNext() }
+}
+
+// endregion
+
 // region Byte
 
 /**

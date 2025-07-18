@@ -64,6 +64,32 @@ internal class KoneBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : H
 public fun KoneBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = defaultHashing()): Hashing<KoneBooleanArray> =
     KoneBooleanArrayHashing(elementHashing)
 
+internal class KoneMutableCharArrayHashing(val elementHashing: Hashing<Char>) : Hashing<KoneMutableCharArray> {
+    override fun KoneMutableCharArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneMutableCharArray.Companion.hashing(elementHashing: Hashing<Char> = defaultHashing()): Hashing<KoneMutableCharArray> =
+    KoneMutableCharArrayHashing(elementHashing)
+
+internal class KoneCharArrayHashing(val elementHashing: Hashing<Char>) : Hashing<KoneCharArray> {
+    override fun KoneCharArray.hash(): Int {
+        var hash = 1
+        for (index in 0u ..< size) elementHashing {
+            hash = 31 * hash + this[index].hash()
+        }
+        return hash
+    }
+}
+
+public fun KoneCharArray.Companion.hashing(elementHashing: Hashing<Char> = defaultHashing()): Hashing<KoneCharArray> =
+    KoneCharArrayHashing(elementHashing)
+
 internal class KoneMutableByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing<KoneMutableByteArray> {
     override fun KoneMutableByteArray.hash(): Int {
         var hash = 1

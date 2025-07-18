@@ -56,6 +56,28 @@ internal class KoneMutableBooleanArrayEquality(val elementEquality: Equality<Boo
 public fun KoneMutableBooleanArray.Companion.equality(elementEquality: Equality<Boolean> = defaultEquality()): Equality<KoneMutableBooleanArray> =
     KoneMutableBooleanArrayEquality(elementEquality)
 
+internal class KoneCharArrayEquality(val elementEquality: Equality<Char>) : Equality<KoneCharArray> {
+    override fun KoneCharArray.equalsTo(other: KoneCharArray): Boolean {
+        if (this.size != other.size) return false
+        for (index in 0u ..< this.size) if (elementEquality { this[index] neq other[index] }) return false
+        return true
+    }
+}
+
+public fun KoneCharArray.Companion.equality(elementEquality: Equality<Char> = defaultEquality()): Equality<KoneCharArray> =
+    KoneCharArrayEquality(elementEquality)
+
+internal class KoneMutableCharArrayEquality(val elementEquality: Equality<Char>) : Equality<KoneMutableCharArray> {
+    override fun KoneMutableCharArray.equalsTo(other: KoneMutableCharArray): Boolean {
+        if (this.size != other.size) return false
+        for (index in 0u ..< this.size) if (elementEquality { this[index] neq other[index] }) return false
+        return true
+    }
+}
+
+public fun KoneMutableCharArray.Companion.equality(elementEquality: Equality<Char> = defaultEquality()): Equality<KoneMutableCharArray> =
+    KoneMutableCharArrayEquality(elementEquality)
+
 internal class KoneByteArrayEquality(val elementEquality: Equality<Byte>) : Equality<KoneByteArray> {
     override fun KoneByteArray.equalsTo(other: KoneByteArray): Boolean {
         if (this.size != other.size) return false

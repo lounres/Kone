@@ -212,6 +212,104 @@ public value class KoneMutableBooleanArray(internal val array: BooleanArray): Ko
 
 // FIXME: KT-42977
 /**
+ * An immutable wrapper for standard [CharArray] with unsigned indexation that also implements [KoneList].
+ */
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
+@JvmInline
+public value class KoneCharArray(internal val array: CharArray): KoneList<Char> {
+    // FIXME: KT-30915
+//    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
+    
+    public override val size: UInt get() = array.size.toUInt()
+    public override operator fun get(index: UInt): Char =
+        if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
+        else indexOutOfBoundsException(index, array.size.toUInt())
+    public override operator fun iterator(): KoneLinearIterator<Char> = Iterator(array)
+    public override fun iteratorFrom(index: UInt): KoneLinearIterator<Char> {
+        require(index <= size)
+        return Iterator(array, index.toInt())
+    }
+    
+    override fun toString(): String = array.contentToString()
+    
+    // FIXME: KT-24874
+//    override fun hashCode(): Int = array.contentHashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (other !is KoneUIntArray<*>) return false
+//        return array.contentEquals(other.array)
+//    }
+    
+    internal open class Iterator(val array: CharArray, protected var index: Int = 0): KoneLinearIterator<Char> {
+        override fun hasNext(): Boolean = index < array.size
+        override fun getNext(): Char = if (hasNext()) array[index] else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        override fun moveNext() {
+            if (!hasNext()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            index++
+        }
+        override fun nextIndex(): UInt = if (hasNext()) index.toUInt() else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        
+        override fun hasPrevious(): Boolean = index > 0
+        override fun getPrevious(): Char = if (hasPrevious()) array[index - 1] else indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+        override fun movePrevious() {
+            if (!hasPrevious()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            index--
+        }
+        override fun previousIndex(): UInt = (index - 1).toUInt()
+    }
+    
+    public companion object
+}
+
+/**
+ * A wrapper for standard [CharArray] with unsigned indexation that also implements [KoneSettableList].
+ */
+@OptIn(DelicateCollectionsInheritanceAPI::class)
+@Serializable
+@JvmInline
+public value class KoneMutableCharArray(internal val array: CharArray): KoneSettableList<Char> {
+    // FIXME: KT-30915
+//    public constructor(size: UInt, init: (UInt) -> E): this(Array(size.toInt()) { init(it.toUInt()) })
+    
+    public override val size: UInt get() = array.size.toUInt()
+    public override operator fun get(index: UInt): Char =
+        if (index in 0u ..< array.size.toUInt()) array[index.toInt()]
+        else indexOutOfBoundsException(index, array.size.toUInt())
+    public override operator fun set(index: UInt, element: Char) {
+        if (index !in 0u ..< array.size.toUInt()) indexOutOfBoundsException(index, array.size.toUInt())
+        array[index.toInt()] = element
+    }
+    public override operator fun iterator(): KoneSettableLinearIterator<Char> = Iterator(array)
+    public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Char> {
+        require(index <= size)
+        return Iterator(array, index.toInt())
+    }
+    
+    override fun toString(): String = array.contentToString()
+    
+    // FIXME: KT-24874
+//    override fun hashCode(): Int = array.contentHashCode()
+//    override fun equals(other: Any?): Boolean {
+//        if (other !is KoneMutableUIntArray<*>) return false
+//        return array.contentEquals(other.array)
+//    }
+    
+    internal class Iterator(array: CharArray, index: Int = 0): KoneCharArray.Iterator(array, index), KoneSettableLinearIterator<Char> {
+        override fun setNext(element: Char) {
+            if (!hasNext()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            array[index] = element
+        }
+        override fun setPrevious(element: Char) {
+            if (!hasPrevious()) indexOutOfBoundsException(index.toUInt(), array.size.toUInt())
+            array[index - 1] = element
+        }
+    }
+    
+    public companion object
+}
+
+// FIXME: KT-42977
+/**
  * An immutable wrapper for standard [ByteArray] with unsigned indexation that also implements [KoneList].
  */
 @OptIn(DelicateCollectionsInheritanceAPI::class)

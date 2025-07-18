@@ -18,7 +18,7 @@ import dev.lounres.kone.maybe.Some
 
 internal class KoneListReification<Element>(
     val elementReification: Reification<Element>
-) :  Reification<KoneList<Element>> {
+) : Reification<KoneList<Element>> {
     override fun contains(element: Any?): Boolean =
         element is KoneList<*> && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneList<Element>> =

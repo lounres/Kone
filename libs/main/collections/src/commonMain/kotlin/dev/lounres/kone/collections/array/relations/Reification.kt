@@ -3,10 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.lounres.kone.collections.array.relations
 
 import dev.lounres.kone.collections.array.*
-import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -19,15 +20,15 @@ internal class KoneMutableArrayReification<Element>(
     val elementReification: Reification<Element>
 ) : Reification<KoneMutableArray<Element>> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableArray<*> && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableArray<Element>> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableArray<Element>)
+        if (element is KoneMutableArray<*> && element.all { it in elementReification }) Some(element as KoneMutableArray<Element>)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableArray<Element>? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableArray<Element>
+        if (element is KoneMutableArray<*> && element.all { it in elementReification }) element as KoneMutableArray<Element>
         else null
     override fun reify(element: Any?): KoneMutableArray<Element> =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableArray<Element>
+        if (element is KoneMutableArray<*> && element.all { it in elementReification }) element as KoneMutableArray<Element>
         else reificationException()
 }
 
@@ -38,15 +39,15 @@ internal class KoneArrayReification<Element>(
     val elementReification: Reification<Element>
 ) : Reification<KoneArray<Element>> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneArray<*> && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneArray<Element>> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneArray<Element>)
+        if (element is KoneArray<*> && element.all { it in elementReification }) Some(element as KoneArray<Element>)
         else None
     override fun reifyOrNull(element: Any?): KoneArray<Element>? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneArray<Element>
+        if (element is KoneArray<*> && element.all { it in elementReification }) element as KoneArray<Element>
         else null
     override fun reify(element: Any?): KoneArray<Element> =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneArray<Element>
+        if (element is KoneArray<*> && element.all { it in elementReification }) element as KoneArray<Element>
         else reificationException()
 }
 
@@ -57,15 +58,15 @@ internal class KoneMutableBooleanArrayReification(
     val elementReification: Reification<Boolean>
 ) : Reification<KoneMutableBooleanArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableBooleanArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableBooleanArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableBooleanArray)
+        if (element is KoneMutableBooleanArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableBooleanArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableBooleanArray
+        if (element is KoneMutableBooleanArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableBooleanArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableBooleanArray
+        if (element is KoneMutableBooleanArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -76,34 +77,72 @@ internal class KoneBooleanArrayReification(
     val elementReification: Reification<Boolean>
 ) : Reification<KoneBooleanArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneBooleanArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneBooleanArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneBooleanArray)
+        if (element is KoneBooleanArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneBooleanArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneBooleanArray
+        if (element is KoneBooleanArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneBooleanArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneBooleanArray
+        if (element is KoneBooleanArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
 public fun KoneBooleanArray.Companion.reification(elementReification: Reification<Boolean>): Reification<KoneBooleanArray> =
     KoneBooleanArrayReification(elementReification)
 
+internal class KoneMutableCharArrayReification(
+    val elementReification: Reification<Char>
+) : Reification<KoneMutableCharArray> {
+    override fun contains(element: Any?): Boolean =
+        element is KoneMutableCharArray && element.all { it in elementReification }
+    override fun reifyMaybe(element: Any?): Maybe<KoneMutableCharArray> =
+        if (element is KoneMutableCharArray && element.all { it in elementReification }) Some(element)
+        else None
+    override fun reifyOrNull(element: Any?): KoneMutableCharArray? =
+        if (element is KoneMutableCharArray && element.all { it in elementReification }) element
+        else null
+    override fun reify(element: Any?): KoneMutableCharArray =
+        if (element is KoneMutableCharArray && element.all { it in elementReification }) element
+        else reificationException()
+}
+
+public fun KoneMutableCharArray.Companion.reification(elementReification: Reification<Char>): Reification<KoneMutableCharArray> =
+    KoneMutableCharArrayReification(elementReification)
+
+internal class KoneCharArrayReification(
+    val elementReification: Reification<Char>
+) : Reification<KoneCharArray> {
+    override fun contains(element: Any?): Boolean =
+        element is KoneCharArray && element.all { it in elementReification }
+    override fun reifyMaybe(element: Any?): Maybe<KoneCharArray> =
+        if (element is KoneCharArray && element.all { it in elementReification }) Some(element)
+        else None
+    override fun reifyOrNull(element: Any?): KoneCharArray? =
+        if (element is KoneCharArray && element.all { it in elementReification }) element
+        else null
+    override fun reify(element: Any?): KoneCharArray =
+        if (element is KoneCharArray && element.all { it in elementReification }) element
+        else reificationException()
+}
+
+public fun KoneCharArray.Companion.reification(elementReification: Reification<Char>): Reification<KoneCharArray> =
+    KoneCharArrayReification(elementReification)
+
 internal class KoneMutableByteArrayReification(
     val elementReification: Reification<Byte>
 ) : Reification<KoneMutableByteArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableByteArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableByteArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableByteArray)
+        if (element is KoneMutableByteArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableByteArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableByteArray
+        if (element is KoneMutableByteArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableByteArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableByteArray
+        if (element is KoneMutableByteArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -114,15 +153,15 @@ internal class KoneByteArrayReification(
     val elementReification: Reification<Byte>
 ) : Reification<KoneByteArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneByteArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneByteArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneByteArray)
+        if (element is KoneByteArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneByteArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneByteArray
+        if (element is KoneByteArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneByteArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneByteArray
+        if (element is KoneByteArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -133,15 +172,15 @@ internal class KoneMutableShortArrayReification(
     val elementReification: Reification<Short>
 ) : Reification<KoneMutableShortArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableShortArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableShortArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableShortArray)
+        if (element is KoneMutableShortArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableShortArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableShortArray
+        if (element is KoneMutableShortArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableShortArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableShortArray
+        if (element is KoneMutableShortArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -152,15 +191,15 @@ internal class KoneShortArrayReification(
     val elementReification: Reification<Short>
 ) : Reification<KoneShortArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneShortArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneShortArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneShortArray)
+        if (element is KoneShortArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneShortArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneShortArray
+        if (element is KoneShortArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneShortArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneShortArray
+        if (element is KoneShortArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -171,15 +210,15 @@ internal class KoneMutableIntArrayReification(
     val elementReification: Reification<Int>
 ) : Reification<KoneMutableIntArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableIntArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableIntArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableIntArray)
+        if (element is KoneMutableIntArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableIntArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableIntArray
+        if (element is KoneMutableIntArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableIntArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableIntArray
+        if (element is KoneMutableIntArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -190,15 +229,15 @@ internal class KoneIntArrayReification(
     val elementReification: Reification<Int>
 ) : Reification<KoneIntArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneIntArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneIntArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneIntArray)
+        if (element is KoneIntArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneIntArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneIntArray
+        if (element is KoneIntArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneIntArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneIntArray
+        if (element is KoneIntArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -209,15 +248,15 @@ internal class KoneMutableLongArrayReification(
     val elementReification: Reification<Long>
 ) : Reification<KoneMutableLongArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableLongArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableLongArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableLongArray)
+        if (element is KoneMutableLongArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableLongArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableLongArray
+        if (element is KoneMutableLongArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableLongArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableLongArray
+        if (element is KoneMutableLongArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -228,15 +267,15 @@ internal class KoneLongArrayReification(
     val elementReification: Reification<Long>
 ) : Reification<KoneLongArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneLongArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneLongArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneLongArray)
+        if (element is KoneLongArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneLongArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneLongArray
+        if (element is KoneLongArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneLongArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneLongArray
+        if (element is KoneLongArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -247,15 +286,15 @@ internal class KoneMutableFloatArrayReification(
     val elementReification: Reification<Float>
 ) : Reification<KoneMutableFloatArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableFloatArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableFloatArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableFloatArray)
+        if (element is KoneMutableFloatArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableFloatArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableFloatArray
+        if (element is KoneMutableFloatArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableFloatArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableFloatArray
+        if (element is KoneMutableFloatArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -266,15 +305,15 @@ internal class KoneFloatArrayReification(
     val elementReification: Reification<Float>
 ) : Reification<KoneFloatArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneFloatArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneFloatArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneFloatArray)
+        if (element is KoneFloatArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneFloatArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneFloatArray
+        if (element is KoneFloatArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneFloatArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneFloatArray
+        if (element is KoneFloatArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -285,15 +324,15 @@ internal class KoneMutableDoubleArrayReification(
     val elementReification: Reification<Double>
 ) : Reification<KoneMutableDoubleArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableDoubleArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableDoubleArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableDoubleArray)
+        if (element is KoneMutableDoubleArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableDoubleArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableDoubleArray
+        if (element is KoneMutableDoubleArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableDoubleArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableDoubleArray
+        if (element is KoneMutableDoubleArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -304,15 +343,15 @@ internal class KoneDoubleArrayReification(
     val elementReification: Reification<Double>
 ) : Reification<KoneDoubleArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneDoubleArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneDoubleArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneDoubleArray)
+        if (element is KoneDoubleArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneDoubleArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneDoubleArray
+        if (element is KoneDoubleArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneDoubleArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneDoubleArray
+        if (element is KoneDoubleArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -323,15 +362,15 @@ internal class KoneMutableUByteArrayReification(
     val elementReification: Reification<UByte>
 ) : Reification<KoneMutableUByteArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableUByteArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableUByteArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableUByteArray)
+        if (element is KoneMutableUByteArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableUByteArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUByteArray
+        if (element is KoneMutableUByteArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableUByteArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUByteArray
+        if (element is KoneMutableUByteArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -342,15 +381,15 @@ internal class KoneUByteArrayReification(
     val elementReification: Reification<UByte>
 ) : Reification<KoneUByteArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneUByteArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneUByteArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneUByteArray)
+        if (element is KoneUByteArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneUByteArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUByteArray
+        if (element is KoneUByteArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneUByteArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUByteArray
+        if (element is KoneUByteArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -361,15 +400,15 @@ internal class KoneMutableUShortArrayReification(
     val elementReification: Reification<UShort>
 ) : Reification<KoneMutableUShortArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableUShortArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableUShortArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableUShortArray)
+        if (element is KoneMutableUShortArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableUShortArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUShortArray
+        if (element is KoneMutableUShortArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableUShortArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUShortArray
+        if (element is KoneMutableUShortArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -380,15 +419,15 @@ internal class KoneUShortArrayReification(
     val elementReification: Reification<UShort>
 ) : Reification<KoneUShortArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneUShortArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneUShortArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneUShortArray)
+        if (element is KoneUShortArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneUShortArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUShortArray
+        if (element is KoneUShortArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneUShortArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUShortArray
+        if (element is KoneUShortArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -399,15 +438,15 @@ internal class KoneMutableUIntArrayReification(
     val elementReification: Reification<UInt>
 ) : Reification<KoneMutableUIntArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableUIntArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableUIntArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableUIntArray)
+        if (element is KoneMutableUIntArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableUIntArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUIntArray
+        if (element is KoneMutableUIntArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableUIntArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableUIntArray
+        if (element is KoneMutableUIntArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -418,15 +457,15 @@ internal class KoneUIntArrayReification(
     val elementReification: Reification<UInt>
 ) : Reification<KoneUIntArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneUIntArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneUIntArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneUIntArray)
+        if (element is KoneUIntArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneUIntArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUIntArray
+        if (element is KoneUIntArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneUIntArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneUIntArray
+        if (element is KoneUIntArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -437,15 +476,15 @@ internal class KoneMutableULongArrayReification(
     val elementReification: Reification<ULong>
 ) : Reification<KoneMutableULongArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneMutableULongArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneMutableULongArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneMutableULongArray)
+        if (element is KoneMutableULongArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneMutableULongArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableULongArray
+        if (element is KoneMutableULongArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneMutableULongArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneMutableULongArray
+        if (element is KoneMutableULongArray && element.all { it in elementReification }) element
         else reificationException()
 }
 
@@ -456,15 +495,15 @@ internal class KoneULongArrayReification(
     val elementReification: Reification<ULong>
 ) : Reification<KoneULongArray> {
     override fun contains(element: Any?): Boolean =
-        element is KoneList<*> && element.all { it in elementReification }
+        element is KoneULongArray && element.all { it in elementReification }
     override fun reifyMaybe(element: Any?): Maybe<KoneULongArray> =
-        if (element is KoneList<*> && element.all { it in elementReification }) Some(element as KoneULongArray)
+        if (element is KoneULongArray && element.all { it in elementReification }) Some(element)
         else None
     override fun reifyOrNull(element: Any?): KoneULongArray? =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneULongArray
+        if (element is KoneULongArray && element.all { it in elementReification }) element
         else null
     override fun reify(element: Any?): KoneULongArray =
-        if (element is KoneList<*> && element.all { it in elementReification }) element as KoneULongArray
+        if (element is KoneULongArray && element.all { it in elementReification }) element
         else reificationException()
 }
 

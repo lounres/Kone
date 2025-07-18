@@ -9,6 +9,8 @@ package dev.lounres.kone.collections.array
 // TODO: Think about what to add for Kone arrays
 
 public fun <Element> KoneMutableArray<Element>.toKoneArray(): KoneArray<Element> = KoneArray(array.copyOf())
+public fun KoneMutableBooleanArray.toKoneByteArray(): KoneBooleanArray = KoneBooleanArray(array.copyOf())
+public fun KoneMutableCharArray.toKoneByteArray(): KoneCharArray = KoneCharArray(array.copyOf())
 public fun KoneMutableByteArray.toKoneByteArray(): KoneByteArray = KoneByteArray(array.copyOf())
 public fun KoneMutableShortArray.toKoneShortArray(): KoneShortArray = KoneShortArray(array.copyOf())
 public fun KoneMutableIntArray.toKoneIntArray(): KoneIntArray = KoneIntArray(array.copyOf())
@@ -21,6 +23,8 @@ public fun KoneMutableUIntArray.toKoneUIntArray(): KoneUIntArray = KoneUIntArray
 public fun KoneMutableULongArray.toKoneULongArray(): KoneULongArray = KoneULongArray(array.copyOf())
 
 public fun <Element> KoneMutableArray<Element>.asKoneArray(): KoneArray<Element> = KoneArray(array)
+public fun KoneMutableBooleanArray.asKoneByteArray(): KoneBooleanArray = KoneBooleanArray(array)
+public fun KoneMutableCharArray.asKoneByteArray(): KoneCharArray = KoneCharArray(array)
 public fun KoneMutableByteArray.asKoneByteArray(): KoneByteArray = KoneByteArray(array)
 public fun KoneMutableShortArray.asKoneShortArray(): KoneShortArray = KoneShortArray(array)
 public fun KoneMutableIntArray.asKoneIntArray(): KoneIntArray = KoneIntArray(array)
@@ -34,6 +38,8 @@ public fun KoneMutableULongArray.asKoneULongArray(): KoneULongArray = KoneULongA
 
 // TODO: Wait for actual decision with equals operator
 public infix fun KoneByteArray.contentEquals(other: KoneByteArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneBooleanArray.contentEquals(other: KoneBooleanArray): Boolean = this.array.contentEquals(other.array)
+public infix fun KoneCharArray.contentEquals(other: KoneCharArray): Boolean = this.array.contentEquals(other.array)
 public infix fun KoneShortArray.contentEquals(other: KoneShortArray): Boolean = this.array.contentEquals(other.array)
 public infix fun KoneIntArray.contentEquals(other: KoneIntArray): Boolean = this.array.contentEquals(other.array)
 public infix fun KoneLongArray.contentEquals(other: KoneLongArray): Boolean = this.array.contentEquals(other.array)
@@ -46,6 +52,8 @@ public infix fun KoneULongArray.contentEquals(other: KoneULongArray): Boolean = 
 
 // TODO: Wait for actual decision with hashCode operator
 public fun KoneByteArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneBooleanArray.contentHashCode(): Int = this.array.contentHashCode()
+public fun KoneCharArray.contentHashCode(): Int = this.array.contentHashCode()
 public fun KoneShortArray.contentHashCode(): Int = this.array.contentHashCode()
 public fun KoneIntArray.contentHashCode(): Int = this.array.contentHashCode()
 public fun KoneLongArray.contentHashCode(): Int = this.array.contentHashCode()
@@ -58,6 +66,10 @@ public fun KoneULongArray.contentHashCode(): Int = this.array.contentHashCode()
 
 public fun KoneArray<*>.isEmpty(): Boolean = size == 0u
 public fun KoneMutableArray<*>.isEmpty(): Boolean = size == 0u
+public fun KoneBooleanArray.isEmpty(): Boolean = size == 0u
+public fun KoneMutableBooleanArray.isEmpty(): Boolean = size == 0u
+public fun KoneCharArray.isEmpty(): Boolean = size == 0u
+public fun KoneMutableCharArray.isEmpty(): Boolean = size == 0u
 public fun KoneByteArray.isEmpty(): Boolean = size == 0u
 public fun KoneMutableByteArray.isEmpty(): Boolean = size == 0u
 public fun KoneShortArray.isEmpty(): Boolean = size == 0u
@@ -81,6 +93,10 @@ public fun KoneMutableULongArray.isEmpty(): Boolean = size == 0u
 
 public fun KoneArray<*>.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneMutableArray<*>.isNotEmpty(): Boolean = !isEmpty()
+public fun KoneBooleanArray.isNotEmpty(): Boolean = !isEmpty()
+public fun KoneMutableBooleanArray.isNotEmpty(): Boolean = !isEmpty()
+public fun KoneCharArray.isNotEmpty(): Boolean = !isEmpty()
+public fun KoneMutableCharArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneByteArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneMutableByteArray.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneShortArray.isNotEmpty(): Boolean = !isEmpty()
