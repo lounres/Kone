@@ -9,16 +9,13 @@ package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializationStrategyTemplate
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.CompositeDecoder
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.decodeStructure
 
 
 public fun <Element> KoneArrayGrowableList(): KoneArrayGrowableList<Element> =
@@ -59,28 +56,12 @@ public fun KoneArrayGrowableList.Companion.producer(): KoneGrowableMutableListPr
 
 internal class KoneArrayGrowableListSerializer<Element>(
     override val elementSerializer: KSerializer<Element>,
-): KoneIterableSerializationStrategyTemplate<Element, KoneArrayGrowableList<Element>>(), KSerializer<KoneArrayGrowableList<Element>> {
+): KoneIterableSerializerTemplate<Element, KoneArrayGrowableList<Element>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArrayGrowableList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
-
-    override fun deserialize(decoder: Decoder): KoneArrayGrowableList<Element> =
-        decoder.decodeStructure(descriptor) {
-            if (decodeSequentially()) {
-                val size = decodeCollectionSize(descriptor)
-                KoneArrayGrowableList(size.toUInt()) {
-                    decodeSerializableElement(descriptor, it.toInt(), elementSerializer)
-                }
-            } else {
-                val builder = KoneArrayGrowableList<Element>()
-                while (true) {
-                    val index = decodeElementIndex(descriptor)
-                    if (index == CompositeDecoder.DECODE_DONE) break
-                    builder.add(decodeSerializableElement(descriptor, index, elementSerializer))
-                }
-                builder
-            }
-        }
+    override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneArrayGrowableList<Element> =
+        KoneArrayGrowableList(size, initializer)
 }

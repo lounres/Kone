@@ -24,6 +24,8 @@ public interface MDList2<out E>: MDList<E> {
         ) indexOutOfShapeException(index = index, shape = shape)
         return get(index[0u], index[1u])
     }
+    
+    public companion object
 }
 
 //@Serializable(with = SettableMDList2Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
@@ -37,4 +39,6 @@ public interface SettableMDList2<E>: SettableMDList<E>, MDList2<E> {
         ) indexOutOfShapeException(shape = shape, index = index)
         set(index[0u], index[1u], element)
     }
+    
+    public companion object
 }

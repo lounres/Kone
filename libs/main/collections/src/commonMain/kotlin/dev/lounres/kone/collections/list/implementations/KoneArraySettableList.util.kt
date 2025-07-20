@@ -41,7 +41,7 @@ internal class KoneArraySettableListSerializer<E>(
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArraySettableList",
-            elementSerializer = elementSerializer,
+            elementDescriptor = elementSerializer.descriptor,
         )
     
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArraySettableList<E> =

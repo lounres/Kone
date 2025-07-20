@@ -9,7 +9,6 @@ import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -65,11 +64,11 @@ public fun KoneArrayFixedCapacityNoddedList.Companion.producer(): KoneFixedCapac
 
 internal class KoneArrayFixedCapacityNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneArrayFixedCapacityNoddedList<E>>(), DeserializationStrategy<KoneArrayFixedCapacityNoddedList<E>> {
+): KoneIterableSerializerTemplate<E, KoneArrayFixedCapacityNoddedList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArrayFixedCapacityNoddedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayFixedCapacityNoddedList<E> =
         KoneArrayFixedCapacityNoddedList(size, initializer)

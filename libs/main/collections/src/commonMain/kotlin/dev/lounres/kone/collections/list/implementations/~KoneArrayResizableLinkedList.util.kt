@@ -9,10 +9,8 @@ import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
-import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlin.math.max
@@ -42,11 +40,11 @@ public fun KoneArrayResizableLinkedList.Companion.producer(): KoneResizableMutab
 
 internal class KoneArrayResizableLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneArrayResizableLinkedList<E>>(), DeserializationStrategy<KoneArrayResizableLinkedList<E>> {
+): KoneIterableSerializerTemplate<E, KoneArrayResizableLinkedList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArrayResizableLinkedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableLinkedList<E> =
         KoneArrayResizableLinkedList(size, initializer)

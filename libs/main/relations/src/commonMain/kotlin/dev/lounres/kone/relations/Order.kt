@@ -18,6 +18,7 @@ import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmInline
 import kotlin.reflect.KVariance
 import kotlin.Comparator as KotlinStdlibComparator
 
@@ -283,19 +284,18 @@ public fun <Target, Element> compareByOrdered(vararg selectors: (Target) -> Elem
     return@Comparator ComparisonResult.Equal
 }
 
-// TODO: Replace with multifield value classes when KT-72538 will be fixed
 /**
  * A wrapper data class that contains values [start] and [endInclusive] to be used by [ClosedRange.contains] operator that checks
  * if the provided value lies in a closed interval `[start; endInclusive]`.
  */
-//@JvmInline
-public data class ClosedRange<out Element>(public val start: Element, public val endInclusive: Element)
+@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
+public value class ClosedRange<out Element>(public val start: Element, public val endInclusive: Element)
 /**
  * A wrapper data class that contains values [start] and [endExclusive] to be used by [RightOpenRange.contains] operator that checks
  * if the provided value lies in a right-open interval `[start; endExclusive)`.
  */
-//@JvmInline
-public data class RightOpenRange<out Element>(public val start: Element, public val endExclusive: Element)
+@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
+public value class RightOpenRange<out Element>(public val start: Element, public val endExclusive: Element)
 
 /**
  * Creates [ClosedRange] instance to be used by [ClosedRange.contains] operator that checks if the provided value

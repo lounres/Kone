@@ -161,6 +161,8 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
         override fun contains(element: KoneMutableLinkedSetNode<Element>): Boolean = backingList.any { it === element }
         override fun iterator(): KoneSetIterator<KoneMutableLinkedSetNode<Element>> = backingList.iterator()
     }
+    
+    public companion object
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -173,4 +175,6 @@ public class KoneListBackedMutableLinkedNoddedReifiedSet<Element> @PublishedApi 
     backingList = backingList,
 ), KoneMutableLinkedNoddedReifiedSet<Element> {
     override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
+    
+    public companion object
 }

@@ -5,52 +5,81 @@
 
 package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
+import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
+import dev.lounres.kone.collections.utils.none
+import dev.lounres.kone.collections.utils.toOptimizedList
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.eq
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
-//internal class KoneListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneIterableDescriptor(
-//        serialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet<data>",
-//        elementDescriptor = elementDescriptor,
-//    )
+public open class KoneListBackedSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementEquality: Equality<Element>,
+): KoneIterableSerializerTemplate<Element, KoneListBackedSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneListBackedSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneListBackedSet<Element> =
+        KoneListBackedSet(
+            elementEquality,
+            KoneArrayFixedCapacityList<Element>(size)
+                .apply {
+                    (0u..<size).forEach { index ->
+                        val element = initializer(index)
+                        if (this.none { elementEquality { element eq it } }) add(element)
+                    }
+                }.toOptimizedList()
+        )
+}
 
-//internal class KoneListBackedSetSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneListBackedSet<E, EC>>(), DeserializationStrategy<KoneListBackedSet<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneListBackedSetDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneListBackedSet<E, EC> =
-//        KoneListBackedSet(
-//            elementContext,
-//            KoneFixedCapacityArrayList(size, elementContext)
-//                .apply {
-//                    (0u..<size).forEach {
-//                        val element = initializer(it)
-//                        if (element !in this ) add(element)
-//                    }
-//                }.toOptimizedList(elementContext)
-//        )
-//}
-//
-//internal class KoneListBackedSetWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneListBackedSet<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.set.implementations.KoneListBackedSet",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneListBackedSet<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneListBackedSet<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneListBackedSet<E, EC> =
-//        KoneListBackedSet(
-//            elementContext,
-//            KoneFixedCapacityArrayList(elementList.size, elementContext)
-//                .apply {
-//                    elementList.indices.forEach {
-//                        val element = elementList[it]
-//                        if (element !in this ) add(element)
-//                    }
-//                }.toOptimizedList(elementContext)
-//        )
-//}
+public fun <Element> KoneListBackedSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementEquality: Equality<Element>,
+): KSerializer<KoneListBackedSet<Element>> =
+    KoneListBackedSetSerializer(
+        elementSerializer = elementSerializer,
+        elementEquality = elementEquality,
+    )
+
+public open class KoneListBackedReifiedSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementReification: Reification<Element>,
+    protected val elementEquality: Equality<Element>,
+): KoneIterableSerializerTemplate<Element, KoneListBackedReifiedSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneListBackedReifiedSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneListBackedReifiedSet<Element> =
+        KoneListBackedReifiedSet(
+            elementReification,
+            elementEquality,
+            KoneArrayFixedCapacityList<Element>(size)
+                .apply {
+                    (0u..<size).forEach { index ->
+                        val element = initializer(index)
+                        if (this.none { elementEquality { element eq it } }) add(element)
+                    }
+                }.toOptimizedList()
+        )
+}
+
+public fun <Element> KoneListBackedReifiedSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
+): KSerializer<KoneListBackedReifiedSet<Element>> =
+    KoneListBackedReifiedSetSerializer(
+        elementSerializer = elementSerializer,
+        elementReification = elementReification,
+        elementEquality = elementEquality,
+    )

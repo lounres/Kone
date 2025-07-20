@@ -11,6 +11,7 @@ import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 import kotlin.reflect.KVariance
 
 
@@ -19,10 +20,10 @@ import kotlin.reflect.KVariance
  * See [EuclideanSemiring]'s or [EuclideanRing]'s docs for more.
  */
 @Serializable
-//@JvmInline // FIXME: Make it a value class when MFVC will be ready
-public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
-//    public operator fun component1(): Number = quotient
-//    public operator fun component2(): Number = remainder
+@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
+public value class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
+    public operator fun component1(): Number = quotient
+    public operator fun component2(): Number = remainder
 }
 
 /**

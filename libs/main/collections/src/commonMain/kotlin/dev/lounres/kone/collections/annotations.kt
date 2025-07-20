@@ -12,3 +12,10 @@ package dev.lounres.kone.collections
     message = "Please, read the contracts of the interface carefully before inheriting it."
 )
 public annotation class DelicateCollectionsInheritanceAPI
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "Please, read the contracts of the constructor or builder carefully before using it."
+)
+public annotation class DelicateListBackedCollectionsBuilderAPI

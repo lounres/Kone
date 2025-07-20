@@ -28,7 +28,7 @@ internal class KoneArraySettableNoddedListSerializer<E>(
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArraySettableNoddedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArraySettableNoddedList<E> =
         KoneArraySettableNoddedList(size, initializer)

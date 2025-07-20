@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import dev.lounres.kone.repeat
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -40,11 +39,11 @@ public fun KoneGCLinkedList.Companion.producer(): KoneResizableMutableNoddedList
 
 internal class KoneGCLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneGCLinkedList<E>>(), DeserializationStrategy<KoneGCLinkedList<E>> {
+): KoneIterableSerializerTemplate<E, KoneGCLinkedList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneGCLinkedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneGCLinkedList<E> =
         KoneGCLinkedList(size, initializer)

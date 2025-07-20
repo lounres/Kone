@@ -18,9 +18,13 @@ public interface MDList<out E> {
     public val size: UInt get() = shape.fold(1u) { acc, dim -> acc * dim }
     
     public operator fun get(index: KoneUIntArray): E
+    
+    public companion object
 }
 
 //@Serializable(with = SettableMDListSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
 public interface SettableMDList<E>: MDList<E> {
     public operator fun set(index: KoneUIntArray, element: E)
+    
+    public companion object
 }

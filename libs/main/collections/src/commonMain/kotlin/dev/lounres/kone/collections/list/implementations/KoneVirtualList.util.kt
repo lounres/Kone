@@ -7,18 +7,17 @@ package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 internal class KoneVirtualListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneVirtualList<E>>(), DeserializationStrategy<KoneVirtualList<E>> {
+): KoneIterableSerializerTemplate<E, KoneVirtualList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneVirtualList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneVirtualList<E> =
         KoneVirtualList(size, initializer)

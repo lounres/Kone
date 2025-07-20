@@ -5,11 +5,21 @@
 
 package dev.lounres.kone.collections.set.implementations
 
+import dev.lounres.kone.collections.DelicateListBackedCollectionsBuilderAPI
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.toKoneMutableNoddedList
+import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
+import dev.lounres.kone.collections.utils.none
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.eq
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public fun <Element> KoneListBackedMutableSet(
@@ -26,12 +36,14 @@ public fun <Element> KoneListBackedMutableSet(
     listProducer: KoneGrowableMutableListProducer,
 ): KoneListBackedMutableSet<Element> = KoneListBackedMutableSet(elementEquality, listProducer.produce())
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableSet(
     elementEquality: Equality<Element>,
     size: UInt,
     builder: (UInt) -> Element
 ): KoneListBackedMutableSet<Element> = KoneListBackedMutableSet(elementEquality, KoneArrayResizableLinkedList(size, builder))
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableSet(
     elementEquality: Equality<Element>,
     size: UInt,
@@ -39,6 +51,7 @@ public fun <Element> KoneListBackedMutableSet(
     builder: (UInt) -> Element
 ): KoneListBackedMutableSet<Element> = KoneListBackedMutableSet(elementEquality, listProducer.produceBy(size, builder))
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableSet(
     elementEquality: Equality<Element>,
     size: UInt,
@@ -63,6 +76,7 @@ public fun <Element> KoneListBackedMutableReifiedSet(
     listProducer: KoneGrowableMutableListProducer,
 ): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, listProducer.produce())
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableReifiedSet(
     elementReification: Reification<Element>,
     elementEquality: Equality<Element>,
@@ -70,6 +84,7 @@ public fun <Element> KoneListBackedMutableReifiedSet(
     builder: (UInt) -> Element
 ): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, KoneArrayResizableLinkedList(size, builder))
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableReifiedSet(
     elementReification: Reification<Element>,
     elementEquality: Equality<Element>,
@@ -78,6 +93,7 @@ public fun <Element> KoneListBackedMutableReifiedSet(
     builder: (UInt) -> Element
 ): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, listProducer.produceBy(size, builder))
 
+@DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableReifiedSet(
     elementReification: Reification<Element>,
     elementEquality: Equality<Element>,
@@ -86,48 +102,72 @@ public fun <Element> KoneListBackedMutableReifiedSet(
     builder: (UInt) -> Element
 ): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, listProducer.produceBy(size, builder))
 
-//internal class KoneMutableListBackedSetDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneIterableDescriptor(
-//        serialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet",
-//        elementDescriptor = elementDescriptor,
-//    )
+// TODO: Think about adding custom list producer argument to the serializers classes
 
-//internal class KoneMutableListBackedSetSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneMutableListBackedSet<E, EC>>(), DeserializationStrategy<KoneMutableListBackedSet<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneMutableListBackedSetDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneMutableListBackedSet<E, EC> =
-//        KoneMutableListBackedSet(
-//            elementContext,
-//            KoneFixedCapacityArrayList(size, elementContext)
-//                .apply {
-//                    (0u..<size).forEach {
-//                        val element = initializer(it)
-//                        if (element !in this ) add(element)
-//                    }
-//                }.toKoneMutableIterableList(elementContext)
-//        )
-//}
-//
-//internal class KoneMutableListBackedSetWithContextSerializer<E, EC: Equality<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneMutableListBackedSet<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.implementations.KoneMutableListBackedSet",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneMutableListBackedSet<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneMutableListBackedSet<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneMutableListBackedSet<E, EC> =
-//        KoneMutableListBackedSet(
-//            elementContext,
-//            KoneFixedCapacityArrayList(elementList.size, elementContext)
-//                .apply {
-//                    elementList.indices.forEach {
-//                        val element = elementList[it]
-//                        if (element !in this ) add(element)
-//                    }
-//                }.toKoneMutableIterableList(elementContext)
-//        )
-//}
+public open class KoneListBackedMutableSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementEquality: Equality<Element>,
+): KoneIterableSerializerTemplate<Element, KoneListBackedMutableSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneListBackedMutableSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneListBackedMutableSet<Element> =
+        KoneListBackedMutableSet(
+            elementEquality,
+            KoneArrayFixedCapacityList<Element>(size)
+                .apply {
+                    (0u..<size).forEach { index ->
+                        val element = initializer(index)
+                        if (this.none { elementEquality { element eq it } })
+                            add(element)
+                    }
+                }.toKoneMutableNoddedList()
+        )
+}
+
+public fun <Element> KoneListBackedMutableSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementEquality: Equality<Element>,
+): KSerializer<KoneListBackedMutableSet<Element>> =
+    KoneListBackedMutableSetSerializer(
+        elementSerializer = elementSerializer,
+        elementEquality = elementEquality,
+    )
+
+public open class KoneListBackedMutableReifiedSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementReification: Reification<Element>,
+    protected val elementEquality: Equality<Element>,
+): KoneIterableSerializerTemplate<Element, KoneListBackedMutableReifiedSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneListBackedMutableReifiedSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneListBackedMutableReifiedSet<Element> =
+        KoneListBackedMutableReifiedSet(
+            elementReification,
+            elementEquality,
+            KoneArrayFixedCapacityList<Element>(size)
+                .apply {
+                    (0u..<size).forEach { index ->
+                        val element = initializer(index)
+                        if (this.none { elementEquality { element eq it } })
+                            add(element)
+                    }
+                }.toKoneMutableNoddedList()
+        )
+}
+
+public fun <Element> KoneListBackedMutableReifiedSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
+): KSerializer<KoneListBackedMutableReifiedSet<Element>> =
+    KoneListBackedMutableReifiedSetSerializer(
+        elementSerializer = elementSerializer,
+        elementReification = elementReification,
+        elementEquality = elementEquality,
+    )

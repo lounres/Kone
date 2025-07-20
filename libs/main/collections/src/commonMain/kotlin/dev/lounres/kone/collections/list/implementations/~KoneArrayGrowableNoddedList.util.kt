@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -56,11 +55,11 @@ public fun KoneArrayGrowableNoddedList.Companion.producer(): KoneGrowableMutable
 
 internal class KoneArrayGrowableNoddedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneArrayGrowableNoddedList<E>>(), DeserializationStrategy<KoneArrayGrowableNoddedList<E>> {
+): KoneIterableSerializerTemplate<E, KoneArrayGrowableNoddedList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArrayGrowableNoddedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayGrowableNoddedList<E> =
         KoneArrayGrowableNoddedList(size, initializer)

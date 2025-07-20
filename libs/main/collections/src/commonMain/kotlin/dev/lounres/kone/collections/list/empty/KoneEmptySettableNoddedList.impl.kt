@@ -34,4 +34,5 @@ internal open class KoneEmptySettableNoddedListTemplate<Element> : KoneSettableN
     override fun equals(other: Any?): Boolean = other is KoneList<*> && other.isEmpty()
 }
 
+@PublishedApi
 internal object KoneEmptySettableNoddedList : KoneEmptySettableNoddedListTemplate<Nothing>()

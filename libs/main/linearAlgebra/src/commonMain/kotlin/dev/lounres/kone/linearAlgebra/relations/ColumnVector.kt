@@ -11,12 +11,12 @@ import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.multidimensionalCollections.MDList1
-import dev.lounres.kone.multidimensionalCollections.relations.mdListEquality
-import dev.lounres.kone.multidimensionalCollections.relations.mdListHashing
+import dev.lounres.kone.multidimensionalCollections.relations.equality
+import dev.lounres.kone.multidimensionalCollections.relations.hashing
 
 
 internal class ColumnVectorEquality<N>(elementEquality: Equality<N>) : Equality<ColumnVector<N>> {
-    private val mdListEquality: Equality<MDList1<N>> = mdListEquality(elementEquality)
+    private val mdListEquality: Equality<MDList1<N>> = MDList1.equality(elementEquality)
     override fun ColumnVector<N>.equalsTo(other: ColumnVector<N>): Boolean = context(mdListEquality) { this.coefficients eq other.coefficients }
 }
 
@@ -24,7 +24,7 @@ public fun <N> columnVectorEquality(elementEquality: Equality<N>): Equality<Colu
     ColumnVectorEquality(elementEquality)
 
 internal class ColumnVectorHashing<N>(elementHashing: Hashing<N>) : Hashing<ColumnVector<N>> {
-    private val mdListHashing: Hashing<MDList1<N>> = mdListHashing(elementHashing)
+    private val mdListHashing: Hashing<MDList1<N>> = MDList1.hashing(elementHashing)
     override fun ColumnVector<N>.hash(): Int = context(mdListHashing) { this.coefficients.hash() }
 }
 

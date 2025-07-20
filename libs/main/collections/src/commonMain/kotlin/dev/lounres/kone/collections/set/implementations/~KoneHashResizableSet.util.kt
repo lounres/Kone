@@ -5,11 +5,15 @@
 
 package dev.lounres.kone.collections.set.implementations
 
+import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.defaultHashing
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public fun <Element> KoneHashResizableSet(
@@ -31,34 +35,66 @@ public inline fun <reified Element> KoneHashResizableReifiedSet(
 ): KoneHashResizableReifiedSet<Element> =
     KoneHashResizableReifiedSet(size = 0u, elementReification = Reification(), elementEquality = elementEquality,  elementHashing = elementHashing)
 
-//internal class KoneHashResizableSetDescriptor(elementDescriptor: SerialDescriptor):
-//    KoneIterableDescriptor(
-//        serialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet<data>",
-//        elementDescriptor = elementDescriptor,
-//    )
+public open class KoneHashResizableSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementEquality: Equality<Element>,
+    protected val elementHashing: Hashing<Element>,
+): KoneIterableSerializerTemplate<Element, KoneHashResizableSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneHashResizableSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneHashResizableSet<Element> =
+        KoneHashResizableSet(
+            elementEquality,
+            elementHashing,
+        ).apply {
+            (0u..<size).forEach { index -> add(initializer(index)) }
+        }
+}
 
-//internal class KoneHashResizableSetSerializer<E, EC: Hashing<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    public val elementContext: EC,
-//): KoneIterableCollectionSerializerTemplate<E, KoneHashResizableSet<E, EC>>(), DeserializationStrategy<KoneHashResizableSet<E, EC>> {
-//    override val descriptor: SerialDescriptor = KoneHashResizableSetDescriptor(elementSerializer.descriptor)
-//    override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneHashResizableSet<E, EC> =
-//        KoneHashResizableSet(elementContext).apply {
-//            (0u..<size).forEach { add(initializer(it)) }
-//        }
-//}
-//
-//internal class KoneHashResizableSetWithContextSerializer<E, EC: Hashing<E>>(
-//    override val elementSerializer: KSerializer<E>,
-//    override val elementContextSerializer: KSerializer<EC>,
-//): KoneIterableCollectionWithContextSerializerTemplate<E, EC, KoneHashResizableSet<E, EC>>(
-//    collectionSerialName = "dev.lounres.kone.collections.set.implementations.KoneHashResizableSet",
-//    elementDescriptor = elementSerializer.descriptor,
-//), DeserializationStrategy<KoneHashResizableSet<E, EC>> {
-//    override val elementCollectionSerializer: SerializationStrategy<KoneHashResizableSet<E, EC>> =
-//        DefaultKoneIterableCollectionSerializer(elementSerializer)
-//    override fun result(elementList: KoneIterableList<E>, elementContext: EC): KoneHashResizableSet<E, EC> =
-//        KoneHashResizableSet(elementContext).apply {
-//            addAllFrom(elementList)
-//        }
-//}
+public fun <Element> KoneHashResizableSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementEquality: Equality<Element>,
+    elementHashing: Hashing<Element>,
+): KSerializer<KoneHashResizableSet<Element>> =
+    KoneHashResizableSetSerializer(
+        elementSerializer = elementSerializer,
+        elementEquality = elementEquality,
+        elementHashing = elementHashing,
+    )
+
+public open class KoneHashResizableReifiedSetSerializer<Element>(
+    final override val elementSerializer: KSerializer<Element>,
+    protected val elementReification: Reification<Element>,
+    protected val elementEquality: Equality<Element>,
+    protected val elementHashing: Hashing<Element>,
+): KoneIterableSerializerTemplate<Element, KoneHashResizableReifiedSet<Element>>() {
+    final override val descriptor: SerialDescriptor =
+        KoneSetImplementationDescriptor(
+            "KoneHashResizableReifiedSet",
+            elementSerializer.descriptor,
+        )
+    final override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneHashResizableReifiedSet<Element> =
+        KoneHashResizableReifiedSet(
+            elementReification,
+            elementEquality,
+            elementHashing,
+        ).apply {
+            (0u..<size).forEach { index -> add(initializer(index)) }
+        }
+}
+
+public fun <Element> KoneHashResizableReifiedSet.Companion.serializer(
+    elementSerializer: KSerializer<Element>,
+    elementReification: Reification<Element>,
+    elementEquality: Equality<Element>,
+    elementHashing: Hashing<Element>,
+): KSerializer<KoneHashResizableReifiedSet<Element>> =
+    KoneHashResizableReifiedSetSerializer(
+        elementSerializer = elementSerializer,
+        elementReification = elementReification,
+        elementEquality = elementEquality,
+        elementHashing = elementHashing,
+    )

@@ -43,6 +43,8 @@ public open class KoneListBackedSet<Element> @PublishedApi internal constructor(
         }
         append(']')
     }
+    
+    public companion object
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -52,4 +54,6 @@ public class KoneListBackedReifiedSet<Element> @PublishedApi internal constructo
     backingList: KoneList<Element>,
 ) : KoneListBackedSet<Element>(elementEquality, backingList), KoneReifiedSet<Element> {
     override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
+    
+    public companion object
 }

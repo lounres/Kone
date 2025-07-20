@@ -252,6 +252,8 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
             }
         }
     }
+    
+    public companion object
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -280,4 +282,6 @@ public class KoneHashResizableReifiedSet<Element> @PublishedApi internal constru
     elementHashing = elementHashing,
 ), KoneMutableReifiedSet<Element> {
     override fun contains(element: Element): Boolean = element in elementReification && super.contains(element)
+    
+    public companion object
 }

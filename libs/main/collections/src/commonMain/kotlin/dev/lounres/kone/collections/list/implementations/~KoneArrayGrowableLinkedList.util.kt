@@ -11,7 +11,6 @@ import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializer
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
 import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -54,11 +53,11 @@ public fun KoneArrayGrowableLinkedList.Companion.producer(): KoneGrowableMutable
 
 internal class KoneArrayGrowableLinkedListSerializer<E>(
     override val elementSerializer: KSerializer<E>,
-): KoneIterableSerializerTemplate<E, KoneArrayGrowableLinkedList<E>>(), DeserializationStrategy<KoneArrayGrowableLinkedList<E>> {
+): KoneIterableSerializerTemplate<E, KoneArrayGrowableLinkedList<E>>() {
     override val descriptor: SerialDescriptor =
         KoneListImplementationDescriptor(
             implementationName = "KoneArrayGrowableLinkedList",
-            elementSerializer = elementSerializer
+            elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayGrowableLinkedList<E> =
         KoneArrayGrowableLinkedList(size, initializer)
