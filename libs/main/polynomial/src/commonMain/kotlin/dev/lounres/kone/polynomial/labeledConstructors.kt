@@ -21,6 +21,7 @@ import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.utils.associateBy
 import dev.lounres.kone.collections.utils.mapKeys
 import dev.lounres.kone.collections.utils.setOrChange
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.defaultHashing
 
 
@@ -399,6 +400,6 @@ public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
 context(numberContext: Ring<C>, _: LabeledPolynomialSpace<C>)
 public fun <C> LabeledVariable.asLabeledRationalFunction() : LabeledRationalFunction<C> =
     LabeledRationalFunction(
-        context(numberContext) { this.asLabeledPolynomial() },
+        numberContext { this.asLabeledPolynomial() },
         polynomialOne,
     )

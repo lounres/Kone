@@ -12,6 +12,7 @@ import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.computationalGeometry.relations.pointEquality
 import dev.lounres.kone.computationalGeometry.relations.vectorEquality
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.minus
 import dev.lounres.kone.linearAlgebra.plus
@@ -99,19 +100,19 @@ internal class EuclideanKategory4WithNumberRingAndVectorKategory<N>(
     override val pointEquality: Equality<Point<N>> = pointEquality(numberRing)
     override val vectorEquality: Equality<Vector<N>> = vectorEquality(numberRing)
     
-    override fun Vector4<N>.unaryMinus(): Vector4<N> = Vector4(context(vectorKategory) { -coordinates })
-    override fun Vector4<N>.plus(other: Vector4<N>): Vector4<N> = Vector4(context(vectorKategory) { this.coordinates + other.coordinates })
-    override fun Vector4<N>.minus(other: Vector4<N>): Vector4<N> = Vector4(context(vectorKategory) { this.coordinates - other.coordinates })
+    override fun Vector4<N>.unaryMinus(): Vector4<N> = Vector4(vectorKategory { -coordinates })
+    override fun Vector4<N>.plus(other: Vector4<N>): Vector4<N> = Vector4(vectorKategory { this.coordinates + other.coordinates })
+    override fun Vector4<N>.minus(other: Vector4<N>): Vector4<N> = Vector4(vectorKategory { this.coordinates - other.coordinates })
     
-    override fun Vector4<N>.times(other: N): Vector4<N> = Vector4(context(vectorKategory) { coordinates * other })
-    override fun N.times(other: Vector4<N>): Vector4<N> = Vector4(context(vectorKategory) { this * other.coordinates })
+    override fun Vector4<N>.times(other: N): Vector4<N> = Vector4(vectorKategory { coordinates * other })
+    override fun N.times(other: Vector4<N>): Vector4<N> = Vector4(vectorKategory { this * other.coordinates })
     
-    override fun Point4<N>.plus(other: Vector4<N>): Point4<N> = Point4(context(vectorKategory) { this.coordinates + other.coordinates })
-    override fun Point4<N>.minus(other: Vector4<N>): Point4<N> = Point4(context(vectorKategory) { this.coordinates - other.coordinates })
-    override fun Vector4<N>.plus(other: Point4<N>): Point4<N> = Point4(context(vectorKategory) { this.coordinates + other.coordinates })
-    override fun Point4<N>.minus(other: Point4<N>): Vector4<N> = Vector4(context(vectorKategory) { this.coordinates - other.coordinates })
+    override fun Point4<N>.plus(other: Vector4<N>): Point4<N> = Point4(vectorKategory { this.coordinates + other.coordinates })
+    override fun Point4<N>.minus(other: Vector4<N>): Point4<N> = Point4(vectorKategory { this.coordinates - other.coordinates })
+    override fun Vector4<N>.plus(other: Point4<N>): Point4<N> = Point4(vectorKategory { this.coordinates + other.coordinates })
+    override fun Point4<N>.minus(other: Point4<N>): Vector4<N> = Vector4(vectorKategory { this.coordinates - other.coordinates })
     
-    override val Vector4<N>.lengthSquared: N get() = context(numberRing) { this.x * this.x + this.y * this.y + this.z * this.z + this.t * this.t }
+    override val Vector4<N>.lengthSquared: N get() = numberRing { this.x * this.x + this.y * this.y + this.z * this.z + this.t * this.t }
     
-    override fun Vector4<N>.dot(other: Vector4<N>): N = context(numberRing) { this.x * other.x + this.y * other.y + this.z * other.z + this.t * other.t }
+    override fun Vector4<N>.dot(other: Vector4<N>): N = numberRing { this.x * other.x + this.y * other.y + this.z * other.z + this.t * other.t }
 }

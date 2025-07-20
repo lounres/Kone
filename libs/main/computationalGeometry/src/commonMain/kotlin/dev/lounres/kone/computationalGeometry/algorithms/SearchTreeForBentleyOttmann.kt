@@ -6,6 +6,7 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.searchTree.implementations.KoneTwoThreeSearchTree
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {
@@ -32,13 +33,13 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
     private fun NodeHolder<E>?.replaceChild(oldChild: NodeHolder<E>, newChild: NodeHolder<E>) {
         when (this) {
             null -> rootHolder = newChild
-            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder ->
+            is TwoNodeHolder ->
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
                     else -> throw IllegalStateException("Trying to change parent's non-existent child")
                 }
-            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+            is ThreeNodeHolder ->
                 when (oldChild) {
                     this.firstChild -> this.firstChild = newChild
                     this.secondChild -> this.secondChild = newChild
@@ -60,7 +61,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 )
                 rootHolder = newHolder
             }
-            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+            is TwoNodeHolder -> {
                 val parent = this.parent
                 val isThisBottom = this.isItBottom
                 val firstChild = this.firstChild
@@ -94,7 +95,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 
                 parent.replaceChild(this, newNodeHolder)
             }
-            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+            is ThreeNodeHolder -> {
                 val parent = this.parent
                 val isThisBottom = this.isItBottom
                 val firstChild = this.firstChild
@@ -104,9 +105,9 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 val thirdChild = this.thirdChild
                 this.dispose()
                 
-                val firstNewParent: TwoNodeHolder
+                val firstNewParent: TwoNodeHolder<E>
                 val parentNode: Node<E>
-                val secondNewParent: TwoNodeHolder
+                val secondNewParent: TwoNodeHolder<E>
                 
                 when (oldChild) {
                     firstChild -> {
@@ -174,11 +175,11 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 rootHolder = referredChild
                 referredChild?.parent = null
             }
-            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder ->
+            is TwoNodeHolder ->
                 when (oldChild) {
                     this.firstChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newThis = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -192,7 +193,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                                 secondChild.dispose()
                                 parent.replaceChildWithReference(this, newThis)
                             }
-                            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -220,7 +221,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                     this.secondChild ->
                         when (val firstChild = this.firstChild!!) {
-                            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newThis = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -234,7 +235,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                                 firstChild.dispose()
                                 parent.replaceChildWithReference(this, newThis)
                             }
-                            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -262,11 +263,11 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                     else -> throw IllegalStateException("Received not a child of the parent")
                 }
-            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+            is ThreeNodeHolder ->
                 when (oldChild) {
                     this.firstChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -286,7 +287,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -316,7 +317,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                     this.secondChild ->
                         when (val firstChild = this.firstChild!!) {
-                            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = threeNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -337,7 +338,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newFirstChild = twoNodeHolder(
                                     isItBottom = firstChild.isItBottom,
@@ -367,7 +368,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                     this.thirdChild ->
                         when (val secondChild = this.secondChild!!) {
-                            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                            is TwoNodeHolder -> {
                                 val parent = this.parent
                                 val newSecondChild = threeNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -388,7 +389,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                                 this.dispose()
                                 parent.replaceChild(this, newThis)
                             }
-                            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                            is ThreeNodeHolder -> {
                                 val parent = this.parent
                                 val newSecondChild = twoNodeHolder(
                                     isItBottom = secondChild.isItBottom,
@@ -441,7 +442,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                     else -> onEmpty()
                 }
             when (subtree) {
-                is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                is TwoNodeHolder -> {
                     val subtreeElementSign = sign.sign(subtree.element.element)
                     when {
                         subtreeElementSign > 0 -> {
@@ -456,7 +457,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                     }
                 }
-                is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+                is ThreeNodeHolder -> {
                     val subtreeFirstElementSign = sign.sign(subtree.firstElement.element)
                     val subtreeSecondElementSign = sign.sign(subtree.secondElement.element)
                     when {
@@ -483,12 +484,12 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
     
     private fun removeBottomNode(node: Node<E>) {
         when (val holder = node.holder) {
-            is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+            is TwoNodeHolder -> {
                 val parent = holder.parent
                 holder.dispose()
                 parent.replaceChildWithReference(holder, null)
             }
-            is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder -> {
+            is ThreeNodeHolder -> {
                 val newHolder = twoNodeHolder(
                     isItBottom = true,
                     firstChild = null,
@@ -528,12 +529,12 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 val holder = node.holder
                 val nextHolder = nextNode.holder
                 when (holder) {
-                    is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder ->
+                    is TwoNodeHolder ->
                         when (node) {
                             holder.element -> holder.element = nextNode
                             else -> throw IllegalStateException("Received not a holder of the node")
                         }
-                    is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         when (node) {
                             holder.firstElement -> holder.firstElement = nextNode
                             holder.secondElement -> holder.secondElement = nextNode
@@ -541,12 +542,12 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         }
                 }
                 when (nextHolder) {
-                    is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder ->
+                    is TwoNodeHolder ->
                         when (nextNode) {
                             nextHolder.element -> nextHolder.element = node
                             else -> throw IllegalStateException("Received not a holder of the node")
                         }
-                    is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         when (nextNode) {
                             nextHolder.firstElement -> nextHolder.firstElement = node
                             nextHolder.secondElement -> nextHolder.secondElement = node
@@ -594,7 +595,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 val lowerBoundHolder = lowerBound.holder
                 val upperBoundHolder = upperBound.holder
                 when {
-                    lowerBoundHolder.isItBottom && lowerBoundHolder is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                    lowerBoundHolder.isItBottom && lowerBoundHolder is TwoNodeHolder -> {
                         val parent = lowerBoundHolder.parent
                         val newLowerBoundHolder = threeNodeHolder(
                             isItBottom = true,
@@ -611,7 +612,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         newLowerBoundHolder.parent = parent
                         lowerBoundHolder.dispose()
                     }
-                    upperBoundHolder.isItBottom && upperBoundHolder is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                    upperBoundHolder.isItBottom && upperBoundHolder is TwoNodeHolder -> {
                         val parent = upperBoundHolder.parent
                         val newUpperBoundHolder = threeNodeHolder(
                             isItBottom = true,
@@ -649,7 +650,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         lowerBoundHolder.dispose()
                     }
                     lowerBoundHolder.isItBottom -> {
-                        lowerBoundHolder as TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder
+                        lowerBoundHolder as ThreeNodeHolder
                         lowerBoundHolder.parent.replaceChild(
                             oldChild = lowerBoundHolder,
                             firstNewChild = twoNodeHolder(
@@ -669,7 +670,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         lowerBoundHolder.dispose()
                     }
                     upperBoundHolder.isItBottom -> {
-                        upperBoundHolder as TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder
+                        upperBoundHolder as ThreeNodeHolder
                         upperBoundHolder.parent.replaceChild(
                             oldChild = upperBoundHolder,
                             firstNewChild = twoNodeHolder(
@@ -701,7 +702,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 val minimumHolder = minimum.holder
                 check(minimum.holder.isItBottom) { "For some reason, minimum is not at the bottom" }
                 when (minimumHolder) {
-                    is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                    is TwoNodeHolder -> {
                         val parent = minimumHolder.parent
                         val newMinimumHolder = threeNodeHolder(
                             isItBottom = true,
@@ -717,7 +718,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         )
                         newMinimumHolder.parent = parent
                     }
-                    is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         minimumHolder.parent.replaceChild(
                             oldChild = minimumHolder,
                             firstNewChild = twoNodeHolder(
@@ -746,7 +747,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                 val maximumHolder = maximum.holder
                 check(maximum.holder.isItBottom) { "For some reason, maximum is not at the bottom" }
                 when (maximumHolder) {
-                    is TwoThreeTreeForBentleyOttmann<E>.TwoNodeHolder -> {
+                    is TwoNodeHolder -> {
                         val parent = maximumHolder.parent
                         val newMaximumHolder = threeNodeHolder(
                             isItBottom = true,
@@ -762,7 +763,7 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
                         )
                         newMaximumHolder.parent = parent
                     }
-                    is TwoThreeTreeForBentleyOttmann<E>.ThreeNodeHolder ->
+                    is ThreeNodeHolder ->
                         maximumHolder.parent.replaceChild(
                             oldChild = maximumHolder,
                             firstNewChild = twoNodeHolder(
@@ -791,7 +792,8 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         val isItBottom: Boolean
         val tree: TwoThreeTreeForBentleyOttmann<E>
     }
-    internal inner class TwoNodeHolder(
+    internal class TwoNodeHolder<E>(
+        tree: TwoThreeTreeForBentleyOttmann<E>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<E>?,
         element: Node<E>,
@@ -806,15 +808,19 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
             get() = _element!!
             set(value) { _element = value }
         
-        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = this@TwoThreeTreeForBentleyOttmann
+        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
+        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override fun dispose() {
+            if (isDisposed) return
+            _tree = null
             parent = null
             firstChild = null
             _element = null
             secondChild = null
         }
     }
-    internal inner class ThreeNodeHolder(
+    internal class ThreeNodeHolder<E>(
+        tree: TwoThreeTreeForBentleyOttmann<E>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<E>?,
         firstElement: Node<E>,
@@ -835,8 +841,11 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
             get() = _secondElement!!
             set(value) { _secondElement = value }
         
-        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = this@TwoThreeTreeForBentleyOttmann
+        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
+        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override fun dispose() {
+            if (isDisposed) return
+            _tree = null
             parent = null
             firstChild = null
             _firstElement = null
@@ -851,12 +860,13 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         firstChild: NodeHolder<E>?,
         element: Node<E>,
         secondChild: NodeHolder<E>?,
-    ): TwoNodeHolder {
+    ): TwoNodeHolder<E> {
         check(
             if (isItBottom) firstChild == null && secondChild == null
             else firstChild != null && secondChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = TwoNodeHolder(
+            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             element = element,
@@ -875,12 +885,13 @@ internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyO
         secondChild: NodeHolder<E>?,
         secondElement: Node<E>,
         thirdChild: NodeHolder<E>?,
-    ): ThreeNodeHolder {
+    ): ThreeNodeHolder<E> {
         check(
             if (isItBottom) firstChild == null && secondChild == null && thirdChild == null
             else firstChild != null && secondChild != null && thirdChild != null
         ) { "Flag isItBottom contradicts the truth" }
         val newHolder = ThreeNodeHolder(
+            tree = this,
             isItBottom = isItBottom,
             firstChild = firstChild,
             firstElement = firstElement,

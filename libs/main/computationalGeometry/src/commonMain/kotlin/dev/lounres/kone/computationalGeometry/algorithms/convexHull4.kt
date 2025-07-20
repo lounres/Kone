@@ -33,6 +33,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction4Po
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction4Vertex
 import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.scope
@@ -167,7 +168,7 @@ internal fun <
                 computedFacesRegistry = computedFacesRegistry,
             )
 
-            allVertices.removeAllThat { context(vertexEquality) { it in newVertices } && it !in newFacet.vertices }
+            allVertices.removeAllThat { vertexEquality { it in newVertices } && it !in newFacet.vertices }
 
             for (dim in 0u .. subspaceDimension-2u) restConvexHullFaces[dim].addAllFrom(newFacet.facesOfDimension(dim))
             restConvexHullFaces[subspaceDimension-1u].add(newFacet)

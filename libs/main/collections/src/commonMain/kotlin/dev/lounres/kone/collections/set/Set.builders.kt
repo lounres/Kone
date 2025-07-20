@@ -31,6 +31,7 @@ import dev.lounres.kone.relations.loadHashingForOrNull
 import dev.lounres.kone.relations.loadOrderForOrNull
 import dev.lounres.kone.relations.loadReificationFor
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -150,7 +151,7 @@ public fun <Element> KoneSet.Companion.of(
             .apply { addSeveral(elements.size.toUInt()) { elements[it.toInt()] } }
     else {
         val backingList = KoneArrayGrowableList<Element>()
-        for (element in elements) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in elements) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedSet(elementEquality, backingList)
     }
 
@@ -194,7 +195,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
         ).apply { addSeveral(elements.size.toUInt()) { elements[it.toInt()] } }
     else {
         val backingList = KoneArrayGrowableList<Element>()
-        for (element in elements) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in elements) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedReifiedSet(elementReification, elementEquality, backingList)
     }
 
@@ -271,7 +272,7 @@ public fun <Element> KoneMutableSet.Companion.of(
             .apply { addSeveral(elements.size.toUInt()) { elements[it.toInt()] } }
     else {
         val backingList = KoneArrayResizableLinkedList<Element>()
-        for (element in elements) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in elements) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
@@ -316,7 +317,7 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
         ).apply { addSeveral(elements.size.toUInt()) { elements[it.toInt()] } }
     else {
         val backingList = KoneArrayResizableLinkedList<Element>()
-        for (element in elements) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in elements) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedMutableReifiedSet(
             elementReification = elementReification,
             elementEquality = elementEquality,
@@ -347,7 +348,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(
             .apply { addAllFrom(this@toKoneMutableSet) }
     else {
         val backingList = KoneArrayGrowableList<Element>()
-        for (element in this) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in this) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
@@ -384,7 +385,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableReifiedSet(
             .apply { addAllFrom(this@toKoneMutableReifiedSet) }
     else {
         val backingList = KoneArrayGrowableList<Element>()
-        for (element in this) if (context(elementEquality) { element !in backingList }) backingList.add(element)
+        for (element in this) if (elementEquality { element !in backingList }) backingList.add(element)
         KoneListBackedMutableReifiedSet(elementReification, elementEquality, backingList)
     }
 

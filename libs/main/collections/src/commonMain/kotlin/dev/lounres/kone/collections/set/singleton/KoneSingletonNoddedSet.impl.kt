@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.set.KoneNoddedSetIterator
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.collections.set.KoneSetNode
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
@@ -27,9 +28,9 @@ internal open class KoneSingletonNoddedSet<Element>(
     override val size: UInt get() = 1u
     override fun contains(element: Element): Boolean = with(elementEquality) { singleElement eq element }
     override fun nodeOfOrNull(element: Element): KoneSetNode<Element>? =
-        if (context(elementEquality) { singleElement eq element }) singleNode else null
+        if (elementEquality { singleElement eq element }) singleNode else null
     override fun nodeOf(element: Element): KoneSetNode<Element> =
-        if (context(elementEquality) { singleElement eq element }) singleNode
+        if (elementEquality { singleElement eq element }) singleNode
         else noCorrespondingSetNodeException()
     
     override val nodesView: KoneReifiedSet<KoneSetNode<Element>> = Nodes(this)
@@ -99,5 +100,5 @@ internal class KoneSingletonNoddedReifiedSet<Element>(
     singleElement = singleElement,
     elementEquality = elementEquality,
 ), KoneNoddedReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementReification && context(elementEquality) { singleElement eq element }
+    override fun contains(element: Element): Boolean = element in elementReification && elementEquality { singleElement eq element }
 }

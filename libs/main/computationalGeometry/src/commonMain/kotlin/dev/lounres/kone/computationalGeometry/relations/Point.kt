@@ -10,6 +10,7 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.computationalGeometry.Point
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.ColumnVector
 import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
 import dev.lounres.kone.linearAlgebra.relations.columnVectorHashing
@@ -17,7 +18,7 @@ import kotlin.jvm.JvmName
 
 
 internal class PointEquality<N>(val columnVectorEquality: Equality<ColumnVector<N>>) : Equality<Point<N>> {
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = context(columnVectorEquality) { this.coordinates eq other.coordinates }
+    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorEquality { this.coordinates eq other.coordinates }
 }
 
 @JvmName("pointEqualityForColumnVector")
@@ -29,7 +30,7 @@ public fun <N> pointEquality(numberEquality: Equality<N>): Equality<Point<N>> =
     PointEquality(columnVectorEquality(numberEquality))
 
 internal class PointHashing<N>(val columnVectorHashing: Hashing<ColumnVector<N>>) : Hashing<Point<N>> {
-    override fun Point<N>.hash(): Int = context(columnVectorHashing) { this.coordinates.hash() }
+    override fun Point<N>.hash(): Int = columnVectorHashing { this.coordinates.hash() }
 }
 
 @JvmName("pointHashingForColumnVector")

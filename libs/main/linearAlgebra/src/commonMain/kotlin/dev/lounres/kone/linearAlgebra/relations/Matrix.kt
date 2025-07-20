@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.linearAlgebra.relations
 
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
@@ -17,7 +18,7 @@ import dev.lounres.kone.multidimensionalCollections.relations.hashing
 
 internal class MatrixEquality<N>(elementEquality: Equality<N>) : Equality<Matrix<N>> {
     private val mdListEquality: Equality<MDList2<N>> = MDList2.equality(elementEquality)
-    override fun Matrix<N>.equalsTo(other: Matrix<N>): Boolean = context(mdListEquality) { this.coefficients eq other.coefficients }
+    override fun Matrix<N>.equalsTo(other: Matrix<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
 }
 
 public fun <N> matrixEquality(elementEquality: Equality<N>): Equality<Matrix<N>> =
@@ -25,7 +26,7 @@ public fun <N> matrixEquality(elementEquality: Equality<N>): Equality<Matrix<N>>
 
 internal class MatrixHashing<N>(elementHashing: Hashing<N>) : Hashing<Matrix<N>> {
     private val mdListHashing: Hashing<MDList2<N>> = MDList2.hashing(elementHashing)
-    override fun Matrix<N>.hash(): Int = context(mdListHashing) { this.coefficients.hash() }
+    override fun Matrix<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
 }
 
 public fun <N> matrixHashing(elementHashing: Hashing<N>): Hashing<Matrix<N>> =

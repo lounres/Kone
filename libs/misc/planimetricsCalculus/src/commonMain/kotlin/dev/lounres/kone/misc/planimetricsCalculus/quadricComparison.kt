@@ -7,6 +7,7 @@ package dev.lounres.kone.misc.planimetricsCalculus
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.polynomial.LabeledPolynomial
@@ -16,7 +17,7 @@ internal class QuadricEquality<Number>(val polynomialRing: Ring<LabeledPolynomia
     override fun Quadric<Number>.equalsTo(other: Quadric<Number>): Boolean {
         if (this === other) return true
         
-        return context(polynomialRing) {
+        return polynomialRing {
             this.xx * other.yy eq this.yy * other.xx &&
                     this.xx * other.zz eq this.zz * other.xx &&
                     this.xx * other.xy eq this.xy * other.xx &&

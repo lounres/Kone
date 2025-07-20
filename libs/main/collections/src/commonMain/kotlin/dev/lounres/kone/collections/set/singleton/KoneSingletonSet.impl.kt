@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.KoneSetIterator
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
@@ -20,7 +21,7 @@ internal open class KoneSingletonSet<Element>(
     open val elementEquality: Equality<Element>,
 ) : KoneSet<Element> {
     override val size: UInt get() = 1u
-    override fun contains(element: Element): Boolean = context(elementEquality) { singleElement eq element }
+    override fun contains(element: Element): Boolean = elementEquality { singleElement eq element }
     
     override fun iterator(): KoneSetIterator<Element> = Iterator(this)
 
@@ -53,5 +54,5 @@ internal class KoneSingletonReifiedSet<Element>(
     singleElement = singleElement,
     elementEquality = elementEquality,
 ), KoneReifiedSet<Element> {
-    override fun contains(element: Element): Boolean = element in elementReification && context(elementEquality) { singleElement eq element }
+    override fun contains(element: Element): Boolean = element in elementReification && elementEquality { singleElement eq element }
 }

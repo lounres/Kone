@@ -29,6 +29,7 @@ import dev.lounres.kone.computationalGeometry.Point2
 import dev.lounres.kone.computationalGeometry.curves.Segment2
 import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.utils.lexicographic2DOrder
+import dev.lounres.kone.contexts.invoke
 
 
 public data class Intersection<I>(public val index1: UInt, public val index2: UInt, public val intersection: I)
@@ -98,7 +99,7 @@ public fun <N> KoneList<Segment2<N>>.allIntersectionByBentleyOttmann(): KoneList
     val segmentsSearchTree: ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>> = TwoThreeTreeForBentleyOttmann()
     val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<N>>?>(this.size) { null }
     
-    context(pointsOrder) {
+    pointsOrder {
         for ((index, segment) in this.withIndex()) {
             val structuralStart = segment.start
             val structuralEnd = segment.end

@@ -19,6 +19,7 @@ import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.registry.RegistryKey
@@ -71,7 +72,7 @@ public val <Number> Matrix<Number>.determinantViaLeibnizFormula: Number
     }
 
 internal class DeterminantViaLeibnizFormulaComputer<Number>(val numberContext: Ring<Number>) : DeterminantComputer<Number> {
-    override val Matrix<Number>.det: Number get() = context(numberContext) { determinantViaLeibnizFormula }
+    override val Matrix<Number>.det: Number get() = numberContext { determinantViaLeibnizFormula }
 }
 
 public val <Number> Ring<Number>.determinantViaLeibnizFormulaComputer: DeterminantComputer<Number>
@@ -124,7 +125,7 @@ public val <Number> Matrix<Number>.determinantViaGaussianElimination: Number
     }
 
 internal class DeterminantViaGaussianEliminationComputer<Number>(val numberContext: Field<Number>) : DeterminantComputer<Number> {
-    override val Matrix<Number>.det: Number get() = context(numberContext) { determinantViaGaussianElimination }
+    override val Matrix<Number>.det: Number get() = numberContext { determinantViaGaussianElimination }
 }
 
 public val <Number> Field<Number>.determinantViaGaussianEliminationComputer: DeterminantComputer<Number>
@@ -139,5 +140,5 @@ public fun <Number> KoneContextRegistryBuilder.installDeterminantViaGaussianElim
 //context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>)
 //public fun <Number> Matrix<Number>.det(numberType: SuppliedType<Number>): Number {
 //    val determinantComputer = koneContextRegistry.loadOrNull(DeterminantComputer.Key(numberType))
-//    return if (determinantComputer != null) context(determinantComputer) { this.det } else this.determinantViaLeibnizFormula
+//    return if (determinantComputer != null) determinantComputer { this.det } else this.determinantViaLeibnizFormula
 //}
