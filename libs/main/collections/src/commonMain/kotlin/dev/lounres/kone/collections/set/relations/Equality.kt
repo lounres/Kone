@@ -10,6 +10,7 @@ package dev.lounres.kone.collections.set.relations
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.toKoneSet
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 
 
@@ -22,7 +23,7 @@ internal open class KoneSetEquality<Element>(val elementEquality: Equality<Eleme
         if (thisCopied.size != this.size) return false
         val otherCopied = other.toKoneSet(elementEquality)
         if (otherCopied.size != other.size) return false
-        for (element in thisCopied) if (context(elementEquality) { element !in otherCopied }) return false
+        for (element in thisCopied) if (elementEquality { element !in otherCopied }) return false
         
         return true
     }

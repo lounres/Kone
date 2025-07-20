@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.searchTree
 
 import dev.lounres.kone.collections.DetachedNodeException
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.set.KoneLinkedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
@@ -160,7 +162,8 @@ public interface SearchTree<Element, Priority> {
     /**
      * Iterable that is a view on elements of that search tree.
      */
-    public val elementsView: KoneSet<Element>
+    public val prioritiesView: KoneSet<Priority>
+    public val elementsView: KoneIterable<Element>
     
     /**
      * Adds the [element] with corresponding [priority] to the search tree
@@ -211,7 +214,8 @@ public interface LinkedSearchTree<Element, Priority> : SearchTree<Element, Prior
      *
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the search tree itself.
      */
-    override val elementsView: KoneLinkedSet<Element>
+    override val prioritiesView: KoneLinkedSet<Priority>
+    override val elementsView: KoneReversibleIterable<Element>
 
     override fun add(element: Element, priority: Priority): LinkedSearchTreeNode<Element, Priority>
     override fun find(priority: Priority): LinkedSearchTreeNode<Element, Priority>?

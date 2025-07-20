@@ -9,6 +9,7 @@ package dev.lounres.kone.collections.set.relations
 
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 
@@ -17,7 +18,7 @@ internal open class KoneSetHashing<Element>(open val elementHashing: Hashing<Ele
     override fun KoneSet<out Element>.hash(): Int {
         val thisIterator = this.iterator()
         var hash = 0
-        while (thisIterator.hasNext()) context(elementHashing) {
+        while (thisIterator.hasNext()) elementHashing {
             hash += thisIterator.getAndMoveNext().hash()
         }
         return hash

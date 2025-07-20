@@ -9,27 +9,27 @@ import dev.lounres.kone.collections.heap.HeapEntry
 import dev.lounres.kone.relations.Order
 
 
-public fun <Element, Priority> KoneBinaryGCMinimumHeap(priorityContext: Order<Priority>): KoneBinaryGCMinimumHeap<Element, Priority> =
+public fun <Element, Priority> KoneBinaryGCMinimumHeap(priorityOrder: Order<Priority>): KoneBinaryGCMinimumHeap<Element, Priority> =
     KoneBinaryGCMinimumHeap(
-        priorityContext = priorityContext,
+        priorityOrder = priorityOrder,
         rootHolder = null,
         lastHolder = null,
     )
 
 public inline fun <Element, Priority> KoneBinaryGCMinimumHeap(
-    priorityContext: Order<Priority>,
+    priorityOrder: Order<Priority>,
     size: UInt,
     elementInitializer: (index: UInt) -> Element,
     priorityInitializer: (index: UInt) -> Priority,
 ): KoneBinaryGCMinimumHeap<Element, Priority> {
     if (size == 0u) return KoneBinaryGCMinimumHeap(
-        priorityContext = priorityContext,
+        priorityOrder = priorityOrder,
         rootHolder = null,
         lastHolder = null,
     )
     
     val result = KoneBinaryGCMinimumHeap<Element, Priority>(
-        priorityContext = priorityContext,
+        priorityOrder = priorityOrder,
         rootHolder = null,
         lastHolder = null,
         size = size,
@@ -78,18 +78,18 @@ public inline fun <Element, Priority> KoneBinaryGCMinimumHeap(
 }
 
 public inline fun <Element, Priority> KoneBinaryGCMinimumHeap(
-    priorityContext: Order<Priority>,
+    priorityOrder: Order<Priority>,
     size: UInt,
     heapEntryInitializer: (index: UInt) -> HeapEntry<Element, Priority>,
 ): KoneBinaryGCMinimumHeap<Element, Priority> {
     if (size == 0u) return KoneBinaryGCMinimumHeap(
-        priorityContext = priorityContext,
+        priorityOrder = priorityOrder,
         rootHolder = null,
         lastHolder = null,
     )
     
     val result = KoneBinaryGCMinimumHeap<Element, Priority>(
-        priorityContext = priorityContext,
+        priorityOrder = priorityOrder,
         rootHolder = null,
         lastHolder = null,
         size = size,

@@ -17,15 +17,15 @@ import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.indexOutOfBoundsException
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
 
 
 // TODO: Make the implementation disposable
-@Suppress("UNCHECKED_CAST")
 public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal constructor(
-    public val priorityContext: Order<Priority>,
+    public val priorityOrder: Order<Priority>,
     @PublishedApi
     internal var rootHolder: NodeHolder<Element, Priority>?,
     @PublishedApi
@@ -43,7 +43,7 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
     
     private tailrec fun siftTheNodeDownToTheRoot(holder: NodeHolder<Element, Priority>) {
         val parent = holder.parent ?: return
-        if (context(priorityContext) { parent.node.priority gt holder.node.priority }) {
+        if (priorityOrder { parent.node.priority gt holder.node.priority }) {
             swapNodeHoldersIdentities(holder, parent)
             siftTheNodeDownToTheRoot(parent)
         }
@@ -56,20 +56,20 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
         when {
             firstChild != null && secondChild != null ->
                 when {
-                    context(priorityContext) { firstChild.node.priority lt holder.node.priority && firstChild.node.priority lt secondChild.node.priority } -> {
+                    priorityOrder { firstChild.node.priority lt holder.node.priority && firstChild.node.priority lt secondChild.node.priority } -> {
                         swapNodeHoldersIdentities(firstChild, holder)
                         siftTheNodeUpToTheLeaf(firstChild)
                     }
-                    context(priorityContext) { secondChild.node.priority lt holder.node.priority } -> {
+                    priorityOrder { secondChild.node.priority lt holder.node.priority } -> {
                         swapNodeHoldersIdentities(secondChild, holder)
                         siftTheNodeUpToTheLeaf(secondChild)
                     }
                 }
-            firstChild != null && context(priorityContext) { firstChild.node.priority lt holder.node.priority } -> {
+            firstChild != null && priorityOrder { firstChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(firstChild, holder)
                 siftTheNodeUpToTheLeaf(firstChild)
             }
-            secondChild != null && context(priorityContext) { secondChild.node.priority lt holder.node.priority } -> {
+            secondChild != null && priorityOrder { secondChild.node.priority lt holder.node.priority } -> {
                 swapNodeHoldersIdentities(secondChild, holder)
                 siftTheNodeUpToTheLeaf(secondChild)
             }
@@ -121,8 +121,9 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
         siftTheNode(holder)
     }
     
-    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> = Nodes()
-    override val elementsView: KoneReversibleIterable<Element> = Elements()
+    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> = Nodes(this)
+    override val elementsView: KoneReversibleIterable<Element> = Elements(this)
+    override val prioritiesView: KoneReversibleIterable<Priority> = Priorities(this)
 
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority> {
         val newHolder =
@@ -301,18 +302,20 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
-    internal inner class Nodes : KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> {
-        override val size: UInt get() = this@KoneBinaryGCMinimumHeap.size
+    internal class Nodes<Element, Priority>(
+        private val heap: KoneBinaryGCMinimumHeap<Element, Priority>,
+    ) : KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>> {
+        override val size: UInt get() = heap.size
         override fun contains(element: LinkedHeapNode<Element, Priority>): Boolean =
-            element is Node<*, *> && element.heap === this@KoneBinaryGCMinimumHeap
-        override fun iterator(): KoneLinkedSetIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(rootHolder, this@KoneBinaryGCMinimumHeap.size)
+            element is Node<*, *> && element.heap === heap
+        override fun iterator(): KoneLinkedSetIterator<LinkedHeapNode<Element, Priority>> = NodesIterator(heap.rootHolder, heap.size)
     }
     
-    internal class ElementsIterator<Element, Priority>(
-        private var nextHolder: NodeHolder<Element, Priority>?,
+    internal class ElementsIterator<Element>(
+        private var nextHolder: NodeHolder<Element, *>?,
         private val size: UInt,
     ): KoneLinearIterator<Element> {
-        private var previousHolder: NodeHolder<Element, Priority>? = null
+        private var previousHolder: NodeHolder<Element, *>? = null
         private var nextIndex: UInt = 0u
         
         override fun hasNext(): Boolean = nextHolder != null
@@ -349,8 +352,58 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
-    internal inner class Elements : KoneReversibleIterable<Element> {
-        override val size: UInt get() = this@KoneBinaryGCMinimumHeap.size
-        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(rootHolder, this@KoneBinaryGCMinimumHeap.size)
+    internal class Elements<Element>(
+        private val heap: KoneBinaryGCMinimumHeap<Element, *>,
+    ) : KoneReversibleIterable<Element> {
+        override val size: UInt get() = heap.size
+        override fun iterator(): KoneLinearIterator<Element> = ElementsIterator(heap.rootHolder, heap.size)
+    }
+    
+    internal class PrioritiesIterator<Priority>(
+        private var nextHolder: NodeHolder<*, Priority>?,
+        private val size: UInt,
+    ): KoneLinearIterator<Priority> {
+        private var previousHolder: NodeHolder<*, Priority>? = null
+        private var nextIndex: UInt = 0u
+        
+        override fun hasNext(): Boolean = nextHolder != null
+        override fun nextIndex(): UInt {
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
+            return nextIndex
+        }
+        override fun getNext(): Priority {
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
+            return nextHolder!!.node.priority
+        }
+        override fun moveNext() {
+            if (!hasNext()) indexOutOfBoundsException(nextIndex, size)
+            nextIndex++
+            previousHolder = nextHolder
+            nextHolder = nextHolder!!.next
+        }
+        
+        override fun hasPrevious(): Boolean = previousHolder != null
+        override fun previousIndex(): UInt {
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
+            return nextIndex - 1u
+        }
+        override fun getPrevious(): Priority {
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
+            return previousHolder!!.node.priority
+        }
+        override fun movePrevious() {
+            if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, size)
+            nextIndex++
+            nextHolder = previousHolder
+            previousHolder = previousHolder!!.previous
+        }
+    }
+    
+    @OptIn(DelicateCollectionsInheritanceAPI::class)
+    internal class Priorities<Priority>(
+        private val heap: KoneBinaryGCMinimumHeap<*, Priority>,
+    ) : KoneReversibleIterable<Priority> {
+        override val size: UInt get() = heap.size
+        override fun iterator(): KoneLinearIterator<Priority> = PrioritiesIterator(heap.rootHolder, heap.size)
     }
 }

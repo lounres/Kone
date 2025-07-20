@@ -116,6 +116,7 @@ public interface MinimumHeap<Element, Priority> {
      * Iterable that is a view on elements of that heap.
      */
     public val elementsView: KoneIterable<Element>
+    public val prioritiesView: KoneIterable<Priority>
     
     /**
      * Adds the [element] with corresponding [priority] to the heap
@@ -160,6 +161,7 @@ public interface MaximumHeap<Element, Priority> {
      * Iterable that is a view on elements of that heap.
      */
     public val elementsView: KoneIterable<Element>
+    public val prioritiesView: KoneIterable<Priority>
     
     /**
      * Adds the [element] with corresponding [priority] to the heap
@@ -235,6 +237,7 @@ public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Pri
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
     override val elementsView: KoneReversibleIterable<Element>
+    override val prioritiesView: KoneReversibleIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMinimum(): LinkedHeapNode<Element, Priority>
@@ -271,6 +274,7 @@ public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Pri
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
     override val elementsView: KoneReversibleIterable<Element>
+    override val prioritiesView: KoneReversibleIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMaximum(): LinkedHeapNode<Element, Priority>

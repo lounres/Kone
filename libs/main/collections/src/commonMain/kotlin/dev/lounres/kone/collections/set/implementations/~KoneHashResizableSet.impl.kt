@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.firstIndexThat
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -74,7 +75,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         private set
 
     private fun Element.localHash(): Int {
-        val contextHash = context(elementHashing) { this.hash() }
+        val contextHash = elementHashing { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
     private fun Element.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
@@ -120,7 +121,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
 
     override fun contains(element: Element): Boolean {
         if (isDisposed) disposedInstanceException()
-        for (currentElement in data[element.dataIndex()]) if (context(elementEquality) { currentElement eq element }) return true
+        for (currentElement in data[element.dataIndex()]) if (elementEquality { currentElement eq element }) return true
         return false
     }
 
@@ -128,7 +129,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
-            if (context(elementEquality) { iterator.getNext() eq element }) {
+            if (elementEquality { iterator.getNext() eq element }) {
                 iterator.setNext(element)
                 return
             }
@@ -171,7 +172,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         if (isDisposed) disposedInstanceException()
         val iterator = data[element.dataIndex()].iterator()
         while (iterator.hasNext()) {
-            if (context(elementEquality) { iterator.getNext() eq element }) {
+            if (elementEquality { iterator.getNext() eq element }) {
                 iterator.removeNext()
                 if (size == sizeLowerBound) reinitializeBoundsAndData(size - 1u)
                 else size--
@@ -183,7 +184,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
 
     override fun iterator(): KoneRemovableIterator<Element> =
         if (isDisposed) disposedInstanceException()
-        else Iterator()
+        else Iterator(this)
 
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
@@ -219,36 +220,36 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
     }
     override fun equals(other: Any?): Boolean = this === other
 
-    internal inner class Iterator : KoneRemovableIterator<Element> {
+    internal class Iterator<Element>(private val set: KoneHashResizableSet<Element>) : KoneRemovableIterator<Element> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneRemovableIterator<Element> = data[currentBucket].iterator()
+        private var currentIterator: KoneRemovableIterator<Element> = set.data[currentBucket].iterator()
 
         override fun hasNext(): Boolean =
-            if (isDisposed) disposedInstanceException()
-            else currentIterator.hasNext() || data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
+            if (set.isDisposed) disposedInstanceException()
+            else currentIterator.hasNext() || set.data.anyIndexed { index, value -> index > currentBucket && value.isNotEmpty() }
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
             return if (currentIterator.hasNext()) currentIterator.getNext()
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                data[nextIndex].first()
+                val nextIndex = set.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                set.data[nextIndex].first()
             }
         }
         override fun moveNext() {
             if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.moveNext()
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                val nextIndex = set.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
                 currentBucket = nextIndex
-                currentIterator = data[nextIndex].iterator().also { it.moveNext() }
+                currentIterator = set.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
         override fun removeNext() {
             if (!hasNext()) noNextElementInIteratorException()
             if (currentIterator.hasNext()) currentIterator.removeNext()
             else {
-                val nextIndex = data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
-                data[nextIndex].iterator().removeNext()
+                val nextIndex = set.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                set.data[nextIndex].iterator().removeNext()
             }
         }
     }

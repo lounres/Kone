@@ -469,81 +469,68 @@ public class KoneSetBuilder<Element> @PublishedApi internal constructor(result: 
     private var result: KoneMutableSet<Element>? = result
     
     override val size: UInt get() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         return result.size
     }
     
     override fun contains(element: Element): Boolean {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         return element in result
     }
     
     override fun add(element: Element) {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.add(element)
     }
     
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.addSeveral(number, builder)
     }
     
     override fun remove(element: Element) {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.remove(element)
     }
     
     override fun removeAll() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.removeAll()
     }
     
     override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.removeAllThat(predicate)
     }
     
     override fun iterator(): KoneRemovableIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         return result.iterator()
     }
     
     public operator fun Element.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.add(this)
     }
     
     public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.addAllFrom(this)
     }
     
     public operator fun Element.unaryMinus() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.remove(this)
     }
     
     public operator fun KoneIterable<Element>.unaryMinus() {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         result.removeAllFrom(this)
     }
     
     @PublishedApi
     internal fun build(): KoneSet<Element> {
-        val result = result
-        if (result == null) error("This KoneSet builder is already used")
+        val result = result ?: error("This KoneSet builder is already used")
         return result.also { this.result = null }
     }
 }
@@ -553,81 +540,68 @@ public class KoneReifiedSetBuilder<Element> @PublishedApi internal constructor(r
     private var result: KoneMutableReifiedSet<Element>? = result
     
     override val size: UInt get() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         return result.size
     }
     
     override fun contains(element: Element): Boolean {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         return element in result
     }
     
     override fun add(element: Element) {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.add(element)
     }
     
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.addSeveral(number, builder)
     }
     
     override fun remove(element: Element) {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.remove(element)
     }
     
     override fun removeAll() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.removeAll()
     }
     
     override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.removeAllThat(predicate)
     }
     
     override fun iterator(): KoneRemovableIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         return result.iterator()
     }
     
     public operator fun Element.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.add(this)
     }
     
     public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.addAllFrom(this)
     }
     
     public operator fun Element.unaryMinus() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.remove(this)
     }
     
     public operator fun KoneIterable<Element>.unaryMinus() {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         result.removeAllFrom(this)
     }
     
     @PublishedApi
     internal fun build(): KoneReifiedSet<Element> {
-        val result = result
-        if (result == null) error("This KoneReifiedSet builder is already used")
+        val result = result ?: error("This KoneReifiedSet builder is already used")
         return result.also { this.result = null }
     }
 }

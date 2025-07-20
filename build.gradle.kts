@@ -244,6 +244,7 @@ stal {
                         "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
+                        "-Xcontext-sensitive-resolution",
                     )
                 }
 
@@ -267,6 +268,7 @@ stal {
                         "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
+                        "-Xcontext-sensitive-resolution",
                     )
                 }
 
@@ -329,6 +331,8 @@ stal {
                                 enableLanguageFeature("ValueClasses")
                                 enableLanguageFeature("ContractSyntaxV2")
                                 enableLanguageFeature("ExplicitBackingFields")
+//                                enableLanguageFeature("ContextSensitiveResolution")
+                                enableLanguageFeature("NestedTypeAliases")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")

@@ -23,6 +23,7 @@ import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThatOrNull
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -73,7 +74,7 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         private set
 
     private fun Key.localHash(): Int {
-        val contextHash = context(keyHashing) { this.hash() }
+        val contextHash = keyHashing { this.hash() }
         return contextHash xor (contextHash ushr 16)
     }
     protected fun Key.dataIndex(): UInt = localHash().toUInt() and (capacityUpperBound - 1u)
@@ -119,14 +120,14 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>? =
         if (isDisposed) disposedInstanceException()
-        else data[key.dataIndex()].firstThatOrNull { context(keyEquality) { it.key eq key } }
+        else data[key.dataIndex()].firstThatOrNull { keyEquality { it.key eq key } }
 
     override fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value> {
         if (isDisposed) disposedInstanceException()
         val iterator = data[key.dataIndex()].iterator()
         while (iterator.hasNext()) {
             val nextNode = iterator.getNext()
-            if (context(keyEquality) { nextNode.key eq key }) {
+            if (keyEquality { nextNode.key eq key }) {
                 nextNode.value = value
                 return nextNode
             }
@@ -182,7 +183,7 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         val iterator = data[key.dataIndex()].iterator()
         while (iterator.hasNext()) {
             val nextNode = iterator.getNext()
-            if (context(keyEquality) { nextNode.key eq key }) {
+            if (keyEquality { nextNode.key eq key }) {
                 nextNode.remove()
                 if (size == sizeLowerBound) reinitializeBoundsAndData(size - 1u)
                 else size--

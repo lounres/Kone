@@ -11,12 +11,13 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.iterator
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 
 
 internal open class KoneMapEntryHashing<Key, Value>(open val keyHashing: Hashing<Key>, open val valueHashing: Hashing<Value>) : Hashing<KoneMapEntry<Key, Value>> {
-    override fun KoneMapEntry<Key, Value>.hash(): Int = context(keyHashing) { key.hash() } * 31 + context(valueHashing) { value.hash() }
+    override fun KoneMapEntry<Key, Value>.hash(): Int = keyHashing { key.hash() } * 31 + valueHashing { value.hash() }
 }
 
 public fun <Key, Value> koneMapEntryHashing(keyHashing: Hashing<Key>, valueHashing: Hashing<Value>): Hashing<KoneMapEntry<Key, Value>> =
@@ -28,7 +29,7 @@ internal open class KoneMapHashing<Key, Value>(open val keyHashing: Hashing<Key>
         var hash = 0
         while (thisIterator.hasNext()) {
             val entry = thisIterator.getAndMoveNext()
-            hash += context(keyHashing) { entry.key.hash() } xor context(valueHashing) { entry.value.hash() }
+            hash += keyHashing { entry.key.hash() } xor valueHashing { entry.value.hash() }
         }
         return hash
     }

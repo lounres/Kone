@@ -20,6 +20,7 @@ import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.collections.utils.iterator
 import dev.lounres.kone.collections.utils.map
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteEquality
@@ -37,7 +38,7 @@ public open class KoneListBackedMap<Key, Value> @PublishedApi internal construct
     override val keysView: KoneSet<Key> = KoneListBackedSet(keyEquality, backingList.map { it.key })
     override val valuesView: KoneIterable<Value> = backingList.map { it.value }
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { context(keyEquality) { it.key eq key } }
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = backingList.firstThatOrNull { keyEquality { it.key eq key } }
     
     // TODO: Override equals and `hashCode`
 
@@ -74,5 +75,5 @@ public class KoneListBackedReifiedMap<Key, Value> @PublishedApi internal constru
 ), KoneReifiedMap<Key, Value> {
     override val keysView: KoneReifiedSet<Key> = KoneListBackedReifiedSet(keyReification, keyEquality, backingList.map { it.key })
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (key in keyReification) backingList.firstThatOrNull { context(keyEquality) { it.key eq key } } else null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (key in keyReification) backingList.firstThatOrNull { keyEquality { it.key eq key } } else null
 }

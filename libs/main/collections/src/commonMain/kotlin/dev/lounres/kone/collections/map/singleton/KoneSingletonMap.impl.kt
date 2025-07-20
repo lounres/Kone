@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
 import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteEquality
@@ -47,7 +48,7 @@ internal open class KoneSingletonMap<Key, Value>(
         )
     override val valuesView: KoneIterable<Value> = Values(this)
     
-    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (context(keyEquality) { key eq singleKey }) singleNode else null
+    override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? = if (keyEquality { key eq singleKey }) singleNode else null
     
     override fun toString(): String = "{$singleKey=$singleValue}"
     override fun hashCode(): Int = singleKey.hashCode() xor singleValue.hashCode()
@@ -134,5 +135,5 @@ internal open class KoneSingletonReifiedMap<Key, Value>(
         )
     
     override fun getNodeOrNull(key: Key): KoneMapNode<Key, Value>? =
-        if (key in keyReification && context(keyEquality) { key eq singleKey }) singleNode else null
+        if (key in keyReification && keyEquality { key eq singleKey }) singleNode else null
 }

@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.map.iterator
 import dev.lounres.kone.collections.utils.copyTo
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.orElse
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.eq
@@ -19,7 +20,7 @@ import dev.lounres.kone.relations.neq
 
 internal class KoneMapEntryEquality<Key, Value>(val keyEquality: Equality<Key>, val valueEquality: Equality<Value>) : Equality<KoneMapEntry<Key, Value>> {
     override fun KoneMapEntry<Key, Value>.equalsTo(other: KoneMapEntry<Key, Value>): Boolean =
-        context(keyEquality) { this.key eq other.key } && context(valueEquality) { this.value eq other.value }
+        keyEquality { this.key eq other.key } && valueEquality { this.value eq other.value }
 }
 
 public fun <Key, Value> koneMapEntryEquality(keyEquality: Equality<Key>, valueEquality: Equality<Value>): Equality<KoneMapEntry<Key, Value>> =
@@ -36,7 +37,7 @@ internal open class KoneMapEquality<Key, Value>(open val keyEquality: Equality<K
         if (other.size != otherCopied.size) return false
         for (entry in thisCopied) {
             val otherValue = otherCopied.getMaybe(entry.key).orElse { return false }
-            if (context(valueEquality) { entry.value neq otherValue }) return false
+            if (valueEquality { entry.value neq otherValue }) return false
         }
         
         return true

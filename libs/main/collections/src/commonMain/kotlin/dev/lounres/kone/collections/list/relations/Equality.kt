@@ -9,6 +9,7 @@ package dev.lounres.kone.collections.list.relations
 
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.neq
@@ -22,7 +23,7 @@ internal class KoneListEquality<Element>(val elementEquality: Equality<Element>)
         val thisIterator = this.iterator()
         val otherIterator = other.iterator()
         while (thisIterator.hasNext()) {
-            if (context(elementEquality) { thisIterator.getAndMoveNext() neq otherIterator.getAndMoveNext() }) return false
+            if (elementEquality { thisIterator.getAndMoveNext() neq otherIterator.getAndMoveNext() }) return false
         }
 
         return true
