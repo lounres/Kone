@@ -26,7 +26,7 @@ import dev.lounres.kone.relations.lt
 import dev.lounres.kone.scope
 
 
-public class KoneFibonacciGCWithProvidedListProducerMinimumHeap<Element, Priority> @PublishedApi internal constructor(
+public class KoneFibonacciGCWithProvidedListMinimumHeap<Element, Priority> @PublishedApi internal constructor(
     private val priorityOrder: Order<Priority>,
     private var roots: KoneMutableNoddedList<Node<Element, Priority>>,
     internal var numberOfChildren: UInt,
@@ -143,7 +143,7 @@ public class KoneFibonacciGCWithProvidedListProducerMinimumHeap<Element, Priorit
         override var element: Element,
         priority: Priority,
         var parent: Node<Element, Priority>?,
-        var heap: KoneFibonacciGCWithProvidedListProducerMinimumHeap<Element, Priority>?,
+        var heap: KoneFibonacciGCWithProvidedListMinimumHeap<Element, Priority>?,
         children: KoneMutableNoddedList<Node<Element, Priority>>,
         var numberOfChildren: UInt,
         var isMarked: Boolean,
@@ -284,7 +284,7 @@ public class KoneFibonacciGCWithProvidedListProducerMinimumHeap<Element, Priorit
             get() = _children!!
             set(value) { _children = value }
         
-        private fun actualHeap(): KoneFibonacciGCWithProvidedListProducerMinimumHeap<Element, Priority> {
+        private fun actualHeap(): KoneFibonacciGCWithProvidedListMinimumHeap<Element, Priority> {
             var node = this
             while (node.parent != null) node = node.parent!!
             val rootListNode = node.parentsChildrenListNode
