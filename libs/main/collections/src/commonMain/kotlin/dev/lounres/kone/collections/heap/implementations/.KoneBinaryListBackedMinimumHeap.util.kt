@@ -7,9 +7,9 @@ package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.collections.heap.HeapEntry
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
-import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
 import dev.lounres.kone.relations.Order
 
 

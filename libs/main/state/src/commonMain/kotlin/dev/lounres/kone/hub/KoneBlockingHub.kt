@@ -7,7 +7,7 @@ package dev.lounres.kone.hub
 
 import dev.lounres.kone.automata.*
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
-import dev.lounres.kone.collections.list.implementations.KoneGCLinkedList
+import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
@@ -25,7 +25,7 @@ public abstract class KoneBlockingHub<out Value> internal constructor() {
     internal val callbacksLock: ReentrantLock = ReentrantLock()
     @PublishedApi
     internal abstract val callbacksValue: Value
-    internal val callbacks: KoneMutableNoddedList<(@UnsafeVariance Value) -> Unit> = KoneGCLinkedList() // TODO: Replace with concurrent queue
+    internal val callbacks: KoneMutableNoddedList<(@UnsafeVariance Value) -> Unit> = KoneGCLinkedSizedList() // TODO: Replace with concurrent queue
     
     internal abstract val automaton: BlockingAutomaton<@UnsafeVariance Value, @UnsafeVariance Value, Nothing?>
     

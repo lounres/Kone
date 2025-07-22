@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor

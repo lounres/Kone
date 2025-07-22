@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneGrowableMutableNoddedList
 import dev.lounres.kone.collections.list.KoneList
@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
-    internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    internal var sizeUpperBound: UInt = powerOf2ArraySizeGreaterOrEqualTo(size),
     data: KoneMutableArray<Node<Element>?> = KoneMutableArray(sizeUpperBound) { null },
 ) : KoneGrowableMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false

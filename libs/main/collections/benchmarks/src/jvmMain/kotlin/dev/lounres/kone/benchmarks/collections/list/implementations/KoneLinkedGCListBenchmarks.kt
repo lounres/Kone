@@ -22,11 +22,11 @@ import kotlin.reflect.KProperty0
 //    )
 //    var listSize: UInt = 0u
 //
-//    lateinit var list: KoneGCLinkedList<UInt, Equality<UInt>>
+//    lateinit var list: KoneGCLinkedSizedList<UInt, Equality<UInt>>
 //
 //    @Benchmark
 //    fun benchmark(blackhole: Blackhole) {
-//        list = KoneGCLinkedList(listSize) { 0u }
+//        list = KoneGCLinkedSizedList(listSize) { 0u }
 //        blackhole.consume(list)
 //    }
 //}

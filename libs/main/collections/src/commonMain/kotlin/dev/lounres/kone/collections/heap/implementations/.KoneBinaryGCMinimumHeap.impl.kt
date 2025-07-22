@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.set.KoneLinkedSetIterator
 import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 import dev.lounres.kone.collections.heap.LinkedHeapNode
 import dev.lounres.kone.collections.heap.LinkedMinimumHeap
-import dev.lounres.kone.collections.accessRootOfEmptyHeapException
+import dev.lounres.kone.collections.accessExtremumOfEmptyHeapException
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.Disposable
@@ -25,7 +25,7 @@ import dev.lounres.kone.relations.lt
 
 // TODO: Make the implementation disposable
 public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal constructor(
-    public val priorityOrder: Order<Priority>,
+    private val priorityOrder: Order<Priority>,
     @PublishedApi
     internal var rootHolder: NodeHolder<Element, Priority>?,
     @PublishedApi
@@ -171,13 +171,13 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
     }
     
     override fun takeMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) accessRootOfEmptyHeapException()
+        if (size == 0u) accessExtremumOfEmptyHeapException()
         val root = rootHolder!!
         return root.node
     }
     
     override fun popMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) accessRootOfEmptyHeapException()
+        if (size == 0u) accessExtremumOfEmptyHeapException()
         val root = rootHolder!!
         return root.node.also { removeNode(root) }
     }
@@ -195,9 +195,7 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             private set
         
         private var _heap: KoneBinaryGCMinimumHeap<Element, Priority>? = heap
-        var heap: KoneBinaryGCMinimumHeap<Element, Priority>
-            get() = _heap!!
-            set(value) { _heap = value }
+        val heap: KoneBinaryGCMinimumHeap<Element, Priority> get() = _heap!!
         
         var parent: NodeHolder<Element, Priority>? = parent
             private set
@@ -213,6 +211,7 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             set(value) { _node = value }
         
         override fun dispose() {
+            if (isDisposed) return
             _heap = null
             parent = null
             previous = null

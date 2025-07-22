@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayGrowableLinkedList<Element> internal constructor(
     size: UInt,
-    internal var sizeUpperBound: UInt = powerOf2GreaterOrEqualTo(size),
+    internal var sizeUpperBound: UInt = powerOf2ArraySizeGreaterOrEqualTo(size),
     data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
     nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
     previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },

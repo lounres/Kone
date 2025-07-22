@@ -22,15 +22,15 @@ import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 
 
-@Serializable(with = KoneGCLinkedListSerializer::class)
+@Serializable(with = KoneGCLinkedSizedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
+public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     startNode: Node<Element>? = null,
     endNode: Node<Element>? = null,
 ) : KoneMutableNoddedList<Element>, Disposable {
     override var isDisposed: Boolean = false
-        private set
+        internal set
     
     @PublishedApi
     internal var start: Node<Element>? = startNode
@@ -231,17 +231,19 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         }
     }
     
-    override fun iterator(): KoneMutableNoddedListIterator<Element> = Iterator(
-        list = this,
-        nextNode = start,
-        currentIndex = 0u,
-    )
+    override fun iterator(): KoneMutableNoddedListIterator<Element> =
+        Iterator(
+            list = this,
+            nextNode = start,
+            currentIndex = 0u,
+        )
     
-    override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> = Iterator(
-        list = this,
-        nextNode = getInternalNode(index),
-        currentIndex = index,
-    )
+    override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> =
+        Iterator(
+            list = this,
+            nextNode = getInternalNode(index),
+            currentIndex = index,
+        )
     
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
@@ -275,7 +277,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         if (this.size != other.size) return false
         
         when (other) {
-            is KoneGCLinkedList<*> -> {
+            is KoneGCLinkedSizedList<*> -> {
                 var thisCurrentNode = this.start
                 var otherCurrentNode = other.start
                 repeat(size) {
@@ -307,7 +309,7 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
     
     public class Node<Element> @PublishedApi internal constructor(
         override var element: Element,
-        list: KoneGCLinkedList<Element>,
+        list: KoneGCLinkedSizedList<Element>,
     ) : KoneMutableListNode<Element> {
         override var isDetached: Boolean = false
             private set
@@ -317,9 +319,10 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         @PublishedApi
         internal var _previousNode: Node<Element>? = null
         
-        private var _list: KoneGCLinkedList<Element>? = list
-        internal val list: KoneGCLinkedList<Element>
+        private var _list: KoneGCLinkedSizedList<Element>? = list
+        internal var list: KoneGCLinkedSizedList<Element>
             get() = _list!!
+            set(value) { _list = value }
         
         internal fun detach() {
             if (isDetached) return
@@ -361,21 +364,23 @@ public class KoneGCLinkedList<Element> @PublishedApi internal constructor(
         override val previousNode: KoneMutableListNode<Element>?
             get() = if (isDetached) detachedNodeException() else _previousNode
         
-        override fun iteratorFromBeforeHere(): KoneMutableNoddedListIterator<Element> = Iterator(
-            list = list,
-            nextNode = this,
-            currentIndex = null
-        )
+        override fun iteratorFromBeforeHere(): KoneMutableNoddedListIterator<Element> =
+            Iterator(
+                list = list,
+                nextNode = this,
+                currentIndex = null
+            )
         
-        override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> = Iterator(
-            list = list,
-            nextNode = _nextNode,
-            currentIndex = null
-        )
+        override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> =
+            Iterator(
+                list = list,
+                nextNode = _nextNode,
+                currentIndex = null
+            )
     }
     
     internal class Iterator<Element>(
-        val list: KoneGCLinkedList<Element>,
+        val list: KoneGCLinkedSizedList<Element>,
         var nextNode: Node<Element>?,
         currentIndex: UInt?,
     ): KoneMutableNoddedListIterator<Element> {

@@ -9,8 +9,8 @@ import dev.lounres.kone.collections.DelicateListBackedCollectionsBuilderAPI
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.list.toKoneMutableNoddedList
 import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
 import dev.lounres.kone.collections.utils.none

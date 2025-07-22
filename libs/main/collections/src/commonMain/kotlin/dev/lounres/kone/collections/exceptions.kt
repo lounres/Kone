@@ -18,11 +18,11 @@ public fun indexOutOfBoundsException(index: UInt, size: UInt): Nothing =
 
 public class ElementAccessInEmptyCollectionException(message: String = "Cannot access the element of the empty collection") : NoSuchElementException(message)
 
-public fun accessRootOfEmptyHeapException(): Nothing =
-    throw ElementAccessInEmptyCollectionException("Cannot access the root because the heap is empty")
+public fun accessExtremumOfEmptyHeapException(): Nothing =
+    throw ElementAccessInEmptyCollectionException("Cannot access the extremum because the heap is empty")
 
 /**
- * Represents exception that is thrown when user tries to get, set, remove, or bypass the next or the previous non-existent element.
+ * Represents an exception that is thrown when a user tries to get, set, remove, or bypass the next or the previous non-existent element.
  */
 public class NoFollowingElementInIteratorException(message: String = "There is no following element in the iterator") : NoSuchElementException(message)
 

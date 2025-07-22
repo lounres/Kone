@@ -8,10 +8,10 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -24,11 +24,11 @@ public fun <Element> KoneArrayGrowableList(): KoneArrayGrowableList<Element> =
 public fun <Element> KoneArrayGrowableList(initialCapacity: UInt): KoneArrayGrowableList<Element> =
     KoneArrayGrowableList(
         size = 0u,
-        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
+        sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity),
     )
 
 public inline fun <Element> KoneArrayGrowableList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
-    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
+    val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(size)
     return KoneArrayGrowableList(
         size = size,
         sizeUpperBound = sizeUpperBound,
@@ -38,7 +38,7 @@ public inline fun <Element> KoneArrayGrowableList(size: UInt, initializer: (inde
 
 public inline fun <Element> KoneArrayGrowableList(initialCapacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
     require(size <= initialCapacity) { "Provided initial capacity must not be less than provided size" }
-    val sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity)
+    val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity)
     return KoneArrayGrowableList(
         size = size,
         sizeUpperBound = sizeUpperBound,

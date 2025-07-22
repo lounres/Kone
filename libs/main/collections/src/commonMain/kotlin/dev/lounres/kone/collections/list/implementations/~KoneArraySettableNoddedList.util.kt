@@ -7,7 +7,7 @@ package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
-import dev.lounres.kone.collections.list.producers.KoneSettableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneSettableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor

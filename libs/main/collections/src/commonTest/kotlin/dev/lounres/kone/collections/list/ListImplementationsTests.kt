@@ -7,14 +7,14 @@ package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.implementations.*
-import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableNoddedListProducer
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
-import dev.lounres.kone.collections.list.producers.KoneListProducer
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableListProducer
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
-import dev.lounres.kone.collections.list.producers.KoneSettableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneSettableListProducer
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import io.kotest.assertions.fail
@@ -74,7 +74,7 @@ val listImplementations = listOf<ListImplementationDescription>(
     KoneArrayResizableNoddedListDescription,
     KoneArraySettableListDescription,
     KoneArraySettableNoddedListDescription,
-    KoneGCLinkedListDescription,
+    KoneGCLinkedSizedListDescription,
     KoneTwoThreeTreeListDescription,
 )
 

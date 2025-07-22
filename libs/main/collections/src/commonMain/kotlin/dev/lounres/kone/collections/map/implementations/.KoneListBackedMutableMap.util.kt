@@ -6,9 +6,9 @@
 package dev.lounres.kone.collections.map.implementations
 
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedList
-import dev.lounres.kone.collections.list.producers.KoneFixedCapacityMutableNoddedListProducer
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
-import dev.lounres.kone.collections.list.producers.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.defaultEquality

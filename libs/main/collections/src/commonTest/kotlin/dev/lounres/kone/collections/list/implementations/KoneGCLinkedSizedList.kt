@@ -9,15 +9,15 @@ import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
-import dev.lounres.kone.collections.list.producers.KoneListProducer
+import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import io.kotest.assertions.fail
 
 
-object KoneGCLinkedListDescription : ListImplementationDescription {
-    override val name get() = "KoneGCLinkedList"
+object KoneGCLinkedSizedListDescription : ListImplementationDescription {
+    override val name get() = "KoneGCLinkedSizedList"
     
     internal object Validator {
-        fun <Element: Any> validate(list: KoneGCLinkedList<Element>) {
+        fun <Element: Any> validate(list: KoneGCLinkedSizedList<Element>) {
             if (list.isDisposed) fail("The list is invalid")
             
             val size = list.size
@@ -45,8 +45,8 @@ object KoneGCLinkedListDescription : ListImplementationDescription {
         }
         
         fun validateWithIterator(
-            list: KoneGCLinkedList<Any>,
-            iterator: KoneGCLinkedList.Iterator<Any>
+            list: KoneGCLinkedSizedList<Any>,
+            iterator: KoneGCLinkedSizedList.Iterator<Any>
         ) {
             validate(list)
             
@@ -60,12 +60,12 @@ object KoneGCLinkedListDescription : ListImplementationDescription {
         }
     }
     
-    override val listProducer: KoneListProducer get() = KoneGCLinkedListProducer
+    override val listProducer: KoneListProducer get() = KoneGCLinkedSizedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneGCLinkedList<Any>) fail("The list is invalid")
+            if (list !is KoneGCLinkedSizedList<Any>) fail("The list is invalid")
             Validator.validate(list)
         }
         
@@ -73,8 +73,8 @@ object KoneGCLinkedListDescription : ListImplementationDescription {
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneGCLinkedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneGCLinkedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneGCLinkedSizedList<Any>) fail("The list is invalid")
+            if (iterator !is KoneGCLinkedSizedList.Iterator<Any>) fail("The iterator is invalid")
             Validator.validateWithIterator(list, iterator)
         }
     }

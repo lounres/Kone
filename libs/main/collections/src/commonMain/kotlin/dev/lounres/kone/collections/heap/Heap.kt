@@ -77,6 +77,12 @@ public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
      * holds the last priority it was holding.
      * After detaching, the node just stores the priority that can be changed.
      * And the changing won't modify the structure the node was detached from.
+     *
+     * > **Note for implementers!**
+     * Usually heaps do not provide increment (in case of minimum-heap and decrement in case of maximum-heap)
+     * of node's priority.
+     * However, it can be implemented it by removement of the node with consequent addition of it with new priority.
+     * Also, all popular implementations can do it without much hassle.
      */
     override var priority: Priority
     /**
@@ -84,6 +90,26 @@ public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
      *
      * The operation must be idempotent.
      * It means that calling this function again must do nothing at all.
+     *
+     * > **Note for implementers!**
+     * Usually heaps do not provide deletion of non-root nodes.
+     * However, it can be implemented using `Maybe<Priority>` instead of `Priority`
+     * with a new order on the new elements that works in the same way on wrapped in `Some` values
+     * and treats `None` as the least element (in case of minimum-heap or the greatest in case of maximum-heap)
+     * by the following operations:
+     * >  1. decrease priority of the element to `None` (so that the node becomes the only least (greatest) node),
+     * >  2. pop the only minimum node.
+     * >
+     * > That means that it is possible to implement the heap in the way that it can remove arbitrary element.
+     * Also, all popular implementations can do it without any problem of introducing new elements with new order.
+     * But if for some reason you can not implement the logic without introduction of new elements with new order,
+     * you can reimplement idea of Kotlin's [Result]:
+     * >  1. Introduce `internal` object `LeastPriority`.
+     * >  2. Instead of priority of type `Priority` store also `LeastPriority` by changing your type to `Any?`.
+     * >  3. When you need to compare two nodes' priorities, at first, check whether each of them is `LeastPriority`
+     * >    and if both of them are not the element, cast them to `Priority` and use provided order.
+     * >  4. When you need to return the priority, just cast it to `Priority`.
+     * >    It is not of the type `Priority` only when it is in process of the node removement.
      */
     public fun remove()
 }

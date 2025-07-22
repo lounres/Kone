@@ -8,9 +8,9 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.implementations.powerOf2GreaterOrEqualTo
+import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
-import dev.lounres.kone.collections.list.producers.KoneGrowableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -23,11 +23,11 @@ public fun <Element> KoneArrayGrowableNoddedList(): KoneArrayGrowableNoddedList<
 public fun <Element> KoneArrayGrowableNoddedList(initialCapacity: UInt): KoneArrayGrowableNoddedList<Element> =
     KoneArrayGrowableNoddedList(
         size = 0u,
-        sizeUpperBound = powerOf2GreaterOrEqualTo(initialCapacity),
+        sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity),
     )
 
 public inline fun <Element> KoneArrayGrowableNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableNoddedList<Element> {
-    val sizeUpperBound = powerOf2GreaterOrEqualTo(size)
+    val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(size)
     return KoneArrayGrowableNoddedList(
         size = size,
         sizeUpperBound = sizeUpperBound,
@@ -36,7 +36,7 @@ public inline fun <Element> KoneArrayGrowableNoddedList(size: UInt, initializer:
 }
 
 public inline fun <Element> KoneArrayGrowableNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableNoddedList<Element> {
-    val sizeUpperBound = powerOf2GreaterOrEqualTo(capacity)
+    val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(capacity)
     return KoneArrayGrowableNoddedList(
         size = size,
         sizeUpperBound = sizeUpperBound,

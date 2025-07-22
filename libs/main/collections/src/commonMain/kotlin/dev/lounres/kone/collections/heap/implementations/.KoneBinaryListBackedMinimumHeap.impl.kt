@@ -7,7 +7,7 @@ package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.Disposable
-import dev.lounres.kone.collections.accessRootOfEmptyHeapException
+import dev.lounres.kone.collections.accessExtremumOfEmptyHeapException
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.heap.LinkedHeapNode
@@ -124,12 +124,12 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
     }
     
     override fun takeMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) accessRootOfEmptyHeapException()
+        if (size == 0u) accessExtremumOfEmptyHeapException()
         return data[0u]
     }
     
     override fun popMinimum(): LinkedHeapNode<Element, Priority> {
-        if (size == 0u) accessRootOfEmptyHeapException()
+        if (size == 0u) accessExtremumOfEmptyHeapException()
         return data[0u].also { removeNode(0u) }
     }
     

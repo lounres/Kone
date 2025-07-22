@@ -11,7 +11,7 @@ import dev.lounres.kone.automata.TransitionAndComputation
 import dev.lounres.kone.automata.move
 import dev.lounres.kone.automata.moveAndCompute
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
-import dev.lounres.kone.collections.list.implementations.KoneGCLinkedList
+import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
@@ -34,7 +34,7 @@ public abstract class KoneAsynchronousHub<out Value> internal constructor() {
     internal val callbacksLock: ReentrantLock = ReentrantLock()
     @PublishedApi
     internal abstract val callbacksValue: Value
-    internal val callbacks: KoneMutableNoddedList<suspend (@UnsafeVariance Value) -> Unit> = KoneGCLinkedList() // TODO: Replace with concurrent queue
+    internal val callbacks: KoneMutableNoddedList<suspend (@UnsafeVariance Value) -> Unit> = KoneGCLinkedSizedList() // TODO: Replace with concurrent queue
 
     public fun interface Subscription {
         public fun cancel()

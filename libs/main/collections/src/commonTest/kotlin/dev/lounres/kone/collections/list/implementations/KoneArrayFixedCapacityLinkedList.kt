@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListDisposabilityTest
 import dev.lounres.kone.collections.list.ListImplementationDescription
-import dev.lounres.kone.collections.list.producers.KoneListProducer
+import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
