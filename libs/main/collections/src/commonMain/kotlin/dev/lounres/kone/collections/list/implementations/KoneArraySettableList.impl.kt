@@ -68,7 +68,7 @@ public value class KoneArraySettableList<Element> @PublishedApi internal constru
     override fun iterator(): KoneSettableLinearIterator<Element> = Iterator(data)
     public override fun iteratorFrom(index: UInt): KoneSettableLinearIterator<Element> = Iterator(data, index)
     
-    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //    override fun toString(): String = buildString {
 //        append('[')
 //        if (size > 0u) append(data[0u])

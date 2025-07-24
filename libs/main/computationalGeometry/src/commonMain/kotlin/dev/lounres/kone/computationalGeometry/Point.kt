@@ -11,13 +11,13 @@ import kotlinx.serialization.Serializable
 
 
 // FIXME: KT-42977
-//@Serializable(with = PointSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = PointSerializer::class)
 //@JvmInline
 public open /*value*/ class Point<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Point${coordinates.coefficients}"
 }
 
-//@Serializable(with = Point2Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Point2Serializer::class)
 //@JvmInline
 public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
@@ -29,7 +29,7 @@ public /*value*/ class Point2<out N>(coordinates: ColumnVector<N>): Point<N>(coo
     override fun toString(): String = "Point2${coordinates.coefficients}"
 }
 
-//@Serializable(with = Point3Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Point3Serializer::class)
 //@JvmInline
 public /*value*/ class Point3<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
@@ -42,7 +42,7 @@ public /*value*/ class Point3<out N>(coordinates: ColumnVector<N>): Point<N>(coo
     override fun toString(): String = "Point3${coordinates.coefficients}"
 }
 
-//@Serializable(with = Point4Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Point4Serializer::class)
 //@JvmInline
 public /*value*/ class Point4<out N>(coordinates: ColumnVector<N>): Point<N>(coordinates) {
     init {
@@ -64,7 +64,7 @@ public fun <N> Point2(coordinates: MDList1<N>): Point2<N> = Point2(ColumnVector(
 public fun <N> Point2(x: N, y: N): Point2<N> = Point2(ColumnVector(x, y))
 
 public fun <N> Point3(coordinates: MDList1<N>): Point3<N> = Point3(ColumnVector(coordinates))
-public fun <N> Point3(x: N, y: N): Point3<N> = Point3(ColumnVector(x, y))
+public fun <N> Point3(x: N, y: N, z: N): Point3<N> = Point3(ColumnVector(x, y, z))
 
 public fun <N> Point4(coordinates: MDList1<N>): Point4<N> = Point4(ColumnVector(coordinates))
-public fun <N> Point4(x: N, y: N): Point4<N> = Point4(ColumnVector(x, y))
+public fun <N> Point4(x: N, y: N, z: N, t: N): Point4<N> = Point4(ColumnVector(x, y, z, t))

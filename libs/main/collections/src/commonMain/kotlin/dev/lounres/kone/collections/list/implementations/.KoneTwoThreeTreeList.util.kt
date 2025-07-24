@@ -21,7 +21,7 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
     if (elements.size == 0u) return KoneTwoThreeTreeList()
 
     val result = KoneTwoThreeTreeList<Element>(size = elements.size)
-    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
     val nodes = Array(elements.size.toInt()) { KoneTwoThreeTreeList.Node(elements[it.toUInt()]) }
     for (i in nodes.indices) {

@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = MDList1Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = MDList1Serializer::class)
 public interface MDList1<out E>: MDList<E> {
     public override val size: UInt
     override val shape: MDShape get() = MDShape(size)
@@ -22,7 +22,7 @@ public interface MDList1<out E>: MDList<E> {
     public companion object
 }
 
-//@Serializable(with = SettableMDList1Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = SettableMDList1Serializer::class)
 public interface SettableMDList1<E>: SettableMDList<E>, MDList1<E> {
     public operator fun set(index: UInt, element: E)
     override fun set(index: KoneUIntArray, element: E) {

@@ -10,7 +10,7 @@ import dev.lounres.kone.multidimensionalCollections.SettableMDList1
 import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = ColumnVectorSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = ColumnVectorSerializer::class)
 /*@JvmInline*/
 public open /*value*/ class ColumnVector<out N>(
     public open val coefficients: MDList1<N>
@@ -21,7 +21,7 @@ public open /*value*/ class ColumnVector<out N>(
     override fun toString(): String = "ColumnVector$coefficients"
 }
 
-//@Serializable(with = SettableColumnVectorSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = SettableColumnVectorSerializer::class)
 /*@JvmInline*/
 public /*value*/ class SettableColumnVector<N>(
     override val coefficients: SettableMDList1<N>

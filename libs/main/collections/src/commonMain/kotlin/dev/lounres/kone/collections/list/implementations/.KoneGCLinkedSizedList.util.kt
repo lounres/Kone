@@ -38,11 +38,11 @@ internal object KoneGCLinkedSizedListProducer : KoneResizableMutableNoddedListPr
 
 public fun KoneGCLinkedSizedList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneGCLinkedSizedListProducer
 
-internal object KoneGCLinkedSizedListCopier: (KoneGCLinkedSizedList<Any?>) -> KoneGCLinkedSizedList<Any?> {
-    override fun invoke(base: KoneGCLinkedSizedList<Any?>): KoneGCLinkedSizedList<Any?> {
+internal val KoneGCLinkedSizedListCopier: (KoneGCLinkedSizedList<Any?>) -> KoneGCLinkedSizedList<Any?> =
+    copier@{ base ->
         if (base.isDisposed) disposedInstanceException()
         val result = KoneGCLinkedSizedList<Any?>(size = base.size)
-        var currentNode = base.start ?: return result
+        var currentNode = base.start ?: return@copier result
         var newCurrentNode = result.Node(currentNode.element)
         result.start = newCurrentNode
         while (currentNode._nextNode != null) {
@@ -54,9 +54,8 @@ internal object KoneGCLinkedSizedListCopier: (KoneGCLinkedSizedList<Any?>) -> Ko
             newCurrentNode = newNextNode
         }
         result.end = newCurrentNode
-        return result
+        result
     }
-}
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneGCLinkedSizedList.Companion.copier(): (KoneGCLinkedSizedList<Element>) -> KoneGCLinkedSizedList<Element> =

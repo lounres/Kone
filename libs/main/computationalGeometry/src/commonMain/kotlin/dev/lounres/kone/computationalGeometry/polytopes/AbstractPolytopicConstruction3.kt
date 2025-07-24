@@ -111,7 +111,7 @@ public class AbstractPolytopicConstruction3Vertex<Number> internal constructor(
     override fun toString(): String = "AbstractPolytopicConstruction3Vertex:${id.toHexString()}"
 }
 
-//@Serializable(with = AbstractPolytopicConstruction3Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = AbstractPolytopicConstruction3Serializer::class)
 public class AbstractPolytopicConstruction3<Number> : MutablePolytopicConstruction3<Number, AbstractPolytopicConstruction3Polytope<Number>, AbstractPolytopicConstruction3Vertex<Number>> {
     private val _polytopes: KoneList<KoneMutableNoddedReifiedSet<AbstractPolytopicConstruction3Polytope<Number>>> =
         KoneList(4u) { KoneListBackedMutableLinkedNoddedReifiedSet(Reification(), absoluteEquality()) }
@@ -152,100 +152,99 @@ public class AbstractPolytopicConstruction3<Number> : MutablePolytopicConstructi
     }
 }
 
-// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
-//internal class AbstractPolytopicConstruction3Serializer<Number>(
-//    numberSerializer: KSerializer<Number>,
-//) : KSerializer<AbstractPolytopicConstruction3<Number>> {
-//    @Serializable
-//    private data class PolytopeDescription(
-//        val vertices: KoneList<UInt>,
-//        val faces: KoneList<KoneList<UInt>>,
-//    )
-//
-//    val pointsSerializer = KoneList.serializer(Point3.serializer(numberSerializer))
-//
-//    override val descriptor: SerialDescriptor =
-//        buildClassSerialDescriptor("AbstractPolytopicConstruction3Serializer", numberSerializer.descriptor) {
-//            element("vertices", pointsSerializer.descriptor)
-//            element<KoneList<KoneList<PolytopeDescription>>>("polytopes")
-//        }
-//
-//    override fun serialize(encoder: Encoder, value: AbstractPolytopicConstruction3<Number>) {
-//        val spaceDimension = 3u
-//        val vertices = value.vertices.toKoneList()
-//        val indexByVertex = vertices.indices.toKoneList().associateBy(keyEquality = absoluteEquality(), keyHashing = defaultHashing()) { vertices[it] }
-//        val points = vertices.map { it.position }
-//        val indexByPolytope = KoneList(spaceDimension + 1u) { dimension ->
-//            val polytopesOfDimension = value.polytopesOfDimension(dimension).toKoneList()
-//            polytopesOfDimension.indices.toKoneList().associateBy { polytopesOfDimension[it] }
-//        }
-//        val polytopes = value.polytopes.mapIndexed { dimension, polytopesOfDimension ->
-//            if (dimension == 0u) {
-//                vertices.indices.toKoneList().map { PolytopeDescription(vertices = KoneList.of(it), faces = KoneList.empty()) }
-//            } else {
-//                polytopesOfDimension.map { polytope ->
-//                    PolytopeDescription(
-//                        vertices = polytope.vertices.map { indexByVertex[it] },
-//                        faces = polytope.faces.mapIndexed { subdimension, polytopes ->
-//                            val indexByPolytopeOfSubdimension = indexByPolytope[subdimension]
-//                            polytopes.map { indexByPolytopeOfSubdimension[it] }
-//                        }
-//                    )
-//                }
-//            }
-//        }
-//
-//        encoder.encodeStructure(descriptor) {
-//            encodeSerializableElement(descriptor, 0, pointsSerializer, points)
-//            encodeSerializableElement(descriptor, 1, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())), polytopes)
-//        }
-//    }
-//
-//    @OptIn(ExperimentalSerializationApi::class)
-//    override fun deserialize(decoder: Decoder): AbstractPolytopicConstruction3<Number> =
-//        decoder.decodeStructure(descriptor) {
-//            val spaceDimension: UInt
-//            val points: KoneList<Point3<Number>>
-//            val polytopeDescriptions: KoneList<KoneList<PolytopeDescription>>
-//
-//            if (decodeSequentially()) {
-//                points = decodeSerializableElement(descriptor, 0, pointsSerializer)
-//                polytopeDescriptions = decodeSerializableElement(descriptor, 1, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())))
-//            } else {
-//                var pointsContender: KoneList<Point3<Number>>? = null
-//                var polytopeDescriptionsContender: KoneList<KoneList<PolytopeDescription>>? = null
-//                while (true) {
-//                    when (val index = decodeElementIndex(descriptor)) {
-//                        0 -> pointsContender = decodeSerializableElement(descriptor, 1, pointsSerializer)
-//                        1 -> polytopeDescriptionsContender = decodeSerializableElement(descriptor, 3, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())))
-//                        CompositeDecoder.DECODE_DONE -> break
-//                        else -> error("Unexpected index: $index")
-//                    }
-//                }
-//                points = pointsContender ?: error("Did not receive vertices")
-//                polytopeDescriptions = polytopeDescriptionsContender ?: error("Did not receive polytopes")
-//            }
-//
-//            val polytopicConstruction = AbstractPolytopicConstruction3<Number>()
-//            val vertices = points.map { polytopicConstruction.addVertex(it) }
-//            val polytopes = KoneArrayFixedCapacityList<KoneList<AbstractPolytopicConstruction3Polytope<Number>>>(4u)
-//            polytopes.add(polytopeDescriptions[0u].map { vertices[it.vertices.single()].asPolytope() })
-//            for (dimension in 1u .. 3u)
-//                polytopes.add(
-//                    polytopeDescriptions[dimension].map { polytopeDescription ->
-//                        polytopicConstruction.addPolytope(
-//                            dimension = dimension,
-//                            vertices = polytopeDescription.vertices.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { vertices[it] },
-//                            faces = polytopeDescription.faces.mapIndexed { subdimension, polytopesOfSubDimension ->
-//                                polytopesOfSubDimension.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { polytopes[subdimension][it] }
-//                            },
-//                        )
-//                    }
-//                )
-//
-//            polytopicConstruction
-//        }
-//}
+internal class AbstractPolytopicConstruction3Serializer<Number>(
+    numberSerializer: KSerializer<Number>,
+) : KSerializer<AbstractPolytopicConstruction3<Number>> {
+    @Serializable
+    private data class PolytopeDescription(
+        val vertices: KoneList<UInt>,
+        val faces: KoneList<KoneList<UInt>>,
+    )
+
+    val pointsSerializer = KoneList.serializer(Point3.serializer(numberSerializer))
+
+    override val descriptor: SerialDescriptor =
+        buildClassSerialDescriptor("AbstractPolytopicConstruction3Serializer", numberSerializer.descriptor) {
+            element("vertices", pointsSerializer.descriptor)
+            element<KoneList<KoneList<PolytopeDescription>>>("polytopes")
+        }
+
+    override fun serialize(encoder: Encoder, value: AbstractPolytopicConstruction3<Number>) {
+        val spaceDimension = 3u
+        val vertices = value.vertices.toKoneList()
+        val indexByVertex = vertices.indices.toKoneList().associateBy(keyEquality = absoluteEquality(), keyHashing = defaultHashing()) { vertices[it] }
+        val points = vertices.map { it.position }
+        val indexByPolytope = KoneList(spaceDimension + 1u) { dimension ->
+            val polytopesOfDimension = value.polytopesOfDimension(dimension).toKoneList()
+            polytopesOfDimension.indices.toKoneList().associateBy { polytopesOfDimension[it] }
+        }
+        val polytopes = value.polytopes.mapIndexed { dimension, polytopesOfDimension ->
+            if (dimension == 0u) {
+                vertices.indices.toKoneList().map { PolytopeDescription(vertices = KoneList.of(it), faces = KoneList.empty()) }
+            } else {
+                polytopesOfDimension.map { polytope ->
+                    PolytopeDescription(
+                        vertices = polytope.vertices.map { indexByVertex[it] },
+                        faces = polytope.faces.mapIndexed { subdimension, polytopes ->
+                            val indexByPolytopeOfSubdimension = indexByPolytope[subdimension]
+                            polytopes.map { indexByPolytopeOfSubdimension[it] }
+                        }
+                    )
+                }
+            }
+        }
+
+        encoder.encodeStructure(descriptor) {
+            encodeSerializableElement(descriptor, 0, pointsSerializer, points)
+            encodeSerializableElement(descriptor, 1, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())), polytopes)
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun deserialize(decoder: Decoder): AbstractPolytopicConstruction3<Number> =
+        decoder.decodeStructure(descriptor) {
+            val spaceDimension: UInt
+            val points: KoneList<Point3<Number>>
+            val polytopeDescriptions: KoneList<KoneList<PolytopeDescription>>
+
+            if (decodeSequentially()) {
+                points = decodeSerializableElement(descriptor, 0, pointsSerializer)
+                polytopeDescriptions = decodeSerializableElement(descriptor, 1, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())))
+            } else {
+                var pointsContender: KoneList<Point3<Number>>? = null
+                var polytopeDescriptionsContender: KoneList<KoneList<PolytopeDescription>>? = null
+                while (true) {
+                    when (val index = decodeElementIndex(descriptor)) {
+                        0 -> pointsContender = decodeSerializableElement(descriptor, 1, pointsSerializer)
+                        1 -> polytopeDescriptionsContender = decodeSerializableElement(descriptor, 3, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())))
+                        CompositeDecoder.DECODE_DONE -> break
+                        else -> error("Unexpected index: $index")
+                    }
+                }
+                points = pointsContender ?: error("Did not receive vertices")
+                polytopeDescriptions = polytopeDescriptionsContender ?: error("Did not receive polytopes")
+            }
+
+            val polytopicConstruction = AbstractPolytopicConstruction3<Number>()
+            val vertices = points.map { polytopicConstruction.addVertex(it) }
+            val polytopes = KoneArrayFixedCapacityList<KoneList<AbstractPolytopicConstruction3Polytope<Number>>>(4u)
+            polytopes.add(polytopeDescriptions[0u].map { vertices[it.vertices.single()].asPolytope() })
+            for (dimension in 1u .. 3u)
+                polytopes.add(
+                    polytopeDescriptions[dimension].map { polytopeDescription ->
+                        polytopicConstruction.addPolytope(
+                            dimension = dimension,
+                            vertices = polytopeDescription.vertices.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { vertices[it] },
+                            faces = polytopeDescription.faces.mapIndexed { subdimension, polytopesOfSubDimension ->
+                                polytopesOfSubDimension.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { polytopes[subdimension][it] }
+                            },
+                        )
+                    }
+                )
+
+            polytopicConstruction
+        }
+}
 
 internal fun <Number> abstractPolytopicConstruction3PolytopeSuppliedTypeFor(numberSuppliedType: SuppliedType): SuppliedType =
     @OptIn(DelicateSuppliedTypeConstructor::class)

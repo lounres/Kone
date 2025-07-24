@@ -10,7 +10,7 @@ import dev.lounres.kone.computationalGeometry.angles.Angle
 import kotlinx.serialization.Serializable
 
 
-//@Serializable // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable
 public data class KoneCanvasState(
     val offset: Vector2<Double> = Vector2(0.0, 0.0),
     val zoom: Double = 1.0,

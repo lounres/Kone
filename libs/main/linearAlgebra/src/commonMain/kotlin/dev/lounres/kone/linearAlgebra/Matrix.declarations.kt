@@ -10,7 +10,7 @@ import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import kotlinx.serialization.Serializable
 
 
-//@Serializable(with = MatrixSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = MatrixSerializer::class)
 /*@JvmInline*/
 public open /*value*/ class Matrix<out N>(
     public open val coefficients: MDList2<N>
@@ -22,7 +22,7 @@ public open /*value*/ class Matrix<out N>(
     override fun toString(): String = "Matrix$coefficients"
 }
 
-//@Serializable(with = SettableMatrixSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = SettableMatrixSerializer::class)
 /*@JvmInline*/
 public /*value*/ class SettableMatrix<N>(
     override val coefficients: SettableMDList2<N>

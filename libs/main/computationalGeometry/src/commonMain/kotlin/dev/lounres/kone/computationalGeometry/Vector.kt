@@ -11,13 +11,13 @@ import kotlinx.serialization.Serializable
 
 
 // FIXME: KT-42977
-//@Serializable(with = VectorSerializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = VectorSerializer::class)
 //@JvmInline
 public open /*value*/ class Vector<out N>(public val coordinates: ColumnVector<N>) {
     override fun toString(): String = "Vector${coordinates.coefficients}"
 }
 
-//@Serializable(with = Vector2Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Vector2Serializer::class)
 //@JvmInline
 public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
@@ -29,7 +29,7 @@ public /*value*/ class Vector2<out N>(coordinates: ColumnVector<N>): Vector<N>(c
     override fun toString(): String = "Vector2${coordinates.coefficients}"
 }
 
-//@Serializable(with = Vector3Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Vector3Serializer::class)
 //@JvmInline
 public /*value*/ class Vector3<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
@@ -42,7 +42,7 @@ public /*value*/ class Vector3<out N>(coordinates: ColumnVector<N>): Vector<N>(c
     override fun toString(): String = "Vector3${coordinates.coefficients}"
 }
 
-//@Serializable(with = Vector4Serializer::class) // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1
+@Serializable(with = Vector4Serializer::class)
 //@JvmInline
 public /*value*/ class Vector4<out N>(coordinates: ColumnVector<N>): Vector<N>(coordinates) {
     init {
@@ -64,7 +64,7 @@ public fun <N> Vector2(coordinates: MDList1<N>): Vector2<N> = Vector2(ColumnVect
 public fun <N> Vector2(x: N, y: N): Vector2<N> = Vector2(ColumnVector(x, y))
 
 public fun <N> Vector3(coordinates: MDList1<N>): Vector3<N> = Vector3(ColumnVector(coordinates))
-public fun <N> Vector3(x: N, y: N): Vector3<N> = Vector3(ColumnVector(x, y))
+public fun <N> Vector3(x: N, y: N, z: N): Vector3<N> = Vector3(ColumnVector(x, y, z))
 
 public fun <N> Vector4(coordinates: MDList1<N>): Vector4<N> = Vector4(ColumnVector(coordinates))
-public fun <N> Vector4(x: N, y: N): Vector4<N> = Vector4(ColumnVector(x, y))
+public fun <N> Vector4(x: N, y: N, z: N, t: N): Vector4<N> = Vector4(ColumnVector(x, y, z, t))

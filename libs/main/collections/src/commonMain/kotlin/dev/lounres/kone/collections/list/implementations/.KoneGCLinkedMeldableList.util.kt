@@ -58,10 +58,8 @@ public object KoneGCLinkedMeldableListCopier {
     }
 }
 
-internal object KoneGCLinkedMeldableListCopierErased: (KoneGCLinkedMeldableList<Any?>) -> KoneGCLinkedMeldableList<Any?> {
-    override fun invoke(base: KoneGCLinkedMeldableList<Any?>): KoneGCLinkedMeldableList<Any?> =
-        KoneGCLinkedMeldableListCopier.copy(base)
-}
+internal val KoneGCLinkedMeldableListCopierErased: (KoneGCLinkedMeldableList<Any?>) -> KoneGCLinkedMeldableList<Any?> =
+    { base -> KoneGCLinkedMeldableListCopier.copy(base) }
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneGCLinkedMeldableList.Companion.copier(): (KoneGCLinkedMeldableList<Element>) -> KoneGCLinkedMeldableList<Element> =
@@ -86,10 +84,8 @@ public object KoneGCLinkedMeldableListMelder {
     }
 }
 
-internal object KoneGCLinkedMeldableListMelderErased: (KoneGCLinkedMeldableList<Any?>, KoneGCLinkedMeldableList<Any?>) -> KoneGCLinkedMeldableList<Any?> {
-    override fun invoke(first: KoneGCLinkedMeldableList<Any?>, second: KoneGCLinkedMeldableList<Any?>): KoneGCLinkedMeldableList<Any?> =
-        KoneGCLinkedMeldableListMelder.meld(first, second)
-}
+internal val KoneGCLinkedMeldableListMelderErased: (KoneGCLinkedMeldableList<Any?>, KoneGCLinkedMeldableList<Any?>) -> KoneGCLinkedMeldableList<Any?> =
+    { first, second -> KoneGCLinkedMeldableListMelder.meld(first, second) }
 
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneGCLinkedMeldableList.Companion.melder(): (KoneGCLinkedMeldableList<Element>, KoneGCLinkedMeldableList<Element>) -> KoneGCLinkedMeldableList<Element> =

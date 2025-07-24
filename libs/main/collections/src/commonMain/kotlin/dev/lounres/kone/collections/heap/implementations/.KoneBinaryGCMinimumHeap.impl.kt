@@ -25,7 +25,7 @@ import dev.lounres.kone.relations.lt
 
 // TODO: Make the implementation disposable
 public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal constructor(
-    private val priorityOrder: Order<Priority>,
+    internal val priorityOrder: Order<Priority>,
     @PublishedApi
     internal var rootHolder: NodeHolder<Element, Priority>?,
     @PublishedApi
