@@ -38,6 +38,9 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
 public inline fun <Element> KoneTwoThreeTreeList(size: UInt, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
     KoneTwoThreeTreeList(KoneArraySettableList(size) { initializer(it) })
 
+public inline fun <Element> KoneTwoThreeTreeList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
+    KoneTwoThreeTreeList(KoneArraySettableList(indices) { initializer(it) })
+
 internal object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneTwoThreeTreeList<Element> = KoneTwoThreeTreeList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneTwoThreeTreeList<Element> =

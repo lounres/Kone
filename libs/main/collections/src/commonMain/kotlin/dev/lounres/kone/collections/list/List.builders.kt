@@ -52,9 +52,17 @@ public inline fun <Element> KoneList(size: UInt, initializer: (index: UInt) -> E
     if (size == 0u) KoneList.empty()
     else KoneArraySettableList(size, initializer)
 
+public inline fun <Element> KoneList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneList<Element> =
+    if (indices.isEmpty()) KoneList.empty()
+    else KoneArraySettableList(indices, initializer)
+
 public inline fun <Element> KoneNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else KoneArraySettableNoddedList(size, initializer)
+
+public inline fun <Element> KoneNoddedList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneNoddedList<Element> =
+    if (indices.isEmpty()) KoneNoddedList.empty()
+    else KoneArraySettableNoddedList(indices, initializer)
 
 /**
  * Returns a settable list of provided [size] of elements produced by the [initializer].
@@ -67,9 +75,17 @@ public inline fun <Element> KoneSettableList(size: UInt, initializer: (index: UI
     if (size == 0u) KoneSettableList.empty()
     else KoneArraySettableList(size, initializer)
 
+public inline fun <Element> KoneSettableList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneSettableList<Element> =
+    if (indices.isEmpty()) KoneSettableList.empty()
+    else KoneArraySettableList(indices, initializer)
+
 public inline fun <Element> KoneSettableNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneSettableNoddedList<Element> =
     if (size == 0u) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList(size, initializer)
+
+public inline fun <Element> KoneSettableNoddedList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneSettableNoddedList<Element> =
+    if (indices.isEmpty()) KoneSettableNoddedList.empty()
+    else KoneArraySettableNoddedList(indices, initializer)
 
 /**
  * Returns a mutable list of provided [size] of elements produced by the [initializer].
@@ -81,8 +97,16 @@ public inline fun <Element> KoneSettableNoddedList(size: UInt, initializer: (ind
 public inline fun <Element> KoneMutableList(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList(size, initializer)
 
+// TODO: Add the following builder
+//public inline fun <Element> KoneMutableList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
+//    KoneArrayResizableList(indices, initializer)
+
 public inline fun <Element> KoneMutableNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList(size, initializer)
+
+// TODO: Add the following builder
+//public inline fun <Element> KoneMutableNoddedList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
+//    KoneArrayResizableNoddedList(indices, initializer)
 
 public fun <Element> KoneList.Companion.of(): KoneList<Element> = KoneList.empty()
 
@@ -194,99 +218,83 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
     private var result: KoneMutableList<Element>? = result
     
     override val size: UInt get() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.size
     }
     
     override fun get(index: UInt): Element {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result[index]
     }
     
     override fun set(index: UInt, element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result[index] = element
     }
     
     override fun add(element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.add(element)
     }
     
     override fun addAt(index: UInt, element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addAt(index, element)
     }
     
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addSeveral(number, builder)
     }
     
     override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addSeveralAt(index, number, builder)
     }
     
     override fun removeAt(index: UInt) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAt(index)
     }
     
     override fun removeAll() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAll()
     }
     
     override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAllThat(predicate)
     }
     
     override fun removeAllThatIndexed(predicate: (UInt, Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAllThatIndexed(predicate)
     }
     
     override fun iterator(): KoneMutableListIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.iterator()
     }
     
     override fun iteratorFrom(index: UInt): KoneMutableListIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.iteratorFrom(index)
     }
     
     public operator fun Element.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.add(this)
     }
     
     public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addAllFrom(this)
     }
     
     @PublishedApi
     internal fun build(): KoneList<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.also { this.result = null }
     }
 }
@@ -308,117 +316,98 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
     private var result: KoneMutableNoddedList<Element>? = result
     
     override val size: UInt get() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.size
     }
     
     override fun get(index: UInt): Element {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result[index]
     }
     
     override fun getNode(index: UInt): KoneMutableListNode<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.getNode(index)
     }
     
     override fun set(index: UInt, element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result[index] = element
     }
     
     override fun add(element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.add(element)
     }
     
     override fun addNode(element: Element): KoneMutableListNode<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.addNode(element)
     }
     
     override fun addAt(index: UInt, element: Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addAt(index, element)
     }
     
     override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.addNodeAt(index, element)
     }
     
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addSeveral(number, builder)
     }
     
     override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addSeveralAt(index, number, builder)
     }
     
     override fun removeAt(index: UInt) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAt(index)
     }
     
     override fun removeAll() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAll()
     }
     
     override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAllThat(predicate)
     }
     
     override fun removeAllThatIndexed(predicate: (UInt, Element) -> Boolean) {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.removeAllThatIndexed(predicate)
     }
     
     override fun iterator(): KoneMutableNoddedListIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.iterator()
     }
     
     override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.iteratorFrom(index)
     }
     
     public operator fun Element.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.add(this)
     }
     
     public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         result.addAllFrom(this)
     }
     
     @PublishedApi
     internal fun build(): KoneList<Element> {
-        val result = result
-        if (result == null) error("This KoneList builder is already used")
+        val result = result ?: error("This KoneList builder is already used")
         return result.also { this.result = null }
     }
 }

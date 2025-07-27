@@ -26,6 +26,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 public inline fun <Element> KoneArraySettableList(size: UInt, initializer: (index: UInt) -> Element): KoneArraySettableList<Element> =
     KoneArraySettableList(KoneMutableArray(size, initializer))
 
+public inline fun <Element> KoneArraySettableList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneArraySettableList<Element> =
+    KoneArraySettableList(KoneMutableArray(indices, initializer))
+
 /**
  * Producer of [KoneArraySettableList].
  */

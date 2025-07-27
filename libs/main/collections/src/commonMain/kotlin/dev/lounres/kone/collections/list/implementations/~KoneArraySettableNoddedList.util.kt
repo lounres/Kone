@@ -16,6 +16,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 public inline fun <Element> KoneArraySettableNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArraySettableNoddedList<Element> =
     KoneArraySettableNoddedList(KoneMutableArray(size) { KoneArraySettableNoddedList.Node(initializer(it), it) })
 
+public inline fun <Element> KoneArraySettableNoddedList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneArraySettableNoddedList<Element> =
+    KoneArraySettableNoddedList(KoneMutableArray(indices.last + 1u - indices.first) { KoneArraySettableNoddedList.Node(initializer(it), it - indices.first) })
+
 internal object KoneArraySettableNoddedListProducer : KoneSettableNoddedListProducer {
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneArraySettableNoddedList<Element> = KoneArraySettableNoddedList(number, builder)
 }

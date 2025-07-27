@@ -31,6 +31,21 @@ public inline fun <Element> KoneGCLinkedMeldableList(size: UInt, initializer: (i
     return result
 }
 
+public inline fun <Element> KoneGCLinkedMeldableList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneGCLinkedMeldableList<Element> {
+    val result = KoneGCLinkedMeldableList<Element>()
+    if (indices.isEmpty()) return result
+    var currentNode = KoneGCLinkedMeldableList.Node(initializer(indices.first))
+    result.start = currentNode
+    for (index in (indices.first + 1u) .. indices.last) {
+        val newNode = KoneGCLinkedMeldableList.Node(initializer(index))
+        newNode._previousNode = currentNode
+        currentNode._nextNode = newNode
+        currentNode = newNode
+    }
+    result.end = currentNode
+    return result
+}
+
 internal object KoneGCLinkedMeldableListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneGCLinkedMeldableList<Element> = KoneGCLinkedMeldableList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedMeldableList(number, builder)
