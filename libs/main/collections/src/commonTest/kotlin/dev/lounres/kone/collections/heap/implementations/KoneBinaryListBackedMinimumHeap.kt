@@ -13,9 +13,9 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityL
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableListProducer
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableListProducer
 import dev.lounres.kone.collections.list.indices
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt
-import dev.lounres.kone.context
 import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
@@ -35,7 +35,7 @@ object KoneBinaryListBackedMinimumHeapValidator : MinimumHeapValidator {
             node.index shouldBe index
             if (index != 0u) {
                 val parent = data[(index - 1u) / 2u]
-                context(heap.priorityContext) { if (parent.priority gt node.priority) fail("The heap is invalid") }
+                heap.priorityOrder { if (parent.priority gt node.priority) fail("The heap is invalid") }
             }
         }
     }
@@ -45,18 +45,18 @@ object KoneBinaryListBackedMinimumHeapOverResizableListDescription : MinimumHeap
     override val name = "KoneBinaryListBackedMinimumHeap over resizable list"
     override val producer: MinimumHeapProducer =
         object : MinimumHeapProducer.Resizable  {
-            override fun <Element, Priority> produce(priorityContext: Order<Priority>): MinimumHeap<Element, Priority> =
+            override fun <Element, Priority> produce(priorityOrder: Order<Priority>): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayResizableListProducer,
                 )
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 size: UInt,
                 elementInitializer: (UInt) -> Element,
                 priorityInitializer: (UInt) -> Priority
             ): MinimumHeap<Element, Priority> = KoneBinaryListBackedMinimumHeap(
-                priorityContext = priorityContext,
+                priorityOrder = priorityOrder,
                 listProducer = KoneArrayResizableListProducer,
                 size = size,
                 elementInitializer = elementInitializer,
@@ -70,42 +70,42 @@ object KoneBinaryListBackedMinimumHeapOverGrowableListDescription : MinimumHeapI
     override val name = "KoneBinaryListBackedMinimumHeap over growable list"
     override val producer: MinimumHeapProducer =
         object : MinimumHeapProducer.Growable  {
-            override fun <Element, Priority> produce(priorityContext: Order<Priority>): MinimumHeap<Element, Priority> =
+            override fun <Element, Priority> produce(priorityOrder: Order<Priority>): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayGrowableListProducer,
                 )
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 size: UInt,
                 elementInitializer: (index: UInt) -> Element,
                 priorityInitializer: (index: UInt) -> Priority,
             ): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayGrowableListProducer,
                     size = size,
                     elementInitializer = elementInitializer,
                     priorityInitializer = priorityInitializer,
                 )
             override fun <Element, Priority> produce(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 initialCapacity: UInt
             ): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayGrowableListProducer,
                     initialCapacity = initialCapacity,
                 )
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 initialCapacity: UInt,
                 size: UInt,
                 elementInitializer: (index: UInt) -> Element,
                 priorityInitializer: (index: UInt) -> Priority,
             ): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayGrowableListProducer,
                     initialCapacity = initialCapacity,
                     size = size,
@@ -121,33 +121,33 @@ object KoneBinaryListBackedMinimumHeapOverFixedCapacityListDescription : Minimum
     override val producer: MinimumHeapProducer =
         object : MinimumHeapProducer.FixedCapacity  {
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 size: UInt,
                 elementInitializer: (index: UInt) -> Element,
                 priorityInitializer: (index: UInt) -> Priority,
             ): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayFixedCapacityListProducer,
                     size = size,
                     elementInitializer = elementInitializer,
                     priorityInitializer = priorityInitializer,
                 )
-            override fun <Element, Priority> produce(priorityContext: Order<Priority>, capacity: UInt): MinimumHeap<Element, Priority> =
+            override fun <Element, Priority> produce(priorityOrder: Order<Priority>, capacity: UInt): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayFixedCapacityListProducer,
                     capacity = capacity,
                 )
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 capacity: UInt,
                 size: UInt,
                 elementInitializer: (index: UInt) -> Element,
                 priorityInitializer: (index: UInt) -> Priority,
             ): MinimumHeap<Element, Priority> =
                 KoneBinaryListBackedMinimumHeap(
-                    priorityContext = priorityContext,
+                    priorityOrder = priorityOrder,
                     listProducer = KoneArrayFixedCapacityListProducer,
                     capacity = capacity,
                     size = size,

@@ -438,6 +438,9 @@ fun <Element> Exhaustive.Companion.allMutableNoddedListOperationWithResult(
 //   3. `hashCode`, `equals`.
 //   4. `getNextNode`, `getPreviousNode`.
 class ListImplementationsTests : FunSpec({
+    threads = 16
+    concurrency = 16
+    
     for (impl in listImplementations) context(impl.name) {
         val producer = impl.listProducer
         

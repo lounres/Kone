@@ -19,5 +19,7 @@ interface ListImplementationDescription {
 }
 
 class SetImplementationsTests : FunSpec({
+    threads = 16
+    concurrency = 16
 
 })

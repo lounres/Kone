@@ -88,6 +88,9 @@ fun <Element> testEquality(list1: KoneList<Element>, list2: KoneList<Element>) {
 }
 
 class SortTests : FunSpec({
+    threads = 16
+    concurrency = 16
+    
     val listsToShuffle = Exhaustive.of(KoneList.of(0u, 0u, 2u, 4u, 4u, 4u), KoneList.of(0u, 1u, 2u, 3u), KoneList.of(0u, 1u, 2u, 3u, 4u))
     
     for (desc in sortings) context(desc.name) {

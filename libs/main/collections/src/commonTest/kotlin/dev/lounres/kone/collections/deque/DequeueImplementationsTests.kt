@@ -101,6 +101,9 @@ fun <Element> arbDequeOperations(
 }
 
 class DequeImplementationsTest : FunSpec({
+    threads = 16
+    concurrency = 16
+
     for (impl in dequeImplementations) context(impl.name) {
         val producer = impl.dequeProducer
         val validator = impl.dequeValidator

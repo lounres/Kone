@@ -27,15 +27,15 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
     override val name = "KoneBinaryGCMinimumHeap"
     override val producer: MinimumHeapProducer =
         object : MinimumHeapProducer.Resizable {
-            override fun <Element, Priority> produce(priorityContext: Order<Priority>): MinimumHeap<Element, Priority> =
-                KoneBinaryGCMinimumHeap(priorityContext)
+            override fun <Element, Priority> produce(priorityOrder: Order<Priority>): MinimumHeap<Element, Priority> =
+                KoneBinaryGCMinimumHeap(priorityOrder)
             override fun <Element, Priority> produceBy(
-                priorityContext: Order<Priority>,
+                priorityOrder: Order<Priority>,
                 size: UInt,
                 elementInitializer: (UInt) -> Element,
                 priorityInitializer: (UInt) -> Priority
             ): MinimumHeap<Element, Priority> =
-                KoneBinaryGCMinimumHeap(priorityContext, size, elementInitializer, priorityInitializer)
+                KoneBinaryGCMinimumHeap(priorityOrder, size, elementInitializer, priorityInitializer)
         }
     override val validator: MinimumHeapValidator =
         object : MinimumHeapValidator {

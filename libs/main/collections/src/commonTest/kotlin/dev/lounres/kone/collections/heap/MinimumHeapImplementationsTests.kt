@@ -27,32 +27,32 @@ import io.kotest.property.exhaustive.of
 
 interface MinimumHeapProducer {
     fun <Element, Priority> produceBy(
-        priorityContext: Order<Priority>,
+        priorityOrder: Order<Priority>,
         size: UInt,
         elementInitializer: (index: UInt) -> Element,
         priorityInitializer: (index: UInt) -> Priority,
     ): MinimumHeap<Element, Priority>
     
     interface Resizable : MinimumHeapProducer {
-        fun <Element, Priority> produce(priorityContext: Order<Priority>): MinimumHeap<Element, Priority>
+        fun <Element, Priority> produce(priorityOrder: Order<Priority>): MinimumHeap<Element, Priority>
         override fun <Element, Priority> produceBy(
-            priorityContext: Order<Priority>,
+            priorityOrder: Order<Priority>,
             size: UInt,
             elementInitializer: (index: UInt) -> Element,
             priorityInitializer: (index: UInt) -> Priority,
         ): MinimumHeap<Element, Priority>
     }
     interface Growable : MinimumHeapProducer {
-        fun <Element, Priority> produce(priorityContext: Order<Priority>): MinimumHeap<Element, Priority>
+        fun <Element, Priority> produce(priorityOrder: Order<Priority>): MinimumHeap<Element, Priority>
         override fun <Element, Priority> produceBy(
-            priorityContext: Order<Priority>,
+            priorityOrder: Order<Priority>,
             size: UInt,
             elementInitializer: (index: UInt) -> Element,
             priorityInitializer: (index: UInt) -> Priority,
         ): MinimumHeap<Element, Priority>
-        fun <Element, Priority> produce(priorityContext: Order<Priority>, initialCapacity: UInt): MinimumHeap<Element, Priority>
+        fun <Element, Priority> produce(priorityOrder: Order<Priority>, initialCapacity: UInt): MinimumHeap<Element, Priority>
         fun <Element, Priority> produceBy(
-            priorityContext: Order<Priority>,
+            priorityOrder: Order<Priority>,
             initialCapacity: UInt,
             size: UInt,
             elementInitializer: (index: UInt) -> Element,
@@ -61,14 +61,14 @@ interface MinimumHeapProducer {
     }
     interface FixedCapacity : MinimumHeapProducer {
         override fun <Element, Priority> produceBy(
-            priorityContext: Order<Priority>,
+            priorityOrder: Order<Priority>,
             size: UInt,
             elementInitializer: (index: UInt) -> Element,
             priorityInitializer: (index: UInt) -> Priority,
         ): MinimumHeap<Element, Priority>
-        fun <Element, Priority> produce(priorityContext: Order<Priority>, capacity: UInt): MinimumHeap<Element, Priority>
+        fun <Element, Priority> produce(priorityOrder: Order<Priority>, capacity: UInt): MinimumHeap<Element, Priority>
         fun <Element, Priority> produceBy(
-            priorityContext: Order<Priority>,
+            priorityOrder: Order<Priority>,
             capacity: UInt,
             size: UInt,
             elementInitializer: (index: UInt) -> Element,
@@ -95,6 +95,9 @@ val minHeapImplementations = listOf<MinimumHeapImplementationDescription>(
 )
 
 class MinimumHeapImplementationsTests : FunSpec({
+    threads = 16
+    concurrency = 16
+    
     val listsToShuffle = Exhaustive.of(KoneList.of(0u, 0u, 2u, 4u, 4u, 4u), KoneList.of(0u, 1u, 2u, 3u), KoneList.of(0u, 1u, 2u, 3u, 4u))
     
     for (impl in minHeapImplementations) context(impl.name) {
