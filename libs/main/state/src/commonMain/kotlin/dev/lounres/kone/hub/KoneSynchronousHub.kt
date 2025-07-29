@@ -39,6 +39,7 @@ public fun <Value> KoneSynchronousHub<Value>.subscribe(callback: (Value) -> Unit
 
 @JvmInline
 public value class KoneSynchronousHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneSynchronousHub<Value>) {
+    @IgnorableReturnValue
     public fun subscribe(callback: (Value) -> Unit): KoneSynchronousHub.Subscription {
         val node = hub.callbacks.addNode(callback)
         return KoneSynchronousHub.Subscription { node.remove() }

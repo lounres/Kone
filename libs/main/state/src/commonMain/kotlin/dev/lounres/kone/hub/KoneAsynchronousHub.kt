@@ -53,6 +53,7 @@ public fun <Value> KoneAsynchronousHub<Value>.subscribe(callback: suspend (Value
 
 @JvmInline
 public value class KoneAsynchronousHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneAsynchronousHub<Value>) {
+    @IgnorableReturnValue
     public fun subscribe(callback: suspend (Value) -> Unit): KoneAsynchronousHub.Subscription {
         val node = hub.callbacks.addNode(callback)
         return KoneAsynchronousHub.Subscription {

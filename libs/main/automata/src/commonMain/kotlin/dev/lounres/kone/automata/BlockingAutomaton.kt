@@ -21,6 +21,7 @@ public class BlockingAutomaton<State, Transition, NoNextStateReason>(
     internal var _state: State = initialState
 }
 
+@IgnorableReturnValue
 public inline fun <
     State,
     Transition,
@@ -51,6 +52,7 @@ public inline fun <
         MovementMaybeResult.Success(previousState, transition, nextState)
     }
 
+@IgnorableReturnValue
 public inline fun <
     State,
     Transition,
@@ -75,6 +77,7 @@ public inline fun <
         MovementResult.Success(previousState, transition, nextState)
     }
 
+@IgnorableReturnValue
 public fun <
     State,
     Transition,
@@ -84,6 +87,7 @@ public fun <
     transition: TransitionOrReason<Transition, NoTransitionReason>
 ): MovementMaybeResult<State, Transition, NoTransitionReason, NoNextStateReason> = moveMaybe { transition }
 
+@IgnorableReturnValue
 public fun <
     State,
     Transition,

@@ -245,6 +245,7 @@ stal {
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
+                        "-Xreturn-value-checker=full",
                     )
                 }
 
@@ -269,6 +270,7 @@ stal {
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
+                        "-Xreturn-value-checker=full",
                     )
                 }
 

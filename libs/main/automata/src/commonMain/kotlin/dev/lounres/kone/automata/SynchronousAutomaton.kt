@@ -21,6 +21,7 @@ public class SynchronousAutomaton<State, Transition, NoNextStateReason>(
     internal var _state: State = initialState
 }
 
+@IgnorableReturnValue
 public inline fun <
     State,
     Transition,
@@ -53,6 +54,7 @@ public inline fun <
     return MovementMaybeResult.Success(previousState, transition, nextState)
 }
 
+@IgnorableReturnValue
 public inline fun <
     State,
     Transition,
@@ -79,6 +81,7 @@ public inline fun <
     return MovementResult.Success(previousState, transition, nextState)
 }
 
+@IgnorableReturnValue
 public fun <
     State,
     Transition,
@@ -89,6 +92,7 @@ public fun <
 ): MovementMaybeResult<State, Transition, NoTransitionReason, NoNextStateReason> =
     moveMaybe { transition }
 
+@IgnorableReturnValue
 public fun <
     State,
     Transition,

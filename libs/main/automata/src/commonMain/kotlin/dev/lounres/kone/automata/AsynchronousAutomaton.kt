@@ -23,6 +23,7 @@ public class AsynchronousAutomaton<State, Transition, NoNextStateReason>(
     internal var _state: State = initialState
 }
 
+@IgnorableReturnValue
 public suspend inline fun <
     State,
     Transition,
@@ -53,6 +54,7 @@ public suspend inline fun <
         MovementMaybeResult.Success(previousState, transition, nextState)
     }
 
+@IgnorableReturnValue
 public suspend inline fun <
     State,
     Transition,
@@ -77,6 +79,7 @@ public suspend inline fun <
         MovementResult.Success(previousState, transition, nextState)
     }
 
+@IgnorableReturnValue
 public suspend fun <
     State,
     Transition,
@@ -87,6 +90,7 @@ public suspend fun <
 ): MovementMaybeResult<State, Transition, NoTransitionReason, NoNextStateReason> =
     moveMaybe { transition }
 
+@IgnorableReturnValue
 public suspend fun <
     State,
     Transition,

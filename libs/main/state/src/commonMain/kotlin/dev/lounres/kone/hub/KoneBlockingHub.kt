@@ -48,6 +48,7 @@ public fun <Value> KoneBlockingHub<Value>.subscribe(callback: (Value) -> Unit): 
 
 @JvmInline
 public value class KoneBlockingHubSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHub<Value>) {
+    @IgnorableReturnValue
     public fun subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription {
         val node = hub.callbacks.addNode(callback)
         return KoneBlockingHub.Subscription {
