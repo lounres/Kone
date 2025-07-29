@@ -35,6 +35,8 @@ public interface KoneIterator<out Element> {
      * @throws NoFollowingElementInIteratorException when there is no next element.
      */
     public fun moveNext()
+    
+    public companion object
 }
 
 /**
