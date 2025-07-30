@@ -326,7 +326,9 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
      * And this operation adds a place with index [size] and puts the value in it.
      */
     public fun addNode(element: Element): KoneMutableListNode<Element>
-    override fun add(element: Element) { addNode(element) }
+    override fun add(element: Element) {
+        val _ = addNode(element)
+    }
     /**
      * Adds provided [element] before element with index [index]
      * and returns its corresponding node.
@@ -344,7 +346,9 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
      * @throws IndexOutOfBoundsException when index is greater than [size].
      */
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
-    override fun addAt(index: UInt, element: Element) { addNodeAt(index, element) }
+    override fun addAt(index: UInt, element: Element) {
+        val _ = addNodeAt(index, element)
+    }
     
     override fun iterator(): KoneMutableNoddedListIterator<Element>
     override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element>
