@@ -148,6 +148,7 @@ public interface MinimumHeap<Element, Priority> {
      * Adds the [element] with corresponding [priority] to the heap
      * and returns constructed node that corresponds to the element and the priority.
      */
+    @IgnorableReturnValue
     public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
     /**
      * Retrieves the root node. It is a node with the minimum priority.
@@ -156,6 +157,7 @@ public interface MinimumHeap<Element, Priority> {
     /**
      * Retrieves the root node and removes it from the heap. It is a node with the minimum priority.
      */
+    @IgnorableReturnValue
     public fun popMinimum(): HeapNode<Element, Priority>
 }
 
@@ -193,6 +195,7 @@ public interface MaximumHeap<Element, Priority> {
      * Adds the [element] with corresponding [priority] to the heap
      * and returns constructed node that corresponds to the element and the priority.
      */
+    @IgnorableReturnValue
     public fun add(element: Element, priority: Priority): HeapNode<Element, Priority>
     /**
      * Retrieves the root node. It is a node with the maximum priority.
@@ -201,6 +204,7 @@ public interface MaximumHeap<Element, Priority> {
     /**
      * Retrieves the root node and removes it from the heap. It is a node with the maximum priority.
      */
+    @IgnorableReturnValue
     public fun popMaximum(): HeapNode<Element, Priority>
 }
 

@@ -335,6 +335,7 @@ stal {
                                 enableLanguageFeature("ExplicitBackingFields")
 //                                enableLanguageFeature("ContextSensitiveResolution")
                                 enableLanguageFeature("NestedTypeAliases")
+                                optIn("kotlin.experimental.ExperimentalTypeInference")
                                 optIn("kotlin.contracts.ExperimentalContracts")
                                 optIn("kotlin.ExperimentalStdlibApi")
                                 optIn("kotlin.ExperimentalSubclassOptIn")

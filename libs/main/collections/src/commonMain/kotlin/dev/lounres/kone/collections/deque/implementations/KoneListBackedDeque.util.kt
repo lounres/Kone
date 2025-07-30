@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.deque.implementations
 
-import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 
 
-public fun <Element> KoneListBackedDeque(): KoneListBackedDeque<Element> = KoneListBackedDeque(KoneArrayResizableList())
+public fun <Element> KoneListBackedDeque(): KoneListBackedDeque<Element> = KoneListBackedDeque(KoneArrayResizableLinkedList())

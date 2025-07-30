@@ -263,7 +263,7 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             get() = if (isDetached) detachedNodeException() else _holder?.previous?.node
         
         override fun remove() {
-            if (isDetached) detachedNodeException()
+            if (isDetached) return
             _holder!!.remove()
         }
     }

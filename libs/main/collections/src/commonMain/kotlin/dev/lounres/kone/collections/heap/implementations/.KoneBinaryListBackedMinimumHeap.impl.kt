@@ -168,7 +168,7 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
             }
         
         override fun remove() {
-            if (isDetached) detachedNodeException()
+            if (isDetached) return
             heap.removeNode(index)
         }
     }

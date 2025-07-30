@@ -68,4 +68,6 @@ public interface KoneDeque<Element> {
      * Removes all elements from the collection.
      */
     public fun removeAll()
+    
+    public companion object
 }
