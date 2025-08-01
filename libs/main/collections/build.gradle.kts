@@ -23,3 +23,10 @@ kotlin {
         }
     }
 }
+
+//tasks.jvmTest {
+//    systemProperties = buildMap {
+//        putAll(systemProperties)
+//        put("kotest.tags", "KoneFibonacciGCMinimumHeap")
+//    }
+//}

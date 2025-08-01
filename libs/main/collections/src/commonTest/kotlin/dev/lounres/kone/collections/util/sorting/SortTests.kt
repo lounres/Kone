@@ -20,11 +20,9 @@ import dev.lounres.kone.relations.defaultOrder
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.scopes.ContainerScope
+import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
-import io.kotest.property.Exhaustive
-import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.exhaustive
-import io.kotest.property.exhaustive.of
 
 
 interface SortingApplier {
@@ -91,16 +89,16 @@ class SortTests : FunSpec({
     threads = 16
     concurrency = 16
     
-    val listsToShuffle = Exhaustive.of(KoneList.of(0u, 0u, 2u, 4u, 4u, 4u), KoneList.of(0u, 1u, 2u, 3u), KoneList.of(0u, 1u, 2u, 3u, 4u))
+    val listsToShuffle = listOf(KoneList.of(0u, 0u, 2u, 4u, 4u, 4u), KoneList.of(0u, 1u, 2u, 3u), KoneList.of(0u, 1u, 2u, 3u, 4u))
     
     for (desc in sortings) context(desc.name) {
         
-        suspend /*inline*/ fun testSortFunction(
+        suspend /*inline*/ fun ContainerScope.testSortFunction(
             /*crossinline*/ sort: (list: KoneSettableList<UInt>) -> Unit,
         ) {
-            checkAll(listsToShuffle) { init ->
-                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList().exhaustive()
-                checkAll(permutationsExhaustive) { input ->
+            withData(listsToShuffle) { init ->
+                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList()
+                withData(permutationsExhaustive) { input ->
                     val target = input.toKoneSettableList()
                     
                     sort(target)
@@ -110,79 +108,79 @@ class SortTests : FunSpec({
             }
         }
         
-        test("sort comparable") {
+        context("sort comparable") {
             testSortFunction {
                 desc.applier.sort(it)
             }
         }
-        test("sort ordered") {
+        context("sort ordered") {
             testSortFunction {
                 desc.applier.sort(defaultOrder(), it)
             }
         }
-        test("sort with comparator") {
+        context("sort with comparator") {
             testSortFunction {
                 desc.applier.sortWith(it, defaultComparator())
             }
         }
-        test("sort descending comparable") {
+        context("sort descending comparable") {
             testSortFunction {
                 desc.applier.sortDescending(it)
                 it.reverse()
             }
         }
-        test("sort descending ordered") {
+        context("sort descending ordered") {
             testSortFunction {
                 desc.applier.sortDescending(defaultOrder(), it)
                 it.reverse()
             }
         }
-        test("sort descending with comparator") {
+        context("sort descending with comparator") {
             testSortFunction {
                 desc.applier.sortWithDescending(it, defaultComparator())
                 it.reverse()
             }
         }
-        test("sort by comparable") {
+        context("sort by comparable") {
             testSortFunction {
                 desc.applier.sortBy(it) { it }
             }
         }
-        test("sort by ordered") {
+        context("sort by ordered") {
             testSortFunction {
                 desc.applier.sortBy(defaultOrder(), it) { it }
             }
         }
-        test("sort by with comparator") {
+        context("sort by with comparator") {
             testSortFunction {
                 desc.applier.sortWithBy(it, defaultComparator()) { it }
             }
         }
-        test("sort by descending comparable") {
+        context("sort by descending comparable") {
             testSortFunction {
                 desc.applier.sortByDescending(it) { it }
                 it.reverse()
             }
         }
-        test("sort by descending ordered") {
+        context("sort by descending ordered") {
             testSortFunction {
                 desc.applier.sortByDescending(defaultOrder(), it) { it }
                 it.reverse()
             }
         }
-        test("sort by descending with comparator") {
+        context("sort by descending with comparator") {
             testSortFunction {
                 desc.applier.sortWithByDescending(it, defaultComparator()) { it }
                 it.reverse()
             }
         }
         
-        suspend /*inline*/ fun testSortedFunction(
+        suspend /*inline*/ fun ContainerScope.testSortedFunction(
             /*crossinline*/ sort: (list: KoneIterable<UInt>) -> KoneList<UInt>,
         ) {
-            checkAll(listsToShuffle) { init ->
-                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList().exhaustive()
-                checkAll(permutationsExhaustive) { input ->
+            withData(listsToShuffle) { init ->
+                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList()
+                withData(permutationsExhaustive) { input ->
                     val result = sort(input)
                     
                     testEquality(result, init)
@@ -190,40 +188,40 @@ class SortTests : FunSpec({
             }
         }
         
-        test("sorted comparable") {
+        context("sorted comparable") {
             testSortedFunction { desc.applier.sorted(it) }
         }
-        test("sorted ordered") {
+        context("sorted ordered") {
             testSortedFunction { desc.applier.sorted(defaultOrder(), it) }
         }
-        test("sorted with comparator") {
+        context("sorted with comparator") {
             testSortedFunction { desc.applier.sortedWith(it, defaultComparator()) }
         }
-        test("sorted descending comparable") {
+        context("sorted descending comparable") {
             testSortedFunction { desc.applier.sortedDescending(it).reversed() }
         }
-        test("sorted descending ordered") {
+        context("sorted descending ordered") {
             testSortedFunction { desc.applier.sortedDescending(defaultOrder(), it).reversed() }
         }
-        test("sorted descending with comparator") {
+        context("sorted descending with comparator") {
             testSortedFunction { desc.applier.sortedWithDescending(it, defaultComparator()).reversed() }
         }
-        test("sorted by comparable") {
+        context("sorted by comparable") {
             testSortedFunction { desc.applier.sortedBy(it) { it } }
         }
-        test("sorted by ordered") {
+        context("sorted by ordered") {
             testSortedFunction { desc.applier.sortedBy(defaultOrder(), it) { it } }
         }
-        test("sorted by with comparator") {
+        context("sorted by with comparator") {
             testSortedFunction { desc.applier.sortedWithBy(it, defaultComparator()) { it } }
         }
-        test("sorted by descending comparable") {
+        context("sorted by descending comparable") {
             testSortedFunction { desc.applier.sortedByDescending(it) { it }.reversed() }
         }
-        test("sorted by descending ordered") {
+        context("sorted by descending ordered") {
             testSortedFunction { desc.applier.sortedByDescending(defaultOrder(), it) { it }.reversed() }
         }
-        test("sorted by descending with comparator") {
+        context("sorted by descending with comparator") {
             testSortedFunction { desc.applier.sortedWithByDescending(it, defaultComparator()) { it }.reversed() }
         }
     }

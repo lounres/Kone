@@ -14,6 +14,7 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.scope
@@ -63,13 +64,13 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
         newNode.previousSibling = lastChild
         lastChild?.nextSibling = newNode
         lastChild = newNode
-        if (firstChild == null) firstChild = newNode
+        if (firstChild === null) firstChild = newNode
         numberOfChildren++
         size++
 
         val minNode = minimumNode
         when {
-            minNode == null -> {
+            minNode === null -> {
                 minimumNode = newNode
                 newNode.heap = this
             }
@@ -117,7 +118,7 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
                     var currentRoot: Node<Element, Priority> = currentNode
                     while (true) {
                         val nodeOfTheSameDegree = degrees[currentRoot.numberOfChildren]
-                        if (nodeOfTheSameDegree == null) {
+                        if (nodeOfTheSameDegree === null) {
                             degrees[currentRoot.numberOfChildren] = currentRoot
                             break
                         }
@@ -140,7 +141,7 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
                         maxNode.previousSibling = minNode.lastChild
                         minNode.lastChild?.nextSibling = maxNode
                         minNode.lastChild = maxNode
-                        if (minNode.firstChild == null) minNode.firstChild = maxNode
+                        if (minNode.firstChild === null) minNode.firstChild = maxNode
                         minNode.numberOfChildren++
                         numberOfChildren--
                         currentRoot = minNode
@@ -187,93 +188,51 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
 
         override var priority: Priority = priority
             set(value) {
+                val oldValue = field
                 field = value
                 if (!isDetached) {
                     val heap = actualHeap()
-                    when {
-                        parent != null && heap.priorityOrder { value lt parent!!.priority } -> {
-                            nextSibling?.previousSibling = previousSibling
-                            previousSibling?.nextSibling = nextSibling
-                            parent!!.numberOfChildren--
-                            parent = null
-                            heap.lastChild?.nextSibling = this
-                            this.previousSibling = heap.lastChild
-                            this.nextSibling = null
-                            heap.lastChild = this
-                            heap.numberOfChildren++
-                            isMarked = false
-                            val minNode = heap.minimumNode!!
-                            if (heap.priorityOrder { value lt minNode.priority }) {
-                                heap.minimumNode = this
-                                minNode.heap = null
-                                this.heap = heap
-                            }
-
-                            var currentNode = parent!!
-                            while (currentNode.isMarked) {
-                                val parent = currentNode.parent!!
-                                currentNode.nextSibling?.previousSibling = currentNode.previousSibling
-                                currentNode.previousSibling?.nextSibling = currentNode.nextSibling
-                                if (parent.firstChild === currentNode) parent.firstChild = currentNode.nextSibling
-                                if (parent.lastChild === currentNode) parent.lastChild = currentNode.previousSibling
-                                currentNode.parent!!.numberOfChildren--
-                                currentNode.parent = null
-                                currentNode.nextSibling = null
-                                currentNode.previousSibling = heap.lastChild
-                                heap.lastChild?.nextSibling = currentNode
-                                heap.numberOfChildren++
-                                currentNode.isMarked = false
-                                val minNode = heap.minimumNode!!
-                                if (heap.priorityOrder { currentNode.priority lt minNode.priority }) {
-                                    heap.minimumNode = currentNode
-                                    minNode.heap = null
-                                    currentNode.heap = heap
+                    when (heap.priorityOrder { value compareWith oldValue }) {
+                        Equal -> {}
+                        LeftIsLessThanRight -> when {
+                            parent === null -> {
+                                val min = heap.minimumNode!!
+                                if (heap.priorityOrder { value lt min.priority }) {
+                                    heap.minimumNode = this
+                                    min.heap = null
+                                    this.heap = heap
                                 }
-                                currentNode = parent
                             }
-                            if (currentNode.parent != null) currentNode.isMarked = true
-                        }
-                        scope {
-                            var currentChildNode = firstChild
-                            while (currentChildNode != null) {
-                                if (heap.priorityOrder { value gt currentChildNode.priority }) return@scope true
-                                currentChildNode = currentChildNode.nextSibling
-                            }
-                            false
-                        } -> {
-                            heap.minimumNode!!.heap = null
-                            heap.minimumNode = null
-                            val parentForCascadingCut = parent
-                            if (parent != null) {
-                                this.nextSibling?.previousSibling = this.previousSibling
-                                this.previousSibling?.nextSibling = this.nextSibling
+                            heap.priorityOrder { value lt parent!!.priority } -> {
+                                nextSibling?.previousSibling = previousSibling
+                                previousSibling?.nextSibling = nextSibling
                                 parent!!.numberOfChildren--
                                 parent = null
                                 heap.lastChild?.nextSibling = this
                                 this.previousSibling = heap.lastChild
+                                this.nextSibling = null
                                 heap.lastChild = this
                                 heap.numberOfChildren++
-                            }
-                            this.heap = null
-                            isMarked = false
-                            heap.lastChild?.nextSibling = this.firstChild
-                            this.firstChild?.previousSibling = heap.lastChild
-                            heap.lastChild = this.lastChild ?: heap.lastChild
-                            heap.firstChild = heap.firstChild ?: this.firstChild
-                            heap.numberOfChildren += numberOfChildren
-                            numberOfChildren = 0u
-
-                            if (parentForCascadingCut != null) {
-                                var currentNode: Node<Element, Priority> = parentForCascadingCut
+                                isMarked = false
+                                val minNode = heap.minimumNode!!
+                                if (heap.priorityOrder { value lt minNode.priority }) {
+                                    heap.minimumNode = this
+                                    minNode.heap = null
+                                    this.heap = heap
+                                }
+                                
+                                var currentNode = parent!!
                                 while (currentNode.isMarked) {
                                     val parent = currentNode.parent!!
                                     currentNode.nextSibling?.previousSibling = currentNode.previousSibling
                                     currentNode.previousSibling?.nextSibling = currentNode.nextSibling
+                                    if (parent.firstChild === currentNode) parent.firstChild = currentNode.nextSibling
+                                    if (parent.lastChild === currentNode) parent.lastChild = currentNode.previousSibling
                                     currentNode.parent!!.numberOfChildren--
                                     currentNode.parent = null
+                                    currentNode.nextSibling = null
                                     currentNode.previousSibling = heap.lastChild
-                                    heap.lastChild?.previousSibling = currentNode
-                                    heap.lastChild = currentNode
+                                    heap.lastChild?.nextSibling = currentNode
                                     heap.numberOfChildren++
                                     currentNode.isMarked = false
                                     val minNode = heap.minimumNode!!
@@ -286,55 +245,126 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
                                 }
                                 if (currentNode.parent != null) currentNode.isMarked = true
                             }
-                            
+                        }
+                        LeftIsGreaterThanRight -> when {
                             scope {
-                                val degrees = KoneMutableArray<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(heap.size)) { null }
-                                var currentNode: Node<Element, Priority>? = heap.firstChild
-                                while (currentNode != null) {
-                                    val nextNode = currentNode.nextSibling
-                                    while (true) {
-                                        val nodeOfTheSameDegree = degrees[currentNode.numberOfChildren]
-                                        if (nodeOfTheSameDegree == null) {
-                                            degrees[currentNode.numberOfChildren] = currentNode
-                                            break
+                                var currentChildNode = firstChild
+                                while (currentChildNode != null) {
+                                    if (heap.priorityOrder { value gt currentChildNode.priority }) return@scope true
+                                    currentChildNode = currentChildNode.nextSibling
+                                }
+                                false
+                            } -> {
+                                heap.minimumNode!!.heap = null
+                                heap.minimumNode = null
+                                val parentForCascadingCut = parent
+                                if (parent != null) {
+                                    this.nextSibling?.previousSibling = this.previousSibling
+                                    this.previousSibling?.nextSibling = this.nextSibling
+                                    parent!!.numberOfChildren--
+                                    parent = null
+                                    heap.lastChild?.nextSibling = this
+                                    this.previousSibling = heap.lastChild
+                                    heap.lastChild = this
+                                    heap.numberOfChildren++
+                                }
+                                this.heap = null
+                                isMarked = false
+                                heap.lastChild?.nextSibling = this.firstChild
+                                this.firstChild?.previousSibling = heap.lastChild
+                                heap.lastChild = this.lastChild ?: heap.lastChild
+                                heap.firstChild = heap.firstChild ?: this.firstChild
+                                heap.numberOfChildren += numberOfChildren
+                                numberOfChildren = 0u
+                                
+                                if (parentForCascadingCut != null) {
+                                    var currentNode: Node<Element, Priority> = parentForCascadingCut
+                                    while (currentNode.isMarked) {
+                                        val parent = currentNode.parent!!
+                                        currentNode.nextSibling?.previousSibling = currentNode.previousSibling
+                                        currentNode.previousSibling?.nextSibling = currentNode.nextSibling
+                                        currentNode.parent!!.numberOfChildren--
+                                        currentNode.parent = null
+                                        currentNode.previousSibling = heap.lastChild
+                                        heap.lastChild?.previousSibling = currentNode
+                                        heap.lastChild = currentNode
+                                        heap.numberOfChildren++
+                                        currentNode.isMarked = false
+                                        val minNode = heap.minimumNode!!
+                                        if (heap.priorityOrder { currentNode.priority lt minNode.priority }) {
+                                            heap.minimumNode = currentNode
+                                            minNode.heap = null
+                                            currentNode.heap = heap
                                         }
-                                        degrees[currentNode.numberOfChildren] = null
-                                        val minNode: Node<Element, Priority>
-                                        val maxNode: Node<Element, Priority>
-                                        if (heap.priorityOrder { currentNode.priority lt nodeOfTheSameDegree.priority }) {
-                                            minNode = currentNode
-                                            maxNode = nodeOfTheSameDegree
-                                        } else {
-                                            minNode = nodeOfTheSameDegree
-                                            maxNode = currentNode
-                                        }
-                                        maxNode.nextSibling?.previousSibling = maxNode.previousSibling
-                                        maxNode.previousSibling?.nextSibling = maxNode.nextSibling
-                                        maxNode.parent = minNode
-                                        maxNode.nextSibling = null
-                                        maxNode.previousSibling = minNode.lastChild
-                                        minNode.lastChild?.nextSibling = maxNode
-                                        minNode.lastChild = maxNode
-                                        if (minNode.firstChild == null) minNode.firstChild = maxNode
-                                        minNode.numberOfChildren++
-                                        nodeOfTheSameDegree.remove()
-                                        heap.numberOfChildren--
+                                        currentNode = parent
                                     }
-                                    currentNode = nextNode
+                                    if (currentNode.parent != null) currentNode.isMarked = true
+                                }
+                                
+                                scope {
+                                    val degrees = KoneMutableArray<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(heap.size)) { null }
+                                    var currentNode: Node<Element, Priority>? = heap.firstChild
+                                    while (currentNode != null) {
+                                        val nextNode = currentNode.nextSibling
+                                        while (true) {
+                                            val nodeOfTheSameDegree = degrees[currentNode.numberOfChildren]
+                                            if (nodeOfTheSameDegree === null) {
+                                                degrees[currentNode.numberOfChildren] = currentNode
+                                                break
+                                            }
+                                            degrees[currentNode.numberOfChildren] = null
+                                            val minNode: Node<Element, Priority>
+                                            val maxNode: Node<Element, Priority>
+                                            if (heap.priorityOrder { currentNode.priority lt nodeOfTheSameDegree.priority }) {
+                                                minNode = currentNode
+                                                maxNode = nodeOfTheSameDegree
+                                            } else {
+                                                minNode = nodeOfTheSameDegree
+                                                maxNode = currentNode
+                                            }
+                                            maxNode.nextSibling?.previousSibling = maxNode.previousSibling
+                                            maxNode.previousSibling?.nextSibling = maxNode.nextSibling
+                                            maxNode.parent = minNode
+                                            maxNode.nextSibling = null
+                                            maxNode.previousSibling = minNode.lastChild
+                                            minNode.lastChild?.nextSibling = maxNode
+                                            minNode.lastChild = maxNode
+                                            if (minNode.firstChild === null) minNode.firstChild = maxNode
+                                            minNode.numberOfChildren++
+                                            nodeOfTheSameDegree.remove()
+                                            heap.numberOfChildren--
+                                        }
+                                        currentNode = nextNode
+                                    }
+                                }
+                                
+                                scope {
+                                    var currentNode: Node<Element, Priority>? = heap.firstChild
+                                    var minNode = currentNode!!
+                                    currentNode = currentNode.nextSibling
+                                    while (currentNode != null) {
+                                        if (heap.priorityOrder { currentNode.priority lt minNode.priority })
+                                            minNode = currentNode
+                                        currentNode = currentNode.nextSibling
+                                    }
+                                    
+                                    heap.minimumNode = minNode
                                 }
                             }
-                            
-                            scope {
+                            heap.minimumNode === this -> {
                                 var currentNode: Node<Element, Priority>? = heap.firstChild
                                 var minNode = currentNode!!
                                 currentNode = currentNode.nextSibling
                                 while (currentNode != null) {
-                                    if (heap.priorityOrder { currentNode.priority lt minNode.priority })
-                                        minNode = currentNode
+                                    if (heap.priorityOrder { currentNode.priority lt minNode.priority }) minNode = currentNode
                                     currentNode = currentNode.nextSibling
                                 }
                                 
-                                heap.minimumNode = minNode
+                                if (minNode !== this) {
+                                    heap.minimumNode = minNode
+                                    minNode.heap = heap
+                                    this.heap = null
+                                }
                             }
                         }
                     }

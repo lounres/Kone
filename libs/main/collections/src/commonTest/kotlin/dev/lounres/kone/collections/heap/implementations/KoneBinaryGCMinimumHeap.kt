@@ -12,7 +12,7 @@ import dev.lounres.kone.collections.heap.MinimumHeapValidator
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.geq
+import dev.lounres.kone.relations.lt
 import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.comparables.shouldBeLessThan
@@ -86,7 +86,7 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
                                 nodes.add(firstChildHolder)
                                 firstChildHolder.parent shouldBeSameInstanceAs currentHolder
                                 heap.priorityOrder {
-                                    firstChildHolder.node.priority geq node.priority
+                                    if (firstChildHolder.node.priority lt node.priority) fail("The heap is invalid")
                                 }
                                 break
                             }
@@ -97,8 +97,8 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
                                 firstChildHolder.parent shouldBeSameInstanceAs currentHolder
                                 secondChildHolder.parent shouldBeSameInstanceAs currentHolder
                                 heap.priorityOrder {
-                                    firstChildHolder.node.priority geq node.priority
-                                    secondChildHolder.node.priority geq node.priority
+                                    if (firstChildHolder.node.priority lt node.priority) fail("The heap is invalid")
+                                    if (secondChildHolder.node.priority lt node.priority) fail("The heap is invalid")
                                 }
                             }
                         }

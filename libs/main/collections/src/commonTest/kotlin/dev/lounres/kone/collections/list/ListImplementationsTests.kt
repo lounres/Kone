@@ -20,6 +20,7 @@ import dev.lounres.kone.scope
 import io.kotest.assertions.fail
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -29,7 +30,6 @@ import io.kotest.property.arbitrary.chunked
 import io.kotest.property.arbitrary.uInt
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.exhaustive
-import io.kotest.property.exhaustive.ints
 
 
 interface KoneListValidator {
@@ -43,8 +43,10 @@ interface KoneListValidator {
     )
 }
 
+@IgnorableReturnValue
 fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>): Validator =
     apply { validate(list) }
+@IgnorableReturnValue
 fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator =
     apply { validateWithIterator(list, iterator) }
 
@@ -325,7 +327,8 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
     
     // TODO: Добавить проверку вместимости
     // Add
-    scope {
+    // FIXME: Remove the `val _ = `
+    val _ = scope {
         val newElement = element()
         add(
             MutableListOperationWithResult(
@@ -409,7 +412,8 @@ fun <Element> Exhaustive.Companion.allMutableNoddedListOperationWithResult(
 
     // TODO: Добавить проверку вместимости
     // AddNode
-    scope {
+    // FIXME: Remove the `val _ = `
+    val _ = scope {
         val newElement = element()
         add(
             MutableNoddedListOperationWithResult(
@@ -444,8 +448,8 @@ class ListImplementationsTests : FunSpec({
     for (impl in listImplementations) context(impl.name) {
         val producer = impl.listProducer
         
-        test("test generative construction") {
-            checkAll(Exhaustive.ints(0 .. 20)) { length ->
+        context("test generative construction") {
+            withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                 checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                     val list = producer.produceBy(length.toUInt()) { input[it.toInt()] }
                     impl.listValidator.shouldValidate(list)
@@ -554,22 +558,22 @@ class ListImplementationsTests : FunSpec({
             }
         
         if (producer is KoneResizableMutableListProducer) {
-            test("test element-by-element extension") {
-                checkAll(Exhaustive.ints(0 .. 20)) { length ->
+            context("test element-by-element extension") {
+                withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>()
                         impl.listValidator.shouldValidate(list)
                         testEquality(list, emptyList())
                         for (index in 0 ..< length) {
-                            list.add(input[index.toInt()])
+                            list.add(input[index])
                             impl.listValidator.shouldValidate(list)
                             testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
             }
-            test("test element-by-element reduction") {
-                checkAll(Exhaustive.ints(0 .. 20)) { length ->
+            context("test element-by-element reduction") {
+                withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produceBy<UInt>(length.toUInt()) { input[it.toInt()] }
                         impl.listValidator.shouldValidate(list)
@@ -585,36 +589,36 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneGrowableMutableListProducer) {
-            test("test element-by-element extension") {
-                checkAll(Exhaustive.ints(0..20)) { length ->
+            context("test element-by-element extension") {
+                withData(nameFn = { "length $it" }, 0..20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>()
                         impl.listValidator.shouldValidate(list)
                         testEquality(list, emptyList())
                         for (index in 0 ..< length) {
-                            list.add(input[index.toInt()])
+                            list.add(input[index])
                             impl.listValidator.shouldValidate(list)
                             testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
             }
-            test("test element-by-element extension with ensured capacity") {
-                checkAll(Exhaustive.ints(0..20)) { length ->
+            context("test element-by-element extension with ensured capacity") {
+                withData(nameFn = { "length $it" }, 0..20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>(length.toUInt())
                         impl.listValidator.shouldValidate(list)
                         testEquality(list, emptyList())
                         for (index in 0 ..< length) {
-                            list.add(input[index.toInt()])
+                            list.add(input[index])
                             impl.listValidator.shouldValidate(list)
                             testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
             }
-            test("test element-by-element reduction") {
-                checkAll(Exhaustive.ints(0 .. 20)) { length ->
+            context("test element-by-element reduction") {
+                withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produceBy<UInt>(length.toUInt()) { input[it.toInt()] }
                         impl.listValidator.shouldValidate(list)
@@ -630,22 +634,22 @@ class ListImplementationsTests : FunSpec({
         }
         
         if (producer is KoneFixedCapacityMutableListProducer) {
-            test("test element-by-element extension") {
-                checkAll(Exhaustive.ints(0 .. 20)) { length ->
+            context("test element-by-element extension") {
+                withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produce<UInt>(30u)
                         impl.listValidator.shouldValidate(list)
                         testEquality(list, emptyList())
                         for (index in 0 ..< length) withClue("at iteration $index") {
-                            list.add(input[index.toInt()])
+                            list.add(input[index])
                             impl.listValidator.shouldValidate(list)
                             testEquality(list, input.subList(0, index + 1))
                         }
                     }
                 }
             }
-            test("test element-by-element reduction") {
-                checkAll(Exhaustive.ints(0 .. 20)) { length ->
+            context("test element-by-element reduction") {
+                withData(nameFn = { "length $it" }, 0 .. 20) { length ->
                     checkAll(10, Arb.uInt().chunked(length, length)) { input ->
                         val list = producer.produceBy<UInt>(length.toUInt()) { input[it.toInt()] }
                         impl.listValidator.shouldValidate(list)
@@ -760,11 +764,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneResizableMutableListProducer)
             test("test of mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operation, result) ->
                         val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableList = mutableList,
                             validator = impl.listValidator,
@@ -776,11 +780,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneGrowableMutableListProducer) {
             test("test of mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operation, result) ->
                         val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableList = mutableList,
                             validator = impl.listValidator,
@@ -790,11 +794,11 @@ class ListImplementationsTests : FunSpec({
             }
             test("test of mutability operations after series of changes with ensured capacity") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operation, result) ->
                         val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableList = mutableList,
                             validator = impl.listValidator,
@@ -807,11 +811,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneFixedCapacityMutableListProducer)
             test("test of mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) { (operation, result) ->
                         val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableList = mutableList,
                             validator = impl.listValidator,
@@ -853,11 +857,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneResizableMutableNoddedListProducer)
             test("test of nodded mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operation, result) ->
                         val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableNoddedListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableNoddedList = mutableNoddedList,
                             validator = impl.listValidator,
@@ -869,11 +873,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneGrowableMutableNoddedListProducer) {
             test("test of nodded mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operation, result) ->
                         val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableNoddedListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableNoddedList = mutableNoddedList,
                             validator = impl.listValidator,
@@ -883,11 +887,11 @@ class ListImplementationsTests : FunSpec({
             }
             test("test of nodded mutability operations after series of changes with ensured capacity") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operation, result) ->
                         val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableNoddedListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableNoddedList = mutableNoddedList,
                             validator = impl.listValidator,
@@ -900,11 +904,11 @@ class ListImplementationsTests : FunSpec({
         if (producer is KoneFixedCapacityMutableNoddedListProducer)
             test("test of nodded mutability operations after series of changes") {
                 checkAll(Exhaustive.allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(arbElements = Arb.uInt(), initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) { previousSteps ->
-                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operattion, result) ->
+                    checkAll(Exhaustive.allMutableNoddedListOperationWithResult(arbElements = Arb.uInt(), initialList = previousSteps.lastResult)) { (operation, result) ->
                         val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
                         testKoneMutableNoddedListMutabilityOperationsOn(
                             previousSteps = previousSteps,
-                            operation = operattion,
+                            operation = operation,
                             result = result,
                             mutableNoddedList = mutableNoddedList,
                             validator = impl.listValidator,
