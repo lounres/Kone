@@ -350,10 +350,9 @@ stal {
                     }
                 }
             }
-            pluginManager.withPlugin("org.gradle.java") {
-                tasks.withType<Test> {
-                    useJUnitPlatform()
-                }
+            tasks.withType<Test> {
+                useJUnitPlatform()
+                maxHeapSize = "4g"
             }
         }
         "kotlin library settings" {

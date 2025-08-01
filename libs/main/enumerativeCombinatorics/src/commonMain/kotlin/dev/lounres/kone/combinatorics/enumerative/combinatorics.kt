@@ -131,7 +131,7 @@ public fun <E> KoneList<E>.selectiveCartesianPower(power: UInt, testPrefix: (Kon
 
 // TODO: Add more selective functions
 
-public fun <E> KoneList<E>.combinations(k: UInt = size): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinations(k: UInt): Sequence<KoneList<E>> {
     val collection = this
 
     return sequence {
@@ -319,7 +319,7 @@ public fun <E> KoneList<E>.allPermutations(): Sequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
     val collection = this
 
     return sequence {

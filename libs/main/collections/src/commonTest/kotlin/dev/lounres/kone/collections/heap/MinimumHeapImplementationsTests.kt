@@ -31,7 +31,6 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultOrder
 import io.kotest.assertions.withClue
 import io.kotest.core.NamedTag
-import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
