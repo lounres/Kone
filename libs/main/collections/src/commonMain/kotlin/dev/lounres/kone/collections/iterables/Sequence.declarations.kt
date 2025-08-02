@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.iterables
 
 
-public interface KoneSequence<out Element> {
+public fun interface KoneSequence<out Element> {
     public operator fun iterator(): KoneIterator<Element>
     
     public companion object

@@ -7,12 +7,18 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.deque.KoneDeque
+import dev.lounres.kone.collections.deque.empty
+import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterables.empty.KoneEmptySettableLinearIterator
 import dev.lounres.kone.collections.list.*
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.noElementMatchingThePredicateException
+import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.utils.sorting.heapsort
@@ -49,16 +55,41 @@ import kotlin.random.nextUInt
 
 
 // TODO: Add operations for array value classes
-// TODO: Add operations for iterators
 // TODO: Add slicing operations (like `.count(from = 5u, to = 7u) { ... }`)
 
+public fun <E, D: KoneMutableList<in E>> KoneIterator<E>.copyTo(destination: D): D {
+    destination.addAllFrom(this)
+    return destination
+}
+public fun <E, D: KoneMutableSet<in E>> KoneIterator<E>.copyTo(destination: D): D {
+    destination.addAllFrom(this)
+    return destination
+}
+
 public fun <E, D: KoneMutableList<in E>> KoneIterable<E>.copyTo(destination: D): D {
-    for (element in this) destination.add(element)
+    destination.addAllFrom(this)
     return destination
 }
 public fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.copyTo(destination: D): D {
-    for (element in this) destination.add(element)
+    destination.addAllFrom(this)
     return destination
+}
+
+public fun <E, D: KoneMutableList<in E>> KoneSequence<E>.copyTo(destination: D): D {
+    destination.addAllFrom(this)
+    return destination
+}
+public fun <E, D: KoneMutableSet<in E>> KoneSequence<E>.copyTo(destination: D): D {
+    destination.addAllFrom(this)
+    return destination
+}
+
+public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneIterator<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneIterator<E>) {
+    addAllFrom(elements)
 }
 
 public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneIterable<E>) {
@@ -66,6 +97,14 @@ public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneIterable<E>)
 }
 
 public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneIterable<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableList<E>.plusAssign(elements: KoneSequence<E>) {
+    addAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableSet<E>.plusAssign(elements: KoneSequence<E>) {
     addAllFrom(elements)
 }
 
@@ -77,11 +116,47 @@ public operator fun <E> KoneMutableSet<E>.plusAssign(element: E) {
     add(element)
 }
 
+private class KoneTakeIterator<Element>(
+    private val source: KoneIterator<Element>,
+    private val n: UInt,
+) : KoneIterator<Element> {
+    private var nextIndex = 0u
+    override fun hasNext(): Boolean = nextIndex < n && source.hasNext()
+    override fun getNext(): Element {
+        if (!hasNext()) noNextElementInIteratorException()
+        return source.getNext()
+    }
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        source.moveNext()
+    }
+}
+
+public fun <E> KoneIterator<E>.take(n: UInt): KoneIterator<E> = KoneTakeIterator(this, n)
+
 public fun <E> KoneIterable<E>.take(n: UInt): KoneList<E> {
     val newSize = min(size, n)
     if (newSize == 0u) return KoneList.empty()
     val iterator = iterator()
     return KoneList(newSize) { iterator.getAndMoveNext() }
+}
+
+private class KoneTakeSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val n: UInt,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = source.iterator().take(n)
+}
+
+public fun <E> KoneSequence<E>.take(n: UInt): KoneSequence<E> = KoneTakeSequence(this, n)
+
+public fun <E> KoneIterator<E>.takeLast(n: UInt): KoneIterator<E> {
+    val deque = KoneDeque.empty<E>()
+    while (hasNext()) {
+        deque.addLast(getAndMoveNext())
+        if (deque.size > n) deque.removeFirst()
+    }
+    return KoneList(deque.size) { deque.popFirst() }.iterator()
 }
 
 public fun <E> KoneIterable<E>.takeLast(n: UInt): KoneList<E> {
@@ -106,14 +181,58 @@ public fun <E> KoneList<E>.takeLast(n: UInt): KoneList<E> {
     return KoneArraySettableList(result)
 }
 
-public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
-public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - n)
-public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - n)
+private class KoneTakeLastSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val n: UInt,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = source.iterator().takeLast(n)
+}
 
-public fun <E> KoneList<E>.slice(fromIndex: UInt, toIndex: UInt): KoneList<E> {
-    if (toIndex < fromIndex) return KoneList.empty()
+public fun <E> KoneSequence<E>.takeLast(n: UInt): KoneSequence<E> = KoneTakeLastSequence(this, n)
+
+public fun <E> KoneIterator<E>.drop(n: UInt): KoneIterator<E> {
+    var index = 0u
+    while (index < n && hasNext()) {
+        moveNext()
+        index++
+    }
+    return this
+}
+
+public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - min(size, n))
+
+public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - min(size, n))
+
+private class KoneDropSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val n: UInt,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = source.iterator().drop(n)
+}
+
+public fun <E> KoneSequence<E>.drop(n: UInt): KoneSequence<E> = KoneDropSequence(this, n)
+
+public fun <E> KoneIterator<E>.dropLast(n: UInt): KoneIterator<E> {
+    val cache = KoneArrayGrowableList<E>()
+    while (hasNext()) cache.add(getAndMoveNext())
+    return if (cache.size < n) KoneEmptySettableLinearIterator else KoneList(cache.size - n) { cache[it] }.iterator()
+}
+
+public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - min(size, n))
+
+private class KoneDropLastSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val n: UInt,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = source.iterator().dropLast(n)
+}
+
+public fun <E> KoneSequence<E>.dropLast(n: UInt): KoneSequence<E> = KoneDropLastSequence(this, n)
+
+public fun <E> KoneList<E>.slice(fromIndex: UInt, untilIndex: UInt): KoneList<E> {
+    if (untilIndex <= fromIndex) return KoneList.empty()
     val iterator = iteratorFrom(fromIndex)
-    return KoneList(toIndex - fromIndex) { iterator.getAndMoveNext() }
+    return KoneList(untilIndex - fromIndex) { iterator.getAndMoveNext() }
 }
 
 public fun <E> KoneSettableList<E>.reverse() {
@@ -145,77 +264,145 @@ public fun <E> KoneIterable<E>.reversed(): KoneList<E> {
     return KoneArraySettableList(result)
 }
 
+public inline fun <E> KoneIterator<E>.forEach(block: (value: E) -> Unit) {
+    while (hasNext()) block(getAndMoveNext())
+}
+
 public inline fun <E> KoneIterable<E>.forEach(block: (value: E) -> Unit) {
-    for (element in this) block(element)
+    iterator().forEach(block)
+}
+
+public inline fun <E> KoneSequence<E>.forEach(block: (value: E) -> Unit) {
+    iterator().forEach(block)
+}
+
+public inline fun <E> KoneIterator<E>.forEachIndexed(block: (index: UInt, value: E) -> Unit) {
+    var index = 0u
+    while (hasNext()) block(index++, getAndMoveNext())
 }
 
 public inline fun <E> KoneIterable<E>.forEachIndexed(block: (index: UInt, value: E) -> Unit) {
-    var index = 0u
-    for (element in this) block(index++, element)
+    iterator().forEachIndexed(block)
+}
+
+public inline fun <E> KoneSequence<E>.forEachIndexed(block: (index: UInt, value: E) -> Unit) {
+    iterator().forEachIndexed(block)
+}
+
+public inline fun <E> KoneIterator<E>.withEach(block: E.() -> Unit) {
+    while (hasNext()) getAndMoveNext().block()
 }
 
 public inline fun <E> KoneIterable<E>.withEach(block: E.() -> Unit) {
-    for (element in this) element.block()
+    iterator().withEach(block)
+}
+
+public inline fun <E> KoneSequence<E>.withEach(block: E.() -> Unit) {
+    iterator().withEach(block)
+}
+
+public inline fun <E> KoneIterator<E>.withEachIndexed(block: E.(index: UInt) -> Unit) {
+    var index = 0u
+    while (hasNext()) getAndMoveNext().block(index++)
 }
 
 public inline fun <E> KoneIterable<E>.withEachIndexed(block: E.(index: UInt) -> Unit) {
-    var index = 0u
-    for (element in this) element.block(index++)
+    iterator().withEachIndexed(block)
 }
 
-public inline fun <E> KoneIterable<E>.any(block: (value: E) -> Boolean): Boolean {
-    for (element in this) if (block(element)) return true
+public inline fun <E> KoneSequence<E>.withEachIndexed(block: E.(index: UInt) -> Unit) {
+    iterator().withEachIndexed(block)
+}
+
+public inline fun <E> KoneIterator<E>.any(block: (value: E) -> Boolean): Boolean {
+    while (hasNext()) if (block(getNext())) return true else moveNext()
     return false
 }
 
-public inline fun <E> KoneIterable<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+public inline fun <E> KoneIterable<E>.any(block: (value: E) -> Boolean): Boolean = iterator().any(block)
+
+public inline fun <E> KoneSequence<E>.any(block: (value: E) -> Boolean): Boolean = iterator().any(block)
+
+public inline fun <E> KoneIterator<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
     var currentIndex = 0u
-    for (element in this) if (block(currentIndex++, element)) return true
+    while (hasNext()) if (block(currentIndex++, getNext())) return true else moveNext()
     return false
 }
 
-public inline fun <E> KoneIterable<E>.all(block: (value: E) -> Boolean): Boolean {
-    for (element in this) if (!block(element)) return false
+public inline fun <E> KoneIterable<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().anyIndexed(block)
+
+public inline fun <E> KoneSequence<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().anyIndexed(block)
+
+public inline fun <E> KoneIterator<E>.all(block: (value: E) -> Boolean): Boolean {
+    while (hasNext()) if (!block(getNext())) return false else moveNext()
     return true
 }
 
-public inline fun <E> KoneIterable<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+public inline fun <E> KoneIterable<E>.all(block: (value: E) -> Boolean): Boolean = iterator().all(block)
+
+public inline fun <E> KoneSequence<E>.all(block: (value: E) -> Boolean): Boolean = iterator().all(block)
+
+public inline fun <E> KoneIterator<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
     var currentIndex = 0u
-    for (element in this) if (!block(currentIndex++, element)) return false
+    while (hasNext()) if (!block(currentIndex++, getNext())) return false else moveNext()
     return true
 }
 
-public inline fun <E> KoneIterable<E>.none(block: (value: E) -> Boolean): Boolean {
-    for (element in this) if (block(element)) return false
+public inline fun <E> KoneIterable<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().allIndexed(block)
+
+public inline fun <E> KoneSequence<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().allIndexed(block)
+
+public inline fun <E> KoneIterator<E>.none(block: (value: E) -> Boolean): Boolean {
+    while (hasNext()) if (block(getNext())) return false else moveNext()
     return true
 }
 
-public inline fun <E> KoneIterable<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
+public inline fun <E> KoneIterable<E>.none(block: (value: E) -> Boolean): Boolean = iterator().none(block)
+
+public inline fun <E> KoneSequence<E>.none(block: (value: E) -> Boolean): Boolean = iterator().none(block)
+
+public inline fun <E> KoneIterator<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean {
     var currentIndex = 0u
-    for (element in this) if (block(currentIndex++, element)) return false
+    while (hasNext()) if (block(currentIndex++, getNext())) return false else moveNext()
     return true
 }
 
-public inline fun <E> KoneIterable<E>.count(predicate: (value: E) -> Boolean): UInt {
+public inline fun <E> KoneIterable<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().noneIndexed(block)
+
+public inline fun <E> KoneSequence<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().noneIndexed(block)
+
+public inline fun <E> KoneIterator<E>.count(predicate: (value: E) -> Boolean): UInt {
     var count = 0u
-    for (element in this) if (predicate(element)) count++
+    while (hasNext()) if (predicate(getAndMoveNext())) count++
     return count
 }
 
-public inline fun <E> KoneIterable<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt {
+public inline fun <E> KoneIterable<E>.count(predicate: (value: E) -> Boolean): UInt = iterator().count(predicate)
+
+public inline fun <E> KoneSequence<E>.count(predicate: (value: E) -> Boolean): UInt = iterator().count(predicate)
+
+public inline fun <E> KoneIterator<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt {
     var count = 0u
     var currentIndex = 0u
-    for (element in this) if (predicate(currentIndex++, element)) count++
+    while (hasNext()) if (predicate(currentIndex++, getAndMoveNext())) count++
     return count
 }
 
-// TODO: Think about moving `KoneIterableList<E>.first*` extensions inside `KoneIterableList` interface
-//  like it is done for `indexThat`.
+public inline fun <E> KoneIterable<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt = iterator().countIndexed(predicate)
 
-public inline fun <E> KoneIterable<E>.firstThat(predicate: (E) -> Boolean): E {
-    for (element in this) if (predicate(element)) return element
+public inline fun <E> KoneSequence<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt = iterator().countIndexed(predicate)
+
+public inline fun <E> KoneIterator<E>.firstThat(predicate: (E) -> Boolean): E {
+    while (hasNext()) {
+        val element = getNext()
+        if (predicate(element)) return element else moveNext()
+    }
     noElementMatchingThePredicateException()
 }
+
+public inline fun <E> KoneIterable<E>.firstThat(predicate: (E) -> Boolean): E = iterator().firstThat(predicate)
+
+public inline fun <E> KoneSequence<E>.firstThat(predicate: (E) -> Boolean): E = iterator().firstThat(predicate)
 
 public inline fun <E> KoneList<E>.lastThat(predicate: (E) -> Boolean): E {
     val backIterator = iteratorFrom(size)
@@ -247,10 +434,17 @@ public inline fun <E> KoneList<E>.lastThatIndexed(predicate: (index: UInt, E) ->
     noElementMatchingThePredicateException()
 }
 
-public inline fun <E> KoneIterable<E>.firstThatOrNull(predicate: (E) -> Boolean): E? {
-    for (element in this) if (predicate(element)) return element
+public inline fun <E> KoneIterator<E>.firstThatOrNull(predicate: (E) -> Boolean): E? {
+    while (hasNext()) {
+        val element = getNext()
+        if (predicate(element)) return element else moveNext()
+    }
     return null
 }
+
+public inline fun <E> KoneIterable<E>.firstThatOrNull(predicate: (E) -> Boolean): E? = iterator().firstThatOrNull(predicate)
+
+public inline fun <E> KoneSequence<E>.firstThatOrNull(predicate: (E) -> Boolean): E? = iterator().firstThatOrNull(predicate)
 
 public inline fun <E> KoneList<E>.lastThatOrNull(predicate: (E) -> Boolean): E? {
     val backIterator = iteratorFrom(size)
@@ -282,10 +476,17 @@ public inline fun <E> KoneList<E>.lastThatIndexedOrNull(predicate: (index: UInt,
     return null
 }
 
-public inline fun <E> KoneIterable<E>.firstThatMaybe(predicate: (E) -> Boolean): Maybe<E> {
-    for (element in this) if (predicate(element)) return Some(element)
+public inline fun <E> KoneIterator<E>.firstThatMaybe(predicate: (E) -> Boolean): Maybe<E> {
+    while (hasNext()) {
+        val element = getNext()
+        if (predicate(element)) return Some(element) else moveNext()
+    }
     return None
 }
+
+public inline fun <E> KoneIterable<E>.firstThatMaybe(predicate: (E) -> Boolean): Maybe<E> = iterator().firstThatMaybe(predicate)
+
+public inline fun <E> KoneSequence<E>.firstThatMaybe(predicate: (E) -> Boolean): Maybe<E> = iterator().firstThatMaybe(predicate)
 
 public inline fun <E> KoneList<E>.lastThatMaybe(predicate: (E) -> Boolean): Maybe<E> {
     val backIterator = iteratorFrom(size)
@@ -317,13 +518,17 @@ public inline fun <E> KoneList<E>.lastThatIndexedMaybe(predicate: (index: UInt, 
     return None
 }
 
-public inline fun <E, R> KoneIterable<E>.firstOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R {
-    for (element in this) {
-        val result = transform(element)
-        if (predicate(result)) return result
+public inline fun <E, R> KoneIterator<E>.firstOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R {
+    while (hasNext()) {
+        val result = transform(getNext())
+        if (predicate(result)) return result else moveNext()
     }
     noElementMatchingThePredicateException()
 }
+
+public inline fun <E, R> KoneIterable<E>.firstOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R = iterator().firstOfThat(transform, predicate)
+
+public inline fun <E, R> KoneSequence<E>.firstOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R = iterator().firstOfThat(transform, predicate)
 
 public inline fun <E, R> KoneList<E>.lastOfThat(transform: (E) -> R, predicate: (R) -> Boolean): R {
     val backIterator = iteratorFrom(size)
@@ -358,13 +563,17 @@ public inline fun <E, R> KoneList<E>.lastOfThatIndexed(transform: (index: UInt, 
     noElementMatchingThePredicateException()
 }
 
-public inline fun <E, R> KoneIterable<E>.firstOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? {
-    for (element in this) {
-        val result = transform(element)
-        if (predicate(result)) return result
+public inline fun <E, R> KoneIterator<E>.firstOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? {
+    while (hasNext()) {
+        val result = transform(getNext())
+        if (predicate(result)) return result else moveNext()
     }
     return null
 }
+
+public inline fun <E, R> KoneIterable<E>.firstOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? = iterator().firstOfThatOrNull(transform, predicate)
+
+public inline fun <E, R> KoneSequence<E>.firstOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? = iterator().firstOfThatOrNull(transform, predicate)
 
 public inline fun <E, R> KoneList<E>.lastOfThatOrNull(transform: (E) -> R, predicate: (R) -> Boolean): R? {
     val backIterator = iteratorFrom(size)
@@ -399,13 +608,17 @@ public inline fun <E, R> KoneList<E>.lastOfThatIndexedOrNull(transform: (index:U
     return null
 }
 
-public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> {
-    for (element in this) {
-        val result = transform(element)
-        if (predicate(result)) return Some(result)
+public inline fun <E, R> KoneIterator<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> {
+    while (hasNext()) {
+        val result = transform(getNext())
+        if (predicate(result)) return Some(result) else moveNext()
     }
     return None
 }
+
+public inline fun <E, R> KoneIterable<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> = iterator().firstOfThatMaybe(transform, predicate)
+
+public inline fun <E, R> KoneSequence<E>.firstOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> = iterator().firstOfThatMaybe(transform, predicate)
 
 public inline fun <E, R> KoneList<E>.lastOfThatMaybe(transform: (E) -> R, predicate: (R) -> Boolean): Maybe<R> {
     val backIterator = iteratorFrom(size)
@@ -473,37 +686,150 @@ public fun <E> KoneIterable<E>.random(random: Random): E {
     return iterator.getNext()
 }
 
-public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapTo(destination: D, transform: (E) -> R): D {
-    for (element in this) destination.add(transform(element))
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.mapTo(destination: D, transform: (E) -> R): D {
+    while (hasNext()) destination.add(transform(getAndMoveNext()))
     return destination
 }
-public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapTo(destination: D, transform: (E) -> R): D {
-    for (element in this) destination.add(transform(element))
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.mapTo(destination: D, transform: (E) -> R): D {
+    while (hasNext()) destination.add(transform(getAndMoveNext()))
     return destination
 }
 
-public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapTo(destination: D, crossinline transform: (E) -> R): D {
+    val iterator = iterator()
+    destination.addSeveral(size) { transform(iterator.getAndMoveNext()) }
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapTo(destination: D, crossinline transform: (E) -> R): D {
+    val iterator = iterator()
+    destination.addSeveral(size) { transform(iterator.getAndMoveNext()) }
+    return destination
+}
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapToInline(destination: D, transform: (E) -> R): D {
+    val iterator = iterator()
+    repeat(size) { destination.add(transform(iterator.getAndMoveNext())) }
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapToInline(destination: D, transform: (E) -> R): D {
+    val iterator = iterator()
+    repeat(size) { destination.add(transform(iterator.getAndMoveNext())) }
+    return destination
+}
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.mapTo(destination: D, transform: (E) -> R): D = iterator().mapTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.mapTo(destination: D, transform: (E) -> R): D = iterator().mapTo(destination, transform)
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
-    for (element in this) destination.add(transform(currentIndex++, element))
+    while (hasNext()) destination.add(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
-public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
-    for (element in this) destination.add(transform(currentIndex++, element))
+    while (hasNext()) destination.add(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
 
-// TODO: Reimplement using just KoneArraySettableList
-public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> = mapTo(KoneMutableList.of(), transform)
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapIndexedTo(destination: D, crossinline transform: (index: UInt, E) -> R): D {
+    val iterator = iterator()
+    var currentIndex = 0u
+    destination.addSeveral(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(destination: D, crossinline transform: (index: UInt, E) -> R): D {
+    val iterator = iterator()
+    var currentIndex = 0u
+    destination.addSeveral(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
+    return destination
+}
 
-public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> =
-    mapIndexedTo(KoneMutableList.of(), transform)
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapIndexedToInline(destination: D, crossinline transform: (index: UInt, E) -> R): D {
+    val iterator = iterator()
+    var currentIndex = 0u
+    repeat(size) { destination.add(transform(currentIndex++, iterator.getAndMoveNext())) }
+    return destination
+}
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedToInline(destination: D, crossinline transform: (index: UInt, E) -> R): D {
+    val iterator = iterator()
+    var currentIndex = 0u
+    repeat(size) { destination.add(transform(currentIndex++, iterator.getAndMoveNext())) }
+    return destination
+}
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D = iterator().mapIndexedTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D = iterator().mapIndexedTo(destination, transform)
+
+private class KoneMapIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (Element) -> Result,
+) : KoneIterator<Result> {
+    override fun hasNext(): Boolean = source.hasNext()
+    override fun getNext(): Result = transform(source.getNext())
+    override fun moveNext() {
+        source.moveNext()
+    }
+}
+
+public fun <E, R> KoneIterator<E>.map(transform: (E) -> R): KoneIterator<R> = KoneMapIterator(this, transform)
+
+public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> {
+    val iterator = iterator()
+    return KoneList(size) { transform(iterator.getAndMoveNext()) }
+}
+
+private class KoneMapSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val transform: (Element) -> Result,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().map(transform)
+}
+
+public fun <E, R> KoneSequence<E>.map(transform: (E) -> R): KoneSequence<R> = KoneMapSequence(this, transform)
+
+private class KoneMapIndexedIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (UInt, Element) -> Result,
+) : KoneIterator<Result> {
+    private var index = 0u
+    override fun hasNext(): Boolean = source.hasNext()
+    override fun getNext(): Result = transform(index, source.getNext())
+    override fun moveNext() {
+        source.moveNext()
+        index++
+    }
+}
+
+public fun <E, R> KoneIterator<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneIterator<R> = KoneMapIndexedIterator(this, transform)
+
+public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> {
+    val iterator = iterator()
+    var currentIndex = 0u
+    return KoneList(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
+}
+
+private class KoneMapIndexedSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val transform: (UInt, Element) -> Result,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().mapIndexed(transform)
+}
+
+public fun <E, R> KoneSequence<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneSequence<R> = KoneMapIndexedSequence(this, transform)
+
+// TODO: Think about other flattening operations
 
 public fun <E> KoneIterable<KoneIterable<E>>.flatten(): KoneList<E> {
-    val result = KoneMutableList.of<E>()
+    val result = KoneArrayGrowableList<E>()
     for (iterable in this) result.addAllFrom(iterable)
     return result
 }
+
+//public fun <E> KoneSequence<KoneSequence<E>>.flatten(): KoneList<E> {
+//    val result = KoneArrayGrowableList<E>()
+//    for (iterable in this) result.addAllFrom(iterable)
+//    return result
+//}
 
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
     for (element in this) destination.addAllFrom(transform(element))
@@ -525,10 +851,24 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexed
     return destination
 }
 
-public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(KoneMutableList.of(), transform)
+public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(KoneArrayGrowableList(), transform)
 
-public inline fun <E, R> KoneIterable<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterable<R>): KoneList<R> =
-    flatMapIndexedTo(KoneMutableList.of(), transform)
+public inline fun <E, R> KoneIterable<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterable<R>): KoneList<R> = flatMapIndexedTo(KoneArrayGrowableList(), transform)
+
+public inline fun <E, D: KoneMutableList<in E>> KoneIterator<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
+    while (hasNext()) {
+        val item = getNext()
+        if (predicate(item)) destination.add(item)
+    }
+    return destination
+}
+public inline fun <E, D: KoneMutableSet<in E>> KoneIterator<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
+    while (hasNext()) {
+        val item = getNext()
+        if (predicate(item)) destination.add(item)
+    }
+    return destination
+}
 
 public inline fun <E, D: KoneMutableList<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
@@ -539,15 +879,59 @@ public inline fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.filterTo(destinat
     return destination
 }
 
-public inline fun <E> KoneIterable<E>.filter(predicate: (E) -> Boolean): KoneList<E> =
-    filterTo(KoneMutableList.of(), predicate)
+public inline fun <E, D: KoneMutableList<in E>> KoneSequence<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
+    for (item in this) if (predicate(item)) destination.add(item)
+    return destination
+}
+public inline fun <E, D: KoneMutableSet<in E>> KoneSequence<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
+    for (item in this) if (predicate(item)) destination.add(item)
+    return destination
+}
+
+private class KoneFilterIterator<Element>(
+    private val source: KoneIterator<Element>,
+    private val predicate: (Element) -> Boolean,
+) : KoneIterator<Element> {
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (!source.hasNext()) return false
+            if (predicate(source.getNext())) return true
+            source.moveNext()
+        }
+    }
+    override fun getNext(): Element {
+        if (!hasNext()) noNextElementInIteratorException()
+        return source.next()
+    }
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        source.moveNext()
+    }
+}
+
+public fun <E> KoneIterator<E>.filter(predicate: (E) -> Boolean): KoneIterator<E> = KoneFilterIterator(this, predicate)
+
+public inline fun <E> KoneIterable<E>.filter(predicate: (E) -> Boolean): KoneList<E> = filterTo(KoneArrayFixedCapacityList(size), predicate).toOptimizedList()
+
+private class KoneFilterSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val predicate: (Element) -> Boolean,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = source.iterator().filter(predicate)
+}
+
+public fun <E> KoneSequence<E>.filter(predicate: (E) -> Boolean): KoneSequence<E> = KoneFilterSequence(this, predicate)
 
 public inline fun <E, R> KoneIterator<E>.fold(initial: R, operation: (acc: R, E) -> R): R {
     var accumulator = initial
     for (element in this) accumulator = operation(accumulator, element)
     return accumulator
 }
+
 public inline fun <E, R> KoneIterable<E>.fold(initial: R, operation: (acc: R, E) -> R): R =
+    iterator().fold(initial, operation)
+
+public inline fun <E, R> KoneSequence<E>.fold(initial: R, operation: (acc: R, E) -> R): R =
     iterator().fold(initial, operation)
 
 public inline fun <E, R> KoneList<E>.foldRight(initial: R, operation: (acc: R, E) -> R): R {
@@ -562,7 +946,11 @@ public inline fun <E, R> KoneIterator<E>.foldIndexed(initial: R, operation: (ind
     for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
+
 public inline fun <E, R> KoneIterable<E>.foldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): R =
+    iterator().foldIndexed(initial, operation)
+
+public inline fun <E, R> KoneSequence<E>.foldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): R =
     iterator().foldIndexed(initial, operation)
 
 public inline fun <E, R> KoneList<E>.foldRightIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): R {
@@ -571,15 +959,31 @@ public inline fun <E, R> KoneList<E>.foldRightIndexed(initial: R, operation: (in
     return accumulator
 }
 
-public inline fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
-    val result = KoneArrayGrowableList(1u) { initial }
-    var accumulator = initial
-    for (element in this) {
-        accumulator = operation(accumulator, element)
-        result.add(accumulator)
+@Suppress("UNCHECKED_CAST")
+private class KoneRunningFoldIterator<Element, Result>(
+    accumulator: Result,
+    private val source: KoneIterator<Element>,
+    private val operation: (Result, Element) -> Result,
+) : KoneIterator<Result> {
+    private var hasNextFlag = true
+    private var accumulator: Result? = accumulator
+    override fun hasNext(): Boolean = hasNextFlag
+    override fun getNext(): Result {
+        if (!hasNext()) noNextElementInIteratorException()
+        return accumulator as Result
     }
-    return result.toOptimizedList()
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        if (!source.hasNext()) {
+            hasNextFlag = false
+            accumulator = null
+        }
+        accumulator = operation(accumulator as Result, source.getAndMoveNext())
+    }
 }
+
+public fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIterator(initial, this, operation)
+
 public inline fun <E, R> KoneIterable<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
     val result = KoneSettableList(size + 1u) { initial }
     var accumulator = initial
@@ -592,17 +996,42 @@ public inline fun <E, R> KoneIterable<E>.runningFold(initial: R, operation: (acc
     return result
 }
 
-public inline fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
-    val result = KoneArrayGrowableList(1u) { initial }
-    var accumulator = initial
-    var index = 0u
-    for (element in this) {
-        accumulator = operation(index, accumulator, element)
-        result.add(accumulator)
-        index++
-    }
-    return result
+private class KoneRunningFoldSequence<Element, Result>(
+    private val initial: Result,
+    private val source: KoneSequence<Element>,
+    private val operation: (Result, Element) -> Result,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().runningFold(initial, operation)
 }
+
+public fun <E, R> KoneSequence<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneSequence<R> = KoneRunningFoldSequence(initial, this, operation)
+
+@Suppress("UNCHECKED_CAST")
+private class KoneRunningFoldIndexedIterator<Element, Result>(
+    accumulator: Result,
+    private val source: KoneIterator<Element>,
+    private val operation: (UInt, Result, Element) -> Result,
+) : KoneIterator<Result> {
+    private var hasNextFlag = true
+    private var index = 0u
+    private var accumulator: Result? = accumulator
+    override fun hasNext(): Boolean = hasNextFlag
+    override fun getNext(): Result {
+        if (!hasNext()) noNextElementInIteratorException()
+        return accumulator as Result
+    }
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        if (!source.hasNext()) {
+            hasNextFlag = false
+            accumulator = null
+        }
+        accumulator = operation(index++, accumulator as Result, source.getAndMoveNext())
+    }
+}
+
+public fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIndexedIterator(initial, this, operation)
+
 public inline fun <E, R> KoneIterable<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
     val result = KoneSettableList(size + 1u) { initial }
     var accumulator = initial
@@ -615,6 +1044,16 @@ public inline fun <E, R> KoneIterable<E>.runningFoldIndexed(initial: R, operatio
     return result
 }
 
+private class KoneRunningFoldIndexedSequence<Element, Result>(
+    private val initial: Result,
+    private val source: KoneSequence<Element>,
+    private val operation: (UInt, Result, Element) -> Result,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().runningFoldIndexed(initial, operation)
+}
+
+public fun <E, R> KoneSequence<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneSequence<R> = KoneRunningFoldIndexedSequence(initial, this, operation)
+
 // TODO: Add `runningFoldRight` and `runningFoldRightIndexed`
 
 public inline fun <E: R, R> KoneIterator<E>.reduce(operation: (acc: R, E) -> R): R {
@@ -623,8 +1062,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduce(operation: (acc: R, E) -> R):
     for (element in this) accumulator = operation(accumulator, element)
     return accumulator
 }
-public inline fun <E: R, R> KoneIterable<E>.reduce(operation: (acc: R, E) -> R): R =
-    iterator().reduce(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduce(operation: (acc: R, E) -> R): R = iterator().reduce(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduce(operation: (acc: R, E) -> R): R = iterator().reduce(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceOrNull(operation: (acc: R, E) -> R): R? {
     if (!this.hasNext()) return null
@@ -632,8 +1073,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduceOrNull(operation: (acc: R, E) 
     for (element in this) accumulator = operation(accumulator, element)
     return accumulator
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceOrNull(operation: (acc: R, E) -> R): R? =
-    iterator().reduceOrNull(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduceOrNull(operation: (acc: R, E) -> R): R? = iterator().reduceOrNull(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduceOrNull(operation: (acc: R, E) -> R): R? = iterator().reduceOrNull(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> {
     if (!this.hasNext()) return None
@@ -641,8 +1084,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduceMaybe(operation: (acc: R, E) -
     for (element in this) accumulator = operation(accumulator, element)
     return Some(accumulator)
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> =
-    iterator().reduceMaybe(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> = iterator().reduceMaybe(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduceMaybe(operation: (acc: R, E) -> R): Maybe<R> = iterator().reduceMaybe(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R {
     if (!this.hasNext()) throw UnsupportedOperationException("Empty collection can't be reduced.")
@@ -651,8 +1096,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduceIndexed(operation: (index: UIn
     for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R =
-    iterator().reduceIndexed(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R = iterator().reduceIndexed(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduceIndexed(operation: (index: UInt, acc: R, E) -> R): R = iterator().reduceIndexed(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? {
     if (!this.hasNext()) return null
@@ -661,8 +1108,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduceIndexedOrNull(operation: (inde
     for (element in this) accumulator = operation(index++, accumulator, element)
     return accumulator
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? =
-    iterator().reduceIndexedOrNull(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? = iterator().reduceIndexedOrNull(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduceIndexedOrNull(operation: (index: UInt, acc: R, E) -> R): R? = iterator().reduceIndexedOrNull(operation)
 
 public inline fun <E: R, R> KoneIterator<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> {
     if (!this.hasNext()) return None
@@ -671,8 +1120,10 @@ public inline fun <E: R, R> KoneIterator<E>.reduceIndexedMaybe(operation: (index
     for (element in this) accumulator = operation(index++, accumulator, element)
     return Some(accumulator)
 }
-public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> =
-    iterator().reduceIndexedMaybe(operation)
+
+public inline fun <E: R, R> KoneIterable<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> = iterator().reduceIndexedMaybe(operation)
+
+public inline fun <E: R, R> KoneSequence<E>.reduceIndexedMaybe(operation: (index: UInt, acc: R, E) -> R): Maybe<R> = iterator().reduceIndexedMaybe(operation)
 
 // TODO: Add `reduce`-like extensions. Like `reduceRight`, `runningReduce`, and `runningReduceRight`.
 

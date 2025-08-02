@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.neq
@@ -24,6 +26,10 @@ public fun <Element> KoneList<Element>.getOrNull(index: UInt): Element? = if (in
 public fun <Element> KoneList<Element>.getMaybe(index: UInt): Maybe<Element> = if (index < size) Some(this[index]) else None
 public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Element): Element = if (index < size) this[index] else block()
 
+public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterator<Element>) {
+    while (elements.hasNext()) add(elements.getAndMoveNext())
+}
+
 /**
  * Adds provided [elements] at the end of the ordered collection.
  *
@@ -33,6 +39,15 @@ public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Eleme
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<Element>) {
     val iterator = elements.iterator()
     addSeveral(elements.size) { iterator.getAndMoveNext() }
+}
+
+public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneSequence<Element>) {
+    addAllFrom(elements.iterator())
+}
+
+public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterator<Element>) {
+    var index = index
+    while (elements.hasNext()) addAt(index++, elements.getAndMoveNext())
 }
 
 /**
@@ -53,6 +68,10 @@ public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterable<Element>) {
     val iterator = elements.iterator()
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
+}
+
+public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneSequence<Element>) {
+    addAllFromAt(index, elements.iterator())
 }
 
 /**
