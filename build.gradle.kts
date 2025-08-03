@@ -32,12 +32,12 @@ import kotlin.text.replace
 
 
 plugins {
-    alias(versions.plugins.kotlin.multiplatform) apply false
+//    alias(versions.plugins.kotlin.multiplatform) apply false
     alias(versions.plugins.kotlinx.atomicfu) apply false
     alias(versions.plugins.kotlin.compose) apply false
     alias(versions.plugins.compose.multiplatform) apply false
     alias(versions.plugins.kotlin.allopen) apply false
-    alias(versions.plugins.kotlinx.benchmark) apply false
+//    alias(versions.plugins.kotlinx.benchmark) apply false
     alias(versions.plugins.kotest.multiplatform) apply false
     alias(versions.plugins.kotlinx.kover) apply false
     id("org.ajoberstar.grgit") version "5.3.0"
@@ -559,21 +559,7 @@ stal {
             @Suppress("UNUSED_VARIABLE")
             configure<BenchmarksExtension> {
                 configurations {
-                    // TODO: Create my own configurations
-                    val main by getting {
-                        mode = "AverageTime"
-                        warmups = 20
-                        iterations = 10
-                        iterationTime = 3
-                        iterationTimeUnit = "s"
-                    }
-                    val smoke by creating {
-                        mode = "AverageTime"
-                        warmups = 5
-                        iterations = 3
-                        iterationTime = 500
-                        iterationTimeUnit = "ms"
-                    }
+                    remove(getByName("main"))
                 }
             }
         }
