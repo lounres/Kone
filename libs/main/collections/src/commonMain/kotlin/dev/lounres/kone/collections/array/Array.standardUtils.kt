@@ -9,8 +9,8 @@ package dev.lounres.kone.collections.array
 // TODO: Think about what to add for Kone arrays
 
 public fun <Element> KoneMutableArray<Element>.toKoneArray(): KoneArray<Element> = KoneArray(array.copyOf())
-public fun KoneMutableBooleanArray.toKoneByteArray(): KoneBooleanArray = KoneBooleanArray(array.copyOf())
-public fun KoneMutableCharArray.toKoneByteArray(): KoneCharArray = KoneCharArray(array.copyOf())
+public fun KoneMutableBooleanArray.toKoneBooleanArray(): KoneBooleanArray = KoneBooleanArray(array.copyOf())
+public fun KoneMutableCharArray.toKoneCharArray(): KoneCharArray = KoneCharArray(array.copyOf())
 public fun KoneMutableByteArray.toKoneByteArray(): KoneByteArray = KoneByteArray(array.copyOf())
 public fun KoneMutableShortArray.toKoneShortArray(): KoneShortArray = KoneShortArray(array.copyOf())
 public fun KoneMutableIntArray.toKoneIntArray(): KoneIntArray = KoneIntArray(array.copyOf())
@@ -23,8 +23,8 @@ public fun KoneMutableUIntArray.toKoneUIntArray(): KoneUIntArray = KoneUIntArray
 public fun KoneMutableULongArray.toKoneULongArray(): KoneULongArray = KoneULongArray(array.copyOf())
 
 public fun <Element> KoneMutableArray<Element>.asKoneArray(): KoneArray<Element> = KoneArray(array)
-public fun KoneMutableBooleanArray.asKoneByteArray(): KoneBooleanArray = KoneBooleanArray(array)
-public fun KoneMutableCharArray.asKoneByteArray(): KoneCharArray = KoneCharArray(array)
+public fun KoneMutableBooleanArray.asKoneBooleanArray(): KoneBooleanArray = KoneBooleanArray(array)
+public fun KoneMutableCharArray.asKoneCharArray(): KoneCharArray = KoneCharArray(array)
 public fun KoneMutableByteArray.asKoneByteArray(): KoneByteArray = KoneByteArray(array)
 public fun KoneMutableShortArray.asKoneShortArray(): KoneShortArray = KoneShortArray(array)
 public fun KoneMutableIntArray.asKoneIntArray(): KoneIntArray = KoneIntArray(array)

@@ -24,7 +24,8 @@ public inline fun <reified Element> KoneMutableArray(size: UInt, initializer: (U
     KoneMutableArray(Array(size.toInt()) { initializer(it.toUInt()) })
 
 public inline fun <reified Element> KoneMutableArray(indices: UIntRange, initializer: (UInt) -> Element): KoneMutableArray<Element> =
-    KoneMutableArray(Array((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableArray(emptyArray())
+    else KoneMutableArray(Array((indices.last - indices.first + 1u).toInt()) { initializer(it.toUInt() + indices.first) })
 
 /**
  * Returns a [KoneArray] of provided [size] of elements produced by the [initializer].
@@ -37,7 +38,12 @@ public inline fun <reified Element> KoneArray(size: UInt, initializer: (UInt) ->
     KoneArray(Array(size.toInt()) { initializer(it.toUInt()) })
 
 public inline fun <reified Element> KoneArray(indices: UIntRange, initializer: (UInt) -> Element): KoneArray<Element> =
-    KoneArray(Array((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneArray(emptyArray())
+    else KoneArray(Array((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+
+public inline fun <reified Element> KoneMutableArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public inline fun <reified Element> KoneMutableArray.Companion.of(vararg elements: Element): KoneMutableArray<Element> =
     KoneMutableArray(elements as Array<Element>)
@@ -76,7 +82,8 @@ public fun KoneMutableBooleanArray(size: UInt): KoneMutableBooleanArray =
     KoneMutableBooleanArray(BooleanArray(size.toInt()))
 
 public inline fun KoneMutableBooleanArray(indices: UIntRange, initializer: (UInt) -> Boolean): KoneMutableBooleanArray =
-    KoneMutableBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableBooleanArray(BooleanArray(0))
+    else KoneMutableBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableBooleanArray(indices: UIntRange): KoneMutableBooleanArray =
     KoneMutableBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()))
@@ -98,10 +105,15 @@ public fun KoneBooleanArray(size: UInt): KoneBooleanArray =
     KoneBooleanArray(BooleanArray(size.toInt()))
 
 public inline fun KoneBooleanArray(indices: UIntRange, initializer: (UInt) -> Boolean): KoneBooleanArray =
-    KoneBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneBooleanArray(BooleanArray(0))
+    else KoneBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneBooleanArray(indices: UIntRange): KoneBooleanArray =
     KoneBooleanArray(BooleanArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableBooleanArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneBooleanArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableBooleanArray.Companion.of(vararg elements: Boolean): KoneMutableBooleanArray =
     KoneMutableBooleanArray(elements)
@@ -140,7 +152,8 @@ public fun KoneMutableCharArray(size: UInt): KoneMutableCharArray =
     KoneMutableCharArray(CharArray(size.toInt()))
 
 public inline fun KoneMutableCharArray(indices: UIntRange, initializer: (UInt) -> Char): KoneMutableCharArray =
-    KoneMutableCharArray(CharArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableCharArray(CharArray(0))
+    else KoneMutableCharArray(CharArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableCharArray(indices: UIntRange): KoneMutableCharArray =
     KoneMutableCharArray(CharArray((indices.last + 1u - indices.first).toInt()))
@@ -162,10 +175,15 @@ public fun KoneCharArray(size: UInt): KoneCharArray =
     KoneCharArray(CharArray(size.toInt()))
 
 public inline fun KoneCharArray(indices: UIntRange, initializer: (UInt) -> Char): KoneCharArray =
-    KoneCharArray(CharArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneCharArray(CharArray(0))
+    else KoneCharArray(CharArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneCharArray(indices: UIntRange): KoneCharArray =
     KoneCharArray(CharArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableCharArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneCharArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableCharArray.Companion.of(vararg elements: Char): KoneMutableCharArray =
     KoneMutableCharArray(elements)
@@ -204,7 +222,8 @@ public fun KoneMutableByteArray(size: UInt): KoneMutableByteArray =
     KoneMutableByteArray(ByteArray(size.toInt()))
 
 public inline fun KoneMutableByteArray(indices: UIntRange, initializer: (UInt) -> Byte): KoneMutableByteArray =
-    KoneMutableByteArray(ByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableByteArray(ByteArray(0))
+    else KoneMutableByteArray(ByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableByteArray(indices: UIntRange): KoneMutableByteArray =
     KoneMutableByteArray(ByteArray((indices.last + 1u - indices.first).toInt()))
@@ -226,10 +245,15 @@ public fun KoneByteArray(size: UInt): KoneByteArray =
     KoneByteArray(ByteArray(size.toInt()))
 
 public inline fun KoneByteArray(indices: UIntRange, initializer: (UInt) -> Byte): KoneByteArray =
-    KoneByteArray(ByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneByteArray(ByteArray(0))
+    else KoneByteArray(ByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneByteArray(indices: UIntRange): KoneByteArray =
     KoneByteArray(ByteArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableByteArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneByteArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableByteArray.Companion.of(vararg elements: Byte): KoneMutableByteArray =
     KoneMutableByteArray(elements)
@@ -268,7 +292,8 @@ public fun KoneMutableShortArray(size: UInt): KoneMutableShortArray =
     KoneMutableShortArray(ShortArray(size.toInt()))
 
 public inline fun KoneMutableShortArray(indices: UIntRange, initializer: (UInt) -> Short): KoneMutableShortArray =
-    KoneMutableShortArray(ShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableShortArray(ShortArray(0))
+    else KoneMutableShortArray(ShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableShortArray(indices: UIntRange): KoneMutableShortArray =
     KoneMutableShortArray(ShortArray((indices.last + 1u - indices.first).toInt()))
@@ -290,10 +315,15 @@ public fun KoneShortArray(size: UInt): KoneShortArray =
     KoneShortArray(ShortArray(size.toInt()))
 
 public inline fun KoneShortArray(indices: UIntRange, initializer: (UInt) -> Short): KoneShortArray =
-    KoneShortArray(ShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneShortArray(ShortArray(0))
+    else KoneShortArray(ShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneShortArray(indices: UIntRange): KoneShortArray =
     KoneShortArray(ShortArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableShortArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneShortArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableShortArray.Companion.of(vararg elements: Short): KoneMutableShortArray =
     KoneMutableShortArray(elements)
@@ -332,7 +362,8 @@ public fun KoneMutableIntArray(size: UInt): KoneMutableIntArray =
     KoneMutableIntArray(IntArray(size.toInt()))
 
 public inline fun KoneMutableIntArray(indices: UIntRange, initializer: (UInt) -> Int): KoneMutableIntArray =
-    KoneMutableIntArray(IntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableIntArray(IntArray(0))
+    else KoneMutableIntArray(IntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableIntArray(indices: UIntRange): KoneMutableIntArray =
     KoneMutableIntArray(IntArray((indices.last + 1u - indices.first).toInt()))
@@ -354,10 +385,15 @@ public fun KoneIntArray(size: UInt): KoneIntArray =
     KoneIntArray(IntArray(size.toInt()))
 
 public inline fun KoneIntArray(indices: UIntRange, initializer: (UInt) -> Int): KoneIntArray =
-    KoneIntArray(IntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneIntArray(IntArray(0))
+    else KoneIntArray(IntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneIntArray(indices: UIntRange): KoneIntArray =
     KoneIntArray(IntArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableIntArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneIntArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableIntArray.Companion.of(vararg elements: Int): KoneMutableIntArray =
     KoneMutableIntArray(elements)
@@ -396,7 +432,8 @@ public fun KoneMutableLongArray(size: UInt): KoneMutableLongArray =
     KoneMutableLongArray(LongArray(size.toInt()))
 
 public inline fun KoneMutableLongArray(indices: UIntRange, initializer: (UInt) -> Long): KoneMutableLongArray =
-    KoneMutableLongArray(LongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableLongArray(LongArray(0))
+    else KoneMutableLongArray(LongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableLongArray(indices: UIntRange): KoneMutableLongArray =
     KoneMutableLongArray(LongArray((indices.last + 1u - indices.first).toInt()))
@@ -418,10 +455,15 @@ public fun KoneLongArray(size: UInt): KoneLongArray =
     KoneLongArray(LongArray(size.toInt()))
 
 public inline fun KoneLongArray(indices: UIntRange, initializer: (UInt) -> Long): KoneLongArray =
-    KoneLongArray(LongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneLongArray(LongArray(0))
+    else KoneLongArray(LongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneLongArray(indices: UIntRange): KoneLongArray =
     KoneLongArray(LongArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableLongArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneLongArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableLongArray.Companion.of(vararg elements: Long): KoneMutableLongArray =
     KoneMutableLongArray(elements)
@@ -460,7 +502,8 @@ public fun KoneMutableFloatArray(size: UInt): KoneMutableFloatArray =
     KoneMutableFloatArray(FloatArray(size.toInt()))
 
 public inline fun KoneMutableFloatArray(indices: UIntRange, initializer: (UInt) -> Float): KoneMutableFloatArray =
-    KoneMutableFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableFloatArray(FloatArray(0))
+    else KoneMutableFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableFloatArray(indices: UIntRange): KoneMutableFloatArray =
     KoneMutableFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()))
@@ -482,10 +525,15 @@ public fun KoneFloatArray(size: UInt): KoneFloatArray =
     KoneFloatArray(FloatArray(size.toInt()))
 
 public inline fun KoneFloatArray(indices: UIntRange, initializer: (UInt) -> Float): KoneFloatArray =
-    KoneFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneFloatArray(FloatArray(0))
+    else KoneFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneFloatArray(indices: UIntRange): KoneFloatArray =
     KoneFloatArray(FloatArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableFloatArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneFloatArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableFloatArray.Companion.of(vararg elements: Float): KoneMutableFloatArray =
     KoneMutableFloatArray(elements)
@@ -524,7 +572,8 @@ public fun KoneMutableDoubleArray(size: UInt): KoneMutableDoubleArray =
     KoneMutableDoubleArray(DoubleArray(size.toInt()))
 
 public inline fun KoneMutableDoubleArray(indices: UIntRange, initializer: (UInt) -> Double): KoneMutableDoubleArray =
-    KoneMutableDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableDoubleArray(DoubleArray(0))
+    else KoneMutableDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableDoubleArray(indices: UIntRange): KoneMutableDoubleArray =
     KoneMutableDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()))
@@ -546,10 +595,15 @@ public fun KoneDoubleArray(size: UInt): KoneDoubleArray =
     KoneDoubleArray(DoubleArray(size.toInt()))
 
 public inline fun KoneDoubleArray(indices: UIntRange, initializer: (UInt) -> Double): KoneDoubleArray =
-    KoneDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneDoubleArray(DoubleArray(0))
+    else KoneDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneDoubleArray(indices: UIntRange): KoneDoubleArray =
     KoneDoubleArray(DoubleArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableDoubleArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneDoubleArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableDoubleArray.Companion.of(vararg elements: Double): KoneMutableDoubleArray =
     KoneMutableDoubleArray(elements)
@@ -588,7 +642,8 @@ public fun KoneMutableUByteArray(size: UInt): KoneMutableUByteArray =
     KoneMutableUByteArray(UByteArray(size.toInt()))
 
 public inline fun KoneMutableUByteArray(indices: UIntRange, initializer: (UInt) -> UByte): KoneMutableUByteArray =
-    KoneMutableUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableUByteArray(UByteArray(0))
+    else KoneMutableUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableUByteArray(indices: UIntRange): KoneMutableUByteArray =
     KoneMutableUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()))
@@ -610,10 +665,15 @@ public fun KoneUByteArray(size: UInt): KoneUByteArray =
     KoneUByteArray(UByteArray(size.toInt()))
 
 public inline fun KoneUByteArray(indices: UIntRange, initializer: (UInt) -> UByte): KoneUByteArray =
-    KoneUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneUByteArray(UByteArray(0))
+    else KoneUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneUByteArray(indices: UIntRange): KoneUByteArray =
     KoneUByteArray(UByteArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableUByteArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneUByteArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableUByteArray.Companion.of(vararg elements: UByte): KoneMutableUByteArray =
     KoneMutableUByteArray(elements)
@@ -652,7 +712,8 @@ public fun KoneMutableUShortArray(size: UInt): KoneMutableUShortArray =
     KoneMutableUShortArray(UShortArray(size.toInt()))
 
 public inline fun KoneMutableUShortArray(indices: UIntRange, initializer: (UInt) -> UShort): KoneMutableUShortArray =
-    KoneMutableUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableUShortArray(UShortArray(0))
+    else KoneMutableUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableUShortArray(indices: UIntRange): KoneMutableUShortArray =
     KoneMutableUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()))
@@ -674,10 +735,15 @@ public fun KoneUShortArray(size: UInt): KoneUShortArray =
     KoneUShortArray(UShortArray(size.toInt()))
 
 public inline fun KoneUShortArray(indices: UIntRange, initializer: (UInt) -> UShort): KoneUShortArray =
-    KoneUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneUShortArray(UShortArray(0))
+    else KoneUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneUShortArray(indices: UIntRange): KoneUShortArray =
     KoneUShortArray(UShortArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableUShortArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneUShortArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableUShortArray.Companion.of(vararg elements: UShort): KoneMutableUShortArray =
     KoneMutableUShortArray(elements)
@@ -716,7 +782,8 @@ public fun KoneMutableUIntArray(size: UInt): KoneMutableUIntArray =
     KoneMutableUIntArray(UIntArray(size.toInt()))
 
 public inline fun KoneMutableUIntArray(indices: UIntRange, initializer: (UInt) -> UInt): KoneMutableUIntArray =
-    KoneMutableUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableUIntArray(UIntArray(0))
+    else KoneMutableUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableUIntArray(indices: UIntRange): KoneMutableUIntArray =
     KoneMutableUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()))
@@ -738,10 +805,15 @@ public fun KoneUIntArray(size: UInt): KoneUIntArray =
     KoneUIntArray(UIntArray(size.toInt()))
 
 public inline fun KoneUIntArray(indices: UIntRange, initializer: (UInt) -> UInt): KoneUIntArray =
-    KoneUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneUIntArray(UIntArray(0))
+    else KoneUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneUIntArray(indices: UIntRange): KoneUIntArray =
     KoneUIntArray(UIntArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableUIntArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneUIntArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableUIntArray.Companion.of(vararg elements: UInt): KoneMutableUIntArray =
     KoneMutableUIntArray(elements)
@@ -780,7 +852,8 @@ public fun KoneMutableULongArray(size: UInt): KoneMutableULongArray =
     KoneMutableULongArray(ULongArray(size.toInt()))
 
 public inline fun KoneMutableULongArray(indices: UIntRange, initializer: (UInt) -> ULong): KoneMutableULongArray =
-    KoneMutableULongArray(ULongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneMutableULongArray(ULongArray(0))
+    else KoneMutableULongArray(ULongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneMutableULongArray(indices: UIntRange): KoneMutableULongArray =
     KoneMutableULongArray(ULongArray((indices.last + 1u - indices.first).toInt()))
@@ -802,10 +875,15 @@ public fun KoneULongArray(size: UInt): KoneULongArray =
     KoneULongArray(ULongArray(size.toInt()))
 
 public inline fun KoneULongArray(indices: UIntRange, initializer: (UInt) -> ULong): KoneULongArray =
-    KoneULongArray(ULongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
+    if (indices.first > indices.last) KoneULongArray(ULongArray(0))
+    else KoneULongArray(ULongArray((indices.last + 1u - indices.first).toInt()) { initializer(it.toUInt() + indices.first) })
 
 public fun KoneULongArray(indices: UIntRange): KoneULongArray =
     KoneULongArray(ULongArray((indices.last + 1u - indices.first).toInt()))
+
+public inline fun <reified Element> KoneMutableULongArray.Companion.empty(): KoneArray<Element> = KoneArray(emptyArray())
+
+public inline fun <reified Element> KoneULongArray.Companion.empty(): KoneMutableArray<Element> = KoneMutableArray(emptyArray())
 
 public fun KoneMutableULongArray.Companion.of(vararg elements: ULong): KoneMutableULongArray =
     KoneMutableULongArray(elements)

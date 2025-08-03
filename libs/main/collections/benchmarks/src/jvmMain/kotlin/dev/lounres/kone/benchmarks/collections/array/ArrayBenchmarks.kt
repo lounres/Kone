@@ -40,7 +40,6 @@ class ArrayAllocationBenchmarks {
     @Benchmark
     fun kone_null_generic(blackhole: Blackhole) {
         blackhole.consume(KoneArray(size) { null })
-        val a = KoneArray(size) { null }
     }
     
     @Benchmark
