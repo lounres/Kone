@@ -16,6 +16,16 @@ kotlin {
 
 benchmark {
     configurations {
+        val start = 2
+
+        @OptIn(ExperimentalStdlibApi::class)
+        val numbers = buildList {
+            addAll(1 ..< (1 shl start))
+            for (i in start .. 29) {
+                addAll((1 shl i) ..< (1 shl (i + 1)) step (1 shl (i - start)))
+            }
+        }
+
         register("arrayAllocationWithSizeOfPowersOfTwo") {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
@@ -26,6 +36,11 @@ benchmark {
             include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
         }
+        register("arrayAllocationWithSizeFromSpecificNumbers") {
+            mainConfiguration()
+            include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
+            param("size", value = numbers.toTypedArray())
+        }
         register("arrayAccessWithSizeOfPowersOfTwo") {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
@@ -35,6 +50,11 @@ benchmark {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
+        }
+        register("arrayAccessWithSizeFromFromSpecificNumbers") {
+            mainConfiguration()
+            include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
+            param("size", value = numbers.toTypedArray())
         }
     }
 }
