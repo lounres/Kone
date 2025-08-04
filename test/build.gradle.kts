@@ -70,19 +70,19 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(versions.kotlinx.serialization.core)
+//                implementation(versions.kotlinx.serialization.json)
+//                implementation(projects.kone.libs.main.multidimensionalCollections)
+//                implementation(projects.libs.util.misc)
             }
         }
-//        jvmMain {
-//            dependencies {
-//                implementation(versions.kotlinx.serialization.json)
-//
+        jvmMain {
+            dependencies {
 //                implementation(projects.libs.util.misc)
 //                implementation(projects.libs.main.annotations)
 //                implementation(projects.libs.main.collections)
 //                implementation(projects.libs.main.enumerativeCombinatorics)
 //                implementation(projects.libs.main.linearAlgebra)
-////                implementation(projects.libs.main.multidimensionalCollections)
+//                implementation(projects.libs.main.multidimensionalCollections)
 //                implementation(projects.libs.main.computationalGeometry)
 //                implementation(projects.libs.main.algebraicExtra)
 //                implementation(projects.libs.misc.planimetricsCalculus)
@@ -90,8 +90,9 @@ kotlin {
 //                implementation(projects.libs.misc.composeCanvas)
 //                implementation(compose.desktop.currentOs)
 //                implementation(compose.components.resources)
-//            }
-//        }
+//                implementation(versions.kotest.assertions.core)
+            }
+        }
 //        wasmJsMain {
 //            dependencies {
 //                implementation(projects.libs.main.collections)

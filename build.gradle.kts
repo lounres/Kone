@@ -240,7 +240,7 @@ stal {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
-                    freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                    freeCompilerArgs.addAll(
                         "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
@@ -265,7 +265,7 @@ stal {
                 applyDefaultHierarchyTemplate()
                 
                 compilerOptions {
-                    freeCompilerArgs = freeCompilerArgs.get() + listOf(
+                    freeCompilerArgs.addAll(
                         "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
