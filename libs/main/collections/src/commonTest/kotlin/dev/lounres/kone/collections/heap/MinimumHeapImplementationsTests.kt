@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.list.build
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.collections.list.of
+import dev.lounres.kone.collections.utils.flatMap
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.collections.utils.joinToString
 import dev.lounres.kone.collections.utils.map

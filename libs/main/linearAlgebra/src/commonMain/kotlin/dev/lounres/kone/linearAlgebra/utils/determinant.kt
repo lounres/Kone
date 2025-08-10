@@ -16,6 +16,7 @@ import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.interop.toKoneList
+import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.combinatorics.enumerative.permutations
 import dev.lounres.kone.contexts.KoneContextRegistryBuilder
@@ -27,7 +28,6 @@ import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance
-import kotlin.sequences.fold
 
 
 public interface DeterminantComputer<Number> {

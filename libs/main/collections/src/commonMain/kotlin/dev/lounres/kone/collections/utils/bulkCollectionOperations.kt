@@ -819,41 +819,241 @@ public fun <E, R> KoneSequence<E>.mapIndexed(transform: (index: UInt, E) -> R): 
 
 // TODO: Think about other flattening operations
 
+private class KoneFlattenIteratorIterator<Element>(
+    private val source: KoneIterator<KoneIterator<Element>>,
+) : KoneIterator<Element> {
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (!source.hasNext()) return false
+            if (source.getNext().hasNext()) return true
+            source.moveNext()
+        }
+    }
+    override fun getNext(): Element =
+        if (!hasNext()) noNextElementInIteratorException()
+        else source.getNext().getNext()
+    override fun moveNext() {
+        while (true) {
+            if (!source.hasNext()) noNextElementInIteratorException()
+            if (!source.getNext().hasNext()) source.moveNext()
+            else break
+        }
+        source.getNext().moveNext()
+    }
+}
+
+public fun <E> KoneIterator<KoneIterator<E>>.flatten(): KoneIterator<E> = KoneFlattenIteratorIterator(this)
+
 public fun <E> KoneIterable<KoneIterable<E>>.flatten(): KoneList<E> {
     val result = KoneArrayGrowableList<E>()
     for (iterable in this) result.addAllFrom(iterable)
     return result
 }
 
-//public fun <E> KoneSequence<KoneSequence<E>>.flatten(): KoneList<E> {
-//    val result = KoneArrayGrowableList<E>()
-//    for (iterable in this) result.addAllFrom(iterable)
-//    return result
-//}
+private class KoneFlattenSequenceIterator<Element>(
+    private val source: KoneIterator<KoneSequence<Element>>,
+) : KoneIterator<Element> {
+    private var iterator: KoneIterator<Element> = KoneIterator.empty()
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (iterator.hasNext()) return true
+            if (!source.hasNext()) return false
+            iterator = source.getNext().iterator()
+            source.moveNext()
+        }
+    }
+    override fun getNext(): Element =
+        if (!hasNext()) noNextElementInIteratorException()
+        else iterator.getNext()
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        else iterator.moveNext()
+    }
+}
 
-public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
-    for (element in this) destination.addAllFrom(transform(element))
+private class KoneFlattenSequenceSequence<Element>(
+    private val source: KoneSequence<KoneSequence<Element>>,
+) : KoneSequence<Element> {
+    override fun iterator(): KoneIterator<Element> = KoneFlattenSequenceIterator(source.iterator())
+}
+
+public fun <E> KoneSequence<KoneSequence<E>>.flatten(): KoneSequence<E> = KoneFlattenSequenceSequence(this)
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
+    while (hasNext()) destination.addAllFrom(transform(getAndMoveNext()))
     return destination
 }
-public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
-    for (element in this) destination.addAllFrom(transform(element))
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
+    while (hasNext()) destination.addAllFrom(transform(getAndMoveNext()))
     return destination
 }
 
-public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
+    iterator().flatMapTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
+    iterator().flatMapTo(destination, transform)
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
+    iterator().flatMapTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
+    iterator().flatMapTo(destination, transform)
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
     var currentIndex = 0u
-    for (element in this) destination.addAllFrom(transform(currentIndex++, element))
+    while (hasNext()) destination.addAllFrom(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
-public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
     var currentIndex = 0u
-    for (element in this) destination.addAllFrom(transform(currentIndex++, element))
+    while (hasNext()) destination.addAllFrom(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
+    iterator().flatMapIndexedTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
+    iterator().flatMapIndexedTo(destination, transform)
+
+public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
+    iterator().flatMapIndexedTo(destination, transform)
+public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
+    iterator().flatMapIndexedTo(destination, transform)
+
+private class KoneFlatMapIteratorIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (Element) -> KoneIterator<Result>,
+) : KoneIterator<Result> {
+    var nextIterator: KoneIterator<Result> = KoneIterator.empty()
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (nextIterator.hasNext()) return true
+            if (!source.hasNext()) return false
+            nextIterator = transform(source.getAndMoveNext())
+        }
+    }
+    override fun getNext(): Result =
+        if (!hasNext()) noNextElementInIteratorException()
+        else nextIterator.getNext()
+    override fun moveNext() {
+        while (true) {
+            if (nextIterator.hasNext()) {
+                nextIterator.moveNext()
+                break
+            }
+            if (!source.hasNext()) noNextElementInIteratorException()
+            nextIterator = transform(source.getAndMoveNext())
+        }
+    }
+}
+
+public fun <E, R> KoneIterator<E>.flatMap(transform: (E) -> KoneIterator<R>): KoneIterator<R> = KoneFlatMapIteratorIterator(this, transform)
 
 public inline fun <E, R> KoneIterable<E>.flatMap(transform: (E) -> KoneIterable<R>): KoneList<R> = flatMapTo(KoneArrayGrowableList(), transform)
 
+private class KoneFlatMapSequenceIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (Element) -> KoneSequence<Result>,
+) : KoneIterator<Result> {
+    var nextIterator: KoneIterator<Result> = KoneIterator.empty()
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (nextIterator.hasNext()) return true
+            if (!source.hasNext()) return false
+            nextIterator = transform(source.getAndMoveNext()).iterator()
+        }
+    }
+    override fun getNext(): Result =
+        if (!hasNext()) noNextElementInIteratorException()
+        else nextIterator.getNext()
+    override fun moveNext() {
+        while (true) {
+            if (nextIterator.hasNext()) {
+                nextIterator.moveNext()
+                break
+            }
+            if (!source.hasNext()) noNextElementInIteratorException()
+            nextIterator = transform(source.getAndMoveNext()).iterator()
+        }
+    }
+}
+
+private class KoneFlatMapSequenceSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val transform: (Element) -> KoneSequence<Result>,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = KoneFlatMapSequenceIterator(source.iterator(), transform)
+}
+
+public fun <E, R> KoneSequence<E>.flatMap(transform: (E) -> KoneSequence<R>): KoneSequence<R> = KoneFlatMapSequenceSequence(this, transform)
+
+private class KoneFlatMapIndexedIteratorIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (UInt, Element) -> KoneIterator<Result>,
+) : KoneIterator<Result> {
+    var nextIndex: UInt = 0u
+    var nextIterator: KoneIterator<Result> = KoneIterator.empty()
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (nextIterator.hasNext()) return true
+            if (!source.hasNext()) return false
+            nextIterator = transform(nextIndex++, source.getAndMoveNext())
+        }
+    }
+    override fun getNext(): Result =
+        if (!hasNext()) noNextElementInIteratorException()
+        else nextIterator.getNext()
+    override fun moveNext() {
+        while (true) {
+            if (nextIterator.hasNext()) {
+                nextIterator.moveNext()
+                break
+            }
+            if (!source.hasNext()) noNextElementInIteratorException()
+            nextIterator = transform(nextIndex++, source.getAndMoveNext())
+        }
+    }
+}
+
+public fun <E, R> KoneIterator<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterator<R>): KoneIterator<R> = KoneFlatMapIndexedIteratorIterator(this, transform)
+
 public inline fun <E, R> KoneIterable<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterable<R>): KoneList<R> = flatMapIndexedTo(KoneArrayGrowableList(), transform)
+
+private class KoneFlatMapIndexedSequenceIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val transform: (UInt, Element) -> KoneSequence<Result>,
+) : KoneIterator<Result> {
+    var nextIndex: UInt = 0u
+    var nextIterator: KoneIterator<Result> = KoneIterator.empty()
+    override fun hasNext(): Boolean {
+        while (true) {
+            if (nextIterator.hasNext()) return true
+            if (!source.hasNext()) return false
+            nextIterator = transform(nextIndex++, source.getAndMoveNext()).iterator()
+        }
+    }
+    override fun getNext(): Result =
+        if (!hasNext()) noNextElementInIteratorException()
+        else nextIterator.getNext()
+    override fun moveNext() {
+        while (true) {
+            if (nextIterator.hasNext()) {
+                nextIterator.moveNext()
+                break
+            }
+            if (!source.hasNext()) noNextElementInIteratorException()
+            nextIterator = transform(nextIndex++, source.getAndMoveNext()).iterator()
+        }
+    }
+}
+
+private class KoneFlatMapIndexedSequenceSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val transform: (UInt, Element) -> KoneSequence<Result>,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = KoneFlatMapIndexedSequenceIterator(source.iterator(), transform)
+}
+
+public fun <E, R> KoneSequence<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneSequence<R>): KoneSequence<R> = KoneFlatMapIndexedSequenceSequence(this, transform)
 
 public inline fun <E, D: KoneMutableList<in E>> KoneIterator<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     while (hasNext()) {

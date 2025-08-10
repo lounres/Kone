@@ -97,7 +97,7 @@ class SortTests : FunSpec({
             /*crossinline*/ sort: (list: KoneSettableList<UInt>) -> Unit,
         ) {
             withData(listsToShuffle) { init ->
-                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList()
+                val permutationsExhaustive = init.permutationsWithoutRepetitions()
                 withData(permutationsExhaustive) { input ->
                     val target = input.toKoneSettableList()
                     
@@ -179,7 +179,7 @@ class SortTests : FunSpec({
             /*crossinline*/ sort: (list: KoneIterable<UInt>) -> KoneList<UInt>,
         ) {
             withData(listsToShuffle) { init ->
-                val permutationsExhaustive = init.permutationsWithoutRepetitions().toList()
+                val permutationsExhaustive = init.permutationsWithoutRepetitions()
                 withData(permutationsExhaustive) { input ->
                     val result = sort(input)
                     

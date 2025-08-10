@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections.iterables
 
+import dev.lounres.kone.collections.iterables.empty.KoneEmptySettableLinearIterator
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -16,6 +17,8 @@ import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 import kotlin.coroutines.resume
 import kotlin.jvm.JvmInline
 
+
+public fun <Element> KoneIterator.Companion.empty(): KoneIterator<Element> = KoneEmptySettableLinearIterator
 
 @RestrictsSuspension
 public interface KoneIteratorBuilder<in Element> {

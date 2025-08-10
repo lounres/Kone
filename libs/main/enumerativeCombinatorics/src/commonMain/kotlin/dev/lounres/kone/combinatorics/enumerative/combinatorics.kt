@@ -12,6 +12,8 @@ import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.toKoneUIntArray
 import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneSequence
+import dev.lounres.kone.collections.iterables.build
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
@@ -31,7 +33,7 @@ import dev.lounres.kone.scope
 public fun <E1, E2> cartesianProduct(
     collection1: KoneIterable<E1>,
     collection2: KoneIterable<E2>,
-): Sequence<Pair<E1, E2>> = sequence {
+): KoneSequence<Pair<E1, E2>> = KoneSequence.build {
     for (e1 in collection1) for (e2 in collection2) yield(Pair(e1, e2))
 }
 
@@ -39,13 +41,13 @@ public fun <E1, E2, E3> cartesianProduct(
     collection1: KoneIterable<E1>,
     collection2: KoneIterable<E2>,
     collection3: KoneIterable<E3>,
-): Sequence<Triple<E1, E2, E3>> = sequence {
+): KoneSequence<Triple<E1, E2, E3>> = KoneSequence.build {
     for (e1 in collection1) for (e2 in collection2) for (e3 in collection3) yield(Triple(e1, e2, e3))
 }
 
 // TODO: Make such utilities return list views instead of copies
-public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<KoneList<E>> = sequence {
-    if (collections.any { it.isEmpty() }) return@sequence
+public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): KoneSequence<KoneList<E>> = KoneSequence.build {
+    if (collections.any { it.isEmpty() }) return@build
 
     val size = collections.size
     val lastIndices = KoneUIntArray(size) { collections[it].lastIndex }
@@ -57,7 +59,7 @@ public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<Ko
         yield(currentElements.toKoneList())
 
         val firstToIncrease = currentIndices.lastIndexThat { k, index -> index != lastIndices[k] }
-        if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+        if (firstToIncrease == UInt.MAX_VALUE) return@build
 
         val newIndex = ++currentIndices[firstToIncrease]
         currentElements[firstToIncrease] = collections[firstToIncrease][newIndex]
@@ -69,13 +71,13 @@ public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): Sequence<Ko
     }
 }
 
-public fun <E> cartesianProduct(vararg collections: KoneList<E>): Sequence<KoneList<E>> = cartesianProduct(KoneArray(collections))
+public fun <E> cartesianProduct(vararg collections: KoneList<E>): KoneSequence<KoneList<E>> = cartesianProduct(KoneArray(collections))
 
-public infix fun <E> KoneList<E>.cartesianPower(power: UInt): Sequence<KoneList<E>> {
+public infix fun <E> KoneList<E>.cartesianPower(power: UInt): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.isEmpty()) return@sequence
+    return KoneSequence.build {
+        if (collection.isEmpty()) return@build
 
         val lastIndex = collection.lastIndex
         val firstElement = collection.first()
@@ -86,7 +88,7 @@ public infix fun <E> KoneList<E>.cartesianPower(power: UInt): Sequence<KoneList<
             yield(currentElements.toKoneList())
 
             val firstToIncrease = currentIndices.lastIndexThat { _, index -> index != lastIndex }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             val newIndex = ++currentIndices[firstToIncrease]
             currentElements[firstToIncrease] = collection[newIndex]
@@ -100,11 +102,11 @@ public infix fun <E> KoneList<E>.cartesianPower(power: UInt): Sequence<KoneList<
 }
 
 @Suppress("UNCHECKED_CAST")
-public fun <E> KoneList<E>.selectiveCartesianPower(power: UInt, testPrefix: (KoneList<E>) -> Boolean): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.selectiveCartesianPower(power: UInt, testPrefix: (KoneList<E>) -> Boolean): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.isEmpty()) return@sequence
+    return KoneSequence.build {
+        if (collection.isEmpty()) return@build
 
         val lastIndex = collection.size - 1u
         var currentSize = 0u
@@ -131,11 +133,11 @@ public fun <E> KoneList<E>.selectiveCartesianPower(power: UInt, testPrefix: (Kon
 
 // TODO: Add more selective functions
 
-public fun <E> KoneList<E>.combinations(k: UInt): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinations(k: UInt): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.size < k) return@sequence
+    return KoneSequence.build {
+        if (collection.size < k) return@build
 
         val addition = collection.size - k
         val currentIndices = KoneMutableUIntArray(k) { it }
@@ -145,7 +147,7 @@ public fun <E> KoneList<E>.combinations(k: UInt): Sequence<KoneList<E>> {
             yield(currentElements.toKoneList())
 
             val firstToIncrease = currentIndices.lastIndexThat { t, index -> index < addition + t }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             var index = currentIndices[firstToIncrease]
             for (t in firstToIncrease ..< k) {
@@ -156,10 +158,10 @@ public fun <E> KoneList<E>.combinations(k: UInt): Sequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.allCombinations(): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
+    return KoneSequence.build {
         val size = collection.size
         val currentState = KoneMutableUIntArray(size) { 0u }
         var currentElements = KoneList.empty<E>()
@@ -168,7 +170,7 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
             yield(currentElements)
 
             val firstToIncrease = currentState.firstIndexThat { _, element -> element == 0u }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             currentState[firstToIncrease] = 1u
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
@@ -180,11 +182,11 @@ public fun <E> KoneList<E>.allCombinations(): Sequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.permutations(k: UInt = size): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.permutations(k: UInt = size): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.size < k) return@sequence
+    return KoneSequence.build {
+        if (collection.size < k) return@build
 
         val size = collection.size
         val references = KoneMutableUIntArray(size + 1u) { it + 1u }.apply {
@@ -233,7 +235,7 @@ public fun <E> KoneList<E>.permutations(k: UInt = size): Sequence<KoneList<E>> {
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             val newIndex = moveToNextMark(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -248,10 +250,10 @@ public fun <E> KoneList<E>.permutations(k: UInt = size): Sequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.allPermutations(): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.allPermutations(): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
+    return KoneSequence.build {
         val size = collection.size
         val references = KoneMutableUIntArray(size + 1u) { it + 1u }
         var currentSize = 0u
@@ -309,7 +311,7 @@ public fun <E> KoneList<E>.allPermutations(): Sequence<KoneList<E>> {
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             val newIndex = moveToNextMark(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -319,14 +321,14 @@ public fun <E> KoneList<E>.allPermutations(): Sequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.size < k) return@sequence
+    return KoneSequence.build {
+        if (collection.size < k) return@build
         if (collection.size == 0u) {
             yield(KoneList.empty())
-            return@sequence
+            return@build
         }
 
         val size = collection.size
@@ -418,7 +420,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest:
                         currentCounts[index + 1u] < counts[index + 1u] &&
                         count > 0u
             }
-            if (firstToDecrease == UInt.MAX_VALUE) return@sequence
+            if (firstToDecrease == UInt.MAX_VALUE) return@build
 
             currentCounts[firstToDecrease]--
             restCounts[firstToDecrease]++
@@ -427,13 +429,13 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest:
     }
 }
 
-public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
+    return KoneSequence.build {
         if (collection.size == 0u) {
             yield(KoneList.empty())
-            return@sequence
+            return@build
         }
 
         val size = collection.size
@@ -494,7 +496,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
             yield(currentElements.take(currentSize) as KoneList<E>)
 
             val firstToIncrease = currentCounts.lastIndexThat { index, count -> count < counts[index] }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             currentCounts[firstToIncrease]++
             currentSize++
@@ -507,11 +509,11 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
     }
 }
 
-public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
-        if (collection.size < k) return@sequence
+    return KoneSequence.build {
+        if (collection.size < k) return@build
 
         val size = collection.size
         val references = KoneMutableUIntArray(size + 1u) { it + 1u }
@@ -585,7 +587,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             val newIndex = addMarkAt(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -600,10 +602,10 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
     }
 }
 
-public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): Sequence<KoneList<E>> {
+public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
     val collection = this
 
-    return sequence {
+    return KoneSequence.build {
         val size = collection.size
         val references = KoneMutableUIntArray(size + 1u) { it + 1u }
         val nextSameElement = KoneMutableUIntArray(size + 1u) { size + 1u }
@@ -682,7 +684,7 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@sequence
+            if (firstToIncrease == UInt.MAX_VALUE) return@build
 
             val newIndex = addMarkAt(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex

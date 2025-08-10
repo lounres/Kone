@@ -2,10 +2,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(versions.kotest.framework.engine)
-                implementation(versions.kotest.framework.datatest)
-                implementation(versions.kotest.assertions.core)
-                implementation(versions.kotest.property)
+                api(versions.kotest.framework.engine)
+                api(versions.kotest.framework.datatest)
+                api(versions.kotest.assertions.core)
+                api(versions.kotest.property)
+                api(projects.libs.main.collections)
             }
         }
         commonTest {
