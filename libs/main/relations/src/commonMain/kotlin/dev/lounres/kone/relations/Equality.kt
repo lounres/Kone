@@ -9,12 +9,11 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
-import dev.lounres.kone.contexts.load
-import dev.lounres.kone.contexts.loadOrDefault
-import dev.lounres.kone.contexts.loadOrElse
-import dev.lounres.kone.contexts.loadOrNull
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.getOrDefault
+import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -65,34 +64,34 @@ public interface Equality<in Element> : KoneContext {
  * Shortcut for getting [Equality] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityFor(suppliedElementType: SuppliedType): Equality<Element> = load(Equality.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getEqualityFor(suppliedElementType: SuppliedType): Equality<Element> = get(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityForOrNull(suppliedElementType: SuppliedType): Equality<Element>? = loadOrNull(Equality.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getEqualityForOrNull(suppliedElementType: SuppliedType): Equality<Element>? = getOrNull(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadEqualityForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> = loadOrDefault(Equality.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.getEqualityForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> = getOrDefault(Equality.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadEqualityForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> = loadOrElse(Equality.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.getEqualityForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> = getOrElse(Equality.Key(suppliedElementType), block)
 
 /**
- * Installs default [Equality] context for the given [suppliedElementType] into context registry builder.
+ * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installDefaultEqualityFor(suppliedElementType: SuppliedType) {
-    contextsBuilder[Equality.Key(suppliedElementType)] = defaultEquality<Element>()
+public fun <Element> RegistryBuilder<KoneContextRegistry>.setDefaultEqualityFor(suppliedElementType: SuppliedType) {
+    Equality.Key<Element>(suppliedElementType) correspondsTo  defaultEquality<Element>()
 }
 /**
- * Installs absolute [Equality] context for the given [suppliedElementType] into context registry builder.
+ * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installAbsoluteEqualityFor(suppliedElementType: SuppliedType) {
-    contextsBuilder[Equality.Key(suppliedElementType)] = absoluteEquality<Element>()
+public fun <Element> RegistryBuilder<KoneContextRegistry>.setAbsoluteEqualityFor(suppliedElementType: SuppliedType) {
+    Equality.Key<Element>(suppliedElementType) correspondsTo  absoluteEquality<Element>()
 }
 
 /**

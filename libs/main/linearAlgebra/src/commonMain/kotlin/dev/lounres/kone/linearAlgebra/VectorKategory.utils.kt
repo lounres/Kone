@@ -7,11 +7,11 @@ package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDListProducer
 import dev.lounres.kone.multidimensionalCollections.producers.*
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -26,21 +26,21 @@ public fun <N> Ring<N>.vectorKategory(
     mdListProducer: MDListProducer = ArrayMDListProducer,
 ): VectorKategory<N> = VectorKategoryWithNumberRing(this, mdListProducer.as1D(), mdListProducer.as2D())
 
-public fun <N> KoneContextRegistryBuilder.installVectorKategoryFor(
+public fun <N> RegistryBuilder<KoneContextRegistry>.setVectorKategoryFor(
     numberType: SuppliedType,
     mdList1Producer: MDList1Producer = ArrayMDList1Producer,
     mdList2Producer: MDList2Producer = ArrayMDList2Producer,
 ) {
-    val vectorKategory = contextsBuilder[Ring.Key<N>(numberType)].vectorKategory(mdList1Producer, mdList2Producer)
-    contextsBuilder[VectorKategory.Key<N>(numberType)] = vectorKategory
+    val vectorKategory = this[Ring.Key<N>(numberType)].vectorKategory(mdList1Producer, mdList2Producer)
+    VectorKategory.Key<N>(numberType) correspondsTo vectorKategory
 }
 
-public fun <N> KoneContextRegistryBuilder.installVectorKategoryFor(
+public fun <N> RegistryBuilder<KoneContextRegistry>.setVectorKategoryFor(
     numberType: SuppliedType,
     mdListProducer: MDListProducer = ArrayMDListProducer,
 ) {
-    val vectorKategory = contextsBuilder[Ring.Key<N>(numberType)].vectorKategory(mdListProducer)
-    contextsBuilder[VectorKategory.Key<N>(numberType)] = vectorKategory
+    val vectorKategory = this[Ring.Key<N>(numberType)].vectorKategory(mdListProducer)
+    this[VectorKategory.Key<N>(numberType)] = vectorKategory
 }
 
 public fun <N, R> KoneContextRegistry.inVectorKategoryFor(numberType: SuppliedType, block: context(VectorKategory<N>) () -> R): R {

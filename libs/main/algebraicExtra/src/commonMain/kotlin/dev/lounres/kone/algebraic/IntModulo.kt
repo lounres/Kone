@@ -7,14 +7,15 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -78,7 +79,7 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
     override operator fun ULong.times(other: Int): Int = ((this.toLong() * other) % modulus).toInt()
 }
 
-public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
+public fun RegistryBuilder<KoneContextRegistry>.setIntModuloContext(modulus: Int) {
     val ring = IntModuloRing(modulus)
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intModuloSuppliedType = SuppliedType.Regular(
@@ -86,8 +87,8 @@ public fun KoneContextRegistryBuilder.installIntModuloContext(modulus: Int) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(intModuloSuppliedType)] = ring
-    contextsBuilder[Equality.Key(intModuloSuppliedType)] = ring
-    contextsBuilder[Ring.Key(intModuloSuppliedType)] = ring
-    contextsBuilder[Hashing.Key(intModuloSuppliedType)] = ring
+    Reification.Key<Int>(intModuloSuppliedType) correspondsTo ring
+    Equality.Key<Int>(intModuloSuppliedType) correspondsTo ring
+    Ring.Key<Int>(intModuloSuppliedType) correspondsTo ring
+    Hashing.Key<Int>(intModuloSuppliedType) correspondsTo ring
 }

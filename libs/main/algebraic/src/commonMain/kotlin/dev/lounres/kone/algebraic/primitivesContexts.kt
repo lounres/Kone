@@ -7,6 +7,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.squaringPower
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -14,10 +15,10 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.asComparisonResult
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
@@ -120,7 +121,7 @@ public data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<By
 public val Byte.Companion.context: ByteContext get() = ByteContext
 
 /**
- * Installs default [Byte] context (see [ByteContext])
+ * Sets default [Byte] context (see [ByteContext])
  * as the following type of contexts with [Byte] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -131,21 +132,21 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installByteContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setByteContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val byteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Byte",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[Equality.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[Semiring.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[Ring.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[EuclideanSemiring.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[EuclideanRing.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[Order.Key(byteSuppliedType)] = ByteContext
-    contextsBuilder[Hashing.Key(byteSuppliedType)] = ByteContext
+    Reification.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Equality.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Semiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Ring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    EuclideanSemiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    EuclideanRing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Order.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Hashing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
 }
 
 /**
@@ -245,7 +246,7 @@ public data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order
 public val Short.Companion.context: ShortContext get() = ShortContext
 
 /**
- * Installs default [Short] context (see [ShortContext])
+ * Sets default [Short] context (see [ShortContext])
  * as the following type of contexts with [Short] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -256,21 +257,21 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installShortContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setShortContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val shortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Short",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[Equality.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[Semiring.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[Ring.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[EuclideanSemiring.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[EuclideanRing.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[Order.Key(shortSuppliedType)] = ShortContext
-    contextsBuilder[Hashing.Key(shortSuppliedType)] = ShortContext
+    Reification.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Equality.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Semiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Ring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    EuclideanSemiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    EuclideanRing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Order.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Hashing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
 }
 
 /**
@@ -358,7 +359,7 @@ public data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>,
 public val Int.Companion.context: IntContext get() = IntContext
 
 /**
- * Installs default [Int] context (see [IntContext])
+ * Sets default [Int] context (see [IntContext])
  * as the following type of contexts with [Int] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -369,21 +370,21 @@ public val Int.Companion.context: IntContext get() = IntContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installIntContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setIntContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Int",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(intSuppliedType)] = IntContext
-    contextsBuilder[Equality.Key(intSuppliedType)] = IntContext
-    contextsBuilder[Semiring.Key(intSuppliedType)] = IntContext
-    contextsBuilder[Ring.Key(intSuppliedType)] = IntContext
-    contextsBuilder[EuclideanSemiring.Key(intSuppliedType)] = IntContext
-    contextsBuilder[EuclideanRing.Key(intSuppliedType)] = IntContext
-    contextsBuilder[Order.Key(intSuppliedType)] = IntContext
-    contextsBuilder[Hashing.Key(intSuppliedType)] = IntContext
+    Reification.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Equality.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Semiring.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Ring.Key<Int>(intSuppliedType) correspondsTo IntContext
+    EuclideanSemiring.Key<Int>(intSuppliedType) correspondsTo IntContext
+    EuclideanRing.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Order.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Hashing.Key<Int>(intSuppliedType) correspondsTo IntContext
 }
 
 /**
@@ -471,7 +472,7 @@ public data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Lo
 public val Long.Companion.context: LongContext get() = LongContext
 
 /**
- * Installs default [Long] context (see [LongContext])
+ * Sets default [Long] context (see [LongContext])
  * as the following type of contexts with [Long] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -482,21 +483,21 @@ public val Long.Companion.context: LongContext get() = LongContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installLongContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setLongContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Long",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(longSuppliedType)] = LongContext
-    contextsBuilder[Equality.Key(longSuppliedType)] = LongContext
-    contextsBuilder[Semiring.Key(longSuppliedType)] = LongContext
-    contextsBuilder[Ring.Key(longSuppliedType)] = LongContext
-    contextsBuilder[EuclideanSemiring.Key(longSuppliedType)] = LongContext
-    contextsBuilder[EuclideanRing.Key(longSuppliedType)] = LongContext
-    contextsBuilder[Order.Key(longSuppliedType)] = LongContext
-    contextsBuilder[Hashing.Key(longSuppliedType)] = LongContext
+    Reification.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Equality.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Semiring.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Ring.Key<Long>(longSuppliedType) correspondsTo LongContext
+    EuclideanSemiring.Key<Long>(longSuppliedType) correspondsTo LongContext
+    EuclideanRing.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Order.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Hashing.Key<Long>(longSuppliedType) correspondsTo LongContext
 }
 
 /**
@@ -572,7 +573,7 @@ public data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, E
 public val UByte.Companion.context: UByteContext get() = UByteContext
 
 /**
- * Installs default [UByte] context (see [UByteContext])
+ * Sets default [UByte] context (see [UByteContext])
  * as the following type of contexts with [UByte] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -581,19 +582,19 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installUByteContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setUByteContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uByteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UByte",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(uByteSuppliedType)] = UByteContext
-    contextsBuilder[Equality.Key(uByteSuppliedType)] = UByteContext
-    contextsBuilder[Semiring.Key(uByteSuppliedType)] = UByteContext
-    contextsBuilder[EuclideanSemiring.Key(uByteSuppliedType)] = UByteContext
-    contextsBuilder[Order.Key(uByteSuppliedType)] = UByteContext
-    contextsBuilder[Hashing.Key(uByteSuppliedType)] = UByteContext
+    Reification.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Equality.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Semiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    EuclideanSemiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Order.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Hashing.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
 }
 
 /**
@@ -669,7 +670,7 @@ public data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>
 public val UShort.Companion.context: UShortContext get() = UShortContext
 
 /**
- * Installs default [UShort] context (see [UShortContext])
+ * Sets default [UShort] context (see [UShortContext])
  * as the following type of contexts with [UShort] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -678,19 +679,19 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installUShortContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setUShortContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uShortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UShort",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(uShortSuppliedType)] = UShortContext
-    contextsBuilder[Equality.Key(uShortSuppliedType)] = UShortContext
-    contextsBuilder[Semiring.Key(uShortSuppliedType)] = UShortContext
-    contextsBuilder[EuclideanSemiring.Key(uShortSuppliedType)] = UShortContext
-    contextsBuilder[Order.Key(uShortSuppliedType)] = UShortContext
-    contextsBuilder[Hashing.Key(uShortSuppliedType)] = UShortContext
+    Reification.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Equality.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Semiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    EuclideanSemiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Order.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Hashing.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
 }
 
 /**
@@ -756,7 +757,7 @@ public data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Exte
 public val UInt.Companion.context: UIntContext get() = UIntContext
 
 /**
- * Installs default [UInt] context (see [UIntContext])
+ * Sets default [UInt] context (see [UIntContext])
  * as the following type of contexts with [UInt] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -765,19 +766,19 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installUIntContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setUIntContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uIntSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UInt",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(uIntSuppliedType)] = UIntContext
-    contextsBuilder[Equality.Key(uIntSuppliedType)] = UIntContext
-    contextsBuilder[Semiring.Key(uIntSuppliedType)] = UIntContext
-    contextsBuilder[EuclideanSemiring.Key(uIntSuppliedType)] = UIntContext
-    contextsBuilder[Order.Key(uIntSuppliedType)] = UIntContext
-    contextsBuilder[Hashing.Key(uIntSuppliedType)] = UIntContext
+    Reification.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Equality.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Semiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    EuclideanSemiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Order.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Hashing.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
 }
 
 /**
@@ -843,7 +844,7 @@ public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, E
 public val ULong.Companion.context: ULongContext get() = ULongContext
 
 /**
- * Installs default [ULong] context (see [ULongContext])
+ * Sets default [ULong] context (see [ULongContext])
  * as the following type of contexts with [ULong] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -852,19 +853,19 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installULongContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setULongContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uLongSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.ULong",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(uLongSuppliedType)] = ULongContext
-    contextsBuilder[Equality.Key(uLongSuppliedType)] = ULongContext
-    contextsBuilder[Semiring.Key(uLongSuppliedType)] = ULongContext
-    contextsBuilder[EuclideanSemiring.Key(uLongSuppliedType)] = ULongContext
-    contextsBuilder[Order.Key(uLongSuppliedType)] = ULongContext
-    contextsBuilder[Hashing.Key(uLongSuppliedType)] = ULongContext
+    Reification.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Equality.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Semiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    EuclideanSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Order.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Hashing.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
 }
 
 /**
@@ -980,7 +981,7 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
 public val Double.Companion.context: DoubleContext get() = DoubleContext
 
 /**
- * Installs default [Double] context (see [DoubleContext])
+ * Sets default [Double] context (see [DoubleContext])
  * as the following type of contexts with [Double] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -990,20 +991,20 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installDoubleContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setDoubleContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val doubleSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Double",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Equality.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Semiring.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Ring.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Field.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Order.Key(doubleSuppliedType)] = DoubleContext
-    contextsBuilder[Hashing.Key(doubleSuppliedType)] = DoubleContext
+    Reification.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Equality.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Semiring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Ring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Field.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Order.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Hashing.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
 }
 
 /**
@@ -1119,7 +1120,7 @@ public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>,
 public val Float.Companion.context: FloatContext get() = FloatContext
 
 /**
- * Installs default [Float] context (see [FloatContext])
+ * Sets default [Float] context (see [FloatContext])
  * as the following type of contexts with [Float] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -1129,18 +1130,18 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installFloatContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setFloatContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val floatSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Float",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Equality.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Semiring.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Ring.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Field.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Order.Key(floatSuppliedType)] = FloatContext
-    contextsBuilder[Hashing.Key(floatSuppliedType)] = FloatContext
+    Reification.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Equality.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Semiring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Ring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Field.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Order.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Hashing.Key<Float>(floatSuppliedType) correspondsTo FloatContext
 }

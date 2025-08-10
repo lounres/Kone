@@ -19,10 +19,11 @@ import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -78,10 +79,10 @@ internal class DeterminantViaLeibnizFormulaComputer<Number>(val numberContext: R
 public val <Number> Ring<Number>.determinantViaLeibnizFormulaComputer: DeterminantComputer<Number>
     get() = DeterminantViaLeibnizFormulaComputer(this)
 
-public fun <Number> KoneContextRegistryBuilder.installDeterminantViaLeibnizFormulaComputer(
+public fun <Number> RegistryBuilder<KoneContextRegistry>.setDeterminantViaLeibnizFormulaComputer(
     numberType: SuppliedType,
 ) {
-    contextsBuilder[DeterminantComputer.Key<Number>(numberType)] = contextsBuilder[Ring.Key<Number>(numberType)].determinantViaLeibnizFormulaComputer
+    this[DeterminantComputer.Key<Number>(numberType)] = this[Ring.Key<Number>(numberType)].determinantViaLeibnizFormulaComputer
 }
 
 context(_: Field<Number>)
@@ -131,10 +132,10 @@ internal class DeterminantViaGaussianEliminationComputer<Number>(val numberConte
 public val <Number> Field<Number>.determinantViaGaussianEliminationComputer: DeterminantComputer<Number>
     get() = DeterminantViaGaussianEliminationComputer(this)
 
-public fun <Number> KoneContextRegistryBuilder.installDeterminantViaGaussianEliminationComputer(
+public fun <Number> RegistryBuilder<KoneContextRegistry>.setDeterminantViaGaussianEliminationComputer(
     numberType: SuppliedType,
 ) {
-    contextsBuilder[DeterminantComputer.Key<Number>(numberType)] = contextsBuilder[Field.Key<Number>(numberType)].determinantViaGaussianEliminationComputer
+    this[DeterminantComputer.Key<Number>(numberType)] = this[Field.Key<Number>(numberType)].determinantViaGaussianEliminationComputer
 }
 
 //context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>)

@@ -10,7 +10,11 @@ import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
-import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
@@ -19,10 +23,25 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.of
-import dev.lounres.kone.collections.set.*
+import dev.lounres.kone.collections.set.KoneMutableReifiedSet
+import dev.lounres.kone.collections.set.KoneMutableSet
+import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.build
+import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.set.relations.equality
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.set.removeAllFrom
+import dev.lounres.kone.collections.set.toKoneMutableReifiedSet
+import dev.lounres.kone.collections.set.toKoneMutableSet
+import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.firstOfThatOrNull
+import dev.lounres.kone.collections.utils.firstThat
+import dev.lounres.kone.collections.utils.mapTo
+import dev.lounres.kone.collections.utils.maxBy
+import dev.lounres.kone.collections.utils.minListBy
+import dev.lounres.kone.collections.utils.minListWithBy
+import dev.lounres.kone.collections.utils.single
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
@@ -35,8 +54,8 @@ import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVer
 import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -401,22 +420,18 @@ public fun <
 > ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
     vertexSuppliedType: SuppliedType,
     polytopeSuppliedType: SuppliedType,
-    vertexReification: Reification<Vertex>,
-    vertexEquality: Equality<Vertex>,
-    polytopeReification: Reification<Polytope>,
-    polytopeEquality: Equality<Polytope>,
     vertices: KoneIterable<Vertex>,
 ): Polytope {
     require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
     return giftWrappingFull(
-        vertexReification = vertexReification,
-        vertexEquality = vertexEquality,
-        vertexHashing = koneContextRegistry.load(Hashing.Key<Vertex>(vertexSuppliedType)),
-        vertexOrder = koneContextRegistry.load(Order.Key<Vertex>(vertexSuppliedType)),
-        polytopeReification = polytopeReification,
-        polytopeEquality = polytopeEquality,
-        polytopeHashing = koneContextRegistry.load(Hashing.Key<Polytope>(polytopeSuppliedType)),
-        polytopeOrder = koneContextRegistry.load(Order.Key<Polytope>(polytopeSuppliedType)),
+        vertexReification = koneContextRegistry[Reification.Key<Vertex>(vertexSuppliedType)],
+        vertexEquality = koneContextRegistry[Equality.Key<Vertex>(vertexSuppliedType)],
+        vertexHashing = koneContextRegistry.getOrNull(Hashing.Key<Vertex>(vertexSuppliedType)),
+        vertexOrder = koneContextRegistry.getOrNull(Order.Key<Vertex>(vertexSuppliedType)),
+        polytopeReification = koneContextRegistry[Reification.Key<Polytope>(polytopeSuppliedType)],
+        polytopeEquality = koneContextRegistry[Equality.Key<Polytope>(polytopeSuppliedType)],
+        polytopeHashing = koneContextRegistry.getOrNull(Hashing.Key<Polytope>(polytopeSuppliedType)),
+        polytopeOrder = koneContextRegistry.getOrNull(Order.Key<Polytope>(polytopeSuppliedType)),
         subspaceDimension = spaceDimension,
         points = vertices,
     ).polytope

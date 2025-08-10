@@ -12,7 +12,6 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.asComparisonResult
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -162,7 +161,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 //}
 
 //public val Long.Companion.safeContext: SafeLongContext get() = SafeLongContext
-//public fun KoneContextRegistryBuilder.installSafeLongContext() {
+//public fun KoneContextRegistryBuilder.setSafeLongContext() {
 //    val longSuppliedType = SuppliedType.Regular<Long>(
 //        kClass = Long::class,
 //        typeArguments = emptyList(),

@@ -107,11 +107,11 @@ public inline fun <T> Registry.getOrElse(registryKey: RegistryKey<T>, block: () 
 /**
  * Builder function for [Registry].
  */
-public inline fun Registry(block: RegistryBuilder.() -> Unit): Registry {
+public inline fun <Owner> Registry(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return RegistryBuilder().apply(block).build()
+    return RegistryBuilder<Owner>().apply(block).build()
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -127,7 +127,7 @@ internal class RegistryImpl(private val content: Map<RegistryKeyMapWrapper<*>, A
  * Mutable version of [Registry] that is used by builder function.
  */
 @Suppress("UNCHECKED_CAST")
-public class RegistryBuilder @PublishedApi internal constructor() : Registry {
+public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Registry {
     private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
     
     override operator fun <T> contains(registryKey: RegistryKey<T>): Boolean {

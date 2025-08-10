@@ -26,10 +26,10 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.relations.loadEqualityFor
-import dev.lounres.kone.relations.loadHashingForOrNull
-import dev.lounres.kone.relations.loadOrderForOrNull
-import dev.lounres.kone.relations.loadReificationFor
+import dev.lounres.kone.relations.getEqualityFor
+import dev.lounres.kone.relations.getHashingForOrNull
+import dev.lounres.kone.relations.getOrderForOrNull
+import dev.lounres.kone.relations.getReificationFor
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -58,9 +58,9 @@ public fun <Element> KoneSet.Companion.contextualOf(
     elementType: SuppliedType,
 ): KoneSet<Element> =
     KoneSet.of(
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 @Suppress("UNUSED_PARAMETER")
@@ -83,10 +83,10 @@ public fun <Element> KoneReifiedSet.Companion.contextualOf(
     elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 @Suppress("unused")
@@ -104,9 +104,9 @@ public fun <Element> KoneSet.Companion.contextualOf(
 ): KoneSet<Element> =
     KoneSet.of(
         element = element,
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 @Suppress("unused")
@@ -134,10 +134,10 @@ public fun <Element> KoneReifiedSet.Companion.contextualOf(
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
         element = element,
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneSet.Companion.of(
@@ -162,9 +162,9 @@ public fun <Element> KoneSet.Companion.contextualOf(
 ): KoneSet<Element> =
     KoneSet.of(
         elements = elements,
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneReifiedSet.Companion.of(
@@ -206,10 +206,10 @@ public fun <Element> KoneReifiedSet.Companion.contextualOf(
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.of(
         elements = elements,
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneMutableSet.Companion.of(
@@ -225,9 +225,9 @@ public fun <Element> KoneMutableSet.Companion.contextualOf(
     elementType: SuppliedType,
 ): KoneMutableSet<Element> =
     KoneMutableSet.of(
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneMutableReifiedSet.Companion.of(
@@ -255,10 +255,10 @@ public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
     elementType: SuppliedType,
 ): KoneMutableReifiedSet<Element> =
     KoneMutableReifiedSet.of(
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneMutableSet.Companion.of(
@@ -283,9 +283,9 @@ public fun <Element> KoneMutableSet.Companion.contextualOf(
 ): KoneMutableSet<Element> =
     KoneMutableSet.of(
         elements = elements,
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneMutableReifiedSet.Companion.of(
@@ -332,10 +332,10 @@ public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
 ): KoneMutableReifiedSet<Element> =
     KoneMutableReifiedSet.of(
         elements = elements,
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneIterable<Element>.toKoneMutableSet(
@@ -357,9 +357,9 @@ public fun <Element> KoneIterable<Element>.toKoneContextualMutableSet(
     elementType: SuppliedType,
 ): KoneMutableSet<Element> =
     toKoneMutableSet(
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneMutableReifiedSet(
@@ -394,10 +394,10 @@ public fun <Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(
     elementType: SuppliedType,
 ): KoneMutableReifiedSet<Element> =
     toKoneMutableReifiedSet(
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public fun <Element> KoneIterable<Element>.toKoneSet(
@@ -405,9 +405,9 @@ public fun <Element> KoneIterable<Element>.toKoneSet(
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> =
-    when {
-        size == 0u -> KoneSet.empty()
-        size == 1u -> KoneSingletonNoddedSet(singleElement = iterator().getNext(), elementEquality = elementEquality)
+    when (size) {
+        0u -> KoneSet.empty()
+        1u -> KoneSingletonNoddedSet(singleElement = iterator().getNext(), elementEquality = elementEquality)
         else -> this.toKoneMutableSet(elementEquality = elementEquality, elementHashing = elementHashing, elementOrder = elementOrder)
     }
 
@@ -416,9 +416,9 @@ public fun <Element> KoneIterable<Element>.toKoneContextualSet(
     elementType: SuppliedType,
 ): KoneSet<Element> =
     toKoneSet(
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneReifiedSet(
@@ -439,9 +439,9 @@ public fun <Element> KoneIterable<Element>.toKoneReifiedSet(
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
 ): KoneReifiedSet<Element> =
-    when {
-        size == 0u -> KoneReifiedSet.empty()
-        size == 1u -> KoneSingletonNoddedReifiedSet(
+    when (size) {
+        0u -> KoneReifiedSet.empty()
+        1u -> KoneSingletonNoddedReifiedSet(
             singleElement = iterator().getNext(),
             elementReification = elementReification,
             elementEquality = elementEquality,
@@ -459,10 +459,10 @@ public fun <Element> KoneIterable<Element>.toKoneContextualReifiedSet(
     elementType: SuppliedType,
 ): KoneReifiedSet<Element> =
     toKoneReifiedSet(
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
     )
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -629,9 +629,9 @@ public inline fun <Element> KoneSet.Companion.buildContextual(
     @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> =
     KoneSet.build(
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
         builderAction = builderAction
     )
 
@@ -673,10 +673,10 @@ public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
     @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
         builderAction = builderAction,
     )
 
@@ -705,9 +705,9 @@ public inline fun <Element> KoneSet.Companion.buildContextual(
 ): KoneSet<Element> =
     KoneSet.build(
         initialCapacity = initialCapacity,
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
         builderAction = builderAction,
     )
 
@@ -754,9 +754,9 @@ public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
         initialCapacity = initialCapacity,
-        elementReification = koneContextRegistry.loadReificationFor(elementType),
-        elementEquality = koneContextRegistry.loadEqualityFor(elementType),
-        elementHashing = koneContextRegistry.loadHashingForOrNull(elementType),
-        elementOrder = koneContextRegistry.loadOrderForOrNull(elementType),
+        elementReification = koneContextRegistry.getReificationFor(elementType),
+        elementEquality = koneContextRegistry.getEqualityFor(elementType),
+        elementHashing = koneContextRegistry.getHashingForOrNull(elementType),
+        elementOrder = koneContextRegistry.getOrderForOrNull(elementType),
         builderAction = builderAction,
     )

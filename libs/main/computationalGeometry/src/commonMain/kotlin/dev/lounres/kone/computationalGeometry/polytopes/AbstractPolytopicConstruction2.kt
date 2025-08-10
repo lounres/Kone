@@ -16,13 +16,14 @@ import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableLinkedNoddedReifiedSet
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteEquality
 import dev.lounres.kone.relations.defaultHashing
-import dev.lounres.kone.relations.installAbsoluteEqualityFor
-import dev.lounres.kone.relations.installDefaultHashingFor
-import dev.lounres.kone.relations.installReificationFor
+import dev.lounres.kone.relations.setAbsoluteEqualityFor
+import dev.lounres.kone.relations.setDefaultHashingFor
+import dev.lounres.kone.relations.setReificationFor
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -272,15 +273,15 @@ internal fun <Number> abstractPolytopicConstruction2VertexSuppliedTypeFor(number
         isNullable = false,
     )
 
-public fun <Number> KoneContextRegistryBuilder.installAbstractPolytopicConstruction2PropertiesFor(numberSuppliedType: SuppliedType) {
+public fun <Number> RegistryBuilder<KoneContextRegistry>.setAbstractPolytopicConstruction2PropertiesFor(numberSuppliedType: SuppliedType) {
     val abstractPolytopicConstruction2PolytopeSuppliedType = abstractPolytopicConstruction2PolytopeSuppliedTypeFor<Number>(numberSuppliedType)
     val abstractPolytopicConstruction2VertexSuppliedType = abstractPolytopicConstruction2VertexSuppliedTypeFor<Number>(numberSuppliedType)
     
-    installReificationFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType)
-    installAbsoluteEqualityFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType)
-    installDefaultHashingFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType) // TODO: Replace with optimised hashing
+    setReificationFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType)
+    setAbsoluteEqualityFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType)
+    setDefaultHashingFor<AbstractPolytopicConstruction2Polytope<Number>>(abstractPolytopicConstruction2PolytopeSuppliedType) // TODO: Replace with optimised hashing
     
-    installReificationFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType)
-    installAbsoluteEqualityFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType)
-    installDefaultHashingFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType) // TODO: Replace with optimised hashing
+    setReificationFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType)
+    setAbsoluteEqualityFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType)
+    setDefaultHashingFor<AbstractPolytopicConstruction2Vertex<Number>>(abstractPolytopicConstruction2VertexSuppliedType) // TODO: Replace with optimised hashing
 }

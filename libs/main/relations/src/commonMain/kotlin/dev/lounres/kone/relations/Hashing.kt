@@ -7,12 +7,11 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
-import dev.lounres.kone.contexts.load
-import dev.lounres.kone.contexts.loadOrDefault
-import dev.lounres.kone.contexts.loadOrElse
-import dev.lounres.kone.contexts.loadOrNull
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.getOrDefault
+import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -63,28 +62,28 @@ public interface Hashing<in Element> : KoneContext {
  * Shortcut for getting [Hashing] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingFor(suppliedElementType: SuppliedType): Hashing<Element> = load(Hashing.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getHashingFor(suppliedElementType: SuppliedType): Hashing<Element> = get(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? = loadOrNull(Hashing.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getHashingForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? = getOrNull(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadHashingForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> = loadOrDefault(Hashing.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.getHashingForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> = getOrDefault(Hashing.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadHashingForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> = loadOrElse(Hashing.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.getHashingForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> = getOrElse(Hashing.Key(suppliedElementType), block)
 
 /**
- * Installs default [Hashing] context for the given [suppliedElementType] into context registry builder.
+ * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> KoneContextRegistryBuilder.installDefaultHashingFor(suppliedElementType: SuppliedType) {
-    contextsBuilder[Hashing.Key(suppliedElementType)] = defaultHashing<Element>()
+public fun <Element> RegistryBuilder<KoneContextRegistry>.setDefaultHashingFor(suppliedElementType: SuppliedType) {
+    Hashing.Key<Element>(suppliedElementType) correspondsTo defaultHashing<Element>()
 }
 
 /**

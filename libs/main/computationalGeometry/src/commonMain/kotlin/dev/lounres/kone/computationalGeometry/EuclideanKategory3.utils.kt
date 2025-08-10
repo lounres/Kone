@@ -8,9 +8,9 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -35,9 +35,9 @@ public fun <N> Ring<N>.euclideanKategory3(
 ): EuclideanKategory3<N> =
     EuclideanKategory3WithNumberRingAndVectorKategory(this, vectorKategory)
 
-public fun <N> KoneContextRegistryBuilder.installEuclideanKategory3For(numberType: SuppliedType) {
-    val euclideanKategory3 = contextsBuilder[Ring.Key<N>(numberType)].euclideanKategory3(contextsBuilder[VectorKategory.Key<N>(numberType)])
-    contextsBuilder[EuclideanKategory3.Key<N>(numberType)] = euclideanKategory3
+public fun <N> RegistryBuilder<KoneContextRegistry>.setEuclideanKategory3For(numberType: SuppliedType) {
+    val euclideanKategory3 = this[Ring.Key<N>(numberType)].euclideanKategory3(this[VectorKategory.Key<N>(numberType)])
+    this[EuclideanKategory3.Key<N>(numberType)] = euclideanKategory3
 }
 
 public inline fun <N, R> KoneContextRegistry.inEuclideanKategory3For(numberType: SuppliedType, block: context(EuclideanKategory3<N>) () -> R): R {

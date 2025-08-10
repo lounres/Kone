@@ -7,10 +7,6 @@ package dev.lounres.kone.contexts
 
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.RegistryBuilder
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.getOrDefault
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.getOrNull
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmInline
@@ -20,12 +16,12 @@ import kotlin.jvm.JvmInline
  * Type-safe registry (a.k.a. type-safe map) made especially for contexts in Kone.
  */
 @JvmInline
-public value class KoneContextRegistry @PublishedApi internal constructor(
+public value class KoneContextRegistry(
     /**
      * Underlying type-safe registry.
      */
     public val contexts: Registry
-)
+) : Registry by contexts
 
 /**
  * Provides receiver for Kone context registry.
@@ -39,52 +35,11 @@ public inline operator fun <R> KoneContextRegistry.invoke(block: KoneContextRegi
 }
 
 /**
- * Shortcut for getting context of type [Context] from [KoneContextRegistry] by corresponding key
- * or throw if nothing is associated with the key.
- */
-public fun <Context> KoneContextRegistry.load(key: RegistryKey<Context>): Context = this.contexts[key]
-/**
- * Shortcut for getting context of type [Context] from [KoneContextRegistry] by corresponding key
- * or null if nothing is associated with the key.
- */
-public fun <Context> KoneContextRegistry.loadOrNull(key: RegistryKey<Context>): Context? = this.contexts.getOrNull(key)
-/**
- * Shortcut for getting context of type [Context] from [KoneContextRegistry] by corresponding key
- * or default value if nothing is associated with the key.
- */
-public fun <Context> KoneContextRegistry.loadOrDefault(key: RegistryKey<Context>, default: Context): Context = this.contexts.getOrDefault(key, default)
-/**
- * Shortcut for getting context of type [Context] from [KoneContextRegistry] by corresponding key
- * or computes and returns value via [block] if nothing is associated with the key.
- */
-public inline fun <Context> KoneContextRegistry.loadOrElse(key: RegistryKey<Context>, block: () -> Context): Context = this.contexts.getOrElse(key, block)
-
-/**
- * Builder for [KoneContextRegistry].
- */
-@JvmInline
-public value class KoneContextRegistryBuilder @PublishedApi internal constructor(public val contextsBuilder: RegistryBuilder)
-
-/**
  * Builder function for [KoneContextRegistry].
  */
-public inline fun KoneContextRegistry(block: KoneContextRegistryBuilder.() -> Unit): KoneContextRegistry {
+public inline fun KoneContextRegistry(block: RegistryBuilder<KoneContextRegistry>.() -> Unit): KoneContextRegistry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return KoneContextRegistry(Registry { KoneContextRegistryBuilder(this).block() })
-}
-
-/**
- * Installs provided [context] associating it by corresponding [key].
- */
-public fun <T> KoneContextRegistryBuilder.install(key: RegistryKey<T>, context: T) {
-    contextsBuilder[key] = context
-}
-
-/**
- * Installs contexts associated by corresponding keys from provided [otherKoneContextRegistry].
- */
-public fun KoneContextRegistryBuilder.installAllFrom(otherKoneContextRegistry: KoneContextRegistry) {
-    contextsBuilder.setFrom(otherKoneContextRegistry.contexts)
+    return KoneContextRegistry(Registry { this.block() })
 }

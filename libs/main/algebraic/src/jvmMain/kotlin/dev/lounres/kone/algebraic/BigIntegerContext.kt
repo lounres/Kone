@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -12,10 +13,10 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.asComparisonResult
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import java.math.BigInteger
@@ -96,7 +97,7 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
 //public val BigInteger.Companion.context: BigIntegerContext get() = BigIntegerContext
 
 /**
- * Installs default [BigInteger] context (see [BigIntegerContext])
+ * Sets default [BigInteger] context (see [BigIntegerContext])
  * as the following type of contexts with [BigInteger] as a type argument:
  * - [Reification],
  * - [Equality],
@@ -107,19 +108,19 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  * - [Order],
  * - [Hashing].
  */
-public fun KoneContextRegistryBuilder.installBigIntegerContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setBigIntegerContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigIntegerSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "java.math.BigInteger",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[Equality.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[Semiring.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[Ring.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[EuclideanSemiring.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[EuclideanRing.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[Order.Key(bigIntegerSuppliedType)] = BigIntegerContext
-    contextsBuilder[Hashing.Key(bigIntegerSuppliedType)] = BigIntegerContext
+    Reification.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Equality.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Semiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Ring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    EuclideanSemiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    EuclideanRing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Order.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Hashing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
 }

@@ -9,11 +9,10 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.load
-import dev.lounres.kone.contexts.loadOrDefault
-import dev.lounres.kone.contexts.loadOrElse
-import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.getOrDefault
+import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -76,22 +75,22 @@ public interface Order<in Element> : KoneContext {
  * Shortcut for getting [Order] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadOrderFor(suppliedElementType: SuppliedType): Order<Element> = load(Order.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getOrderFor(suppliedElementType: SuppliedType): Order<Element> = get(Order.Key(suppliedElementType))
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadOrderForOrNull(suppliedElementType: SuppliedType): Order<Element>? = loadOrNull(Order.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getOrderForOrNull(suppliedElementType: SuppliedType): Order<Element>? = getOrNull(Order.Key(suppliedElementType))
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadOrderForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> = loadOrDefault(Order.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.getOrderForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> = getOrDefault(Order.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadOrderForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> = loadOrElse(Order.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.getOrderForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> = getOrElse(Order.Key(suppliedElementType), block)
 
 /**
  * Provides comparison of two elements. Alternative of [Kotlin stlib Comparator][KotlinStdlibComparator] but with result of type [ComparisonResult].

@@ -70,10 +70,10 @@ public fun <Key, Value> KoneReifiedMap.Companion.contextualOf(
     keyType: SuppliedType,
 ): KoneReifiedMap<Key, Value> =
     KoneReifiedMap.of(
-        keyReification = koneContextRegistry.loadReificationFor(keyType),
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.getReificationFor(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 @Suppress("unused")
@@ -96,9 +96,9 @@ public fun <Key, Value> KoneMap.Companion.contextualOf(
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entry = entry,
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 @Suppress("unused")
@@ -155,9 +155,9 @@ public fun <Key, Value> KoneMap.Companion.contextualOf(
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entries = entries,
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
@@ -205,9 +205,9 @@ public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
     keyType: SuppliedType,
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
@@ -247,9 +247,9 @@ public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
         entries = entries,
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
@@ -283,10 +283,10 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
 ): KoneMutableReifiedMap<Key, Value> =
     KoneMutableReifiedMap.of(
         entries = entries,
-        keyReification = koneContextRegistry.loadReificationFor(keyType),
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.getReificationFor(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
     )
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -479,9 +479,9 @@ public inline fun <Key, Value> KoneMap.Companion.buildContextual(
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
         builderAction = builderAction
     )
 
@@ -518,10 +518,10 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
-        keyReification = koneContextRegistry.loadReificationFor(keyType),
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.getReificationFor(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
         builderAction = builderAction
     )
 
@@ -546,9 +546,9 @@ public inline fun <Key, Value> KoneMap.Companion.buildContextual(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
         initialCapacity = initialCapacity,
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
         builderAction = builderAction
     )
 
@@ -590,10 +590,10 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
         initialCapacity = initialCapacity,
-        keyReification = koneContextRegistry.loadReificationFor(keyType),
-        keyEquality = koneContextRegistry.loadEqualityFor(keyType),
-        keyHashing = koneContextRegistry.loadHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.loadOrderForOrNull(keyType),
+        keyReification = koneContextRegistry.getReificationFor(keyType),
+        keyEquality = koneContextRegistry.getEqualityFor(keyType),
+        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
+        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
         builderAction = builderAction
     )
 

@@ -8,13 +8,13 @@ package dev.lounres.kone.misc.planimetricsCalculus
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.linearAlgebra.VectorKategory
 import dev.lounres.kone.linearAlgebra.vectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
 import dev.lounres.kone.polynomial.labeledPolynomialSpace
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -32,7 +32,7 @@ internal val labeledVariableType =
         isNullable = false,
     )
 
-public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor(numberType: SuppliedType) {
+public fun <N> RegistryBuilder<KoneContextRegistry>.setPlanimetricsCalculationSpaceFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val polynomialType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledPolynomial",
@@ -77,17 +77,17 @@ public fun <N> KoneContextRegistryBuilder.installPlanimetricsCalculationSpaceFor
         ),
         isNullable = false,
     )
-    val numberRing = contextsBuilder[Ring.Key<N>(numberType)]
-    val polynomialSpace = contextsBuilder.getOrNull(MultivariatePolynomialSpace.Key<N, LabeledVariable, LabeledPolynomial<N>>(numberType, labeledVariableType, polynomialType)) ?: numberRing.labeledPolynomialSpace
-    val polynomialVectorKategory = contextsBuilder.getOrNull(VectorKategory.Key<LabeledPolynomial<N>>(polynomialType)) ?: polynomialSpace.vectorKategory()
+    val numberRing = this[Ring.Key<N>(numberType)]
+    val polynomialSpace = this.getOrNull(MultivariatePolynomialSpace.Key<N, LabeledVariable, LabeledPolynomial<N>>(numberType, labeledVariableType, polynomialType)) ?: numberRing.labeledPolynomialSpace
+    val polynomialVectorKategory = this.getOrNull(VectorKategory.Key<LabeledPolynomial<N>>(polynomialType)) ?: polynomialSpace.vectorKategory()
     val planimetricsCalculationSpace = PlanimetricsCalculationSpace(numberRing, polynomialSpace, polynomialVectorKategory)
     val pointEquality = pointEquality(polynomialSpace)
     val lineEquality = lineEquality(polynomialSpace)
     val quadricEquality = quadricEquality(polynomialSpace)
-    contextsBuilder[PlanimetricsCalculationSpace.Key<N>(numberType)] = planimetricsCalculationSpace
-    contextsBuilder[Equality.Key<Point<N>>(pointType)] = pointEquality
-    contextsBuilder[Equality.Key<Line<N>>(lineType)] = lineEquality
-    contextsBuilder[Equality.Key<Quadric<N>>(quadricType)] = quadricEquality
+    this[PlanimetricsCalculationSpace.Key<N>(numberType)] = planimetricsCalculationSpace
+    this[Equality.Key<Point<N>>(pointType)] = pointEquality
+    this[Equality.Key<Line<N>>(lineType)] = lineEquality
+    this[Equality.Key<Quadric<N>>(quadricType)] = quadricEquality
 }
 
 public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceFor(numberType: SuppliedType, block: context(PlanimetricsCalculationSpace<N>) () -> R): R {

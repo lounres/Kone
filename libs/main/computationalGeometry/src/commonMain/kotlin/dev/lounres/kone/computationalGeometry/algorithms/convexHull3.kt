@@ -34,8 +34,8 @@ import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction3Ve
 import dev.lounres.kone.computationalGeometry.utils.any
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.load
 import dev.lounres.kone.linearAlgebra.ColumnVector
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -400,22 +400,18 @@ public fun <
 > ExtendablePolytopicConstruction3<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping3(
     vertexSuppliedType: SuppliedType,
     polytopeSuppliedType: SuppliedType,
-    vertexReification: Reification<Vertex>,
-    vertexEquality: Equality<Vertex>,
-    polytopeReification: Reification<Polytope>,
-    polytopeEquality: Equality<Polytope>,
     vertices: KoneIterable<Vertex>,
 ): Polytope {
     require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
     return giftWrapping3Full(
-        vertexReification = vertexReification,
-        vertexEquality = vertexEquality,
-        vertexHashing = koneContextRegistry.load(Hashing.Key<Vertex>(vertexSuppliedType)),
-        vertexOrder = koneContextRegistry.load(Order.Key<Vertex>(vertexSuppliedType)),
-        polytopeReification = polytopeReification,
-        polytopeEquality = polytopeEquality,
-        polytopeHashing = koneContextRegistry.load(Hashing.Key<Polytope>(polytopeSuppliedType)),
-        polytopeOrder = koneContextRegistry.load(Order.Key<Polytope>(polytopeSuppliedType)),
+        vertexReification = koneContextRegistry[Reification.Key<Vertex>(vertexSuppliedType)],
+        vertexEquality = koneContextRegistry[Equality.Key<Vertex>(vertexSuppliedType)],
+        vertexHashing = koneContextRegistry.getOrNull(Hashing.Key<Vertex>(vertexSuppliedType)),
+        vertexOrder = koneContextRegistry.getOrNull(Order.Key<Vertex>(vertexSuppliedType)),
+        polytopeReification = koneContextRegistry[Reification.Key<Polytope>(polytopeSuppliedType)],
+        polytopeEquality = koneContextRegistry[Equality.Key<Polytope>(polytopeSuppliedType)],
+        polytopeHashing = koneContextRegistry.getOrNull(Hashing.Key<Polytope>(polytopeSuppliedType)),
+        polytopeOrder = koneContextRegistry.getOrNull(Order.Key<Polytope>(polytopeSuppliedType)),
         subspaceDimension = 3u,
         points = vertices,
     ).polytope

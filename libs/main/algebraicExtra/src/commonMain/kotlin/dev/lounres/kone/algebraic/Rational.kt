@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -12,11 +13,11 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmField
@@ -73,19 +74,19 @@ public class Rational {
     }
 }
 
-public fun KoneContextRegistryBuilder.installRationalContext() {
+public fun RegistryBuilder<KoneContextRegistry>.setRationalContext() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val rationalSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    contextsBuilder[Reification.Key(rationalSuppliedType)] = RationalContext
-    contextsBuilder[Equality.Key(rationalSuppliedType)] = RationalContext
-    contextsBuilder[Ring.Key(rationalSuppliedType)] = RationalContext
-    contextsBuilder[Field.Key(rationalSuppliedType)] = RationalContext
-    contextsBuilder[Order.Key(rationalSuppliedType)] = RationalContext
-    contextsBuilder[Hashing.Key(rationalSuppliedType)] = RationalContext
+    Reification.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Equality.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Ring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Field.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Order.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Hashing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
 }
 
 @JvmInline

@@ -9,15 +9,14 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.KoneContextRegistryBuilder
-import dev.lounres.kone.contexts.load
-import dev.lounres.kone.contexts.loadOrDefault
-import dev.lounres.kone.contexts.loadOrElse
-import dev.lounres.kone.contexts.loadOrNull
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.getOrDefault
+import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -84,29 +83,29 @@ public interface Reification<out Element> : KoneContext {
  * Shortcut for getting [Reification] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadReificationFor(suppliedElementType: SuppliedType): Reification<Element> = load(Reification.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getReificationFor(suppliedElementType: SuppliedType): Reification<Element> = get(Reification.Key(suppliedElementType))
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadReificationForOrNull(suppliedElementType: SuppliedType): Reification<Element>? = loadOrNull(Reification.Key(suppliedElementType))
+public fun <Element> KoneContextRegistry.getReificationForOrNull(suppliedElementType: SuppliedType): Reification<Element>? = getOrNull(Reification.Key(suppliedElementType))
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.loadReificationForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> = loadOrDefault(Reification.Key(suppliedElementType), default)
+public fun <Element> KoneContextRegistry.getReificationForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> = getOrDefault(Reification.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.loadReificationForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> = loadOrElse(Reification.Key(suppliedElementType), block)
+public inline fun <Element> KoneContextRegistry.getReificationForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> = getOrElse(Reification.Key(suppliedElementType), block)
 
 /**
- * Installs [Reification] context for the given [suppliedElementType] into context registry builder.
- * The installed reification just only checks that the element is of type [Element].
+ * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
+ * The set reification just only checks that the element is of type [Element].
  */
-public inline fun <reified Element> KoneContextRegistryBuilder.installReificationFor(suppliedElementType: SuppliedType) {
-    contextsBuilder[Reification.Key(suppliedElementType)] = Reification<Element>()
+public inline fun <reified Element> RegistryBuilder<KoneContextRegistry>.setReificationFor(suppliedElementType: SuppliedType) {
+    Reification.Key<Element>(suppliedElementType) correspondsTo Reification<Element>()
 }
 
 /**
