@@ -13,8 +13,8 @@ import dev.lounres.kone.computationalGeometry.utils.cross
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.contains
 import dev.lounres.kone.relations.leq
-import dev.lounres.kone.relations.max
-import dev.lounres.kone.relations.min
+import dev.lounres.kone.relations.maxOf
+import dev.lounres.kone.relations.minOf
 import dev.lounres.kone.relations.rangeTo
 
 
@@ -108,8 +108,8 @@ public fun <N> Segment2<N>.intersect(other: Segment2<N>): Segment2WithSegment2In
             val startMoment = ((other.start - this.start) dot this.direction) / (this.direction dot this.direction)
             val endMoment = ((other.start + other.direction - this.start) dot this.direction) / (this.direction dot this.direction)
             
-            val intersectionStart = max(startMoment, zero)
-            val intersectionEnd = min(endMoment, one)
+            val intersectionStart = maxOf(startMoment, zero)
+            val intersectionEnd = minOf(endMoment, one)
             
             Segment2WithSegment2Intersection.TheLinesAreCollinear(
                 if (intersectionStart leq intersectionEnd) Segment2(this.start + this.direction * intersectionStart, this.direction * (intersectionEnd - intersectionStart))

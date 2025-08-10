@@ -204,21 +204,21 @@ public inline infix fun <Element> Element.leq(other: Element): Boolean = this le
  * Returns the smaller of two values [a] and [b].
  */
 context(_: Order<Element>)
-public fun <Element> min(a: Element, b: Element): Element = if (a leq b) a else b
+public fun <Element> minOf(a: Element, b: Element): Element = if (a leq b) a else b
 /**
  * Returns the greater of two values [a] and [b].
  */
 context(_: Order<Element>)
-public fun <Element> max(a: Element, b: Element): Element = if (a geq b) a else b
+public fun <Element> maxOf(a: Element, b: Element): Element = if (a geq b) a else b
 /**
  * Returns the smallest value from [elements]. If [elements] is empty throws [IllegalArgumentException].
  *
  * @throws IllegalArgumentException If [elements] is empty.
  */
 context(_: Order<Element>)
-public fun <Element> min(vararg elements: Element): Element {
+public fun <Element> minOf(vararg elements: Element): Element {
     require(elements.isNotEmpty()) { "Cannot calculate minimum of an empty collection of elements" }
-    return elements.reduce { a, b -> min(a, b) }
+    return elements.reduce { a, b -> minOf(a, b) }
 }
 /**
  * Returns the greatest value from [elements]. If [elements] is empty throws [IllegalArgumentException].
@@ -226,9 +226,9 @@ public fun <Element> min(vararg elements: Element): Element {
  * @throws IllegalArgumentException If [elements] is empty.
  */
 context(_: Order<Element>)
-public fun <Element> max(vararg elements: Element): Element {
+public fun <Element> maxOf(vararg elements: Element): Element {
     require(elements.isNotEmpty()) { "Cannot calculate maximum of an empty collection of elements" }
-    return elements.reduce { a, b -> max(a, b) }
+    return elements.reduce { a, b -> maxOf(a, b) }
 }
 
 /**

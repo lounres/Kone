@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.asKoneUIntArray
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.build
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.*
@@ -44,16 +45,16 @@ public interface MDShapeIndexer : KoneIterable<KoneUIntArray> {
     public fun KoneUIntArray.hasNext(): Boolean
     public fun KoneUIntArray.next(): KoneUIntArray
 
-    public fun asSequence(): Sequence<KoneUIntArray> = sequence {
-        if (shape.any { it == 0u }) return@sequence
-        var index = KoneUIntArray(shape.size) { 0u } // TODO: Think about moving starting index to the interface level
-        while (true) {
-            yield(index)
-            if (!index.hasNext()) break
-            index = index.next()
+    public override fun iterator(): KoneIterator<KoneUIntArray> =
+        KoneIterator.build {
+            if (shape.any { it == 0u }) return@build
+            var index = KoneUIntArray(shape.size) { 0u } // TODO: Think about moving starting index to the interface level
+            while (true) {
+                yield(index)
+                if (!index.hasNext()) break
+                index = index.next()
+            }
         }
-    }
-    public override fun iterator(): KoneIterator<KoneUIntArray> = MDShapeIndexerIterator(asSequence().iterator()) // TODO: Reimplement `iterator { ... }` builder for Kone
 }
 
 context(indexer: MDShapeIndexer)
