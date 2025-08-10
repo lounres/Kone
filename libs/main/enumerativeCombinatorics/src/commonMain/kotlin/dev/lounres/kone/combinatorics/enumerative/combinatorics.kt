@@ -27,6 +27,10 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.scope
 
 
@@ -321,7 +325,7 @@ public fun <E> KoneList<E>.allPermutations(): KoneSequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -344,7 +348,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest:
                 for (i in 1u..size) {
                     var j = i - 1u
                     while (j != 0u) {
-                        if (equalityTest(collection[j - 1u], collection[i - 1u])) break
+                        if (equality { collection[j - 1u] eq collection[i-1u] }) break
                         j--
                     }
                     if (j == 0u) {
@@ -429,7 +433,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equalityTest:
     }
 }
 
-public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -451,7 +455,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
                 for (i in 1u..size) {
                     var j = i - 1u
                     while (j != 0u) {
-                        if (equalityTest(collection[j - 1u], collection[i - 1u])) break
+                        if (equality { collection[j - 1u] eq collection[i-1u] }) break
                         j--
                     }
                     if (j == 0u) {
@@ -509,7 +513,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equalityTest: (E, E
     }
 }
 
-public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -523,7 +527,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
             for (i in 1u..size) {
                 var j = i-1u
                 while (j != 0u) {
-                    if (equalityTest(collection[j-1u], collection[i-1u])) break
+                    if (equality { collection[j - 1u] eq collection[i-1u] }) break
                     j--
                 }
                 if (j == 0u) {
@@ -602,7 +606,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
     }
 }
 
-public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E) -> Boolean = { e1, e2 -> e1 == e2 }): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -614,7 +618,7 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equalityTest: (E, E
             for (i in 1u..size) {
                 var j = i-1u
                 while (j != 0u) {
-                    if (equalityTest(collection[j-1u], collection[i-1u])) break
+                    if (equality { collection[j - 1u] eq collection[i-1u] }) break
                     j--
                 }
                 if (j == 0u) {
