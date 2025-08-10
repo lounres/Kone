@@ -901,7 +901,7 @@ private class KoneFilterIterator<Element>(
     }
     override fun getNext(): Element {
         if (!hasNext()) noNextElementInIteratorException()
-        return source.next()
+        return source.getNext()
     }
     override fun moveNext() {
         if (!hasNext()) noNextElementInIteratorException()

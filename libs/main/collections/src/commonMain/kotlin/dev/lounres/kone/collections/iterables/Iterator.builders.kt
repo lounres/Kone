@@ -109,7 +109,7 @@ private class KoneIteratorBuilderImpl<Element>(builder: suspend KoneIteratorBuil
             State.Failed -> error("Unexpected state of the iterator: $state")
             State.Waits -> error("Unexpected state of the iterator: $state")
             State.WaitsWithElement -> @Suppress("UNCHECKED_CAST") return nextElement as Element
-            State.WaitsWithNonEmptyIterator -> return nextIterator!!.next()
+            State.WaitsWithNonEmptyIterator -> return nextIterator!!.getNext()
             State.WaitsWithSomeIterator -> error("Unexpected state of the iterator: $state")
             else -> error("Unexpected state of the iterator: $state")
         }

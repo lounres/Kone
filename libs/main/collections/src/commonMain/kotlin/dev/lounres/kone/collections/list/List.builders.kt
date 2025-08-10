@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.list.singleton.KoneSingletonSettableList
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableNoddedList
@@ -159,6 +160,9 @@ public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<
     return KoneMutableList(size) { iterator.getAndMoveNext() }
 }
 
+public fun <Element> KoneSequence<Element>.toKoneMutableList(): KoneMutableList<Element> =
+    iterator().toKoneMutableList()
+
 public fun <Element> KoneIterator<Element>.toKoneMutableNoddedList(): KoneMutableNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -170,6 +174,9 @@ public fun <Element> KoneIterable<Element>.toKoneMutableNoddedList(): KoneMutabl
     val iterator = iterator()
     return KoneMutableNoddedList(size) { iterator.getAndMoveNext() }
 }
+
+public fun <Element> KoneSequence<Element>.toKoneMutableNoddedList(): KoneMutableNoddedList<Element> =
+    iterator().toKoneMutableNoddedList()
 
 public fun <Element> KoneIterator<Element>.toKoneSettableList(): KoneSettableList<Element> =
     KoneArrayGrowableList<Element>().apply {
@@ -183,6 +190,9 @@ public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableLis
     return KoneSettableList(size) { iterator.getAndMoveNext() }
 }
 
+public fun <Element> KoneSequence<Element>.toKoneSettableList(): KoneSettableList<Element> =
+    iterator().toKoneSettableList()
+
 public fun <Element> KoneIterator<Element>.toKoneSettableNoddedList(): KoneSettableNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -195,6 +205,9 @@ public fun <Element> KoneIterable<Element>.toKoneSettableNoddedList(): KoneSetta
     return KoneSettableNoddedList(size) { iterator.getAndMoveNext() }
 }
 
+public fun <Element> KoneSequence<Element>.toKoneSettableNoddedList(): KoneSettableNoddedList<Element> =
+    iterator().toKoneSettableNoddedList()
+
 public fun <Element> KoneIterator<Element>.toKoneList(): KoneList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -204,6 +217,9 @@ public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
     if (size == 0u) KoneList.empty()
     else this.toKoneMutableList().toOptimizedList()
 
+public fun <Element> KoneSequence<Element>.toKoneList(): KoneList<Element> =
+    iterator().toKoneList()
+
 public fun <Element> KoneIterator<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -212,6 +228,9 @@ public fun <Element> KoneIterator<Element>.toKoneNoddedList(): KoneNoddedList<El
 public fun <Element> KoneIterable<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else this.toKoneMutableList().toOptimizedNoddedList()
+
+public fun <Element> KoneSequence<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
+    iterator().toKoneNoddedList()
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneListBuilder<Element> @PublishedApi internal constructor(result: KoneMutableList<Element>) : KoneMutableList<Element> {
