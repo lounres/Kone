@@ -6,12 +6,8 @@
 package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.linearAlgebra.relations.MatrixEquality
-import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
-import dev.lounres.kone.linearAlgebra.relations.rowVectorEquality
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1Producer
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
@@ -20,14 +16,9 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 
 public interface VectorKategory<N> : KoneContext {
-    public val rowVectorEquality: Equality<RowVector<N>>
-    public val columnVectorEquality: Equality<ColumnVector<N>>
-    public val matrixEquality: Equality<Matrix<N>>
-
     public operator fun RowVector<N>.unaryMinus(): RowVector<N>
     public operator fun ColumnVector<N>.unaryMinus(): ColumnVector<N>
     public operator fun Matrix<N>.unaryMinus(): Matrix<N>
@@ -61,8 +52,8 @@ public interface VectorKategory<N> : KoneContext {
                 fullyQualifiedName = "dev.lounres.kone.linearAlgebra.VectorKategory",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType
                     )
                 ),
                 isNullable = false
@@ -115,15 +106,11 @@ public operator fun <N> RowVector<N>.times(other: Matrix<N>): RowVector<N> = wit
 context(vectorKategory: VectorKategory<N>)
 public operator fun <N> RowVector<N>.times(other: ColumnVector<N>): N = with(vectorKategory) { this@times * other }
 
-internal class VectorKategoryWithNumberRing<N, out A: Ring<N>>(
+internal class DefaultVectorKategory<N, out A: Ring<N>>(
     val numberRing: A,
     val mdList1Producer: MDList1Producer = ArrayMDList1Producer,
     val mdList2Producer: MDList2Producer = ArrayMDList2Producer,
 ) : VectorKategory<N> {
-    override val rowVectorEquality: Equality<RowVector<N>> get() = rowVectorEquality(numberRing)
-    override val columnVectorEquality: Equality<ColumnVector<N>> get() = columnVectorEquality(numberRing)
-    override val matrixEquality: Equality<Matrix<N>> get() = MatrixEquality(numberRing)
-
     override operator fun RowVector<N>.unaryMinus(): RowVector<N> =
         RowVector(mdList1Producer.produceBy(this.size) { numberRing { -this@unaryMinus[it] } })
     override operator fun ColumnVector<N>.unaryMinus(): ColumnVector<N> =
@@ -132,28 +119,28 @@ internal class VectorKategoryWithNumberRing<N, out A: Ring<N>>(
         Matrix(mdList2Producer.produceBy(this.rowNumber, this.columnNumber) { row, column -> numberRing { -this[row, column] } })
 
     override operator fun RowVector<N>.plus(other: RowVector<N>): RowVector<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return RowVector(mdList1Producer.produceBy(this.size) { numberRing { this[it] + other[it] } })
     }
     override operator fun ColumnVector<N>.plus(other: ColumnVector<N>): ColumnVector<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return ColumnVector(mdList1Producer.produceBy(this.size) { numberRing { this[it] + other[it] } })
     }
     override operator fun Matrix<N>.plus(other: Matrix<N>): Matrix<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return Matrix(mdList2Producer.produceBy(this.rowNumber, this.columnNumber) { row, column -> numberRing { this[row, column] + other[row, column] } })
     }
 
     override operator fun RowVector<N>.minus(other: RowVector<N>): RowVector<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return RowVector(mdList1Producer.produceBy(this.size) { numberRing { this[it] - other[it] } })
     }
     override operator fun ColumnVector<N>.minus(other: ColumnVector<N>): ColumnVector<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return ColumnVector(mdList1Producer.produceBy(this.size) { numberRing { this[it] - other[it] } })
     }
     override operator fun Matrix<N>.minus(other: Matrix<N>): Matrix<N> {
-        requireShapeEquality(this, other)
+        requireMDSizeEquality(this, other)
         return Matrix(mdList2Producer.produceBy(this.rowNumber, this.columnNumber) { row, column -> numberRing { this[row, column] - other[row, column] } })
     }
 

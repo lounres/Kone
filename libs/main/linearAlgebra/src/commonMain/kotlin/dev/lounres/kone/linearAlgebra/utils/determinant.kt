@@ -43,8 +43,8 @@ public interface DeterminantComputer<Number> {
                 fullyQualifiedName = "dev.lounres.kone.linearAlgebra.utils.DeterminantComputer",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType
                     )
                 ),
                 isNullable = false

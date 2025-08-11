@@ -16,18 +16,18 @@ import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
 
 
-internal class MatrixEquality<N>(elementEquality: Equality<N>) : Equality<Matrix<N>> {
+private class MatrixEquality<N>(elementEquality: Equality<N>) : Equality<Matrix<N>> {
     private val mdListEquality: Equality<MDList2<N>> = MDList2.equality(elementEquality)
     override fun Matrix<N>.equalsTo(other: Matrix<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
 }
 
-public fun <N> matrixEquality(elementEquality: Equality<N>): Equality<Matrix<N>> =
+public fun <N> Matrix.Companion.equality(elementEquality: Equality<N>): Equality<Matrix<N>> =
     MatrixEquality(elementEquality)
 
-internal class MatrixHashing<N>(elementHashing: Hashing<N>) : Hashing<Matrix<N>> {
+private class MatrixHashing<N>(elementHashing: Hashing<N>) : Hashing<Matrix<N>> {
     private val mdListHashing: Hashing<MDList2<N>> = MDList2.hashing(elementHashing)
     override fun Matrix<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
 }
 
-public fun <N> matrixHashing(elementHashing: Hashing<N>): Hashing<Matrix<N>> =
+public fun <N> Matrix.Companion.hashing(elementHashing: Hashing<N>): Hashing<Matrix<N>> =
     MatrixHashing(elementHashing)

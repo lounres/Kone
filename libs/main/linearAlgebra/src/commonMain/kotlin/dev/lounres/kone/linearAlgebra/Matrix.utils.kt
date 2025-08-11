@@ -15,7 +15,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.columnIndices
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.multidimensionalCollections.rowIndices
-import dev.lounres.kone.multidimensionalCollections.shapeMismatchException
+import dev.lounres.kone.multidimensionalCollections.mdSizeMismatchException
 
 
 public fun <E> Matrix(vararg elements: KoneList<E>): Matrix<E> {
@@ -25,9 +25,9 @@ public fun <E> Matrix(vararg elements: KoneList<E>): Matrix<E> {
 public fun <E> Matrix(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): Matrix<E> =
     Matrix(MDList2(rowNumber, columnNumber, initializer))
 
-public fun requireShapeEquality(left: Matrix<*>, right: Matrix<*>) {
+public fun requireMDSizeEquality(left: Matrix<*>, right: Matrix<*>) {
     if (left.rowNumber != right.rowNumber || left.columnNumber != right.columnNumber)
-        shapeMismatchException(left = left.coefficients.shape, right = right.coefficients.shape)
+        mdSizeMismatchException(left = left.coefficients.size, right = right.coefficients.size)
 }
 
 public val Matrix<*>.rowIndices: UIntRange get() = coefficients.rowIndices

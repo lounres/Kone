@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 public open /*value*/ class ColumnVector<out N>(
     public open val coefficients: MDList1<N>
 ) {
-    public val size: UInt get() = coefficients.size
+    public val size: UInt get() = coefficients.size[0u]
     public operator fun get(index: UInt): N = coefficients[index]
 
     override fun toString(): String = "ColumnVector$coefficients"

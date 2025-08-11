@@ -16,18 +16,18 @@ import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
 
 
-internal class RowVectorEquality<N>(elementEquality: Equality<N>) : Equality<RowVector<N>> {
+private class RowVectorEquality<N>(elementEquality: Equality<N>) : Equality<RowVector<N>> {
     private val mdListEquality: Equality<MDList1<N>> = MDList1.equality(elementEquality)
     override fun RowVector<N>.equalsTo(other: RowVector<N>): Boolean = mdListEquality { this.coefficients eq other.coefficients }
 }
 
-public fun <N> rowVectorEquality(elementEquality: Equality<N>): Equality<RowVector<N>> =
+public fun <N> RowVector.Companion.equality(elementEquality: Equality<N>): Equality<RowVector<N>> =
     RowVectorEquality(elementEquality)
 
-internal class RowVectorHashing<N>(elementHashing: Hashing<N>) : Hashing<RowVector<N>> {
+private class RowVectorHashing<N>(elementHashing: Hashing<N>) : Hashing<RowVector<N>> {
     private val mdListHashing: Hashing<MDList1<N>> = MDList1.hashing(elementHashing)
     override fun RowVector<N>.hash(): Int = mdListHashing { this.coefficients.hash() }
 }
 
-public fun <N> rowVectorHashing(elementHashing: Hashing<N>): Hashing<RowVector<N>> =
+public fun <N> RowVector.Companion.hashing(elementHashing: Hashing<N>): Hashing<RowVector<N>> =
     RowVectorHashing(elementHashing)
