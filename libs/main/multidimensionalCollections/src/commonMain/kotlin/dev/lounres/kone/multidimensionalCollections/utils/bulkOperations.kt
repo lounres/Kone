@@ -8,7 +8,6 @@ package dev.lounres.kone.multidimensionalCollections.utils
 import dev.lounres.kone.algebraic.Semiring
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.zero
-import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
