@@ -199,8 +199,8 @@ public interface Ring<Number> : Semiring<Number> {
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Ring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType,
                     )
                 ),
                 isNullable = false

@@ -49,8 +49,8 @@ public interface Equality<in Element> : KoneContext {
                 fullyQualifiedName = "dev.lounres.kone.relations.Equality",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = IN,
+                        type = elementType
                     )
                 ),
                 isNullable = false

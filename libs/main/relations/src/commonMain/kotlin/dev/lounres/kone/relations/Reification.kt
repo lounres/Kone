@@ -68,8 +68,8 @@ public interface Reification<out Element> : KoneContext {
                 fullyQualifiedName = "dev.lounres.kone.relations.Reification",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = OUT,
+                        type = elementType
                     )
                 ),
                 isNullable = false

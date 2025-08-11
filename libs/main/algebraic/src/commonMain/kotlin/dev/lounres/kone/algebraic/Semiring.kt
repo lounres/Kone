@@ -196,8 +196,8 @@ public interface Semiring<Number> : Equality<Number> {
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Semiring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType
                     )
                 ),
                 isNullable = false

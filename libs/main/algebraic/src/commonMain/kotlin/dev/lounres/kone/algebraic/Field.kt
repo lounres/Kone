@@ -122,8 +122,8 @@ public interface Field<Number> : Ring<Number> {
                 fullyQualifiedName = "dev.lounres.kone.algebraic.Field",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType
                     )
                 ),
                 isNullable = false

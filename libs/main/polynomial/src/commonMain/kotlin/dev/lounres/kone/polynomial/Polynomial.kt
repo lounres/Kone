@@ -96,12 +96,12 @@ public interface PolynomialSpace<Number, Polynomial> : Ring<Polynomial> {
                 fullyQualifiedName = "dev.lounres.kone.polynomial.PolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false
@@ -220,12 +220,12 @@ public interface UnivariatePolynomialSpace<Number, Polynomial> : PolynomialSpace
                 fullyQualifiedName = "dev.lounres.kone.polynomial.UnivariatePolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false
@@ -385,16 +385,16 @@ public interface MultivariatePolynomialSpace<Number, Variable, Polynomial> : Pol
                 fullyQualifiedName = "dev.lounres.kone.polynomial.MultivariatePolynomialSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        variableType
+                        variance = INVARIANT,
+                        type = variableType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false
@@ -635,12 +635,12 @@ public interface PolynomialSpaceOverField<Number, Polynomial> : PolynomialSpace<
                 fullyQualifiedName = "dev.lounres.kone.polynomial.PolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false
@@ -696,12 +696,12 @@ public interface UnivariatePolynomialSpaceOverField<Number, Polynomial> : Polyno
                 fullyQualifiedName = "dev.lounres.kone.polynomial.UnivariatePolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false
@@ -749,16 +749,16 @@ public interface MultivariatePolynomialSpaceOverField<Number, Variable, Polynomi
                 fullyQualifiedName = "dev.lounres.kone.polynomial.MultivariatePolynomialSpaceOverField",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        numberType
+                        variance = INVARIANT,
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        variableType
+                        variance = INVARIANT,
+                        type = variableType
                     ),
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        polynomialType
+                        variance = INVARIANT,
+                        type = polynomialType
                     )
                 ),
                 isNullable = false

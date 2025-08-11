@@ -47,8 +47,8 @@ public interface Hashing<in Element> : KoneContext {
                 fullyQualifiedName = "dev.lounres.kone.relations.Hashing",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = IN,
+                        type = elementType
                     )
                 ),
                 isNullable = false

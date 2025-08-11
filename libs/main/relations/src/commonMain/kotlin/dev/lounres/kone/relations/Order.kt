@@ -60,8 +60,8 @@ public interface Order<in Element> : KoneContext {
                 fullyQualifiedName = "dev.lounres.kone.relations.Order",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = IN,
+                        type = elementType
                     )
                 ),
                 isNullable = false

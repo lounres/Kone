@@ -66,8 +66,8 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanSemiring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType,
                     )
                 ),
                 isNullable = false
@@ -117,8 +117,8 @@ public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number>
                 fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanRing",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType,
                     )
                 ),
                 isNullable = false
