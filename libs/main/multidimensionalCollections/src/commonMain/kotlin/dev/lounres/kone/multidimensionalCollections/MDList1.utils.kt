@@ -5,22 +5,20 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 
 
 public fun <E> MDList1(vararg elements: E): MDList1<E> =
     ArrayMDList1(elements.size.toUInt()) { index -> elements[index.toInt()] }
 
-public fun <E> MDList1(size: UInt, initializer: (index: UInt) -> E): MDList1<E> =
-    ArrayMDList1(size = size, initializer = initializer)
+public fun <E> MDList1(contentSize: UInt, initializer: (index: UInt) -> E): MDList1<E> =
+    ArrayMDList1(contentSize = contentSize, initializer = initializer)
 
 public fun <E> SettableMDList1(vararg elements: E): SettableMDList1<E> =
     ArrayMDList1(elements.size.toUInt()) { index -> elements[index.toInt()] }
 
-public fun <E> SettableMDList1(size: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
-    ArrayMDList1(size = size, initializer = initializer)
+public fun <E> SettableMDList1(contentSize: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
+    ArrayMDList1(contentSize = contentSize, initializer = initializer)
 
 public val MDList1<*>.indices: UIntRange get() = 0u ..< size[0u]
 

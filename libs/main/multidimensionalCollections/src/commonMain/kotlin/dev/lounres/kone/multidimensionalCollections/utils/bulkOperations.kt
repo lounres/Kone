@@ -16,6 +16,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.MDSizeStrides
 import dev.lounres.kone.multidimensionalCollections.columnIndices
+import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
@@ -122,10 +123,10 @@ public inline fun <E, R> MDList<E>.mapIndexed(transform: (index: MDIndex, E) -> 
     ArrayMDList(size) { transform(it, get(it)) }
 
 public inline fun <E, R> MDList1<E>.map(transform: (E) -> R): MDList1<R> =
-    ArrayMDList1(size) { transform(get(it)) }
+    ArrayMDList1(contentSize) { transform(get(it)) }
 
 public inline fun <E, R> MDList1<E>.mapIndexed(transform: (index: UInt, E) -> R): MDList1<R> =
-    ArrayMDList1(size) { transform(it, get(it)) }
+    ArrayMDList1(contentSize) { transform(it, get(it)) }
 
 public inline fun <E, R> MDList2<E>.map(transform: (E) -> R): MDList2<R> =
     ArrayMDList2(rowNumber, columnNumber) { row, column -> transform(get(row, column)) }
@@ -139,7 +140,7 @@ public inline fun <E, R> MDList<E>.fold(initial: R, operation: (acc: R, E) -> R)
     return accumulator
 }
 
-public inline fun <E, R> MDList<E>.foldIndexed(initial: R, operation: (index: KoneUIntArray, acc: R, E) -> R): R {
+public inline fun <E, R> MDList<E>.foldIndexed(initial: R, operation: (index: MDIndex, acc: R, E) -> R): R {
     var accumulator = initial
     for (index in MDSizeStrides(size)) accumulator = operation(index, accumulator, get(index))
     return accumulator
@@ -166,7 +167,7 @@ context(_: Semiring<A>)
 public inline fun <E, A> MDList<E>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
 
 context(_: Semiring<A>)
-public inline fun <E, A> MDList<E>.sumOfIndexed(selector: (index: KoneUIntArray, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
+public inline fun <E, A> MDList<E>.sumOfIndexed(selector: (index: MDIndex, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
 context(_: Semiring<A>)
 public inline fun <E, A> MDList1<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index: UInt, acc, e -> acc + selector(index, e) }

@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.KoneUIntArray
 import kotlinx.serialization.Serializable
 
 

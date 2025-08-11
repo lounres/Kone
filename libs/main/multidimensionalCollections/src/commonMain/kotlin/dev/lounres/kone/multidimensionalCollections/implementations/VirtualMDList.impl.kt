@@ -5,8 +5,6 @@
 
 package dev.lounres.kone.multidimensionalCollections.implementations
 
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDList1

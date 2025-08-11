@@ -6,8 +6,6 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.contentEquals
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.joinToString
 import dev.lounres.kone.multidimensionalCollections.*
