@@ -8,10 +8,8 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.serializers.serializer
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableNoddedList
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
@@ -28,7 +26,7 @@ import kotlinx.serialization.encoding.*
 internal class MDListSerializer<E>(
     elementSerializer: KSerializer<E>,
 ) : KSerializer<MDList<E>> {
-    private val shapeSerializer = KoneUIntArray.serializer()
+    private val mdSizeSerializer = MDSize.serializer()
     // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
 //        KoneArraySettableList.serializer(elementSerializer)
@@ -38,23 +36,23 @@ internal class MDListSerializer<E>(
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList", elementSerializer.descriptor) {
-        element("shape", shapeSerializer.descriptor)
+        element("size", mdSizeSerializer.descriptor)
         element("content", contentDeserializationStrategy.descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: MDList<E>) {
         val content = scope {
-            val indicesIterator = MDShapeStrides(value.shape).iterator()
+            val indicesIterator = MDSizeStrides(value.size).iterator()
             // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //            KoneArraySettableList(value.size) { value[indicesIterator.next()] }
-            KoneArraySettableNoddedList(value.size) { value[indicesIterator.next()] }
+            KoneArraySettableNoddedList(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(
                 descriptor = descriptor,
                 index = 0,
-                serializer = shapeSerializer,
-                value = value.shape,
+                serializer = mdSizeSerializer,
+                value = value.size,
             )
             encodeSerializableElement(
                 descriptor = descriptor,
@@ -67,34 +65,34 @@ internal class MDListSerializer<E>(
 
     override fun deserialize(decoder: Decoder): MDList<E> =
         decoder.decodeStructure(descriptor) {
-            val shape: MDShape
+            val size: MDSize
             val content: KoneMutableArray<Any?>
             if (decodeSequentially()) { // sequential decoding protocol
-                shape = decodeSerializableElement(descriptor, 0, shapeSerializer)
+                size = decodeSerializableElement(descriptor, 0, mdSizeSerializer)
                 content = decodeSerializableElement(descriptor, 1, contentDeserializationStrategy)
             } else {
-                var shapeBuilder: MDShape? = null
+                var sizeBuilder: MDSize? = null
                 var contentBuilder: KoneMutableArray<Any?>? = null
                 while (true) {
                     when (val index = decodeElementIndex(descriptor)) {
-                        0 -> shapeBuilder = decodeSerializableElement(descriptor, 0, shapeSerializer)
+                        0 -> sizeBuilder = decodeSerializableElement(descriptor, 0, mdSizeSerializer)
                         1 -> contentBuilder = decodeSerializableElement(descriptor, 1, contentDeserializationStrategy)
                         CompositeDecoder.DECODE_DONE -> break
                         else -> error("Cannot deserialize MDList: got index $index out of range [0; 2)")
                     }
                 }
-                shape = shapeBuilder ?: error("Cannot deserialize MDList: did not receive element with index 0")
+                size = sizeBuilder ?: error("Cannot deserialize MDList: did not receive element with index 0")
                 content = contentBuilder ?: error("Cannot deserialize MDList: did not receive element with index 1")
             }
-            check(content.size == shape.fold(1u) { acc, dim -> acc * dim }) { "Cannot deserialize MDList: received shape and content size mismatch" }
-            ArrayMDList(shape = shape, data = content)
+            check(content.size == size.fold(1u) { acc, dim -> acc * dim }) { "Cannot deserialize MDList: received MD size and content size mismatch" }
+            ArrayMDList(size = size, data = content)
         }
 }
 
 internal class SettableMDListSerializer<E>(
     elementSerializer: KSerializer<E>,
 ) : KSerializer<SettableMDList<E>> {
-    private val shapeSerializer = KoneUIntArray.serializer()
+    private val mdSizeSerializer = MDSize.serializer()
     // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
 //        KoneArraySettableList.serializer(elementSerializer)
@@ -104,23 +102,23 @@ internal class SettableMDListSerializer<E>(
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("dev.lounres.kone.multidimensionalCollections.MDList", elementSerializer.descriptor) {
-        element("shape", shapeSerializer.descriptor)
+        element("size", mdSizeSerializer.descriptor)
         element("content", contentDeserializationStrategy.descriptor)
     }
 
     override fun serialize(encoder: Encoder, value: SettableMDList<E>) {
         val content = scope {
-            val indicesIterator = MDShapeStrides(value.shape).iterator()
+            val indicesIterator = MDSizeStrides(value.size).iterator()
             // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //            KoneArraySettableList(value.size) { value[indicesIterator.next()] }
-            KoneArraySettableNoddedList(value.size) { value[indicesIterator.next()] }
+            KoneArraySettableNoddedList(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(
                 descriptor = descriptor,
                 index = 0,
-                serializer = shapeSerializer,
-                value = value.shape,
+                serializer = mdSizeSerializer,
+                value = value.size,
             )
             encodeSerializableElement(
                 descriptor = descriptor,
@@ -133,26 +131,26 @@ internal class SettableMDListSerializer<E>(
 
     override fun deserialize(decoder: Decoder): SettableMDList<E> =
         decoder.decodeStructure(descriptor) {
-            val shape: MDShape
+            val size: MDSize
             val content: KoneMutableArray<Any?>
             if (decodeSequentially()) { // sequential decoding protocol
-                shape = decodeSerializableElement(descriptor, 0, shapeSerializer)
+                size = decodeSerializableElement(descriptor, 0, mdSizeSerializer)
                 content = decodeSerializableElement(descriptor, 1, contentDeserializationStrategy)
             } else {
-                var shapeBuilder: MDShape? = null
+                var sizeBuilder: MDSize? = null
                 var contentBuilder: KoneMutableArray<Any?>? = null
                 while (true) {
                     when (val index = decodeElementIndex(descriptor)) {
-                        0 -> shapeBuilder = decodeSerializableElement(descriptor, 0, shapeSerializer)
+                        0 -> sizeBuilder = decodeSerializableElement(descriptor, 0, mdSizeSerializer)
                         1 -> contentBuilder = decodeSerializableElement(descriptor, 1, contentDeserializationStrategy)
                         CompositeDecoder.DECODE_DONE -> break
                         else -> error("Cannot deserialize MDList: got index $index out of range [0; 2)")
                     }
                 }
-                shape = shapeBuilder ?: error("Cannot deserialize MDList: did not receive element with index 0")
+                size = sizeBuilder ?: error("Cannot deserialize MDList: did not receive element with index 0")
                 content = contentBuilder ?: error("Cannot deserialize MDList: did not receive element with index 1")
             }
-            check(content.size == shape.fold(1u) { acc, dim -> acc * dim }) { "Cannot deserialize MDList: received shape and content size mismatch" }
-            ArrayMDList(shape = shape, data = content)
+            check(content.size == size.fold(1u) { acc, dim -> acc * dim }) { "Cannot deserialize MDList: received MD size and content size mismatch" }
+            ArrayMDList(size = size, data = content)
         }
 }

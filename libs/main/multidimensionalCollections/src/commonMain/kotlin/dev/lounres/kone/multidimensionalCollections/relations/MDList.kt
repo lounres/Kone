@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.multidimensionalCollections.relations
 
-import dev.lounres.kone.collections.array.contentEquals
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
@@ -13,7 +12,8 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.multidimensionalCollections.MDList
-import dev.lounres.kone.multidimensionalCollections.MDShapeStrides
+import dev.lounres.kone.multidimensionalCollections.MDSizeStrides
+import dev.lounres.kone.multidimensionalCollections.contentEquals
 import dev.lounres.kone.multidimensionalCollections.utils.fold
 import dev.lounres.kone.relations.defaultEquality
 import dev.lounres.kone.relations.defaultHashing
@@ -22,9 +22,9 @@ import dev.lounres.kone.relations.defaultHashing
 internal class MDListEquality<E>(private val elementEquality: Equality<E>) : Equality<MDList<E>> {
     override fun MDList<E>.equalsTo(other: MDList<E>): Boolean {
         if (this === other) return true
-        if (!(this.shape contentEquals other.shape)) return false
+        if (!(this.size contentEquals other.size)) return false
         
-        for (index in MDShapeStrides(this.shape)) if (elementEquality { this[index] neq other[index] }) return false
+        for (index in MDSizeStrides(this.size)) if (elementEquality { this[index] neq other[index] }) return false
         
         return true
     }

@@ -5,15 +5,13 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.KoneUIntArray
 
+public class MDSizeMismatchException(message: String = "MD sizes mismatch") : RuntimeException(message)
 
-public class ShapeMismatchException(message: String = "Shapes mismatch") : RuntimeException(message)
+public fun mdSizeMismatchException(left: MDSize, right: MDSize): Nothing =
+    throw MDSizeMismatchException("MD sizes $left and $right mismatch.")
 
-public fun shapeMismatchException(left: MDShape, right: MDShape): Nothing =
-    throw ShapeMismatchException("Shapes $left and $right mismatch.")
+public class MDIndexOutOfMDSizeException(message: String = "MD index is out of MD size") : RuntimeException(message)
 
-public class IndexOutOfShapeException(message: String = "Index is out of shape") : RuntimeException(message)
-
-public fun indexOutOfShapeException(shape: MDShape, index: KoneUIntArray): Nothing =
-    throw IndexOutOfShapeException("Index $index is out of shape $shape")
+public fun mdIndexOutOfSizeException(index: MDIndex, size: MDSize): Nothing =
+    throw MDIndexOutOfMDSizeException("MD index $index is out of MD size $size")

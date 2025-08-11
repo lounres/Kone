@@ -5,17 +5,15 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.KoneUIntArray
 import kotlinx.serialization.Serializable
 
 
 @Serializable(with = MDList1Serializer::class)
-public interface MDList1<out E>: MDList<E> {
-    public override val size: UInt
-    override val shape: MDShape get() = MDShape(size)
+public interface MDList1<out E> : MDList<E> {
+    override val size: MDSize
     public operator fun get(index: UInt): E
-    override fun get(index: KoneUIntArray): E {
-        if (index.size != 1u || index[0u] >= shape[0u]) indexOutOfShapeException(shape = shape, index = index)
+    override fun get(index: MDIndex): E {
+        if (index.size != 1u || index[0u] >= size[0u]) mdIndexOutOfSizeException(size = size, index = index)
         return get(index[0u])
     }
     
@@ -23,10 +21,10 @@ public interface MDList1<out E>: MDList<E> {
 }
 
 @Serializable(with = SettableMDList1Serializer::class)
-public interface SettableMDList1<E>: SettableMDList<E>, MDList1<E> {
+public interface SettableMDList1<E> : SettableMDList<E>, MDList1<E> {
     public operator fun set(index: UInt, element: E)
-    override fun set(index: KoneUIntArray, element: E) {
-        if (index.size != 1u || index[0u] >= size) indexOutOfShapeException(shape = shape, index = index)
+    override fun set(index: MDIndex, element: E) {
+        if (index.size != 1u || index[0u] >= size[0u]) mdIndexOutOfSizeException(size = size, index = index)
         set(index[0u], element)
     }
     

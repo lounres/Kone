@@ -5,11 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneVirtualList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 
@@ -43,31 +39,31 @@ public inline val MDList2<*>.columnIndices: UIntRange get() = 0u ..< columnNumbe
 internal open /*value*/ class MDList2Wrapper<E>(open val list: MDList<E>): MDList2<E> {
     init {
         @Suppress("LeakingThis")
-        require(list.shape.size == 2u) { "Cannot wrap MDList with shape ${list.shape} as a MDList2" }
+        require(list.size.size == 2u) { "Cannot wrap MDList with MD size ${list.size} as a MDList2" }
     }
     
-    override val rowNumber: UInt get() = list.shape[0u]
-    override val columnNumber: UInt get() = list.shape[1u]
-    override val shape: MDShape get() = list.shape
-    override fun get(rowIndex: UInt, columnIndex: UInt): E = list[KoneUIntArray.of(rowIndex, columnIndex)]
+    override val rowNumber: UInt get() = list.size[0u]
+    override val columnNumber: UInt get() = list.size[1u]
+    override val size: MDSize get() = list.size
+    override fun get(rowIndex: UInt, columnIndex: UInt): E = list[MDIndex.of(rowIndex, columnIndex)]
 }
 
 /*@JvmInline*/
 internal /*value*/ class SettableMDList2Wrapper<E>(override val list: SettableMDList<E>): MDList2Wrapper<E>(list), SettableMDList2<E> {
     override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
-        list[KoneUIntArray.of(rowIndex, columnIndex)] = element
+        list[MDIndex.of(rowIndex, columnIndex)] = element
     }
 }
 
 public fun <E> MDList<E>.as2D(): MDList2<E> =
     this as? MDList2<E> ?:
-    if (shape.size == 1u) MDList2Wrapper(this)
-    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of shape $shape")
+    if (dimension == 2u) MDList2Wrapper(this)
+    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of MD size $size")
 
 public fun <E> SettableMDList<E>.as2D(): SettableMDList2<E> =
     this as? SettableMDList2<E> ?:
-    if (shape.size == 1u) SettableMDList2Wrapper(this)
-    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of shape $shape")
+    if (dimension == 2u) SettableMDList2Wrapper(this)
+    else throw IllegalArgumentException("Expected 1-dimensional MD list, got MD list of MD size $size")
 
 public fun <E> MDList2<E>.asMD(): MDList<E> =
     if (this is MDList2Wrapper) list

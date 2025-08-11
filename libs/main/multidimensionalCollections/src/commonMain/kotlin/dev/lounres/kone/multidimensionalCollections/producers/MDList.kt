@@ -5,26 +5,26 @@
 
 package dev.lounres.kone.multidimensionalCollections.producers
 
-import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.SettableMDList
-import dev.lounres.kone.multidimensionalCollections.MDShape
-import dev.lounres.kone.multidimensionalCollections.MDShapeOffsetting
-import dev.lounres.kone.multidimensionalCollections.MDShapeStrides
+import dev.lounres.kone.multidimensionalCollections.MDSize
+import dev.lounres.kone.multidimensionalCollections.MDSizeOffsetting
+import dev.lounres.kone.multidimensionalCollections.MDSizeStrides
 
 
 public interface MDListProducer {
     public fun <Element> produceBy(
-        shape: MDShape,
-        offsetting: MDShapeOffsetting = MDShapeStrides(shape),
-        initializer: (index: KoneUIntArray) -> Element
+        size: MDSize,
+        offsetting: MDSizeOffsetting = MDSizeStrides(size),
+        initializer: (index: MDIndex) -> Element
     ): MDList<Element>
 }
 
 public interface SettableMDListProducer : MDListProducer {
     override fun <Element> produceBy(
-        shape: MDShape,
-        offsetting: MDShapeOffsetting,
-        initializer: (index: KoneUIntArray) -> Element
+        size: MDSize,
+        offsetting: MDSizeOffsetting,
+        initializer: (index: MDIndex) -> Element
     ): SettableMDList<Element>
 }

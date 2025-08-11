@@ -6,7 +6,6 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
@@ -15,9 +14,9 @@ import dev.lounres.kone.multidimensionalCollections.producers.MDListProducer
 
 
 public inline fun <E> ArrayMDList(
-    shape: MDShape,
-    offsetting: MDShapeOffsetting = MDShapeStrides(shape),
-    initializer: (KoneUIntArray) -> E,
+    size: MDSize,
+    offsetting: MDSizeOffsetting = MDSizeStrides(size),
+    initializer: (MDIndex) -> E,
 ): ArrayMDList<E> {
     val data = KoneMutableArray<Any?>(offsetting.size) { null }
 
@@ -25,7 +24,7 @@ public inline fun <E> ArrayMDList(
     for (index in offsetting) data[offset++] = initializer(index)
 
     return ArrayMDList(
-        shape = shape,
+        size = size,
         offsetting = offsetting,
         data = data,
     )
@@ -33,22 +32,22 @@ public inline fun <E> ArrayMDList(
 
 public object ArrayMDListProducer : MDListProducer {
     override fun <Element> produceBy(
-        shape: MDShape,
-        offsetting: MDShapeOffsetting,
-        initializer: (KoneUIntArray) -> Element
-    ): MDList<Element> = ArrayMDList(shape, offsetting, initializer)
+        size: MDSize,
+        offsetting: MDSizeOffsetting,
+        initializer: (MDIndex) -> Element
+    ): MDList<Element> = ArrayMDList(size, offsetting, initializer)
 }
 
 public inline fun <E> ArrayMDList1(
-    size: UInt,
+    contentSize: UInt,
     initializer: (index: UInt) -> E,
 ): ArrayMDList1<E> {
-    val data = KoneMutableArray<Any?>(size) { null }
+    val data = KoneMutableArray<Any?>(contentSize) { null }
 
-    for (index in  0u ..< size) data[index] = initializer(index)
+    for (index in  0u ..< contentSize) data[index] = initializer(index)
 
     return ArrayMDList1(
-        size = size,
+        contentSize = contentSize,
         data = data,
     )
 }

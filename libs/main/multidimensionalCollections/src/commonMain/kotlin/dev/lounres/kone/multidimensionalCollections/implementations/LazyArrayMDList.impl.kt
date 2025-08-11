@@ -6,9 +6,6 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.of
-import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.SettableMDList
 import dev.lounres.kone.multidimensionalCollections.SettableMDList1
@@ -20,37 +17,38 @@ import dev.lounres.kone.maybe.orElse
 
 
 public class LazyArrayMDList<E>(
-    override val shape: MDShape,
-    private val offsetting: MDShapeOffsetting = MDShapeStrides(shape),
-    private val generator: (index: KoneUIntArray) -> E
+    override val size: MDSize,
+    private val offsetting: MDSizeOffsetting = MDSizeStrides(size),
+    private val generator: (index: MDIndex) -> E
 ): SettableMDList<E> {
-    override val size: UInt = shape.fold(1u) { acc, dim -> acc * dim }
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(size) { None }
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(contentSize) { None }
 
-    override fun get(index: KoneUIntArray): E {
-        requireIndexInShape(index = index, shape = shape)
+    override fun get(index: MDIndex): E {
+        requireIndexInSize(index = index, size = size)
         return offsetting.offset(index).let { offset -> buffer[offset].orElse { generator(index).also { buffer[offset] = Some(it) } } }
     }
 
-    override fun set(index: KoneUIntArray, element: E) {
-        requireIndexInShape(index = index, shape = shape)
+    override fun set(index: MDIndex, element: E) {
+        requireIndexInSize(index = index, size = size)
         buffer[offsetting.offset(index)] = Some(element)
     }
 }
 
 public class LazyArrayMDList1<E>(
-    override val size: UInt,
+    contentSize: UInt,
     private val generator: (index: UInt) -> E
 ): SettableMDList1<E> {
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(size) { None }
+    override val size: MDSize = MDSize.of(contentSize)
+    
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(contentSize) { None }
 
     override fun get(index: UInt): E {
-        if (index >= size) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(index))
+        if (index >= size[0u]) mdIndexOutOfSizeException(size = size, index = MDIndex.of(index))
         return buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
     }
 
     override fun set(index: UInt, element: E) {
-        if (index >= size) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(index))
+        if (index >= size[0u]) mdIndexOutOfSizeException(size = size, index = MDIndex.of(index))
         buffer[index] = Some(element)
     }
 }
@@ -60,17 +58,16 @@ public class LazyArrayMDList2<E>(
     override val columnNumber: UInt,
     private val generator: (rowIndex: UInt, columnIndex: UInt) -> E
 ): SettableMDList2<E> {
-    override val size: UInt = rowNumber * columnNumber
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(size) { None }
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(rowNumber * columnNumber) { None }
 
     override fun get(rowIndex: UInt, columnIndex: UInt): E {
-        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(rowIndex, columnIndex))
+        if (rowIndex >= rowNumber || columnIndex >= columnNumber) mdIndexOutOfSizeException(size = size, index = MDIndex.of(rowIndex, columnIndex))
         val offset = rowIndex + columnIndex * rowNumber
         return buffer[offset].orElse { generator(rowIndex, columnIndex).also { buffer[offset] = Some(it) } }
     }
 
     override fun set(rowIndex: UInt, columnIndex: UInt, element: E) {
-        if (rowIndex >= rowNumber || columnIndex >= columnNumber) indexOutOfShapeException(shape = shape, index = KoneUIntArray.of(rowIndex, columnIndex))
+        if (rowIndex >= rowNumber || columnIndex >= columnNumber) mdIndexOutOfSizeException(size = size, index = MDIndex.of(rowIndex, columnIndex))
         buffer[rowIndex + columnIndex * rowNumber] = Some(element)
     }
 }

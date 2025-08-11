@@ -21,7 +21,7 @@ internal class MDList1Equality<E>(private val elementEquality: Equality<E>) : Eq
         if (this === other) return true
         if (this.size != other.size) return false
         
-        for (index in 0u .. this.size) if (elementEquality { this[index] neq other[index] }) return false
+        for (index in 0u .. this.size[0u]) if (elementEquality { this[index] neq other[index] }) return false
         
         return true
     }

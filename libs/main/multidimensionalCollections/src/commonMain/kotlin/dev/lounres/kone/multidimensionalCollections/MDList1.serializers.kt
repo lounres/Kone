@@ -7,8 +7,6 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableNoddedList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -30,7 +28,7 @@ internal class MDList1Serializer<E>(
     override fun serialize(encoder: Encoder, value: MDList1<E>) {
         // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //        val content = KoneArraySettableList(value.size) { value[it] }
-        val content = KoneArraySettableNoddedList(value.size) { value[it] }
+        val content = KoneArraySettableNoddedList(value.contentSize) { value[it] }
         encoder.encodeSerializableValue(settableListSerializer, content)
     }
 
@@ -52,7 +50,7 @@ internal class SettableMDList1Serializer<E>(
     override fun serialize(encoder: Encoder, value: SettableMDList1<E>) {
         // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 //        val content = KoneArraySettableList(value.size) { value[it] }
-        val content = KoneArraySettableNoddedList(value.size) { value[it] }
+        val content = KoneArraySettableNoddedList(value.contentSize) { value[it] }
         encoder.encodeSerializableValue(settableListSerializer, content)
     }
 

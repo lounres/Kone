@@ -7,25 +7,26 @@ package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.utils.fold
+import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.MDShape
+import dev.lounres.kone.multidimensionalCollections.MDSize
+import dev.lounres.kone.multidimensionalCollections.of
 
 
 public class VirtualMDList<E>(
-    override val shape: MDShape,
-    private val generator: (index: KoneUIntArray) -> E
+    override val size: MDSize,
+    private val generator: (index: MDIndex) -> E
 ): MDList<E> {
-    override val size: UInt = shape.fold(1u) { acc, dim -> acc * dim }
-
-    override fun get(index: KoneUIntArray): E = generator(index)
+    override fun get(index: MDIndex): E = generator(index)
 }
 
 public class VirtualMDList1<E>(
-    override val size: UInt,
+    contentSize: UInt,
     private val generator: (index: UInt) -> E
 ): MDList1<E> {
+    override val size: MDSize = MDSize.of(contentSize)
     override fun get(index: UInt): E = generator(index)
 }
 

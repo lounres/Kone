@@ -6,11 +6,12 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.MDShape
-import dev.lounres.kone.multidimensionalCollections.MDShapeOffsetting
+import dev.lounres.kone.multidimensionalCollections.MDSize
+import dev.lounres.kone.multidimensionalCollections.MDSizeOffsetting
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList2Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDListProducer
@@ -18,10 +19,10 @@ import dev.lounres.kone.multidimensionalCollections.producers.MDListProducer
 
 public object LazyArrayMDListProducer : MDListProducer {
     override fun <Element> produceBy(
-        shape: MDShape,
-        offsetting: MDShapeOffsetting,
-        initializer: (KoneUIntArray) -> Element
-    ): MDList<Element> = LazyArrayMDList(shape, offsetting, initializer)
+        size: MDSize,
+        offsetting: MDSizeOffsetting,
+        initializer: (MDIndex) -> Element
+    ): MDList<Element> = LazyArrayMDList(size, offsetting, initializer)
 }
 
 public object LazyArrayMDList1Producer : MDList1Producer {
