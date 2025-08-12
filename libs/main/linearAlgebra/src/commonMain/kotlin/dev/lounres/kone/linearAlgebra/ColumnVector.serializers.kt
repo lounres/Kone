@@ -16,32 +16,30 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-internal class ColumnVectorSerializer<E>(
+internal class ColumnVectorSerializer<E, Content: MDList1<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<ColumnVector<E>> {
-    private val mdList1Serializer = MDList1.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<ColumnVector<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.ColumnVector", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.ColumnVector", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: ColumnVector<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: ColumnVector<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): ColumnVector<E> =
-        ColumnVector(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): ColumnVector<E, Content> =
+        ColumnVector(decoder.decodeSerializableValue(contentSerializer))
 }
 
-internal class SettableColumnVectorSerializer<E>(
+internal class SettableColumnVectorSerializer<E, Content: SettableMDList1<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<SettableColumnVector<E>> {
-    private val mdList1Serializer = SettableMDList1.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<SettableColumnVector<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableColumnVector", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableColumnVector", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: SettableColumnVector<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: SettableColumnVector<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): SettableColumnVector<E> =
-        SettableColumnVector(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): SettableColumnVector<E, Content> =
+        SettableColumnVector(decoder.decodeSerializableValue(contentSerializer))
 }

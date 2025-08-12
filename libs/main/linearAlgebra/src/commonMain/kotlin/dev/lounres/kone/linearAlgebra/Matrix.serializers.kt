@@ -16,32 +16,30 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-internal class MatrixSerializer<E>(
+internal class MatrixSerializer<E, Content: MDList2<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<Matrix<E>> {
-    private val mdList1Serializer = MDList2.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<Matrix<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.Matrix", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.Matrix", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: Matrix<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: Matrix<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): Matrix<E> =
-        Matrix(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): Matrix<E, Content> =
+        Matrix(decoder.decodeSerializableValue(contentSerializer))
 }
 
-internal class SettableMatrixSerializer<E>(
+internal class SettableMatrixSerializer<E, Content: SettableMDList2<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<SettableMatrix<E>> {
-    private val mdList1Serializer = SettableMDList2.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<SettableMatrix<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableMatrix", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableMatrix", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: SettableMatrix<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: SettableMatrix<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): SettableMatrix<E> =
-        SettableMatrix(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): SettableMatrix<E, Content> =
+        SettableMatrix(decoder.decodeSerializableValue(contentSerializer))
 }

@@ -16,32 +16,30 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-internal class RowVectorSerializer<E>(
+internal class RowVectorSerializer<E, Content: MDList1<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<RowVector<E>> {
-    private val mdList1Serializer = MDList1.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<RowVector<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.RowVector", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.RowVector", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: RowVector<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: RowVector<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): RowVector<E> =
-        RowVector(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): RowVector<E, Content> =
+        RowVector(decoder.decodeSerializableValue(contentSerializer))
 }
 
-internal class SettableRowVectorSerializer<E>(
+internal class SettableRowVectorSerializer<E, Content: SettableMDList1<E>>(
     elementSerializer: KSerializer<E>,
-) : KSerializer<SettableRowVector<E>> {
-    private val mdList1Serializer = SettableMDList1.serializer(elementSerializer)
+    private val contentSerializer: KSerializer<Content>,
+) : KSerializer<SettableRowVector<E, Content>> {
+    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableRowVector", contentSerializer.descriptor)
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("dev.lounres.kone.linearAlgebra.SettableRowVector", mdList1Serializer.descriptor)
-
-    override fun serialize(encoder: Encoder, value: SettableRowVector<E>) {
-        encoder.encodeSerializableValue(mdList1Serializer, value.coefficients)
+    override fun serialize(encoder: Encoder, value: SettableRowVector<E, Content>) {
+        encoder.encodeSerializableValue(contentSerializer, value.coefficients)
     }
 
-    override fun deserialize(decoder: Decoder): SettableRowVector<E> =
-        SettableRowVector(decoder.decodeSerializableValue(mdList1Serializer))
+    override fun deserialize(decoder: Decoder): SettableRowVector<E, Content> =
+        SettableRowVector(decoder.decodeSerializableValue(contentSerializer))
 }

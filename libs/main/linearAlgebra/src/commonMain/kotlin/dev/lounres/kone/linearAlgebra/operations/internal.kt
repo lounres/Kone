@@ -3,15 +3,15 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra.utils
+package dev.lounres.kone.linearAlgebra.operations
 
-import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.KoneMutableBooleanArray
 import dev.lounres.kone.collections.list.KoneList
 
 
 internal fun KoneList<UInt>.isEvenPermutation(): Boolean {
     var permutationIsEven = true
-    val visited = KoneMutableArray(size) { false } // TODO: Can be replaced with specialised array
+    val visited = KoneMutableBooleanArray(size) { false } // TODO: Can be replaced with specialised array
     for (i in 0u ..< size) if (!visited[i]) {
         var current = i
         visited[i] = true

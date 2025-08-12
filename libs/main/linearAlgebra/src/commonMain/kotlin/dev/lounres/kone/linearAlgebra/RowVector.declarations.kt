@@ -12,8 +12,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = RowVectorSerializer::class)
 /*@JvmInline*/
-public open /*value*/ class RowVector<out N>(
-    public open val coefficients: MDList1<N>,
+public open /*value*/ class RowVector<out N, out Content: MDList1<N>>(
+    public open val coefficients: Content,
 ) {
     public val size: UInt get() = coefficients.size[0u]
     public operator fun get(index: UInt): N = coefficients[index]
@@ -23,9 +23,9 @@ public open /*value*/ class RowVector<out N>(
 
 @Serializable(with = SettableRowVectorSerializer::class)
 /*@JvmInline*/
-public /*value*/ class SettableRowVector<N>(
-    override val coefficients: SettableMDList1<N>
-): RowVector<N>(coefficients) {
+public /*value*/ class SettableRowVector<N, out Content: SettableMDList1<N>>(
+    override val coefficients: Content,
+): RowVector<N, Content>(coefficients) {
     public operator fun set(index: UInt, coefficient: N) {
         coefficients[index] = coefficient
     }

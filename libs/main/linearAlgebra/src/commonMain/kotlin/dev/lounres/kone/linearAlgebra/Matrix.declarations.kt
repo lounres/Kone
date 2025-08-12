@@ -12,8 +12,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = MatrixSerializer::class)
 /*@JvmInline*/
-public open /*value*/ class Matrix<out N>(
-    public open val coefficients: MDList2<N>
+public open /*value*/ class Matrix<out N, out Content: MDList2<N>>(
+    public open val coefficients: Content,
 ) {
     public val rowNumber: UInt get() = coefficients.rowNumber
     public val columnNumber: UInt get() = coefficients.columnNumber
@@ -24,9 +24,9 @@ public open /*value*/ class Matrix<out N>(
 
 @Serializable(with = SettableMatrixSerializer::class)
 /*@JvmInline*/
-public /*value*/ class SettableMatrix<N>(
-    override val coefficients: SettableMDList2<N>
-): Matrix<N>(coefficients) {
+public /*value*/ class SettableMatrix<N, out Content: SettableMDList2<N>>(
+    override val coefficients: Content,
+): Matrix<N, Content>(coefficients) {
     public operator fun set(rowIndex: UInt, columnIndex: UInt, coefficient: N) {
         coefficients[rowIndex, columnIndex] = coefficient
     }

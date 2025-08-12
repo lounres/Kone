@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra.utils
+package dev.lounres.kone.linearAlgebra.operations
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.Ring
@@ -19,75 +19,81 @@ import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.collections.utils.foldIndexed
 import dev.lounres.kone.combinatorics.enumerative.permutations
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.Matrix
+import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 
-public interface DeterminantComputer<Number> {
-    public val Matrix<Number>.det: Number
+public interface DeterminantComputer<Number, in Content2: MDList2<Number>> : KoneContext {
+    public fun Matrix<Number, Content2>.determinant(): Number
     
-    public class Key<Number>(
+    public companion object;
+    
+    public class Key<Number, Content2: MDList2<Number>>(
         elementType: SuppliedType,
-    ) : RegistryKey<DeterminantComputer<Number>> {
+        content2Type: SuppliedType,
+    ) : RegistryKey<DeterminantComputer<Number, Content2>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.utils.DeterminantComputer",
+                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.operations.DeterminantComputer",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
                         type = elementType
-                    )
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = IN,
+                        type = content2Type
+                    ),
                 ),
                 isNullable = false
             )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
 }
 
-context(determinantComputer: DeterminantComputer<Number>)
-public val <Number> Matrix<Number>.det get() = with(determinantComputer) { this@det.det }
+context(determinantComputer: DeterminantComputer<Number, Content2>)
+public fun <Number, Content2: MDList2<Number>> Matrix<Number, Content2>.determinant(): Number =
+    with(determinantComputer) { this@determinant.determinant() }
 
 public class NonSquareMatrixDeterminantComputationAttemptException : IllegalArgumentException("Cannot compute determinant of non-square matrix")
 public fun nonSquareMatrixDeterminantComputationAttemptException(): Nothing = throw NonSquareMatrixDeterminantComputationAttemptException()
 
-context(_: Ring<Number>)
-public val <Number> Matrix<Number>.determinantViaLeibnizFormula: Number
-    get() {
+private class DeterminantViaLeibnizFormulaComputer<Number>(val numberContext: Ring<Number>) : DeterminantComputer<Number, MDList2<Number>> {
+    override fun Matrix<Number, MDList2<Number>>.determinant(): Number = numberContext {
         if (rowNumber != columnNumber) nonSquareMatrixDeterminantComputationAttemptException()
         
-        return (0u ..< rowNumber).toKoneList().permutations().fold(zero) { result, permutation ->
+        (0u ..< rowNumber).toKoneList().permutations().fold(zero) { result, permutation ->
             val permutationIsEven = permutation.isEvenPermutation()
             
             result + permutation.foldIndexed(one) { row, product, column -> product * this[row, column] }.let { if (permutationIsEven) it else -it }
         }
     }
-
-internal class DeterminantViaLeibnizFormulaComputer<Number>(val numberContext: Ring<Number>) : DeterminantComputer<Number> {
-    override val Matrix<Number>.det: Number get() = numberContext { determinantViaLeibnizFormula }
 }
 
-public val <Number> Ring<Number>.determinantViaLeibnizFormulaComputer: DeterminantComputer<Number>
-    get() = DeterminantViaLeibnizFormulaComputer(this)
+public fun <Number, Content2: MDList2<Number>> DeterminantComputer.Companion.viaLeibnizFormula(
+    ring: Ring<Number>,
+): DeterminantComputer<Number, Content2> = DeterminantViaLeibnizFormulaComputer(ring)
 
-public fun <Number> RegistryBuilder<KoneContextRegistry>.setDeterminantViaLeibnizFormulaComputer(
+public fun <Number, Content2: MDList2<Number>> RegistryBuilder<KoneContextRegistry>.setDeterminantViaLeibnizFormulaComputer(
     numberType: SuppliedType,
+    content2Type: SuppliedType,
 ) {
-    this[DeterminantComputer.Key<Number>(numberType)] = this[Ring.Key<Number>(numberType)].determinantViaLeibnizFormulaComputer
+    this[DeterminantComputer.Key<Number, Content2>(numberType, content2Type)] = DeterminantComputer.viaLeibnizFormula(this[Ring.Key<Number>(numberType)])
 }
 
-context(_: Field<Number>)
-public val <Number> Matrix<Number>.determinantViaGaussianElimination: Number
-    get() {
+private class DeterminantViaGaussianEliminationComputer<Number>(val numberContext: Field<Number>) : DeterminantComputer<Number, MDList2<Number>> {
+    override fun Matrix<Number, MDList2<Number>>.determinant(): Number = numberContext {
         if (rowNumber != columnNumber) nonSquareMatrixDeterminantComputationAttemptException()
         
         val matrix = ArrayMDList2(rowNumber, columnNumber) { rowIndex, columnIndex -> this.coefficients[rowIndex, columnIndex] }
@@ -124,22 +130,15 @@ public val <Number> Matrix<Number>.determinantViaGaussianElimination: Number
         
         return (0u ..< matrix.rowNumber).fold(if (applyMinus) -one else one) { acc, index -> acc * matrix[index, index] }
     }
-
-internal class DeterminantViaGaussianEliminationComputer<Number>(val numberContext: Field<Number>) : DeterminantComputer<Number> {
-    override val Matrix<Number>.det: Number get() = numberContext { determinantViaGaussianElimination }
 }
 
-public val <Number> Field<Number>.determinantViaGaussianEliminationComputer: DeterminantComputer<Number>
-    get() = DeterminantViaGaussianEliminationComputer(this)
+public fun <Number, Content2: MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(
+    field: Field<Number>,
+): DeterminantComputer<Number, Content2> = DeterminantViaGaussianEliminationComputer(field)
 
-public fun <Number> RegistryBuilder<KoneContextRegistry>.setDeterminantViaGaussianEliminationComputer(
+public fun <Number, Content2: MDList2<Number>> RegistryBuilder<KoneContextRegistry>.setDeterminantViaGaussianEliminationComputer(
     numberType: SuppliedType,
+    content2Type: SuppliedType,
 ) {
-    this[DeterminantComputer.Key<Number>(numberType)] = this[Field.Key<Number>(numberType)].determinantViaGaussianEliminationComputer
+    this[DeterminantComputer.Key<Number, Content2>(numberType, content2Type)] = DeterminantComputer.viaGaussianElimination(this[Field.Key<Number>(numberType)])
 }
-
-//context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>)
-//public fun <Number> Matrix<Number>.det(numberType: SuppliedType<Number>): Number {
-//    val determinantComputer = koneContextRegistry.loadOrNull(DeterminantComputer.Key(numberType))
-//    return if (determinantComputer != null) determinantComputer { this.det } else this.determinantViaLeibnizFormula
-//}
