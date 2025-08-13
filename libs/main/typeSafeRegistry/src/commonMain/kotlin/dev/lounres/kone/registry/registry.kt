@@ -84,6 +84,8 @@ public interface Registry {
      * Represents this registry as Kotlin stdlib's map.
      */
     public fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?>
+    
+    public companion object
 }
 
 /**
@@ -107,7 +109,7 @@ public inline fun <T> Registry.getOrElse(registryKey: RegistryKey<T>, block: () 
 /**
  * Builder function for [Registry].
  */
-public inline fun <Owner> Registry(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
+public inline fun <Owner> Registry.Companion.build(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

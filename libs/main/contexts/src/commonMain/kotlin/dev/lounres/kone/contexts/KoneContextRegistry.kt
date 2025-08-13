@@ -7,6 +7,8 @@ package dev.lounres.kone.contexts
 
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.build
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmInline
@@ -21,7 +23,9 @@ public value class KoneContextRegistry(
      * Underlying type-safe registry.
      */
     public val contexts: Registry
-) : Registry by contexts
+) : Registry by contexts {
+    public companion object
+}
 
 /**
  * Provides receiver for Kone context registry.
@@ -34,12 +38,97 @@ public inline operator fun <R> KoneContextRegistry.invoke(block: KoneContextRegi
     return block(this)
 }
 
-/**
- * Builder function for [KoneContextRegistry].
- */
-public inline fun KoneContextRegistry(block: RegistryBuilder<KoneContextRegistry>.() -> Unit): KoneContextRegistry {
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    block: context(Context1) () -> Result
+): Result {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return KoneContextRegistry(Registry { this.block() })
+    return block(
+        koneContextRegistry[key1],
+    )
+}
+
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    block: context(Context1, Context2) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+    )
+}
+
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    block: context(Context1, Context2, Context3) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+    )
+}
+
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    block: context(Context1, Context2, Context3, Context4) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+    )
+}
+
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Context5, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    block: context(Context1, Context2, Context3, Context4, Context5) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+        koneContextRegistry[key5],
+    )
+}
+
+/**
+ * Builder function for [KoneContextRegistry].
+ */
+public inline fun KoneContextRegistry.Companion.build(block: RegistryBuilder<KoneContextRegistry>.() -> Unit): KoneContextRegistry {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return KoneContextRegistry(Registry.build { this.block() })
 }
