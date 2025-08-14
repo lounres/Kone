@@ -6,7 +6,6 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.collections.Disposable
-import dev.lounres.kone.collections.searchTree.implementations.KoneTwoThreeSearchTree
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {

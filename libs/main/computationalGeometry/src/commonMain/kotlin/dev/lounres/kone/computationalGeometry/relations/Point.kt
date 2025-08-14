@@ -8,35 +8,35 @@ package dev.lounres.kone.computationalGeometry.relations
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.relations.hash
 import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.linearAlgebra.ColumnVector
-import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
-import dev.lounres.kone.linearAlgebra.relations.columnVectorHashing
+import dev.lounres.kone.multidimensionalCollections.MDList1
+import dev.lounres.kone.multidimensionalCollections.relations.equality
+import dev.lounres.kone.multidimensionalCollections.relations.hashing
+import dev.lounres.kone.relations.hash
 import kotlin.jvm.JvmName
 
 
-internal class PointEquality<N>(val columnVectorEquality: Equality<ColumnVector<N>>) : Equality<Point<N>> {
-    override fun Point<N>.equalsTo(other: Point<N>): Boolean = columnVectorEquality { this.coordinates eq other.coordinates }
+private class PointEquality<N, Content: MDList1<N>>(val contentEquality: Equality<Content>) : Equality<Point<N, Content>> {
+    override fun Point<N, Content>.equalsTo(other: Point<N, Content>): Boolean = contentEquality { this.coordinates eq other.coordinates }
 }
 
 @JvmName("pointEqualityForColumnVector")
-public fun <N> pointEquality(columnVectorEquality: Equality<ColumnVector<N>>): Equality<Point<N>> =
-    PointEquality(columnVectorEquality)
+public fun <N, Content: MDList1<N>> Point.Companion.equality(contentEquality: Equality<Content>): Equality<Point<N, Content>> =
+    PointEquality(contentEquality)
 
 @JvmName("pointEqualityForNumber")
-public fun <N> pointEquality(numberEquality: Equality<N>): Equality<Point<N>> =
-    PointEquality(columnVectorEquality(numberEquality))
+public fun <N> Point.Companion.equality(numberEquality: Equality<N>): Equality<Point<N, MDList1<N>>> =
+    PointEquality(MDList1.equality(numberEquality))
 
-internal class PointHashing<N>(val columnVectorHashing: Hashing<ColumnVector<N>>) : Hashing<Point<N>> {
-    override fun Point<N>.hash(): Int = columnVectorHashing { this.coordinates.hash() }
+private class PointHashing<N, Content: MDList1<N>>(val contentHashing: Hashing<Content>) : Hashing<Point<N, Content>> {
+    override fun Point<N, Content>.hash(): Int = contentHashing { this.coordinates.hash() }
 }
 
 @JvmName("pointHashingForColumnVector")
-public fun <N> pointHashing(columnVectorContext: Hashing<ColumnVector<N>>): Hashing<Point<N>> =
-    PointHashing(columnVectorContext)
+public fun <N, Content: MDList1<N>> Point.Companion.hashing(contentHashing: Hashing<Content>): Hashing<Point<N, Content>> =
+    PointHashing(contentHashing)
 
 @JvmName("pointHashingForNumber")
-public fun <N> pointHashing(numberContext: Hashing<N>): Hashing<Point<N>> =
-    PointHashing(columnVectorHashing(numberContext))
+public fun <N> Point.Companion.hashing(numberHashing: Hashing<N>): Hashing<Point<N, MDList1<N>>> =
+    PointHashing(MDList1.hashing(numberHashing))

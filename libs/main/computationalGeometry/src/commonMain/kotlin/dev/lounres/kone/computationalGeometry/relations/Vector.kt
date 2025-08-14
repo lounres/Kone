@@ -8,35 +8,36 @@ package dev.lounres.kone.computationalGeometry.relations
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.relations.hash
 import dev.lounres.kone.computationalGeometry.Vector
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.ColumnVector
-import dev.lounres.kone.linearAlgebra.relations.columnVectorEquality
-import dev.lounres.kone.linearAlgebra.relations.columnVectorHashing
+import dev.lounres.kone.multidimensionalCollections.MDList1
+import dev.lounres.kone.multidimensionalCollections.relations.equality
+import dev.lounres.kone.multidimensionalCollections.relations.hashing
+import dev.lounres.kone.relations.hash
 import kotlin.jvm.JvmName
 
 
-internal class VectorEquality<N>(val columnVectorEquality: Equality<ColumnVector<N>>) : Equality<Vector<N>> {
-    override fun Vector<N>.equalsTo(other: Vector<N>): Boolean = columnVectorEquality { this.coordinates eq other.coordinates }
+internal class VectorEquality<N, Content: MDList1<N>>(val contentEquality: Equality<Content>) : Equality<Vector<N, Content>> {
+    override fun Vector<N, Content>.equalsTo(other: Vector<N, Content>): Boolean = contentEquality { this.coordinates eq other.coordinates }
 }
 
 @JvmName("vectorEqualityForColumnVector")
-public fun <N> vectorEquality(columnVectorEquality: Equality<ColumnVector<N>>): Equality<Vector<N>> =
-    VectorEquality(columnVectorEquality)
+public fun <N, Content: MDList1<N>> vectorEquality(contentEquality: Equality<Content>): Equality<Vector<N, Content>> =
+    VectorEquality(contentEquality)
 
 @JvmName("vectorEqualityForNumber")
-public fun <N> vectorEquality(numberEquality: Equality<N>): Equality<Vector<N>> =
-    VectorEquality(columnVectorEquality(numberEquality))
+public fun <N> vectorEquality(numberEquality: Equality<N>): Equality<Vector<N, MDList1<N>>> =
+    VectorEquality(MDList1.equality(numberEquality))
 
-internal class VectorHashing<N>(val columnVectorHashing: Hashing<ColumnVector<N>>) : Hashing<Vector<N>> {
-    override fun Vector<N>.hash(): Int = columnVectorHashing { this.coordinates.hash() }
+internal class VectorHashing<N, Content: MDList1<N>>(val contentHashing: Hashing<Content>) : Hashing<Vector<N, Content>> {
+    override fun Vector<N, Content>.hash(): Int = contentHashing { this.coordinates.hash() }
 }
 
 @JvmName("vectorHashingForColumnVector")
-public fun <N> vectorHashing(columnVectorHashing: Hashing<ColumnVector<N>>): Hashing<Vector<N>> =
-    VectorHashing(columnVectorHashing)
+public fun <N, Content: MDList1<N>> vectorHashing(contentHashing: Hashing<Content>): Hashing<Vector<N, Content>> =
+    VectorHashing(contentHashing)
 
 @JvmName("vectorHashingForNumber")
-public fun <N> vectorHashing(numberHashing: Hashing<N>): Hashing<Vector<N>> =
-    VectorHashing(columnVectorHashing(numberHashing))
+public fun <N> vectorHashing(numberHashing: Hashing<N>): Hashing<Vector<N, MDList1<N>>> =
+    VectorHashing(MDList1.hashing(numberHashing))

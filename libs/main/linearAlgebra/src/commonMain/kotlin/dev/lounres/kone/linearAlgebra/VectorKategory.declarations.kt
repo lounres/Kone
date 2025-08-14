@@ -11,12 +11,18 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 public interface VectorKategory<N, Content1: MDList1<N>, Content2: MDList2<N>> : KoneContext {
+    public fun RowVector.Companion.zero(size: UInt): RowVector<N, Content1>
+    public fun ColumnVector.Companion.zero(size: UInt): ColumnVector<N, Content1>
+    public fun Matrix.Companion.zero(rowNumber: UInt, columnNumber: UInt): Matrix<N, Content2>
+    
     public operator fun RowVector<N, Content1>.unaryMinus(): RowVector<N, Content1>
     public operator fun ColumnVector<N, Content1>.unaryMinus(): ColumnVector<N, Content1>
     public operator fun Matrix<N, Content2>.unaryMinus(): Matrix<N, Content2>
@@ -72,6 +78,13 @@ public interface VectorKategory<N, Content1: MDList1<N>, Content2: MDList2<N>> :
 }
 
 context(vectorKategory: VectorKategory<N, Content1, *>)
+public fun <N, Content1: MDList1<N>> RowVector.Companion.zero(size: UInt): RowVector<N, Content1> = with(vectorKategory) { RowVector.zero(size) }
+context(vectorKategory: VectorKategory<N, Content1, *>)
+public fun <N, Content1: MDList1<N>> ColumnVector.Companion.zero(size: UInt): ColumnVector<N, Content1> = with(vectorKategory) { ColumnVector.zero(size) }
+context(vectorKategory: VectorKategory<N, *, Content2>)
+public fun <N, Content2: MDList2<N>> Matrix.Companion.zero(rowNumber: UInt, columnNumber: UInt): Matrix<N, Content2> = with(vectorKategory) { Matrix.zero(rowNumber, columnNumber) }
+
+context(vectorKategory: VectorKategory<N, Content1, *>)
 public operator fun <N, Content1: MDList1<N>> RowVector<N, Content1>.unaryMinus(): RowVector<N, Content1> = with(vectorKategory) { -this@unaryMinus }
 context(vectorKategory: VectorKategory<N, Content1, *>)
 public operator fun <N, Content1: MDList1<N>> ColumnVector<N, Content1>.unaryMinus(): ColumnVector<N, Content1> = with(vectorKategory) { -this@unaryMinus }
@@ -121,3 +134,11 @@ context(_: Field<N>, _: VectorKategory<N, Content1, *>)
 public operator fun <N, Content1: MDList1<N>> ColumnVector<N, Content1>.div(other: N): ColumnVector<N, Content1> = this * other.reciprocal
 context(_: Field<N>, _: VectorKategory<N, *, Content2>)
 public operator fun <N, Content2: MDList2<N>> Matrix<N, Content2>.div(other: N): Matrix<N, Content2> = this * other.reciprocal
+
+// TODO: Think about moving the zero checks to a separate interface:
+context( _: VectorKategory<N, Content1, *>, _: Equality<RowVector<N, Content1>>)
+public fun <N, Content1: MDList1<N>> RowVector<N, Content1>.isZero(): Boolean = this eq RowVector.zero(size)
+context( _: VectorKategory<N, Content1, *>, _: Equality<ColumnVector<N, Content1>>)
+public fun <N, Content1: MDList1<N>> ColumnVector<N, Content1>.isZero(): Boolean = this eq ColumnVector.zero(size)
+context( _: VectorKategory<N, *, Content2>, _: Equality<Matrix<N, Content2>>)
+public fun <N, Content2: MDList2<N>> Matrix<N, Content2>.isZero(): Boolean = this eq Matrix.zero(rowNumber, columnNumber)

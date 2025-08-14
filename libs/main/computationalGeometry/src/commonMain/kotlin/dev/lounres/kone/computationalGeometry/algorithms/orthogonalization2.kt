@@ -13,24 +13,25 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.computationalGeometry.*
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.repeat
 
 
-internal data class GramSchmidtOrthogonalizationIntermediateState2<Number>(
-    val orthogonalizedBasis: KoneMutableList<Vector2<Number>>,
+internal data class GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent: MDList1<Number>>(
+    val orthogonalizedBasis: KoneMutableList<Vector2<Number, VectorContent>>,
     var product: Number,
     val exclusiveProducts: KoneMutableList<Number>,
 )
 
-internal fun <Number> GramSchmidtOrthogonalizationIntermediateState2<Number>.clone(): GramSchmidtOrthogonalizationIntermediateState2<Number> =
+internal fun <Number, VectorContent: MDList1<Number>> GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent>.clone(): GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent> =
     GramSchmidtOrthogonalizationIntermediateState2(
         orthogonalizedBasis = KoneArrayFixedCapacityList(2u, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
         product = product,
         exclusiveProducts = KoneArrayFixedCapacityList(2u, exclusiveProducts.size) { exclusiveProducts[it] }
     )
 
-context(_: NumberContext, _: EuclideanKategory2<Number>)
-internal fun <Number, NumberContext: Ring<Number>> GramSchmidtOrthogonalizationIntermediateState2<Number>.gramSchmidtOrthogonalizationUsage(newVector: Vector2<Number>): Vector2<Number> {
+context(_: Ring<Number>, _: EuclideanKategory2<Number, VectorContent, *>)
+internal fun <Number, VectorContent: MDList1<Number>> GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent>.gramSchmidtOrthogonalizationUsage(newVector: Vector2<Number, VectorContent>): Vector2<Number, VectorContent> {
     // FIXME: KT-67840
 //    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
 //        val previousOrthogonalizedVector = orthogonalizedBasis[index]
@@ -46,8 +47,8 @@ internal fun <Number, NumberContext: Ring<Number>> GramSchmidtOrthogonalizationI
     return result
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState2<N>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector2<N>) {
+context(_: Ring<Number>, _: EuclideanKategory2<Number, VectorContent, *>)
+internal fun <Number, VectorContent: MDList1<Number>> GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector2<Number, VectorContent>) {
     val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
@@ -56,14 +57,14 @@ internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState2<N>.g
     product *= currentNorm
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-internal fun <N, A: Ring<N>> GramSchmidtOrthogonalizationIntermediateState2<N>.gramSchmidtOrthogonalizationStep(newVector: Vector2<N>) {
+context(_: Ring<Number>, _: EuclideanKategory2<Number, VectorContent, *>)
+internal fun <Number, VectorContent: MDList1<Number>> GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent>.gramSchmidtOrthogonalizationStep(newVector: Vector2<Number, VectorContent>) {
     gramSchmidtOrthogonalizationExtension(gramSchmidtOrthogonalizationUsage(newVector))
 }
 
-context(_: A, _: EuclideanKategory2<N>)
-internal fun <N, A: Ring<N>> KoneList<Vector2<N>>.gramSchmidtOrthogonalization(): KoneList<Vector2<N>> {
-    val result = GramSchmidtOrthogonalizationIntermediateState2<N>(
+context(_: Ring<Number>, _: EuclideanKategory2<Number, VectorContent, *>)
+internal fun <Number, VectorContent: MDList1<Number>> KoneList<Vector2<Number, VectorContent>>.gramSchmidtOrthogonalization(): KoneList<Vector2<Number, VectorContent>> {
+    val result = GramSchmidtOrthogonalizationIntermediateState2<Number, VectorContent>(
         orthogonalizedBasis = KoneArrayFixedCapacityList(size),
         product = one,
         exclusiveProducts = KoneArrayFixedCapacityList(size),

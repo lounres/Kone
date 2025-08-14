@@ -31,6 +31,13 @@ private class DefaultVectorKategory<N, Content1: MDList1<N>, Content2: MDList2<N
     private val content1Producer: (size: UInt, initializer: (index: UInt) -> N) -> Content1,
     private val content2Producer: (rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> N) -> Content2,
 ) : VectorKategory<N, Content1, Content2> {
+    override fun RowVector.Companion.zero(size: UInt): RowVector<N, Content1> =
+        RowVector(content1Producer(size) { numberRing.zero })
+    override fun ColumnVector.Companion.zero(size: UInt): ColumnVector<N, Content1> =
+        ColumnVector(content1Producer(size) { numberRing.zero })
+    override fun Matrix.Companion.zero(rowNumber: UInt, columnNumber: UInt): Matrix<N, Content2> =
+        Matrix(content2Producer(rowNumber, columnNumber) { _, _ -> numberRing.zero })
+    
     override operator fun RowVector<N, Content1>.unaryMinus(): RowVector<N, Content1> =
         RowVector(content1Producer(this.size) { numberRing { -this@unaryMinus[it] } })
     override operator fun ColumnVector<N, Content1>.unaryMinus(): ColumnVector<N, Content1> =

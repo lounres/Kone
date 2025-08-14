@@ -19,6 +19,8 @@ public open /*value*/ class ColumnVector<out N, out Content: MDList1<N>>(
     public operator fun get(index: UInt): N = coefficients[index]
 
     override fun toString(): String = "ColumnVector$coefficients"
+    
+    public companion object;
 }
 
 @Serializable(with = SettableColumnVectorSerializer::class)

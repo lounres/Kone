@@ -49,12 +49,11 @@ import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.polytopes.ExtendablePolytopicConstruction
-import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionPolytope
-import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstructionVertex
-import dev.lounres.kone.computationalGeometry.utils.any
+import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.ColumnVector
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -62,15 +61,17 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 
 // TODO: There is a problem: some mandatory contexts are used as implicit contexts taken from `KoneContextRegistry`.
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number, VectorContent, PointContent>)
 internal fun <
     Number,
-    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
+    VectorContent: MDList1<Number>,
+    PointContent: MDList1<Number>,
+    Polytope: PolytopicConstruction.Polytope<Number, PointContent, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Number, PointContent, Polytope, Vertex>,
 > giftWrappingAtom(
-    startPoint: Point<Number>,
-    normalGiftWrappingVector: Vector<Number>,
-    tangentGiftWrappingVector: Vector<Number>,
+    startPoint: Point<Number, PointContent>,
+    normalGiftWrappingVector: Vector<Number, VectorContent>,
+    tangentGiftWrappingVector: Vector<Number, VectorContent>,
     otherPoints: KoneIterable<Vertex>,
 ): KoneList<Vertex> {
     data class TangentFraction(val numerator: Number, val denominator: Number)
@@ -88,12 +89,14 @@ internal fun <
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number, VectorContent, PointContent>)
 internal fun <
     Number,
-    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingIncrement(
+    VectorContent: MDList1<Number>,
+    PointContent: MDList1<Number>,
+    Polytope: PolytopicConstruction.Polytope<Number, PointContent, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Number, PointContent, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, PointContent, Polytope, Vertex>.giftWrappingIncrement(
     vertexReification: Reification<Vertex>,
     vertexEquality: Equality<Vertex>,
     vertexHashing: Hashing<Vertex>?,
@@ -144,9 +147,9 @@ internal fun <
     while (facetsToProcess.isNotEmpty()) {
         val facet = facetsToProcess.popFirst()
         for (subfacet in facet.facesOfDimension(subspaceDimension - 2u)) if (subfacet in subfacetsToProcess) {
-            val startPoint: Point<Number>
-            val normalGiftWrappingVector: Vector<Number>
-            val tangentGiftWrappingVector: Vector<Number>
+            val startPoint: Point<Number, PointContent>
+            val normalGiftWrappingVector: Vector<Number, VectorContent>
+            val tangentGiftWrappingVector: Vector<Number, VectorContent>
             scope {
                 val facetFlag = KoneSettableList(subspaceDimension) { facet }
                 facetFlag[subspaceDimension - 2u] = subfacet
@@ -163,7 +166,7 @@ internal fun <
                 normalGiftWrappingVector = orthogonalizedBasis[subspaceDimension-1u]
             }
 
-            val newVertices: KoneList<Vertex> = giftWrappingAtom<Number, Polytope, Vertex>(
+            val newVertices: KoneList<Vertex> = giftWrappingAtom<Number, VectorContent, PointContent, Polytope, Vertex>(
                 startPoint = startPoint,
                 normalGiftWrappingVector = normalGiftWrappingVector,
                 tangentGiftWrappingVector = tangentGiftWrappingVector,
@@ -206,19 +209,21 @@ internal fun <
     return addPolytope(subspaceDimension, allVertices, restConvexHullFaces).also { computedFacesRegistry[allVertices] = it }
 }
 
-internal data class WrappingResult<Number, Polytope, Vertex>(
+internal data class WrappingResult<Number, VectorContent: MDList1<Number>, PointContent: MDList1<Number>, Polytope, Vertex>(
     var polytope: Polytope,
     val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
-    val startPoint: Point<Number>,
-    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number>,
+    val startPoint: Point<Number, PointContent>,
+    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number, VectorContent>,
 )
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number, VectorContent, PointContent>)
 internal fun <
     Number,
-    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingExtension(
+    VectorContent: MDList1<Number>,
+    PointContent: MDList1<Number>,
+    Polytope: PolytopicConstruction.Polytope<Number, PointContent, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Number, PointContent, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Number, PointContent, Polytope, Vertex>.giftWrappingExtension(
     vertexReification: Reification<Vertex>,
     vertexEquality: Equality<Vertex>,
     vertexHashing: Hashing<Vertex>?,
@@ -228,8 +233,8 @@ internal fun <
     polytopeHashing: Hashing<Polytope>?,
     polytopeOrder: Order<Polytope>?,
     subspaceDimension: UInt,
-    wrappingResult: WrappingResult<Number, Polytope, Vertex>,
-    normalVector: Vector<Number>,
+    wrappingResult: WrappingResult<Number, VectorContent, PointContent, Polytope, Vertex>,
+    normalVector: Vector<Number, VectorContent>,
     otherPoints: KoneIterable<Vertex>,
 ) {
     if (otherPoints.isEmpty()) return

@@ -7,83 +7,91 @@ package dev.lounres.kone.computationalGeometry.polytopes
 
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.set.KoneReifiedSet
-import dev.lounres.kone.computationalGeometry.Point
 import dev.lounres.kone.computationalGeometry.Point2
+import dev.lounres.kone.multidimensionalCollections.MDList1
 
-
-public interface PolytopicConstruction2Polytope<
-    out Number,
-    out Polytope: PolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> {
-    public val dimension: UInt
-    public val faces: KoneList<KoneReifiedSet<Polytope>>
-    public fun facesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = faces[dim]
-    public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = facesOfDimension(dim)
-    public val vertices: KoneReifiedSet<Vertex>
-    public val cofaces: KoneList<KoneReifiedSet<Polytope>>
-    public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = cofaces[dim - dimension - 1u]
-}
-
-public interface PolytopicConstruction2Vertex<
-    out Number,
-    out Polytope: PolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> {
-    public val position: Point2<Number>
-    public fun asPolytope(): Polytope
-}
 
 public interface PolytopicConstruction2<
     out Number,
-    out Polytope: PolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction2Vertex<Number, Polytope, Vertex>,
+    out PointContent: MDList1<Number>,
+    out Polytope: PolytopicConstruction2.Polytope<Number, PointContent, Polytope, Vertex>,
+    out Vertex: PolytopicConstruction2.Vertex<Number, PointContent, Polytope, Vertex>,
 > {
     public val polytopes: KoneList<KoneReifiedSet<Polytope>>
     public fun polytopesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = polytopes[dim]
     public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = polytopesOfDimension(dim)
     
     public val vertices: KoneReifiedSet<Vertex>
+    
+    public interface Polytope<
+        out Number,
+        out PointContent: MDList1<Number>,
+        out PolytopeType: Polytope<Number, PointContent, PolytopeType, VertexType>,
+        out VertexType: Vertex<Number, PointContent, PolytopeType, VertexType>,
+    > {
+        public val dimension: UInt
+        public val faces: KoneList<KoneReifiedSet<PolytopeType>>
+        public fun facesOfDimension(dim: UInt): KoneReifiedSet<PolytopeType> = faces[dim]
+        public operator fun get(dim: UInt): KoneReifiedSet<PolytopeType> = facesOfDimension(dim)
+        public val vertices: KoneReifiedSet<VertexType>
+        public val cofaces: KoneList<KoneReifiedSet<PolytopeType>>
+        public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<PolytopeType> = cofaces[dim - dimension - 1u]
+    }
+    
+    public interface Vertex<
+        out Number,
+        out PointContent: MDList1<Number>,
+        out PolytopeType: Polytope<Number, PointContent, PolytopeType, VertexType>,
+        out VertexType: Vertex<Number, PointContent, PolytopeType, VertexType>,
+    > {
+        public val position: Point2<Number, PointContent>
+        public fun asPolytope(): PolytopeType
+    }
 }
 
 public interface ExtendablePolytopicConstruction2<
     Number,
-    out Polytope: PolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> : PolytopicConstruction2<Number, Polytope, Vertex> {
+    PointContent: MDList1<Number>,
+    out Polytope: PolytopicConstruction2.Polytope<Number, PointContent, Polytope, Vertex>,
+    out Vertex: PolytopicConstruction2.Vertex<Number, PointContent, Polytope, Vertex>,
+> : PolytopicConstruction2<Number, PointContent, Polytope, Vertex> {
     public fun addPolytope(
         dimension: UInt,
         vertices: KoneReifiedSet<@UnsafeVariance Vertex>,
         faces: KoneList<KoneReifiedSet<@UnsafeVariance Polytope>>
     ): Polytope
     
-    public fun addVertex(position: Point2<Number>): Vertex
-}
-
-public interface RemovablePolytopicConstruction2Polytope<
-    out Number,
-    out Polytope: RemovablePolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: RemovablePolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> : PolytopicConstruction2Polytope<Number, Polytope, Vertex> {
-    public fun remove()
-}
-
-public interface RemovablePolytopicConstruction2Vertex<
-    out Number,
-    out Polytope: RemovablePolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: RemovablePolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> : PolytopicConstruction2Vertex<Number, Polytope, Vertex> {
-    public fun remove()
+    public fun addVertex(position: Point2<Number, PointContent>): Vertex
 }
 
 public interface ReduciblePolytopicConstruction2<
-    Number,
-    out Polytope: RemovablePolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: RemovablePolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> : PolytopicConstruction2<Number, Polytope, Vertex>
+    out Number,
+    out PointContent: MDList1<Number>,
+    out Polytope: ReduciblePolytopicConstruction2.Polytope<Number, PointContent, Polytope, Vertex>,
+    out Vertex: ReduciblePolytopicConstruction2.Vertex<Number, PointContent, Polytope, Vertex>,
+> : PolytopicConstruction2<Number, PointContent, Polytope, Vertex> {
+    public interface Polytope<
+            out Number,
+            out PointContent: MDList1<Number>,
+            out PolytopeType: Polytope<Number, PointContent, PolytopeType, VertexType>,
+            out VertexType: Vertex<Number, PointContent, PolytopeType, VertexType>,
+            > : PolytopicConstruction2.Polytope<Number, PointContent, PolytopeType, VertexType> {
+        public fun remove()
+    }
+    
+    public interface Vertex<
+            out Number,
+            out PointContent: MDList1<Number>,
+            out PolytopeType: Polytope<Number, PointContent, PolytopeType, VertexType>,
+            out VertexType: Vertex<Number, PointContent, PolytopeType, VertexType>,
+            > : PolytopicConstruction2.Vertex<Number, PointContent, PolytopeType, VertexType> {
+        public fun remove()
+    }
+}
 
 public interface MutablePolytopicConstruction2<
     Number,
-    out Polytope: RemovablePolytopicConstruction2Polytope<Number, Polytope, Vertex>,
-    out Vertex: RemovablePolytopicConstruction2Vertex<Number, Polytope, Vertex>,
-> : ExtendablePolytopicConstruction2<Number, Polytope, Vertex>, ReduciblePolytopicConstruction2<Number, Polytope, Vertex>
+    PointContent: MDList1<Number>,
+    out Polytope: ReduciblePolytopicConstruction2.Polytope<Number, PointContent, Polytope, Vertex>,
+    out Vertex: ReduciblePolytopicConstruction2.Vertex<Number, PointContent, Polytope, Vertex>,
+> : ExtendablePolytopicConstruction2<Number, PointContent, Polytope, Vertex>, ReduciblePolytopicConstruction2<Number, PointContent, Polytope, Vertex>

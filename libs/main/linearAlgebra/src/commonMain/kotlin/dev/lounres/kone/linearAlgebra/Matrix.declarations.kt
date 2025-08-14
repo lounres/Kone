@@ -20,6 +20,8 @@ public open /*value*/ class Matrix<out N, out Content: MDList2<N>>(
     public operator fun get(rowIndex: UInt, columnIndex: UInt): N = coefficients[rowIndex, columnIndex]
 
     override fun toString(): String = "Matrix$coefficients"
+    
+    public companion object;
 }
 
 @Serializable(with = SettableMatrixSerializer::class)
