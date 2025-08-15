@@ -5,23 +5,6 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.map.KoneMutableMap
-import dev.lounres.kone.collections.map.containsKey
-import dev.lounres.kone.collections.map.getMaybe
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.maybe.isNone
-import dev.lounres.kone.maybe.orThrow
-import dev.lounres.kone.suppliedTypes.SuppliedType
-
 
 // TODO: Review grouping API
 

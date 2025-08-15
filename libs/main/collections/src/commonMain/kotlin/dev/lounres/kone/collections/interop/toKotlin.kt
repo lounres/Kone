@@ -10,8 +10,9 @@ import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
 
 
 // region Conversion
@@ -37,7 +38,7 @@ internal class KoneIterableAsKotlinCollectionWrapper<Element>(
     
     override fun iterator(): Iterator<Element> = KoneIteratorAsKotlinIteratorWrapper(iterable.iterator())
     
-    override fun contains(element: Element): Boolean = (defaultEquality<Element>()) { iterable.contains(element) }
+    override fun contains(element: Element): Boolean = (Equality.defaultFor<Element>()) { iterable.contains(element) }
     override fun containsAll(elements: Collection<Element>): Boolean = elements.all { contains(it) }
 }
 

@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.array.relations
 import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.neq
 
 
@@ -20,7 +20,7 @@ internal class KoneArrayEquality<Element>(val elementEquality: Equality<Element>
     }
 }
 
-public fun <Element> KoneArray.Companion.equality(elementEquality: Equality<Element> = defaultEquality()): Equality<KoneArray<Element>> =
+public fun <Element> KoneArray.Companion.equality(elementEquality: Equality<Element> = Equality.defaultFor()): Equality<KoneArray<Element>> =
     KoneArrayEquality(elementEquality)
 
 internal class KoneMutableArrayEquality<Element>(val elementEquality: Equality<Element>) : Equality<KoneMutableArray<Element>> {
@@ -31,7 +31,7 @@ internal class KoneMutableArrayEquality<Element>(val elementEquality: Equality<E
     }
 }
 
-public fun <Element> KoneMutableArray.Companion.equality(elementEquality: Equality<Element> = defaultEquality()): Equality<KoneMutableArray<Element>> =
+public fun <Element> KoneMutableArray.Companion.equality(elementEquality: Equality<Element> = Equality.defaultFor()): Equality<KoneMutableArray<Element>> =
     KoneMutableArrayEquality(elementEquality)
 
 internal class KoneBooleanArrayEquality(val elementEquality: Equality<Boolean>) : Equality<KoneBooleanArray> {
@@ -42,7 +42,7 @@ internal class KoneBooleanArrayEquality(val elementEquality: Equality<Boolean>) 
     }
 }
 
-public fun KoneBooleanArray.Companion.equality(elementEquality: Equality<Boolean> = defaultEquality()): Equality<KoneBooleanArray> =
+public fun KoneBooleanArray.Companion.equality(elementEquality: Equality<Boolean> = Equality.defaultFor()): Equality<KoneBooleanArray> =
     KoneBooleanArrayEquality(elementEquality)
 
 internal class KoneMutableBooleanArrayEquality(val elementEquality: Equality<Boolean>) : Equality<KoneMutableBooleanArray> {
@@ -53,7 +53,7 @@ internal class KoneMutableBooleanArrayEquality(val elementEquality: Equality<Boo
     }
 }
 
-public fun KoneMutableBooleanArray.Companion.equality(elementEquality: Equality<Boolean> = defaultEquality()): Equality<KoneMutableBooleanArray> =
+public fun KoneMutableBooleanArray.Companion.equality(elementEquality: Equality<Boolean> = Equality.defaultFor()): Equality<KoneMutableBooleanArray> =
     KoneMutableBooleanArrayEquality(elementEquality)
 
 internal class KoneCharArrayEquality(val elementEquality: Equality<Char>) : Equality<KoneCharArray> {
@@ -64,7 +64,7 @@ internal class KoneCharArrayEquality(val elementEquality: Equality<Char>) : Equa
     }
 }
 
-public fun KoneCharArray.Companion.equality(elementEquality: Equality<Char> = defaultEquality()): Equality<KoneCharArray> =
+public fun KoneCharArray.Companion.equality(elementEquality: Equality<Char> = Equality.defaultFor()): Equality<KoneCharArray> =
     KoneCharArrayEquality(elementEquality)
 
 internal class KoneMutableCharArrayEquality(val elementEquality: Equality<Char>) : Equality<KoneMutableCharArray> {
@@ -75,7 +75,7 @@ internal class KoneMutableCharArrayEquality(val elementEquality: Equality<Char>)
     }
 }
 
-public fun KoneMutableCharArray.Companion.equality(elementEquality: Equality<Char> = defaultEquality()): Equality<KoneMutableCharArray> =
+public fun KoneMutableCharArray.Companion.equality(elementEquality: Equality<Char> = Equality.defaultFor()): Equality<KoneMutableCharArray> =
     KoneMutableCharArrayEquality(elementEquality)
 
 internal class KoneByteArrayEquality(val elementEquality: Equality<Byte>) : Equality<KoneByteArray> {
@@ -86,7 +86,7 @@ internal class KoneByteArrayEquality(val elementEquality: Equality<Byte>) : Equa
     }
 }
 
-public fun KoneByteArray.Companion.equality(elementEquality: Equality<Byte> = defaultEquality()): Equality<KoneByteArray> =
+public fun KoneByteArray.Companion.equality(elementEquality: Equality<Byte> = Equality.defaultFor()): Equality<KoneByteArray> =
     KoneByteArrayEquality(elementEquality)
 
 internal class KoneMutableByteArrayEquality(val elementEquality: Equality<Byte>) : Equality<KoneMutableByteArray> {
@@ -97,7 +97,7 @@ internal class KoneMutableByteArrayEquality(val elementEquality: Equality<Byte>)
     }
 }
 
-public fun KoneMutableByteArray.Companion.equality(elementEquality: Equality<Byte> = defaultEquality()): Equality<KoneMutableByteArray> =
+public fun KoneMutableByteArray.Companion.equality(elementEquality: Equality<Byte> = Equality.defaultFor()): Equality<KoneMutableByteArray> =
     KoneMutableByteArrayEquality(elementEquality)
 
 internal class KoneShortArrayEquality(val elementEquality: Equality<Short>) : Equality<KoneShortArray> {
@@ -108,7 +108,7 @@ internal class KoneShortArrayEquality(val elementEquality: Equality<Short>) : Eq
     }
 }
 
-public fun KoneShortArray.Companion.equality(elementEquality: Equality<Short> = defaultEquality()): Equality<KoneShortArray> =
+public fun KoneShortArray.Companion.equality(elementEquality: Equality<Short> = Equality.defaultFor()): Equality<KoneShortArray> =
     KoneShortArrayEquality(elementEquality)
 
 internal class KoneMutableShortArrayEquality(val elementEquality: Equality<Short>) : Equality<KoneMutableShortArray> {
@@ -119,7 +119,7 @@ internal class KoneMutableShortArrayEquality(val elementEquality: Equality<Short
     }
 }
 
-public fun KoneMutableShortArray.Companion.equality(elementEquality: Equality<Short> = defaultEquality()): Equality<KoneMutableShortArray> =
+public fun KoneMutableShortArray.Companion.equality(elementEquality: Equality<Short> = Equality.defaultFor()): Equality<KoneMutableShortArray> =
     KoneMutableShortArrayEquality(elementEquality)
 
 internal class KoneIntArrayEquality(val elementEquality: Equality<Int>) : Equality<KoneIntArray> {
@@ -130,7 +130,7 @@ internal class KoneIntArrayEquality(val elementEquality: Equality<Int>) : Equali
     }
 }
 
-public fun KoneIntArray.Companion.equality(elementEquality: Equality<Int> = defaultEquality()): Equality<KoneIntArray> =
+public fun KoneIntArray.Companion.equality(elementEquality: Equality<Int> = Equality.defaultFor()): Equality<KoneIntArray> =
     KoneIntArrayEquality(elementEquality)
 
 internal class KoneMutableIntArrayEquality(val elementEquality: Equality<Int>) : Equality<KoneMutableIntArray> {
@@ -141,7 +141,7 @@ internal class KoneMutableIntArrayEquality(val elementEquality: Equality<Int>) :
     }
 }
 
-public fun KoneMutableIntArray.Companion.equality(elementEquality: Equality<Int> = defaultEquality()): Equality<KoneMutableIntArray> =
+public fun KoneMutableIntArray.Companion.equality(elementEquality: Equality<Int> = Equality.defaultFor()): Equality<KoneMutableIntArray> =
     KoneMutableIntArrayEquality(elementEquality)
 
 internal class KoneLongArrayEquality(val elementEquality: Equality<Long>) : Equality<KoneLongArray> {
@@ -152,7 +152,7 @@ internal class KoneLongArrayEquality(val elementEquality: Equality<Long>) : Equa
     }
 }
 
-public fun KoneLongArray.Companion.equality(elementEquality: Equality<Long> = defaultEquality()): Equality<KoneLongArray> =
+public fun KoneLongArray.Companion.equality(elementEquality: Equality<Long> = Equality.defaultFor()): Equality<KoneLongArray> =
     KoneLongArrayEquality(elementEquality)
 
 internal class KoneMutableLongArrayEquality(val elementEquality: Equality<Long>) : Equality<KoneMutableLongArray> {
@@ -163,7 +163,7 @@ internal class KoneMutableLongArrayEquality(val elementEquality: Equality<Long>)
     }
 }
 
-public fun KoneMutableLongArray.Companion.equality(elementEquality: Equality<Long> = defaultEquality()): Equality<KoneMutableLongArray> =
+public fun KoneMutableLongArray.Companion.equality(elementEquality: Equality<Long> = Equality.defaultFor()): Equality<KoneMutableLongArray> =
     KoneMutableLongArrayEquality(elementEquality)
 
 internal class KoneFloatArrayEquality(val elementEquality: Equality<Float>) : Equality<KoneFloatArray> {
@@ -174,7 +174,7 @@ internal class KoneFloatArrayEquality(val elementEquality: Equality<Float>) : Eq
     }
 }
 
-public fun KoneFloatArray.Companion.equality(elementEquality: Equality<Float> = defaultEquality()): Equality<KoneFloatArray> =
+public fun KoneFloatArray.Companion.equality(elementEquality: Equality<Float> = Equality.defaultFor()): Equality<KoneFloatArray> =
     KoneFloatArrayEquality(elementEquality)
 
 internal class KoneMutableFloatArrayEquality(val elementEquality: Equality<Float>) : Equality<KoneMutableFloatArray> {
@@ -185,7 +185,7 @@ internal class KoneMutableFloatArrayEquality(val elementEquality: Equality<Float
     }
 }
 
-public fun KoneMutableFloatArray.Companion.equality(elementEquality: Equality<Float> = defaultEquality()): Equality<KoneMutableFloatArray> =
+public fun KoneMutableFloatArray.Companion.equality(elementEquality: Equality<Float> = Equality.defaultFor()): Equality<KoneMutableFloatArray> =
     KoneMutableFloatArrayEquality(elementEquality)
 
 internal class KoneDoubleArrayEquality(val elementEquality: Equality<Double>) : Equality<KoneDoubleArray> {
@@ -196,7 +196,7 @@ internal class KoneDoubleArrayEquality(val elementEquality: Equality<Double>) : 
     }
 }
 
-public fun KoneDoubleArray.Companion.equality(elementEquality: Equality<Double> = defaultEquality()): Equality<KoneDoubleArray> =
+public fun KoneDoubleArray.Companion.equality(elementEquality: Equality<Double> = Equality.defaultFor()): Equality<KoneDoubleArray> =
     KoneDoubleArrayEquality(elementEquality)
 
 internal class KoneMutableDoubleArrayEquality(val elementEquality: Equality<Double>) : Equality<KoneMutableDoubleArray> {
@@ -207,7 +207,7 @@ internal class KoneMutableDoubleArrayEquality(val elementEquality: Equality<Doub
     }
 }
 
-public fun KoneMutableDoubleArray.Companion.equality(elementEquality: Equality<Double> = defaultEquality()): Equality<KoneMutableDoubleArray> =
+public fun KoneMutableDoubleArray.Companion.equality(elementEquality: Equality<Double> = Equality.defaultFor()): Equality<KoneMutableDoubleArray> =
     KoneMutableDoubleArrayEquality(elementEquality)
 
 internal class KoneUByteArrayEquality(val elementEquality: Equality<UByte>) : Equality<KoneUByteArray> {
@@ -218,7 +218,7 @@ internal class KoneUByteArrayEquality(val elementEquality: Equality<UByte>) : Eq
     }
 }
 
-public fun KoneUByteArray.Companion.equality(elementEquality: Equality<UByte> = defaultEquality()): Equality<KoneUByteArray> =
+public fun KoneUByteArray.Companion.equality(elementEquality: Equality<UByte> = Equality.defaultFor()): Equality<KoneUByteArray> =
     KoneUByteArrayEquality(elementEquality)
 
 internal class KoneMutableUByteArrayEquality(val elementEquality: Equality<UByte>) : Equality<KoneMutableUByteArray> {
@@ -229,7 +229,7 @@ internal class KoneMutableUByteArrayEquality(val elementEquality: Equality<UByte
     }
 }
 
-public fun KoneMutableUByteArray.Companion.equality(elementEquality: Equality<UByte> = defaultEquality()): Equality<KoneMutableUByteArray> =
+public fun KoneMutableUByteArray.Companion.equality(elementEquality: Equality<UByte> = Equality.defaultFor()): Equality<KoneMutableUByteArray> =
     KoneMutableUByteArrayEquality(elementEquality)
 
 internal class KoneUShortArrayEquality(val elementEquality: Equality<UShort>) : Equality<KoneUShortArray> {
@@ -240,7 +240,7 @@ internal class KoneUShortArrayEquality(val elementEquality: Equality<UShort>) : 
     }
 }
 
-public fun KoneUShortArray.Companion.equality(elementEquality: Equality<UShort> = defaultEquality()): Equality<KoneUShortArray> =
+public fun KoneUShortArray.Companion.equality(elementEquality: Equality<UShort> = Equality.defaultFor()): Equality<KoneUShortArray> =
     KoneUShortArrayEquality(elementEquality)
 
 internal class KoneMutableUShortArrayEquality(val elementEquality: Equality<UShort>) : Equality<KoneMutableUShortArray> {
@@ -251,7 +251,7 @@ internal class KoneMutableUShortArrayEquality(val elementEquality: Equality<USho
     }
 }
 
-public fun KoneMutableUShortArray.Companion.equality(elementEquality: Equality<UShort> = defaultEquality()): Equality<KoneMutableUShortArray> =
+public fun KoneMutableUShortArray.Companion.equality(elementEquality: Equality<UShort> = Equality.defaultFor()): Equality<KoneMutableUShortArray> =
     KoneMutableUShortArrayEquality(elementEquality)
 
 internal class KoneUIntArrayEquality(val elementEquality: Equality<UInt>) : Equality<KoneUIntArray> {
@@ -262,7 +262,7 @@ internal class KoneUIntArrayEquality(val elementEquality: Equality<UInt>) : Equa
     }
 }
 
-public fun KoneUIntArray.Companion.equality(elementEquality: Equality<UInt> = defaultEquality()): Equality<KoneUIntArray> =
+public fun KoneUIntArray.Companion.equality(elementEquality: Equality<UInt> = Equality.defaultFor()): Equality<KoneUIntArray> =
     KoneUIntArrayEquality(elementEquality)
 
 internal class KoneMutableUIntArrayEquality(val elementEquality: Equality<UInt>) : Equality<KoneMutableUIntArray> {
@@ -273,7 +273,7 @@ internal class KoneMutableUIntArrayEquality(val elementEquality: Equality<UInt>)
     }
 }
 
-public fun KoneMutableUIntArray.Companion.equality(elementEquality: Equality<UInt> = defaultEquality()): Equality<KoneMutableUIntArray> =
+public fun KoneMutableUIntArray.Companion.equality(elementEquality: Equality<UInt> = Equality.defaultFor()): Equality<KoneMutableUIntArray> =
     KoneMutableUIntArrayEquality(elementEquality)
 
 internal class KoneULongArrayEquality(val elementEquality: Equality<ULong>) : Equality<KoneULongArray> {
@@ -284,7 +284,7 @@ internal class KoneULongArrayEquality(val elementEquality: Equality<ULong>) : Eq
     }
 }
 
-public fun KoneULongArray.Companion.equality(elementEquality: Equality<ULong> = defaultEquality()): Equality<KoneULongArray> =
+public fun KoneULongArray.Companion.equality(elementEquality: Equality<ULong> = Equality.defaultFor()): Equality<KoneULongArray> =
     KoneULongArrayEquality(elementEquality)
 
 internal class KoneMutableULongArrayEquality(val elementEquality: Equality<ULong>) : Equality<KoneMutableULongArray> {
@@ -295,5 +295,5 @@ internal class KoneMutableULongArrayEquality(val elementEquality: Equality<ULong
     }
 }
 
-public fun KoneMutableULongArray.Companion.equality(elementEquality: Equality<ULong> = defaultEquality()): Equality<KoneMutableULongArray> =
+public fun KoneMutableULongArray.Companion.equality(elementEquality: Equality<ULong> = Equality.defaultFor()): Equality<KoneMutableULongArray> =
     KoneMutableULongArrayEquality(elementEquality)

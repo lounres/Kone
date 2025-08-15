@@ -45,7 +45,7 @@ import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.repeat
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -1329,13 +1329,13 @@ public inline fun <E: R, R> KoneSequence<E>.reduceIndexedMaybe(operation: (index
 
 // TODO: Add summing and multiplying extensions for primitives. Maybe.
 
-context(_: Semiring<E>)
+context(_: Monoid<E>)
 public fun <E> KoneIterable<E>.sum(): E = fold(zero) { acc, e -> acc + e }
 
-context(_: Semiring<N>)
+context(_: Monoid<N>)
 public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(zero) { acc, e -> acc + selector(e) }
 
-context(_: Semiring<N>)
+context(_: Monoid<N>)
 public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
 
 context(_: Semiring<E>)
@@ -1366,7 +1366,7 @@ public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableList<V>>> KoneIt
 }
 
 public inline fun <E, K> KoneIterable<E>.groupBy(
-    keyEquality: Equality<K> = defaultEquality(),
+    keyEquality: Equality<K> = Equality.defaultFor(),
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
     keySelector: (E) -> K
@@ -1393,7 +1393,7 @@ public inline fun <E, K> KoneIterable<E>.groupContextualBy(
     )
 
 public inline fun <E, K, V> KoneIterable<E>.groupBy(
-    keyEquality: Equality<K> = defaultEquality(),
+    keyEquality: Equality<K> = Equality.defaultFor(),
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
     keySelector: (E) -> K,

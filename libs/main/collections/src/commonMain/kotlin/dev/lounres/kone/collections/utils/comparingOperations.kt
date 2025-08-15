@@ -24,7 +24,7 @@ import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -747,7 +747,7 @@ public fun <E, R> KoneIterable<E>.maxListWithBy(comparator: Comparator<R>, selec
 }
 
 public fun <E> KoneIterable<E>.hasDuplicates(
-    elementEquality: Equality<E> = defaultEquality(),
+    elementEquality: Equality<E> = Equality.defaultFor(),
     elementHashing: Hashing<E>? = null,
     elementOrder: Order<E>? = null,
 ): Boolean {

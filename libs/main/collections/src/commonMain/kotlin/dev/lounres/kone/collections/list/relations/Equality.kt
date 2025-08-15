@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.neq
 
 
@@ -30,5 +30,5 @@ internal class KoneListEquality<Element>(val elementEquality: Equality<Element>)
     }
 }
 
-public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element> = defaultEquality()): Equality<KoneList<Element>> =
+public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element> = Equality.defaultFor()): Equality<KoneList<Element>> =
     KoneListEquality(elementEquality)

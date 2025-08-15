@@ -8,7 +8,7 @@ package dev.lounres.kone.collections.array.relations
 import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.hash
 
 
@@ -22,7 +22,7 @@ internal class KoneMutableArrayHashing<Element>(val elementHashing: Hashing<Elem
     }
 }
 
-public fun <Element> KoneMutableArray.Companion.hashing(elementHashing: Hashing<Element> = defaultHashing()): Hashing<KoneMutableArray<Element>> =
+public fun <Element> KoneMutableArray.Companion.hashing(elementHashing: Hashing<Element> = Hashing.defaultFor()): Hashing<KoneMutableArray<Element>> =
     KoneMutableArrayHashing(elementHashing)
 
 internal class KoneArrayHashing<Element>(val elementHashing: Hashing<Element>) : Hashing<KoneArray<Element>> {
@@ -35,7 +35,7 @@ internal class KoneArrayHashing<Element>(val elementHashing: Hashing<Element>) :
     }
 }
 
-public fun <Element> KoneArray.Companion.hashing(elementHashing: Hashing<Element> = defaultHashing()): Hashing<KoneArray<Element>> =
+public fun <Element> KoneArray.Companion.hashing(elementHashing: Hashing<Element> = Hashing.defaultFor()): Hashing<KoneArray<Element>> =
     KoneArrayHashing(elementHashing)
 
 internal class KoneMutableBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : Hashing<KoneMutableBooleanArray> {
@@ -48,7 +48,7 @@ internal class KoneMutableBooleanArrayHashing(val elementHashing: Hashing<Boolea
     }
 }
 
-public fun KoneMutableBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = defaultHashing()): Hashing<KoneMutableBooleanArray> =
+public fun KoneMutableBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = Hashing.defaultFor()): Hashing<KoneMutableBooleanArray> =
     KoneMutableBooleanArrayHashing(elementHashing)
 
 internal class KoneBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : Hashing<KoneBooleanArray> {
@@ -61,7 +61,7 @@ internal class KoneBooleanArrayHashing(val elementHashing: Hashing<Boolean>) : H
     }
 }
 
-public fun KoneBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = defaultHashing()): Hashing<KoneBooleanArray> =
+public fun KoneBooleanArray.Companion.hashing(elementHashing: Hashing<Boolean> = Hashing.defaultFor()): Hashing<KoneBooleanArray> =
     KoneBooleanArrayHashing(elementHashing)
 
 internal class KoneMutableCharArrayHashing(val elementHashing: Hashing<Char>) : Hashing<KoneMutableCharArray> {
@@ -74,7 +74,7 @@ internal class KoneMutableCharArrayHashing(val elementHashing: Hashing<Char>) : 
     }
 }
 
-public fun KoneMutableCharArray.Companion.hashing(elementHashing: Hashing<Char> = defaultHashing()): Hashing<KoneMutableCharArray> =
+public fun KoneMutableCharArray.Companion.hashing(elementHashing: Hashing<Char> = Hashing.defaultFor()): Hashing<KoneMutableCharArray> =
     KoneMutableCharArrayHashing(elementHashing)
 
 internal class KoneCharArrayHashing(val elementHashing: Hashing<Char>) : Hashing<KoneCharArray> {
@@ -87,7 +87,7 @@ internal class KoneCharArrayHashing(val elementHashing: Hashing<Char>) : Hashing
     }
 }
 
-public fun KoneCharArray.Companion.hashing(elementHashing: Hashing<Char> = defaultHashing()): Hashing<KoneCharArray> =
+public fun KoneCharArray.Companion.hashing(elementHashing: Hashing<Char> = Hashing.defaultFor()): Hashing<KoneCharArray> =
     KoneCharArrayHashing(elementHashing)
 
 internal class KoneMutableByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing<KoneMutableByteArray> {
@@ -100,7 +100,7 @@ internal class KoneMutableByteArrayHashing(val elementHashing: Hashing<Byte>) : 
     }
 }
 
-public fun KoneMutableByteArray.Companion.hashing(elementHashing: Hashing<Byte> = defaultHashing()): Hashing<KoneMutableByteArray> =
+public fun KoneMutableByteArray.Companion.hashing(elementHashing: Hashing<Byte> = Hashing.defaultFor()): Hashing<KoneMutableByteArray> =
     KoneMutableByteArrayHashing(elementHashing)
 
 internal class KoneByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing<KoneByteArray> {
@@ -113,7 +113,7 @@ internal class KoneByteArrayHashing(val elementHashing: Hashing<Byte>) : Hashing
     }
 }
 
-public fun KoneByteArray.Companion.hashing(elementHashing: Hashing<Byte> = defaultHashing()): Hashing<KoneByteArray> =
+public fun KoneByteArray.Companion.hashing(elementHashing: Hashing<Byte> = Hashing.defaultFor()): Hashing<KoneByteArray> =
     KoneByteArrayHashing(elementHashing)
 
 internal class KoneMutableIntArrayHashing(val elementHashing: Hashing<Int>) : Hashing<KoneMutableIntArray> {
@@ -126,7 +126,7 @@ internal class KoneMutableIntArrayHashing(val elementHashing: Hashing<Int>) : Ha
     }
 }
 
-public fun KoneMutableIntArray.Companion.hashing(elementHashing: Hashing<Int> = defaultHashing()): Hashing<KoneMutableIntArray> =
+public fun KoneMutableIntArray.Companion.hashing(elementHashing: Hashing<Int> = Hashing.defaultFor()): Hashing<KoneMutableIntArray> =
     KoneMutableIntArrayHashing(elementHashing)
 
 internal class KoneIntArrayHashing(val elementHashing: Hashing<Int>) : Hashing<KoneIntArray> {
@@ -139,7 +139,7 @@ internal class KoneIntArrayHashing(val elementHashing: Hashing<Int>) : Hashing<K
     }
 }
 
-public fun KoneIntArray.Companion.hashing(elementHashing: Hashing<Int> = defaultHashing()): Hashing<KoneIntArray> =
+public fun KoneIntArray.Companion.hashing(elementHashing: Hashing<Int> = Hashing.defaultFor()): Hashing<KoneIntArray> =
     KoneIntArrayHashing(elementHashing)
 
 internal class KoneMutableLongArrayHashing(val elementHashing: Hashing<Long>) : Hashing<KoneMutableLongArray> {
@@ -152,7 +152,7 @@ internal class KoneMutableLongArrayHashing(val elementHashing: Hashing<Long>) : 
     }
 }
 
-public fun KoneMutableLongArray.Companion.hashing(elementHashing: Hashing<Long> = defaultHashing()): Hashing<KoneMutableLongArray> =
+public fun KoneMutableLongArray.Companion.hashing(elementHashing: Hashing<Long> = Hashing.defaultFor()): Hashing<KoneMutableLongArray> =
     KoneMutableLongArrayHashing(elementHashing)
 
 internal class KoneLongArrayHashing(val elementHashing: Hashing<Long>) : Hashing<KoneLongArray> {
@@ -165,7 +165,7 @@ internal class KoneLongArrayHashing(val elementHashing: Hashing<Long>) : Hashing
     }
 }
 
-public fun KoneLongArray.Companion.hashing(elementHashing: Hashing<Long> = defaultHashing()): Hashing<KoneLongArray> =
+public fun KoneLongArray.Companion.hashing(elementHashing: Hashing<Long> = Hashing.defaultFor()): Hashing<KoneLongArray> =
     KoneLongArrayHashing(elementHashing)
 
 internal class KoneMutableFloatArrayHashing(val elementHashing: Hashing<Float>) : Hashing<KoneMutableFloatArray> {
@@ -178,7 +178,7 @@ internal class KoneMutableFloatArrayHashing(val elementHashing: Hashing<Float>) 
     }
 }
 
-public fun KoneMutableFloatArray.Companion.hashing(elementHashing: Hashing<Float> = defaultHashing()): Hashing<KoneMutableFloatArray> =
+public fun KoneMutableFloatArray.Companion.hashing(elementHashing: Hashing<Float> = Hashing.defaultFor()): Hashing<KoneMutableFloatArray> =
     KoneMutableFloatArrayHashing(elementHashing)
 
 internal class KoneFloatArrayHashing(val elementHashing: Hashing<Float>) : Hashing<KoneFloatArray> {
@@ -191,7 +191,7 @@ internal class KoneFloatArrayHashing(val elementHashing: Hashing<Float>) : Hashi
     }
 }
 
-public fun KoneFloatArray.Companion.hashing(elementHashing: Hashing<Float> = defaultHashing()): Hashing<KoneFloatArray> =
+public fun KoneFloatArray.Companion.hashing(elementHashing: Hashing<Float> = Hashing.defaultFor()): Hashing<KoneFloatArray> =
     KoneFloatArrayHashing(elementHashing)
 
 internal class KoneMutableDoubleArrayHashing(val elementHashing: Hashing<Double>) : Hashing<KoneMutableDoubleArray> {
@@ -204,7 +204,7 @@ internal class KoneMutableDoubleArrayHashing(val elementHashing: Hashing<Double>
     }
 }
 
-public fun KoneMutableDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = defaultHashing()): Hashing<KoneMutableDoubleArray> =
+public fun KoneMutableDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = Hashing.defaultFor()): Hashing<KoneMutableDoubleArray> =
     KoneMutableDoubleArrayHashing(elementHashing)
 
 internal class KoneDoubleArrayHashing(val elementHashing: Hashing<Double>) : Hashing<KoneDoubleArray> {
@@ -217,7 +217,7 @@ internal class KoneDoubleArrayHashing(val elementHashing: Hashing<Double>) : Has
     }
 }
 
-public fun KoneDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = defaultHashing()): Hashing<KoneDoubleArray> =
+public fun KoneDoubleArray.Companion.hashing(elementHashing: Hashing<Double> = Hashing.defaultFor()): Hashing<KoneDoubleArray> =
     KoneDoubleArrayHashing(elementHashing)
 
 internal class KoneMutableUByteArrayHashing(val elementHashing: Hashing<UByte>) : Hashing<KoneMutableUByteArray> {
@@ -230,7 +230,7 @@ internal class KoneMutableUByteArrayHashing(val elementHashing: Hashing<UByte>) 
     }
 }
 
-public fun KoneMutableUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = defaultHashing()): Hashing<KoneMutableUByteArray> =
+public fun KoneMutableUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = Hashing.defaultFor()): Hashing<KoneMutableUByteArray> =
     KoneMutableUByteArrayHashing(elementHashing)
 
 internal class KoneUByteArrayHashing(val elementHashing: Hashing<UByte>) : Hashing<KoneUByteArray> {
@@ -243,7 +243,7 @@ internal class KoneUByteArrayHashing(val elementHashing: Hashing<UByte>) : Hashi
     }
 }
 
-public fun KoneUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = defaultHashing()): Hashing<KoneUByteArray> =
+public fun KoneUByteArray.Companion.hashing(elementHashing: Hashing<UByte> = Hashing.defaultFor()): Hashing<KoneUByteArray> =
     KoneUByteArrayHashing(elementHashing)
 
 internal class KoneMutableUShortArrayHashing(val elementHashing: Hashing<UShort>) : Hashing<KoneMutableUShortArray> {
@@ -256,7 +256,7 @@ internal class KoneMutableUShortArrayHashing(val elementHashing: Hashing<UShort>
     }
 }
 
-public fun KoneMutableUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = defaultHashing()): Hashing<KoneMutableUShortArray> =
+public fun KoneMutableUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = Hashing.defaultFor()): Hashing<KoneMutableUShortArray> =
     KoneMutableUShortArrayHashing(elementHashing)
 
 internal class KoneUShortArrayHashing(val elementHashing: Hashing<UShort>) : Hashing<KoneUShortArray> {
@@ -269,7 +269,7 @@ internal class KoneUShortArrayHashing(val elementHashing: Hashing<UShort>) : Has
     }
 }
 
-public fun KoneUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = defaultHashing()): Hashing<KoneUShortArray> =
+public fun KoneUShortArray.Companion.hashing(elementHashing: Hashing<UShort> = Hashing.defaultFor()): Hashing<KoneUShortArray> =
     KoneUShortArrayHashing(elementHashing)
 
 internal class KoneMutableUIntArrayHashing(val elementHashing: Hashing<UInt>) : Hashing<KoneMutableUIntArray> {
@@ -282,7 +282,7 @@ internal class KoneMutableUIntArrayHashing(val elementHashing: Hashing<UInt>) : 
     }
 }
 
-public fun KoneMutableUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = defaultHashing()): Hashing<KoneMutableUIntArray> =
+public fun KoneMutableUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = Hashing.defaultFor()): Hashing<KoneMutableUIntArray> =
     KoneMutableUIntArrayHashing(elementHashing)
 
 internal class KoneUIntArrayHashing(val elementHashing: Hashing<UInt>) : Hashing<KoneUIntArray> {
@@ -295,7 +295,7 @@ internal class KoneUIntArrayHashing(val elementHashing: Hashing<UInt>) : Hashing
     }
 }
 
-public fun KoneUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = defaultHashing()): Hashing<KoneUIntArray> =
+public fun KoneUIntArray.Companion.hashing(elementHashing: Hashing<UInt> = Hashing.defaultFor()): Hashing<KoneUIntArray> =
     KoneUIntArrayHashing(elementHashing)
 
 internal class KoneMutableULongArrayHashing(val elementHashing: Hashing<ULong>) : Hashing<KoneMutableULongArray> {
@@ -308,7 +308,7 @@ internal class KoneMutableULongArrayHashing(val elementHashing: Hashing<ULong>) 
     }
 }
 
-public fun KoneMutableULongArray.Companion.hashing(elementHashing: Hashing<ULong> = defaultHashing()): Hashing<KoneMutableULongArray> =
+public fun KoneMutableULongArray.Companion.hashing(elementHashing: Hashing<ULong> = Hashing.defaultFor()): Hashing<KoneMutableULongArray> =
     KoneMutableULongArrayHashing(elementHashing)
 
 internal class KoneULongArrayHashing(val elementHashing: Hashing<ULong>) : Hashing<KoneULongArray> {
@@ -321,5 +321,5 @@ internal class KoneULongArrayHashing(val elementHashing: Hashing<ULong>) : Hashi
     }
 }
 
-public fun KoneULongArray.Companion.hashing(elementHashing: Hashing<ULong> = defaultHashing()): Hashing<KoneULongArray> =
+public fun KoneULongArray.Companion.hashing(elementHashing: Hashing<ULong> = Hashing.defaultFor()): Hashing<KoneULongArray> =
     KoneULongArrayHashing(elementHashing)
