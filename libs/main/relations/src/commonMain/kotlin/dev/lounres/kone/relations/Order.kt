@@ -9,6 +9,7 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
@@ -18,7 +19,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
-import kotlin.reflect.KVariance
 import kotlin.Comparator as KotlinStdlibComparator
 
 
@@ -48,6 +48,8 @@ public interface Order<in Element> : KoneContext {
      */
     public infix fun Element.compareWith(other: Element): ComparisonResult
     
+    public companion object;
+    
     /**
      * Registry key for [Order] interface in [KoneContextRegistry].
      */
@@ -75,22 +77,35 @@ public interface Order<in Element> : KoneContext {
  * Shortcut for getting [Order] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getOrderFor(suppliedElementType: SuppliedType): Order<Element> = get(Order.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Order.Companion.getFor(suppliedElementType: SuppliedType): Order<Element> =
+    koneContextRegistryBuilder[Order.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getOrderForOrNull(suppliedElementType: SuppliedType): Order<Element>? = getOrNull(Order.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> KoneContextRegistry.getForOrNull(suppliedElementType: SuppliedType): Order<Element>? =
+    koneContextRegistryBuilder.getOrNull(Order.Key(suppliedElementType))
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getOrderForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> = getOrDefault(Order.Key(suppliedElementType), default)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Order.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> =
+    koneContextRegistryBuilder.getOrDefault(Order.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.getOrderForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> = getOrElse(Order.Key(suppliedElementType), block)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public inline fun <Element> Order.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> =
+    koneContextRegistryBuilder.getOrElse(Order.Key(suppliedElementType), block)
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element: Comparable<Element>> Order.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
+    koneContextRegistryBuilder[Order.Key<Element>(suppliedElementType)] = Order.defaultFor<Element>()
+}
 
 /**
  * Provides comparison of two elements. Alternative of [Kotlin stlib Comparator][KotlinStdlibComparator] but with result of type [ComparisonResult].
@@ -100,6 +115,8 @@ public fun interface Comparator<in Element> {
      * Compares [left] and [right] elements.
      */
     public fun compare(left: Element, right: Element): ComparisonResult
+    
+    public companion object
 }
 
 /**
@@ -241,19 +258,19 @@ public inline fun <Element> Order(crossinline comparator: (left: Element, right:
 /**
  * [Order] builder from a [comparator] that compares the `left` and `right` elements to each other.
  */
-public inline fun <Element> Order(comparator: Comparator<Element>): Order<Element> =
+public fun <Element> Comparator<Element>.asOrder(): Order<Element> =
     object : Order<Element> {
-        override fun Element.compareWith(other: Element): ComparisonResult = comparator.compare(this, other)
+        override fun Element.compareWith(other: Element): ComparisonResult = this@asOrder.compare(this, other)
     }
 
 /**
  * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
-public inline fun <Element: Comparable<Element>> defaultOrder(): Order<Element> = DefaultOrderOnComparables
+public fun <Element: Comparable<Element>> Order.Companion.defaultFor(): Order<Element> = DefaultOrderOnComparables
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
-public inline fun <Element: Comparable<Element>> defaultComparator(): Comparator<Element> = DefaultComparatorOnComparables
+public fun <Element: Comparable<Element>> Comparator.Companion.defaultFor(): Comparator<Element> = DefaultComparatorOnComparables
 /**
  * Converts provided [Order] receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
@@ -275,7 +292,7 @@ public val <Element> comparator: Comparator<Element> get() = Comparator { left, 
  * with respect to the provided orders.
  */
 context(_: Order<Element>)
-public fun <Target, Element> compareByOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { a, b ->
+public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { a, b ->
     for (s in selectors) {
         val comparisonResult = s(a).compareWith(s(b))
         if (comparisonResult != ComparisonResult.Equal) return@Comparator comparisonResult

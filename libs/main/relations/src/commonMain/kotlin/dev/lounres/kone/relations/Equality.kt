@@ -17,7 +17,6 @@ import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 
 /**
@@ -36,6 +35,8 @@ public interface Equality<in Element> : KoneContext {
      * Checks equality of [this] and [other] elements.
      */
     public infix fun Element.equalsTo(other: Element): Boolean = this == other
+    
+    public companion object;
     
     /**
      * Registry key for [Equality] interface in [KoneContextRegistry].
@@ -64,34 +65,44 @@ public interface Equality<in Element> : KoneContext {
  * Shortcut for getting [Equality] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getEqualityFor(suppliedElementType: SuppliedType): Equality<Element> = get(Equality.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Equality.Companion.getFor(suppliedElementType: SuppliedType): Equality<Element> =
+    koneContextRegistryBuilder[Equality.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getEqualityForOrNull(suppliedElementType: SuppliedType): Equality<Element>? = getOrNull(Equality.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Equality.Companion.getForOrNull(suppliedElementType: SuppliedType): Equality<Element>? =
+    koneContextRegistryBuilder.getOrNull(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getEqualityForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> = getOrDefault(Equality.Key(suppliedElementType), default)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Equality.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> =
+    koneContextRegistryBuilder.getOrDefault(Equality.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.getEqualityForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> = getOrElse(Equality.Key(suppliedElementType), block)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public inline fun <Element> Equality.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> =
+    koneContextRegistryBuilder.getOrElse(Equality.Key(suppliedElementType), block)
 
 /**
  * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> RegistryBuilder<KoneContextRegistry>.setDefaultEqualityFor(suppliedElementType: SuppliedType) {
-    Equality.Key<Element>(suppliedElementType) correspondsTo  defaultEquality<Element>()
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Equality.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
+    koneContextRegistryBuilder[Equality.Key<Element>(suppliedElementType)] = Equality.defaultFor<Element>()
 }
 /**
  * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> RegistryBuilder<KoneContextRegistry>.setAbsoluteEqualityFor(suppliedElementType: SuppliedType) {
-    Equality.Key<Element>(suppliedElementType) correspondsTo  absoluteEquality<Element>()
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Equality.Companion.setAbsoluteFor(suppliedElementType: SuppliedType) {
+    koneContextRegistryBuilder[Equality.Key<Element>(suppliedElementType)] = Equality.absoluteFor<Element>()
 }
 
 /**
@@ -166,8 +177,8 @@ public inline fun <Element> Equality(crossinline equalizer: (left: Element, righ
 /**
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses [Any.equals] operator's result as a return value.
  */
-public fun <Element> defaultEquality(): Equality<Element> = DefaultEquality
+public fun <Element> Equality.Companion.defaultFor(): Equality<Element> = DefaultEquality
 /**
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
-public fun <Element> absoluteEquality(): Equality<Element> = AbsoluteEquality
+public fun <Element> Equality.Companion.absoluteFor(): Equality<Element> = AbsoluteEquality

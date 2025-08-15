@@ -15,7 +15,6 @@ import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 
 /**
@@ -34,6 +33,8 @@ public interface Hashing<in Element> : KoneContext {
      * Computes hash code of [this] element.
      */
     public fun Element.hash(): Int = this.hashCode()
+    
+    public companion object;
     
     /**
      * Registry key for [Hashing] interface in [KoneContextRegistry].
@@ -62,28 +63,37 @@ public interface Hashing<in Element> : KoneContext {
  * Shortcut for getting [Hashing] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getHashingFor(suppliedElementType: SuppliedType): Hashing<Element> = get(Hashing.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Hashing.Companion.getFor(suppliedElementType: SuppliedType): Hashing<Element> =
+    koneContextRegistryBuilder[Hashing.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getHashingForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? = getOrNull(Hashing.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Hashing.Companion.getForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? =
+    koneContextRegistryBuilder.getOrNull(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getHashingForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> = getOrDefault(Hashing.Key(suppliedElementType), default)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Hashing.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> =
+    koneContextRegistryBuilder.getOrDefault(Hashing.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.getHashingForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> = getOrElse(Hashing.Key(suppliedElementType), block)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public inline fun <Element> Hashing.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> =
+    koneContextRegistryBuilder.getOrElse(Hashing.Key(suppliedElementType), block)
 
 /**
  * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
  */
-public fun <Element> RegistryBuilder<KoneContextRegistry>.setDefaultHashingFor(suppliedElementType: SuppliedType) {
-    Hashing.Key<Element>(suppliedElementType) correspondsTo defaultHashing<Element>()
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Hashing.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
+    koneContextRegistryBuilder[Hashing.Key<Element>(suppliedElementType)] = Hashing.defaultFor<Element>()
 }
 
 /**
@@ -106,4 +116,4 @@ public inline fun <Element> Hashing(crossinline hasher: (Element) -> Int): Hashi
  * Returns [Hashing] instance which [Equality.coincidesWith] operator just uses [Any.equals] operator's result as a return value
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
-public fun <Element> defaultHashing(): Hashing<Element> = DefaultHashing
+public fun <Element> Hashing.Companion.defaultFor(): Hashing<Element> = DefaultHashing

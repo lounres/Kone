@@ -20,7 +20,6 @@ import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 /**
  * Describes a context that checks if the element lays in specific domain.
@@ -56,6 +55,8 @@ public interface Reification<out Element> : KoneContext {
      */
     public fun reify(element: Any?): Element
     
+    public companion object;
+    
     /**
      * Registry key for [Reification] interface in [KoneContextRegistry].
      */
@@ -83,29 +84,38 @@ public interface Reification<out Element> : KoneContext {
  * Shortcut for getting [Reification] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getReificationFor(suppliedElementType: SuppliedType): Reification<Element> = get(Reification.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Reification.Companion.getFor(suppliedElementType: SuppliedType): Reification<Element> =
+    koneContextRegistryBuilder[Reification.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getReificationForOrNull(suppliedElementType: SuppliedType): Reification<Element>? = getOrNull(Reification.Key(suppliedElementType))
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Reification.Companion.getForOrNull(suppliedElementType: SuppliedType): Reification<Element>? =
+    koneContextRegistryBuilder.getOrNull(Reification.Key(suppliedElementType))
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-public fun <Element> KoneContextRegistry.getReificationForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> = getOrDefault(Reification.Key(suppliedElementType), default)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Element> Reification.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> =
+    koneContextRegistryBuilder.getOrDefault(Reification.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-public inline fun <Element> KoneContextRegistry.getReificationForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> = getOrElse(Reification.Key(suppliedElementType), block)
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public inline fun <Element> Reification.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> =
+    koneContextRegistryBuilder.getOrElse(Reification.Key(suppliedElementType), block)
 
 /**
  * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
  * The set reification just only checks that the element is of type [Element].
  */
-public inline fun <reified Element> RegistryBuilder<KoneContextRegistry>.setReificationFor(suppliedElementType: SuppliedType) {
-    Reification.Key<Element>(suppliedElementType) correspondsTo Reification<Element>()
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public inline fun <reified Element> Reification.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
+    koneContextRegistryBuilder[Reification.Key<Element>(suppliedElementType)] = Reification.defaultFor<Element>()
 }
 
 /**
@@ -166,7 +176,7 @@ public fun <Element> reify(element: Any?): Element = reification.reify(element)
 /**
  * [Reification] builder from a reified type [Element] that is used to cast elements.
  */
-public inline fun <reified Element> Reification(): Reification<Element> =
+public inline fun <reified Element> Reification.Companion.defaultFor(): Reification<Element> =
     object : Reification<Element> {
         override fun contains(element: Any?): Boolean = element is Element
         override fun reifyMaybe(element: Any?): Maybe<Element> = if (element is Element) Some(element) else None

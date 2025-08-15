@@ -18,19 +18,19 @@ class Comparison : FunSpec({
     
     test("test that the default equalities and hashings are the same instances`") {
         assertSoftly {
-            defaultEquality<Int>() shouldBeSameInstanceAs defaultEquality<String>()
-            absoluteEquality<Int>() shouldNotBeSameInstanceAs absoluteEquality<String>()
-            defaultHashing<Int>() shouldBeSameInstanceAs defaultHashing<String>()
+            Equality.defaultFor<Int>() shouldBeSameInstanceAs Equality.defaultFor<String>()
+            Equality.absoluteFor<Int>() shouldNotBeSameInstanceAs Equality.absoluteFor<String>()
+            Hashing.defaultFor<Int>() shouldBeSameInstanceAs Hashing.defaultFor<String>()
         }
     }
     
     test("test behaviours of the default equalities and hashings") {
         assertSoftly {
             checkAll<Int, Int> { a, b ->
-                (a == b) shouldBe (defaultEquality<Int>()) { a eq b }
+                (a == b) shouldBe (Equality.defaultFor<Int>()) { a eq b }
             }
             checkAll<String, String> { a, b ->
-                (a == b) shouldBe (defaultEquality<String>()) { a eq b }
+                (a == b) shouldBe (Equality.defaultFor<String>()) { a eq b }
             }
         }
     }

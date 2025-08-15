@@ -8,13 +8,13 @@
 package dev.lounres.kone.benchmarks.relations
 
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.compareTo
-import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.relations.defaultHashing
-import dev.lounres.kone.relations.defaultOrder
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.lt
@@ -50,8 +50,8 @@ class IntDefaultEqualityImplementationsBenchmarks {
         bBoxed = boxedIntegers[b]
     }
 
-    final val structuralEquality = defaultEquality<Any>()
-    final val referencesEquality = absoluteEquality<Any>()
+    final val structuralEquality = Equality.defaultFor<Any>()
+    final val referencesEquality = Equality.absoluteFor<Any>()
 
     @Benchmark
     fun structural_equality_via_primitives() = a == b
@@ -85,8 +85,8 @@ class IntDefaultEqualityImplementationsBulkBenchmarks {
 
     final var index: Int = 0
 
-    final val structuralEquality = defaultEquality<Any>()
-    final val referencesEquality = absoluteEquality<Any>()
+    final val structuralEquality = Equality.defaultFor<Any>()
+    final val referencesEquality = Equality.absoluteFor<Any>()
 
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -166,7 +166,7 @@ class IntDefaultOrderImplementationsBenchmarks {
     }
 
     @Suppress("UNCHECKED_CAST")
-    val order = defaultOrder<Nothing>() as Order<Any>
+    val order = Order.defaultFor<Nothing>() as Order<Any>
 
     @Benchmark
     fun comparison_via_primitives() = a < b
@@ -202,7 +202,7 @@ class IntDefaultOrderImplementationsBulkBenchmarks {
     final var index: Int = 0
 
     @Suppress("UNCHECKED_CAST")
-    final val order = defaultOrder<Nothing>() as Order<Any>
+    final val order = Order.defaultFor<Nothing>() as Order<Any>
 
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -272,7 +272,7 @@ class IntDefaultHashingImplementationsBenchmarks {
         aBoxed = a
     }
 
-    val hashing = defaultHashing<Any>()
+    val hashing = Hashing.defaultFor<Any>()
 
     @Benchmark
     fun hash_via_primitives() = a.hashCode()
@@ -292,7 +292,7 @@ class IntDefaultHashingImplementationsBulkBenchmarks {
 
     final var index: Int = 0
 
-    final val hashing = defaultHashing<Any>()
+    final val hashing = Hashing.defaultFor<Any>()
 
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -337,7 +337,7 @@ class IntDefaultReificationImplementationsBenchmarks {
     final val a: Int = 57
     final val aBoxed: Any = 57
 
-    final val reification = Reification<Int>()
+    final val reification = Reification.defaultFor<Int>()
 
     @Benchmark
     fun reifibility_successful() = aBoxed in reification
@@ -399,7 +399,7 @@ class IntDefaultReificationImplementationsBulkBenchmarks {
 
     final var index: Int = 0
 
-    final val reification = Reification<Int>()
+    final val reification = Reification.defaultFor<Int>()
 
     @Benchmark
     fun Blackhole.idle_on_inputs() {
