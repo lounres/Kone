@@ -10,30 +10,29 @@ import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescrip
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.defaultFor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
 
 public fun <Element> KoneHashResizableSet(
-    elementEquality: Equality<Element> = defaultEquality(),
-    elementHashing: Hashing<Element> = defaultHashing()
+    elementEquality: Equality<Element> = Equality.defaultFor(),
+    elementHashing: Hashing<Element> = Hashing.defaultFor()
 ): KoneHashResizableSet<Element> =
     KoneHashResizableSet(size = 0u, elementEquality = elementEquality, elementHashing = elementHashing)
 
 public fun <Element> KoneHashResizableReifiedSet(
     elementReification: Reification<Element>,
-    elementEquality: Equality<Element> = defaultEquality(),
-    elementHashing: Hashing<Element> = defaultHashing(),
+    elementEquality: Equality<Element> = Equality.defaultFor(),
+    elementHashing: Hashing<Element> = Hashing.defaultFor(),
 ): KoneHashResizableReifiedSet<Element> =
     KoneHashResizableReifiedSet(size = 0u, elementReification = elementReification, elementEquality = elementEquality,  elementHashing = elementHashing)
 
 public inline fun <reified Element> KoneHashResizableReifiedSet(
-    elementEquality: Equality<Element> = defaultEquality(),
-    elementHashing: Hashing<Element> = defaultHashing(),
+    elementEquality: Equality<Element> = Equality.defaultFor(),
+    elementHashing: Hashing<Element> = Hashing.defaultFor(),
 ): KoneHashResizableReifiedSet<Element> =
-    KoneHashResizableReifiedSet(size = 0u, elementReification = Reification(), elementEquality = elementEquality,  elementHashing = elementHashing)
+    KoneHashResizableReifiedSet(size = 0u, elementReification = Reification.defaultFor(), elementEquality = elementEquality,  elementHashing = elementHashing)
 
 public open class KoneHashResizableSetSerializer<Element>(
     final override val elementSerializer: KSerializer<Element>,

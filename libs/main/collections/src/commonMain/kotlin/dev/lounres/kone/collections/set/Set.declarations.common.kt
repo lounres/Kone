@@ -12,10 +12,11 @@ import dev.lounres.kone.collections.iterables.KoneRemovableIterable
 import dev.lounres.kone.collections.iterables.KoneReversibleIterable
 import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterable
 import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
 
 
 // TODO: Add contracts on `toString()`, `equals` and `hashCode`.
@@ -128,9 +129,9 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
     override val nodesView: KoneReifiedSet<KoneMutableSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneMutableSetNode<Element>>
         get() = nodesView.toKoneReifiedSet(
-            elementReification = Reification(),
-            elementEquality = absoluteEquality(),
-            elementHashing = defaultHashing(),
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
         )
     override fun nodeOfOrNull(element: Element): KoneMutableSetNode<Element>?
     override fun nodeOf(element: Element): KoneMutableSetNode<Element>
@@ -220,9 +221,9 @@ public interface KoneMutableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Eleme
     override val nodesView: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
         get() = nodesView.toKoneReifiedSet(
-            elementReification = Reification(),
-            elementEquality = absoluteEquality(),
-            elementHashing = defaultHashing(),
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
         )
     override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>?
     override fun nodeOf(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>
