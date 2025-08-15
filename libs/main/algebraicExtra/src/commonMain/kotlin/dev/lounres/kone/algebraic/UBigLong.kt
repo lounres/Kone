@@ -17,10 +17,11 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.relations.reificationException
 import kotlinx.serialization.Serializable
@@ -533,8 +534,8 @@ public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
     if (this.isEmpty()) numberFormatException(this, radix)
     if (this == "0") return UBigLong.context.zero
-    if (context(defaultEquality<Char>()) { this.first() !in possibleDigits.slice(1u, radix) }) numberFormatException(this, radix)
-    if (context(defaultEquality<Char>()) { this.any { it !in possibleDigits.slice(0u, radix) } }) numberFormatException(this, radix)
+    if (context(Equality.defaultFor<Char>()) { this.first() !in possibleDigits.slice(1u, radix) }) numberFormatException(this, radix)
+    if (context(Equality.defaultFor<Char>()) { this.any { it !in possibleDigits.slice(0u, radix) } }) numberFormatException(this, radix)
     
     var result = UBigLong.context.zero
     for (char in this) result = context(UBigLong.context) { result * radix + char.asDigit() }

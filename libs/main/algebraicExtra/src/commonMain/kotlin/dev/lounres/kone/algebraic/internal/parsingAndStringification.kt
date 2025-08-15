@@ -10,9 +10,10 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.flatMap
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultFor
 
 
 internal val possibleDigits = KoneList.of('0'..'9', 'A'..'Z').flatMap { it.toKoneList() }
 
-internal fun Char.asDigit(): UInt = context(defaultEquality<Char>()) { possibleDigits.firstIndexOf(this.uppercaseChar()) }
+internal fun Char.asDigit(): UInt = context(Equality.defaultFor<Char>()) { possibleDigits.firstIndexOf(this.uppercaseChar()) }

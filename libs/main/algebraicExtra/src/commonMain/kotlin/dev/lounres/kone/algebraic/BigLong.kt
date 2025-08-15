@@ -16,13 +16,14 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.relations.Equality
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
@@ -468,8 +469,8 @@ public fun String.toBigLong(radix: UInt = 10u): BigLong {
         digits = this
     }
     
-    if (context(defaultEquality<Char>()) { digits.first() !in possibleDigits.slice(1u, radix) }) numberFormatException(this, radix)
-    if (context(defaultEquality<Char>()) { digits.any { it !in possibleDigits.slice(0u, radix) } }) numberFormatException(this, radix)
+    if (context(Equality.defaultFor<Char>()) { digits.first() !in possibleDigits.slice(1u, radix) }) numberFormatException(this, radix)
+    if (context(Equality.defaultFor<Char>()) { digits.any { it !in possibleDigits.slice(0u, radix) } }) numberFormatException(this, radix)
     
     var result = UBigLong.context.zero
     for (char in digits) result = context(UBigLong.context) { result * radix + char.asDigit() }
