@@ -123,10 +123,14 @@ public inline fun <Context1, Context2, Context3, Context4, Context5, Result> kon
     )
 }
 
+@DslMarker
+@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+public annotation class KoneContextRegistryBuilderDsl
+
 /**
  * Builder function for [KoneContextRegistry].
  */
-public inline fun KoneContextRegistry.Companion.build(block: RegistryBuilder<KoneContextRegistry>.() -> Unit): KoneContextRegistry {
+public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl RegistryBuilder<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
