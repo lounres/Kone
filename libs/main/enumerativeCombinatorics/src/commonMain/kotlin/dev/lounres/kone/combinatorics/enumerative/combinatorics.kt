@@ -29,7 +29,7 @@ import dev.lounres.kone.collections.list.toKoneSettableList
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.scope
 
@@ -325,7 +325,7 @@ public fun <E> KoneList<E>.allPermutations(): KoneSequence<KoneList<E>> {
     }
 }
 
-public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equality: Equality<E> = Equality.defaultFor()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -433,7 +433,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equality: Equ
     }
 }
 
-public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equality: Equality<E> = Equality.defaultFor()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -513,7 +513,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equality: Equality<
     }
 }
 
-public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equality: Equality<E> = Equality.defaultFor()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
@@ -606,7 +606,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
     }
 }
 
-public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<E> = defaultEquality()): KoneSequence<KoneList<E>> {
+public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<E> = Equality.defaultFor()): KoneSequence<KoneList<E>> {
     val collection = this
 
     return KoneSequence.build {
