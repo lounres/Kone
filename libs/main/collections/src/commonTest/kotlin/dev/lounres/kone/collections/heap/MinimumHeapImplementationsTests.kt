@@ -29,7 +29,7 @@ import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 import dev.lounres.kone.combinatorics.enumerative.combinations
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.defaultOrder
+import dev.lounres.kone.relations.defaultFor
 import io.kotest.assertions.withClue
 import io.kotest.core.NamedTag
 import io.kotest.core.spec.style.FunSpec
@@ -128,7 +128,7 @@ class MinimumHeapImplementationsTests : FunSpec({
             withData(nameFn = { "initial list $it" }, listsToShuffle) { init ->
                 withData(nameFn = { "permutation $it" }, init.permutationsWithoutRepetitions()) { input ->
                     val heap = producer.produceBy<String, UInt>(
-                        defaultOrder(),
+                        Order.defaultFor(),
                         input.size,
                         { "$it" },
                         { input[it] }
@@ -189,21 +189,21 @@ class MinimumHeapImplementationsTests : FunSpec({
 
         if (producer is MinimumHeapProducer.Resizable)
             context("test filling and emptying") {
-                testHeapFillingAndEmptying { producer.produce<String, UInt>(defaultOrder()) }
+                testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
 
         if (producer is MinimumHeapProducer.Growable) {
             context("test filling and emptying") {
-                testHeapFillingAndEmptying { producer.produce<String, UInt>(defaultOrder()) }
+                testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
             context("test filling and emptying with predefined capacity") {
-                testHeapFillingAndEmptying { producer.produce<String, UInt>(defaultOrder(), it) }
+                testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         }
 
         if (producer is MinimumHeapProducer.FixedCapacity)
             context("test filling and emptying") {
-                testHeapFillingAndEmptying { producer.produce<String, UInt>(defaultOrder(), it) }
+                testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         
         suspend /*inline*/ fun FunSpecContainerScope.testHeapFillingChangingAndEmptying(
@@ -278,21 +278,21 @@ class MinimumHeapImplementationsTests : FunSpec({
         
         if (producer is MinimumHeapProducer.Resizable)
             context("test filling, changing, and emptying") {
-                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(defaultOrder()) }
+                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
         
         if (producer is MinimumHeapProducer.Growable) {
             context("test filling, changing, and emptying") {
-                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(defaultOrder()) }
+                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
             context("test filling, changing, and emptying with predefined capacity") {
-                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(defaultOrder(), it) }
+                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         }
         
         if (producer is MinimumHeapProducer.FixedCapacity)
             context("test filling, changing, and emptying") {
-                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(defaultOrder(), it) }
+                testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
     }
 })
