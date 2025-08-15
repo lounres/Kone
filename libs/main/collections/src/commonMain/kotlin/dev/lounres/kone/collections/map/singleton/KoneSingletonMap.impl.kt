@@ -21,7 +21,8 @@ import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 
 
@@ -38,8 +39,8 @@ internal open class KoneSingletonMap<Key, Value>(
     override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> =
         KoneSingletonNoddedReifiedSet( // TODO: Replace with `KoneSingletonNoddedAbsoluteReifiedSet`
             singleElement = singleNode,
-            elementReification = Reification(),
-            elementEquality = absoluteEquality(),
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
         )
     override val keysView: KoneSet<Key> =
         KoneSingletonNoddedSet(

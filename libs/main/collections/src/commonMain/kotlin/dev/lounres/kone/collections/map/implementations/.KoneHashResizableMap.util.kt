@@ -8,25 +8,24 @@ package dev.lounres.kone.collections.map.implementations
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.defaultFor
 
 
 public fun <Key, Value> KoneHashResizableMap(
-    keyEquality: Equality<Key> = defaultEquality(),
-    keyHashing: Hashing<Key> = defaultHashing(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
+    keyHashing: Hashing<Key> = Hashing.defaultFor(),
 ): KoneHashResizableMap<Key, Value> =
     KoneHashResizableMap(size = 0u, keyEquality = keyEquality, keyHashing = keyHashing)
 
 public fun <Key, Value> KoneHashResizableReifiedMap(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
-    keyHashing: Hashing<Key> = defaultHashing(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
+    keyHashing: Hashing<Key> = Hashing.defaultFor(),
 ): KoneHashResizableReifiedMap<Key, Value> =
     KoneHashResizableReifiedMap(size = 0u, keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
 
 public inline fun <reified Key, Value> KoneHashResizableReifiedMap(
-    keyEquality: Equality<Key> = defaultEquality(),
-    keyHashing: Hashing<Key> = defaultHashing(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
+    keyHashing: Hashing<Key> = Hashing.defaultFor(),
 ): KoneHashResizableReifiedMap<Key, Value> =
-    KoneHashResizableReifiedMap(size = 0u, keyReification = Reification(), keyEquality = keyEquality, keyHashing = keyHashing)
+    KoneHashResizableReifiedMap(size = 0u, keyReification = Reification.defaultFor(), keyEquality = keyEquality, keyHashing = keyHashing)

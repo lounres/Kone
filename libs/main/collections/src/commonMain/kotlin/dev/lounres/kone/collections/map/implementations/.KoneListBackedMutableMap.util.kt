@@ -11,11 +11,11 @@ import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListP
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 
 
 public fun <Key, Value> KoneListBackedMutableMap(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
 ): KoneListBackedMutableMap<Key, Value> =
     KoneListBackedMutableMap(
         keyEquality = keyEquality,
@@ -23,7 +23,7 @@ public fun <Key, Value> KoneListBackedMutableMap(
     )
 
 public fun <Key, Value> KoneListBackedMutableMap(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneResizableMutableNoddedListProducer,
 ): KoneListBackedMutableMap<Key, Value> =
     KoneListBackedMutableMap(
@@ -32,7 +32,7 @@ public fun <Key, Value> KoneListBackedMutableMap(
     )
 
 public fun <Key, Value> KoneListBackedMutableMap(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneGrowableMutableNoddedListProducer,
 ): KoneListBackedMutableMap<Key, Value> =
     KoneListBackedMutableMap(
@@ -42,7 +42,7 @@ public fun <Key, Value> KoneListBackedMutableMap(
 
 public fun <Key, Value> KoneListBackedMutableMap(
     initialCapacity: UInt,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneGrowableMutableNoddedListProducer,
 ): KoneListBackedMutableMap<Key, Value> =
     KoneListBackedMutableMap(
@@ -52,7 +52,7 @@ public fun <Key, Value> KoneListBackedMutableMap(
 
 public fun <Key, Value> KoneListBackedMutableMap(
     capacity: UInt,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneFixedCapacityMutableNoddedListProducer,
 ): KoneListBackedMutableMap<Key, Value> =
     KoneListBackedMutableMap(
@@ -62,7 +62,7 @@ public fun <Key, Value> KoneListBackedMutableMap(
 
 public fun <Key, Value> KoneListBackedMutableReifiedMap(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
 ): KoneListBackedMutableReifiedMap<Key, Value> =
     KoneListBackedMutableReifiedMap(
         keyReification = keyReification,
@@ -72,7 +72,7 @@ public fun <Key, Value> KoneListBackedMutableReifiedMap(
 
 public fun <Key, Value> KoneListBackedMutableReifiedMap(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneResizableMutableNoddedListProducer,
 ): KoneListBackedMutableReifiedMap<Key, Value> =
     KoneListBackedMutableReifiedMap(
@@ -83,7 +83,7 @@ public fun <Key, Value> KoneListBackedMutableReifiedMap(
 
 public fun <Key, Value> KoneListBackedMutableReifiedMap(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneGrowableMutableNoddedListProducer,
 ): KoneListBackedMutableReifiedMap<Key, Value> =
     KoneListBackedMutableReifiedMap(
@@ -95,7 +95,7 @@ public fun <Key, Value> KoneListBackedMutableReifiedMap(
 public fun <Key, Value> KoneListBackedMutableReifiedMap(
     initialCapacity: UInt,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneGrowableMutableNoddedListProducer,
 ): KoneListBackedMutableReifiedMap<Key, Value> =
     KoneListBackedMutableReifiedMap(
@@ -107,7 +107,7 @@ public fun <Key, Value> KoneListBackedMutableReifiedMap(
 public fun <Key, Value> KoneListBackedMutableReifiedMap(
     capacity: UInt,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     backingListProducer: KoneFixedCapacityMutableNoddedListProducer,
 ): KoneListBackedMutableReifiedMap<Key, Value> =
     KoneListBackedMutableReifiedMap(

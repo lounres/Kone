@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
-import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.KoneMutableMapNode
 import dev.lounres.kone.collections.map.KoneMutableReifiedMap
@@ -25,7 +24,8 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 
 
@@ -36,7 +36,7 @@ public open class KoneListBackedMutableMap<Key, Value> @PublishedApi internal co
     override val size: UInt
         get() = backingList.size
     
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = KoneListBackedReifiedSet(elementReification = Reification(), elementEquality = absoluteEquality(), backingList)
+    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = KoneListBackedReifiedSet(elementReification = Reification.defaultFor(), elementEquality = Equality.absoluteFor(), backingList)
     override val keysView: KoneSet<Key> = KeysView(this)
     override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementEquality = keyEquality)
     override val valuesView: KoneIterable<Value> = ValuesView(this)

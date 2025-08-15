@@ -39,7 +39,7 @@ public fun <Key, Value> KoneReifiedMap.Companion.empty(): KoneReifiedMap<Key, Va
 
 @Suppress("unused")
 public fun <Key, Value> KoneMap.Companion.of(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> = KoneMap.empty()
@@ -52,7 +52,7 @@ public fun <Key, Value> KoneMap.Companion.contextualOf(
 
 @Suppress("unused")
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> = KoneReifiedMap.empty()
@@ -60,7 +60,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
 @Suppress("unused")
 public fun <Key, Value> KoneReifiedMap.Companion.of(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> = KoneReifiedMap.empty()
@@ -70,16 +70,16 @@ public fun <Key, Value> KoneReifiedMap.Companion.contextualOf(
     keyType: SuppliedType,
 ): KoneReifiedMap<Key, Value> =
     KoneReifiedMap.of(
-        keyReification = koneContextRegistry.getReificationFor(keyType),
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyReification = Reification.getFor(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 @Suppress("unused")
 public fun <Key, Value> KoneMap.Companion.of(
     entry: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> =
@@ -96,21 +96,21 @@ public fun <Key, Value> KoneMap.Companion.contextualOf(
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entry = entry,
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 @Suppress("unused")
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
     entry: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> =
     KoneReifiedMap.of(
         entry = entry,
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -120,7 +120,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
 public fun <Key, Value> KoneReifiedMap.Companion.of(
     entry: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> =
@@ -133,7 +133,7 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
 
 public fun <Key, Value> KoneMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> =
@@ -155,20 +155,20 @@ public fun <Key, Value> KoneMap.Companion.contextualOf(
 ): KoneMap<Key, Value> =
     KoneMap.of(
         entries = entries,
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> =
     KoneReifiedMap.of(
         entries = entries,
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -177,7 +177,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
 public fun <Key, Value> KoneReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> =
@@ -193,7 +193,7 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
     }
 
 public fun <Key, Value> KoneMutableMap.Companion.of(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableMap<Key, Value> =
@@ -205,18 +205,18 @@ public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
     keyType: SuppliedType,
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
     KoneMutableReifiedMap.of(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -224,7 +224,7 @@ public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
 
 public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
@@ -233,7 +233,7 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
 
 public fun <Key, Value> KoneMutableMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableMap<Key, Value> =
@@ -247,20 +247,20 @@ public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
 ): KoneMutableMap<Key, Value> =
     KoneMutableMap.of(
         entries = entries,
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
     KoneMutableReifiedMap.of(
         entries = entries,
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -269,7 +269,7 @@ public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
 public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
 ): KoneMutableReifiedMap<Key, Value> =
@@ -283,10 +283,10 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
 ): KoneMutableReifiedMap<Key, Value> =
     KoneMutableReifiedMap.of(
         entries = entries,
-        keyReification = koneContextRegistry.getReificationFor(keyType),
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyReification = Reification.getFor(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
     )
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -462,7 +462,7 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
 }
 
 public inline fun <Key, Value> KoneMap.Companion.build(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
@@ -479,20 +479,20 @@ public inline fun <Key, Value> KoneMap.Companion.buildContextual(
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
         builderAction = builderAction
     )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build<Key, Value>(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -501,7 +501,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
 
 public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
@@ -518,16 +518,16 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
-        keyReification = koneContextRegistry.getReificationFor(keyType),
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyReification = Reification.getFor(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
         builderAction = builderAction
     )
 
 public inline fun <Key, Value> KoneMap.Companion.build(
     initialCapacity: UInt,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
@@ -546,22 +546,22 @@ public inline fun <Key, Value> KoneMap.Companion.buildContextual(
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
         initialCapacity = initialCapacity,
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
         builderAction = builderAction
     )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
     initialCapacity: UInt,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build<Key, Value>(
         initialCapacity = initialCapacity,
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -571,7 +571,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
 public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     initialCapacity: UInt,
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
@@ -590,10 +590,10 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
         initialCapacity = initialCapacity,
-        keyReification = koneContextRegistry.getReificationFor(keyType),
-        keyEquality = koneContextRegistry.getEqualityFor(keyType),
-        keyHashing = koneContextRegistry.getHashingForOrNull(keyType),
-        keyOrder = koneContextRegistry.getOrderForOrNull(keyType),
+        keyReification = Reification.getFor(keyType),
+        keyEquality = Equality.getFor(keyType),
+        keyHashing = Hashing.getForOrNull(keyType),
+        keyOrder = Order.getForOrNull(keyType),
         builderAction = builderAction
     )
 
@@ -619,7 +619,7 @@ public inline fun <Key, Value, Destination : KoneMutableMap<in Key, in Value>> K
 }
 
 public inline fun <Element, Key, Value> KoneIterable<Element>.associate(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (Element) -> KoneMapEntry<Key, Value>
@@ -634,13 +634,13 @@ public inline fun <Element, Key, Value> KoneIterable<Element>.associate(
     )
 
 public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (Element) -> KoneMapEntry<Key, Value>,
 ): KoneReifiedMap<Key, Value> =
     associateReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -649,7 +649,7 @@ public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateR
 
 public inline fun <Element, Key, Value> KoneIterable<Element>.associateReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (Element) -> KoneMapEntry<Key, Value>
@@ -665,7 +665,7 @@ public inline fun <Element, Key, Value> KoneIterable<Element>.associateReified(
     )
 
 public inline fun <Element, Key> KoneIterable<Element>.associateBy(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key
@@ -680,13 +680,13 @@ public inline fun <Element, Key> KoneIterable<Element>.associateBy(
     )
 
 public inline fun <Element, reified Key> KoneIterable<Element>.associateByReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key
 ): KoneReifiedMap<Key, Element> =
     associateByReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -695,7 +695,7 @@ public inline fun <Element, reified Key> KoneIterable<Element>.associateByReifie
 
 public inline fun <Element, Key> KoneIterable<Element>.associateByReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key,
@@ -711,7 +711,7 @@ public inline fun <Element, Key> KoneIterable<Element>.associateByReified(
     )
 
 public inline fun <Element, Key, Value> KoneIterable<Element>.associateBy(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key,
@@ -728,14 +728,14 @@ public inline fun <Element, Key, Value> KoneIterable<Element>.associateBy(
     )
 
 public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateByReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key,
     valueTransform: (Element) -> Value
 ): KoneReifiedMap<Key, Value> =
     associateByReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -745,7 +745,7 @@ public inline fun <Element, reified Key, Value> KoneIterable<Element>.associateB
 
 public inline fun <Element, Key, Value> KoneIterable<Element>.associateByReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     keySelector: (Element) -> Key,
@@ -763,7 +763,7 @@ public inline fun <Element, Key, Value> KoneIterable<Element>.associateByReified
     )
 
 public inline fun <Key, Value> KoneIterable<Key>.associateWith(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     valueSelector: (Key) -> Value
@@ -778,13 +778,13 @@ public inline fun <Key, Value> KoneIterable<Key>.associateWith(
     )
 
 public inline fun <reified Key, Value> KoneIterable<Key>.associateWithReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     valueSelector: (Key) -> Value,
 ): KoneReifiedMap<Key, Value> =
     associateWithReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -793,7 +793,7 @@ public inline fun <reified Key, Value> KoneIterable<Key>.associateWithReified(
 
 public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     valueSelector: (Key) -> Value
@@ -812,7 +812,7 @@ public inline fun <K, V, W, D : KoneMutableMap<in K, in W>> KoneMap<out K, V>.ma
     nodesView.associateByTo(destination, { it.key }, transform)
 
 public inline fun <Key, V, W> KoneMap<out Key, V>.mapValues(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (KoneMapEntry<Key, V>) -> W
@@ -827,13 +827,13 @@ public inline fun <Key, V, W> KoneMap<out Key, V>.mapValues(
     )
 
 public inline fun <reified Key, V, W> KoneMap<out Key, V>.mapValuesReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (KoneMapEntry<Key, V>) -> W
 ): KoneReifiedMap<Key, W> =
     mapValuesReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -842,7 +842,7 @@ public inline fun <reified Key, V, W> KoneMap<out Key, V>.mapValuesReified(
 
 public inline fun <Key, V, W> KoneMap<out Key, V>.mapValuesReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     transform: (KoneMapEntry<Key, V>) -> W
@@ -861,7 +861,7 @@ public inline fun <K, V, L, D : KoneMutableMap<in L, in V>> KoneMap<out K, V>.ma
     nodesView.associateByTo(destination = destination, keySelector = transform, valueTransform = { it.value })
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
-    keyEquality: Equality<L> = defaultEquality(),
+    keyEquality: Equality<L> = Equality.defaultFor(),
     keyHashing: Hashing<L>? = null,
     keyOrder: Order<L>? = null,
     transform: (KoneMapEntry<K, V>) -> L
@@ -876,13 +876,13 @@ public inline fun <K, V, L> KoneMap<out K, V>.mapKeys(
     )
 
 public inline fun <K, V, reified L> KoneMap<out K, V>.mapKeysReified(
-    keyEquality: Equality<L> = defaultEquality(),
+    keyEquality: Equality<L> = Equality.defaultFor(),
     keyHashing: Hashing<L>? = null,
     keyOrder: Order<L>? = null,
     transform: (KoneMapEntry<K, V>) -> L
 ): KoneReifiedMap<L, V> =
     mapKeysReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -892,7 +892,7 @@ public inline fun <K, V, reified L> KoneMap<out K, V>.mapKeysReified(
 
 public inline fun <K, V, L> KoneMap<out K, V>.mapKeysReified(
     keyReification: Reification<L>,
-    keyEquality: Equality<L> = defaultEquality(),
+    keyEquality: Equality<L> = Equality.defaultFor(),
     keyHashing: Hashing<L>? = null,
     keyOrder: Order<L>? = null,
     transform: (KoneMapEntry<K, V>) -> L
@@ -913,7 +913,7 @@ public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filte
 }
 
 public inline fun <Key, V> KoneMap<out Key, V>.filterKeys(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (Key) -> Boolean
@@ -928,13 +928,13 @@ public inline fun <Key, V> KoneMap<out Key, V>.filterKeys(
     )
 
 public inline fun <reified Key, V> KoneMap<out Key, V>.filterKeysReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (Key) -> Boolean
 ): KoneReifiedMap<Key, V> =
     filterKeysReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -943,7 +943,7 @@ public inline fun <reified Key, V> KoneMap<out Key, V>.filterKeysReified(
 
 public inline fun <Key, V> KoneMap<out Key, V>.filterKeysReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (Key) -> Boolean
@@ -964,7 +964,7 @@ public inline fun <K, V, D : KoneMutableMap<in K, in V>> KoneMap<out K, V>.filte
 }
 
 public inline fun <Key, V> KoneMap<out Key, V>.filterValues(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (V) -> Boolean
@@ -979,13 +979,13 @@ public inline fun <Key, V> KoneMap<out Key, V>.filterValues(
     )
 
 public inline fun <reified Key, V> KoneMap<out Key, V>.filterValuesReified(
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (V) -> Boolean
 ): KoneReifiedMap<Key, V> =
     filterValuesReified(
-        keyReification = Reification(),
+        keyReification = Reification.defaultFor(),
         keyEquality = keyEquality,
         keyHashing = keyHashing,
         keyOrder = keyOrder,
@@ -994,7 +994,7 @@ public inline fun <reified Key, V> KoneMap<out Key, V>.filterValuesReified(
 
 public inline fun <Key, Value> KoneMap<out Key, Value>.filterValuesReified(
     keyReification: Reification<Key>,
-    keyEquality: Equality<Key> = defaultEquality(),
+    keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
     predicate: (Value) -> Boolean)

@@ -23,7 +23,7 @@ import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
+import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.eq
 
 
@@ -34,7 +34,7 @@ public open class KoneListBackedMap<Key, Value> @PublishedApi internal construct
     override val size: UInt
         get() = backingList.size
     
-    override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> = backingList.toKoneReifiedSet(elementEquality = absoluteEquality())
+    override val nodesView: KoneReifiedSet<KoneMapNode<Key, Value>> = backingList.toKoneReifiedSet(elementEquality = Equality.absoluteFor())
     override val keysView: KoneSet<Key> = KoneListBackedSet(keyEquality, backingList.map { it.key })
     override val valuesView: KoneIterable<Value> = backingList.map { it.value }
     
