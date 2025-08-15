@@ -9,7 +9,8 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.defaultFor
 import kotlin.jvm.JvmName
 
 
@@ -48,7 +49,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
             coefficients.nodesView.forEach { entry ->
                 val degs = entry.key
                 val c = entry.value
-                val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
+                val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
                 val newC = args.nodesView.fold(c) { product, subEntry ->
                     val variable = subEntry.key
                     val substitution = subEntry.value
@@ -62,7 +63,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
 
 context(_: Ring<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledPolynomial<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 // TODO: To optimize boxing
 @JvmName("substitutePolynomial")
@@ -71,7 +72,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
     coefficients.nodesView.fold(polynomialZero) { acc, entry ->
         val degs = entry.key
         val c = entry.value
-        val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
+        val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
         acc + args.nodesView.fold(LabeledPolynomial<C>(KoneReifiedMap.of(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing))) { product, subEntry ->
             val variable = subEntry.key
             val substitution = subEntry.value
@@ -83,7 +84,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
 @JvmName("substitutePolynomial")
 context(_: LabeledPolynomialSpace<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledPolynomial<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 // TODO: To optimize boxing
 @JvmName("substituteRationalFunction")
@@ -92,7 +93,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
     coefficients.nodesView.fold(rationalFunctionZero) { acc, entry ->
         val degs = entry.key
         val c = entry.value
-        val newDegs = degs.filterKeysReified(keyHashing = defaultHashing()) { it !in args.keysView }
+        val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
         acc + args.nodesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(KoneReifiedMap.of(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, subEntry ->
             val variable = subEntry.key
             val substitution = subEntry.value
@@ -104,7 +105,7 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, La
 @JvmName("substituteRationalFunction")
 context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 context(_: Ring<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, C>): LabeledRationalFunction<C> =
@@ -112,7 +113,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 
 context(_: Ring<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 // TODO: To optimize calculation
 @JvmName("substitutePolynomial")
@@ -123,7 +124,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 @JvmName("substitutePolynomial")
 context(_: LabeledPolynomialSpace<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 // TODO: To optimize calculation
 @JvmName("substituteRationalFunction")
@@ -134,7 +135,7 @@ public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariab
 @JvmName("substituteRationalFunction")
 context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
 public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = defaultHashing<LabeledVariable>()))
+    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 context(numberContext: Ring<C>)
 public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(variable: LabeledVariable): LabeledPolynomial<C> =
@@ -243,7 +244,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
             coefficients.nodesView.forEach { entry ->
                 val degs = entry.key
                 val c = entry.value
-                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { 1u }, transformOnChange = { it + 1u }) // FIXME
+                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = Hashing.defaultFor(), valueOnSet = { 1u }, transformOnChange = { it + 1u }) // FIXME
                 set(
                     newDegs,
                     c / (one doublingTimes newDegs[variable])
@@ -263,7 +264,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
             coefficients.nodesView.forEach { entry ->
                 val degs = entry.key
                 val c = entry.value
-                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = defaultHashing(), valueOnSet = { order }, transformOnChange = { it + order }) // FIXME
+                val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = Hashing.defaultFor(), valueOnSet = { order }, transformOnChange = { it + order }) // FIXME
                 set(
                     newDegs,
                     newDegs[variable].let { deg ->

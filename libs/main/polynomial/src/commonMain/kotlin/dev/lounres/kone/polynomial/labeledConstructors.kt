@@ -22,7 +22,8 @@ import dev.lounres.kone.collections.utils.associateBy
 import dev.lounres.kone.collections.utils.mapKeys
 import dev.lounres.kone.collections.utils.setOrChange
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.defaultFor
 
 
 // TODO: Check reifications.
@@ -87,7 +88,7 @@ internal annotation class LabeledPolynomialConstructorDSL1
 
 @LabeledPolynomialConstructorDSL1
 public class DSL1LabeledPolynomialTermSignatureBuilder {
-    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = KoneMutableReifiedMap.of(keyHashing = defaultHashing())
+    private val signature: KoneMutableReifiedMap<LabeledVariable, UInt> = KoneMutableReifiedMap.of(keyHashing = Hashing.defaultFor())
 
     @PublishedApi
     internal fun build(): LabeledMonomialSignature = signature
