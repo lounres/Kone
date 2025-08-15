@@ -63,30 +63,30 @@ public interface Hashing<in Element> : KoneContext {
  * Shortcut for getting [Hashing] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Hashing.Companion.getFor(suppliedElementType: SuppliedType): Hashing<Element> =
-    koneContextRegistryBuilder[Hashing.Key(suppliedElementType)]
+    koneContextRegistry[Hashing.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Hashing.Companion.getForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? =
-    koneContextRegistryBuilder.getOrNull(Hashing.Key(suppliedElementType))
+    koneContextRegistry.getOrNull(Hashing.Key(suppliedElementType))
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Hashing.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> =
-    koneContextRegistryBuilder.getOrDefault(Hashing.Key(suppliedElementType), default)
+    koneContextRegistry.getOrDefault(Hashing.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> Hashing.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> =
-    koneContextRegistryBuilder.getOrElse(Hashing.Key(suppliedElementType), block)
+    koneContextRegistry.getOrElse(Hashing.Key(suppliedElementType), block)
 
 /**
  * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.

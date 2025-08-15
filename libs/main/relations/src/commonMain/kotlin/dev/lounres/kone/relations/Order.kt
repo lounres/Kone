@@ -77,30 +77,30 @@ public interface Order<in Element> : KoneContext {
  * Shortcut for getting [Order] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Order.Companion.getFor(suppliedElementType: SuppliedType): Order<Element> =
-    koneContextRegistryBuilder[Order.Key(suppliedElementType)]
+    koneContextRegistry[Order.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Order.Companion.getForOrNull(suppliedElementType: SuppliedType): Order<Element>? =
-    koneContextRegistryBuilder.getOrNull(Order.Key(suppliedElementType))
+    koneContextRegistry.getOrNull(Order.Key(suppliedElementType))
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Order.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> =
-    koneContextRegistryBuilder.getOrDefault(Order.Key(suppliedElementType), default)
+    koneContextRegistry.getOrDefault(Order.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> Order.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> =
-    koneContextRegistryBuilder.getOrElse(Order.Key(suppliedElementType), block)
+    koneContextRegistry.getOrElse(Order.Key(suppliedElementType), block)
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
 public fun <Element: Comparable<Element>> Order.Companion.setDefaultFor(suppliedElementType: SuppliedType) {

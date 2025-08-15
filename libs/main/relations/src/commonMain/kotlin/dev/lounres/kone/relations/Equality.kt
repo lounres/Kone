@@ -65,30 +65,30 @@ public interface Equality<in Element> : KoneContext {
  * Shortcut for getting [Equality] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Equality.Companion.getFor(suppliedElementType: SuppliedType): Equality<Element> =
-    koneContextRegistryBuilder[Equality.Key(suppliedElementType)]
+    koneContextRegistry[Equality.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Equality.Companion.getForOrNull(suppliedElementType: SuppliedType): Equality<Element>? =
-    koneContextRegistryBuilder.getOrNull(Equality.Key(suppliedElementType))
+    koneContextRegistry.getOrNull(Equality.Key(suppliedElementType))
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Equality.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> =
-    koneContextRegistryBuilder.getOrDefault(Equality.Key(suppliedElementType), default)
+    koneContextRegistry.getOrDefault(Equality.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> Equality.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> =
-    koneContextRegistryBuilder.getOrElse(Equality.Key(suppliedElementType), block)
+    koneContextRegistry.getOrElse(Equality.Key(suppliedElementType), block)
 
 /**
  * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.

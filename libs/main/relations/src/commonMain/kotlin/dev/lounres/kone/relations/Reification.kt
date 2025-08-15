@@ -84,30 +84,30 @@ public interface Reification<out Element> : KoneContext {
  * Shortcut for getting [Reification] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Reification.Companion.getFor(suppliedElementType: SuppliedType): Reification<Element> =
-    koneContextRegistryBuilder[Reification.Key(suppliedElementType)]
+    koneContextRegistry[Reification.Key(suppliedElementType)]
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Reification.Companion.getForOrNull(suppliedElementType: SuppliedType): Reification<Element>? =
-    koneContextRegistryBuilder.getOrNull(Reification.Key(suppliedElementType))
+    koneContextRegistry.getOrNull(Reification.Key(suppliedElementType))
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public fun <Element> Reification.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> =
-    koneContextRegistryBuilder.getOrDefault(Reification.Key(suppliedElementType), default)
+    koneContextRegistry.getOrDefault(Reification.Key(suppliedElementType), default)
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> Reification.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> =
-    koneContextRegistryBuilder.getOrElse(Reification.Key(suppliedElementType), block)
+    koneContextRegistry.getOrElse(Reification.Key(suppliedElementType), block)
 
 /**
  * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
