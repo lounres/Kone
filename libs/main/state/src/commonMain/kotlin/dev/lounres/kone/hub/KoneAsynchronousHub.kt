@@ -16,7 +16,7 @@ import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import kotlinx.atomicfu.locks.ReentrantLock
 import kotlinx.atomicfu.locks.withLock
@@ -71,7 +71,7 @@ public inline fun <Value, Result> KoneAsynchronousHub<Value>.buildSubscription(b
 
 public class KoneMutableAsynchronousHub<Value>(
     initialValue: Value,
-    private val elementEquality: Equality<Value> = defaultEquality(),
+    private val elementEquality: Equality<Value> = Equality.defaultFor(),
 ) : KoneAsynchronousHub<Value>() {
     override var callbacksValue: Value = initialValue
 
@@ -121,7 +121,7 @@ public suspend inline fun <Value> KoneMutableAsynchronousHub<Value>.updateAndGet
 public suspend inline fun <Value> KoneMutableAsynchronousHub<Value>.getAndUpdate(transform: (Value) -> Value): Value =
     automaton.move { previousValue -> transform(previousValue) }.previousState
 
-public fun <Value, Result> KoneAsynchronousHub<Value>.map(elementEquality: Equality<Result> = defaultEquality(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> =
+public fun <Value, Result> KoneAsynchronousHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> =
     buildSubscription { initialValue ->
         val hub = KoneMutableAsynchronousHub(transform(initialValue), elementEquality)
         subscribe { hub.set(transform(it)) }

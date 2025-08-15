@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +51,7 @@ public inline fun <Value, Result> KoneSynchronousHub<Value>.buildSubscription(bu
 
 public class KoneMutableSynchronousHub<Value>(
     initialElement: Value,
-    private val elementEquality: Equality<Value> = defaultEquality(),
+    private val elementEquality: Equality<Value> = Equality.defaultFor(),
 ) : KoneSynchronousHub<Value>() {
     override var callbacksValue: Value = initialElement
     
@@ -91,7 +91,7 @@ public inline fun <Value> KoneMutableSynchronousHub<Value>.updateAndGet(transfor
 public inline fun <Value> KoneMutableSynchronousHub<Value>.getAndUpdate(transform: (Value) -> Value): Value =
     automaton.move { previousValue -> transform(previousValue) }.previousState
 
-public fun <Value, Result> KoneSynchronousHub<Value>.map(elementEquality: Equality<Result> = defaultEquality(), transform: (Value) -> Result): KoneMutableSynchronousHub<Result> =
+public fun <Value, Result> KoneSynchronousHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableSynchronousHub<Result> =
     buildSubscription { initialValue ->
         val hub = KoneMutableSynchronousHub(transform(initialValue), elementEquality)
         subscribe { hub.value = transform(it) }

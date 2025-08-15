@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultEquality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import kotlinx.atomicfu.locks.ReentrantLock
 import kotlinx.atomicfu.locks.withLock
@@ -66,7 +66,7 @@ public inline fun <Value, Result> KoneBlockingHub<Value>.buildSubscription(build
 
 public class KoneMutableBlockingHub<Value>(
     initialElement: Value,
-    private val elementEquality: Equality<Value> = defaultEquality(),
+    private val elementEquality: Equality<Value> = Equality.defaultFor(),
 ) : KoneBlockingHub<Value>() {
     override var callbacksValue: Value = initialElement
     
@@ -106,7 +106,7 @@ public inline fun <Value> KoneMutableBlockingHub<Value>.updateAndGet(transform: 
 public inline fun <Value> KoneMutableBlockingHub<Value>.getAndUpdate(transform: (Value) -> Value): Value =
     automaton.move { previousValue -> transform(previousValue) }.previousState
 
-public fun <Value, Result> KoneBlockingHub<Value>.map(elementEquality: Equality<Result> = defaultEquality(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
+public fun <Value, Result> KoneBlockingHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
     buildSubscription { initialValue ->
         val hub = KoneMutableBlockingHub(transform(initialValue), elementEquality)
         subscribe { hub.value = transform(it) }

@@ -85,7 +85,7 @@ public fun <Element> Order.Companion.getFor(suppliedElementType: SuppliedType): 
  * or `null` if there is no such context in the registry.
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Element> KoneContextRegistry.getForOrNull(suppliedElementType: SuppliedType): Order<Element>? =
+public fun <Element> Order.Companion.getForOrNull(suppliedElementType: SuppliedType): Order<Element>? =
     koneContextRegistryBuilder.getOrNull(Order.Key(suppliedElementType))
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
