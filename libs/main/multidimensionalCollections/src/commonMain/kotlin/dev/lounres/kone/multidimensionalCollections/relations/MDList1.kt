@@ -12,8 +12,7 @@ import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.utils.fold
-import dev.lounres.kone.relations.defaultEquality
-import dev.lounres.kone.relations.defaultHashing
+import dev.lounres.kone.relations.defaultFor
 
 
 internal class MDList1Equality<E>(private val elementEquality: Equality<E>) : Equality<MDList1<E>> {
@@ -27,10 +26,10 @@ internal class MDList1Equality<E>(private val elementEquality: Equality<E>) : Eq
     }
 }
 
-public fun <E> MDList1.Companion.equality(elementEquality: Equality<E> = defaultEquality()): Equality<MDList1<E>> = MDList1Equality(elementEquality)
+public fun <E> MDList1.Companion.equality(elementEquality: Equality<E> = Equality.defaultFor()): Equality<MDList1<E>> = MDList1Equality(elementEquality)
 
 internal class MDList1Hashing<E>(private val elementHashing: Hashing<E>) : Hashing<MDList1<E>> {
     override fun MDList1<E>.hash(): Int = this.fold(0) { acc, element -> acc xor elementHashing { element.hash() } } // TODO: Maybe replace with `foldIndexed` with more complex hashing
 }
 
-public fun <E> MDList1.Companion.hashing(elementHashing: Hashing<E> = defaultHashing()): Hashing<MDList1<E>> = MDList1Hashing(elementHashing)
+public fun <E> MDList1.Companion.hashing(elementHashing: Hashing<E> = Hashing.defaultFor()): Hashing<MDList1<E>> = MDList1Hashing(elementHashing)
