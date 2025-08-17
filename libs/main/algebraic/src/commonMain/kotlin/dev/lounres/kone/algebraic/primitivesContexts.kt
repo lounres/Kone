@@ -801,8 +801,8 @@ public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, E
     // endregion
     
     // region Constants
-    override val zero: ULong get() = 0.toULong()
-    override val one: ULong get() = 1.toULong()
+    override val zero: ULong get() = 0uL
+    override val one: ULong get() = 1uL
     // endregion
     
     // region Integers conversion

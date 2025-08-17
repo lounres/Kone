@@ -40,8 +40,8 @@ public fun <Number> Number.isNonNegative(): Boolean = this geq zero
  * I.e. returns `1` if [this] number is positive, `-1` if [this] number is negative, or `0` if [this] number is zero.
  */
 context(_: Semiring<Number>, _: Order<Number>)
-public val <Number> Number.sign: Int
-    get() = when(this.compareWith(zero)) {
+public fun <Number> Number.sign(): Int =
+    when(this.compareWith(zero)) {
         ComparisonResult.LeftIsGreaterThanRight -> 1
         ComparisonResult.LeftIsLessThanRight ->  -1
         ComparisonResult.Equal -> 0

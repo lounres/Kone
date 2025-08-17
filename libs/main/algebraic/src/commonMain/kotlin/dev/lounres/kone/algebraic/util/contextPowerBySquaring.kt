@@ -6,6 +6,8 @@
 package dev.lounres.kone.algebraic.util
 
 import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.Group
+import dev.lounres.kone.algebraic.Monoid
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.Semiring
 import dev.lounres.kone.algebraic.minus
@@ -15,7 +17,6 @@ import dev.lounres.kone.algebraic.reciprocal
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.algebraic.zero
-import kotlin.jvm.JvmName
 
 
 // region Number-Int additive operations
@@ -96,7 +97,7 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Int): Number = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
@@ -165,7 +166,7 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Semiring<Number>)
+context(_: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: UInt): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
@@ -248,7 +249,7 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Long): Number = rightMultiplyByDoubling(this, other, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
@@ -317,7 +318,7 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number = rightAddM
  *
  * @usesMathJax
  */
-context(_: Semiring<Number>)
+context(_: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: ULong): Number = rightMultiplyByDoubling(this, other, { zero }) { left, right -> left + right }
 // endregion
 
@@ -399,7 +400,7 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number = rightAddMul
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Group<Number>)
 public infix fun <Number> Int.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
@@ -468,7 +469,7 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Semiring<Number>)
+context(_: Monoid<Number>)
 public infix fun <Number> UInt.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
@@ -550,7 +551,7 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number = rightAddMu
  *
  * @usesMathJax
  */
-context(_: Ring<Number>)
+context(_: Group<Number>)
 public infix fun <Number> Long.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }, { left, right -> left + right }, { c -> -c })
 // endregion
 
@@ -619,7 +620,7 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number = rightAddM
  *
  * @usesMathJax
  */
-context(_: Semiring<Number>)
+context(_: Monoid<Number>)
 public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMultiplyByDoubling(other, this, { zero }) { left, right -> left + right }
 // endregion
 
@@ -650,7 +651,7 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number = rightMult
  * @usesMathJax
  */
 context(_: Field<Number>)
-public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <Number> Number.squaringPower(exponent: Int): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal() })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [one][Semiring.one] if [exponent] is zero.
@@ -699,7 +700,7 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number = rightMu
  * @usesMathJax
  */
 context(_: Field<Number>)
-public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal })
+public infix fun <Number> Number.squaringPower(exponent: Long): Number = rightMultiplyByDoubling(this, exponent, { one }, { left, right -> left * right }, { v -> v.reciprocal() })
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
  * to raise argument [this] in the power of integer [exponent] if [exponent] is positive, or return [one][Semiring.one] if [exponent] is zero.

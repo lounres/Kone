@@ -12,7 +12,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
-import kotlin.reflect.KVariance
 
 
 /**
@@ -40,7 +39,7 @@ public value class EuclideanDivisionResult<Number>(public val quotient: Number, 
  * mentioning that *there is* some Euclidean norm, so that the operations satisfy conditions on it,
  * but no actual programming representation of the norm is not provided.
  */
-public interface EuclideanSemiring<Number> : Semiring<Number> {
+public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
     /**
      * Returns result of Euclidean division (a.k.a. a division with remainder), both quotient and remainder.
      */
@@ -53,6 +52,8 @@ public interface EuclideanSemiring<Number> : Semiring<Number> {
      * Returns remainder of Euclidean division (a.k.a. a division with remainder).
      */
     public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
+    
+    public companion object;
     
     /**
      * Registry key for [EuclideanSemiring] interface in [KoneContextRegistry].
@@ -104,7 +105,9 @@ public operator fun <Number> Number.rem(other: Number): Number = with(ring) { th
  * It means that it extends both [Ring] and [EuclideanSemiring] interfaces without adding anything new to them.
  * Just a composition of this two.
  */
-public interface EuclideanRing<Number> : Ring<Number>, EuclideanSemiring<Number> {
+public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemiring<Number> {
+    public companion object;
+    
     /**
      * Registry key for [EuclideanRing] interface in [KoneContextRegistry].
      */

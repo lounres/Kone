@@ -421,7 +421,7 @@ internal inline fun <Number> rightAddMultipliedByDoublingInternalLogic(base: Num
     var arg = arg
     var multiplier = multiplier
     while (true) {
-        if (multiplier == 1uL) additionToBaseOp(base, arg)
+        if (multiplier == 1uL) return additionToBaseOp(base, arg)
         else {
             base = if (multiplier and 1uL == 0uL) base else additionToBaseOp(base, arg)
             arg = additionOp(arg, arg)

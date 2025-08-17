@@ -10,7 +10,6 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance
 
 
 /**
@@ -18,7 +17,7 @@ import kotlin.reflect.KVariance
  * It means that it is an extension of [Ring] interface that also provides division and exponentiation to the negative
  * integer power. See docs of [Ring] for a full description and docs of the [Field] interface's operations.
  */
-public interface Field<Number> : Ring<Number> {
+public interface Field<Number> : CommutativeRing<Number> {
     /**
      * Divides [this] number by [other] number in terms of the [Field].
      */
@@ -28,55 +27,55 @@ public interface Field<Number> : Ring<Number> {
      *
      * The result is equal to `one / this`.
      */
-    public val Number.reciprocal: Number get() = one / this
+    public fun Number.reciprocal(): Number = one / this
     /**
      * Divides [this] number by [other] integer as elements of the [Field].
      *
-     * The result is equal to `this / other.value`.
+     * The result is equal to `this / valueOf(other)`.
      */
-    public operator fun Number.div(other: Int): Number = this / other.value
+    public operator fun Number.div(other: Int): Number = this / valueOf(other)
     /**
      * Divides [this] number by [other] integer as elements of the [Field].
      *
-     * The result is equal to `this / other.value`.
+     * The result is equal to `this / valueOf(other)`.
      */
-    public operator fun Number.div(other: UInt): Number = this / other.value
+    public operator fun Number.div(other: UInt): Number = this / valueOf(other)
     /**
      * Divides [this] number by [other] integer as elements of the [Field].
      *
-     * The result is equal to `this / other.value`.
+     * The result is equal to `this / valueOf(other)`.
      */
-    public operator fun Number.div(other: Long): Number = this / other.value
+    public operator fun Number.div(other: Long): Number = this / valueOf(other)
     /**
      * Divides [this] number by [other] integer as elements of the [Field].
      *
-     * The result is equal to `this / other.value`.
+     * The result is equal to `this / valueOf(other)`.
      */
-    public operator fun Number.div(other: ULong): Number = this / other.value
+    public operator fun Number.div(other: ULong): Number = this / valueOf(other)
     /**
      * Divides [this] integer by [other] number as elements of the [Field].
      *
-     * The result is equal to `this.value` / other.
+     * The result is equal to `valueOf(this)` / other.
      */
-    public operator fun Int.div(other: Number): Number = this.value / other
+    public operator fun Int.div(other: Number): Number = valueOf(this) / other
     /**
      * Divides [this] integer by [other] number as elements of the [Field].
      *
-     * The result is equal to `this.value` / other`.
+     * The result is equal to `valueOf(this)` / other`.
      */
-    public operator fun UInt.div(other: Number): Number = this.value / other
+    public operator fun UInt.div(other: Number): Number = valueOf(this) / other
     /**
      * Divides [this] integer by [other] number as elements of the [Field].
      *
-     * The result is equal to `this.value` / other`.
+     * The result is equal to `valueOf(this)` / other`.
      */
-    public operator fun Long.div(other: Number): Number = this.value / other
+    public operator fun Long.div(other: Number): Number = valueOf(this) / other
     /**
      * Divides [this] integer by [other] number as elements of the [Field].
      *
-     * The result is equal to `this.value` / other`.
+     * The result is equal to `valueOf(this)` / other`.
      */
-    public operator fun ULong.div(other: Number): Number = this.value / other
+    public operator fun ULong.div(other: Number): Number = valueOf(this) / other
     /**
      * Raises [base] number in the power of [exponent].
      *
@@ -109,6 +108,8 @@ public interface Field<Number> : Ring<Number> {
      * and reciprocal of product of `-exponent` number of [this] copies otherwise.
      */
     public infix fun Number.pow(exponent: Long): Number = power(this, exponent)
+    
+    public companion object;
     
     /**
      * Registry key for [Field] interface in [KoneContextRegistry].
@@ -148,11 +149,11 @@ public operator fun <Number> Number.div(other: Number): Number = with(field) { t
  * A bridge contextual function for [Field.div].
  */
 context(field: Field<Number>)
-public val <Number> Number.reciprocal: Number get() = with(field) { this@reciprocal.reciprocal }
+public fun <Number> Number.reciprocal(): Number = with(field) { this@reciprocal.reciprocal() }
 /**
  * Divides [this] number by [other] integer as elements of the [Field].
  *
- * The result is equal to `this / other.value`.
+ * The result is equal to `this / valueOf(other)`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -161,7 +162,7 @@ public operator fun <Number> Number.div(other: Int): Number = with(field) { this
 /**
  * Divides [this] number by [other] integer as elements of the [Field].
  *
- * The result is equal to `this / other.value`.
+ * The result is equal to `this / valueOf(other)`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -170,7 +171,7 @@ public operator fun <Number> Number.div(other: UInt): Number = with(field) { thi
 /**
  * Divides [this] number by [other] integer as elements of the [Field].
  *
- * The result is equal to `this / other.value`.
+ * The result is equal to `this / valueOf(other)`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -179,7 +180,7 @@ public operator fun <Number> Number.div(other: Long): Number = with(field) { thi
 /**
  * Divides [this] number by [other] integer as elements of the [Field].
  *
- * The result is equal to `this / other.value`.
+ * The result is equal to `this / valueOf(other)`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -188,7 +189,7 @@ public operator fun <Number> Number.div(other: ULong): Number = with(field) { th
 /**
  * Divides [this] integer by [other] number as elements of the [Field].
  *
- * The result is equal to `this.value` / other`.
+ * The result is equal to `valueOf(this)` / other`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -197,7 +198,7 @@ public operator fun <Number> Int.div(other: Number): Number = with(field) { this
 /**
  * Divides [this] integer by [other] number as elements of the [Field].
  *
- * The result is equal to `this.value` / other`.
+ * The result is equal to `valueOf(this)` / other`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -206,7 +207,7 @@ public operator fun <Number> UInt.div(other: Number): Number = with(field) { thi
 /**
  * Divides [this] integer by [other] number as elements of the [Field].
  *
- * The result is equal to `this.value` / other`.
+ * The result is equal to `valueOf(this)` / other`.
  *
  * A bridge contextual function for [Field.div].
  */
@@ -215,7 +216,7 @@ public operator fun <Number> Long.div(other: Number): Number = with(field) { thi
 /**
  * Divides [this] integer by [other] number as elements of the [Field].
  *
- * The result is equal to `this.value` / other`.
+ * The result is equal to `valueOf(this)` / other`.
  *
  * A bridge contextual function for [Field.div].
  */
