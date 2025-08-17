@@ -101,8 +101,16 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  * as the following type of contexts with [BigInteger] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [EuclideanSemiring],
  * - [EuclideanRing],
  * - [Order],
@@ -117,8 +125,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setBigIntegerContext() {
     )
     Reification.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     Equality.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Semigroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    CommutativeSemigroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Monoid.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    CommutativeMonoid.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    Group.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    CommutativeGroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     Semiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    CommutativeSemiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     Ring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    CommutativeRing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     EuclideanSemiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     EuclideanRing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
     Order.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext

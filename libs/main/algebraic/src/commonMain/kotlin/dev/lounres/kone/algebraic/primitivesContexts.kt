@@ -125,14 +125,23 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * as the following type of contexts with [Byte] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [EuclideanSemiring],
  * - [EuclideanRing],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setByteContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun ByteContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val byteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Byte",
@@ -141,8 +150,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setByteContext() {
     )
     Reification.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     Equality.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Semigroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    CommutativeSemigroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Monoid.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    CommutativeMonoid.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    Group.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    CommutativeGroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     Semiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    CommutativeSemiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     Ring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    CommutativeRing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     EuclideanSemiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     EuclideanRing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
     Order.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
@@ -250,14 +267,23 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * as the following type of contexts with [Short] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [EuclideanSemiring],
  * - [EuclideanRing],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setShortContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun ShortContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val shortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Short",
@@ -266,8 +292,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setShortContext() {
     )
     Reification.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     Equality.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Semigroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    CommutativeSemigroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Monoid.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    CommutativeMonoid.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    Group.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    CommutativeGroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     Semiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    CommutativeSemiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     Ring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    CommutativeRing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     EuclideanSemiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     EuclideanRing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
     Order.Key<Short>(shortSuppliedType) correspondsTo ShortContext
@@ -363,14 +397,23 @@ public val Int.Companion.context: IntContext get() = IntContext
  * as the following type of contexts with [Int] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [EuclideanSemiring],
  * - [EuclideanRing],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setIntContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun IntContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Int",
@@ -379,8 +422,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setIntContext() {
     )
     Reification.Key<Int>(intSuppliedType) correspondsTo IntContext
     Equality.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Semigroup.Key<Int>(intSuppliedType) correspondsTo IntContext
+    CommutativeSemigroup.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Monoid.Key<Int>(intSuppliedType) correspondsTo IntContext
+    CommutativeMonoid.Key<Int>(intSuppliedType) correspondsTo IntContext
+    Group.Key<Int>(intSuppliedType) correspondsTo IntContext
+    CommutativeGroup.Key<Int>(intSuppliedType) correspondsTo IntContext
     Semiring.Key<Int>(intSuppliedType) correspondsTo IntContext
+    CommutativeSemiring.Key<Int>(intSuppliedType) correspondsTo IntContext
     Ring.Key<Int>(intSuppliedType) correspondsTo IntContext
+    CommutativeRing.Key<Int>(intSuppliedType) correspondsTo IntContext
     EuclideanSemiring.Key<Int>(intSuppliedType) correspondsTo IntContext
     EuclideanRing.Key<Int>(intSuppliedType) correspondsTo IntContext
     Order.Key<Int>(intSuppliedType) correspondsTo IntContext
@@ -476,14 +527,23 @@ public val Long.Companion.context: LongContext get() = LongContext
  * as the following type of contexts with [Long] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [EuclideanSemiring],
  * - [EuclideanRing],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setLongContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun LongContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Long",
@@ -492,8 +552,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setLongContext() {
     )
     Reification.Key<Long>(longSuppliedType) correspondsTo LongContext
     Equality.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Semigroup.Key<Long>(longSuppliedType) correspondsTo LongContext
+    CommutativeSemigroup.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Monoid.Key<Long>(longSuppliedType) correspondsTo LongContext
+    CommutativeMonoid.Key<Long>(longSuppliedType) correspondsTo LongContext
+    Group.Key<Long>(longSuppliedType) correspondsTo LongContext
+    CommutativeGroup.Key<Long>(longSuppliedType) correspondsTo LongContext
     Semiring.Key<Long>(longSuppliedType) correspondsTo LongContext
+    CommutativeSemiring.Key<Long>(longSuppliedType) correspondsTo LongContext
     Ring.Key<Long>(longSuppliedType) correspondsTo LongContext
+    CommutativeRing.Key<Long>(longSuppliedType) correspondsTo LongContext
     EuclideanSemiring.Key<Long>(longSuppliedType) correspondsTo LongContext
     EuclideanRing.Key<Long>(longSuppliedType) correspondsTo LongContext
     Order.Key<Long>(longSuppliedType) correspondsTo LongContext
@@ -577,12 +645,18 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * as the following type of contexts with [UByte] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [EuclideanSemiring],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setUByteContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun UByteContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uByteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UByte",
@@ -591,7 +665,12 @@ public fun RegistryBuilder<KoneContextRegistry>.setUByteContext() {
     )
     Reification.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
     Equality.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Semigroup.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    CommutativeSemigroup.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    Monoid.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    CommutativeMonoid.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
     Semiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    CommutativeSemiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
     EuclideanSemiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
     Order.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
     Hashing.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
@@ -674,12 +753,18 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * as the following type of contexts with [UShort] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [EuclideanSemiring],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setUShortContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun UShortContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uShortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UShort",
@@ -688,7 +773,12 @@ public fun RegistryBuilder<KoneContextRegistry>.setUShortContext() {
     )
     Reification.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
     Equality.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Semigroup.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    CommutativeSemigroup.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    Monoid.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    CommutativeMonoid.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
     Semiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    CommutativeSemiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
     EuclideanSemiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
     Order.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
     Hashing.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
@@ -761,12 +851,18 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * as the following type of contexts with [UInt] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [EuclideanSemiring],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setUIntContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun UIntContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uIntSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UInt",
@@ -775,7 +871,12 @@ public fun RegistryBuilder<KoneContextRegistry>.setUIntContext() {
     )
     Reification.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
     Equality.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Semigroup.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    CommutativeSemigroup.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    Monoid.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    CommutativeMonoid.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
     Semiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    CommutativeSemiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
     EuclideanSemiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
     Order.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
     Hashing.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
@@ -848,12 +949,18 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * as the following type of contexts with [ULong] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [EuclideanSemiring],
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setULongContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun ULongContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uLongSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.ULong",
@@ -863,6 +970,18 @@ public fun RegistryBuilder<KoneContextRegistry>.setULongContext() {
     Reification.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
     Equality.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
     Semiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    EuclideanSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Order.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Hashing.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    
+    Reification.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Equality.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Semigroup.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    CommutativeSemigroup.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Monoid.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    CommutativeMonoid.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    Semiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    CommutativeSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
     EuclideanSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
     Order.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
     Hashing.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
@@ -985,13 +1104,22 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * as the following type of contexts with [Double] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [Field]
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setDoubleContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun DoubleContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val doubleSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Double",
@@ -1000,8 +1128,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setDoubleContext() {
     )
     Reification.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Equality.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Semigroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    CommutativeSemigroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Monoid.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    CommutativeMonoid.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    Group.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    CommutativeGroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Semiring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    CommutativeSemiring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Ring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    CommutativeRing.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Field.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Order.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
     Hashing.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
@@ -1124,13 +1260,22 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * as the following type of contexts with [Float] as a type argument:
  * - [Reification],
  * - [Equality],
+ * - [Semigroup],
+ * - [CommutativeSemigroup],
+ * - [Monoid],
+ * - [CommutativeMonoid],
+ * - [Group],
+ * - [CommutativeGroup],
  * - [Semiring],
+ * - [CommutativeSemiring],
  * - [Ring],
+ * - [CommutativeRing],
  * - [Field]
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setFloatContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun FloatContext.set(): Unit = with(koneContextRegistryBuilder) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val floatSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Float",
@@ -1139,8 +1284,16 @@ public fun RegistryBuilder<KoneContextRegistry>.setFloatContext() {
     )
     Reification.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Equality.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Semigroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    CommutativeSemigroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Monoid.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    CommutativeMonoid.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    Group.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    CommutativeGroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Semiring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    CommutativeSemiring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Ring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    CommutativeRing.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Field.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Order.Key<Float>(floatSuppliedType) correspondsTo FloatContext
     Hashing.Key<Float>(floatSuppliedType) correspondsTo FloatContext

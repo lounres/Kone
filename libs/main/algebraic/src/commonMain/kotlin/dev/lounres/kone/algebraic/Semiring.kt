@@ -344,11 +344,11 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
     
     public class Key<Number>(
         elementType: SuppliedType,
-    ) : RegistryKey<CommutativeGroup<Number>> {
+    ) : RegistryKey<CommutativeSemiring<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeGroup",
+                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeSemiring",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -363,6 +363,7 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
 }
 
 
+// TODO: Think about replacing with "extended" commutative monoid.
 /**
  * Describes a context that represents "extended" [mathematical semiring](https://en.wikipedia.org/wiki/Semiring).
  * It means that it provides operations like `+`, `*`, `power`,
