@@ -14,6 +14,22 @@ import kotlin.reflect.KVariance.INVARIANT
 
 // unital, associative
 public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> {
+    // region Number conversion
+    public fun valueOf(arg: Number): Vector
+    // endregion
+    
+    // region Vector-Number operations
+    public operator fun Vector.plus(other: Number): Vector = this + valueOf(other)
+    public operator fun Vector.minus(other: Number): Vector = this - valueOf(other)
+    public override fun Vector.times(other: Number): Vector = this * valueOf(other)
+    // endregion
+    
+    // region Number-Vector operations
+    public operator fun Number.plus(other: Vector): Vector = valueOf(this) + other
+    public operator fun Number.minus(other: Vector): Vector = valueOf(this) - other
+    public override fun Number.times(other: Vector): Vector = valueOf(this) * other
+    // endregion
+    
     public companion object;
     
     public class Key<Number, Vector>(
