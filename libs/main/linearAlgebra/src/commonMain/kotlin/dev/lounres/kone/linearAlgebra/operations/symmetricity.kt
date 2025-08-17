@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
@@ -19,59 +18,54 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-public interface SymmetricityComputer<Number, in Content2: MDList2<Number>> : KoneContext {
-    public fun Matrix<Number, Content2>.isSymmetric(): Boolean
-    
-    public companion object;
-    
-    public class Key<Number, Content2: MDList2<Number>>(
-        elementType: SuppliedType,
-        content2Type: SuppliedType,
-    ) : RegistryKey<SymmetricityComputer<Number, Content2>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.operations.SymmetricityComputer",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = elementType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = content2Type
-                    ),
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-    }
-}
-
-context(symmetricityComputer: SymmetricityComputer<Number, Content2>)
-public fun <Number, Content2: MDList2<Number>> Matrix<Number, Content2>.isSymmetric(): Boolean = with(symmetricityComputer) { this@isSymmetric.isSymmetric() }
-
-private class DefaultSymmetricityComputer<Number, in Content2: MDList2<Number>>(
-    private val ring: Ring<Number>,
-) : SymmetricityComputer<Number, Content2> {
-    override fun Matrix<Number, Content2>.isSymmetric(): Boolean {
-        if (rowNumber != columnNumber) return false
-        
-        for (row in 0u ..< rowNumber) for (column in row + 1u ..< columnNumber) if (ring { this[row, column] neq this[column, row] }) return false
-        
-        return true
-    }
-}
-
-public fun <Number, Content2: MDList2<Number>> SymmetricityComputer.Companion.default(
-    ring: Ring<Number>,
-): SymmetricityComputer<Number, Content2> = DefaultSymmetricityComputer(ring)
-
-public fun <Number, Content2: MDList2<Number>> RegistryBuilder<KoneContextRegistry>.setDefaultSymmetricityComputerFor(
-    numberType: SuppliedType,
-    content2Type: SuppliedType,
-) {
-    val ring = this[Ring.Key<Number>(numberType)]
-    SymmetricityComputer.Key<Number, Content2>(numberType, content2Type) correspondsTo SymmetricityComputer.default(ring)
-}
+//public interface SymmetricityComputer<in Matrix> : KoneContext {
+//    public fun Matrix.isSymmetric(): Boolean
+//
+//    public companion object;
+//
+//    public class Key<Matrix>(
+//        matrixType: SuppliedType,
+//    ) : RegistryKey<SymmetricityComputer<Matrix>> {
+//        public val typeKey: SuppliedType.Regular =
+//            @OptIn(DelicateSuppliedTypeConstructor::class)
+//            SuppliedType.Regular(
+//                fullyQualifiedName = "dev.lounres.kone.linearAlgebra.operations.SymmetricityComputer",
+//                typeArguments = listOf(
+//                    SuppliedProjection.Regular(
+//                        variance = IN,
+//                        type = matrixType
+//                    ),
+//                ),
+//                isNullable = false
+//            )
+//        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
+//        override fun hashCode(): Int = typeKey.hashCode()
+//    }
+//}
+//
+//context(symmetricityComputer: SymmetricityComputer<Matrix>)
+//public fun <Matrix> Matrix.isSymmetric(): Boolean = with(symmetricityComputer) { this@isSymmetric.isSymmetric() }
+//
+//private class DefaultSymmetricityComputer<Number>(
+//    private val ring: Ring<Number>,
+//) : SymmetricityComputer<MDList2<Number>> {
+//    override fun MDList2<Number>.isSymmetric(): Boolean {
+//        if (rowNumber != columnNumber) return false
+//
+//        for (row in 0u ..< rowNumber) for (column in row + 1u ..< columnNumber) if (ring { this[row, column] neq this[column, row] }) return false
+//
+//        return true
+//    }
+//}
+//
+//public fun <Number> SymmetricityComputer.Companion.default(
+//    ring: Ring<Number>,
+//): SymmetricityComputer<Number, MDList2<Number>> = DefaultSymmetricityComputer(ring)
+//
+//public fun <Number, Content2: MDList2<Number>> RegistryBuilder<KoneContextRegistry>.setDefaultSymmetricityComputerFor(
+//    numberType: SuppliedType,
+//    content2Type: SuppliedType,
+//) {
+//    val ring = this[Ring.Key<Number>(numberType)]
+//    SymmetricityComputer.Key<Number, Content2>(numberType, content2Type) correspondsTo SymmetricityComputer.default(ring)
+//}
