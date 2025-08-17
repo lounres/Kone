@@ -263,6 +263,15 @@ public fun <Element> Comparator<Element>.asOrder(): Order<Element> =
         override fun Element.compareWith(other: Element): ComparisonResult = this@asOrder.compare(this, other)
     }
 
+context(_: Order<Element>)
+public fun <Target, Element> Order.Companion.byOrdered(vararg selectors: (Target) -> Element): Order<Target> = Order { left, right ->
+    for (selector in selectors) {
+        val comparisonResult = selector(left).compareWith(selector(right))
+        if (comparisonResult != Equal) return@Order comparisonResult
+    }
+    return@Order Equal
+}
+
 /**
  * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
@@ -292,12 +301,12 @@ public val <Element> comparator: Comparator<Element> get() = Comparator { left, 
  * with respect to the provided orders.
  */
 context(_: Order<Element>)
-public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { a, b ->
-    for (s in selectors) {
-        val comparisonResult = s(a).compareWith(s(b))
-        if (comparisonResult != ComparisonResult.Equal) return@Comparator comparisonResult
+public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { left, right ->
+    for (selector in selectors) {
+        val comparisonResult = selector(left).compareWith(selector(right))
+        if (comparisonResult != Equal) return@Comparator comparisonResult
     }
-    return@Comparator ComparisonResult.Equal
+    return@Comparator Equal
 }
 
 /**
