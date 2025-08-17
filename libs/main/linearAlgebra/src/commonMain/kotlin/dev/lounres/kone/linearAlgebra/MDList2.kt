@@ -6,7 +6,7 @@
 package dev.lounres.kone.linearAlgebra
 
 import dev.lounres.kone.algebraic.Algebra
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.isOne
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.minus
@@ -26,7 +26,7 @@ import dev.lounres.kone.relations.neq
 
 
 private class MDList2Algebra<Number>(
-    private val ring: Ring<Number>,
+    private val ring: CommutativeRing<Number>,
     private val dimension: UInt,
 ) : Algebra<Number, MDList2<Number>> {
     // region Constants
@@ -191,3 +191,6 @@ private class MDList2Algebra<Number>(
     override fun power(base: MDList2<Number>, exponent: ULong): MDList2<Number> = base squaringPower exponent
     // endregion
 }
+
+public fun <Number> Algebra.Companion.mdList2(ring: CommutativeRing<Number>, dimension: UInt): Algebra<Number, MDList2<Number>> =
+    MDList2Algebra(ring = ring, dimension = dimension)
