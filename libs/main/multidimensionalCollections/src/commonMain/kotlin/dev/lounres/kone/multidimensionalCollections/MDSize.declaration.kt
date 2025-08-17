@@ -17,16 +17,19 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.*
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
+@JvmInline
 public value class MDSize(public val sizes: KoneUIntArray) : KoneList<UInt> by sizes {
     public companion object
 }
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 @Serializable
+@JvmInline
 public value class MDIndex(public val indices: KoneUIntArray) : KoneList<UInt> by indices {
     public companion object
 }

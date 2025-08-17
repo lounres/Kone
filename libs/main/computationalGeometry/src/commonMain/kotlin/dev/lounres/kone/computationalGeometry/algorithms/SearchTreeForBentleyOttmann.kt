@@ -23,7 +23,10 @@ internal interface ConnectedSearchTreeForBentleyOttmann<E> {
     fun add(element: E, sign: RelativeSignForBentleyOttmann<E>): SearchTreeNodeForBentleyOttmann<E>
 }
 
-internal class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOttmann<E> {
+internal fun <E> ConnectedSearchTreeForBentleyOttmann(): ConnectedSearchTreeForBentleyOttmann<E> =
+    TwoThreeTreeForBentleyOttmann()
+
+private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOttmann<E> {
     private var size: UInt = 0u
     
     private var rootHolder: NodeHolder<E>? = null

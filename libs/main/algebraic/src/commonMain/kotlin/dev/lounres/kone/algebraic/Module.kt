@@ -9,10 +9,13 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.jvm.JvmName
 import kotlin.reflect.KVariance.INVARIANT
 
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
+    @JvmName("timesNumberVector")
     public operator fun Number.times(other: Vector): Vector
     
     public companion object;
@@ -45,7 +48,9 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
 context(module: LeftModule<Number, Vector>)
 public operator fun <Number, Vector> Number.times(other: Vector): Vector = with(module) { this@times * other }
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
+    @JvmName("timesVectorNumber")
     public operator fun Vector.times(other: Number): Vector
     
     public companion object;

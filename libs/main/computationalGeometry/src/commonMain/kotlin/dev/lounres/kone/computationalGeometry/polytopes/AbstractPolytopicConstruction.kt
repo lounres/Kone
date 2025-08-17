@@ -15,17 +15,17 @@ import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableLinkedNoddedReifiedSet
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.computationalGeometry.Point
+import dev.lounres.kone.computationalGeometry.VectorSpacePoint
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteEquality
-import dev.lounres.kone.relations.defaultHashing
-import dev.lounres.kone.relations.setAbsoluteEqualityFor
-import dev.lounres.kone.relations.setDefaultHashingFor
-import dev.lounres.kone.relations.setReificationFor
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.relations.setDefaultFor
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -42,29 +42,29 @@ import kotlin.uuid.Uuid
 
 
 @Serializable(with = AbstractPolytopicConstructionSerializer::class)
-public class AbstractPolytopicConstruction<Number, PointContent: MDList1<Number>>(
+public class AbstractPolytopicConstruction<Point>(
     override val spaceDimension: UInt,
-) : MutablePolytopicConstruction<Number, PointContent, AbstractPolytopicConstruction.Polytope<Number, PointContent>, AbstractPolytopicConstruction.Vertex<Number, PointContent>> {
-    private val _polytopes: KoneList<KoneMutableNoddedReifiedSet<Polytope<Number, PointContent>>> =
-        KoneList(spaceDimension + 1u) { KoneListBackedMutableLinkedNoddedReifiedSet(Reification(), absoluteEquality()) }
-    override val polytopes: KoneList<KoneReifiedSet<Polytope<Number, PointContent>>> get() = _polytopes
+) : MutablePolytopicConstruction<Point, AbstractPolytopicConstruction.Polytope<Point>, AbstractPolytopicConstruction.Vertex<Point>> {
+    private val _polytopes: KoneList<KoneMutableNoddedReifiedSet<Polytope<Point>>> =
+        KoneList(spaceDimension + 1u) { KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor()) }
+    override val polytopes: KoneList<KoneReifiedSet<Polytope<Point>>> get() = _polytopes
     
-    internal fun registerPolytope(polytope: Polytope<Number, PointContent>): KoneMutableSetNode<Polytope<Number, PointContent>> =
+    internal fun registerPolytope(polytope: Polytope<Point>): KoneMutableSetNode<Polytope<Point>> =
         _polytopes[polytope.dimension].addNode(polytope)
     
-    private val _vertices: KoneMutableNoddedReifiedSet<Vertex<Number, PointContent>> =
-        KoneListBackedMutableLinkedNoddedReifiedSet(Reification(), absoluteEquality())
-    override val vertices: KoneReifiedSet<Vertex<Number, PointContent>> get() = _vertices
+    private val _vertices: KoneMutableNoddedReifiedSet<Vertex<Point>> =
+        KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor())
+    override val vertices: KoneReifiedSet<Vertex<Point>> get() = _vertices
     
-    internal fun registerVertex(vertex: Vertex<Number, PointContent>): KoneMutableSetNode<Vertex<Number, PointContent>> =
+    internal fun registerVertex(vertex: Vertex<Point>): KoneMutableSetNode<Vertex<Point>> =
         _vertices.addNode(vertex)
     
     // TODO: Add conditional polytope validation
     override fun addPolytope(
         dimension: UInt,
-        vertices: KoneReifiedSet<Vertex<Number, PointContent>>,
-        faces: KoneList<KoneReifiedSet<Polytope<Number, PointContent>>>,
-    ): Polytope<Number, PointContent> {
+        vertices: KoneReifiedSet<Vertex<Point>>,
+        faces: KoneList<KoneReifiedSet<Polytope<Point>>>,
+    ): Polytope<Point> {
         check(dimension > 0u) { TODO("Error message is not yet provided") }
         check(faces.size == dimension) { TODO("Error message is not yet provided") }
         return Polytope(
@@ -76,36 +76,35 @@ public class AbstractPolytopicConstruction<Number, PointContent: MDList1<Number>
         )
     }
     
-    override fun addVertex(position: Point<Number, PointContent>): Vertex<Number, PointContent> {
-        check(position.coordinates.contentSize == spaceDimension)
+    override fun addVertex(position: Point): Vertex<Point> {
         return Vertex(
             polytopicConstruction = this,
             position = position,
         )
     }
     
-    public class Polytope<Number, PointContent: MDList1<Number>> internal constructor(
-        polytopicConstruction: AbstractPolytopicConstruction<Number, PointContent>,
+    public class Polytope<Point> internal constructor(
+        polytopicConstruction: AbstractPolytopicConstruction<Point>,
         override val dimension: UInt,
-        override val vertices: KoneReifiedSet<Vertex<Number, PointContent>>,
-        override val faces: KoneList<KoneReifiedSet<Polytope<Number, PointContent>>>,
-        private val correspondingVertex: Vertex<Number, PointContent>?,
-    ) : ReduciblePolytopicConstruction.Polytope<Number, PointContent, Polytope<Number, PointContent>, Vertex<Number, PointContent>> {
+        override val vertices: KoneReifiedSet<Vertex<Point>>,
+        override val faces: KoneList<KoneReifiedSet<Polytope<Point>>>,
+        private val correspondingVertex: Vertex<Point>?,
+    ) : ReduciblePolytopicConstruction.Polytope<Point, Polytope<Point>, Vertex<Point>> {
         private val id: Uuid = Uuid.random()
         
-        private val polytopicConstructionNode: KoneMutableSetNode<Polytope<Number, PointContent>> =
+        private val polytopicConstructionNode: KoneMutableSetNode<Polytope<Point>> =
             polytopicConstruction.registerPolytope(this)
-        private val facesNodes: KoneList<KoneList<KoneMutableSetNode<Polytope<Number, PointContent>>>> =
+        private val facesNodes: KoneList<KoneList<KoneMutableSetNode<Polytope<Point>>>> =
             faces.map { it.map { it.registerCoface(this) } }
         
-        private val _cofaces: KoneList<KoneMutableNoddedReifiedSet<Polytope<Number, PointContent>>> =
+        private val _cofaces: KoneList<KoneMutableNoddedReifiedSet<Polytope<Point>>> =
             KoneList(polytopicConstruction.spaceDimension - dimension) {
-                KoneListBackedMutableLinkedNoddedReifiedSet(Reification(), absoluteEquality())
+                KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor())
             }
-        override val cofaces: KoneList<KoneReifiedSet<Polytope<Number, PointContent>>>
+        override val cofaces: KoneList<KoneReifiedSet<Polytope<Point>>>
             get() = _cofaces
         
-        internal fun registerCoface(coface: Polytope<Number, PointContent>): KoneMutableSetNode<Polytope<Number, PointContent>> =
+        internal fun registerCoface(coface: Polytope<Point>): KoneMutableSetNode<Polytope<Point>> =
             _cofaces[coface.dimension - dimension - 1u].addNode(coface)
         
         internal fun detach() {
@@ -124,15 +123,15 @@ public class AbstractPolytopicConstruction<Number, PointContent: MDList1<Number>
         override fun toString(): String = "AbstractPolytopicConstructionPolytope:${id.toHexString()}"
     }
     
-    public class Vertex<Number, PointContent: MDList1<Number>> internal constructor(
-        polytopicConstruction: AbstractPolytopicConstruction<Number, PointContent>,
-        override val position: Point<Number, PointContent>,
-    ) : ReduciblePolytopicConstruction.Vertex<Number, PointContent, Polytope<Number, PointContent>, Vertex<Number, PointContent>> {
+    public class Vertex<Point> internal constructor(
+        polytopicConstruction: AbstractPolytopicConstruction<Point>,
+        override val position: Point,
+    ) : ReduciblePolytopicConstruction.Vertex<Point, Polytope<Point>, Vertex<Point>> {
         private val id: Uuid = Uuid.random()
         
-        private val polytopicConstructionNode: KoneMutableSetNode<Vertex<Number, PointContent>> =
+        private val polytopicConstructionNode: KoneMutableSetNode<Vertex<Point>> =
             polytopicConstruction.registerVertex(this)
-        private val backingPolytope: Polytope<Number, PointContent> =
+        private val backingPolytope: Polytope<Point> =
             Polytope(
                 polytopicConstruction = polytopicConstruction,
                 dimension = 0u,
@@ -140,7 +139,7 @@ public class AbstractPolytopicConstruction<Number, PointContent: MDList1<Number>
                 faces = KoneList.empty(),
                 correspondingVertex = this,
             )
-        override fun asPolytope(): Polytope<Number, PointContent> = backingPolytope
+        override fun asPolytope(): Polytope<Point> = backingPolytope
         
         internal fun detach() {
             polytopicConstructionNode.remove()
@@ -158,29 +157,28 @@ public class AbstractPolytopicConstruction<Number, PointContent: MDList1<Number>
     }
 }
 
-internal class AbstractPolytopicConstructionSerializer<Number, PointContent: MDList1<Number>>(
-    numberSerializer: KSerializer<Number>,
-    pointContentSerializer: KSerializer<PointContent>,
-) : KSerializer<AbstractPolytopicConstruction<Number, PointContent>> {
+internal class AbstractPolytopicConstructionSerializer<Point>(
+    pointSerializer: KSerializer<Point>,
+) : KSerializer<AbstractPolytopicConstruction<Point>> {
     @Serializable
     private data class PolytopeDescription(
         val vertices: KoneList<UInt>,
         val faces: KoneList<KoneList<UInt>>,
     )
 
-    val pointsSerializer = KoneList.serializer(Point.serializer(numberSerializer, pointContentSerializer))
+    val pointsSerializer = KoneList.serializer(pointSerializer)
 
     override val descriptor: SerialDescriptor =
-        buildClassSerialDescriptor("AbstractPolytopicConstructionSerializer", numberSerializer.descriptor) {
+        buildClassSerialDescriptor("AbstractPolytopicConstructionSerializer", pointsSerializer.descriptor) {
             element<UInt>("spaceDimension")
             element("vertices", pointsSerializer.descriptor)
             element<KoneList<KoneList<PolytopeDescription>>>("polytopes")
         }
 
-    override fun serialize(encoder: Encoder, value: AbstractPolytopicConstruction<Number, PointContent>) {
+    override fun serialize(encoder: Encoder, value: AbstractPolytopicConstruction<Point>) {
         val spaceDimension = value.spaceDimension
         val vertices = value.vertices.toKoneList()
-        val indexByVertex = vertices.indices.toKoneList().associateBy(keyEquality = absoluteEquality(), keyHashing = defaultHashing()) { vertices[it] }
+        val indexByVertex = vertices.indices.toKoneList().associateBy(keyEquality = Equality.absoluteFor(), keyHashing = Hashing.defaultFor()) { vertices[it] }
         val points = vertices.map { it.position }
         val indexByPolytope = KoneList(spaceDimension + 1u) { dimension ->
             val polytopesOfDimension = value.polytopesOfDimension(dimension).toKoneList()
@@ -210,10 +208,10 @@ internal class AbstractPolytopicConstructionSerializer<Number, PointContent: MDL
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    override fun deserialize(decoder: Decoder): AbstractPolytopicConstruction<Number, PointContent> =
+    override fun deserialize(decoder: Decoder): AbstractPolytopicConstruction<Point> =
         decoder.decodeStructure(descriptor) {
             val spaceDimension: UInt
-            val points: KoneList<Point<Number, PointContent>>
+            val points: KoneList<Point>
             val polytopeDescriptions: KoneList<KoneList<PolytopeDescription>>
 
             if (decodeSequentially()) {
@@ -222,7 +220,7 @@ internal class AbstractPolytopicConstructionSerializer<Number, PointContent: MDL
                 polytopeDescriptions = decodeSerializableElement(descriptor, 2, KoneList.serializer(KoneList.serializer(PolytopeDescription.serializer())))
             } else {
                 var spaceDimensionContender: UInt? = null
-                var pointsContender: KoneList<Point<Number, PointContent>>? = null
+                var pointsContender: KoneList<Point>? = null
                 var polytopeDescriptionsContender: KoneList<KoneList<PolytopeDescription>>? = null
                 while (true) {
                     when (val index = decodeElementIndex(descriptor)) {
@@ -238,18 +236,18 @@ internal class AbstractPolytopicConstructionSerializer<Number, PointContent: MDL
                 polytopeDescriptions = polytopeDescriptionsContender ?: error("Did not receive polytopes")
             }
 
-            val polytopicConstruction = AbstractPolytopicConstruction<Number, PointContent>(spaceDimension)
+            val polytopicConstruction = AbstractPolytopicConstruction<Point>(spaceDimension)
             val vertices = points.map { polytopicConstruction.addVertex(it) }
-            val polytopes = KoneArrayFixedCapacityList<KoneList<AbstractPolytopicConstruction.Polytope<Number, PointContent>>>(spaceDimension + 1u)
+            val polytopes = KoneArrayFixedCapacityList<KoneList<AbstractPolytopicConstruction.Polytope<Point>>>(spaceDimension + 1u)
             polytopes.add(polytopeDescriptions[0u].map { vertices[it.vertices.single()].asPolytope() })
             for (dimension in 1u .. spaceDimension)
                 polytopes.add(
                     polytopeDescriptions[dimension].map { polytopeDescription ->
                         polytopicConstruction.addPolytope(
                             dimension = dimension,
-                            vertices = polytopeDescription.vertices.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { vertices[it] },
+                            vertices = polytopeDescription.vertices.mapTo(KoneMutableReifiedSet.of(elementReification = Reification.defaultFor(), elementEquality = Equality.absoluteFor(), elementHashing = Hashing.defaultFor())) { vertices[it] },
                             faces = polytopeDescription.faces.mapIndexed { subdimension, polytopesOfSubDimension ->
-                                polytopesOfSubDimension.mapTo(KoneMutableReifiedSet.of(elementReification = Reification(), elementEquality = absoluteEquality(), elementHashing = defaultHashing())) { polytopes[subdimension][it] }
+                                polytopesOfSubDimension.mapTo(KoneMutableReifiedSet.of(elementReification = Reification.defaultFor(), elementEquality = Equality.absoluteFor(), elementHashing = Hashing.defaultFor())) { polytopes[subdimension][it] }
                             },
                         )
                     }
@@ -259,52 +257,52 @@ internal class AbstractPolytopicConstructionSerializer<Number, PointContent: MDL
         }
 }
 
-internal fun <Number, PointContent: MDList1<Number>> abstractPolytopicConstructionPolytopeSuppliedTypeFor(numberType: SuppliedType, pointContentType: SuppliedType): SuppliedType =
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstruction.Polytope",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = pointContentType,
-            ),
-        ),
-        isNullable = false,
-    )
-
-internal fun <Number, PointContent: MDList1<Number>> abstractPolytopicConstructionVertexSuppliedTypeFor(numberSuppliedType: SuppliedType, pointContentType: SuppliedType): SuppliedType =
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstruction.Vertex",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberSuppliedType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = pointContentType,
-            ),
-        ),
-        isNullable = false,
-    )
-
-public fun <Number, PointContent: MDList1<Number>> RegistryBuilder<KoneContextRegistry>.setAbstractPolytopicConstructionPropertiesFor(
-    numberType: SuppliedType,
-    pointContentType: SuppliedType,
-) {
-    val abstractPolytopicConstructionPolytopeSuppliedType = abstractPolytopicConstructionPolytopeSuppliedTypeFor<Number, PointContent>(numberType, pointContentType)
-    val abstractPolytopicConstructionVertexSuppliedType = abstractPolytopicConstructionVertexSuppliedTypeFor<Number, PointContent>(numberType, pointContentType)
-    
-    setReificationFor<AbstractPolytopicConstruction.Polytope<Number, PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType)
-    setAbsoluteEqualityFor<AbstractPolytopicConstruction.Polytope<Number, PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType)
-    setDefaultHashingFor<AbstractPolytopicConstruction.Polytope<Number, PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType) // TODO: Replace with optimised hashing
-    
-    setReificationFor<AbstractPolytopicConstruction.Vertex<Number, PointContent>>(abstractPolytopicConstructionVertexSuppliedType)
-    setAbsoluteEqualityFor<AbstractPolytopicConstruction.Vertex<Number, PointContent>>(abstractPolytopicConstructionVertexSuppliedType)
-    setDefaultHashingFor<AbstractPolytopicConstruction.Vertex<Number, PointContent>>(abstractPolytopicConstructionVertexSuppliedType) // TODO: Replace with optimised hashing
-}
+//internal fun <PointContent: MDList1<Number>> abstractPolytopicConstructionPolytopeSuppliedTypeFor(numberType: SuppliedType, pointContentType: SuppliedType): SuppliedType =
+//    @OptIn(DelicateSuppliedTypeConstructor::class)
+//    SuppliedType.Regular(
+//        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstruction.Polytope",
+//        typeArguments = listOf(
+//            SuppliedProjection.Regular(
+//                variance = INVARIANT,
+//                type = numberType,
+//            ),
+//            SuppliedProjection.Regular(
+//                variance = INVARIANT,
+//                type = pointContentType,
+//            ),
+//        ),
+//        isNullable = false,
+//    )
+//
+//internal fun <PointContent: MDList1<Number>> abstractPolytopicConstructionVertexSuppliedTypeFor(numberSuppliedType: SuppliedType, pointContentType: SuppliedType): SuppliedType =
+//    @OptIn(DelicateSuppliedTypeConstructor::class)
+//    SuppliedType.Regular(
+//        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.polytopes.AbstractPolytopicConstruction.Vertex",
+//        typeArguments = listOf(
+//            SuppliedProjection.Regular(
+//                variance = INVARIANT,
+//                type = numberSuppliedType,
+//            ),
+//            SuppliedProjection.Regular(
+//                variance = INVARIANT,
+//                type = pointContentType,
+//            ),
+//        ),
+//        isNullable = false,
+//    )
+//
+//public fun <PointContent: MDList1<Number>> RegistryBuilder<KoneContextRegistry>.setAbstractPolytopicConstructionPropertiesFor(
+//    numberType: SuppliedType,
+//    pointContentType: SuppliedType,
+//) {
+//    val abstractPolytopicConstructionPolytopeSuppliedType = abstractPolytopicConstructionPolytopeSuppliedTypeFor<PointContent>(numberType, pointContentType)
+//    val abstractPolytopicConstructionVertexSuppliedType = abstractPolytopicConstructionVertexSuppliedTypeFor<PointContent>(numberType, pointContentType)
+//
+//    setReificationFor<AbstractPolytopicConstruction.Polytope<PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType)
+//    setAbsoluteEqualityFor<AbstractPolytopicConstruction.Polytope<PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType)
+//    setDefaultFor<AbstractPolytopicConstruction.Polytope<PointContent>>(abstractPolytopicConstructionPolytopeSuppliedType) // TODO: Replace with optimised hashing
+//
+//    setReificationFor<AbstractPolytopicConstruction.Vertex<PointContent>>(abstractPolytopicConstructionVertexSuppliedType)
+//    setAbsoluteEqualityFor<AbstractPolytopicConstruction.Vertex<PointContent>>(abstractPolytopicConstructionVertexSuppliedType)
+//    setDefaultFor<AbstractPolytopicConstruction.Vertex<PointContent>>(abstractPolytopicConstructionVertexSuppliedType) // TODO: Replace with optimised hashing
+//}

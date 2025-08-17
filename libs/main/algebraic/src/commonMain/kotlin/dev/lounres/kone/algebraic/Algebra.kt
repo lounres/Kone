@@ -9,24 +9,32 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.jvm.JvmName
 import kotlin.reflect.KVariance.INVARIANT
 
 
 // unital, associative
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> {
     // region Number conversion
     public fun valueOf(arg: Number): Vector
     // endregion
     
     // region Vector-Number operations
+    @JvmName("plusVectorNumber")
     public operator fun Vector.plus(other: Number): Vector = this + valueOf(other)
+    @JvmName("minusVectorNumber")
     public operator fun Vector.minus(other: Number): Vector = this - valueOf(other)
+    @JvmName("timesVectorNumber")
     public override fun Vector.times(other: Number): Vector = this * valueOf(other)
     // endregion
     
     // region Number-Vector operations
+    @JvmName("plusNumberVector")
     public operator fun Number.plus(other: Vector): Vector = valueOf(this) + other
+    @JvmName("minusNumberVector")
     public operator fun Number.minus(other: Vector): Vector = valueOf(this) - other
+    @JvmName("timesNumberVector")
     public override fun Number.times(other: Vector): Vector = valueOf(this) * other
     // endregion
     

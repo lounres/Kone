@@ -6,48 +6,59 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.basis.VectorSpaceBasis
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
+import dev.lounres.kone.collections.iterables.KoneSequence
+import dev.lounres.kone.collections.iterables.build
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.withIndex
+import dev.lounres.kone.computationalGeometry.AffineSpaceOverField
+import dev.lounres.kone.computationalGeometry.curves.Line
+import dev.lounres.kone.computationalGeometry.curves.Segment
+import dev.lounres.kone.computationalGeometry.curves.end
+import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.maybe.orElse
+import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.compareTo
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.computationalGeometry.EuclideanKategory2
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.curves.Segment2
-import dev.lounres.kone.computationalGeometry.curves.end
-import dev.lounres.kone.computationalGeometry.utils.lexicographic2DOrder
-import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.multidimensionalCollections.MDList1
+import dev.lounres.kone.relations.compareTo
+import dev.lounres.kone.relations.compareWith
+import dev.lounres.kone.relations.maxOf
+import kotlin.context
 
 
-public data class Intersection<I>(public val index1: UInt, public val index2: UInt, public val intersection: I)
-
-internal sealed interface EventForBentleyOttmann<out N, out PointContent: MDList1<N>> {
-    data class SegmentStart<out N, out PointContent: MDList1<N>>(val segmentIndex: UInt, val start: Point2<N, PointContent>): EventForBentleyOttmann<N, PointContent>
-    data class SegmentEnd<out N, out PointContent: MDList1<N>>(val segmentIndex: UInt, val end: Point2<N, PointContent>): EventForBentleyOttmann<N, PointContent>
-    data class SegmentsIntersection<out N, out PointContent: MDList1<N>>(val segmentIndex1: UInt, val segmentIndex2: UInt, val intersection: Point2<N, PointContent>): EventForBentleyOttmann<N, PointContent>
-}
-
-internal data class SegmentNodeForBentleyOttmann<N, PointContent: MDList1<N>>(
-    val segmentIndex: UInt,
-    var upperIntersection: HeapNode<EventForBentleyOttmann<N, PointContent>, Point2<N, PointContent>>? = null,
-    var lowerIntersection: HeapNode<EventForBentleyOttmann<N, PointContent>, Point2<N, PointContent>>? = null,
+public data class Intersection<Vector, Point>(
+    public val segmentIndex1: UInt,
+    public val segment1: Segment<Vector, Point>,
+    public val segmentIndex2: UInt,
+    public val segment2: Segment<Vector, Point>,
+    public val intersection: Point,
 )
 
-private fun <N, PointContent: MDList1<N>> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttmann<N, PointContent>, tSegmentNode: SegmentNodeForBentleyOttmann<N, PointContent>) {
+public interface PairwiseSegmentsIntersectionsComputer<Vector, Point> {
+    public fun KoneList<Segment<Vector, Point>>.allPairwiseIntersections(): KoneSequence<Intersection<Vector, Point>>
+}
+
+private sealed interface EventForBentleyOttmann<out Point> {
+    data class SegmentStart<out Point>(val segmentIndex: UInt, val start: Point): EventForBentleyOttmann<Point>
+    data class SegmentEnd<out Point>(val segmentIndex: UInt, val end: Point): EventForBentleyOttmann<Point>
+    data class SegmentsIntersection<out Point>(val segmentIndex1: UInt, val segmentIndex2: UInt, val intersection: Point): EventForBentleyOttmann<Point>
+}
+
+private data class SegmentNodeForBentleyOttmann<Point>(
+    val segmentIndex: UInt,
+    var upperIntersection: HeapNode<EventForBentleyOttmann<Point>, Point>? = null,
+    var lowerIntersection: HeapNode<EventForBentleyOttmann<Point>, Point>? = null,
+)
+
+private fun <Point> removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttmann<Point>, tSegmentNode: SegmentNodeForBentleyOttmann<Point>) {
     val stIntersectionNode = sSegmentNode.upperIntersection
     check(stIntersectionNode === tSegmentNode.lowerIntersection) { "For some reason neighbors in the segments search tree do not share the same intersection" }
     if (stIntersectionNode != null) {
@@ -57,55 +68,71 @@ private fun <N, PointContent: MDList1<N>> removeIntersectionFor(sSegmentNode: Se
     }
 }
 
-context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N, VectorContent, PointContent>, _: Order<Point2<N, PointContent>>)
-private fun <N, VectorContent: MDList1<N>, PointContent: MDList1<N>> addIntersectionFor(
-    segmentsList: KoneList<Segment2<N, VectorContent, PointContent>>,
-    eventsHeap: MinimumHeap<EventForBentleyOttmann<N, PointContent>, Point2<N, PointContent>>,
-    currentPriority: Point2<N, PointContent>,
-    sSegmentNode: SegmentNodeForBentleyOttmann<N, PointContent>,
-    tSegmentNode: SegmentNodeForBentleyOttmann<N, PointContent>
-) {
-    val sSegmentIndex = sSegmentNode.segmentIndex
-    val tSegmentIndex = tSegmentNode.segmentIndex
-    val sSegment = segmentsList[sSegmentIndex]
-    val tSegment = segmentsList[tSegmentIndex]
-    when (val intersectionResult = sSegment.intersect(tSegment)) {
-        TheLinesAreParallel -> {}
-        is TheLinesAreCollinear<N, VectorContent, PointContent> -> {} // TODO: Think about cases of collinear segments
-        is TheLinesAreInGeneralPosition<N, PointContent> -> {
-            val stIntersectionPoint = intersectionResult.intersection
-            if (stIntersectionPoint != null && stIntersectionPoint gt currentPriority) {
-                val event = EventForBentleyOttmann.SegmentsIntersection(
-                    segmentIndex1 = sSegmentIndex,
-                    segmentIndex2 = tSegmentIndex,
-                    intersection = stIntersectionPoint,
-                )
-                val eventHeapNode = eventsHeap.add(event, stIntersectionPoint)
-                sSegmentNode.upperIntersection = eventHeapNode
-                tSegmentNode.lowerIntersection = eventHeapNode
-            }
-        }
-    }
-}
 
 // TODO: Think about cases of collinear segments
 // TODO: Think about cases of concurrent segments and/or coincidence of events points
 /**
  * https://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm
  */
-context(_: Field<N>, _: Order<N>, _: EuclideanKategory2<N, VectorContent, PointContent>)
-public fun <N, VectorContent: MDList1<N>, PointContent: MDList1<N>> KoneList<Segment2<N, VectorContent, PointContent>>.allIntersectionByBentleyOttmann(): KoneList<Intersection<Point2<N, PointContent>>> {
-    val pointsOrder = lexicographic2DOrder
-    val eventsHeap: MinimumHeap<EventForBentleyOttmann<N, PointContent>, Point2<N, PointContent>> = KoneBinaryGCMinimumHeap(pointsOrder)
-    val segmentsSearchTree: ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<N, PointContent>> = TwoThreeTreeForBentleyOttmann()
-    val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<N, PointContent>>?>(this.size) { null }
+private class PairwiseSegmentsIntersectionsComputerViaBentleyOttmann<N, Vector, Point>(
+    private val numberField: Field<N>,
+    private val numberOrder: Order<N>,
+    private val euclideanSpace: AffineSpaceOverField<N, Vector, Point>,
+    private val basis: VectorSpaceBasis.Finite<N, Vector>,
+    private val linear2IntersectionsComputer: Linear2IntersectionsComputer<N, Vector, Point>,
+) : PairwiseSegmentsIntersectionsComputer<Vector, Point> {
+    private val pointOrder: Order<Point> = context(numberOrder, euclideanSpace) {
+        Order { left, right ->
+            val differenceBasisDecomposition = basis.decompose(right - left)
+            when (differenceBasisDecomposition[0u] compareWith numberField.zero) {
+                LeftIsGreaterThanRight -> ComparisonResult.LeftIsGreaterThanRight
+                LeftIsLessThanRight -> ComparisonResult.LeftIsLessThanRight
+                Equal -> differenceBasisDecomposition[1u] compareWith numberField.zero
+            }
+        }
+    }
     
-    pointsOrder {
-        for ((index, segment) in this.withIndex()) {
+    private fun addIntersectionFor(
+        segmentsList: KoneList<Segment<Vector, Point>>,
+        eventsHeap: MinimumHeap<EventForBentleyOttmann<Point>, Point>,
+        currentPriority: Point,
+        sSegmentNode: SegmentNodeForBentleyOttmann<Point>,
+        tSegmentNode: SegmentNodeForBentleyOttmann<Point>
+    ) {
+        val sSegmentIndex = sSegmentNode.segmentIndex
+        val tSegmentIndex = tSegmentNode.segmentIndex
+        val sSegment = segmentsList[sSegmentIndex]
+        val tSegment = segmentsList[tSegmentIndex]
+        when (val intersectionResult = linear2IntersectionsComputer.intersectionOf(sSegment, tSegment)) {
+            TheLinesAreParallel -> {}
+            is TheLinesAreCollinear<Vector, Point> -> {} // TODO: Think about cases of collinear segments
+            is TheLinesAreInGeneralPosition<Point> -> {
+                val stIntersectionPoint = intersectionResult.intersection
+                if (stIntersectionPoint is Some && pointOrder { stIntersectionPoint.value gt currentPriority }) {
+                    val event = EventForBentleyOttmann.SegmentsIntersection(
+                        segmentIndex1 = sSegmentIndex,
+                        segmentIndex2 = tSegmentIndex,
+                        intersection = stIntersectionPoint.value,
+                    )
+                    val eventHeapNode = eventsHeap.add(event, stIntersectionPoint.value)
+                    sSegmentNode.upperIntersection = eventHeapNode
+                    tSegmentNode.lowerIntersection = eventHeapNode
+                }
+            }
+        }
+    }
+    
+    override fun KoneList<Segment<Vector, Point>>.allPairwiseIntersections(): KoneSequence<Intersection<Vector, Point>> = context(numberOrder, euclideanSpace, pointOrder) {
+        val segments = this
+        val eventsHeap: MinimumHeap<EventForBentleyOttmann<Point>, Point> = KoneBinaryGCMinimumHeap(pointOrder)
+        val segmentsSearchTree = ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<Point>>()
+        val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<Point>>?>(segments.size) { null }
+        
+        for ((index, segment) in segments.withIndex()) {
             val structuralStart = segment.start
             val structuralEnd = segment.end
-            val start: Point2<N, PointContent>
-            val end: Point2<N, PointContent>
+            val start: Point
+            val end: Point
             if (structuralStart lt structuralEnd) {
                 start = structuralStart
                 end = structuralEnd
@@ -129,103 +156,118 @@ public fun <N, VectorContent: MDList1<N>, PointContent: MDList1<N>> KoneList<Seg
             )
         }
         
-        val intersections = KoneArrayGrowableList<Intersection<Point2<N, PointContent>>>()
-        
-        while (eventsHeap.size != 0u) {
-            val currentEventNode = eventsHeap.popMinimum()
-            val currentEventPriority = currentEventNode.priority
-            val currentEvent = currentEventNode.element
-            
-            when (currentEvent) {
-                is EventForBentleyOttmann.SegmentStart<N, PointContent> -> {
-                    val (sSegmentIndex, start) = currentEvent
-                    val sSegment = this[sSegmentIndex]
-                    val sSegmentPointY =
-                        if (sSegment.direction.x.isNotZero()) sSegment.start.y + sSegment.direction.y / sSegment.direction.x * (start.x - sSegment.start.x)
-                        else start.y
-                    val sNode = segmentsSearchTree.add(SegmentNodeForBentleyOttmann(sSegmentIndex)) { t ->
-                        val tSegmentIndex = t.segmentIndex
-                        val tSegment = this[tSegmentIndex]
-                        val tY =
-                            if (tSegment.direction.x.isNotZero()) tSegment.start.y + tSegment.direction.y / tSegment.direction.x * (start.x - tSegment.start.x)
-                            else start.y
+        KoneSequence.build {
+            while (eventsHeap.size != 0u) {
+                val currentEventNode = eventsHeap.popMinimum()
+                val currentEventPriority = currentEventNode.priority
+                val currentEvent = currentEventNode.element
+                
+                when (currentEvent) {
+                    is EventForBentleyOttmann.SegmentStart<Point> -> {
+                        val (sSegmentIndex, start) = currentEvent
+                        val sSegment = segments[sSegmentIndex]
+                        val verticalLine = Line(start, basis[1u])
+                        val sSegmentPointY =
+                            when (val intersectionResult = linear2IntersectionsComputer.intersectionOf(verticalLine, sSegment)) {
+                                TheLinesAreParallel -> error("For some reason sweeping line does not intersect segment in process")
+                                is TheLinesAreCollinear<Vector, Point> -> maxOf(
+                                    basis.decompose(intersectionResult.intersection.start - start)[1u],
+                                    basis.decompose(intersectionResult.intersection.end - start)[1u],
+                                )
+                                is TheLinesAreInGeneralPosition<Point> -> basis.decompose(intersectionResult.intersection.orElse { error("For some reason sweeping line does not intersect segment in process") } - start)[1u]
+                            }
+                        val sNode = segmentsSearchTree.add(SegmentNodeForBentleyOttmann(sSegmentIndex)) { t ->
+                            val tSegmentIndex = t.segmentIndex
+                            val tSegment = segments[tSegmentIndex]
+                            val tSegmentPointY: N =
+                                when (val intersectionResult = linear2IntersectionsComputer.intersectionOf(verticalLine, tSegment)) {
+                                    TheLinesAreParallel -> error("For some reason sweeping line does not intersect segment in process")
+                                    is TheLinesAreCollinear<Vector, Point> -> maxOf(
+                                        basis.decompose(intersectionResult.intersection.start - start)[1u],
+                                        basis.decompose(intersectionResult.intersection.end - start)[1u],
+                                    )
+                                    is TheLinesAreInGeneralPosition<Point> -> basis.decompose(intersectionResult.intersection.orElse { error("For some reason sweeping line does not intersect segment in process") } - start)[1u]
+                                }
+                            
+                            numberOrder { tSegmentPointY.compareTo(sSegmentPointY) }
+                        }
+                        segmentsSearchTreeNodes[sSegmentIndex] = sNode
+                        val rNode = sNode.previousNode
+                        val tNode = sNode.nextNode
+                        if (rNode != null && tNode != null) removeIntersectionFor(rNode.element, tNode.element)
+                        if (rNode != null) addIntersectionFor(
+                            segments,
+                            eventsHeap,
+                            currentEventPriority,
+                            rNode.element,
+                            sNode.element
+                        )
+                        if (tNode != null) addIntersectionFor(
+                            segments,
+                            eventsHeap,
+                            currentEventPriority,
+                            sNode.element,
+                            tNode.element
+                        )
+                    }
+                    
+                    is EventForBentleyOttmann.SegmentEnd<Point> -> {
+                        val (sSegmentIndex, _) = currentEvent
+                        val sNode = segmentsSearchTreeNodes[sSegmentIndex]!!
+                        val rNode = sNode.previousNode
+                        val tNode = sNode.nextNode
+                        sNode.remove()
+                        segmentsSearchTreeNodes[sSegmentIndex] = null
+                        if (rNode != null) removeIntersectionFor(rNode.element, sNode.element)
+                        if (tNode != null) removeIntersectionFor(sNode.element, tNode.element)
+                        if (rNode != null && tNode != null) addIntersectionFor(
+                            segments,
+                            eventsHeap,
+                            currentEventPriority,
+                            rNode.element,
+                            tNode.element
+                        )
+                    }
+                    
+                    is EventForBentleyOttmann.SegmentsIntersection<Point> -> {
+                        val (sSegmentIndex, tSegmentIndex, int) = currentEvent
+                        yield(
+                            Intersection(
+                                segmentIndex1 = sSegmentIndex,
+                                segment1 = segments[sSegmentIndex],
+                                segmentIndex2 = tSegmentIndex,
+                                segment2 = segments[tSegmentIndex],
+                                intersection = int,
+                            )
+                        )
+                        val sNode = segmentsSearchTreeNodes[sSegmentIndex]!!
+                        val tNode = segmentsSearchTreeNodes[tSegmentIndex]!!
+                        check(sNode.nextNode === tNode) { "Event of segments intersection happened between not neighbor nodes" }
+                        check(sNode.element.upperIntersection?.element === currentEvent) { "Event of segments intersection happened but lower segment upper intersection is not the event" }
+                        check(tNode.element.lowerIntersection?.element === currentEvent) { "Event of segments intersection happened but upper segment lower intersection is not the event" }
+                        sNode.element.upperIntersection = null
+                        tNode.element.lowerIntersection = null
                         
-                        tY.compareTo(sSegmentPointY)
+                        val rNode = sNode.previousNode
+                        val uNode = tNode.nextNode
+                        
+                        if (rNode != null) {
+                            removeIntersectionFor(rNode.element, sNode.element)
+                            addIntersectionFor(segments, eventsHeap, currentEventPriority, rNode.element, tNode.element)
+                        }
+                        if (uNode != null) {
+                            removeIntersectionFor(tNode.element, uNode.element)
+                            addIntersectionFor(segments, eventsHeap, currentEventPriority, sNode.element, uNode.element)
+                        }
+                        
+                        sNode.element = tNode.element.also { tNode.element = sNode.element }
+                        segmentsSearchTreeNodes[sSegmentIndex] = tNode
+                        segmentsSearchTreeNodes[tSegmentIndex] = sNode
                     }
-                    segmentsSearchTreeNodes[sSegmentIndex] = sNode
-                    val rNode = sNode.previousNode
-                    val tNode = sNode.nextNode
-                    if (rNode != null && tNode != null) removeIntersectionFor(rNode.element, tNode.element)
-                    if (rNode != null) addIntersectionFor(
-                        this,
-                        eventsHeap,
-                        currentEventPriority,
-                        rNode.element,
-                        sNode.element
-                    )
-                    if (tNode != null) addIntersectionFor(
-                        this,
-                        eventsHeap,
-                        currentEventPriority,
-                        sNode.element,
-                        tNode.element
-                    )
                 }
                 
-                is EventForBentleyOttmann.SegmentEnd<N, PointContent> -> {
-                    val (sSegmentIndex, _) = currentEvent
-                    val sNode = segmentsSearchTreeNodes[sSegmentIndex]!!
-                    val rNode = sNode.previousNode
-                    val tNode = sNode.nextNode
-                    sNode.remove()
-                    segmentsSearchTreeNodes[sSegmentIndex] = null
-                    if (rNode != null) removeIntersectionFor(rNode.element, sNode.element)
-                    if (tNode != null) removeIntersectionFor(sNode.element, tNode.element)
-                    if (rNode != null && tNode != null) addIntersectionFor(
-                        this,
-                        eventsHeap,
-                        currentEventPriority,
-                        rNode.element,
-                        tNode.element
-                    )
-                }
-                
-                is EventForBentleyOttmann.SegmentsIntersection<N, PointContent> -> {
-                    val (sSegmentIndex, tSegmentIndex, int) = currentEvent
-                    intersections += Intersection(
-                        index1 = sSegmentIndex,
-                        index2 = tSegmentIndex,
-                        intersection = int,
-                    )
-                    val sNode = segmentsSearchTreeNodes[sSegmentIndex]!!
-                    val tNode = segmentsSearchTreeNodes[tSegmentIndex]!!
-                    check(sNode.nextNode === tNode) { "Event of segments intersection happened between not neighbor nodes" }
-                    check(sNode.element.upperIntersection?.element === currentEvent) { "Event of segments intersection happened but lower segment upper intersection is not the event" }
-                    check(tNode.element.lowerIntersection?.element === currentEvent) { "Event of segments intersection happened but upper segment lower intersection is not the event" }
-                    sNode.element.upperIntersection = null
-                    tNode.element.lowerIntersection = null
-                    
-                    val rNode = sNode.previousNode
-                    val uNode = tNode.nextNode
-                    
-                    if (rNode != null) {
-                        removeIntersectionFor(rNode.element, sNode.element)
-                        addIntersectionFor(this, eventsHeap, currentEventPriority, rNode.element, tNode.element)
-                    }
-                    if (uNode != null) {
-                        removeIntersectionFor(tNode.element, uNode.element)
-                        addIntersectionFor(this, eventsHeap, currentEventPriority, sNode.element, uNode.element)
-                    }
-                    
-                    sNode.element = tNode.element.also { tNode.element = sNode.element }
-                    segmentsSearchTreeNodes[sSegmentIndex] = tNode
-                    segmentsSearchTreeNodes[tSegmentIndex] = sNode
-                }
+                check(eventsHeap.size == 0u || eventsHeap.takeMinimum().priority >= currentEventPriority) { "For some reason minimum event priority did not increase" }
             }
-            
-            check(eventsHeap.size == 0u || eventsHeap.takeMinimum().priority >= currentEventPriority) { "For some reason minimum event priority did not increase" }
         }
-        
-        return intersections
     }
 }
