@@ -195,16 +195,6 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
 }
 
 
-// region Constants
-/**
- * Represents a unit element (a.k.a. *neutral multiplicative element*).
- *
- * A bridge contextual property for [Semiring.one].
- */
-context(ring: Semiring<Number>)
-public val <Number> one: Number get() = ring.one
-// endregion
-
 // region Equality
 /**
  * Checks that [this] number is a one in the context of the [Semiring].

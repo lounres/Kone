@@ -17,31 +17,31 @@ import dev.lounres.kone.relations.lt
 /**
  * Checks if [this] number is positive in the ordered semiring.
  */
-context(_: Semiring<Number>, _: Order<Number>)
-public fun <Number> Number.isPositive(): Boolean = this gt zero
+context(ring: Semiring<Number>, _: Order<Number>)
+public fun <Number> Number.isPositive(): Boolean = this gt ring.zero
 /**
  * Checks if [this] number is non-positive in the ordered semiring.
  */
-context(_: Semiring<Number>, _: Order<Number>)
-public fun <Number> Number.isNonPositive(): Boolean = this leq zero
+context(ring: Semiring<Number>, _: Order<Number>)
+public fun <Number> Number.isNonPositive(): Boolean = this leq ring.zero
 /**
  * Checks if [this] number is negative in the ordered semiring.
  */
-context(_: Semiring<Number>, _: Order<Number>)
-public fun <Number> Number.isNegative(): Boolean = this lt zero
+context(ring: Semiring<Number>, _: Order<Number>)
+public fun <Number> Number.isNegative(): Boolean = this lt ring.zero
 /**
  * Checks if [this] number is non-negative in the ordered semiring.
  */
-context(_: Semiring<Number>, _: Order<Number>)
-public fun <Number> Number.isNonNegative(): Boolean = this geq zero
+context(ring: Semiring<Number>, _: Order<Number>)
+public fun <Number> Number.isNonNegative(): Boolean = this geq ring.zero
 
 /**
  * Returns value of (mathematical) `sign` function.
  * I.e. returns `1` if [this] number is positive, `-1` if [this] number is negative, or `0` if [this] number is zero.
  */
-context(_: Semiring<Number>, _: Order<Number>)
+context(ring: Semiring<Number>, _: Order<Number>)
 public fun <Number> Number.sign(): Int =
-    when(this.compareWith(zero)) {
+    when(this.compareWith(ring.zero)) {
         ComparisonResult.LeftIsGreaterThanRight -> 1
         ComparisonResult.LeftIsLessThanRight ->  -1
         ComparisonResult.Equal -> 0

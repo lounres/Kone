@@ -59,7 +59,7 @@ fun main() {
     fun bernoulliNumber(n: UInt): Rational = Rational.context {
         // Initialise a list for storing the recursively computed Bernoulli numbers
         val bernoulliNumbers = KoneArrayFixedCapacityList<Rational>(n + 1u)
-        bernoulliNumbers.add(one)
+        bernoulliNumbers.add(Rational.context.one)
 
         // Compute the numbers with recurrent formula
         for (i in 1u..n)

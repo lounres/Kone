@@ -62,16 +62,6 @@ public interface Monoid<Number> : Semigroup<Number> {
 }
 
 
-// region Constants
-/**
- * Represents a zero element (a.k.a. *neutral additive element*).
- *
- * A bridge contextual property for [Monoid.zero].
- */
-context(monoid: Monoid<Number>)
-public val <Number> zero: Number get() = monoid.zero
-// endregion
-
 // region Equality
 /**
  * Checks that [this] number is a zero in the context of the [Monoid].

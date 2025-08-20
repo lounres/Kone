@@ -65,6 +65,18 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     }
 }
 
+context(algebra: Algebra<Number, Vector>)
+public operator fun <Number, Vector> Vector.plus(other: Number): Vector = with(algebra) { this@plus + other }
+
+context(algebra: Algebra<Number, Vector>)
+public operator fun <Number, Vector> Vector.minus(other: Number): Vector = with(algebra) { this@minus - other }
+
+//context(algebra: Algebra<Number, Vector>)
+//public operator fun <Number, Vector> Number.plus(other: Vector): Vector = with(algebra) { this@plus + other }
+//
+//context(algebra: Algebra<Number, Vector>)
+//public operator fun <Number, Vector> Number.minus(other: Vector): Vector = with(algebra) { this@minus - other }
+
 public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, CommutativeRing<Vector> {
     public companion object;
     
