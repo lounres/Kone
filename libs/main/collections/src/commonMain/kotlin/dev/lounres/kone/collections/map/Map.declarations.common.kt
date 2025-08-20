@@ -47,6 +47,7 @@ public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>?
     
+    @IgnorableReturnValue
     public operator fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value>
     
     public fun remove(key: Key)

@@ -5,30 +5,6 @@
 
 package dev.lounres.kone.misc.composeCanvas
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.toSize
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.empty
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.utils.lastThatOrNull
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Vector2
-import dev.lounres.kone.computationalGeometry.inEuclideanKategoryScope2For
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.times
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.math.exp
-
 
 //public interface KoneCanvasLayer {
 //    context(drawScope: DrawScope)

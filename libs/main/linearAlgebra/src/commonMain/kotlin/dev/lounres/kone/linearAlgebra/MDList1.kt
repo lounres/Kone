@@ -5,21 +5,34 @@
 
 package dev.lounres.kone.linearAlgebra
 
+import dev.lounres.kone.algebraic.CommutativeGroup
+import dev.lounres.kone.algebraic.CommutativeMonoid
 import dev.lounres.kone.algebraic.CommutativeRing
+import dev.lounres.kone.algebraic.CommutativeSemigroup
 import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.Group
+import dev.lounres.kone.algebraic.LeftModule
 import dev.lounres.kone.algebraic.Module
+import dev.lounres.kone.algebraic.Monoid
+import dev.lounres.kone.algebraic.RightModule
+import dev.lounres.kone.algebraic.Semigroup
 import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.relations.eq
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 private class MDList1Module<Number>(
@@ -134,6 +147,33 @@ private class MDList1Module<Number>(
 
 public fun <Number> Module.Companion.mdList1(ring: CommutativeRing<Number>, dimension: UInt): Module<Number, MDList1<Number>> =
     MDList1Module(ring = ring, dimension = dimension)
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val mdList1Type = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = OUT,
+                type = numberType
+            )
+        ),
+        isNullable = false,
+    )
+    
+    val module = mdList1(koneContextRegistryBuilder[CommutativeRing.Key<Number>(numberType)], dimension)
+    
+    Semigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeSemigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    Monoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeMonoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    Group.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeGroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    LeftModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    RightModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+}
 
 private class MDList1VectorSpace<Number>(
     private val field: Field<Number>,
@@ -251,3 +291,31 @@ private class MDList1VectorSpace<Number>(
 
 public fun <Number> VectorSpace.Companion.mdList1(field: Field<Number>, dimension: UInt): VectorSpace<Number, MDList1<Number>> =
     MDList1VectorSpace(field = field, dimension = dimension)
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val mdList1Type = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = OUT,
+                type = numberType
+            )
+        ),
+        isNullable = false,
+    )
+    
+    val module = mdList1(koneContextRegistryBuilder[Field.Key<Number>(numberType)], dimension)
+    
+    Semigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeSemigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    Monoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeMonoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    Group.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    CommutativeGroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
+    LeftModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    RightModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    VectorSpace.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+}

@@ -5,9 +5,8 @@
 
 package dev.lounres.kone.multidimensionalCollections.utils
 
-import dev.lounres.kone.algebraic.Semiring
+import dev.lounres.kone.algebraic.Monoid
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList
@@ -159,19 +158,19 @@ public inline fun <E, R> MDList2<E>.foldIndexed(initial: R, operation: (rowIndex
 
 // TODO: Add `reduce`-like extensions
 
-context(_: Semiring<E>)
-public fun <E> MDList<E>.sum(): E = fold(zero) { acc, e -> acc + e }
+context(monoid: Monoid<E>)
+public fun <E> MDList<E>.sum(): E = fold(monoid.zero) { acc, e -> acc + e }
 
-context(_: Semiring<A>)
-public inline fun <E, A> MDList<E>.sumOf(selector: (E) -> A): A = fold(zero) { acc, e -> acc + selector(e) }
+context(monoid: Monoid<A>)
+public inline fun <E, A> MDList<E>.sumOf(selector: (E) -> A): A = fold(monoid.zero) { acc, e -> acc + selector(e) }
 
-context(_: Semiring<A>)
-public inline fun <E, A> MDList<E>.sumOfIndexed(selector: (index: MDIndex, E) -> A): A = foldIndexed(zero) { index, acc, e -> acc + selector(index, e) }
+context(monoid: Monoid<A>)
+public inline fun <E, A> MDList<E>.sumOfIndexed(selector: (index: MDIndex, E) -> A): A = foldIndexed(monoid.zero) { index, acc, e -> acc + selector(index, e) }
 
-context(_: Semiring<A>)
-public inline fun <E, A> MDList1<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(zero) { index: UInt, acc, e -> acc + selector(index, e) }
+context(monoid: Monoid<A>)
+public inline fun <E, A> MDList1<E>.sumOfIndexed(selector: (index: UInt, E) -> A): A = foldIndexed(monoid.zero) { index: UInt, acc, e -> acc + selector(index, e) }
 
-context(_: Semiring<A>)
-public inline fun <E, A> MDList2<E>.sumOfIndexed(selector: (rowIndex: UInt, columnIndex: UInt, E) -> A): A = foldIndexed(zero) { row, column, acc, e -> acc + selector(row, column, e) }
+context(monoid: Monoid<A>)
+public inline fun <E, A> MDList2<E>.sumOfIndexed(selector: (rowIndex: UInt, columnIndex: UInt, E) -> A): A = foldIndexed(monoid.zero) { row, column, acc, e -> acc + selector(row, column, e) }
 
 // TODO: Add bulk operations

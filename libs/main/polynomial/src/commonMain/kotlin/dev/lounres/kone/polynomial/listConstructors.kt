@@ -30,38 +30,35 @@ public fun <C> ListPolynomial(vararg coefficients: C, reverse: Boolean = false):
  */
 public fun <C> C.asListPolynomial() : ListPolynomial<C> = ListPolynomial(KoneList.of(this))
 
-
-// Waiting for context receivers :( FIXME: Replace with context receivers when they will be available
-
-/**
- * Constructs [ListRationalFunction] instance with numerator and denominator constructed with provided
- * [numeratorCoefficients] and [denominatorCoefficients]. The both collections of coefficients will be reversed if
- * [reverse] parameter is true.
- */
-public fun <C> ListRationalFunction(numeratorCoefficients: KoneList<C>, denominatorCoefficients: KoneList<C>, reverse: Boolean = false): ListRationalFunction<C> =
-    ListRationalFunction<C>(
-        ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
-        ListPolynomial( with(denominatorCoefficients) { if (reverse) reversed() else this } )
-    )
-/**
- * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
- */
-context(_: ListPolynomialSpace<Number>)
-public fun <Number> ListRationalFunction(numerator: ListPolynomial<Number>): ListRationalFunction<Number> =
-    ListRationalFunction<Number>(numerator, polynomialOne)
-/**
- * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
- * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
- */
-context(_: ListPolynomialSpace<Number>)
-public fun <Number> ListRationalFunction(numeratorCoefficients: KoneList<Number>, reverse: Boolean = false): ListRationalFunction<Number> =
-    ListRationalFunction<Number>(
-        ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
-        polynomialOne
-    )
-
-/**
- * Represents [this] constant as a rational function.
- */
-context(_: ListPolynomialSpace<C>)
-public fun <C> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())
+///**
+// * Constructs [ListRationalFunction] instance with numerator and denominator constructed with provided
+// * [numeratorCoefficients] and [denominatorCoefficients]. The both collections of coefficients will be reversed if
+// * [reverse] parameter is true.
+// */
+//public fun <C> ListRationalFunction(numeratorCoefficients: KoneList<C>, denominatorCoefficients: KoneList<C>, reverse: Boolean = false): ListRationalFunction<C> =
+//    ListRationalFunction<C>(
+//        ListPolynomial( with(numeratorCoefficients) { if (reverse) reversed() else this } ),
+//        ListPolynomial( with(denominatorCoefficients) { if (reverse) reversed() else this } )
+//    )
+///**
+// * Constructs [ListRationalFunction] instance with provided [numerator] and unit denominator.
+// */
+//context(polynomialSpace: ListPolynomialSpace<Number>)
+//public fun <Number> ListRationalFunction(numerator: ListPolynomial<Number>): ListRationalFunction<Number> =
+//    ListRationalFunction<Number>(numerator, polynomialSpace.one)
+///**
+// * Constructs [ListRationalFunction] instance with numerator constructed with provided [numeratorCoefficients] and unit
+// * denominator. The collection of numerator coefficients will be reversed if [reverse] parameter is true.
+// */
+//context(polynomialSpace: ListPolynomialSpace<Number>)
+//public fun <Number> ListRationalFunction(numeratorCoefficients: KoneList<Number>, reverse: Boolean = false): ListRationalFunction<Number> =
+//    ListRationalFunction<Number>(
+//        ListPolynomial(numeratorCoefficients.let { if (reverse) it.reversed() else it }),
+//        polynomialSpace.one,
+//    )
+//
+///**
+// * Represents [this] constant as a rational function.
+// */
+//context(_: ListPolynomialSpace<C>)
+//public fun <C> C.asListRationalFunction() : ListRationalFunction<C> = ListRationalFunction(asListPolynomial())

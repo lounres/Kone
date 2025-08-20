@@ -40,6 +40,7 @@ contract [ callsInPlace(transform, AT_MOST_ONCE) ] {
     if (node != null) node.value = transform(node.value)
 }
 
+@IgnorableReturnValue
 public inline fun <K, V> KoneMutableMap<K, V>.setOrChange(key: K, valueOnSet: () -> V, transformOnChange: (currentValue: V) -> V): V
 contract [ callsInPlace(valueOnPut, AT_MOST_ONCE), callsInPlace(transformOnChange, AT_MOST_ONCE) ] {
     val node = getNodeOrNull(key)
@@ -175,6 +176,7 @@ public inline fun <K, V, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyMapTo
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <K, V, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyMapToBy(destination: D, transform: (KoneMapEntry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
         destination.setOrChange(entry.key, { transform(entry) }, { resolve(entry.key, it, entry.value) })

@@ -9,7 +9,6 @@ package dev.lounres.kone.polynomial
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.KoneIterable
@@ -21,7 +20,6 @@ import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.utils.associateBy
 import dev.lounres.kone.collections.utils.mapKeys
 import dev.lounres.kone.collections.utils.setOrChange
-import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.defaultFor
 
@@ -80,8 +78,8 @@ public fun <C> C.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomia
 /**
  * Converts [this] variable to [LabeledPolynomial].
  */
-context(_: Ring<C>)
-public inline fun <C> LabeledVariable.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(KoneReifiedMap.of(KoneReifiedMap.of(this mapsTo 1u) mapsTo one))
+context(ring: Ring<C>)
+public inline fun <C> LabeledVariable.asLabeledPolynomial() : LabeledPolynomial<C> = LabeledPolynomial<C>(KoneReifiedMap.of(KoneReifiedMap.of(this mapsTo 1u) mapsTo ring.one))
 
 @DslMarker
 internal annotation class LabeledPolynomialConstructorDSL1
@@ -368,39 +366,39 @@ public inline fun <C> LabeledPolynomialDSL1(initialCapacity: Int? = null, block:
 //@ExperimentalKoneAPI
 //public fun <C> LabeledPolynomialDSL2(initialCapacity: Int? = null, block: DSL2LabeledPolynomialBuilder<C>.() -> Unit): LabeledPolynomial<C> = DSL2LabeledPolynomialBuilder(polynomialSpace.constantRing, initialCapacity).apply(block).build()
 
-public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>, denominatorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
-    LabeledRationalFunction<C>(
-        LabeledPolynomial(numeratorCoefficients),
-        LabeledPolynomial(denominatorCoefficients)
-    )
-
-context(_: LabeledPolynomialSpace<C>)
-public fun <C> LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
-    LabeledRationalFunction<C>(numerator, one)
-
-context(_: LabeledPolynomialSpace<C>)
-public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
-    LabeledRationalFunction<C>(
-        LabeledPolynomial(numeratorCoefficients),
-        one
-    )
-
-/**
- * Converts [this] constant to [LabeledRationalFunction].
- */
-context(_: LabeledPolynomialSpace<C>)
-public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
-    LabeledRationalFunction(
-        this.asLabeledPolynomial(),
-        one,
-    )
-
-/**
- * Converts [this] variable to [LabeledRationalFunction].
- */
-context(numberContext: Ring<C>, _: LabeledPolynomialSpace<C>)
-public fun <C> LabeledVariable.asLabeledRationalFunction() : LabeledRationalFunction<C> =
-    LabeledRationalFunction(
-        numberContext { this.asLabeledPolynomial() },
-        polynomialOne,
-    )
+//public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>, denominatorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
+//    LabeledRationalFunction<C>(
+//        LabeledPolynomial(numeratorCoefficients),
+//        LabeledPolynomial(denominatorCoefficients)
+//    )
+//
+//context(_: LabeledPolynomialSpace<C>)
+//public fun <C> LabeledRationalFunction(numerator: LabeledPolynomial<C>): LabeledRationalFunction<C> =
+//    LabeledRationalFunction<C>(numerator, one)
+//
+//context(_: LabeledPolynomialSpace<C>)
+//public fun <C> LabeledRationalFunction(numeratorCoefficients: LabeledPolynomialCoefficients<C>): LabeledRationalFunction<C> =
+//    LabeledRationalFunction<C>(
+//        LabeledPolynomial(numeratorCoefficients),
+//        one
+//    )
+//
+///**
+// * Converts [this] constant to [LabeledRationalFunction].
+// */
+//context(_: LabeledPolynomialSpace<C>)
+//public fun <C> C.asLabeledRationalFunction() : LabeledRationalFunction<C> =
+//    LabeledRationalFunction(
+//        this.asLabeledPolynomial(),
+//        one,
+//    )
+//
+///**
+// * Converts [this] variable to [LabeledRationalFunction].
+// */
+//context(numberContext: Ring<C>, _: LabeledPolynomialSpace<C>)
+//public fun <C> LabeledVariable.asLabeledRationalFunction() : LabeledRationalFunction<C> =
+//    LabeledRationalFunction(
+//        numberContext { this.asLabeledPolynomial() },
+//        polynomialOne,
+//    )

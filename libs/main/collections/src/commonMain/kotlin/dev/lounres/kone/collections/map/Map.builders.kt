@@ -414,6 +414,7 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
         return result.getNodeOrNull(key)
     }
     
+    @IgnorableReturnValue
     override fun set(key: Key, value: Value): KoneMutableMapNode<Key, Value> {
         val result = result ?: error("This KoneReifiedMap builder is already used")
         return result.set(key, value)

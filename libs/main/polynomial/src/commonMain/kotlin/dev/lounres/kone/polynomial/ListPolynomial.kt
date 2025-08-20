@@ -24,25 +24,19 @@ public data class ListPolynomial<Number>(
 }
 
 public open class ListPolynomialSpace<Number>(
-    protected open val numberContext: Ring<Number>,
-) : UnivariatePolynomialSpace<Number, ListPolynomial<Number>> {
-    final override val numberZero: Number get() = numberContext.zero
-    final override val numberOne: Number get() = numberContext.one
-    
-    final override fun numberValueOf(arg: Int): Number = numberContext.valueOf(arg)
-    final override fun numberValueOf(arg: UInt): Number = numberContext.valueOf(arg)
-    final override fun numberValueOf(arg: Long): Number = numberContext.valueOf(arg)
-    final override fun numberValueOf(arg: ULong): Number = numberContext.valueOf(arg)
-    final override val Int.numberValue: Number get() = with(numberContext) { this@numberValue.value }
-    final override val UInt.numberValue: Number get() = with(numberContext) { this@numberValue.value }
-    final override val Long.numberValue: Number get() = with(numberContext) { this@numberValue.value }
-    final override val ULong.numberValue: Number get() = with(numberContext) { this@numberValue.value }
-    
+    protected open val ring: CommutativeRing<Number>,
+) : CommutativeAlgebra<Number, ListPolynomial<Number>> {
     final override val zero: ListPolynomial<Number> = ListPolynomial(KoneList.empty())
-    final override val one: ListPolynomial<Number> by lazy { numberOne.asListPolynomial() }
-    override val variable: ListPolynomial<Number> by lazy { ListPolynomial(numberZero, numberOne) }
+    final override val one: ListPolynomial<Number> = ring.one.asListPolynomial()
+    public val variable: ListPolynomial<Number> = ListPolynomial(ring.zero, ring.one)
+    
+    final override fun valueOf(arg: Int): ListPolynomial<Number> = ring.valueOf(arg).asListPolynomial()
+    final override fun valueOf(arg: Long): ListPolynomial<Number> = ring.valueOf(arg).asListPolynomial()
+    final override fun valueOf(arg: UInt): ListPolynomial<Number> = ring.valueOf(arg).asListPolynomial()
+    final override fun valueOf(arg: ULong): ListPolynomial<Number> = ring.valueOf(arg).asListPolynomial()
+    final override fun valueOf(arg: Number): ListPolynomial<Number> = arg.asListPolynomial()
 
-    final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = numberContext {
+    final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = ring {
         for (index in 0u .. max(this.coefficients.lastIndex, other.coefficients.lastIndex))
             when (index) {
                 !in this.coefficients.indices -> if (other.coefficients[index].isNotZero()) return false
@@ -51,32 +45,30 @@ public open class ListPolynomialSpace<Number>(
             }
         return true
     }
-    final override fun ListPolynomial<Number>.isZero(): Boolean = numberContext { coefficients.all { it.isZero() } }
-    final override fun ListPolynomial<Number>.isOne(): Boolean = numberContext { coefficients.allIndexed { index, it -> index == 0u || it.isZero() } }
+    final override fun ListPolynomial<Number>.isZero(): Boolean = ring { coefficients.all { it.isZero() } }
+    final override fun ListPolynomial<Number>.isOne(): Boolean = ring { coefficients.allIndexed { index, it -> index == 0u || it.isZero() } }
 
-    final override fun polynomialValueOf(value: Number): ListPolynomial<Number> = value.asListPolynomial()
-
-    final override operator fun ListPolynomial<Number>.plus(other: Int): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.plus(other: Int): ListPolynomial<Number> = ring {
         if (other == 0) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } + other
+            val result = coefficients.getOrElse(0u) { ring.one } + other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: Int): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.minus(other: Int): ListPolynomial<Number> = ring {
         if (other == 0) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } - other
+            val result = coefficients.getOrElse(0u) { ring.one } - other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.times(other: Int): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.times(other: Int): ListPolynomial<Number> = ring {
         when (other) {
             0 -> zero
             1 -> this
@@ -86,27 +78,27 @@ public open class ListPolynomialSpace<Number>(
         }
     }
     
-    final override operator fun ListPolynomial<Number>.plus(other: UInt): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.plus(other: UInt): ListPolynomial<Number> = ring {
         if (other == 0u) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } + other
+            val result = coefficients.getOrElse(0u) { ring.one } + other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: UInt): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.minus(other: UInt): ListPolynomial<Number> = ring {
         if (other == 0u) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } - other
+            val result = coefficients.getOrElse(0u) { ring.one } - other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.times(other: UInt): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.times(other: UInt): ListPolynomial<Number> = ring {
         when (other) {
             0u -> zero
             1u -> this
@@ -116,27 +108,27 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun ListPolynomial<Number>.plus(other: Long): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.plus(other: Long): ListPolynomial<Number> = ring {
         if (other == 0L) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } + other
+            val result = coefficients.getOrElse(0u) { ring.one } + other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: Long): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.minus(other: Long): ListPolynomial<Number> = ring {
         if (other == 0L) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } - other
+            val result = coefficients.getOrElse(0u) { ring.one } - other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.times(other: Long): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.times(other: Long): ListPolynomial<Number> = ring {
         when (other) {
             0L -> zero
             1L -> this
@@ -146,27 +138,27 @@ public open class ListPolynomialSpace<Number>(
         }
     }
     
-    final override operator fun ListPolynomial<Number>.plus(other: ULong): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.plus(other: ULong): ListPolynomial<Number> = ring {
         if (other == 0uL) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } + other
+            val result = coefficients.getOrElse(0u) { ring.one } + other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: ULong): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.minus(other: ULong): ListPolynomial<Number> = ring {
         if (other == 0uL) this
         else {
-            val result = coefficients.getOrElse(0u) { numberOne } - other
+            val result = coefficients.getOrElse(0u) { ring.one } - other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.times(other: ULong): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.times(other: ULong): ListPolynomial<Number> = ring {
         when (other) {
             0uL -> zero
             1uL -> this
@@ -176,22 +168,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun Int.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Int.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         if (this == 0) other
         else {
-            val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
+            val result = this@plus + other.coefficients.getOrElse(0u) { ring.zero }
             ListPolynomial(
                 if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun Int.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Int.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (this == 0) { other.coefficients.map { -it } }
                 else {
-                    val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
+                    val result = this@minus - other.coefficients.getOrElse(0u) { ring.zero }
                     
                     if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -199,7 +191,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun Int.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Int.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         when (this) {
             0 -> zero
             1 -> other
@@ -209,22 +201,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
     
-    final override operator fun UInt.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun UInt.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         if (this == 0u) other
         else {
-            val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
+            val result = this@plus + other.coefficients.getOrElse(0u) { ring.zero }
             ListPolynomial(
                 if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun UInt.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun UInt.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (this == 0u) { other.coefficients.map { -it } }
                 else {
-                    val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
+                    val result = this@minus - other.coefficients.getOrElse(0u) { ring.zero }
                     
                     if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -232,7 +224,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun UInt.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun UInt.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         when (this) {
             0u -> zero
             1u -> other
@@ -242,22 +234,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun Long.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Long.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         if (this == 0L) other
         else {
-            val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
+            val result = this@plus + other.coefficients.getOrElse(0u) { ring.zero }
             ListPolynomial(
                 if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun Long.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Long.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (this == 0L) { other.coefficients.map { -it } }
                 else {
-                    val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
+                    val result = this@minus - other.coefficients.getOrElse(0u) { ring.zero }
                     
                     if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -265,7 +257,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun Long.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Long.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         when (this) {
             0L -> zero
             1L -> other
@@ -275,22 +267,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
     
-    final override operator fun ULong.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun ULong.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         if (this == 0uL) other
         else {
-            val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
+            val result = this@plus + other.coefficients.getOrElse(0u) { ring.zero }
             ListPolynomial(
                 if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ULong.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun ULong.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (this == 0uL) { other.coefficients.map { -it } }
                 else {
-                    val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
+                    val result = this@minus - other.coefficients.getOrElse(0u) { ring.zero }
                     
                     if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -298,7 +290,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun ULong.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun ULong.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         when (this) {
             0uL -> zero
             1uL -> other
@@ -308,22 +300,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun Number.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Number.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         if (this.isZero()) other
         else {
-            val result = this@plus + other.coefficients.getOrElse(0u) { numberZero }
+            val result = this@plus + other.coefficients.getOrElse(0u) { ring.zero }
             ListPolynomial(
                 if (other.coefficients.size == 0u) KoneList.of(result)
                 else other.coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun Number.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Number.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (this.isZero()) { other.coefficients.map { -it } }
                 else {
-                    val result = this@minus - other.coefficients.getOrElse(0u) { numberZero }
+                    val result = this@minus - other.coefficients.getOrElse(0u) { ring.zero }
                     
                     if (other.coefficients.size == 0u) KoneList.of(result)
                     else other.coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -331,7 +323,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun Number.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    final override operator fun Number.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         when {
             this.isZero() -> zero
             this.isOne() -> other
@@ -341,22 +333,22 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun ListPolynomial<Number>.plus(other: Number): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.plus(other: Number): ListPolynomial<Number> = ring {
         if (other.isZero()) this
         else {
-            val result = coefficients.getOrElse(0u) { numberZero } + other
+            val result = coefficients.getOrElse(0u) { ring.zero } + other
             ListPolynomial(
                 if (coefficients.size == 0u) KoneList.of(result)
                 else coefficients.toKoneSettableList().apply { this[0u] = result }
             )
         }
     }
-    final override operator fun ListPolynomial<Number>.minus(other: Number): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.minus(other: Number): ListPolynomial<Number> = ring {
         ListPolynomial(
             scope {
                 if (other.isZero()) { coefficients.map { -it } }
                 else {
-                    val result = coefficients.getOrElse(0u) { numberZero } - other
+                    val result = coefficients.getOrElse(0u) { ring.zero } - other
                     
                     if (coefficients.size == 0u) KoneList.of(result)
                     else coefficients.mapIndexed { index, number -> if (index == 0u) result else -number }
@@ -364,7 +356,7 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun ListPolynomial<Number>.times(other: Number): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.times(other: Number): ListPolynomial<Number> = ring {
         when {
             other.isZero() -> zero
             other.isOne() -> this
@@ -374,12 +366,12 @@ public open class ListPolynomialSpace<Number>(
         }
     }
 
-    final override operator fun ListPolynomial<Number>.unaryMinus(): ListPolynomial<Number> = numberContext {
+    final override operator fun ListPolynomial<Number>.unaryMinus(): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { -it })
     }
-    final override operator fun ListPolynomial<Number>.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
-        val thisSize = coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } } + 1u
-        val otherSize = other.coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } } + 1u
+    final override operator fun ListPolynomial<Number>.plus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
+        val thisSize = coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
+        val otherSize = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         ListPolynomial(
             KoneList(max(thisSize, otherSize)) {
                 when {
@@ -390,9 +382,9 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun ListPolynomial<Number>.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
-        val thisSize = coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } } + 1u
-        val otherSize = other.coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } } + 1u
+    final override operator fun ListPolynomial<Number>.minus(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
+        val thisSize = coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
+        val otherSize = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         ListPolynomial(
             KoneList(max(thisSize, otherSize)) {
                 when {
@@ -403,9 +395,9 @@ public open class ListPolynomialSpace<Number>(
             }
         )
     }
-    final override operator fun ListPolynomial<Number>.times(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
-        val thisDegree = coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } }
-        val otherDegree = other.coefficients.lastIndexThat { _, it -> numberContext { it.isNotZero() } }
+    final override operator fun ListPolynomial<Number>.times(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
+        val thisDegree = coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } }
+        val otherDegree = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } }
         if (thisDegree == UInt.MAX_VALUE || otherDegree == UInt.MAX_VALUE) return zero
         ListPolynomial(
             KoneList(thisDegree + otherDegree + 1u) { d ->
@@ -418,39 +410,40 @@ public open class ListPolynomialSpace<Number>(
     
     // TODO: To optimize boxing
     final override fun power(base: ListPolynomial<Number>, exponent: UInt): ListPolynomial<Number> = super.power(base, exponent)
+    final override fun power(base: ListPolynomial<Number>, exponent: ULong): ListPolynomial<Number> = super.power(base, exponent)
     
-    final override val ListPolynomial<Number>.degree: UInt
+    public val ListPolynomial<Number>.degree: UInt
         get() = coefficients
-            .lastIndexThat { _, it -> numberContext { it.isNotZero() } }
+            .lastIndexThat { _, it -> ring { it.isNotZero() } }
             .let { if (it == UInt.MAX_VALUE) zeroPolynomialDegreeException() else it }
 }
 
 public class ListPolynomialSpaceOverField<Number>(
-    override val numberContext: Field<Number>,
-) : ListPolynomialSpace<Number>(numberContext), UnivariatePolynomialSpaceOverField<Number, ListPolynomial<Number>> {
-    public override fun ListPolynomial<Number>.div(other: Int): ListPolynomial<Number> = numberContext {
+    override val ring: Field<Number>,
+) : ListPolynomialSpace<Number>(ring), EuclideanRing<ListPolynomial<Number>> {
+    public fun ListPolynomial<Number>.div(other: Int): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { it / other })
     }
-    public override fun ListPolynomial<Number>.div(other: UInt): ListPolynomial<Number> = numberContext {
+    public fun ListPolynomial<Number>.div(other: UInt): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { it / other })
     }
-    public override fun ListPolynomial<Number>.div(other: Long): ListPolynomial<Number> = numberContext {
+    public fun ListPolynomial<Number>.div(other: Long): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { it / other })
     }
-    public override fun ListPolynomial<Number>.div(other: ULong): ListPolynomial<Number> = numberContext {
+    public fun ListPolynomial<Number>.div(other: ULong): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { it / other })
     }
-    public override fun ListPolynomial<Number>.div(other: Number): ListPolynomial<Number> = numberContext {
+    public fun ListPolynomial<Number>.div(other: Number): ListPolynomial<Number> = ring {
         ListPolynomial(coefficients.map { it / other })
     }
     
-    override fun ListPolynomial<Number>.divrem(other: ListPolynomial<Number>): EuclideanDivisionResult<ListPolynomial<Number>> = numberContext {
+    override fun ListPolynomial<Number>.divrem(other: ListPolynomial<Number>): EuclideanDivisionResult<ListPolynomial<Number>> = ring {
         val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
         if (dividendDegree == UInt.MAX_VALUE) return EuclideanDivisionResult(
-            quotient = polynomialZero,
-            remainder = polynomialZero,
+            quotient = zero,
+            remainder = zero,
         )
         if (divisorDegree > dividendDegree) return EuclideanDivisionResult(
             quotient = ListPolynomial(),
@@ -459,7 +452,7 @@ public class ListPolynomialSpaceOverField<Number>(
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]
         val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
-        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { numberZero }
+        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { ring.zero }
         
         for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
             val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
@@ -474,16 +467,16 @@ public class ListPolynomialSpaceOverField<Number>(
         )
     }
     
-    override fun ListPolynomial<Number>.div(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    override fun ListPolynomial<Number>.div(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
-        if (dividendDegree == UInt.MAX_VALUE) return polynomialZero
-        if (divisorDegree > dividendDegree) return polynomialZero
+        if (dividendDegree == UInt.MAX_VALUE) return zero
+        if (divisorDegree > dividendDegree) return zero
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]
         val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
-        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { numberZero }
+        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { ring.zero }
         
         for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
             val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
@@ -495,11 +488,11 @@ public class ListPolynomialSpaceOverField<Number>(
         ListPolynomial(quotientRestCoefficients)
     }
     
-    override fun ListPolynomial<Number>.rem(other: ListPolynomial<Number>): ListPolynomial<Number> = numberContext {
+    override fun ListPolynomial<Number>.rem(other: ListPolynomial<Number>): ListPolynomial<Number> = ring {
         val dividendDegree = this.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         val divisorDegree = other.coefficients.lastIndexThat { _, element -> element.isNotZero() }
         if (divisorDegree == UInt.MAX_VALUE) divisionByZero()
-        if (dividendDegree == UInt.MAX_VALUE) return polynomialZero
+        if (dividendDegree == UInt.MAX_VALUE) return zero
         if (divisorDegree > dividendDegree) return this
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]

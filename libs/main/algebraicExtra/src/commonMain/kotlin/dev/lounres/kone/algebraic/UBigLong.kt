@@ -107,19 +107,19 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     // endregion
     
     // region UBigLong-UInt operations
-    public operator fun UBigLong.div(other: UInt): UBigLong = this / other.value
+    public operator fun UBigLong.div(other: UInt): UBigLong = this / valueOf(other)
     // endregion
 
     // region UBigLong-ULong operations
-    public operator fun UBigLong.div(other: ULong): UBigLong = this / other.value
+    public operator fun UBigLong.div(other: ULong): UBigLong = this / valueOf(other)
     // endregion
 
     // region UInt-UBigLong operations
-    public operator fun UInt.div(other: UBigLong): UBigLong = this.value / other
+    public operator fun UInt.div(other: UBigLong): UBigLong = valueOf(this) / other
     // endregion
 
     // region ULong-UBigLong operations
-    public operator fun ULong.div(other: UBigLong): UBigLong = this.value / other
+    public operator fun ULong.div(other: UBigLong): UBigLong = valueOf(this) / other
     // endregion
 
     // region UBigLong-UBigLong operations
@@ -527,8 +527,8 @@ public infix fun UBigLong.xor(other: UBigLong): UBigLong = with(context) { this@
 public fun UBigLong.toULong(): ULong = this.magnitude.let { if (it.isEmpty()) 0uL else it[0u] }
 public fun UBigLong.toUInt(): UInt = this.toULong().toUInt()
 
-public fun ULong.toUBigLong(): UBigLong = context(UBigLong.context) { this.value }
-public fun UInt.toUBigLong(): UBigLong = context(UBigLong.context) { this.value }
+public fun ULong.toUBigLong(): UBigLong = context(UBigLong.context) { valueOf(this) }
+public fun UInt.toUBigLong(): UBigLong = context(UBigLong.context) { valueOf(this) }
 
 public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
@@ -550,7 +550,7 @@ public fun UBigLong.toString(radix: UInt): String {
         if (this.isZero()) return "0"
         
         return buildString {
-            val radix = radix.value
+            val radix = valueOf(radix)
             
             var result = this@toString
             while (result.isNotZero()) {

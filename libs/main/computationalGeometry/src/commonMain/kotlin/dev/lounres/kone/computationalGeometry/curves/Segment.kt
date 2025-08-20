@@ -6,10 +6,8 @@
 package dev.lounres.kone.computationalGeometry.curves
 
 import dev.lounres.kone.computationalGeometry.AffineSpaceOverRing
-import dev.lounres.kone.computationalGeometry.VectorSpacePoint
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.multidimensionalCollections.MDList1
 
 
 //@JvmInline

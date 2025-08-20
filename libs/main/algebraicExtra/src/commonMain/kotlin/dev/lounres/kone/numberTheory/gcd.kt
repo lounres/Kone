@@ -10,10 +10,8 @@ import dev.lounres.kone.algebraic.EuclideanSemiring
 import dev.lounres.kone.algebraic.divrem
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.one
 import dev.lounres.kone.algebraic.rem
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
 import kotlin.jvm.JvmInline
@@ -141,21 +139,21 @@ public tailrec fun <N> gcd(a: N, b: N): N = if (a.isZero()) b else gcd(b % a, a)
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(_: EuclideanSemiring<N>)
-public fun <N> gcd(vararg values: N): N = if (values.isEmpty()) zero else values.reduce { a, b -> gcd(a, b) }
+context(ring: EuclideanSemiring<N>)
+public fun <N> gcd(vararg values: N): N = if (values.isEmpty()) ring.zero else values.reduce { a, b -> gcd(a, b) }
 /**
  * Computes [Greatest Common Divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of the [values].
  */
-context(_: EuclideanSemiring<N>)
-public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else zero }
+context(ring: EuclideanSemiring<N>)
+public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.hasNext()) it.reduce { a, b -> gcd(a, b) } else ring.zero }
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor) of [a] and [b].
  */
-context(_: EuclideanRing<N>)
+context(ring: EuclideanRing<N>)
 public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
-    bezoutIdentityWithGCDInternalLogic(a, b, one, zero, zero, one)
+    bezoutIdentityWithGCDInternalLogic(a, b, ring.one, ring.zero, ring.zero, ring.one)
 
 /**
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and

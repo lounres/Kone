@@ -55,7 +55,7 @@ internal value class BigLongBigLongQuotientsByGCD(val first: BigLong, val second
 internal fun divideByGCD(first: BigLong, second: BigLong): BigLongBigLongQuotientsByGCD = context(BigLong.context) {
     val gcd = gcd(first, second).absoluteValue
     
-    if (context(UBigLong.context) { gcd.isZero() }) BigLongBigLongQuotientsByGCD(zero, zero)
+    if (context(UBigLong.context) { gcd.isZero() }) BigLongBigLongQuotientsByGCD(BigLong.context.zero, BigLong.context.zero)
     else BigLongBigLongQuotientsByGCD(
         first = first / gcd,
         second = second / gcd,
@@ -103,7 +103,7 @@ internal value class UBigLongUBigLongQuotientsByGCD(val first: UBigLong, val sec
 internal fun divideByGCD(first: UBigLong, second: UBigLong): UBigLongUBigLongQuotientsByGCD = context(UBigLong.context) {
     val gcd = gcd(first, second)
     
-    if (context(UBigLong.context) { gcd.isZero() }) UBigLongUBigLongQuotientsByGCD(zero, zero)
+    if (context(UBigLong.context) { gcd.isZero() }) UBigLongUBigLongQuotientsByGCD(UBigLong.context.zero, UBigLong.context.zero)
     else UBigLongUBigLongQuotientsByGCD(
         first = first / gcd,
         second = second / gcd,

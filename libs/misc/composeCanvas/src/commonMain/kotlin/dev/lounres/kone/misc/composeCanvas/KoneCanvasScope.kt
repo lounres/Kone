@@ -14,18 +14,19 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMo
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Vector2
+import dev.lounres.kone.computationalGeometry.PointWrapper
+import dev.lounres.kone.computationalGeometry.VectorWrapper
 import dev.lounres.kone.computationalGeometry.angles.Angle
 import dev.lounres.kone.computationalGeometry.angles.cos
 import dev.lounres.kone.computationalGeometry.angles.sin
-import dev.lounres.kone.computationalGeometry.inEuclideanKategoryScope2For
 import dev.lounres.kone.computationalGeometry.lengthSquared
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.times
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import kotlin.math.sqrt
 
 
@@ -166,8 +167,8 @@ public fun KoneCanvasScope.transform(
 
 public fun KoneCanvasScope.drawLine(
     brush: Brush,
-    start: Point2<Double>,
-    end: Point2<Double>,
+    start: PointWrapper<MDList1<Double>>,
+    end: PointWrapper<MDList1<Double>>,
     strokeWidth: Double = 0.0,
     cap: StrokeCap = Stroke.DefaultCap,
 //    pathEffect: PathEffect? = null,
@@ -175,29 +176,29 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
+    inKoneCanvasEuclideanSpace {
         val directionVector = end - start
-        val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared))
+        val strokeVector = directionVector.let { VectorWrapper(MDList1(-it.vector[1u], it.vector[0u])) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
         drawPath(
             path = when (cap) {
                 StrokeCap.Butt -> KoneCanvasPath {
                     moveTo(start + strokeVector)
                     lineTo(end + strokeVector)
-                    lineTo(end - strokeVector)
-                    lineTo(start - strokeVector)
+                    lineTo(end + -strokeVector)
+                    lineTo(start + -strokeVector)
                     lineTo(start + strokeVector)
                 }
                 StrokeCap.Round -> KoneCanvasPath {
                     error("Unsupported type of cap for now")
                 }
                 StrokeCap.Square -> KoneCanvasPath {
-                    val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                    val start = start - directionPadVector
+                    val directionPadVector = strokeVector.let { VectorWrapper(MDList1(it.vector[1u], -it.vector[0u])) }
+                    val start = start + -directionPadVector
                     val end = end + directionPadVector
                     moveTo(start + strokeVector)
                     lineTo(end + strokeVector)
-                    lineTo(end - strokeVector)
-                    lineTo(start - strokeVector)
+                    lineTo(end + -strokeVector)
+                    lineTo(start + -strokeVector)
                     lineTo(start + strokeVector)
                 }
                 else -> error("Unknown kind of cap")
@@ -213,8 +214,8 @@ public fun KoneCanvasScope.drawLine(
 
 public fun KoneCanvasScope.drawLine(
     color: Color,
-    start: Point2<Double>,
-    end: Point2<Double>,
+    start: PointWrapper<MDList1<Double>>,
+    end: PointWrapper<MDList1<Double>>,
     strokeWidth: Double = 0.0,
     cap: StrokeCap = Stroke.DefaultCap,
 //    pathEffect: PathEffect? = null,
@@ -222,29 +223,29 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
+    inKoneCanvasEuclideanSpace {
         val directionVector = end - start
-        val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared))
+        val strokeVector = directionVector.let { VectorWrapper(MDList1(-it.vector[1u], it.vector[0u])) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
         drawPath(
             path = when (cap) {
                 StrokeCap.Butt -> KoneCanvasPath {
                     moveTo(start + strokeVector)
                     lineTo(end + strokeVector)
-                    lineTo(end - strokeVector)
-                    lineTo(start - strokeVector)
+                    lineTo(end + -strokeVector)
+                    lineTo(start + -strokeVector)
                     lineTo(start + strokeVector)
                 }
                 StrokeCap.Round -> KoneCanvasPath {
                     error("Unsupported type of cap for now")
                 }
                 StrokeCap.Square -> KoneCanvasPath {
-                    val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                    val start = start - directionPadVector
+                    val directionPadVector = strokeVector.let { VectorWrapper(MDList1(it.vector[1u], -it.vector[0u])) }
+                    val start = start + -directionPadVector
                     val end = end + directionPadVector
                     moveTo(start + strokeVector)
                     lineTo(end + strokeVector)
-                    lineTo(end - strokeVector)
-                    lineTo(start - strokeVector)
+                    lineTo(end + -strokeVector)
+                    lineTo(start + -strokeVector)
                     lineTo(start + strokeVector)
                 }
                 else -> error("Unknown kind of cap")
@@ -260,7 +261,7 @@ public fun KoneCanvasScope.drawLine(
 
 public fun KoneCanvasScope.drawRectangle(
     brush: Brush,
-    center: Point2<Double>,
+    center: PointWrapper<MDList1<Double>>,
     size: KoneCanvasSize,
     direction: Angle = Angle.zero,
     alpha: Float = 1.0f,
@@ -268,16 +269,16 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
-        val widthVector = Vector2(cos(direction), sin(direction)) * size.width
-        val heightVector = Vector2(-sin(direction), cos(direction)) * size.height
+    inKoneCanvasEuclideanSpace {
+        val widthVector = VectorWrapper(MDList1(cos(direction), sin(direction))) * size.width
+        val heightVector = VectorWrapper(MDList1(-sin(direction), cos(direction))) * size.height
         drawPath(
             brush = brush,
             path = KoneCanvasPath {
                 moveTo(center + widthVector + heightVector)
-                lineTo(center - widthVector + heightVector)
-                lineTo(center - widthVector - heightVector)
-                lineTo(center + widthVector - heightVector)
+                lineTo(center + -widthVector + heightVector)
+                lineTo(center + -widthVector + -heightVector)
+                lineTo(center + widthVector + -heightVector)
                 lineTo(center + widthVector + heightVector)
             },
             alpha = alpha,
@@ -290,7 +291,7 @@ public fun KoneCanvasScope.drawRectangle(
 
 public fun KoneCanvasScope.drawRectangle(
     color: Color,
-    center: Point2<Double>,
+    center: PointWrapper<MDList1<Double>>,
     size: KoneCanvasSize,
     direction: Angle = Angle.zero,
     alpha: Float = 1.0f,
@@ -298,16 +299,16 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
-        val widthVector = Vector2(cos(direction), sin(direction)) * (size.width / 2)
-        val heightVector = Vector2(-sin(direction), cos(direction)) * (size.height / 2)
+    inKoneCanvasEuclideanSpace {
+        val widthVector = VectorWrapper(MDList1(cos(direction), sin(direction))) * (size.width / 2)
+        val heightVector = VectorWrapper(MDList1(-sin(direction), cos(direction))) * (size.height / 2)
         drawPath(
             color = color,
             path = KoneCanvasPath {
                 moveTo(center + widthVector + heightVector)
-                lineTo(center - widthVector + heightVector)
-                lineTo(center - widthVector - heightVector)
-                lineTo(center + widthVector - heightVector)
+                lineTo(center + -widthVector + heightVector)
+                lineTo(center + -widthVector + -heightVector)
+                lineTo(center + widthVector + -heightVector)
                 lineTo(center + widthVector + heightVector)
             },
             alpha = alpha,

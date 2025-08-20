@@ -5,10 +5,94 @@
 
 package dev.lounres.kone.computationalGeometry
 
+import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.multidimensionalCollections.MDList1
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance.INVARIANT
+
 
 // The underlying ring is ordered (thus, is a subring of real numbers and is an integral domain)
 public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOverRing<Number, Vector, Point> {
     public infix fun Vector.dot(other: Vector): Number
+    
+    public companion object;
+    
+    public class Key<Number, Vector, Point>(
+        elementType: SuppliedType,
+        vectorType: SuppliedType,
+        pointType: SuppliedType,
+    ) : RegistryKey<EuclideanSpaceOverRing<Number, Vector, Point>> {
+        public val typeKey: SuppliedType.Regular =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
+            SuppliedType.Regular(
+                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing",
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = elementType
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = vectorType
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = pointType
+                    ),
+                ),
+                isNullable = false
+            )
+        override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
+    }
 }
 
-public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpaceOverRing<Number, Vector, Point>, AffineSpaceOverField<Number, Vector, Point>
+context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, *>)
+public infix fun <Number, Vector> Vector.dot(other: Vector): Number = with(euclideanSpace) { this@dot dot other }
+
+context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, *>)
+public fun <Number, Vector> Vector.lengthSquared(): Number = with(euclideanSpace) { this@lengthSquared dot this@lengthSquared }
+
+public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpaceOverRing<Number, Vector, Point>, AffineSpaceOverField<Number, Vector, Point> {
+    public companion object;
+    
+    public class Key<Number, Vector, Point>(
+        elementType: SuppliedType,
+        vectorType: SuppliedType,
+        pointType: SuppliedType,
+    ) : RegistryKey<EuclideanSpaceOverField<Number, Vector, Point>> {
+        public val typeKey: SuppliedType.Regular =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
+            SuppliedType.Regular(
+                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField",
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = elementType
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = vectorType
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = INVARIANT,
+                        type = pointType
+                    ),
+                ),
+                isNullable = false
+            )
+        override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
+        override fun hashCode(): Int = typeKey.hashCode()
+    }
+}
+
+public fun <Number, Vector, Point, Result> KoneContextRegistry.inEuclideanSpaceOverFieldScopeFor(
+    numberType: SuppliedType,
+    vectorType: SuppliedType,
+    pointType: SuppliedType,
+    block: context(EuclideanSpaceOverField<Number, Vector, Point>) () -> Result
+): Result = block(this[EuclideanSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType)])

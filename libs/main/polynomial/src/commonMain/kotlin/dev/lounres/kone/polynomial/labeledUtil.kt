@@ -14,34 +14,16 @@ import dev.lounres.kone.relations.defaultFor
 import kotlin.jvm.JvmName
 
 
-public val <C> Ring<C>.labeledPolynomialSpace: LabeledPolynomialSpace<C>
+public val <C> CommutativeRing<C>.labeledPolynomialSpace: LabeledPolynomialSpace<C>
     get() = LabeledPolynomialSpace(this)
 
 public val <C> Field<C>.labeledPolynomialSpace: LabeledPolynomialSpaceOverField<C>
     get() = LabeledPolynomialSpaceOverField(this)
 
-public val <Number, NumberContext: Ring<Number>> NumberContext.labeledPolynomialSpaceScope: PolynomialSpaceScope<Number, LabeledPolynomial<Number>, NumberContext, LabeledPolynomialSpace<Number>>
-    get() = PolynomialSpaceScope(numberContext = this, polynomialSpace = this.labeledPolynomialSpace)
+//public val <C> LabeledPolynomialSpace<C>.labeledRationalFunctionSpace: LabeledRationalFunctionSpace<C>
+//    get() = LabeledRationalFunctionSpace(this)
 
-public val <Number, NumberContext: Field<Number>> NumberContext.labeledPolynomialSpaceScope: PolynomialSpaceScope<Number, LabeledPolynomial<Number>, NumberContext, LabeledPolynomialSpaceOverField<Number>>
-    get() = PolynomialSpaceScope(numberContext = this, polynomialSpace = this.labeledPolynomialSpace)
-
-public val <C> LabeledPolynomialSpace<C>.labeledRationalFunctionSpace: LabeledRationalFunctionSpace<C>
-    get() = LabeledRationalFunctionSpace(this)
-
-public val <Number, NumberContext: Ring<Number>> NumberContext.labeledRationalFunctionSpaceScope: RationalFunctionSpaceScope<Number, LabeledPolynomial<Number>, LabeledRationalFunction<Number>, NumberContext, LabeledPolynomialSpace<Number>, LabeledRationalFunctionSpace<Number>>
-    get() {
-        val polynomialSpace = this.labeledPolynomialSpace
-        return RationalFunctionSpaceScope(numberContext = this, polynomialSpace = polynomialSpace, rationalFunctionSpace = polynomialSpace.labeledRationalFunctionSpace)
-    }
-
-public val <Number, NumberContext: Field<Number>> NumberContext.labeledRationalFunctionSpaceScope: RationalFunctionSpaceScope<Number, LabeledPolynomial<Number>, LabeledRationalFunction<Number>, NumberContext, LabeledPolynomialSpaceOverField<Number>, LabeledRationalFunctionSpace<Number>>
-    get() {
-        val polynomialSpace = this.labeledPolynomialSpace
-        return RationalFunctionSpaceScope(numberContext = this, polynomialSpace = polynomialSpace, rationalFunctionSpace = polynomialSpace.labeledRationalFunctionSpace)
-    }
-
-context(_: Ring<C>)
+context(_: CommutativeRing<C>)
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>): LabeledPolynomial<C> =
     if (coefficients.isEmpty()) this@substitute
     else LabeledPolynomial<C>(
@@ -61,15 +43,15 @@ public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, C>
         }
     )
 
-context(_: Ring<C>)
+context(_: CommutativeRing<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledPolynomial<C> =
     this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 // TODO: To optimize boxing
 @JvmName("substitutePolynomial")
-context(_: LabeledPolynomialSpace<C>)
+context(polynomialSpace: LabeledPolynomialSpace<C>)
 public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledPolynomial<C>>) : LabeledPolynomial<C> =
-    coefficients.nodesView.fold(polynomialZero) { acc, entry ->
+    coefficients.nodesView.fold(polynomialSpace.zero) { acc, entry ->
         val degs = entry.key
         val c = entry.value
         val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
@@ -86,56 +68,56 @@ context(_: LabeledPolynomialSpace<C>)
 public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledPolynomial<C> =
     this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
-// TODO: To optimize boxing
-@JvmName("substituteRationalFunction")
-context(_: LabeledPolynomialSpace<C>, rationalFunctionSpace: LabeledRationalFunctionSpace<C>)
-public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
-    coefficients.nodesView.fold(rationalFunctionZero) { acc, entry ->
-        val degs = entry.key
-        val c = entry.value
-        val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
-        acc + args.nodesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(KoneReifiedMap.of(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, subEntry ->
-            val variable = subEntry.key
-            val substitution = subEntry.value
-            val deg = degs.getOrDefault(variable, 0u)
-            if (deg == 0u) product else product * rationalFunctionSpace.power(substitution, deg)
-        }
-    }
+//// TODO: To optimize boxing
+//@JvmName("substituteRationalFunction")
+//context(_: LabeledPolynomialSpace<C>, rationalFunctionSpace: LabeledRationalFunctionSpace<C>)
+//public fun <C> LabeledPolynomial<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
+//    coefficients.nodesView.fold(rationalFunctionZero) { acc, entry ->
+//        val degs = entry.key
+//        val c = entry.value
+//        val newDegs = degs.filterKeysReified(keyHashing = Hashing.defaultFor()) { it !in args.keysView }
+//        acc + args.nodesView.fold(LabeledRationalFunction(LabeledPolynomial<C>(KoneReifiedMap.of(newDegs mapsTo c, keyHashing = labeledMonomialSignatureHashing)))) { product, subEntry ->
+//            val variable = subEntry.key
+//            val substitution = subEntry.value
+//            val deg = degs.getOrDefault(variable, 0u)
+//            if (deg == 0u) product else product * rationalFunctionSpace.power(substitution, deg)
+//        }
+//    }
+//
+//@JvmName("substituteRationalFunction")
+//context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
+//public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
+//    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
-@JvmName("substituteRationalFunction")
-context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
-public fun <C> LabeledPolynomial<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
-
-context(_: Ring<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, C>): LabeledRationalFunction<C> =
-    LabeledRationalFunction(numerator.substitute(args), denominator.substitute(args))
-
-context(_: Ring<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
-
-// TODO: To optimize calculation
-@JvmName("substitutePolynomial")
-context(_: LabeledPolynomialSpace<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, LabeledPolynomial<C>>) : LabeledRationalFunction<C> =
-    LabeledRationalFunction(numerator.substitute(args), denominator.substitute(args))
-
-@JvmName("substitutePolynomial")
-context(_: LabeledPolynomialSpace<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
-
-// TODO: To optimize calculation
-@JvmName("substituteRationalFunction")
-context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
-        numerator.substitute(args) / denominator.substitute(args)
-
-@JvmName("substituteRationalFunction")
-context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
-public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
-    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
+//context(_: Ring<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, C>): LabeledRationalFunction<C> =
+//    LabeledRationalFunction(numerator.substitute(args), denominator.substitute(args))
+//
+//context(_: Ring<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, C>): LabeledRationalFunction<C> =
+//    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
+//
+//// TODO: To optimize calculation
+//@JvmName("substitutePolynomial")
+//context(_: LabeledPolynomialSpace<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, LabeledPolynomial<C>>) : LabeledRationalFunction<C> =
+//    LabeledRationalFunction(numerator.substitute(args), denominator.substitute(args))
+//
+//@JvmName("substitutePolynomial")
+//context(_: LabeledPolynomialSpace<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledPolynomial<C>>): LabeledRationalFunction<C> =
+//    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
+//
+//// TODO: To optimize calculation
+//@JvmName("substituteRationalFunction")
+//context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(args: KoneMap<LabeledVariable, LabeledRationalFunction<C>>) : LabeledRationalFunction<C> =
+//        numerator.substitute(args) / denominator.substitute(args)
+//
+//@JvmName("substituteRationalFunction")
+//context(_: LabeledPolynomialSpace<C>, _: LabeledRationalFunctionSpace<C>)
+//public fun <C> LabeledRationalFunction<C>.substitute(vararg inputs: KoneMapEntry<LabeledVariable, LabeledRationalFunction<C>>): LabeledRationalFunction<C> =
+//    this.substitute(KoneMap.of(entries = inputs, keyHashing = Hashing.defaultFor<LabeledVariable>()))
 
 context(numberContext: Ring<C>)
 public fun <C> LabeledPolynomial<C>.derivativeWithRespectTo(variable: LabeledVariable): LabeledPolynomial<C> =
@@ -247,7 +229,7 @@ public fun <C> LabeledPolynomial<C>.antiderivativeWithRespectTo(
                 val newDegs = degs.withSetOrChangedReified(key = variable, keyHashing = Hashing.defaultFor(), valueOnSet = { 1u }, transformOnChange = { it + 1u }) // FIXME
                 set(
                     newDegs,
-                    c / (one doublingTimes newDegs[variable])
+                    c / (numberContext.one doublingTimes newDegs[variable])
                 )
             }
         }
@@ -269,7 +251,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
                     newDegs,
                     newDegs[variable].let { deg ->
                         (deg downTo  deg - order + 1u)
-                            .fold(c) { acc, ord -> acc / (one doublingTimes ord) }
+                            .fold(c) { acc, ord -> acc / (numberContext.one doublingTimes ord) }
                     }
                 )
             }
@@ -294,7 +276,7 @@ public fun <C> LabeledPolynomial<C>.nthAntiderivativeWithRespectTo(
                         val index = subEntry.key
                         val order = subEntry.value
                         newDegs[index].let { deg ->
-                            (deg downTo deg - order + 1u).fold(acc1) { acc2, ord -> acc2 / (one doublingTimes ord) }
+                            (deg downTo deg - order + 1u).fold(acc1) { acc2, ord -> acc2 / (numberContext.one doublingTimes ord) }
                         }
                     }
                 )

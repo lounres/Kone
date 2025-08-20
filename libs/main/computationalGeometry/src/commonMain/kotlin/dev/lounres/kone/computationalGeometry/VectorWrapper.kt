@@ -11,4 +11,8 @@ import kotlin.jvm.JvmInline
 
 @Serializable
 @JvmInline
-public value class VectorSpacePoint<Vector>(public val vector: Vector)
+public value class VectorWrapper<out Vector>(public val vector: Vector)
+
+@Serializable
+@JvmInline
+public value class PointWrapper<out Vector>(public val vector: Vector)

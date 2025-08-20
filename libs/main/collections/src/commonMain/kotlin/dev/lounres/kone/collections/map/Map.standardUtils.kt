@@ -37,6 +37,7 @@ public inline fun <Key, Value> KoneMap<in Key, Value>.getOrElse(key: Key, defaul
 public inline fun <Key, Value> KoneMutableMap<in Key, Value>.getOrSet(key: Key, default: () -> Value): Value =
     getNodeOrNull(key).let { node -> if (node == null) default().also { this[key] = it } else node.value }
 
+@IgnorableReturnValue
 public fun <Key, Value> KoneMutableMap<Key, Value>.set(entry: KoneMapEntry<Key, Value>): KoneMutableMapNode<Key, Value> = set(entry.key, entry.value)
 
 public fun <Key, Value> KoneMutableMap<Key, Value>.setAllFrom(entries: KoneIterable<KoneMapEntry<Key, Value>>) { entries.forEach { set(it) } }

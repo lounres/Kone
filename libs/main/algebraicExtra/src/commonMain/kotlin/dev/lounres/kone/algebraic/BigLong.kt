@@ -119,39 +119,39 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // region BigLong-UBigLong operations
     public operator fun BigLong.plus(other: UBigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign == 1 -> BigLong(sign = 1, absoluteValue = this.absoluteValue + other)
-            this.sign == 1 && other.sign == 0 -> this
-            this.sign == 1 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == 0 && other.sign == 1 -> other.value
-            this.sign == 0 && other.sign == 0 -> zero
-            this.sign == 0 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == 1 ->
+            this.sign == 1 && other.sign() == 1 -> BigLong(sign = 1, absoluteValue = this.absoluteValue + other)
+            this.sign == 1 && other.sign() == 0 -> this
+            this.sign == 1 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == 0 && other.sign() == 1 -> other.value
+            this.sign == 0 && other.sign() == 0 -> zero
+            this.sign == 0 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.sign() == 1 ->
                 when (this.absoluteValue compareWith other) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = -1, absoluteValue = this.absoluteValue - other)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = 1, absoluteValue = other - this.absoluteValue)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == -1 && other.sign == 0 -> this
-            this.sign == -1 && other.sign == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.sign() == 0 -> this
+            this.sign == -1 && other.sign() == -1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
     public operator fun BigLong.minus(other: UBigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == 1 && other.sign == 0 -> this
-            this.sign == 1 && other.sign == 1 ->
+            this.sign == 1 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == 1 && other.sign() == 0 -> this
+            this.sign == 1 && other.sign() == 1 ->
                 when (this.absoluteValue compareWith other) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this.absoluteValue - other)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other - this.absoluteValue)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == 0 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == 0 && other.sign == 0 -> zero
-            this.sign == 0 && other.sign == 1 -> -other.value
-            this.sign == -1 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == 0 -> this
-            this.sign == -1 && other.sign == 1 -> BigLong(sign = -1, absoluteValue = this.absoluteValue + other)
+            this.sign == 0 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == 0 && other.sign() == 0 -> zero
+            this.sign == 0 && other.sign() == 1 -> -other.value
+            this.sign == -1 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.sign() == 0 -> this
+            this.sign == -1 && other.sign() == 1 -> BigLong(sign = -1, absoluteValue = this.absoluteValue + other)
             else -> error("Unexpected internal case")
         }
     }
@@ -215,39 +215,39 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // region UBigLong-BigLong operations
     public operator fun UBigLong.plus(other: BigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign == 1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
-            this.sign == 1 && other.sign == 0 -> this.value
-            this.sign == 1 && other.sign == -1 ->
+            this.sign() == 1 && other.sign == 1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
+            this.sign() == 1 && other.sign == 0 -> this.value
+            this.sign() == 1 && other.sign == -1 ->
                 when (this compareWith other.absoluteValue) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this - other.absoluteValue)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other.absoluteValue - this)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == 0 && other.sign == 1 -> other
-            this.sign == 0 && other.sign == 0 -> zero
-            this.sign == 0 && other.sign == -1 -> other
-            this.sign == -1 && other.sign == 1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == 0 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == -1 -> error("Unexpected internal case")
+            this.sign() == 0 && other.sign == 1 -> other
+            this.sign() == 0 && other.sign == 0 -> zero
+            this.sign() == 0 && other.sign == -1 -> other
+            this.sign() == -1 && other.sign == 1 -> error("Unexpected internal case")
+            this.sign() == -1 && other.sign == 0 -> error("Unexpected internal case")
+            this.sign() == -1 && other.sign == -1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
     public operator fun UBigLong.minus(other: BigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign == -1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
-            this.sign == 1 && other.sign == 0 -> this.value
-            this.sign == 1 && other.sign == 1 ->
+            this.sign() == 1 && other.sign == -1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
+            this.sign() == 1 && other.sign == 0 -> this.value
+            this.sign() == 1 && other.sign == 1 ->
                 when (this compareWith other.absoluteValue) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this - other.absoluteValue)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other.absoluteValue - this)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == 0 && other.sign == -1 -> -other
-            this.sign == 0 && other.sign == 0 -> zero
-            this.sign == 0 && other.sign == 1 -> -other
-            this.sign == -1 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == 0 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign == 1 -> error("Unexpected internal case")
+            this.sign() == 0 && other.sign == -1 -> -other
+            this.sign() == 0 && other.sign == 0 -> zero
+            this.sign() == 0 && other.sign == 1 -> -other
+            this.sign() == -1 && other.sign == -1 -> error("Unexpected internal case")
+            this.sign() == -1 && other.sign == 0 -> error("Unexpected internal case")
+            this.sign() == -1 && other.sign == 1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
@@ -487,7 +487,7 @@ public fun BigLong.toString(radix: UInt): String {
         return buildString {
             if (this@toString.sign == -1) append('-')
             
-            val radix = radix.value
+            val radix = valueOf(radix)
             
             var result = this@toString.absoluteValue
             while (result.isNotZero()) {

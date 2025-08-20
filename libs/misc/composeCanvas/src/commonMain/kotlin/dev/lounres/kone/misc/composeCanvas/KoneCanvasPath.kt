@@ -13,10 +13,10 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.computationalGeometry.Point2
-import dev.lounres.kone.computationalGeometry.Vector2
-import dev.lounres.kone.computationalGeometry.inEuclideanKategoryScope2For
+import dev.lounres.kone.computationalGeometry.PointWrapper
+import dev.lounres.kone.computationalGeometry.VectorWrapper
 import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import kotlin.jvm.JvmInline
 
 
@@ -25,14 +25,14 @@ public value class KoneCanvasPath internal constructor(
     internal val paths: KoneList<Subpath>,
 ) {
     internal class Subpath(
-        val start: Point2<Double>,
+        val start: PointWrapper<MDList1<Double>>,
         val parts: KoneList<Part>,
     ) {
         class Builder(
-            val start: Point2<Double>,
+            val start: PointWrapper<MDList1<Double>>,
         ) {
             private val parts: KoneMutableList<Part> = KoneMutableList.of()
-            var end: Point2<Double> = start
+            var end: PointWrapper<MDList1<Double>> = start
                 private set
             
             fun add(part: Part) {
@@ -49,9 +49,9 @@ public value class KoneCanvasPath internal constructor(
     }
     
     internal sealed interface Part {
-        val end: Point2<Double>
+        val end: PointWrapper<MDList1<Double>>
         
-        data class LineTo(override val end: Point2<Double>) : Part
+        data class LineTo(override val end: PointWrapper<MDList1<Double>>) : Part
     }
     
     @JvmInline
@@ -60,28 +60,28 @@ public value class KoneCanvasPath internal constructor(
     ) {
         internal fun build(): KoneCanvasPath = KoneCanvasPath(paths.map { it.build() })
         
-        public fun moveTo(start: Point2<Double>) {
+        public fun moveTo(start: PointWrapper<MDList1<Double>>) {
             paths.add(Subpath.Builder(start))
         }
         
-        public fun relativeMoveTo(shift: Vector2<Double>) {
+        public fun relativeMoveTo(shift: VectorWrapper<MDList1<Double>>) {
             paths.add(
                 Subpath.Builder(
-                    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
+                    inKoneCanvasEuclideanSpace {
                         paths.last().end + shift
                     }
                 )
             )
         }
         
-        public fun lineTo(end: Point2<Double>) {
+        public fun lineTo(end: PointWrapper<MDList1<Double>>) {
             paths.last().add(Part.LineTo(end))
         }
         
-        public fun relativeLineTo(shift: Vector2<Double>) {
+        public fun relativeLineTo(shift: VectorWrapper<MDList1<Double>>) {
             paths.last().add(
                 Part.LineTo(
-                    koneCanvasContextRegistry.inEuclideanKategoryScope2For(doubleSuppliedType) {
+                    inKoneCanvasEuclideanSpace {
                         paths.last().end + shift
                     }
                 )
@@ -96,10 +96,10 @@ public fun KoneCanvasPath(builder: KoneCanvasPath.Builder.() -> Unit): KoneCanva
 internal fun KoneCanvasPath.toComposePath(): Path =
     Path().apply {
         for (subpath in paths) {
-            moveTo(subpath.start.x.toFloat(), subpath.start.y.toFloat())
+            moveTo(subpath.start.vector[0u].toFloat(), subpath.start.vector[1u].toFloat())
             for (part in subpath.parts)
                 when (part) {
-                    is KoneCanvasPath.Part.LineTo -> lineTo(part.end.x.toFloat(), part.end.y.toFloat())
+                    is KoneCanvasPath.Part.LineTo -> lineTo(part.end.vector[0u].toFloat(), part.end.vector[1u].toFloat())
                 }
         }
     }

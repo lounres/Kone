@@ -7,12 +7,10 @@ package dev.lounres.kone.misc.composeCanvas
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.key.isCtrlPressed
@@ -20,6 +18,10 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Density
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.iterables.next
@@ -28,6 +30,7 @@ import dev.lounres.kone.computationalGeometry.angles.cos
 import dev.lounres.kone.computationalGeometry.angles.degrees
 import dev.lounres.kone.computationalGeometry.angles.plus
 import dev.lounres.kone.computationalGeometry.angles.sin
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 
@@ -42,10 +45,10 @@ public data class ViewRegion(
 context(koneCanvasSize: KoneCanvasSize)
 public val KoneCanvasState.viewRegion: ViewRegion
     get() = ViewRegion(
-        xMin = offset.x - koneCanvasSize.width / 2 * zoom,
-        xMax = offset.x + koneCanvasSize.width / 2 * zoom,
-        yMin = offset.y - koneCanvasSize.height / 2 * zoom,
-        yMax = offset.y + koneCanvasSize.height / 2 * zoom,
+        xMin = offset.vector[0u] - koneCanvasSize.width / 2 * zoom,
+        xMax = offset.vector[0u] + koneCanvasSize.width / 2 * zoom,
+        yMin = offset.vector[1u] - koneCanvasSize.height / 2 * zoom,
+        yMax = offset.vector[1u] + koneCanvasSize.height / 2 * zoom,
     )
 
 public val ViewRegion.leftBottomOffset: Offset
@@ -73,8 +76,8 @@ public fun KoneCanvas(
         koneCanvasScope.transform(
             transformation = KoneCanvasTransformationMatrix(
                 KoneDoubleArray.of(
-                    cos, -sin, -koneCanvasState.offset.x * cos + koneCanvasState.offset.y * sin + size.width / 2 * koneCanvasState.zoom,
-                    -sin, -cos, koneCanvasState.offset.x * sin + koneCanvasState.offset.y * cos + size.height / 2 * koneCanvasState.zoom,
+                    cos, -sin, -koneCanvasState.offset.vector[0u] * cos + koneCanvasState.offset.vector[1u] * sin + size.width / 2 * koneCanvasState.zoom,
+                    -sin, -cos, koneCanvasState.offset.vector[0u] * sin + koneCanvasState.offset.vector[1u] * cos + size.height / 2 * koneCanvasState.zoom,
                     0.0, 0.0, koneCanvasState.zoom,
                 )
             )
@@ -131,7 +134,7 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
             true
         }
         .pointerInput(Unit) {
-            koneCanvasContextRegistry.inEuclideanKategoryScope2For<Double, _>(doubleSuppliedType) {
+            inKoneCanvasEuclideanSpace {
                 awaitPointerEventScope {
                     var currentPressPosition: Offset? = null
                     while (true) {
@@ -150,12 +153,16 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                     val (oldOffset, oldZoom, oldRotation) = getKoneCanvasState()
                                     val lastPosition = event.changes.last().position
                                     val offset = lastPosition - currentPressPosition
+                                    val cos = cos(oldRotation)
+                                    val sin = sin(oldRotation)
                                     currentPressPosition = lastPosition
                                     setKoneCanvasState(
                                         KoneCanvasState(
-                                            offset = oldOffset - Vector2(
-                                                offset.x.toDouble(),
-                                                -offset.y.toDouble()
+                                            offset = oldOffset - VectorWrapper(
+                                                MDList1(
+                                                    offset.x.toDouble() * cos - offset.y.toDouble() * sin,
+                                                    -offset.y.toDouble() * cos - offset.x.toDouble() * sin,
+                                                )
                                             ) * oldZoom,
                                             zoom = oldZoom,
                                             rotation = oldRotation,
@@ -171,9 +178,11 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
 
                                 val pointerOffset =
                                     lastChange.position.let {
-                                        Vector2(
-                                            (-size.width / 2 + it.x).toDouble(),
-                                            (size.height / 2 - it.y).toDouble()
+                                        VectorWrapper(
+                                            MDList1(
+                                                (-size.width / 2 + it.x).toDouble(),
+                                                (size.height / 2 - it.y).toDouble()
+                                            )
                                         )
                                     }
 
@@ -187,9 +196,11 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                     setKoneCanvasState(
                                         KoneCanvasState(
                                             offset = oldOffset + pointerOffset.let {
-                                                Vector2(
-                                                    it.x * cos + it.y * sin,
-                                                    -it.x * sin + it.y * cos
+                                                VectorWrapper(
+                                                    MDList1(
+                                                        it.vector[0u] * cos + it.vector[1u] * sin,
+                                                        -it.vector[0u] * sin + it.vector[1u] * cos
+                                                    )
                                                 )
                                             } * (oldZoom - newZoom),
                                             zoom = newZoom,
@@ -205,12 +216,12 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                                     + pointerOffset.let {
                                                         val cos = cos(oldRotation)
                                                         val sin = sin(oldRotation)
-                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                        VectorWrapper(MDList1(it.vector[0u] * cos + it.vector[1u] * sin, it.vector[0u] * -sin + it.vector[1u] * cos)) * oldZoom
                                                     }
                                                     - pointerOffset.let {
                                                         val cos = cos(oldRotation + angleDelta)
                                                         val sin = sin(oldRotation + angleDelta)
-                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                        VectorWrapper(MDList1(it.vector[0u] * cos + it.vector[1u] * sin, it.vector[0u] * -sin + it.vector[1u] * cos)) * oldZoom
                                                     },
                                             zoom = oldZoom,
                                             rotation = oldRotation + angleDelta,

@@ -5,14 +5,15 @@
 
 package dev.lounres.kone.misc.composeCanvas
 
-import dev.lounres.kone.computationalGeometry.Vector2
+import dev.lounres.kone.computationalGeometry.VectorWrapper
 import dev.lounres.kone.computationalGeometry.angles.Angle
+import dev.lounres.kone.multidimensionalCollections.MDList1
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 public data class KoneCanvasState(
-    val offset: Vector2<Double> = Vector2(0.0, 0.0),
+    val offset: VectorWrapper<MDList1<Double>> = VectorWrapper(MDList1(0.0, 0.0)),
     val zoom: Double = 1.0,
     val rotation: Angle = Angle.zero,
 )
