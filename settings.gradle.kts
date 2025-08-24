@@ -48,7 +48,7 @@ stal {
                 }
             }
             "misc" {
-                subdirs("libs misc", includeIf = { it.name !in listOf("lattices") }) // TODO: Enable the projects eventually
+                subdirs("libs misc", includeIf = { it.name !in listOf("lattices", "planimetricsCalculus") }) // TODO: Enable the projects eventually
             }
             "util" {
                 subdirs("libs util")

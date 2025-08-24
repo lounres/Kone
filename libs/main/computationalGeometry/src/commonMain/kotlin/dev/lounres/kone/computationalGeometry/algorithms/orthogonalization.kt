@@ -14,7 +14,6 @@ import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
-import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.repeat
 
 
@@ -24,7 +23,7 @@ internal data class GramSchmidtOrthogonalizationIntermediateState<Number, Vector
     val exclusiveProducts: KoneMutableList<Number>,
 )
 
-internal fun <Number, VectorContent: MDList1<Number>> GramSchmidtOrthogonalizationIntermediateState<Number, VectorContent>.clone(maximalSubspaceDimension: UInt): GramSchmidtOrthogonalizationIntermediateState<Number, VectorContent> =
+internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.clone(maximalSubspaceDimension: UInt): GramSchmidtOrthogonalizationIntermediateState<Number, Vector> =
     GramSchmidtOrthogonalizationIntermediateState(
         orthogonalizedBasis = KoneArrayFixedCapacityList(maximalSubspaceDimension, orthogonalizedBasis.size) { orthogonalizedBasis[it] },
         product = product,

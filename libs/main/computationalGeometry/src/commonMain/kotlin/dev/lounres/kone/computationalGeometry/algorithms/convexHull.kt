@@ -6,6 +6,9 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.basis.VectorSpaceBasis
+import dev.lounres.kone.algebraic.isNotZero
+import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
@@ -14,13 +17,16 @@ import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.getOrNull
+import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
@@ -28,11 +34,16 @@ import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.collections.set.relations.equality
+import dev.lounres.kone.collections.set.removeAllFrom
 import dev.lounres.kone.collections.set.toKoneMutableReifiedSet
+import dev.lounres.kone.collections.set.toKoneMutableSet
 import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.firstOfThatOrNull
 import dev.lounres.kone.collections.utils.firstThat
 import dev.lounres.kone.collections.utils.mapTo
 import dev.lounres.kone.collections.utils.maxBy
+import dev.lounres.kone.collections.utils.minListBy
 import dev.lounres.kone.collections.utils.minListWithBy
 import dev.lounres.kone.collections.utils.single
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
@@ -199,214 +210,223 @@ internal fun <
     return addPolytope(subspaceDimension, allVertices, restConvexHullFaces).also { computedFacesRegistry[allVertices] = it }
 }
 
-//internal data class WrappingResult<Number, VectorContent: MDList1<Number>, PointContent: MDList1<Number>, Polytope, Vertex>(
-//    var polytope: Polytope,
-//    val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
-//    val startPoint: VectorSpacePoint<Number, PointContent>,
-//    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number, VectorContent>,
-//)
-//
-//context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number, VectorContent, PointContent>)
-//internal fun <
-//    Number,
-//    VectorContent: MDList1<Number>,
-//    PointContent: MDList1<Number>,
-//    Polytope: PolytopicConstruction.Polytope<Number, PointContent, Polytope, Vertex>,
-//    Vertex: PolytopicConstruction.Vertex<Number, PointContent, Polytope, Vertex>,
-//> ExtendablePolytopicConstruction<Number, PointContent, Polytope, Vertex>.giftWrappingExtension(
-//    vertexReification: Reification<Vertex>,
-//    vertexEquality: Equality<Vertex>,
-//    vertexHashing: Hashing<Vertex>?,
-//    vertexOrder: Order<Vertex>?,
-//    polytopeReification: Reification<Polytope>,
-//    polytopeEquality: Equality<Polytope>,
-//    polytopeHashing: Hashing<Polytope>?,
-//    polytopeOrder: Order<Polytope>?,
-//    subspaceDimension: UInt,
-//    wrappingResult: WrappingResult<Number, VectorContent, PointContent, Polytope, Vertex>,
-//    normalVector: Vector<Number, VectorContent>,
-//    otherPoints: KoneIterable<Vertex>,
-//) {
-//    if (otherPoints.isEmpty()) return
-//    require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
-//
-//    val otherPoints = otherPoints.toKoneMutableSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder)
-//    var currentNormalVector = normalVector
-//
-//    while (otherPoints.isNotEmpty()) {
-//        if (wrappingResult.orthogonalizationState.orthogonalizedBasis.size == subspaceDimension - 1u) {
-//            val resultingPolytope = giftWrappingIncrement(
-//                vertexReification = vertexReification,
-//                vertexEquality = vertexEquality,
-//                vertexHashing = vertexHashing,
-//                vertexOrder = vertexOrder,
-//                polytopeReification = polytopeReification,
-//                polytopeEquality = polytopeEquality,
-//                polytopeHashing = polytopeHashing,
-//                polytopeOrder = polytopeOrder,
-//                subspaceDimension = subspaceDimension,
-//                startFacet = wrappingResult.polytope,
-//                otherPoints = otherPoints,
-//                computedFacesRegistry = wrappingResult.computedFacesRegistry,
-//            )
-//            wrappingResult.polytope = resultingPolytope
-//            val newVector = otherPoints.first().position - wrappingResult.startPoint
-//            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
-//            return
-//        }
-//
-//        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone(subspaceDimension)
-//        extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
-//
-//        val tangentVector = otherPoints.firstOfThatOrNull({
-//            extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
-//        }) { it.any { it.isNotZero() } } ?: scope {
-//            val resultingPolytope = giftWrappingIncrement(
-//                vertexReification = vertexReification,
-//                vertexEquality = vertexEquality,
-//                vertexHashing = vertexHashing,
-//                vertexOrder = vertexOrder,
-//                polytopeReification = polytopeReification,
-//                polytopeEquality = polytopeEquality,
-//                polytopeHashing = polytopeHashing,
-//                polytopeOrder = polytopeOrder,
-//                subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
-//                startFacet = wrappingResult.polytope,
-//                otherPoints = otherPoints,
-//                computedFacesRegistry = wrappingResult.computedFacesRegistry,
-//            )
-//            wrappingResult.polytope = resultingPolytope
-//            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(otherPoints.first().position - wrappingResult.startPoint)
-//            return
-//        }
-//
-//        val nextPoints = giftWrappingAtom(
-//            startPoint = wrappingResult.startPoint,
-//            normalGiftWrappingVector = currentNormalVector,
-//            tangentGiftWrappingVector = tangentVector,
-//            otherPoints = otherPoints
-//        )
-//
-//        giftWrappingExtension(
-//            vertexReification = vertexReification,
-//            vertexEquality = vertexEquality,
-//            vertexHashing = vertexHashing,
-//            vertexOrder = vertexOrder,
-//            polytopeReification = polytopeReification,
-//            polytopeEquality = polytopeEquality,
-//            polytopeHashing = polytopeHashing,
-//            polytopeOrder = polytopeOrder,
-//            subspaceDimension = subspaceDimension - 1u,
-//            wrappingResult = wrappingResult,
-//            normalVector = currentNormalVector,
-//            otherPoints = nextPoints,
-//        )
-//
-//        otherPoints.removeAllFrom(nextPoints)
-//        currentNormalVector = scope {
-//            val vectorOfTheExtensionDirection = nextPoints.first().position - wrappingResult.startPoint
-//            tangentVector * (currentNormalVector dot vectorOfTheExtensionDirection) - currentNormalVector * (tangentVector dot vectorOfTheExtensionDirection)
-//        }
-//    }
-//}
-//
-//context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
-//internal fun <
-//    Number,
-//    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-//    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-//> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.giftWrappingFull(
-//    vertexReification: Reification<Vertex>,
-//    vertexEquality: Equality<Vertex>,
-//    vertexHashing: Hashing<Vertex>?,
-//    vertexOrder: Order<Vertex>?,
-//    polytopeReification: Reification<Polytope>,
-//    polytopeEquality: Equality<Polytope>,
-//    polytopeHashing: Hashing<Polytope>?,
-//    polytopeOrder: Order<Polytope>?,
-//    subspaceDimension: UInt,
-//    points: KoneIterable<Vertex>,
-//): WrappingResult<Number, Polytope, Vertex> {
-//    require(points.isNotEmpty()) { TODO("Error message is not specified") }
-//    if (subspaceDimension == 0u) {
-//        val theOnlyVertex = points.single()
-//        return WrappingResult(
-//            polytope = theOnlyVertex.asPolytope(),
-//            computedFacesRegistry = KoneMutableMap.of(
-//                keyEquality = KoneSet.equality(vertexEquality)
-//            ),
-//            startPoint = theOnlyVertex.position,
-//            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
-//                orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension),
-//                product = one,
-//                exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension)
-//            )
-//        )
-//    }
-//
-//    val startPoints = points.minListBy { it.position.coordinates[subspaceDimension - 1u] }
-//    val wrappingResult = giftWrappingFull(
-//        vertexReification = vertexReification,
-//        vertexEquality = vertexEquality,
-//        vertexHashing = vertexHashing,
-//        vertexOrder = vertexOrder,
-//        polytopeReification = polytopeReification,
-//        polytopeEquality = polytopeEquality,
-//        polytopeHashing = polytopeHashing,
-//        polytopeOrder = polytopeOrder,
-//        subspaceDimension = subspaceDimension - 1u,
-//        points = startPoints,
-//    )
-//
-//    giftWrappingExtension(
-//        vertexReification = vertexReification,
-//        vertexEquality = vertexEquality,
-//        vertexHashing = vertexHashing,
-//        vertexOrder = vertexOrder,
-//        polytopeReification = polytopeReification,
-//        polytopeEquality = polytopeEquality,
-//        polytopeHashing = polytopeHashing,
-//        polytopeOrder = polytopeOrder,
-//        subspaceDimension = subspaceDimension,
-//        wrappingResult = wrappingResult,
-//        normalVector = Vector(ColumnVector(spaceDimension) { if (it == subspaceDimension - 1u) one else zero }),
-//        otherPoints = points.toKoneMutableSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder).apply { removeAllFrom(startPoints) },
-//    )
-//
-//    return wrappingResult
-//}
-//
-//context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
-//public fun <
-//    Number,
-//    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-//    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-//> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
-//    vertexReification: Reification<Vertex>,
-//    vertexEquality: Equality<Vertex>,
-//    vertexHashing: Hashing<Vertex>?,
-//    vertexOrder: Order<Vertex>?,
-//    polytopeReification: Reification<Polytope>,
-//    polytopeEquality: Equality<Polytope>,
-//    polytopeHashing: Hashing<Polytope>?,
-//    polytopeOrder: Order<Polytope>?,
-//    vertices: KoneIterable<Vertex>,
-//): Polytope {
-//    require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
-//    return giftWrappingFull(
-//        vertexReification = vertexReification,
-//        vertexEquality = vertexEquality,
-//        vertexHashing = vertexHashing,
-//        vertexOrder = vertexOrder,
-//        polytopeReification = polytopeReification,
-//        polytopeEquality = polytopeEquality,
-//        polytopeHashing = polytopeHashing,
-//        polytopeOrder = polytopeOrder,
-//        subspaceDimension = spaceDimension,
-//        points = vertices,
-//    ).polytope
-//}
-//
+internal data class WrappingResult<Number, Vector, Point, Polytope, Vertex>(
+    var polytope: Polytope,
+    val computedFacesRegistry: KoneMutableMap<KoneSet<Vertex>, Polytope>,
+    val startPoint: Point,
+    val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number, Vector>,
+)
+
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+internal fun <
+    Number,
+    Vector,
+    Point,
+    Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Point, Polytope, Vertex>.giftWrappingExtension(
+    vertexReification: Reification<Vertex>,
+    vertexEquality: Equality<Vertex>,
+    vertexHashing: Hashing<Vertex>?,
+    vertexOrder: Order<Vertex>?,
+    polytopeReification: Reification<Polytope>,
+    polytopeEquality: Equality<Polytope>,
+    polytopeHashing: Hashing<Polytope>?,
+    polytopeOrder: Order<Polytope>?,
+    subspaceDimension: UInt,
+    wrappingResult: WrappingResult<Number, Vector, Point, Polytope, Vertex>,
+    normalVector: Vector,
+    otherPoints: KoneIterable<Vertex>,
+) {
+    if (otherPoints.isEmpty()) return
+    require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
+
+    val otherPoints = otherPoints.toKoneMutableSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder)
+    var currentNormalVector = normalVector
+
+    while (otherPoints.isNotEmpty()) {
+        if (wrappingResult.orthogonalizationState.orthogonalizedBasis.size == subspaceDimension - 1u) {
+            val resultingPolytope = giftWrappingIncrement(
+                vertexReification = vertexReification,
+                vertexEquality = vertexEquality,
+                vertexHashing = vertexHashing,
+                vertexOrder = vertexOrder,
+                polytopeReification = polytopeReification,
+                polytopeEquality = polytopeEquality,
+                polytopeHashing = polytopeHashing,
+                polytopeOrder = polytopeOrder,
+                subspaceDimension = subspaceDimension,
+                startFacet = wrappingResult.polytope,
+                otherPoints = otherPoints,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
+            )
+            wrappingResult.polytope = resultingPolytope
+            val newVector = otherPoints.first().position - wrappingResult.startPoint
+            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(newVector)
+            return
+        }
+
+        val extendedOrthogonalizationState = wrappingResult.orthogonalizationState.clone(subspaceDimension)
+        extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
+
+        val tangentVector = otherPoints.firstOfThatOrNull({
+            extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.position - wrappingResult.startPoint)
+        }) { it.isNotZero() } ?: scope {
+            val resultingPolytope = giftWrappingIncrement(
+                vertexReification = vertexReification,
+                vertexEquality = vertexEquality,
+                vertexHashing = vertexHashing,
+                vertexOrder = vertexOrder,
+                polytopeReification = polytopeReification,
+                polytopeEquality = polytopeEquality,
+                polytopeHashing = polytopeHashing,
+                polytopeOrder = polytopeOrder,
+                subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
+                startFacet = wrappingResult.polytope,
+                otherPoints = otherPoints,
+                computedFacesRegistry = wrappingResult.computedFacesRegistry,
+            )
+            wrappingResult.polytope = resultingPolytope
+            wrappingResult.orthogonalizationState.gramSchmidtOrthogonalizationStep(otherPoints.first().position - wrappingResult.startPoint)
+            return
+        }
+
+        val nextPoints = giftWrappingAtom(
+            startPoint = wrappingResult.startPoint,
+            normalGiftWrappingVector = currentNormalVector,
+            tangentGiftWrappingVector = tangentVector,
+            otherPoints = otherPoints
+        )
+
+        giftWrappingExtension(
+            vertexReification = vertexReification,
+            vertexEquality = vertexEquality,
+            vertexHashing = vertexHashing,
+            vertexOrder = vertexOrder,
+            polytopeReification = polytopeReification,
+            polytopeEquality = polytopeEquality,
+            polytopeHashing = polytopeHashing,
+            polytopeOrder = polytopeOrder,
+            subspaceDimension = subspaceDimension - 1u,
+            wrappingResult = wrappingResult,
+            normalVector = currentNormalVector,
+            otherPoints = nextPoints,
+        )
+
+        otherPoints.removeAllFrom(nextPoints)
+        currentNormalVector = scope {
+            val vectorOfTheExtensionDirection = nextPoints.first().position - wrappingResult.startPoint
+            tangentVector * (currentNormalVector dot vectorOfTheExtensionDirection) - currentNormalVector * (tangentVector dot vectorOfTheExtensionDirection)
+        }
+    }
+}
+
+context(ring: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+internal fun <
+    Number,
+    Vector,
+    Point,
+    Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Point, Polytope, Vertex>.giftWrappingFull(
+    vertexReification: Reification<Vertex>,
+    vertexEquality: Equality<Vertex>,
+    vertexHashing: Hashing<Vertex>?,
+    vertexOrder: Order<Vertex>?,
+    polytopeReification: Reification<Polytope>,
+    polytopeEquality: Equality<Polytope>,
+    polytopeHashing: Hashing<Polytope>?,
+    polytopeOrder: Order<Polytope>?,
+    basis: VectorSpaceBasis.Finite<Number, Vector>,
+    subspaceDimension: UInt,
+    points: KoneIterable<Vertex>,
+): WrappingResult<Number, Vector, Point, Polytope, Vertex> {
+    require(points.isNotEmpty()) { TODO("Error message is not specified") }
+    if (subspaceDimension == 0u) {
+        val theOnlyVertex = points.single()
+        return WrappingResult(
+            polytope = theOnlyVertex.asPolytope(),
+            computedFacesRegistry = KoneMutableMap.of(
+                keyEquality = KoneSet.equality(vertexEquality)
+            ),
+            startPoint = theOnlyVertex.position,
+            orthogonalizationState = GramSchmidtOrthogonalizationIntermediateState(
+                orthogonalizedBasis = KoneArrayFixedCapacityList(spaceDimension),
+                product = ring.one,
+                exclusiveProducts = KoneArrayFixedCapacityList(spaceDimension)
+            )
+        )
+    }
+
+    val somePoint = points.first().position
+    val startPoints = points.minListBy { basis.decompose(it.position - somePoint)[subspaceDimension - 1u] }
+    val wrappingResult = giftWrappingFull(
+        vertexReification = vertexReification,
+        vertexEquality = vertexEquality,
+        vertexHashing = vertexHashing,
+        vertexOrder = vertexOrder,
+        polytopeReification = polytopeReification,
+        polytopeEquality = polytopeEquality,
+        polytopeHashing = polytopeHashing,
+        polytopeOrder = polytopeOrder,
+        basis = basis,
+        subspaceDimension = subspaceDimension - 1u,
+        points = startPoints,
+    )
+
+    giftWrappingExtension(
+        vertexReification = vertexReification,
+        vertexEquality = vertexEquality,
+        vertexHashing = vertexHashing,
+        vertexOrder = vertexOrder,
+        polytopeReification = polytopeReification,
+        polytopeEquality = polytopeEquality,
+        polytopeHashing = polytopeHashing,
+        polytopeOrder = polytopeOrder,
+        subspaceDimension = subspaceDimension,
+        wrappingResult = wrappingResult,
+        normalVector = basis[subspaceDimension - 1u],
+        otherPoints = points.toKoneMutableSet(elementEquality = vertexEquality, elementHashing = vertexHashing, elementOrder = vertexOrder).apply { removeAllFrom(startPoints) },
+    )
+
+    return wrappingResult
+}
+
+context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+public fun <
+    Number,
+    Vector,
+    Point,
+    Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
+    Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
+> ExtendablePolytopicConstruction<Point, Polytope, Vertex>.constructConvexHullByGiftWrapping(
+    vertexReification: Reification<Vertex>,
+    vertexEquality: Equality<Vertex>,
+    vertexHashing: Hashing<Vertex>?,
+    vertexOrder: Order<Vertex>?,
+    polytopeReification: Reification<Polytope>,
+    polytopeEquality: Equality<Polytope>,
+    polytopeHashing: Hashing<Polytope>?,
+    polytopeOrder: Order<Polytope>?,
+    vertices: KoneIterable<Vertex>,
+    basis: VectorSpaceBasis.Finite<Number, Vector>,
+): Polytope {
+    require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
+    return giftWrappingFull(
+        vertexReification = vertexReification,
+        vertexEquality = vertexEquality,
+        vertexHashing = vertexHashing,
+        vertexOrder = vertexOrder,
+        polytopeReification = polytopeReification,
+        polytopeEquality = polytopeEquality,
+        polytopeHashing = polytopeHashing,
+        polytopeOrder = polytopeOrder,
+        basis = basis,
+        subspaceDimension = spaceDimension,
+        points = vertices,
+    ).polytope
+}
+
 //context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
 //public fun <
 //    Number,

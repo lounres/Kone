@@ -74,6 +74,8 @@ public class AbstractPolytopicConstruction<Point>(
         )
     }
     
+    public companion object;
+    
     public class Polytope<Point> internal constructor(
         polytopicConstruction: AbstractPolytopicConstruction<Point>,
         override val dimension: UInt,
@@ -112,6 +114,8 @@ public class AbstractPolytopicConstruction<Point>(
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = id.hashCode()
         override fun toString(): String = "AbstractPolytopicConstructionPolytope:${id.toHexString()}"
+        
+        public companion object;
     }
     
     public class Vertex<Point> internal constructor(
@@ -145,6 +149,8 @@ public class AbstractPolytopicConstruction<Point>(
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = id.hashCode()
         override fun toString(): String = "AbstractPolytopicConstructionVertex:${id.toHexString()}"
+        
+        public companion object;
     }
 }
 
