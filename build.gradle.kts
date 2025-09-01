@@ -5,7 +5,6 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
-import com.vanniktech.maven.publish.SonatypeHost
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -651,7 +650,7 @@ stal {
         "publishing" {
             apply(plugin = "com.vanniktech.maven.publish")
             configure<MavenPublishBaseExtension> {
-                publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+                publishToMavenCentral()
                 
                 signAllPublications()
                 
