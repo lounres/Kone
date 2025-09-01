@@ -24,6 +24,8 @@ import kotlin.jvm.JvmInline
 @Serializable
 @JvmInline
 public value class MDSize(public val sizes: KoneUIntArray) : KoneList<UInt> by sizes {
+    override fun toString(): String = "MDSize$sizes"
+    
     public companion object
 }
 
@@ -31,6 +33,8 @@ public value class MDSize(public val sizes: KoneUIntArray) : KoneList<UInt> by s
 @Serializable
 @JvmInline
 public value class MDIndex(public val indices: KoneUIntArray) : KoneList<UInt> by indices {
+    override fun toString(): String = "MDIndex$indices"
+    
     public companion object
 }
 

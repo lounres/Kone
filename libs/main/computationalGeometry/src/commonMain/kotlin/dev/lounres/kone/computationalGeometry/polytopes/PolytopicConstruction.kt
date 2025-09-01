@@ -51,12 +51,14 @@ public interface ExtendablePolytopicConstruction<
     out Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
     out Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
 > : PolytopicConstruction<Point, Polytope, Vertex> {
+    @IgnorableReturnValue
     public fun addPolytope(
         dimension: UInt,
         vertices: KoneReifiedSet<@UnsafeVariance Vertex>,
         faces: KoneList<KoneReifiedSet<@UnsafeVariance Polytope>>
     ): Polytope
     
+    @IgnorableReturnValue
     public fun addVertex(position: Point): Vertex
 }
 

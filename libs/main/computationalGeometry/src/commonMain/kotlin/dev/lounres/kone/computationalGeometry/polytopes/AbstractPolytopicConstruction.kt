@@ -51,6 +51,7 @@ public class AbstractPolytopicConstruction<Point>(
         _vertices.addNode(vertex)
     
     // TODO: Add conditional polytope validation
+    @IgnorableReturnValue
     override fun addPolytope(
         dimension: UInt,
         vertices: KoneReifiedSet<Vertex<Point>>,
@@ -67,6 +68,7 @@ public class AbstractPolytopicConstruction<Point>(
         )
     }
     
+    @IgnorableReturnValue
     override fun addVertex(position: Point): Vertex<Point> {
         return Vertex(
             polytopicConstruction = this,
@@ -106,7 +108,7 @@ public class AbstractPolytopicConstruction<Point>(
         }
         
         override fun remove() {
-            cofaces.forEach { it.forEach { it.detach() } }
+            cofaces.flatten().forEach { it.detach() }
             this.detach()
             correspondingVertex?.detach()
         }

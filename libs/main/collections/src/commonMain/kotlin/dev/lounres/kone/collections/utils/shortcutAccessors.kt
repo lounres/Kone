@@ -40,3 +40,14 @@ public fun <E> KoneIterable<E>.single(): E =
         size == 1u -> iterator().getNext()
         else -> throw IllegalArgumentException("Iterable has more than one element")
     }
+
+public fun <E> KoneIterable<E>.single(predicate: (E) -> Boolean): E {
+    val iterator = iterator()
+    while (iterator.hasNext() && !predicate(iterator.getNext())) iterator.moveNext()
+    if (!iterator.hasNext()) throw IllegalArgumentException("Iterable has no element matching the predicate")
+    val result = iterator.getNext()
+    iterator.moveNext()
+    while (iterator.hasNext() && !predicate(iterator.getNext())) iterator.moveNext()
+    if (iterator.hasNext()) throw IllegalArgumentException("Iterable has more than one element matching the predicate")
+    return result
+}

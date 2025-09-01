@@ -57,28 +57,34 @@ import kotlin.random.nextUInt
 // TODO: Add operations for array value classes
 // TODO: Add slicing operations (like `.count(from = 5u, to = 7u) { ... }`)
 
+@IgnorableReturnValue
 public fun <E, D: KoneMutableList<in E>> KoneIterator<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
 }
+@IgnorableReturnValue
 public fun <E, D: KoneMutableSet<in E>> KoneIterator<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
 }
 
+@IgnorableReturnValue
 public fun <E, D: KoneMutableList<in E>> KoneIterable<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
 }
+@IgnorableReturnValue
 public fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
 }
 
+@IgnorableReturnValue
 public fun <E, D: KoneMutableList<in E>> KoneSequence<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
 }
+@IgnorableReturnValue
 public fun <E, D: KoneMutableSet<in E>> KoneSequence<E>.copyTo(destination: D): D {
     destination.addAllFrom(this)
     return destination
@@ -686,45 +692,55 @@ public fun <E> KoneIterable<E>.random(random: Random): E {
     return iterator.getNext()
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.mapTo(destination: D, transform: (E) -> R): D {
     while (hasNext()) destination.add(transform(getAndMoveNext()))
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.mapTo(destination: D, transform: (E) -> R): D {
     while (hasNext()) destination.add(transform(getAndMoveNext()))
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapTo(destination: D, crossinline transform: (E) -> R): D {
     val iterator = iterator()
     destination.addSeveral(size) { transform(iterator.getAndMoveNext()) }
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapTo(destination: D, crossinline transform: (E) -> R): D {
     val iterator = iterator()
     destination.addSeveral(size) { transform(iterator.getAndMoveNext()) }
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapToInline(destination: D, transform: (E) -> R): D {
     val iterator = iterator()
     repeat(size) { destination.add(transform(iterator.getAndMoveNext())) }
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapToInline(destination: D, transform: (E) -> R): D {
     val iterator = iterator()
     repeat(size) { destination.add(transform(iterator.getAndMoveNext())) }
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.mapTo(destination: D, transform: (E) -> R): D = iterator().mapTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.mapTo(destination: D, transform: (E) -> R): D = iterator().mapTo(destination, transform)
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
     while (hasNext()) destination.add(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D {
     var currentIndex = 0u
     while (hasNext()) destination.add(transform(currentIndex++, getAndMoveNext()))
@@ -738,6 +754,7 @@ public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapIndexedTo(
     destination.addSeveral(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(destination: D, crossinline transform: (index: UInt, E) -> R): D {
     val iterator = iterator()
     var currentIndex = 0u
@@ -745,12 +762,14 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedTo(d
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.mapIndexedToInline(destination: D, crossinline transform: (index: UInt, E) -> R): D {
     val iterator = iterator()
     var currentIndex = 0u
     repeat(size) { destination.add(transform(currentIndex++, iterator.getAndMoveNext())) }
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedToInline(destination: D, crossinline transform: (index: UInt, E) -> R): D {
     val iterator = iterator()
     var currentIndex = 0u
@@ -758,7 +777,9 @@ public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.mapIndexedToIn
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D = iterator().mapIndexedTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.mapIndexedTo(destination: D, transform: (index: UInt, E) -> R): D = iterator().mapIndexedTo(destination, transform)
 
 private class KoneMapIterator<Element, Result>(
@@ -880,43 +901,55 @@ private class KoneFlattenSequenceSequence<Element>(
 
 public fun <E> KoneSequence<KoneSequence<E>>.flatten(): KoneSequence<E> = KoneFlattenSequenceSequence(this)
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
     while (hasNext()) destination.addAllFrom(transform(getAndMoveNext()))
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D {
     while (hasNext()) destination.addAllFrom(transform(getAndMoveNext()))
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
     iterator().flatMapTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
     iterator().flatMapTo(destination, transform)
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
     iterator().flatMapTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.flatMapTo(destination: D, transform: (E) -> KoneIterable<R>): D =
     iterator().flatMapTo(destination, transform)
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterator<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
     var currentIndex = 0u
     while (hasNext()) destination.addAllFrom(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterator<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D {
     var currentIndex = 0u
     while (hasNext()) destination.addAllFrom(transform(currentIndex++, getAndMoveNext()))
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
     iterator().flatMapIndexedTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneIterable<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
     iterator().flatMapIndexedTo(destination, transform)
 
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableList<in R>> KoneSequence<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
     iterator().flatMapIndexedTo(destination, transform)
+@IgnorableReturnValue
 public inline fun <E, R, D: KoneMutableSet<in R>> KoneSequence<E>.flatMapIndexedTo(destination: D, transform: (index: UInt, E) -> KoneIterable<R>): D =
     iterator().flatMapIndexedTo(destination, transform)
 
@@ -1056,6 +1089,7 @@ private class KoneFlatMapIndexedSequenceSequence<Element, Result>(
 
 public fun <E, R> KoneSequence<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneSequence<R>): KoneSequence<R> = KoneFlatMapIndexedSequenceSequence(this, transform)
 
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableList<in E>> KoneIterator<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     while (hasNext()) {
         val item = getNext()
@@ -1063,6 +1097,7 @@ public inline fun <E, D: KoneMutableList<in E>> KoneIterator<E>.filterTo(destina
     }
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableSet<in E>> KoneIterator<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     while (hasNext()) {
         val item = getNext()
@@ -1071,19 +1106,23 @@ public inline fun <E, D: KoneMutableSet<in E>> KoneIterator<E>.filterTo(destinat
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableList<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableSet<in E>> KoneIterable<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableList<in E>> KoneSequence<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
     return destination
 }
+@IgnorableReturnValue
 public inline fun <E, D: KoneMutableSet<in E>> KoneSequence<E>.filterTo(destination: D, predicate: (E) -> Boolean): D {
     for (item in this) if (predicate(item)) destination.add(item)
     return destination
@@ -1348,6 +1387,7 @@ public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(ring.o
 context(ring: Semiring<N>)
 public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> acc * selector(index, e) }
 
+@IgnorableReturnValue
 public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K): D {
     for (element in this) {
         val key = keySelector(element)
@@ -1357,6 +1397,7 @@ public inline fun <E, K, D : KoneMutableMap<in K, KoneMutableList<E>>> KoneItera
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <E, K, V, D : KoneMutableMap<in K, KoneMutableList<V>>> KoneIterable<E>.groupByTo(destination: D, keySelector: (E) -> K, valueTransform: (E) -> V): D {
     for (element in this) {
         val key = keySelector(element)
