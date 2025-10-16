@@ -201,6 +201,7 @@ public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () 
 }
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): V {
     contract {
         callsInPlace(valueOnPut, AT_MOST_ONCE)
@@ -209,6 +210,7 @@ public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> 
     return computeOnOrElse(key, valueOnPut, transformOnChange).also { this[key] = it }
 }
 
+@IgnorableReturnValue
 public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for ((key, value) in this) {
         destination.putOrChange(key, { value }, { resolve(key, it, value) })
@@ -216,6 +218,7 @@ public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(de
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
         val (key, value) = entry

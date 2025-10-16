@@ -21,7 +21,7 @@ import testDataPath
 
 fun main() {
     generateTestGroupSuiteWithJUnit5 {
-        testGroup(testDataRoot = testDataPath, testsRoot = "../build/generated/kotlinCompilerPluginTestGenerator/test") {
+        testGroup(testDataRoot = testDataPath, testsRoot = "../src/testGenerated/kotlin" /*"../build/generated/kotlinCompilerPluginTestGenerator/test"*/) {
             testClass<AbstractDeclarationsTest> {
                 model("fir/declarations")
             }

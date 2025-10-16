@@ -21,17 +21,19 @@ dependencies {
     implementation(project.parent!!)
 }
 
-val testDataPathSourceSet = "build/generated/paths/main"
+val testDataPathSourceSetString = "build/generated/paths/main"
 
 sourceSets.main {
-    java.srcDirs(testDataPathSourceSet)
+    java.srcDirs(testDataPathSourceSetString)
 }
 
 val writePaths by tasks.registering {
+    val testDataPathSourceSet = projectDir.resolve(testDataPathSourceSetString)
+    val testDataPath = project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")
     doFirst {
-        projectDir.resolve(testDataPathSourceSet).also { it.mkdirs() }.resolve("Paths.kt").writeText(
+        testDataPathSourceSet.also { it.mkdirs() }.resolve("Paths.kt").writeText(
             """
-                internal val testDataPath: String = "${project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")}"
+                internal val testDataPath: String = "$testDataPath"
             """.trimIndent()
         )
     }

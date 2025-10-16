@@ -52,10 +52,11 @@ buildscript {
 }
 
 
-val koneBranch: String = grgit.branch.current().name
+val koneBranch: String by lazy { grgit.branch.current().name }
 val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
-val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
-//val koneVersion = "0.0.0-experiment"
+// FIXME
+//val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
+val koneVersion = "0.0.0-experiment"
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
@@ -363,12 +364,14 @@ stal {
             apply(plugin = "org.gradle.java")
             configure<SourceSetContainer> {
                 named("test") {
-                    java.setSrcDirs(listOf("src/test/java", "build/generated/kotlinCompilerPluginTestGenerator/test"))
+                    java.setSrcDirs(listOf("src/test/java", "src/testGenerated/java" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
                 }
             }
             configure<KotlinJvmProjectExtension> {
                 sourceSets {
-                
+                    named("test") {
+                        kotlin.setSrcDirs(listOf("src/test/kotlin", "src/testGenerated/kotlin" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
+                    }
                 }
             }
         }
@@ -652,7 +655,8 @@ stal {
             configure<MavenPublishBaseExtension> {
                 publishToMavenCentral()
                 
-                signAllPublications()
+                // FIXME
+//                signAllPublications()
                 
                 coordinates(groupId = project.group as String, artifactId = project.artifact, version = project.version as String)
 

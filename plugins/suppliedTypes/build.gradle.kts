@@ -24,24 +24,34 @@ dependencies {
     testImplementation(project.childProjects["testGeneration"]!!)
 }
 
+val testGenerationTaskFullName = "${project.path}:testGeneration:generateTests"
+
 tasks.compileTestKotlin {
-    dependsOn("${project.path}:testGeneration:generateTests")
+    dependsOn(testGenerationTaskFullName)
 }
 
-fun Test.setLibraryProperty(propName: String, jarName: String) {
-    val path = project.configurations
-        .testRuntimeClasspath.get()
-        .files
-        .find { """$jarName-\d.*jar""".toRegex().matches(it.name) }
-        ?.absolutePath
-        ?: return
-    systemProperty(propName, path)
-}
+val dependencyJarTaskFullName = "${projects.libs.main.suppliedTypes.path}:jvmJar"
 
 tasks.test {
-    dependsOn("${projects.libs.main.suppliedTypes.path}:jvmJar")
+    dependsOn(dependencyJarTaskFullName)
     useJUnitPlatform()
+    
+    val testRuntimeClasspathFiles by lazy {
+        project
+            .configurations
+            .testRuntimeClasspath.get()
+            .files
+    }
+    
     doFirst {
+        fun setLibraryProperty(propName: String, jarName: String) {
+            val path = testRuntimeClasspathFiles
+                .find { """$jarName-\d.*jar""".toRegex().matches(it.name) }
+                ?.absolutePath
+                ?: return
+            systemProperty(propName, path)
+        }
+        
         setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
         setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
         setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
