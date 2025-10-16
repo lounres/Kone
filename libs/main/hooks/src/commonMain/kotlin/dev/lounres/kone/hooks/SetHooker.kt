@@ -5,8 +5,6 @@
 
 package dev.lounres.kone.hooks
 
-import dev.lounres.kone.collections.next
-import dev.lounres.kone.collections.*
 //import dev.lounres.kone.collections.delegates.KoneExtendableIterableSetDelegate
 //import dev.lounres.kone.collections.delegates.KoneMutableIterableSetDelegate
 //import dev.lounres.kone.collections.delegates.KoneRemovableIterableSetDelegate

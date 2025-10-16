@@ -174,7 +174,7 @@ public fun <E> KoneList<E>.allCombinations(): KoneSequence<KoneList<E>> {
             yield(currentElements)
 
             val firstToIncrease = currentState.firstIndexThat { _, element -> element == 0u }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == size) return@build
 
             currentState[firstToIncrease] = 1u
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u

@@ -118,89 +118,30 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
 
 private class AffineSpaceOverFieldViaVectorSpace<Number, Vector>(
     private val vectorSpace: VectorSpace<Number, Vector>,
-) : AffineSpaceOverField<Number, VectorWrapper<Vector>, PointWrapper<Vector>> {
-    override val zero: VectorWrapper<Vector> = VectorWrapper(vectorSpace.zero)
+) : AffineSpaceOverField<Number, Vector, PointWrapper<Vector>>, VectorSpace<Number, Vector> by vectorSpace {
     
-    override fun VectorWrapper<Vector>.equalsTo(other: VectorWrapper<Vector>): Boolean =
-        vectorSpace { this.vector equalsTo other.vector }
+    override fun PointWrapper<Vector>.plus(other: Vector): PointWrapper<Vector> =
+        vectorSpace { PointWrapper(this.vector + other) }
     
-    override fun VectorWrapper<Vector>.isZero(): Boolean = vectorSpace { this.vector.isZero() }
+    override fun PointWrapper<Vector>.minus(other: Vector): PointWrapper<Vector> =
+        vectorSpace { PointWrapper(this.vector - other) }
     
-    override fun VectorWrapper<Vector>.isNotZero(): Boolean = vectorSpace { this.vector.isNotZero() }
+    override fun Vector.plus(other: PointWrapper<Vector>): PointWrapper<Vector> =
+        vectorSpace { PointWrapper(this + other.vector) }
     
-    override fun Int.times(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this * other.vector) }
-    
-    override fun Long.times(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this * other.vector) }
-    
-    override fun UInt.times(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this * other.vector) }
-    
-    override fun ULong.times(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this * other.vector) }
-    
-    override fun VectorWrapper<Vector>.times(other: Int): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector * other) }
-    
-    override fun VectorWrapper<Vector>.times(other: Long): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector * other) }
-    
-    override fun VectorWrapper<Vector>.times(other: UInt): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector * other) }
-    
-    override fun VectorWrapper<Vector>.times(other: ULong): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector * other) }
-    
-    override fun VectorWrapper<Vector>.unaryMinus(): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(-this.vector) }
-    
-    override fun VectorWrapper<Vector>.plus(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector + other.vector) }
-    
-    override fun VectorWrapper<Vector>.minus(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector - other.vector) }
-    
-    override fun VectorWrapper<Vector>.times(other: Number): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector * other) }
-    
-    override fun Number.times(other: VectorWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this * other.vector) }
-    
-    override fun VectorWrapper<Vector>.div(other: Number): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector / other) }
-    
-    override fun PointWrapper<Vector>.plus(other: VectorWrapper<Vector>): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this.vector + other.vector) }
-    
-    override fun PointWrapper<Vector>.minus(other: VectorWrapper<Vector>): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this.vector - other.vector) }
-    
-    override fun VectorWrapper<Vector>.plus(other: PointWrapper<Vector>): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this.vector + other.vector) }
-    
-    override fun PointWrapper<Vector>.minus(other: PointWrapper<Vector>): VectorWrapper<Vector> =
-        vectorSpace { VectorWrapper(this.vector - other.vector) }
+    override fun PointWrapper<Vector>.minus(other: PointWrapper<Vector>): Vector =
+        vectorSpace { this.vector - other.vector }
 }
 
-public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vectorSpace: VectorSpace<Number, Vector>): AffineSpaceOverField<Number, VectorWrapper<Vector>, PointWrapper<Vector>> =
+public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vectorSpace: VectorSpace<Number, Vector>): AffineSpaceOverField<Number, Vector, PointWrapper<Vector>> =
     AffineSpaceOverFieldViaVectorSpace(vectorSpace)
 
 @OptIn(DelicateSuppliedTypeConstructor::class)
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
 public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType): Unit = with(koneContextRegistryBuilder) {
-    AffineSpaceOverField.Key<Number, VectorWrapper<Vector>, PointWrapper<Vector>>(
+    AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>(
         numberType,
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.VectorWrapper",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = vectorType,
-                )
-            ),
-            isNullable = false,
-        ),
+        vectorType,
         SuppliedType.Regular(
             fullyQualifiedName = "dev.lounres.kone.computationalGeometry.PointWrapper",
             typeArguments = listOf(

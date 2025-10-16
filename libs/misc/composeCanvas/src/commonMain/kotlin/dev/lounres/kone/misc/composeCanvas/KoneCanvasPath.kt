@@ -13,10 +13,9 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.computationalGeometry.PointWrapper
-import dev.lounres.kone.computationalGeometry.VectorWrapper
+import dev.lounres.kone.computationalGeometry.default2.Point2
+import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.multidimensionalCollections.MDList1
 import kotlin.jvm.JvmInline
 
 
@@ -25,14 +24,14 @@ public value class KoneCanvasPath internal constructor(
     internal val paths: KoneList<Subpath>,
 ) {
     internal class Subpath(
-        val start: PointWrapper<MDList1<Double>>,
+        val start: Point2<Double>,
         val parts: KoneList<Part>,
     ) {
         class Builder(
-            val start: PointWrapper<MDList1<Double>>,
+            val start: Point2<Double>,
         ) {
             private val parts: KoneMutableList<Part> = KoneMutableList.of()
-            var end: PointWrapper<MDList1<Double>> = start
+            var end: Point2<Double> = start
                 private set
             
             fun add(part: Part) {
@@ -49,9 +48,9 @@ public value class KoneCanvasPath internal constructor(
     }
     
     internal sealed interface Part {
-        val end: PointWrapper<MDList1<Double>>
+        val end: Point2<Double>
         
-        data class LineTo(override val end: PointWrapper<MDList1<Double>>) : Part
+        data class LineTo(override val end: Point2<Double>) : Part
     }
     
     @JvmInline
@@ -60,11 +59,11 @@ public value class KoneCanvasPath internal constructor(
     ) {
         internal fun build(): KoneCanvasPath = KoneCanvasPath(paths.map { it.build() })
         
-        public fun moveTo(start: PointWrapper<MDList1<Double>>) {
+        public fun moveTo(start: Point2<Double>) {
             paths.add(Subpath.Builder(start))
         }
         
-        public fun relativeMoveTo(shift: VectorWrapper<MDList1<Double>>) {
+        public fun relativeMoveTo(shift: Vector2<Double>) {
             paths.add(
                 Subpath.Builder(
                     inKoneCanvasEuclideanSpace {
@@ -74,11 +73,11 @@ public value class KoneCanvasPath internal constructor(
             )
         }
         
-        public fun lineTo(end: PointWrapper<MDList1<Double>>) {
+        public fun lineTo(end: Point2<Double>) {
             paths.last().add(Part.LineTo(end))
         }
         
-        public fun relativeLineTo(shift: VectorWrapper<MDList1<Double>>) {
+        public fun relativeLineTo(shift: Vector2<Double>) {
             paths.last().add(
                 Part.LineTo(
                     inKoneCanvasEuclideanSpace {
@@ -96,10 +95,25 @@ public fun KoneCanvasPath(builder: KoneCanvasPath.Builder.() -> Unit): KoneCanva
 internal fun KoneCanvasPath.toComposePath(): Path =
     Path().apply {
         for (subpath in paths) {
-            moveTo(subpath.start.vector[0u].toFloat(), subpath.start.vector[1u].toFloat())
+            moveTo(subpath.start.x.toFloat(), subpath.start.y.toFloat())
             for (part in subpath.parts)
                 when (part) {
-                    is KoneCanvasPath.Part.LineTo -> lineTo(part.end.vector[0u].toFloat(), part.end.vector[1u].toFloat())
+                    is KoneCanvasPath.Part.LineTo -> lineTo(part.end.x.toFloat(), part.end.y.toFloat())
                 }
         }
     }
+
+internal fun KoneCanvasPath.Part.transform(matrix: KoneCanvasTransformationMatrix): KoneCanvasPath.Part =
+    when (this) {
+        is KoneCanvasPath.Part.LineTo -> KoneCanvasPath.Part.LineTo(end.transform(matrix))
+    }
+
+internal fun KoneCanvasPath.transform(matrix: KoneCanvasTransformationMatrix): KoneCanvasPath =
+    KoneCanvasPath(
+        paths = paths.map { subpath ->
+            KoneCanvasPath.Subpath(
+                start = subpath.start.transform(matrix),
+                parts = subpath.parts.map { it.transform(matrix) }
+            )
+        }
+    )

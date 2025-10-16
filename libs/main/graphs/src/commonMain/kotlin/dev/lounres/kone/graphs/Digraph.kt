@@ -8,7 +8,7 @@ package dev.lounres.kone.graphs
 import dev.lounres.kone.collections.set.KoneReifiedSet
 
 
-public interface DigraphVertex<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : GraphVertex<Vertex, Edge> {
+public interface DigraphVertex</*out*/ Vertex: DigraphVertex<Vertex, Edge>, /*out*/ Edge: DigraphEdge<Vertex, Edge>> : GraphVertex<Vertex, Edge> {
     public val outgoingEdges: KoneReifiedSet<Edge>
     public val incomingEdges: KoneReifiedSet<Edge>
     public val outDegree: UInt
@@ -17,26 +17,26 @@ public interface DigraphVertex<out Vertex: DigraphVertex<Vertex, Edge>, out Edge
         get() = incomingEdges.size
 }
 
-public interface DigraphEdge<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : GraphEdge<Vertex, Edge> {
+public interface DigraphEdge</*out*/ Vertex: DigraphVertex<Vertex, Edge>, /*out*/ Edge: DigraphEdge<Vertex, Edge>> : GraphEdge<Vertex, Edge> {
     public val tail: Vertex // from
     public val head: Vertex // to
 }
 
-public interface Digraph<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : Graph<Vertex, Edge>
+public interface Digraph</*out*/ Vertex: DigraphVertex<Vertex, Edge>, /*out*/ Edge: DigraphEdge<Vertex, Edge>> : Graph<Vertex, Edge>
 
-public interface ExtendableDigraph<out Vertex: DigraphVertex<Vertex, Edge>, out Edge: DigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge> {
+public interface ExtendableDigraph</*out*/ Vertex: DigraphVertex<Vertex, Edge>, /*out*/ Edge: DigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge> {
     public fun addVertex(): Vertex
     public fun addEdge(tail: @UnsafeVariance Vertex, head: @UnsafeVariance Vertex): Edge
 }
 
-public interface RemovableDigraphVertex<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphVertex<Vertex, Edge> {
+public interface RemovableDigraphVertex</*out*/ Vertex: RemovableDigraphVertex<Vertex, Edge>, /*out*/ Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphVertex<Vertex, Edge> {
     public fun remove()
 }
 
-public interface RemovableDigraphEdge<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphEdge<Vertex, Edge> {
+public interface RemovableDigraphEdge</*out*/ Vertex: RemovableDigraphVertex<Vertex, Edge>, /*out*/ Edge: RemovableDigraphEdge<Vertex, Edge>> : DigraphEdge<Vertex, Edge> {
     public fun remove()
 }
 
-public interface ReducibleDigraph<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge>
+public interface ReducibleDigraph</*out*/ Vertex: RemovableDigraphVertex<Vertex, Edge>, /*out*/ Edge: RemovableDigraphEdge<Vertex, Edge>> : Digraph<Vertex, Edge>
 
-public interface MutableDigraph<out Vertex: RemovableDigraphVertex<Vertex, Edge>, out Edge: RemovableDigraphEdge<Vertex, Edge>> : ExtendableDigraph<Vertex, Edge>, ReducibleDigraph<Vertex, Edge>
+public interface MutableDigraph</*out*/ Vertex: RemovableDigraphVertex<Vertex, Edge>, /*out*/ Edge: RemovableDigraphEdge<Vertex, Edge>> : ExtendableDigraph<Vertex, Edge>, ReducibleDigraph<Vertex, Edge>

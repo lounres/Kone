@@ -238,12 +238,21 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
             currentIndex = 0u,
         )
     
-    override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> =
-        Iterator(
+    override fun iteratorFrom(index: UInt): KoneMutableNoddedListIterator<Element> {
+        if (index > size) indexOutOfBoundsException(index, size)
+        
+        if (index == size) return Iterator(
+            list = this,
+            nextNode = null,
+            currentIndex = index,
+        )
+        
+        return Iterator(
             list = this,
             nextNode = getInternalNode(index),
             currentIndex = index,
         )
+    }
     
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()

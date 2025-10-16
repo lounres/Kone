@@ -13,7 +13,7 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.linearAlgebra.Matrix
 import dev.lounres.kone.linearAlgebra.times
-import dev.lounres.kone.linearAlgebra.utils.adjugateViaLeibnizFormula
+import dev.lounres.kone.linearAlgebra.operations.adjugateViaLeibnizFormula
 import dev.lounres.kone.linearAlgebra.utils.determinantViaLeibnizFormula
 import dev.lounres.kone.linearAlgebra.utils.firstMinorViaLeibnizFormula
 import dev.lounres.kone.polynomial.*

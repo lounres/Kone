@@ -5,9 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -16,9 +14,7 @@ import kotlin.reflect.KVariance.INVARIANT
 
 
 // The underlying ring is ordered (thus, is a subring of real numbers and is an integral domain)
-public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOverRing<Number, Vector, Point> {
-    public infix fun Vector.dot(other: Vector): Number
-    
+public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOverRing<Number, Vector, Point>, EuclideanVectorSpaceOverRing<Number, Vector> {
     public companion object;
     
     public class Key<Number, Vector, Point>(
@@ -51,13 +47,11 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
     }
 }
 
-context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, *>)
-public infix fun <Number, Vector> Vector.dot(other: Vector): Number = with(euclideanSpace) { this@dot dot other }
+context(_: EuclideanSpaceOverRing<Number, Vector, Point>)
+public fun <Number, Vector, Point> distanceSquaredBetween(point1: Point, point2: Point): Number =
+    (point1 - point2).lengthSquared()
 
-context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, *>)
-public fun <Number, Vector> Vector.lengthSquared(): Number = with(euclideanSpace) { this@lengthSquared dot this@lengthSquared }
-
-public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpaceOverRing<Number, Vector, Point>, AffineSpaceOverField<Number, Vector, Point> {
+public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpaceOverRing<Number, Vector, Point>, AffineSpaceOverField<Number, Vector, Point>, EuclideanVectorSpaceOverField<Number, Vector> {
     public companion object;
     
     public class Key<Number, Vector, Point>(

@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.slice
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
@@ -29,19 +30,18 @@ import kotlin.jvm.JvmInline
 
 
 @Serializable
-@JvmInline
-public value class BigLong(public val sign: Int, public val absoluteValue: UBigLong) {
+//@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
+public /*value*/ data class BigLong(public val sign: Int, public val absoluteValue: UBigLong) {
     init {
-        context(UBigLong.context) {
-            require(sign == 0 || sign == 1 || sign == -1) { "sign must be 0, or 1, or -1" }
-            require((sign == 0) == absoluteValue.isZero()) { "sign must be 0 iff absolute value is zero as well" }
+        UBigLong.context {
+            require(sign == 0 || sign == 1 || sign == -1) { "Sign must be 0, or 1, or -1" }
+            require((sign == 0) == absoluteValue.isZero()) { "Sign must be 0 iff absolute value is zero as well. Actual sign is $sign, actual absolute value is $absoluteValue" }
         }
     }
     
     public val magnitude: KoneULongArray get() = absoluteValue.magnitude
     
-//    override fun toString(): String {
-//    }
+    override fun toString(): String = toString(10u)
     
     public companion object
 }
@@ -113,45 +113,44 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     public fun valueOf(arg: UBigLong): BigLong = context(UBigLong.context) {
         if (arg.isZero()) zero else BigLong(sign = 1, absoluteValue = arg)
     }
-    public val UBigLong.value: BigLong get() = valueOf(this)
     // endregion
     
     // region BigLong-UBigLong operations
     public operator fun BigLong.plus(other: UBigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign() == 1 -> BigLong(sign = 1, absoluteValue = this.absoluteValue + other)
-            this.sign == 1 && other.sign() == 0 -> this
-            this.sign == 1 && other.sign() == -1 -> error("Unexpected internal case")
-            this.sign == 0 && other.sign() == 1 -> other.value
-            this.sign == 0 && other.sign() == 0 -> zero
-            this.sign == 0 && other.sign() == -1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign() == 1 ->
+            this.sign == 1 && other.signInt() == 1 -> BigLong(sign = 1, absoluteValue = this.absoluteValue + other)
+            this.sign == 1 && other.signInt() == 0 -> this
+            this.sign == 1 && other.signInt() == -1 -> error("Unexpected internal case")
+            this.sign == 0 && other.signInt() == 1 -> valueOf(other)
+            this.sign == 0 && other.signInt() == 0 -> zero
+            this.sign == 0 && other.signInt() == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.signInt() == 1 ->
                 when (this.absoluteValue compareWith other) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = -1, absoluteValue = this.absoluteValue - other)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = 1, absoluteValue = other - this.absoluteValue)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == -1 && other.sign() == 0 -> this
-            this.sign == -1 && other.sign() == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.signInt() == 0 -> this
+            this.sign == -1 && other.signInt() == -1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
     public operator fun BigLong.minus(other: UBigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign == 1 && other.sign() == -1 -> error("Unexpected internal case")
-            this.sign == 1 && other.sign() == 0 -> this
-            this.sign == 1 && other.sign() == 1 ->
+            this.sign == 1 && other.signInt() == -1 -> error("Unexpected internal case")
+            this.sign == 1 && other.signInt() == 0 -> this
+            this.sign == 1 && other.signInt() == 1 ->
                 when (this.absoluteValue compareWith other) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this.absoluteValue - other)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other - this.absoluteValue)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign == 0 && other.sign() == -1 -> error("Unexpected internal case")
-            this.sign == 0 && other.sign() == 0 -> zero
-            this.sign == 0 && other.sign() == 1 -> -other.value
-            this.sign == -1 && other.sign() == -1 -> error("Unexpected internal case")
-            this.sign == -1 && other.sign() == 0 -> this
-            this.sign == -1 && other.sign() == 1 -> BigLong(sign = -1, absoluteValue = this.absoluteValue + other)
+            this.sign == 0 && other.signInt() == -1 -> error("Unexpected internal case")
+            this.sign == 0 && other.signInt() == 0 -> zero
+            this.sign == 0 && other.signInt() == 1 -> -valueOf(other)
+            this.sign == -1 && other.signInt() == -1 -> error("Unexpected internal case")
+            this.sign == -1 && other.signInt() == 0 -> this
+            this.sign == -1 && other.signInt() == 1 -> BigLong(sign = -1, absoluteValue = this.absoluteValue + other)
             else -> error("Unexpected internal case")
         }
     }
@@ -169,8 +168,8 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
                 quotient = BigLong(sign = -1, absoluteValue = result.quotient + 1u),
                 remainder = BigLong(sign = 1, absoluteValue = other - result.remainder),
             ) else EuclideanDivisionResult(
-                quotient = result.quotient.value,
-                remainder = result.remainder.value,
+                quotient = valueOf(result.quotient),
+                remainder = valueOf(result.remainder),
             )
         } else {
             if (this.sign != 1) EuclideanDivisionResult(
@@ -190,10 +189,10 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         
         if (result.remainder.isNotZero()) {
             if (this.sign != 1) BigLong(sign = -1, absoluteValue = result.quotient + 1u)
-            else result.quotient.value
+            else valueOf(result.quotient)
         } else {
             if (this.sign != 1) BigLong(sign = -1, absoluteValue = result.quotient)
-            else result.quotient.value
+            else valueOf(result.quotient)
         }
     }
     public operator fun BigLong.rem(other: UBigLong): BigLong = context(UBigLong.context) {
@@ -204,10 +203,10 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         
         if (result.isNotZero()) {
             if (this.sign != 1) BigLong(sign = 1, absoluteValue = other - result)
-            else result.value
+            else valueOf(result)
         } else {
             if (this.sign != 1) BigLong(sign = 0, absoluteValue = result)
-            else result.value
+            else valueOf(result)
         }
     }
     // endregion
@@ -215,39 +214,39 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // region UBigLong-BigLong operations
     public operator fun UBigLong.plus(other: BigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign() == 1 && other.sign == 1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
-            this.sign() == 1 && other.sign == 0 -> this.value
-            this.sign() == 1 && other.sign == -1 ->
+            this.signInt() == 1 && other.sign == 1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
+            this.signInt() == 1 && other.sign == 0 -> valueOf(this)
+            this.signInt() == 1 && other.sign == -1 ->
                 when (this compareWith other.absoluteValue) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this - other.absoluteValue)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other.absoluteValue - this)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign() == 0 && other.sign == 1 -> other
-            this.sign() == 0 && other.sign == 0 -> zero
-            this.sign() == 0 && other.sign == -1 -> other
-            this.sign() == -1 && other.sign == 1 -> error("Unexpected internal case")
-            this.sign() == -1 && other.sign == 0 -> error("Unexpected internal case")
-            this.sign() == -1 && other.sign == -1 -> error("Unexpected internal case")
+            this.signInt() == 0 && other.sign == 1 -> other
+            this.signInt() == 0 && other.sign == 0 -> zero
+            this.signInt() == 0 && other.sign == -1 -> other
+            this.signInt() == -1 && other.sign == 1 -> error("Unexpected internal case")
+            this.signInt() == -1 && other.sign == 0 -> error("Unexpected internal case")
+            this.signInt() == -1 && other.sign == -1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
     public operator fun UBigLong.minus(other: BigLong): BigLong = context(UBigLong.context) {
         when {
-            this.sign() == 1 && other.sign == -1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
-            this.sign() == 1 && other.sign == 0 -> this.value
-            this.sign() == 1 && other.sign == 1 ->
+            this.signInt() == 1 && other.sign == -1 -> BigLong(sign = 1, absoluteValue = this + other.absoluteValue)
+            this.signInt() == 1 && other.sign == 0 -> valueOf(this)
+            this.signInt() == 1 && other.sign == 1 ->
                 when (this compareWith other.absoluteValue) {
                     ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = 1, absoluteValue = this - other.absoluteValue)
                     ComparisonResult.LeftIsLessThanRight -> BigLong(sign = -1, absoluteValue = other.absoluteValue - this)
                     ComparisonResult.Equal -> zero
                 }
-            this.sign() == 0 && other.sign == -1 -> -other
-            this.sign() == 0 && other.sign == 0 -> zero
-            this.sign() == 0 && other.sign == 1 -> -other
-            this.sign() == -1 && other.sign == -1 -> error("Unexpected internal case")
-            this.sign() == -1 && other.sign == 0 -> error("Unexpected internal case")
-            this.sign() == -1 && other.sign == 1 -> error("Unexpected internal case")
+            this.signInt() == 0 && other.sign == -1 -> -other
+            this.signInt() == 0 && other.sign == 0 -> zero
+            this.signInt() == 0 && other.sign == 1 -> -other
+            this.signInt() == -1 && other.sign == -1 -> error("Unexpected internal case")
+            this.signInt() == -1 && other.sign == 0 -> error("Unexpected internal case")
+            this.signInt() == -1 && other.sign == 1 -> error("Unexpected internal case")
             else -> error("Unexpected internal case")
         }
     }
@@ -265,8 +264,8 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
                     quotient = BigLong(sign = -1, absoluteValue = result.quotient + 1u),
                     remainder = BigLong(sign = 1, absoluteValue = other.absoluteValue - result.remainder),
                 ) else EuclideanDivisionResult(
-                    quotient = result.quotient.value,
-                    remainder = result.remainder.value,
+                    quotient = valueOf(result.quotient),
+                    remainder = valueOf(result.remainder),
                 )
             } else {
                 if (1 != other.sign) EuclideanDivisionResult(
@@ -293,10 +292,10 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         val actualResult =
             if (result.remainder.isNotZero()) {
                 if (1 != other.sign) BigLong(sign = -1, absoluteValue = result.quotient + 1u)
-                else result.quotient.value
+                else valueOf(result.quotient)
             } else {
                 if (1 != other.sign) BigLong(sign = -1, absoluteValue = result.quotient)
-                else result.quotient.value
+                else valueOf(result.quotient)
             }
         
         if (other.sign == -1) -actualResult else actualResult
@@ -309,7 +308,7 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         val actualResult =
             if (result.isNotZero()) {
                 if (1 != other.sign) BigLong(sign = 1, absoluteValue = other.absoluteValue - result)
-                else result.value
+                else valueOf(result)
             } else BigLong(sign = 0, absoluteValue = result)
         
         if (other.sign == -1) -actualResult else actualResult
@@ -380,8 +379,8 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
                     quotient = BigLong(sign = -1, absoluteValue = result.quotient + 1u),
                     remainder = BigLong(sign = 1, absoluteValue = other.absoluteValue - result.remainder),
                 ) else EuclideanDivisionResult(
-                    quotient = result.quotient.value,
-                    remainder = result.remainder.value,
+                    quotient = valueOf(result.quotient),
+                    remainder = valueOf(result.remainder),
                 )
             } else {
                 if (this.sign != other.sign) EuclideanDivisionResult(
@@ -408,10 +407,10 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         val actualResult =
             if (result.remainder.isNotZero()) {
                 if (this.sign != other.sign) BigLong(sign = -1, absoluteValue = result.quotient + 1u)
-                else result.quotient.value
+                else valueOf(result.quotient)
             } else {
                 if (this.sign != other.sign) BigLong(sign = -1, absoluteValue = result.quotient)
-                else result.quotient.value
+                else valueOf(result.quotient)
             }
         
         if (other.sign == -1) -actualResult else actualResult
@@ -424,7 +423,7 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
         val actualResult =
             if (result.isNotZero()) {
                 if (this.sign != other.sign) BigLong(sign = 1, absoluteValue = other.absoluteValue - result)
-                else result.value
+                else valueOf(result)
             } else BigLong(sign = 0, absoluteValue = result)
         
         if (other.sign == -1) -actualResult else actualResult
@@ -481,12 +480,10 @@ public fun String.toBigLong(radix: UInt = 10u): BigLong {
 public fun BigLong.toString(radix: UInt): String {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
     
-    context(UBigLong.context) {
+    UBigLong.context {
         if (this.sign == 0) return "0"
         
         return buildString {
-            if (this@toString.sign == -1) append('-')
-            
             val radix = valueOf(radix)
             
             var result = this@toString.absoluteValue
@@ -495,6 +492,8 @@ public fun BigLong.toString(radix: UInt): String {
                 append(possibleDigits[digit.toUInt()])
                 result = newResult
             }
+            
+            if (this@toString.sign == -1) append('-')
         }.reversed()
     }
 }
@@ -502,8 +501,6 @@ public fun BigLong.toString(radix: UInt): String {
 // region Conversion
 context(context: BigLongContext)
 public fun valueOf(arg: UBigLong): BigLong = context.valueOf(arg)
-context(context: BigLongContext)
-public val UBigLong.value: BigLong get() = with(context) { this@value.value }
 // endregion
 
 // region BigLong-UBigLong operations

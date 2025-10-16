@@ -6,7 +6,19 @@
 package dev.lounres.kone.misc.lattices
 
 import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.implementations.KoneHashResizableSet
+import dev.lounres.kone.collections.set.implementations.KoneHashResizableSet
+import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.addAllFrom
+import dev.lounres.kone.collections.list.buildKoneList
+import dev.lounres.kone.collections.list.emptyKoneList
+import dev.lounres.kone.collections.list.remove
+import dev.lounres.kone.collections.list.toKoneList
+import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.buildKoneSet
+import dev.lounres.kone.collections.set.removeAllFrom
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.combinations
 import dev.lounres.kone.comparison.defaultEquality
@@ -14,6 +26,7 @@ import dev.lounres.kone.computations.*
 import dev.lounres.kone.computations.CancellationException
 import dev.lounres.kone.context.KoneContext
 import dev.lounres.kone.context.invoke
+import dev.lounres.kone.misc.lattices.plus
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
@@ -46,12 +59,31 @@ public interface Lattice<C, K, V>: KoneContext {
     public val rotations: List<(Position<C, K>) -> Position<C, K>>
 }
 
+@JvmName("plus-V-V")
+context(lattice: Lattice<C, K, V>)
+public operator fun <C, K, V> V.plus(other: V): V = with(lattice) { this@plus + other }
+@JvmName("minus-V-V")
+context(lattice: Lattice<C, K, V>)
+public operator fun <C, K, V> V.minus(other: V): V = with(lattice) { this@minus - other }
 
-context(Lattice<C, K, V>)
+@JvmName("plus-C-V")
+context(lattice: Lattice<C, K, V>)
+public operator fun <C, K, V> C.plus(other: V): C = with(lattice) { this@plus + other }
+@JvmName("minus-C-V")
+context(lattice: Lattice<C, K, V>)
+public operator fun <C, K, V> C.minus(other: V): C = with(lattice) { this@minus - other }
+@JvmName("minus-C-C")
+context(lattice: Lattice<C, K, V>)
+public operator fun <C, K, V> C.minus(other: C): V = with(lattice) { this@minus - other }
+
+context(lattice: Lattice<C, K, V>)
+public val <C, K, V> rotations: List<(Position<C, K>) -> Position<C, K>> get() = lattice.rotations
+
+context(_: Lattice<C, K, V>)
 public operator fun <C, K, A, V> Cell<C, K, A>.plus(other: V): Cell<C, K, A> = Cell(Position(position.coordinates + other, position.kind), attributes)
-context(Lattice<C, K, V>)
+context(_: Lattice<C, K, V>)
 public operator fun <C, K, A, V> Cell<C, K, A>.minus(other: V): Cell<C, K, A> = Cell(Position(position.coordinates - other, position.kind), attributes)
-context(Lattice<C, K, V>)
+context(_: Lattice<C, K, V>)
 public operator fun <C, K, A, V> Cell<C, K, A>.minus(other: Cell<C, K, A>): V {
     require(this.position.kind == other.position.kind)
     return this.position.coordinates - other.position.coordinates
@@ -79,7 +111,10 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt
     val allCells = this@divideInParts
 
     val firstCell = allCells.first()
-    for (otherCellsOfFirstPart in buildKoneList { addAllFrom(allCells); (defaultEquality<Cell<C, K, A>>()) { remove(firstCell) } }.combinations(cellsPerPart - 1u)) {
+    for (otherCellsOfFirstPart in buildKoneList {
+        addAllFrom(allCells)
+        defaultEquality<Cell<C, K, A>> { remove(firstCell) }
+    }.combinations(cellsPerPart - 1u)) {
         if(!isActive) return@sequence
         val firstPart = buildKoneSet(initialCapacity = otherCellsOfFirstPart.size + 1u) {
             addAllFrom(otherCellsOfFirstPart)
@@ -103,7 +138,7 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts(numberOfParts: UInt
 
         val allPossibleParts = buildKoneSet {
             for (form in forms) for (otherFirstCell in restCells) {
-                if(!isActive) return@sequence
+                if (!isActive) return@sequence
                 if (otherFirstCell.position.kind != form.startCell.position.kind) continue
                 val shift = otherFirstCell - form.startCell
                 val part = form.cells.mapTo(KoneHashResizableSet(/* TODO: Replace with fixed capacity implementation with capacity `cellsPerPart` */)) { it + shift }
@@ -215,7 +250,10 @@ public fun <C, K, A, V> KoneSet<Cell<C, K, A>>.divideInParts2(numberOfParts: UIn
     
     val firstCell = allCells.first()
     
-    val otherCellsOfFirstPartIterator = buildKoneList { addAllFrom(allCells); (defaultEquality<Cell<C, K, A>>()) { remove(firstCell) } }.combinations(cellsPerPart - 1u).iterator()
+    val otherCellsOfFirstPartIterator = buildKoneList {
+        addAllFrom(allCells)
+        (defaultEquality<Cell<C, K, A>>()) { remove(firstCell) }
+    }.combinations(cellsPerPart - 1u).iterator()
     
     val logic: suspend CoroutineScope.(SendChannel<KoneList<KoneSet<Cell<C, K, A>>>>) -> Unit = logic@{
         for (otherCellsOfFirstPart in otherCellsOfFirstPartIterator) {

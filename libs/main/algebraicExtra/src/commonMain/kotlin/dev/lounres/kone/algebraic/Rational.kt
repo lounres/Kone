@@ -20,10 +20,18 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
 
 
+@Serializable(with = RationalSerializer::class)
 public class Rational {
     @JvmField
     public val numerator: Long
@@ -70,23 +78,25 @@ public class Rational {
     override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
 
     public companion object {
-        public val context: RationalContext = RationalContext
+        public val context: RationalContext get() = RationalContext
     }
 }
 
-public fun RegistryBuilder<KoneContextRegistry>.setRationalContext() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val rationalSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
-    Reification.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Equality.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Ring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Field.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Order.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Hashing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+internal object RationalSerializer : KSerializer<Rational> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("dev.lounres.kone.algebraic.Rational", PrimitiveKind.STRING)
+    
+    override fun serialize(encoder: Encoder, value: Rational) {
+        encoder.encodeString(value.toString())
+    }
+    
+    override fun deserialize(decoder: Decoder): Rational {
+        val string = decoder.decodeString()
+        return when (string.count { it == '/' }) {
+            0 -> Rational(string.toLong())
+            1 -> Rational(string.substringBefore("/").toLong(), string.substringAfter("/").toLong())
+            else -> TODO()
+        }
+    }
 }
 
 @JvmInline
@@ -440,4 +450,29 @@ public data object RationalContext : Reification<Rational>, Field<Rational>, Ord
         )
     }
     // endregion
+}
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun RationalContext.set(): Unit = with(koneContextRegistryBuilder) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val rationalSuppliedType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    Reification.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Equality.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Semigroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    CommutativeSemigroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Monoid.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    CommutativeMonoid.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Group.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    CommutativeGroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Semiring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    CommutativeSemiring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Ring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    CommutativeRing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Field.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Order.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    Hashing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
 }

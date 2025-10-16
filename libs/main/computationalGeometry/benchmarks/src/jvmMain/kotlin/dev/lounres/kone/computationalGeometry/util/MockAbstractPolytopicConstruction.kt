@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.defaultHashing
 import dev.lounres.kone.computationalGeometry.*
 
 
@@ -19,7 +18,7 @@ import dev.lounres.kone.computationalGeometry.*
 //    override val spaceDimension: UInt,
 //    override val numberContext: NC,
 //) : MutableAbstractPolytopicConstruction<N>, PolytopicConstructionWithContexts<N, NC, AbstractPolytope, AbstractVertex> {
-//    override val polytopeContext: Hashing<AbstractPolytope> = defaultHashing()
+//    override val polytopeContext: Hashing<AbstractPolytope> = Hashing.defaultFor()
 //
 //    private val _positionOf = koneMutableMapOf<AbstractVertex, Point<N>>(keyContext = polytopeContext)
 //

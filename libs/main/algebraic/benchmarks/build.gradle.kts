@@ -1,9 +1,14 @@
+plugins {
+    alias(versions.plugins.kotlinx.serialization)
+}
+
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.libs.main.contexts)
-                api(projects.libs.main.maybe)
+                implementation(projects.libs.main.contexts)
+                implementation(projects.libs.main.maybe)
+                implementation(versions.kotlinx.serialization.json)
             }
         }
     }

@@ -7,7 +7,11 @@ package dev.lounres.kone.algebraic.basis
 
 
 public fun interface VectorSpaceBasisDecomposition<out Number, in Vector, in Index> {
-    public fun decompose(element: Vector): Result<Number, Index>
+    public fun decompose(vector: Vector): Result<Number, Index>
+    
+    public interface Finite<out Number, Vector> : VectorSpaceBasisDecomposition<Number, Vector, UInt> {
+        public val size: UInt
+    }
     
     public fun interface Result<out Number, in Index> {
         public operator fun get(index: Index): Number
@@ -17,7 +21,5 @@ public fun interface VectorSpaceBasisDecomposition<out Number, in Vector, in Ind
 public interface VectorSpaceBasis<out Number, Vector, in Index> : VectorSpaceBasisDecomposition<Number, Vector, Index> {
     public operator fun get(index: Index): Vector
     
-    public interface Finite<out Number, Vector> : VectorSpaceBasis<Number, Vector, UInt> {
-        public val size: UInt
-    }
+    public interface Finite<out Number, Vector> : VectorSpaceBasis<Number, Vector, UInt>, VectorSpaceBasisDecomposition.Finite<Number, Vector>
 }

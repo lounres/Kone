@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.deque
 
 import dev.lounres.kone.collections.EmptyDequeAccessException
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.next
 
 
 /**
@@ -35,3 +37,7 @@ public fun <Element> KoneDeque<out Element>.popFirst(): Element = getFirst().als
  * @throws EmptyDequeAccessException when the collection is empty.
  */
 public fun <Element> KoneDeque<out Element>.popLast(): Element = getLast().also { removeLast() }
+
+public fun <Element> KoneDeque<in Element>.addLastAllFrom(iterable: KoneIterable<Element>) {
+    for (element in iterable) addLast(element)
+}

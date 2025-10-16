@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.misc.lattices
 
-import dev.lounres.kone.collections.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterable
 
 
 public interface LatticeWithConnectivity<C, K, V>: Lattice<C, K, V> {

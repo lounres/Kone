@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.linearAlgebra.VectorKategory
-import dev.lounres.kone.linearAlgebra.vectorKategory
+import dev.lounres.kone.linearAlgebra.defaultVectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
@@ -38,8 +38,8 @@ public fun <N> RegistryBuilder<KoneContextRegistry>.setPlanimetricsCalculationSp
         fullyQualifiedName = "dev.lounres.kone.polynomial.LabeledPolynomial",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType
+                variance = INVARIANT,
+                type = numberType
             ),
         ),
         isNullable = false,
@@ -49,8 +49,8 @@ public fun <N> RegistryBuilder<KoneContextRegistry>.setPlanimetricsCalculationSp
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,
@@ -60,8 +60,8 @@ public fun <N> RegistryBuilder<KoneContextRegistry>.setPlanimetricsCalculationSp
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,
@@ -71,15 +71,15 @@ public fun <N> RegistryBuilder<KoneContextRegistry>.setPlanimetricsCalculationSp
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,
     )
     val numberRing = this[Ring.Key<N>(numberType)]
     val polynomialSpace = this.getOrNull(MultivariatePolynomialSpace.Key<N, LabeledVariable, LabeledPolynomial<N>>(numberType, labeledVariableType, polynomialType)) ?: numberRing.labeledPolynomialSpace
-    val polynomialVectorKategory = this.getOrNull(VectorKategory.Key<LabeledPolynomial<N>>(polynomialType)) ?: polynomialSpace.vectorKategory()
+    val polynomialVectorKategory = this.getOrNull(VectorKategory.Key<LabeledPolynomial<N>>(polynomialType)) ?: polynomialSpace.defaultVectorKategory()
     val planimetricsCalculationSpace = PlanimetricsCalculationSpace(numberRing, polynomialSpace, polynomialVectorKategory)
     val pointEquality = pointEquality(polynomialSpace)
     val lineEquality = lineEquality(polynomialSpace)
@@ -106,8 +106,8 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Point",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,
@@ -117,8 +117,8 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Line",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,
@@ -128,8 +128,8 @@ public fun <N, R> KoneContextRegistry.inPlanimetricsCalculationSpaceScopeFor(num
         fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.Quadric",
         typeArguments = listOf(
             SuppliedProjection.Regular(
-                KVariance.INVARIANT,
-                numberType,
+                variance = INVARIANT,
+                type = numberType,
             )
         ),
         isNullable = false,

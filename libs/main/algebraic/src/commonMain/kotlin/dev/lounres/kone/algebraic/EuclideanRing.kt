@@ -19,10 +19,10 @@ import kotlin.jvm.JvmInline
  * See [EuclideanSemiring]'s or [EuclideanRing]'s docs for more.
  */
 @Serializable
-@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
-public value class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
-    public operator fun component1(): Number = quotient
-    public operator fun component2(): Number = remainder
+//@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
+public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient: Number, public val remainder: Number) {
+//    public operator fun component1(): Number = quotient
+//    public operator fun component2(): Number = remainder
 }
 
 /**

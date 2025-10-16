@@ -5,11 +5,15 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
@@ -17,6 +21,8 @@ import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.reificationException
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.sign
@@ -29,16 +35,18 @@ public /*value*/ data class BigLongRational internal constructor(
     public val denominator: UBigLong,
 ) {
     override fun toString(): String =
-        if (context(UBigLong.context) { denominator.isOne() }) "$numerator"
+        if ((UBigLong.context) { denominator.isOne() }) "$numerator"
         else "$numerator/$denominator"
     
-    public companion object
+    public companion object {
+        public val context: BigLongRationalContext get() = BigLongRationalContext
+    }
 }
 
 public fun BigLongRational.Companion.from(numerator: BigLong, denominator: UBigLong = UBigLong.context.one): BigLongRational {
     if (context(UBigLong.context) { denominator.isZero() }) divisionByZero()
     
-    val greatestCommonDivisor = context(BigLong.context) { gcd(numerator, denominator.value).absoluteValue }
+    val greatestCommonDivisor = context(BigLong.context) { gcd(numerator, valueOf(denominator)).absoluteValue }
     
     return BigLongRational(
         numerator = context(BigLong.context) { numerator / greatestCommonDivisor },
@@ -156,13 +164,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region BigLongRational-Int operations
     override fun BigLongRational.plus(other: Int): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator + denominator.value * other,
+            numerator = numerator + valueOf(denominator) * other,
             denominator = denominator,
         )
     }
     override fun BigLongRational.minus(other: Int): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator - denominator.value * other,
+            numerator = numerator - valueOf(denominator) * other,
             denominator = denominator,
         )
     }
@@ -187,13 +195,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region BigLongRational-UInt operations
     override fun BigLongRational.plus(other: UInt): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator + denominator.value * other,
+            numerator = numerator + valueOf(denominator) * other,
             denominator = denominator,
         )
     }
     override fun BigLongRational.minus(other: UInt): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator - denominator.value * other,
+            numerator = numerator - valueOf(denominator) * other,
             denominator = denominator,
         )
     }
@@ -217,13 +225,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region BigLongRational-Long operations
     override fun BigLongRational.plus(other: Long): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator + denominator.value * other,
+            numerator = numerator + valueOf(denominator) * other,
             denominator = denominator,
         )
     }
     override fun BigLongRational.minus(other: Long): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator - denominator.value * other,
+            numerator = numerator - valueOf(denominator) * other,
             denominator = denominator,
         )
     }
@@ -248,13 +256,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region BigLongRational-ULong operations
     override fun BigLongRational.plus(other: ULong): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator + denominator.value * other,
+            numerator = numerator + valueOf(denominator) * other,
             denominator = denominator,
         )
     }
     override fun BigLongRational.minus(other: ULong): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = numerator - denominator.value * other,
+            numerator = numerator - valueOf(denominator) * other,
             denominator = denominator,
         )
     }
@@ -278,13 +286,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region Int-BigLongRational operations
     override fun Int.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value + other.numerator,
+            numerator = this * valueOf(other.denominator) + other.numerator,
             denominator = other.denominator,
         )
     }
     override fun Int.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value - other.numerator,
+            numerator = this * valueOf(other.denominator) - other.numerator,
             denominator = other.denominator,
         )
     }
@@ -309,13 +317,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region UInt-BigLongRational operations
     override fun UInt.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value + other.numerator,
+            numerator = this * valueOf(other.denominator) + other.numerator,
             denominator = other.denominator,
         )
     }
     override fun UInt.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value - other.numerator,
+            numerator = this * valueOf(other.denominator) - other.numerator,
             denominator = other.denominator,
         )
     }
@@ -340,13 +348,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region Long-BigLongRational operations
     override fun Long.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value + other.numerator,
+            numerator = this * valueOf(other.denominator) + other.numerator,
             denominator = other.denominator,
         )
     }
     override fun Long.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value - other.numerator,
+            numerator = this * valueOf(other.denominator) - other.numerator,
             denominator = other.denominator,
         )
     }
@@ -371,13 +379,13 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // region ULong-BigLongRational operations
     override fun ULong.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value + other.numerator,
+            numerator = this * valueOf(other.denominator) + other.numerator,
             denominator = other.denominator,
         )
     }
     override fun ULong.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
         BigLongRational(
-            numerator = this * other.denominator.value - other.numerator,
+            numerator = this * valueOf(other.denominator) - other.numerator,
             denominator = other.denominator,
         )
     }
@@ -436,7 +444,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.div(other: BigLongRational): BigLongRational = context(BigLong.context, UBigLong.context) {
-        if (other.denominator.isZero()) divisionByZero()
+        if (other.numerator.isZero()) divisionByZero()
         val sign = this.numerator.sign * other.numerator.sign
         val (reducedThisNumerator, reducedOtherNumerator) = divideByGCD(this.numerator.absoluteValue, other.numerator.absoluteValue)
         val (reducedThisDenominator, reducedOtherDenominator) = divideByGCD(this.denominator, other.denominator)
@@ -446,4 +454,29 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     // endregion
+}
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun BigLongRationalContext.set(): Unit = with(koneContextRegistryBuilder) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val bigLongRationalSuppliedType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.BigLongRational",
+        typeArguments = emptyList(),
+        isNullable = false,
+    )
+    Reification.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Equality.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Semigroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    CommutativeSemigroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Monoid.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    CommutativeMonoid.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Group.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    CommutativeGroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Semiring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    CommutativeSemiring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Ring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    CommutativeRing.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Field.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Order.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    Hashing.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
 }

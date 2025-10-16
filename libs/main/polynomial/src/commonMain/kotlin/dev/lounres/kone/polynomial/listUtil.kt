@@ -15,7 +15,7 @@ import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.rem
-import dev.lounres.kone.algebraic.sign
+import dev.lounres.kone.algebraic.signInt
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.interop.toKoneList
@@ -30,8 +30,6 @@ import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.collections.utils.mapIndexedTo
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.repeat
-import kotlin.jvm.JvmName
 
 
 /**
@@ -193,7 +191,7 @@ internal fun <Number> ListPolynomial<Number>.sturmSeries(): KoneList<ListPolynom
 
 context(_: Field<Number>, _: Order<Number>, _: ListPolynomialSpaceOverField<Number>)
 internal fun <Number> ListPolynomial<Number>.sturmNumberOfSignVariationsAt(point: Number): UInt {
-    val sturmSigns = sturmSeries().map { it.substitute(point).sign() }.filter { it != 0 }
+    val sturmSigns = sturmSeries().map { it.substitute(point).signInt() }.filter { it != 0 }
     return (0u ..< sturmSigns.lastIndex).toKoneList().count { sturmSigns[it] != sturmSigns[it + 1u] }
 }
 
@@ -201,8 +199,8 @@ internal fun <Number> ListPolynomial<Number>.sturmNumberOfSignVariationsAt(point
 context(_: Field<Number>, _: Order<Number>, _: ListPolynomialSpaceOverField<Number>)
 public fun <Number> ListPolynomial<Number>.numberOfRootsBySturm(from: Number, to: Number): UInt {
     val sturmSeries = sturmSeries()
-    val sturmSignsAtFromPoint = sturmSeries.map { it.substitute(from).sign() }.filter { it != 0 }
-    val sturmSignsAtToPoint = sturmSeries.map { it.substitute(to).sign() }.filter { it != 0 }
+    val sturmSignsAtFromPoint = sturmSeries.map { it.substitute(from).signInt() }.filter { it != 0 }
+    val sturmSignsAtToPoint = sturmSeries.map { it.substitute(to).signInt() }.filter { it != 0 }
     val sturmNumberOfSignVariationsAtFromPoint = (0u ..< sturmSignsAtFromPoint.lastIndex).toKoneList().count { sturmSignsAtFromPoint[it] != sturmSignsAtFromPoint[it + 1u] }
     val sturmNumberOfSignVariationsAtToPoint = (0u ..< sturmSignsAtToPoint.lastIndex).toKoneList().count { sturmSignsAtToPoint[it] != sturmSignsAtToPoint[it + 1u] }
     return sturmNumberOfSignVariationsAtFromPoint - sturmNumberOfSignVariationsAtToPoint

@@ -508,7 +508,7 @@ public infix fun UBigLong.divrem(other: UBigLong): EuclideanDivisionResult<UBigL
 context(context: UBigLongContext)
 public operator fun UBigLong.div(other: UBigLong): UBigLong = with(context) { this@div / other }
 context(context: UBigLongContext)
-public operator fun UBigLong.rem(other: UBigLong): UBigLong = with(context) { this@rem / other }
+public operator fun UBigLong.rem(other: UBigLong): UBigLong = with(context) { this@rem % other }
 // endregion
 
 // region Bitwise operations

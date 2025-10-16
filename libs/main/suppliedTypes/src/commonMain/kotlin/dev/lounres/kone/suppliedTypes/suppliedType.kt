@@ -102,8 +102,8 @@ public sealed interface SuppliedProjection {
 public annotation class Supplied(/*val parameterName: String = ""*/)
 
 @Target(
-    AnnotationTarget.CONSTRUCTOR,
     AnnotationTarget.FUNCTION,
+    AnnotationTarget.CLASS,
 )
 public annotation class SuppliedTarget
 

@@ -12,13 +12,13 @@ dependencies {
     
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-internal-test-framework:$kotlinVersion")
-    testImplementation("junit:junit:4.13.2")
+//    testImplementation("junit:junit:4.13.2")
     
-    testImplementation(platform("org.junit:junit-bom:5.8.0"))
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.platform:junit-platform-commons")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.junit.platform:junit-platform-runner")
+//    testImplementation("org.junit.platform:junit-platform-runner")
     testImplementation("org.junit.platform:junit-platform-suite-api")
     
     testImplementation(project.childProjects["testGeneration"]!!)

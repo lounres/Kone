@@ -26,34 +26,34 @@ benchmark {
             }
         }
 
-        register("arrayAllocationWithSizeOfPowersOfTwo") {
+        register("koneArrayAllocationWithSizeOfPowersOfTwo") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
             param("size", value = (0 .. 30).map { 1 shl it }.toTypedArray())
         }
-        register("arrayAllocationWithSizeFromZeroToNumber") {
+        register("koneArrayAllocationWithSizeFromZeroToNumber") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
         }
-        register("arrayAllocationWithSizeFromSpecificNumbers") {
+        register("koneArrayAllocationWithSizeFromSpecificNumbers") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAllocationBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
             param("size", value = numbers.toTypedArray())
         }
-        register("arrayAccessWithSizeOfPowersOfTwo") {
+        register("koneArrayAccessWithSizeOfPowersOfTwo") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAccessBenchmarks.*")
             param("size", value = (0 .. 30).map { 1 shl it }.toTypedArray())
         }
-        register("arrayAccessWithSizeFromZeroToNumber") {
+        register("koneArrayAccessWithSizeFromZeroToNumber") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAccessBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
         }
-        register("arrayAccessWithSizeFromFromSpecificNumbers") {
+        register("koneArrayAccessWithSizeFromFromSpecificNumbers") {
             mainConfiguration()
-            include("dev.lounres.kone.benchmarks.collections.array.ArrayAccessBenchmarks.*")
+            include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAccessBenchmarks.*")
             param("size", value = numbers.toTypedArray())
         }
     }

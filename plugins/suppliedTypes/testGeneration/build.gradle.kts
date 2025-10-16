@@ -9,13 +9,13 @@ dependencies {
     
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-compiler-internal-test-framework:$kotlinVersion")
-    implementation("junit:junit:4.13.2")
+//    implementation("junit:junit:4.13.2")
     
-    implementation(platform("org.junit:junit-bom:5.8.0"))
+    implementation(platform("org.junit:junit-bom:6.0.0"))
     implementation("org.junit.jupiter:junit-jupiter")
     implementation("org.junit.platform:junit-platform-commons")
     implementation("org.junit.platform:junit-platform-launcher")
-    implementation("org.junit.platform:junit-platform-runner")
+//    implementation("org.junit.platform:junit-platform-runner")
     implementation("org.junit.platform:junit-platform-suite-api")
     
     implementation(project.parent!!)

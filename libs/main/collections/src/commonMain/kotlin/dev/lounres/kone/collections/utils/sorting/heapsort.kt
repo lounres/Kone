@@ -24,6 +24,10 @@ internal fun <E> KoneSettableList<E>.swap(i: UInt, j: UInt) {
 }
 
 public fun <E: Comparable<E>> KoneSettableList<E>.heapsort() {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u

@@ -12,7 +12,7 @@ import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.linearAlgebra.VectorKategory
-import dev.lounres.kone.linearAlgebra.vectorKategory
+import dev.lounres.kone.linearAlgebra.defaultVectorKategory
 import dev.lounres.kone.polynomial.LabeledPolynomial
 import dev.lounres.kone.polynomial.LabeledVariable
 import dev.lounres.kone.polynomial.MultivariatePolynomialSpace
@@ -33,7 +33,7 @@ import kotlin.reflect.KVariance
 public class PlanimetricsCalculationSpace<Number>(
     @PublishedApi internal val numberRing: Ring<Number>,
     @PublishedApi internal val polynomialSpace: MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>> = numberRing.labeledPolynomialSpace,
-    @PublishedApi internal val polynomialVectorKategory: VectorKategory<LabeledPolynomial<Number>> = polynomialSpace.vectorKategory(),
+    @PublishedApi internal val polynomialVectorKategory: VectorKategory<LabeledPolynomial<Number>> = polynomialSpace.defaultVectorKategory(),
 ) : KoneContext {
     public val origin: Point<Number> = polynomialSpace { Point(zero, zero, one) }
     public val xBasis: Point<Number> = polynomialSpace { Point(one, zero, one) }
@@ -125,8 +125,8 @@ public class PlanimetricsCalculationSpace<Number>(
                 fullyQualifiedName = "dev.lounres.kone.misc.planimetricsCalculus.PlanimetricsCalculationSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
-                        KVariance.INVARIANT,
-                        elementType
+                        variance = INVARIANT,
+                        type = elementType
                     )
                 ),
                 isNullable = false
@@ -168,7 +168,7 @@ public inline fun <Number, R> calculate(
 
 public fun <Number> Ring<Number>.planimetricsCalculationSpace(
     polynomialSpace: MultivariatePolynomialSpace<Number, LabeledVariable, LabeledPolynomial<Number>> = labeledPolynomialSpace,
-    polynomialVectorKategory: VectorKategory<LabeledPolynomial<Number>> = polynomialSpace.vectorKategory(),
+    polynomialVectorKategory: VectorKategory<LabeledPolynomial<Number>> = polynomialSpace.defaultVectorKategory(),
 ): PlanimetricsCalculationSpace<Number> =
     PlanimetricsCalculationSpace(
         numberRing = this,

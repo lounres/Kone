@@ -10,8 +10,6 @@ import dev.lounres.kone.algebraic.BigIntegerContext
 import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.computationalGeometry.util.PointSetDescription
-import dev.lounres.kone.computationalGeometry.utils.map
 import dev.lounres.kone.contexts.invoke
 import kotlinx.benchmark.*
 import kotlinx.serialization.decodeFromString

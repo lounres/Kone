@@ -8,12 +8,143 @@
 package dev.lounres.kone.benchmarks.algebraic
 
 import dev.lounres.kone.algebraic.context
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.lt
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.OutputTimeUnit
+import kotlinx.benchmark.Param
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import java.io.File
 
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntContextEqualityBenchmarks {
+    final val boxedIntegers = listOf(0, 1)
+    
+    @Param("0", "1")
+    final var a: Int = 0
+    @Param("0", "1")
+    final var b: Int = 0
+    
+    final val equality = Int.context
+    
+    @Benchmark
+    fun equality_via_primitives() = a == b
+    
+    @Benchmark
+    fun equality_via_defaultEquality() = equality { a eq b }
+}
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntContextEqualityBulkBenchmarks {
+    final val boxedIntegers = listOf(0, 1)
+    
+    final val inputs: Array<IntArray> = Json.decodeFromStream(File("src/jvmMain/resources/defaultComparisonImplementationsArguments.json").inputStream())
+    
+    final var index: Int = 0
+    
+    final val equality = Int.context
+    
+    @Benchmark
+    fun Blackhole.idle_on_inputs() {
+        consume(inputs[index])
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.equality_via_primitives() {
+        val (a, b) = inputs[index]
+        consume(a == b)
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.equality_via_defaultEquality() {
+        val (a, b) = inputs[index]
+        consume(equality { a eq b })
+        index = (index + 1) % inputs.size
+    }
+}
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntContextOrderBenchmarks {
+    @Param("0", "1")
+    final var a: Int = 0
+    @Param("0", "1")
+    final var b: Int = 0
+    
+    val order = Int.context
+    
+    @Benchmark
+    fun comparison_via_primitives() = a < b
+    
+    @Benchmark
+    fun comparison_via_defaultOrder_compareWith_with_boxing() = order { a lt b }
+}
+
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@State(Scope.Benchmark)
+class IntContextOrderBulkBenchmarks {
+    final val inputs: Array<IntArray> = Json.decodeFromStream(File("src/jvmMain/resources/defaultComparisonImplementationsArguments.json").inputStream())
+    
+    final var index: Int = 0
+    
+    final val order = Int.context
+    
+    @Benchmark
+    fun Blackhole.idle_on_inputs() {
+        consume(inputs[index])
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.comparison_via_primitives() {
+        val (a, b) = inputs[index]
+        consume(a < b)
+        index = (index + 1) % inputs.size
+    }
+    
+    @Benchmark
+    fun Blackhole.comparison_via_defaultOrder_compareWith_with_boxing() {
+        val (a, b) = inputs[index]
+        consume(order { a lt b })
+        index = (index + 1) % inputs.size
+    }
+}
+
+//@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+//@State(Scope.Benchmark)
+//class IntOperationsBenchmarks {
+//    val a: Int = 1846030199
+//    val b: Int = -1469324163
+//
+//    // region Hashing
+//    @Benchmark
+//    fun Any_hashCode_for_Int() = a.hashCode()
+//
+//    @Benchmark
+//    fun Any_hashCode_for_generic_Int() = tryAnyHashCode(a)
+//
+//    @Benchmark
+//    fun Hashing_hash_for_Int() = Int.context { a.hash() }
+//
+//    @Benchmark
+//    fun Hashing_hash_for_generic_Int() = tryHashingHash(a, Int.context)
+//    // endregion
+//
+//    // region Semiring
+//    // TODO: Finish benchmarks
+//    // endregion
+//}
 
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
 @State(Scope.Benchmark)
@@ -49,59 +180,3 @@ class IntContextReificationBenchmarks {
     @Benchmark
     fun reificationNullable_unsuccessful() = reification.reifyOrNull(null)
 }
-
-//@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-//@State(Scope.Benchmark)
-//class IntOperationsBenchmarks {
-//    val a: Int = 1846030199
-//    val b: Int = -1469324163
-//
-//    // region Equality
-//    @Benchmark
-//    fun Any_equals_for_Int() = a == b
-//
-//    @Benchmark
-//    fun Any_equals_for_generic_Int() = tryAnyEquals(a, b)
-//
-//    @Benchmark
-//    fun Equality_equalsTo_for_Int() = Int.context { a equalsTo b }
-//
-//    @Benchmark
-//    fun Equality_equalsTo_for_generic_Int() = tryEqualityEqualsTo(a, b, Int.context)
-//    // endregion
-//
-//    // region Order
-//    @Benchmark
-//    fun Comparable_compareTo_for_Int() = a > b
-//
-//    @Benchmark
-//    fun Comparable_compareTo_for_generic_Int() = tryComparableCompareTo(a, b)
-//
-//    @Benchmark
-//    fun Order_compareTo_for_generic_Int() = tryOrderCompareTo(a, b, Int.context)
-//
-//    @Benchmark
-//    fun Order_compareWith_for_Int() = Int.context { a compareWith b }
-//
-//    @Benchmark
-//    fun Order_compareWith_for_generic_Int() = tryOrderCompareWith(a, b, Int.context)
-//    // endregion
-//
-//    // region Hashing
-//    @Benchmark
-//    fun Any_hashCode_for_Int() = a.hashCode()
-//
-//    @Benchmark
-//    fun Any_hashCode_for_generic_Int() = tryAnyHashCode(a)
-//
-//    @Benchmark
-//    fun Hashing_hash_for_Int() = Int.context { a.hash() }
-//
-//    @Benchmark
-//    fun Hashing_hash_for_generic_Int() = tryHashingHash(a, Int.context)
-//    // endregion
-//
-//    // region Semiring
-//    // TODO: Finish benchmarks
-//    // endregion
-//}

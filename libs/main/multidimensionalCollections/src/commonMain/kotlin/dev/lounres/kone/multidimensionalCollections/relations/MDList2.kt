@@ -11,6 +11,7 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.multidimensionalCollections.MDList2
+import dev.lounres.kone.multidimensionalCollections.contentEquals
 import dev.lounres.kone.multidimensionalCollections.utils.fold
 import dev.lounres.kone.relations.defaultFor
 
@@ -18,7 +19,7 @@ import dev.lounres.kone.relations.defaultFor
 internal class MDList2Equality<E>(private val elementEquality: Equality<E>) : Equality<MDList2<E>> {
     override fun MDList2<E>.equalsTo(other: MDList2<E>): Boolean {
         if (this === other) return true
-        if (this.rowNumber != other.rowNumber || this.columnNumber != other.columnNumber) return false
+        if (!(this.size contentEquals other.size)) return false
         
         for (rowIndex in 0u .. this.rowNumber) for (columnIndex in 0u .. this.columnNumber)
             if (elementEquality { this[rowIndex, columnIndex] neq other[rowIndex, columnIndex] }) return false

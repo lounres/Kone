@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.misc.lattices
 
-import dev.lounres.kone.collections.KoneIterable
-import dev.lounres.kone.collections.contains
-import dev.lounres.kone.collections.koneMutableSetOf
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.set.koneMutableSetOf
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.comparison.defaultEquality
 import dev.lounres.kone.context.invoke
@@ -50,7 +50,7 @@ public object SquareLattice: LatticeWithConnectivity<Pair<Int, Int>, SquareKind,
                 Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second+1), nextPosition.kind),
                 Position(Pair(nextPosition.coordinates.first, nextPosition.coordinates.second-1), nextPosition.kind),
             )
-            for (position in adjacentPositions) if (position !in testedPositions && (defaultEquality<Position<Pair<Int, Int>, SquareKind>>()) { position in this }) positionsToTest.add(position)
+            for (position in adjacentPositions) if (position !in testedPositions && defaultEquality<Position<Pair<Int, Int>, SquareKind>> { position in this }) positionsToTest.add(position)
         }
         return testedPositions.size == this.size
     }

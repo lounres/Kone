@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.onKeyEvent
@@ -25,40 +26,15 @@ import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.angles.cos
 import dev.lounres.kone.computationalGeometry.angles.degrees
 import dev.lounres.kone.computationalGeometry.angles.plus
 import dev.lounres.kone.computationalGeometry.angles.sin
-import dev.lounres.kone.multidimensionalCollections.MDList1
+import dev.lounres.kone.computationalGeometry.default2.Vector2
+import dev.lounres.kone.computationalGeometry.plus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 
-
-public data class ViewRegion(
-    val xMin: Double,
-    val xMax: Double,
-    val yMin: Double,
-    val yMax: Double,
-)
-
-context(koneCanvasSize: KoneCanvasSize)
-public val KoneCanvasState.viewRegion: ViewRegion
-    get() = ViewRegion(
-        xMin = offset.vector[0u] - koneCanvasSize.width / 2 * zoom,
-        xMax = offset.vector[0u] + koneCanvasSize.width / 2 * zoom,
-        yMin = offset.vector[1u] - koneCanvasSize.height / 2 * zoom,
-        yMax = offset.vector[1u] + koneCanvasSize.height / 2 * zoom,
-    )
-
-public val ViewRegion.leftBottomOffset: Offset
-    get() = Offset(xMin.toFloat(), yMin.toFloat())
-public val ViewRegion.leftTopOffset: Offset
-    get() = Offset(xMin.toFloat(), yMax.toFloat())
-public val ViewRegion.rightBottomOffset: Offset
-    get() = Offset(xMax.toFloat(), yMin.toFloat())
-public val ViewRegion.rightTopOffset: Offset
-    get() = Offset(xMax.toFloat(), yMax.toFloat())
 
 @Composable
 public fun KoneCanvas(
@@ -71,14 +47,13 @@ public fun KoneCanvas(
         modifier = modifier,
     ) {
         val koneCanvasScope = CollectingKoneCanvasScope()
-        val cos = cos(koneCanvasState.rotation)
-        val sin = sin(koneCanvasState.rotation)
+        val cos = cos(koneCanvasState.rotation) / koneCanvasState.zoom
+        val sin = sin(koneCanvasState.rotation) / koneCanvasState.zoom
         koneCanvasScope.transform(
             transformation = KoneCanvasTransformationMatrix(
                 KoneDoubleArray.of(
-                    cos, -sin, -koneCanvasState.offset.vector[0u] * cos + koneCanvasState.offset.vector[1u] * sin + size.width / 2 * koneCanvasState.zoom,
-                    -sin, -cos, koneCanvasState.offset.vector[0u] * sin + koneCanvasState.offset.vector[1u] * cos + size.height / 2 * koneCanvasState.zoom,
-                    0.0, 0.0, koneCanvasState.zoom,
+                    cos, -sin, -koneCanvasState.offset.x * cos + koneCanvasState.offset.y * sin + size.width / 2,
+                    -sin, -cos, koneCanvasState.offset.x * sin + koneCanvasState.offset.y * cos + size.height / 2,
                 )
             )
         ) {
@@ -89,26 +64,104 @@ public fun KoneCanvas(
                 if (clip) clipRect()
             }
         ) {
-            for (pathToDraw in koneCanvasScope.paths)
-                when (pathToDraw) {
-                    is CollectingKoneCanvasScope.PathToDraw.Brushed ->
+            for (elementToDraw in koneCanvasScope.elements)
+                when (elementToDraw) {
+                    is CollectingKoneCanvasScope.ElementToDraw.PathBrushed ->
                         drawPath(
-                            path = pathToDraw.path.toComposePath(),
-                            brush = pathToDraw.brush,
-                            alpha = pathToDraw.alpha,
-                            style = pathToDraw.style,
-                            colorFilter = pathToDraw.colorFilter,
-                            blendMode = pathToDraw.blendMode,
+                            path = elementToDraw.path.toComposePath(),
+                            brush = elementToDraw.brush,
+                            alpha = elementToDraw.alpha,
+                            style = elementToDraw.style,
+                            colorFilter = elementToDraw.colorFilter,
+                            blendMode = elementToDraw.blendMode,
                         )
-                    is CollectingKoneCanvasScope.PathToDraw.Colored ->
+                    is CollectingKoneCanvasScope.ElementToDraw.PathColored ->
                         drawPath(
-                            path = pathToDraw.path.toComposePath(),
-                            color = pathToDraw.color,
-                            alpha = pathToDraw.alpha,
-                            style = pathToDraw.style,
-                            colorFilter = pathToDraw.colorFilter,
-                            blendMode = pathToDraw.blendMode,
+                            path = elementToDraw.path.toComposePath(),
+                            color = elementToDraw.color,
+                            alpha = elementToDraw.alpha,
+                            style = elementToDraw.style,
+                            colorFilter = elementToDraw.colorFilter,
+                            blendMode = elementToDraw.blendMode,
                         )
+                    is CollectingKoneCanvasScope.ElementToDraw.EllipseBrushed ->
+                        withTransform(
+                            {
+                                val koneMatrix = elementToDraw.ellipse.transformationMatrix.coefficients
+                                transform(
+                                    Matrix(
+                                        floatArrayOf(
+                                            koneMatrix[0u].toFloat(), koneMatrix[3u].toFloat(), 0f, 0f,
+                                            koneMatrix[1u].toFloat(), koneMatrix[4u].toFloat(), 0f, 0f,
+                                            0f, 0f, 1f, 0f,
+                                            koneMatrix[2u].toFloat(), koneMatrix[5u].toFloat(), 0f, 1f,
+                                        )
+                                    )
+                                )
+                            }
+                        ) {
+                            drawCircle(
+                                brush = elementToDraw.brush,
+                                radius = 1f,
+                                center = Offset.Zero,
+                                alpha = elementToDraw.alpha,
+                                style = elementToDraw.style,
+                                colorFilter = elementToDraw.colorFilter,
+                                blendMode = elementToDraw.blendMode,
+                            )
+                        }
+                    is CollectingKoneCanvasScope.ElementToDraw.EllipseColored ->
+                        withTransform(
+                            {
+                                val koneMatrix = elementToDraw.ellipse.transformationMatrix.coefficients
+                                transform(
+                                    Matrix(
+                                        floatArrayOf(
+                                            koneMatrix[0u].toFloat(), koneMatrix[3u].toFloat(), 0f, 0f,
+                                            koneMatrix[1u].toFloat(), koneMatrix[4u].toFloat(), 0f, 0f,
+                                            0f, 0f, 1f, 0f,
+                                            koneMatrix[2u].toFloat(), koneMatrix[5u].toFloat(), 0f, 1f,
+                                        )
+                                    )
+                                )
+                            }
+                        ) {
+                            drawCircle(
+                                color = elementToDraw.color,
+                                radius = 1f,
+                                center = Offset.Zero,
+                                alpha = elementToDraw.alpha,
+                                style = elementToDraw.style,
+                                colorFilter = elementToDraw.colorFilter,
+                                blendMode = elementToDraw.blendMode,
+                            )
+                        }
+                    is CollectingKoneCanvasScope.ElementToDraw.Image ->
+                        withTransform(
+                            {
+                                val koneMatrix = elementToDraw.image.transformationMatrix.coefficients
+                                transform(
+                                    Matrix(
+                                        floatArrayOf(
+                                            koneMatrix[0u].toFloat(), koneMatrix[3u].toFloat(), 0f, 0f,
+                                            -koneMatrix[1u].toFloat(), -koneMatrix[4u].toFloat(), 0f, 0f,
+                                            0f, 0f, 1f, 0f,
+                                            koneMatrix[2u].toFloat(), koneMatrix[5u].toFloat(), 0f, 1f,
+                                        )
+                                    )
+                                )
+                            }
+                        ) {
+                            val image = elementToDraw.image.image
+                            drawImage(
+                                image = image,
+                                topLeft = Offset(-image.width.toFloat() / 2, -image.height.toFloat() / 2),
+                                alpha = elementToDraw.alpha,
+                                style = elementToDraw.style,
+                                colorFilter = elementToDraw.colorFilter,
+                                blendMode = elementToDraw.blendMode,
+                            )
+                        }
                 }
         }
     }
@@ -158,12 +211,11 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                     currentPressPosition = lastPosition
                                     setKoneCanvasState(
                                         KoneCanvasState(
-                                            offset = oldOffset - VectorWrapper(
-                                                MDList1(
+                                            offset = oldOffset +
+                                                -Vector2(
                                                     offset.x.toDouble() * cos - offset.y.toDouble() * sin,
                                                     -offset.y.toDouble() * cos - offset.x.toDouble() * sin,
-                                                )
-                                            ) * oldZoom,
+                                                ) * oldZoom,
                                             zoom = oldZoom,
                                             rotation = oldRotation,
                                         )
@@ -178,11 +230,9 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
 
                                 val pointerOffset =
                                     lastChange.position.let {
-                                        VectorWrapper(
-                                            MDList1(
-                                                (-size.width / 2 + it.x).toDouble(),
-                                                (size.height / 2 - it.y).toDouble()
-                                            )
+                                        Vector2(
+                                            (-size.width / 2 + it.x).toDouble(),
+                                            (size.height / 2 - it.y).toDouble()
                                         )
                                     }
 
@@ -196,11 +246,9 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                     setKoneCanvasState(
                                         KoneCanvasState(
                                             offset = oldOffset + pointerOffset.let {
-                                                VectorWrapper(
-                                                    MDList1(
-                                                        it.vector[0u] * cos + it.vector[1u] * sin,
-                                                        -it.vector[0u] * sin + it.vector[1u] * cos
-                                                    )
+                                                Vector2(
+                                                    it.x * cos + it.y * sin,
+                                                    -it.x * sin + it.y * cos
                                                 )
                                             } * (oldZoom - newZoom),
                                             zoom = newZoom,
@@ -216,12 +264,12 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
                                                     + pointerOffset.let {
                                                         val cos = cos(oldRotation)
                                                         val sin = sin(oldRotation)
-                                                        VectorWrapper(MDList1(it.vector[0u] * cos + it.vector[1u] * sin, it.vector[0u] * -sin + it.vector[1u] * cos)) * oldZoom
+                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
                                                     }
-                                                    - pointerOffset.let {
+                                                    + -pointerOffset.let {
                                                         val cos = cos(oldRotation + angleDelta)
                                                         val sin = sin(oldRotation + angleDelta)
-                                                        VectorWrapper(MDList1(it.vector[0u] * cos + it.vector[1u] * sin, it.vector[0u] * -sin + it.vector[1u] * cos)) * oldZoom
+                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
                                                     },
                                             zoom = oldZoom,
                                             rotation = oldRotation + angleDelta,
