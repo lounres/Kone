@@ -370,7 +370,7 @@ stal {
             configure<KotlinJvmProjectExtension> {
                 sourceSets {
                     named("test") {
-                        kotlin.setSrcDirs(listOf("src/test/kotlin", "src/testGenerated/kotlin" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
+//                        kotlin.setSrcDirs(listOf("src/test/kotlin", "src/testGenerated/kotlin" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
                     }
                 }
             }
