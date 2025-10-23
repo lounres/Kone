@@ -364,7 +364,7 @@ stal {
             apply(plugin = "org.gradle.java")
             configure<SourceSetContainer> {
                 named("test") {
-                    java.setSrcDirs(listOf("src/test/java", "src/testGenerated/java" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
+                    java.setSrcDirs(listOf("src/test/java", "build/generated/kotlinCompilerPluginTestGenerator/test"))
                 }
             }
             configure<KotlinJvmProjectExtension> {

@@ -19,8 +19,6 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Density
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.array.KoneDoubleArray

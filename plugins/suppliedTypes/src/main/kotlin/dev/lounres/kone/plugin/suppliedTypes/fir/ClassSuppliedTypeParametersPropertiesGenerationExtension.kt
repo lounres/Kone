@@ -5,23 +5,47 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
+import dev.lounres.kone.plugin.suppliedTypes.suppliedClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTargetClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
 import org.jetbrains.kotlin.GeneratedDeclarationKey
+import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.fir.FirSession
+import org.jetbrains.kotlin.fir.declarations.builder.buildConstructor
+import org.jetbrains.kotlin.fir.declarations.constructors
+import org.jetbrains.kotlin.fir.declarations.getConstructedClass
+import org.jetbrains.kotlin.fir.declarations.hasAnnotation
+import org.jetbrains.kotlin.fir.declarations.utils.isExtension
+import org.jetbrains.kotlin.fir.expressions.builder.buildAnnotation
+import org.jetbrains.kotlin.fir.expressions.builder.buildBlock
+import org.jetbrains.kotlin.fir.expressions.builder.buildDelegatedConstructorCall
+import org.jetbrains.kotlin.fir.expressions.impl.FirEmptyAnnotationArgumentMapping
+import org.jetbrains.kotlin.fir.expressions.toReference
 import org.jetbrains.kotlin.fir.extensions.ExperimentalTopLevelDeclarationsGenerationApi
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationPredicateRegistrar
+import org.jetbrains.kotlin.fir.extensions.MemberGenerationContext
 import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate
 import org.jetbrains.kotlin.fir.extensions.predicateBasedProvider
 import org.jetbrains.kotlin.fir.packageFqName
+import org.jetbrains.kotlin.fir.plugin.createConstructor
+import org.jetbrains.kotlin.fir.plugin.createMemberFunction
+import org.jetbrains.kotlin.fir.plugin.createTopLevelFunction
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
+import org.jetbrains.kotlin.fir.resolve.substitution.ConeSubstitutor
+import org.jetbrains.kotlin.fir.scopes.getDeclaredConstructors
+import org.jetbrains.kotlin.fir.symbols.SymbolInternals
+import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirConstructorSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.name.SpecialNames
 
 
 class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSession) : FirDeclarationGenerationExtension(session) {
@@ -42,11 +66,17 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
     private val predicateBasedProvider by lazy { session.predicateBasedProvider }
     private val symbolProvider by lazy { session.symbolProvider }
     private val suppliedTypeConeClassLikeType by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassId)!!.defaultType() }
+//    private val supplianceProvidedConeClassLikeType by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedClassId)!!.defaultType() }
     private val suppliedTypeFirResolvedTypeRef by lazy {
         buildResolvedTypeRef {
             coneType = suppliedTypeConeClassLikeType
         }
     }
+//    private val supplianceProvidedFirResolvedTypeRef by lazy {
+//        buildResolvedTypeRef {
+//            coneType = supplianceProvidedConeClassLikeType
+//        }
+//    }
     
     private val suppliedTargets by lazy {
         predicateBasedProvider.getSymbolsByPredicate(SUPPLIED_TARGET_PREDICATE)
@@ -60,19 +90,106 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
     private val suppliedTargetClasses by lazy {
         suppliedTargets.filterIsInstance<FirRegularClassSymbol>()
     }
-    private val suppliedTargetPackages: Set<FqName> by lazy { suppliedTargets.mapTo(mutableSetOf()) { it.packageFqName() } }
+    private val suppliedTargetConstructors by lazy {
+        suppliedTargets
+            .filterIsInstance<FirConstructorSymbol>()
+            .groupBy { it.getConstructedClass(session)!! }
+            .filterKeys { it in suppliedTargetClasses }
+    }
     
     @ExperimentalTopLevelDeclarationsGenerationApi
     override fun getTopLevelCallableIds(): Set<CallableId> =
-        suppliedTargetTopLevelFunctions.map { it.callableId }.toSet().also {
-            println(
-                """
-                suppliedTargetPackages = $suppliedTargetPackages
-                suppliedTargetFunctions = $suppliedTargetFunctions
-                suppliedTargetClasses = $suppliedTargetClasses
-            """.trimIndent()
-            )
+        suppliedTargetTopLevelFunctions.map { it.callableId }.toSet()
+    
+    override fun getCallableNamesForClass(classSymbol: FirClassSymbol<*>, context: MemberGenerationContext): Set<Name> =
+        buildSet {
+            suppliedTargetFunctions.filter { it.callableId.classId == classSymbol.classId }.mapTo(this) { it.name }
+//            if (classSymbol in suppliedTargetClasses) add(SpecialNames.INIT)
         }
+    
+    @OptIn(ExperimentalTopLevelDeclarationsGenerationApi::class)
+    override fun generateFunctions(
+        callableId: CallableId,
+        context: MemberGenerationContext?
+    ): List<FirNamedFunctionSymbol> {
+        val functionToSupply = suppliedTargetFunctions.first { it.callableId == callableId }
+        return listOf(
+            if (context != null)
+                createMemberFunction(
+                    owner = context.owner,
+                    key = Key,
+                    name = callableId.callableName,
+                    returnType = functionToSupply.resolvedReturnType,
+                ) {
+                
+                }.symbol
+            else {
+//                val typeSubstitutor = ConeSubstitutor
+                createTopLevelFunction(
+                    key = Key,
+                    callableId = callableId,
+                    returnType = functionToSupply.resolvedReturnType,
+                ) {
+                
+                }.symbol
+            }
+        )
+    }
+    
+//    @OptIn(SymbolInternals::class)
+//    override fun generateConstructors(context: MemberGenerationContext): List<FirConstructorSymbol> {
+//        val suppliedTypeParameters = context.owner.ownTypeParameterSymbols.filter { it.hasAnnotation(suppliedClassId, session) }
+//        val contextClass = context.owner as? FirRegularClassSymbol ?: return emptyList()
+//        return suppliedTargetConstructors.getOrElse(contextClass) { emptyList() }.map { oldConstructor ->
+//            createConstructor(
+//                owner = context.owner,
+//                key = Key,
+//            ) {
+//                source = oldConstructor.source
+//                for (typeParameter in suppliedTypeParameters) {
+//                    valueParameter(
+//                        name = typeParameter.name,
+//                        type = suppliedTypeConeClassLikeType,
+//                        isCrossinline = false,
+//                        isNoinline = false,
+//                        isVararg = false,
+//                        hasDefaultValue = /*true*/ false,
+//                        key = Key,
+//                    )
+//                }
+//                for (valueParameterSymbol in oldConstructor.valueParameterSymbols) {
+//                    valueParameter(
+//                        name = valueParameterSymbol.name,
+//                        type = valueParameterSymbol.resolvedReturnType,
+//                        isCrossinline = valueParameterSymbol.isCrossinline,
+//                        isNoinline = valueParameterSymbol.isNoinline,
+//                        isVararg = valueParameterSymbol.isVararg,
+//                        hasDefaultValue = valueParameterSymbol.hasDefaultValue,
+//                        key = Key,
+//                    )
+//                }
+//            }.apply {
+//                replaceAnnotations(
+//                    buildList {
+////                        add(
+////                            buildAnnotation {
+////                                annotationTypeRef = supplianceProvidedFirResolvedTypeRef
+////                                argumentMapping = FirEmptyAnnotationArgumentMapping
+////                            }
+////                        )
+//                        addAll(oldConstructor.annotations)
+//                    }
+//                )
+//            }.symbol
+//        }
+//    }
+    
+//    override fun generateProperties(
+//        callableId: CallableId,
+//        context: MemberGenerationContext?
+//    ): List<FirPropertySymbol> {
+//        return super.generateProperties(callableId, context)
+//    }
     
 //    private data class TypeParametersInfo(
 //        val origin: FirClassSymbol<*>,

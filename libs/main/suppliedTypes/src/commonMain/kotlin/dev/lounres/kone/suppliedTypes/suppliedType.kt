@@ -103,9 +103,16 @@ public annotation class Supplied(/*val parameterName: String = ""*/)
 
 @Target(
     AnnotationTarget.FUNCTION,
+    AnnotationTarget.CONSTRUCTOR,
     AnnotationTarget.CLASS,
 )
 public annotation class SuppliedTarget
+
+//@Target(
+//    AnnotationTarget.FUNCTION,
+////    AnnotationTarget.CONSTRUCTOR,
+//)
+//private annotation class SupplianceProvided
 
 @SuppliedTarget
 public fun <@Supplied T> suppliedTypeOf(): SuppliedType =

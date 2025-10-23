@@ -20,6 +20,7 @@ const val suppliedProjectionRegularShortNameString = "Regular"
 const val suppliedProjectionStarShortNameString = "Star"
 const val suppliedShortNameString = "Supplied"
 const val suppliedTargetShortNameString = "SuppliedTarget"
+//const val supplianceProvidedShortNameString = "SupplianceProvided"
 const val suppliedTypeOfShortNameString = "suppliedTypeOf"
 
 val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString)
@@ -31,6 +32,7 @@ val suppliedProjectionRegularShortName = FqName("$suppliedProjectionShortNameStr
 val suppliedProjectionStarShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionStarShortNameString")
 val suppliedShortName = FqName(suppliedShortNameString)
 val suppliedTargetShortName = FqName(suppliedTargetShortNameString)
+//val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
 val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
 
 val suppliedTypeClassId = ClassId(
@@ -73,4 +75,9 @@ val suppliedTargetClassId = ClassId(
     relativeClassName = suppliedTargetShortName,
     isLocal = false
 )
+//val supplianceProvidedClassId = ClassId(
+//    packageFqName = koneSuppliedTypesPackageFQName,
+//    relativeClassName = supplianceProvidedShortName,
+//    isLocal = false
+//)
 val suppliedTypeOfCallableId = CallableId(packageName = koneSuppliedTypesPackageFQName, className = null, callableName = suppliedTypeOfName)
