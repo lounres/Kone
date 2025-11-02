@@ -61,7 +61,7 @@ stal {
             }
         }
         "docs"()
-        "test"("kotlin multiplatform")
+        "sandbox"("kotlin multiplatform")
     }
 
     tag {

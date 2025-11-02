@@ -18,6 +18,8 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 @OptIn(ExperimentalCompilerApi::class)
 class SuppliedTypesCompilerPluginRegistrar : CompilerPluginRegistrar() {
+    override val pluginId: String
+        get() = TODO("Not yet implemented")
     
     override val supportsK2: Boolean get() = true
     

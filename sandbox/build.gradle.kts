@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    alias(versions.plugins.kotlinx.serialization)
+//    alias(versions.plugins.kotlinx.serialization)
 //    alias(versions.plugins.kotlin.compose)
 //    alias(versions.plugins.compose.multiplatform)
 }
@@ -23,6 +23,8 @@ kotlin {
         binaries {
             executable {
                 mainClass = "MainKt"
+            }.configure {
+                jvmArgs("-XX:MaxMetaspaceSize=4G")
             }
         }
     }
@@ -36,10 +38,8 @@ kotlin {
             commonWebpackConfig {
                 outputFileName = "test.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        rootProject.allprojects.forEach {
-                            add(it.projectDir.path)
-                        }
+                    rootProject.allprojects.forEach {
+                        static(it.projectDir.path)
                     }
                 }
             }
@@ -56,10 +56,8 @@ kotlin {
             commonWebpackConfig {
                 outputFileName = "test.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        rootProject.allprojects.forEach {
-                            add(it.projectDir.path)
-                        }
+                    rootProject.allprojects.forEach {
+                        static(it.projectDir.path)
                     }
                 }
             }
@@ -70,9 +68,18 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-//                implementation(versions.kotlinx.serialization.json)
-//                implementation(projects.kone.libs.main.multidimensionalCollections)
 //                implementation(projects.libs.util.misc)
+//                implementation(projects.libs.main.algebraic)
+//                implementation(projects.libs.main.algebraicExtra)
+//                implementation(projects.libs.main.multidimensionalCollections)
+//                implementation(projects.libs.main.computationalGeometry)
+//                implementation(projects.libs.main.enumerativeCombinatorics)
+//                implementation(versions.kotlinx.serialization.json)
+//                implementation(versions.kotlinx.datetime)
+                
+//                implementation(compose.runtime)
+                
+                implementation(projects.libs.main.concurrentCollections)
             }
         }
         jvmMain {
@@ -80,13 +87,11 @@ kotlin {
 //                implementation(projects.libs.util.misc)
 //                implementation(projects.libs.main.annotations)
 //                implementation(projects.libs.main.collections)
-//                implementation(projects.libs.main.enumerativeCombinatorics)
 //                implementation(projects.libs.main.linearAlgebra)
-//                implementation(projects.libs.main.multidimensionalCollections)
 //                implementation(projects.libs.main.computationalGeometry)
 //                implementation(projects.libs.main.algebraicExtra)
 //                implementation(projects.libs.misc.planimetricsCalculus)
-//
+
 //                implementation(projects.libs.misc.composeCanvas)
 //                implementation(compose.desktop.currentOs)
 //                implementation(compose.components.resources)
@@ -108,10 +113,15 @@ kotlin {
 }
 
 //compose {
-//    desktop {
-//        application {
-//            mainClass = "MainKt"
-//        }
+//    resources {
+//        publicResClass = false
+//        packageOfResClass = ""
+//        generateResClass = always
 //    }
-//    web
+////    desktop {
+////        application {
+////            mainClass = "MainKt"
+////        }
+////    }
+////    web
 //}

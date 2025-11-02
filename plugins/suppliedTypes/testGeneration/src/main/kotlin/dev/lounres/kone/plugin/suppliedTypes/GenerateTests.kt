@@ -7,7 +7,6 @@ package dev.lounres.kone.plugin.suppliedTypes
 
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestComplete
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase0
-import org.jetbrains.kotlin.generators.generateTestGroupSuiteWithJUnit5
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase1
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase2
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase3
@@ -17,6 +16,7 @@ import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestWithoutPlugi
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDeclarationsTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDiagnosticTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFirCompleteTest
+import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
 import testDataPath
 
 fun main() {

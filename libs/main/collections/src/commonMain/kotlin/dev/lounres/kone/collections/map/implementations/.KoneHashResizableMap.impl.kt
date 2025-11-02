@@ -237,16 +237,16 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         return this.nodesView == other.nodesView
     }
     
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
-        field = NodesSet(this)
-        get() = if (isDisposed) disposedInstanceException() else field
+    protected open val _nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
+    final override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+        get() = if (isDisposed) disposedInstanceException() else _nodesView
+    protected open val _keysView: KoneSet<Key> = KeysSet(this)
     override val keysView: KoneSet<Key>
-        field = KeysSet(this)
-        get() = if (isDisposed) disposedInstanceException() else field
+        get() = if (isDisposed) disposedInstanceException() else _keysView
     override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementEquality = keyEquality, elementHashing = keyHashing)
-    override val valuesView: KoneIterable<Value>
-        field = ValueIterable(this)
-        get() = if (isDisposed) disposedInstanceException() else field
+    protected open val _valuesView: KoneIterable<Value> = ValueIterable(this)
+    final override val valuesView: KoneIterable<Value>
+        get() = if (isDisposed) disposedInstanceException() else _valuesView
     
     internal class Node<Key, Value>(
         map: KoneHashResizableMap<*, *>,
@@ -434,13 +434,12 @@ public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal cons
     keyEquality = keyEquality,
     keyHashing = keyHashing,
 ), KoneMutableReifiedMap<Key, Value> {
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
-        field = NodesSet(this)
-        get() = if (isDisposed) disposedInstanceException() else field
+    override val _nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
+    override val _keysView: KoneReifiedSet<Key> = KeysSet(this)
     override val keysView: KoneReifiedSet<Key>
-        field = KeysSet(this)
-        get() = if (isDisposed) disposedInstanceException() else field
-    override val keys: KoneReifiedSet<Key> get() = keysView.toKoneReifiedSet(elementReification = keyReification, elementEquality = keyEquality, elementHashing = keyHashing)
+        get() = if (isDisposed) disposedInstanceException() else _keysView
+    override val keys: KoneReifiedSet<Key>
+        get() = keysView.toKoneReifiedSet(elementReification = keyReification, elementEquality = keyEquality, elementHashing = keyHashing)
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class NodesSet<Key, Value>(

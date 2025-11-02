@@ -115,7 +115,6 @@ class DequeImplementationsTest : FunSpec({
         ) {
             for ((index, operation) in arbData.withIndex())
                 withClue({ "at iteration $index with operation $operation" }) {
-                    index
                     when (operation) {
                         is DequeOperation.GetFirst<Element> -> deque.getFirst() shouldBe operation.expected
                         is DequeOperation.GetLast<Element> -> deque.getLast() shouldBe operation.expected
