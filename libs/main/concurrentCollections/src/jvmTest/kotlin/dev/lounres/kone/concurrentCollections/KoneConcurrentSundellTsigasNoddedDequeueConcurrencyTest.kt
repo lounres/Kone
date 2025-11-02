@@ -5,6 +5,13 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
+import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.last
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.scope
 import org.jetbrains.kotlinx.lincheck.annotations.StateRepresentation
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
@@ -80,9 +87,39 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
     @Operation
     fun popLastMaybe() = dequeue.popLastMaybe()
     
+    class SequentialSpecification {
+        private val dequeue = KoneGCLinkedSizedList<Element>()
+        
+        @Operation
+        fun addFirst(element: Element) {
+            dequeue.addAt(0u, element)
+        }
+        
+        @Operation
+        fun addLast(element: Element) {
+            dequeue.add(element)
+        }
+
+//    @Operation
+//    fun removeFirstIfPresent() {
+//        dequeue.removeFirstIfPresent()
+//    }
+        
+        @Operation
+        fun popFirstMaybe() =
+            if (dequeue.isNotEmpty()) Some(dequeue.first().also { dequeue.removeAt(0u) })
+            else None
+        
+        @Operation
+        fun popLastMaybe() =
+            if (dequeue.isNotEmpty()) Some(dequeue.last().also { dequeue.removeAt(dequeue.lastIndex) })
+            else None
+    }
+    
     @Test
     fun stress() {
         StressOptions()
+            .sequentialSpecification(SequentialSpecification::class.java)
             .actorsBefore(4)
             .threads(4)
             .actorsPerThread(4)
@@ -93,6 +130,7 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
     @Test
     fun modelChecking() {
         ModelCheckingOptions()
+            .sequentialSpecification(SequentialSpecification::class.java)
             .actorsBefore(4)
             .threads(2)
             .actorsPerThread(4)
