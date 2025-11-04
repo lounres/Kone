@@ -5,15 +5,12 @@
 
 package dev.lounres.kone.concurrentCollections
 
-import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.maybe.None
-import dev.lounres.kone.maybe.Some
 import kotlin.concurrent.atomics.AtomicReference
 
 
 public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
-    internal val head = Node<Element>()
-    internal val tail = Node<Element>()
+    internal val head = Node.head<Element>()
+    internal val tail = Node.tail<Element>()
     
     init {
         head.next.store(Node.Link(tail))
@@ -112,7 +109,8 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
         }
     }
     
-    public fun addFirst(element: Element) {
+    @IgnorableReturnValue
+    public fun addFirst(element: Element): Node<Element> {
         val newNode = Node(element)
         val prev = head
         var next = prev.next.load()!!.node
@@ -124,9 +122,11 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             // BACK-OFF
         }
         newNode.pushEnd(next)
+        return newNode
     }
     
-    public fun addLast(element: Element) {
+    @IgnorableReturnValue
+    public fun addLast(element: Element): Node<Element> {
         val newNode = Node(element)
         val next = tail
         var prev = next.prev.load()!!.node
@@ -138,17 +138,15 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             // BACK-OFF
         }
         newNode.pushEnd(next)
+        return newNode
     }
     
-    public fun removeFirstIfPresent() {
-        TODO()
-    }
-    
-    public fun popFirstMaybe(): Maybe<Element> {
+    @IgnorableReturnValue
+    public fun popFirstMaybe(): Node<Element>? {
         val prev = head
         while (true) {
             val node = prev.next.load()!!.node
-            if (node === tail) return None
+            if (node === tail) return null
             val next = node.next.load()!!
             if (next.isBeingDeleted) {
                 node.markPrevLink()
@@ -157,13 +155,14 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             }
             if (node.next.compareAndSet(next, Node.Link(next.node, true))) {
                 correctPrev(prev, next.node)
-                return Some(node.value)
+                return node
             }
             // BACK-OFF
         }
     }
     
-    public fun popLastMaybe(): Maybe<Element> {
+    @IgnorableReturnValue
+    public fun popLastMaybe(): Node<Element>? {
         val next = tail
         var node = next.prev.load()!!.node
         while (true) {
@@ -171,34 +170,58 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                 node = correctPrev(node, next)
                 continue
             }
-            if (node === head) return None
+            if (node === head) return null
             if (node.next.checkEqualityAndSet(next, false, Node.Link(next, true))) {
                 val prev = node.prev.load()!!.node
                 correctPrev(prev, next)
-                return Some(node.value)
+                return node
             }
             // BACK-OFF
         }
     }
     
-    internal class Node<Element>(
-        value: Element? = null,
+    public class Node<Element> private constructor(
+        private val role: Byte, // 0 -> usual node, 1 -> head, 2 -> tail
+        value: Element?,
     ) {
+        public companion object {
+            internal fun <Element> head(): Node<Element> = Node(1, null)
+            internal fun <Element> tail(): Node<Element> = Node(2, null)
+        }
+        
+        internal constructor(value: Element) : this(0, value)
+        
         private var _value: Element? = value
         @Suppress("UNCHECKED_CAST")
-        val value: Element get() = _value as Element
+        public val value: Element get() = _value as Element
         
-        /*value*/ data class Link<Element>(
+        /*value*/ internal data class Link<Element>(
             val node: Node<Element>,
             val isBeingDeleted: Boolean = false,
         )
         
         private var _prev: AtomicReference<Link<Element>?>? = AtomicReference(null)
-        val prev: AtomicReference<Link<Element>?> get() = _prev ?: error("Accessing disposed previous atomic reference")
+        internal val prev: AtomicReference<Link<Element>?> get() = _prev ?: error("Accessing disposed previous atomic reference")
         private var _next: AtomicReference<Link<Element>?>? = AtomicReference(null)
-        val next: AtomicReference<Link<Element>?> get() = _next ?: error("Accessing disposed next atomic reference")
+        internal val next: AtomicReference<Link<Element>?> get() = _next ?: error("Accessing disposed next atomic reference")
         
-        fun dispose() {
+        public fun remove() {
+            if (role != 0.toByte()) return
+            while (true) {
+                val next = this.next.load()!!
+                if (next.isBeingDeleted) return
+                if (this.next.compareAndSet(next, Link(next.node, true))) {
+                    var prev: Link<Element>
+                    while (true) {
+                        prev = this.prev.load()!!
+                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Link(prev.node, true))) break
+                    }
+                    correctPrev(prev.node, next.node)
+                }
+            }
+        }
+        
+        internal fun dispose() {
             _value = null
             _next?.store(null)
             _next = null

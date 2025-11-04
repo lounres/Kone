@@ -5,13 +5,17 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
+import dev.lounres.kone.collections.deque.isEmpty
+import dev.lounres.kone.collections.deque.isNotEmpty
+import dev.lounres.kone.collections.deque.popFirst
+import dev.lounres.kone.collections.deque.popLast
 import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.maybe.None
-import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.scope
 import org.jetbrains.kotlinx.lincheck.annotations.StateRepresentation
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
@@ -24,6 +28,7 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
     typealias Element = Int
     
     private val dequeue = KoneConcurrentSundellTsigasNoddedDequeue<Element>()
+    private val nodesDequeue = KoneListBackedDeque<KoneConcurrentSundellTsigasNoddedDequeue.Node<Element>>()
     
 //    @StateRepresentation
 //    fun stateRepresentation() = buildString {
@@ -76,19 +81,41 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
         dequeue.addLast(element)
     }
     
-//    @Operation
-//    fun removeFirstIfPresent() {
-//        dequeue.removeFirstIfPresent()
-//    }
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun addFirstPushFirst(element: Element) {
+        nodesDequeue.addFirst(dequeue.addFirst(element))
+    }
+    
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun addFirstPushLast(element: Element) {
+        nodesDequeue.addLast(dequeue.addFirst(element))
+    }
+    
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun addLastPushFirst(element: Element) {
+        nodesDequeue.addFirst(dequeue.addLast(element))
+    }
+    
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun addLastPushLast(element: Element) {
+        nodesDequeue.addLast(dequeue.addLast(element))
+    }
 
     @Operation
-    fun popFirstMaybe() = dequeue.popFirstMaybe()
+    fun popFirstMaybe() = dequeue.popFirstMaybe()?.value
     
     @Operation
-    fun popLastMaybe() = dequeue.popLastMaybe()
+    fun popLastMaybe() = dequeue.popLastMaybe()?.value
+    
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun removeFirstNode() = nodesDequeue.run { if (isEmpty()) null else popFirst() }?.also { it.remove() }?.value
+    
+    @Operation(nonParallelGroup = "nodesDequeue")
+    fun removeLastNode() = nodesDequeue.run { if (isEmpty()) null else popLast() }?.also { it.remove() }?.value
     
     class SequentialSpecification {
         private val dequeue = KoneGCLinkedSizedList<Element>()
+        private val nodesDequeue = KoneListBackedDeque<KoneMutableListNode<Element>>()
         
         @Operation
         fun addFirst(element: Element) {
@@ -100,30 +127,51 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
             dequeue.add(element)
         }
 
-//    @Operation
-//    fun removeFirstIfPresent() {
-//        dequeue.removeFirstIfPresent()
-//    }
-        
+        @Operation
+        fun addFirstPushFirst(element: Element) {
+            nodesDequeue.addFirst(dequeue.addNodeAt(0u, element))
+        }
+
+        @Operation
+        fun addFirstPushLast(element: Element) {
+            nodesDequeue.addLast(dequeue.addNodeAt(0u, element))
+        }
+
+        @Operation
+        fun addLastPushFirst(element: Element) {
+            nodesDequeue.addFirst(dequeue.addNode(element))
+        }
+
+        @Operation
+        fun addLastPushLast(element: Element) {
+            nodesDequeue.addLast(dequeue.addNode(element))
+        }
+
         @Operation
         fun popFirstMaybe() =
-            if (dequeue.isNotEmpty()) Some(dequeue.first().also { dequeue.removeAt(0u) })
-            else None
-        
+            if (dequeue.isNotEmpty()) dequeue.first().also { dequeue.removeAt(0u) }
+            else null
+
         @Operation
         fun popLastMaybe() =
-            if (dequeue.isNotEmpty()) Some(dequeue.last().also { dequeue.removeAt(dequeue.lastIndex) })
-            else None
+            if (dequeue.isNotEmpty()) dequeue.last().also { dequeue.removeAt(dequeue.lastIndex) }
+            else null
+
+        @Operation
+        fun removeFirstNode() =
+            if (nodesDequeue.isNotEmpty()) nodesDequeue.popFirst().also { if (!it.isDetached) it.remove() }.element
+            else null
+
+        @Operation
+        fun removeLastNode() =
+            if (nodesDequeue.isNotEmpty()) nodesDequeue.popLast().also { if (!it.isDetached) it.remove() }.element
+            else null
     }
     
     @Test
     fun stress() {
         StressOptions()
             .sequentialSpecification(SequentialSpecification::class.java)
-            .actorsBefore(4)
-            .threads(4)
-            .actorsPerThread(4)
-            .actorsAfter(4)
             .check(this::class)
     }
     
@@ -131,10 +179,15 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
     fun modelChecking() {
         ModelCheckingOptions()
             .sequentialSpecification(SequentialSpecification::class.java)
-            .actorsBefore(4)
-            .threads(2)
-            .actorsPerThread(4)
-            .actorsAfter(4)
             .check(this::class)
+    }
+    
+    @Test
+    fun foo() {
+        val spec = SequentialSpecification()
+        println(spec.addFirstPushFirst(0))
+        println(spec.addFirstPushFirst(1))
+        println(spec.popFirstMaybe())
+        println(spec.removeFirstNode())
     }
 }
