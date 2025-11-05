@@ -110,7 +110,6 @@ public fun <Element> Equality.Companion.setAbsoluteFor(suppliedElementType: Supp
  *
  * A bridge contextual function for [Equality.equalsTo].
  */
-// FIXME: KT-5351
 context(equality: Equality<Element>)
 public inline infix fun <Element> Element.equalsTo(other: Element): Boolean = with(equality) { this@equalsTo equalsTo other }
 /**

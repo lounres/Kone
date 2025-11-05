@@ -241,7 +241,7 @@ stal {
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
                     freeCompilerArgs.addAll(
-                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
+//                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
@@ -266,7 +266,7 @@ stal {
                 
                 compilerOptions {
                     freeCompilerArgs.addAll(
-                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
+//                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",

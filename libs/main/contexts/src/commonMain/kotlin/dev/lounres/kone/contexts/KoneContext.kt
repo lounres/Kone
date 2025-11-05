@@ -5,6 +5,9 @@
 
 package dev.lounres.kone.contexts
 
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+
 
 /**
  * Marker interface for Kone's contexts.
@@ -15,9 +18,8 @@ public interface KoneContext
  * Simple provider of [this] context as a context parameter in the following [block].
  */
 public inline operator fun <KoneContextType: KoneContext, Result> KoneContextType.invoke(block: context(KoneContextType) () -> Result): Result {
-//    FIXME: KT-32313
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//    }
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     return block(this)
 }

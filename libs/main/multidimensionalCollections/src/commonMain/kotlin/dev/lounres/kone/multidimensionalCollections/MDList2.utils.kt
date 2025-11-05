@@ -5,7 +5,9 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
+import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneVirtualList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 
@@ -28,14 +30,12 @@ public fun <E> SettableMDList2(vararg elements: KoneList<E>): SettableMDList2<E>
 
 public val <E> MDList2<E>.rowsView: KoneList<KoneList<E>>
     get() = KoneVirtualList(rowNumber) { row -> KoneVirtualList(columnNumber) { column -> get(row, column) } }
-// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 public val <E> MDList2<E>.rows: KoneList<KoneList<E>>
-    get() = KoneList/*KoneArray*/(rowNumber) { row -> KoneList/*KoneArraySettableList*/(columnNumber) { column -> get(row, column) } }
+    get() = KoneArray(rowNumber) { row -> KoneArraySettableList(columnNumber) { column -> get(row, column) } }
 public val <E> MDList2<E>.columnsView: KoneList<KoneList<E>>
     get() = KoneVirtualList(columnNumber) { column -> KoneVirtualList(rowNumber) { row -> get(row, column) } }
-// FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
 public val <E> MDList2<E>.columns: KoneList<KoneList<E>>
-    get() = KoneList/*KoneArray*/(columnNumber) { column -> KoneList/*KoneArraySettableList*/(rowNumber) { row -> get(row, column) } }
+    get() = KoneArray(columnNumber) { column -> KoneArraySettableList(rowNumber) { row -> get(row, column) } }
 
 public inline val MDList2<*>.rowIndices: UIntRange get() = 0u ..< rowNumber
 public inline val MDList2<*>.columnIndices: UIntRange get() = 0u ..< columnNumber

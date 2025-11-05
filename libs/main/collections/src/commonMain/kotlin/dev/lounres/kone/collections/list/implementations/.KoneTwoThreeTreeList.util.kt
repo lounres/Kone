@@ -8,7 +8,11 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.indices
+import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
+import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.last
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
@@ -21,14 +25,12 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
     if (elements.size == 0u) return KoneTwoThreeTreeList()
 
     val result = KoneTwoThreeTreeList<Element>(size = elements.size)
-    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
-//    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
-    val nodes = Array(elements.size.toInt()) { KoneTwoThreeTreeList.Node(elements[it.toUInt()]) }
+    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
     for (i in nodes.indices) {
-        if (i > 0) nodes[i].previousNode = nodes[i-1]
-        if (i < nodes.lastIndex) nodes[i].nextNode = nodes[i+1]
+        if (i > 0u) nodes[i].previousNode = nodes[i-1u]
+        if (i < nodes.lastIndex) nodes[i].nextNode = nodes[i+1u]
     }
-    val tree = result.createTree(KoneArray(nodes))
+    val tree = result.createTree(nodes)
     result.rootHolder = tree
     result.firstNode = nodes.first()
     result.lastNode = nodes.last()

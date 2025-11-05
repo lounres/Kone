@@ -10,7 +10,7 @@ package dev.lounres.kone.multidimensionalCollections
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.serializers.serializer
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.implementations.KoneArraySettableNoddedList
+import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 import dev.lounres.kone.scope
@@ -27,11 +27,8 @@ internal class MDListSerializer<E>(
     elementSerializer: KSerializer<E>,
 ) : KSerializer<MDList<E>> {
     private val mdSizeSerializer = MDSize.serializer()
-    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
-//    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
-//        KoneArraySettableList.serializer(elementSerializer)
-    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableNoddedList<E>> =
-        KoneArraySettableNoddedList.serializer(elementSerializer)
+    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
+        KoneArraySettableList.serializer(elementSerializer)
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
 
@@ -43,9 +40,7 @@ internal class MDListSerializer<E>(
     override fun serialize(encoder: Encoder, value: MDList<E>) {
         val content = scope {
             val indicesIterator = MDSizeStrides(value.size).iterator()
-            // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
-//            KoneArraySettableList(value.size) { value[indicesIterator.next()] }
-            KoneArraySettableNoddedList(value.contentSize) { value[indicesIterator.next()] }
+            KoneArraySettableList(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(
@@ -93,11 +88,8 @@ internal class SettableMDListSerializer<E>(
     elementSerializer: KSerializer<E>,
 ) : KSerializer<SettableMDList<E>> {
     private val mdSizeSerializer = MDSize.serializer()
-    // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
-//    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
-//        KoneArraySettableList.serializer(elementSerializer)
-    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableNoddedList<E>> =
-        KoneArraySettableNoddedList.serializer(elementSerializer)
+    private val contentSerializationStrategy: SerializationStrategy<KoneArraySettableList<E>> =
+        KoneArraySettableList.serializer(elementSerializer)
     private val contentDeserializationStrategy: DeserializationStrategy<KoneMutableArray<Any?>> =
         @Suppress("UNCHECKED_CAST") KoneMutableArray.serializer<Any, Any?>(elementSerializer as KSerializer<Any?>)
 
@@ -109,9 +101,7 @@ internal class SettableMDListSerializer<E>(
     override fun serialize(encoder: Encoder, value: SettableMDList<E>) {
         val content = scope {
             val indicesIterator = MDSizeStrides(value.size).iterator()
-            // FIXME: For some reason this does not compile in Kotlin 2.2.20-Beta1 (KT-79547)
-//            KoneArraySettableList(value.size) { value[indicesIterator.next()] }
-            KoneArraySettableNoddedList(value.contentSize) { value[indicesIterator.next()] }
+            KoneArraySettableList(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(

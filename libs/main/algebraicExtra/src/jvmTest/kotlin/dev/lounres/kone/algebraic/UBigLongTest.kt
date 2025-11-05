@@ -5,8 +5,9 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.array.isNotEmpty
-import dev.lounres.kone.collections.array.koneULongArrayOf
+import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.relations.ComparisonResult
@@ -208,7 +209,7 @@ class UBigLongTest : FunSpec({
             )
             val inputs = listOf<CaseProducer>(
                 CaseProducer(
-                    number = UBigLong(koneULongArrayOf(12079987231103497637uL, 18185429751149502341uL, 15524878586025400633uL, 7336060013147343010uL)),
+                    number = UBigLong(KoneULongArray.of(12079987231103497637uL, 18185429751149502341uL, 15524878586025400633uL, 7336060013147343010uL)),
                     name = "46049195039428022913422970774947675843853370420699389623804568776985996539301",
                 )
             )
@@ -247,11 +248,11 @@ class UBigLongTest : FunSpec({
             )
             val inputs = listOf<CaseProducer>(
                 CaseProducer(
-                    number = UBigLong(koneULongArrayOf(12079987231103497637uL, 15uL)),
+                    number = UBigLong(KoneULongArray.of(12079987231103497637uL, 15uL)),
                     name = "288781148336746771877",
                 ),
                 CaseProducer(
-                    number = UBigLong(koneULongArrayOf(12079987231103497637uL, 18185429751149502341uL, 15524878586025400633uL, 7336060013147343010uL)),
+                    number = UBigLong(KoneULongArray.of(12079987231103497637uL, 18185429751149502341uL, 15524878586025400633uL, 7336060013147343010uL)),
                     name = "46049195039428022913422970774947675843853370420699389623804568776985996539301",
                 ),
             )

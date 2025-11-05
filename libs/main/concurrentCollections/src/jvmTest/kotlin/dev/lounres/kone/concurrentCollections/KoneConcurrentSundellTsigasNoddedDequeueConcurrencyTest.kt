@@ -181,13 +181,4 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
             .sequentialSpecification(SequentialSpecification::class.java)
             .check(this::class)
     }
-    
-    @Test
-    fun foo() {
-        val spec = SequentialSpecification()
-        println(spec.addFirstPushFirst(0))
-        println(spec.addFirstPushFirst(1))
-        println(spec.popFirstMaybe())
-        println(spec.removeFirstNode())
-    }
 }

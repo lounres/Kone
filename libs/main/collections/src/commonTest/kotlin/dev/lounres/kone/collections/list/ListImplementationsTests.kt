@@ -327,8 +327,7 @@ fun <Element> Exhaustive.Companion.allMutableListOperationWithResult(
     
     // TODO: Добавить проверку вместимости
     // Add
-    // FIXME: Remove the `val _ = `
-    val _ = scope {
+    scope {
         val newElement = element()
         add(
             MutableListOperationWithResult(
@@ -412,8 +411,7 @@ fun <Element> Exhaustive.Companion.allMutableNoddedListOperationWithResult(
 
     // TODO: Добавить проверку вместимости
     // AddNode
-    // FIXME: Remove the `val _ = `
-    val _ = scope {
+    scope {
         val newElement = element()
         add(
             MutableNoddedListOperationWithResult(

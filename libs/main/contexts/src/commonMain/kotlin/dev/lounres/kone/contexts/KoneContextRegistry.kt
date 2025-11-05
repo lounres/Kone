@@ -31,10 +31,9 @@ public value class KoneContextRegistry(
  * Provides receiver for Kone context registry.
  */
 public inline operator fun <R> KoneContextRegistry.invoke(block: KoneContextRegistry.() -> R): R {
-//    FIXME: KT-32313
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//    }
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     return block(this)
 }
 
