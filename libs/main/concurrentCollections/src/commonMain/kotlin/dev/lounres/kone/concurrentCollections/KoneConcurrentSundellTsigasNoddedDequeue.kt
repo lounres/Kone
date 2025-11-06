@@ -59,7 +59,7 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             while (true) {
                 val link = node.prev.load()!!
                 if (link.isBeingDeleted) break
-                var prev2 = prev.next.load()!!
+                val prev2 = prev.next.load()!!
                 if (prev2.isBeingDeleted) {
                     if (lastLink != null) {
                         prev.markPrevLink()
@@ -68,8 +68,7 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                         lastLink = null
                         continue
                     }
-                    prev2 = prev.prev.load()!!
-                    prev = prev2.node
+                    prev = prev.prev.load()!!.node
                     continue
                 }
                 if (prev2.node !== node) {
@@ -104,16 +103,16 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
     public fun addFirst(element: Element): Node<Element> {
         val newNode = Node(element)
         val prev = head
-        var next = prev.next.load()!!.node
         while (true) {
+            val next = prev.next.load()!!.node
             newNode.prev.store(Node.Link(prev, false))
             newNode.next.store(Node.Link(next, false))
-            if (prev.next.checkEqualityAndSet(next, false, Node.Link(newNode, false))) break
-            next = prev.next.load()!!.node
+            if (prev.next.checkEqualityAndSet(next, false, Node.Link(newNode, false))) {
+                newNode.pushEnd(next)
+                return newNode
+            }
             // BACK-OFF
         }
-        newNode.pushEnd(next)
-        return newNode
     }
     
     @IgnorableReturnValue
@@ -202,13 +201,13 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                 val next = this.next.load()!!
                 if (next.isBeingDeleted) return
                 if (this.next.compareAndSet(next, Link(next.node, true))) {
-                    var prev: Link<Element>
                     while (true) {
-                        prev = this.prev.load()!!
-                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Link(prev.node, true))) break
+                        val prev = this.prev.load()!!
+                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Link(prev.node, true))) {
+                            correctPrev(prev.node, next.node)
+                            return
+                        }
                     }
-                    correctPrev(prev.node, next.node)
-                    return
                 }
             }
         }
