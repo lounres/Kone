@@ -43,15 +43,6 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             }
         }
         
-        // SetMark for `next` `Link`
-        private fun <Element> Node<Element>.markNextLink() {
-            val nextReference = next
-            while (true) {
-                val link = nextReference.load() ?: error("Marking next link of node without next link")
-                if (link.isBeingDeleted || nextReference.compareAndSet(link, Node.Link(link.node, true))) break
-            }
-        }
-        
         // SetMark for `prev` `Link`
         private fun <Element> Node<Element>.markPrevLink() {
             val nextReference = prev
@@ -217,6 +208,7 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                         if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Link(prev.node, true))) break
                     }
                     correctPrev(prev.node, next.node)
+                    return
                 }
             }
         }
