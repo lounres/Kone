@@ -5,12 +5,15 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.decrementAndFetch
+import kotlin.concurrent.atomics.update
 
 
 public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
-    internal val head = Node.head<Element>()
-    internal val tail = Node.tail<Element>()
+    internal val head = Node<Element>(null)
+    internal val tail = Node<Element>(null)
     
     init {
         head.next.store(Node.Link(tail))
@@ -90,9 +93,7 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                 val link = next.prev.load()!!
                 if (link.isBeingDeleted || this.next.load()!!.let { it.node !== next || it.isBeingDeleted }) break
                 if (next.prev.compareAndSet(link, Node.Link(this, false))) {
-                    if (this.prev.load()!!.isBeingDeleted)
-                        @Suppress("RETURN_VALUE_NOT_USED")
-                        correctPrev(this, next)
+                    if (this.prev.load()!!.isBeingDeleted) correctPrev(this, next)
                     break
                 }
             }
@@ -170,17 +171,9 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
         }
     }
     
-    public class Node<Element> private constructor(
-        private val role: Byte, // 0 -> usual node, 1 -> head, 2 -> tail
+    public class Node<Element>(
         value: Element?,
     ) {
-        public companion object {
-            internal fun <Element> head(): Node<Element> = Node(1, null)
-            internal fun <Element> tail(): Node<Element> = Node(2, null)
-        }
-        
-        internal constructor(value: Element) : this(0, value)
-        
         private var _value: Element? = value
         @Suppress("UNCHECKED_CAST")
         public val value: Element get() = _value as Element
@@ -195,8 +188,26 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
         private var _next: AtomicReference<Link<Element>?>? = AtomicReference(null)
         internal val next: AtomicReference<Link<Element>?> get() = _next ?: error("Accessing disposed next atomic reference")
         
+        private var referenceCounter: AtomicInt? = AtomicInt(1)
+        
+        private fun dispose() {
+            _value = null
+            _next?.store(null)
+            _next = null
+            _prev?.store(null)
+            _prev = null
+            referenceCounter = null
+        }
+        
+        internal fun reference() {
+            referenceCounter!!.update { it + 1 }
+        }
+        
+        internal fun dereference() {
+            if (referenceCounter!!.decrementAndFetch() == 0) dispose()
+        }
+        
         public fun remove() {
-            if (role != 0.toByte()) return
             while (true) {
                 val next = this.next.load()!!
                 if (next.isBeingDeleted) return
@@ -210,14 +221,6 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
                     }
                 }
             }
-        }
-        
-        internal fun dispose() {
-            _value = null
-            _next?.store(null)
-            _next = null
-            _prev?.store(null)
-            _prev = null
         }
     }
 }
