@@ -104,7 +104,6 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
         val nextLinkToNewNode = Node.Link(newNode, false)
         while (true) {
             val next = prev.next.load()!!
-            if (next.isBeingDeleted) continue
             newNode.next.store(next)
             if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
                 newNode.pushEnd(next.node)
