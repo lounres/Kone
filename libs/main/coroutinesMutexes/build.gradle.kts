@@ -16,6 +16,7 @@ kotlin {
         commonTest {
             dependencies {
 //                implementation(projects.libs.main.enumerativeCombinatorics)
+                implementation(projects.libs.main.concurrentCollections)
             }
         }
         jvmTest {
