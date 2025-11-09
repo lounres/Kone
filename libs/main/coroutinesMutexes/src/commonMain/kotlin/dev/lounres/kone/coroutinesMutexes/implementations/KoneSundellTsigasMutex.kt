@@ -13,8 +13,8 @@ import kotlin.coroutines.CoroutineContext
 
 
 public class KoneSundellTsigasMutex : KoneMutex {
-    internal val head = Node(this)
-    internal val tail = Node(this)
+    private val head = Node()
+    private val tail = Node()
     
     init {
         head.next.store(Node.ForwardLink(tail))
@@ -57,8 +57,8 @@ public class KoneSundellTsigasMutex : KoneMutex {
         var prev = prev
         var lastLink: Node? = null
         while (true) {
-            val link = node.prev.load()!!
-            if (link.isBeingDeleted) break
+            val nodePrevLink = node.prev.load()!!
+            if (nodePrevLink.isBeingDeleted) break
             val prev2 = prev.next.load()!!
             if (prev2.isBeingDeleted) {
                 if (lastLink != null) {
@@ -66,16 +66,16 @@ public class KoneSundellTsigasMutex : KoneMutex {
                     while (true) {
                         val link = lastLink.next.load()!!
                         if (link.node !== prev || link.isBeingDeleted) break
-                        if (prev2.node === tail)
+                        if (prev2.node === tail) {
                             if (lastLink.next.compareAndSet(link, Node.ForwardLink(prev2.node, null, false))) {
                                 // TODO: Maybe the line after the next one is better than the next line?..
                                 link.continuation?.justResume()
 //                                link.continuation?.justResume(onCancellation)
                                 break
                             }
-                            else
-                                if (lastLink.next.compareAndSet(link, Node.ForwardLink(prev2.node, link.continuation, false)))
-                                    break
+                        } else
+                            if (lastLink.next.compareAndSet(link, Node.ForwardLink(prev2.node, link.continuation, false)))
+                                break
                     }
                     prev = lastLink
                     lastLink = null
@@ -89,7 +89,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
                 prev = prev2.node
                 continue
             }
-            if (node.prev.compareAndSet(link, Node.BackwardLink(prev, false))) {
+            if (node.prev.compareAndSet(nodePrevLink, Node.BackwardLink(prev, false))) {
                 if (prev.prev.load()?.isBeingDeleted == true) continue
                 break
             }
@@ -109,7 +109,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
     }
     
     override fun tryLocking(): Boolean {
-        val newNode = Node(this)
+        val newNode = Node()
         val prev = head
         newNode.prev.store(Node.BackwardLink(prev, false))
         val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
@@ -125,9 +125,25 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
     
+    private fun Node.remove() {
+        while (true) {
+            val next = this.next.load()!!
+            if (next.isBeingDeleted) return
+            if (this.next.compareAndSet(next, Node.ForwardLink(next.node, null, true))) {
+                while (true) {
+                    val prev = this.prev.load()!!
+                    if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Node.BackwardLink(prev.node, true))) {
+                        correctPrev(prev.node, next.node)
+                        return
+                    }
+                }
+            }
+        }
+    }
+    
     override suspend fun awaitLock() {
         if (!tryLocking()) suspendCancellableCoroutine {
-            val newNode = Node(this)
+            val newNode = Node()
             val prev = head
             newNode.prev.store(Node.BackwardLink(prev, false))
             val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
@@ -169,38 +185,20 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
     
-    internal class Node(
-        private val mutex: KoneSundellTsigasMutex,
-    ) {
-        /*value*/ internal data class BackwardLink(
+    private class Node {
+        /*value*/ data class BackwardLink(
             val node: Node,
             val isBeingDeleted: Boolean = false,
         )
         
         val prev: AtomicReference<BackwardLink?> = AtomicReference(null)
         
-        /*value*/ internal data class ForwardLink(
+        /*value*/ data class ForwardLink(
             val node: Node,
             val continuation: CancellableContinuation<Unit>? = null,
             val isBeingDeleted: Boolean = false,
         )
         
         val next: AtomicReference<ForwardLink?> = AtomicReference(null)
-        
-        fun remove() {
-            while (true) {
-                val next = this.next.load()!!
-                if (next.isBeingDeleted) return
-                if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
-                    while (true) {
-                        val prev = this.prev.load()!!
-                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, BackwardLink(prev.node, true))) {
-                            mutex.correctPrev(prev.node, next.node)
-                            return
-                        }
-                    }
-                }
-            }
-        }
     }
 }
