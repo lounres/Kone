@@ -100,12 +100,14 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
     public fun addFirst(element: Element): Node<Element> {
         val newNode = Node(element)
         val prev = head
+        newNode.prev.store(Node.Link(prev, false))
+        val nextLinkToNewNode = Node.Link(newNode, false)
         while (true) {
-            val next = prev.next.load()!!.node
-            newNode.prev.store(Node.Link(prev, false))
-            newNode.next.store(Node.Link(next, false))
-            if (prev.next.checkEqualityAndSet(next, false, Node.Link(newNode, false))) {
-                newNode.pushEnd(next)
+            val next = prev.next.load()!!
+            if (next.isBeingDeleted) continue
+            newNode.next.store(next)
+            if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                newNode.pushEnd(next.node)
                 return newNode
             }
             // BACK-OFF
@@ -132,17 +134,17 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
     public fun popFirstMaybe(): Node<Element>? {
         val prev = head
         while (true) {
-            val node = prev.next.load()!!.node
-            if (node === tail) return null
-            val next = node.next.load()!!
+            val here = head.next.load()!!
+            if (here.node === tail) return null
+            val next = here.node.next.load()!!
             if (next.isBeingDeleted) {
-                node.markPrevLink()
-                prev.next.checkNodeEqualityAndSet(node, Node.Link(next.node, false))
+                here.node.markPrevLink()
+                val _ = prev.next.compareAndSet(here, Node.Link(next.node, false))
                 continue
             }
-            if (node.next.compareAndSet(next, Node.Link(next.node, true))) {
+            if (here.node.next.compareAndSet(next, Node.Link(next.node, true))) {
                 correctPrev(prev, next.node)
-                return node
+                return here.node
             }
             // BACK-OFF
         }
