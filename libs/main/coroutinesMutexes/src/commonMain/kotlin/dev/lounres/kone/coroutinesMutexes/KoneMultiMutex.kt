@@ -10,7 +10,8 @@ import kotlin.contracts.contract
 
 
 public interface KoneMultiMutex<in Key> {
-    public suspend fun lockFor(key: Key)
+    public fun tryLockingFor(key: Key): Boolean
+    public suspend fun awaitLockFor(key: Key)
     public fun unlockFor(key: Key)
 }
 
@@ -19,7 +20,7 @@ public suspend inline fun <Key, Result> KoneMultiMutex<Key>.withLockFor(key: Key
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    lockFor(key)
+    awaitLockFor(key)
     return try {
         action()
     } finally {

@@ -10,7 +10,8 @@ import kotlin.contracts.contract
 
 
 public interface KoneMutex {
-    public suspend fun lock()
+    public fun tryLocking(): Boolean
+    public suspend fun awaitLock()
     public fun unlock()
 }
 
@@ -19,7 +20,7 @@ public suspend inline fun <Result> KoneMutex.withLock(action: () -> Result): Res
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    lock()
+    awaitLock()
     return try {
         action()
     } finally {

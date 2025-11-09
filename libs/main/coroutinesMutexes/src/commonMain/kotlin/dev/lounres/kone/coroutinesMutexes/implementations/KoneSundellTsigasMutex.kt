@@ -13,20 +13,20 @@ import kotlin.coroutines.CoroutineContext
 
 
 public class KoneSundellTsigasMutex : KoneMutex {
-    internal val head = Node.head()
-    internal val tail = Node.tail()
+    internal val head = Node(this)
+    internal val tail = Node(this)
     
     init {
-        head.next.store(Node.Link(tail))
-        tail.prev.store(Node.Link(head))
+        head.next.store(Node.ForwardLink(tail))
+        tail.prev.store(Node.BackwardLink(head))
     }
     
     public companion object {
         @IgnorableReturnValue
-        private fun AtomicReference<Node.Link?>.checkEqualityAndSet(
+        private fun AtomicReference<Node.ForwardLink?>.checkNodeAndIsBeingDeletedEqualityAndSet(
             expectedNode: Node,
             expectedIsBeingDeleted: Boolean,
-            newValue: Node.Link,
+            newValue: Node.ForwardLink,
         ): Boolean {
             while (true) {
                 val link = load()!!
@@ -35,144 +35,170 @@ public class KoneSundellTsigasMutex : KoneMutex {
             }
         }
         
-        @IgnorableReturnValue
-        private fun AtomicReference<Node.Link?>.checkNodeEqualityAndSet(
-            expectedNode: Node,
-            newValue: Node.Link,
-        ): Boolean {
-            while (true) {
-                val link = load()!!
-                if (link.node !== expectedNode) return false
-                if (compareAndSet(link, newValue)) return true
-            }
-        }
-        
         // SetMark for `prev` `Link`
         private fun Node.markPrevLink() {
-            val nextReference = prev
             while (true) {
-                val link = nextReference.load() ?: error("Marking prev link of node without prev link")
-                if (link.isBeingDeleted || nextReference.compareAndSet(link, Node.Link(link.node, true))) break
+                val link = prev.load() ?: error("Marking prev link of node without prev link")
+                if (link.isBeingDeleted || prev.compareAndSet(link, Node.BackwardLink(link.node, true))) break
             }
         }
         
-        @IgnorableReturnValue
-        private fun correctPrev(prev: Node, node: Node): Node {
-            var prev = prev
-            var lastLink: Node? = null
-            while (true) {
-                val link = node.prev.load()!!
-                if (link.isBeingDeleted) break
-                var prev2 = prev.next.load()!!
-                if (prev2.isBeingDeleted) {
-                    if (lastLink != null) {
-                        prev.markPrevLink()
-                        lastLink.next.checkEqualityAndSet(prev, false, Node.Link(prev2.node, false))
-                        prev = lastLink
-                        lastLink = null
-                        continue
+        private fun CancellableContinuation<Unit>.justResume(
+            onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
+        ) {
+            resume(Unit, onCancellation)
+        }
+    }
+
+//    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> unlock() }
+    
+    @IgnorableReturnValue
+    private fun correctPrev(prev: Node, node: Node): Node {
+        var prev = prev
+        var lastLink: Node? = null
+        while (true) {
+            val link = node.prev.load()!!
+            if (link.isBeingDeleted) break
+            val prev2 = prev.next.load()!!
+            if (prev2.isBeingDeleted) {
+                if (lastLink != null) {
+                    prev.markPrevLink()
+                    while (true) {
+                        val link = lastLink.next.load()!!
+                        if (link.node !== prev || link.isBeingDeleted) break
+                        if (prev2.node === tail)
+                            if (lastLink.next.compareAndSet(link, Node.ForwardLink(prev2.node, null, false))) {
+                                // TODO: Maybe the line after the next one is better than the next line?..
+                                link.continuation?.justResume()
+//                                link.continuation?.justResume(onCancellation)
+                                break
+                            }
+                            else
+                                if (lastLink.next.compareAndSet(link, Node.ForwardLink(prev2.node, link.continuation, false)))
+                                    break
                     }
-                    prev2 = prev.prev.load()!!
-                    prev = prev2.node
+                    prev = lastLink
+                    lastLink = null
                     continue
                 }
-                if (prev2.node !== node) {
-                    lastLink = prev
-                    prev = prev2.node
-                    continue
-                }
-                if (node.prev.compareAndSet(link, Node.Link(prev, false))) {
-                    if (prev.prev.load()?.isBeingDeleted == true) continue
-                    break
-                }
+                prev = prev.prev.load()!!.node
+                continue
             }
-            return prev
+            if (prev2.node !== node) {
+                lastLink = prev
+                prev = prev2.node
+                continue
+            }
+            if (node.prev.compareAndSet(link, Node.BackwardLink(prev, false))) {
+                if (prev.prev.load()?.isBeingDeleted == true) continue
+                break
+            }
         }
-        
-        private fun Node.pushEnd(next: Node) {
-            while (true) {
-                val link = next.prev.load()!!
-                if (link.isBeingDeleted || this.next.load()!!.let { it.node !== next || it.isBeingDeleted }) break
-                if (next.prev.compareAndSet(link, Node.Link(this, false))) {
-                    if (this.prev.load()!!.isBeingDeleted)
-                        @Suppress("RETURN_VALUE_NOT_USED")
-                        correctPrev(this, next)
-                    break
-                }
+        return prev
+    }
+    
+    private fun Node.pushEnd(next: Node) {
+        while (true) {
+            val link = next.prev.load()!!
+            if (link.isBeingDeleted || this.next.load()!!.let { it.node !== next || it.isBeingDeleted }) break
+            if (next.prev.compareAndSet(link, Node.BackwardLink(this, false))) {
+                if (this.prev.load()!!.isBeingDeleted) correctPrev(this, next)
+                break
             }
         }
     }
     
-    override suspend fun lock() {
-        suspendCancellableCoroutine {
-            val newNode = Node(it)
-            val next = tail
-            var prev = next.prev.load()!!.node
-            while (true) {
-                newNode.prev.store(Node.Link(prev, false))
-                newNode.next.store(Node.Link(next, false))
-                if (prev.next.checkEqualityAndSet(next, false, Node.Link(newNode, false))) break
-                prev = correctPrev(prev, next)
+    override fun tryLocking(): Boolean {
+        val newNode = Node(this)
+        val prev = head
+        newNode.prev.store(Node.BackwardLink(prev, false))
+        val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
+        while (true) {
+            val next = prev.next.load()!!
+            if (next.node !== tail) return false
+            if (next.isBeingDeleted) continue
+            newNode.next.store(next)
+            if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                newNode.pushEnd(next.node)
+                return true
             }
-            newNode.pushEnd(next)
-            
-            it.invokeOnCancellation {
-                if (!newNode.remove()) unlock()
+        }
+    }
+    
+    override suspend fun awaitLock() {
+        if (!tryLocking()) suspendCancellableCoroutine {
+            val newNode = Node(this)
+            val prev = head
+            newNode.prev.store(Node.BackwardLink(prev, false))
+            val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
+            while (true) {
+                val next = prev.next.load()!!
+                if (next.node === tail) {
+                    newNode.next.store(Node.ForwardLink(next.node, null, false))
+                    if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                        newNode.pushEnd(next.node)
+                        it.justResume()
+                        break
+                    }
+                } else {
+                    newNode.next.store(Node.ForwardLink(next.node, it, false))
+                    if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                        newNode.pushEnd(next.node)
+                        it.invokeOnCancellation { newNode.remove() }
+                        break
+                    }
+                }
             }
         }
     }
     
     override fun unlock() {
-        val prev = head
+        val next = tail
+        var node = next.prev.load()!!.node
         while (true) {
-            val node = prev.next.load()!!.node
-            if (node === tail) return
-            val next = node.next.load()!!
-            if (next.isBeingDeleted) {
-                node.markPrevLink()
-                prev.next.checkNodeEqualityAndSet(node, Node.Link(next.node, false))
+            if (node.next.load()!!.let { it.node !== next || it.isBeingDeleted }) {
+                node = correctPrev(node, next)
                 continue
             }
-            if (node.next.compareAndSet(next, Node.Link(next.node, true))) {
-                correctPrev(prev, next.node)
-                node.value.resume(Unit, null as ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)?)
+            if (node === head) error("Mutex is not locked")
+            if (node.next.checkNodeAndIsBeingDeletedEqualityAndSet(next, false, Node.ForwardLink(next, null, true))) {
+                val prev = node.prev.load()!!.node
+                correctPrev(prev, next)
+                return
             }
         }
     }
     
-    internal class Node private constructor(
-        value: CancellableContinuation<Unit>?,
+    internal class Node(
+        private val mutex: KoneSundellTsigasMutex,
     ) {
-        companion object {
-            internal fun head(): Node = Node(null)
-            internal fun tail(): Node = Node(null)
-        }
-        
-        internal constructor(value: CancellableContinuation<Unit>) : this(value as CancellableContinuation<Unit>?)
-        
-        private var _value: CancellableContinuation<Unit>? = value
-        val value: CancellableContinuation<Unit> get() = _value!!
-        
-        /*value*/ internal data class Link(
+        /*value*/ internal data class BackwardLink(
             val node: Node,
             val isBeingDeleted: Boolean = false,
         )
         
-        internal val prev: AtomicReference<Link?> = AtomicReference(null)
-        internal val next: AtomicReference<Link?> = AtomicReference(null)
+        val prev: AtomicReference<BackwardLink?> = AtomicReference(null)
         
-        fun remove(): Boolean {
+        /*value*/ internal data class ForwardLink(
+            val node: Node,
+            val continuation: CancellableContinuation<Unit>? = null,
+            val isBeingDeleted: Boolean = false,
+        )
+        
+        val next: AtomicReference<ForwardLink?> = AtomicReference(null)
+        
+        fun remove() {
             while (true) {
                 val next = this.next.load()!!
-                if (next.isBeingDeleted) return false
-                if (this.next.compareAndSet(next, Link(next.node, true))) {
-                    var prev: Link
+                if (next.isBeingDeleted) return
+                if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
                     while (true) {
-                        prev = this.prev.load()!!
-                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Link(prev.node, true))) break
+                        val prev = this.prev.load()!!
+                        if (prev.isBeingDeleted || this.prev.compareAndSet(prev, BackwardLink(prev.node, true))) {
+                            mutex.correctPrev(prev.node, next.node)
+                            return
+                        }
                     }
-                    correctPrev(prev.node, next.node)
-                    return true
                 }
             }
         }
