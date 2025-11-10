@@ -21,19 +21,6 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     private val tail = ConcurrentHashMap<Key, Node.BackwardLink>()
     
     public companion object {
-        @IgnorableReturnValue
-        private fun AtomicReference<Node.ForwardLink>.checkNodeAndIsBeingDeletedEqualityAndSet(
-            expectedNode: Node?,
-            expectedIsBeingDeleted: Boolean,
-            newValue: Node.ForwardLink,
-        ): Boolean {
-            while (true) {
-                val link = load()
-                if (link.node !== expectedNode || link.isBeingDeleted != expectedIsBeingDeleted) return false
-                if (compareAndSet(link, newValue)) return true
-            }
-        }
-        
         private fun <Key: Any, Value: Any> ConcurrentHashMap<Key, Value>.getCompareAndSet(key: Key, oldValue: Value?, newValue: Value?): Boolean =
             when {
                 oldValue == null && newValue == null -> this[key] == null
@@ -192,13 +179,15 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     
     override fun unlockFor(key: Key) {
         var node = tail[key]?.node
+        val newLink = Node.ForwardLink(null, null, true)
         while (true) {
-            if (node?.next?.load().let { it?.node !== null || it?.isBeingDeleted == true }) {
+            val link = node?.next?.load() ?: head[key]
+            if (link?.isBeingDeleted == true || link?.node !== null) {
                 node = correctPrev(key, node, null)
                 continue
             }
             if (node === null) error("Mutex is not locked")
-            if (node.next.checkNodeAndIsBeingDeletedEqualityAndSet(null, false, Node.ForwardLink(null, null, true))) {
+            if (node.next.compareAndSet(link!!, newLink)) {
                 val prev = node.prev.load().node
                 correctPrev(key, prev, null)
                 return

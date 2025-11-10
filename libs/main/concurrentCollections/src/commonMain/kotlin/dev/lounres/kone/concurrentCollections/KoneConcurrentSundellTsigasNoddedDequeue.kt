@@ -31,18 +31,6 @@ public class KoneConcurrentSundellTsigasNoddedDequeue<Element> {
             }
         }
         
-        @IgnorableReturnValue
-        private fun <Element> AtomicReference<Node.Link<Element>?>.checkNodeEqualityAndSet(
-            expectedNode: Node<Element>,
-            newValue: Node.Link<Element>,
-        ): Boolean {
-            while (true) {
-                val link = load()!!
-                if (link.node !== expectedNode) return false
-                if (compareAndSet(link, newValue)) return true
-            }
-        }
-        
         // SetMark for `prev` `Link`
         private fun <Element> Node<Element>.markPrevLink() {
             while (true) {
