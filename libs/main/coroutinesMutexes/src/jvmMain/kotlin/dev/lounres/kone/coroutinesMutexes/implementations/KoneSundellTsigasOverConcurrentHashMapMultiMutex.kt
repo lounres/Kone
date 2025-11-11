@@ -17,8 +17,8 @@ import kotlin.coroutines.CoroutineContext
 
 
 public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : KoneMultiMutex<Key> {
-    private val head = ConcurrentHashMap<Key, Node.ForwardLink>()
-    private val tail = ConcurrentHashMap<Key, Node.BackwardLink>()
+    private val head = ConcurrentHashMap<Key, ForwardLink>()
+    private val tail = ConcurrentHashMap<Key, BackwardLink>()
     
     public companion object {
         private fun <Key: Any, Value: Any> ConcurrentHashMap<Key, Value>.getCompareAndSet(key: Key, oldValue: Value?, newValue: Value?): Boolean =
@@ -41,12 +41,12 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         if (this != null)
             while (true) {
                 val link = prev.load()
-                if (link.isBeingDeleted || prev.compareAndSet(link, Node.BackwardLink(link.node, true))) break
+                if (link.isBeingDeleted || prev.compareAndSet(link, BackwardLink(link.node, true))) break
             }
         else
             while (true) {
                 val link = tail[key]
-                if (link?.isBeingDeleted == true || tail.getCompareAndSet(key, link, Node.BackwardLink(link?.node, true))) break
+                if (link?.isBeingDeleted == true || tail.getCompareAndSet(key, link, BackwardLink(link?.node, true))) break
             }
     }
     
@@ -57,7 +57,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         while (true) {
             val nodePrevLink = node?.prev?.load() ?: tail[key]
             if (nodePrevLink?.isBeingDeleted == true) break
-            val prev2 = prev?.next?.load() ?: head[key] ?: Node.ForwardLink(null)
+            val prev2 = prev?.next?.load() ?: head[key] ?: ForwardLink(null)
             if (prev2.isBeingDeleted) {
                 if (lastLink != None) {
                     lastLink as Some
@@ -67,7 +67,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                         if (link?.node !== prev || link?.isBeingDeleted == true) break
                         if (prev2.node == null) {
                             if (
-                                if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, Node.ForwardLink(prev2.node, null, false))
+                                if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, null, false))
                                 else head.getCompareAndSet(key, link, null)
                             ) {
                                 // TODO: Maybe the line after the next one is better than the next line?..
@@ -77,7 +77,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                             }
                         } else
                             if (
-                                if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, Node.ForwardLink(prev2.node, link.continuation, false))
+                                if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, link.continuation, false))
                                 else head.getCompareAndSet(key, link, null)
                             )
                                 break
@@ -95,8 +95,8 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                 continue
             }
             if (
-                if (node != null) node.prev.compareAndSet(nodePrevLink!!, Node.BackwardLink(prev, false))
-                else tail.getCompareAndSet(key, nodePrevLink, prev?.let { Node.BackwardLink(it, false) })
+                if (node != null) node.prev.compareAndSet(nodePrevLink!!, BackwardLink(prev, false))
+                else tail.getCompareAndSet(key, nodePrevLink, prev?.let { BackwardLink(it, false) })
             ) {
                 if (prev?.prev?.load()?.isBeingDeleted == true) continue
                 break
@@ -110,8 +110,8 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
             val link = next?.prev?.load() ?: tail[key]
             if (link?.isBeingDeleted == true || this.next.load().let { it.node !== next || it.isBeingDeleted }) break
             if (
-                if (next != null) next.prev.compareAndSet(link!!, Node.BackwardLink(this, false))
-                else tail.getCompareAndSet(key, link, Node.BackwardLink(this, false))
+                if (next != null) next.prev.compareAndSet(link!!, BackwardLink(this, false))
+                else tail.getCompareAndSet(key, link, BackwardLink(this, false))
             ) {
                 if (this.prev.load().isBeingDeleted) correctPrev(key, this, next)
                 break
@@ -121,13 +121,13 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     
     override fun tryLockingFor(key: Key): Boolean {
         val newNode = Node()
-        newNode.prev.store(Node.BackwardLink(null, false))
-        val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
+        newNode.prev.store(BackwardLink(null, false))
+        val nextLinkToNewNode = ForwardLink(newNode, null, false)
         while (true) {
             val next = head[key]
             if (next?.node !== null) return false
             if (next?.isBeingDeleted == true) continue
-            newNode.next.store(next ?: Node.ForwardLink(null))
+            newNode.next.store(next ?: ForwardLink(null))
             if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                 newNode.pushEnd(key, null)
                 return true
@@ -139,10 +139,10 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         while (true) {
             val next = this.next.load()
             if (next.isBeingDeleted) return
-            if (this.next.compareAndSet(next, Node.ForwardLink(next.node, null, true))) {
+            if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
                 while (true) {
                     val prev = this.prev.load()
-                    if (prev.isBeingDeleted || this.prev.compareAndSet(prev, Node.BackwardLink(prev.node, true))) {
+                    if (prev.isBeingDeleted || this.prev.compareAndSet(prev, BackwardLink(prev.node, true))) {
                         correctPrev(key, prev.node, next.node)
                         return
                     }
@@ -154,19 +154,19 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     override suspend fun awaitLockFor(key: Key) {
         if (!tryLockingFor(key)) suspendCancellableCoroutine {
             val newNode = Node()
-            newNode.prev.store(Node.BackwardLink(null, false))
-            val nextLinkToNewNode = Node.ForwardLink(newNode, null, false)
+            newNode.prev.store(BackwardLink(null, false))
+            val nextLinkToNewNode = ForwardLink(newNode, null, false)
             while (true) {
                 val next = head[key]
                 if (next?.node === null) {
-                    newNode.next.store(Node.ForwardLink(null, null, false))
+                    newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, null)
                         it.justResume()
                         break
                     }
                 } else {
-                    newNode.next.store(Node.ForwardLink(next.node, it, false))
+                    newNode.next.store(ForwardLink(next.node, it, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, next.node)
                         it.invokeOnCancellation { newNode.remove(key) }
@@ -179,7 +179,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     
     override fun unlockFor(key: Key) {
         var node = tail[key]?.node
-        val newLink = Node.ForwardLink(null, null, true)
+        val newLink = ForwardLink(null, null, true)
         while (true) {
             val link = node?.next?.load() ?: head[key]
             if (link?.isBeingDeleted == true || link?.node !== null) {
@@ -196,19 +196,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     }
     
     private class Node {
-        /*value*/ data class BackwardLink(
-            val node: Node?,
-            val isBeingDeleted: Boolean = false,
-        )
-        
         val prev: AtomicReference<BackwardLink> = AtomicReference(STUB_BACKWARD_LINK)
-        
-        /*value*/ data class ForwardLink(
-            val node: Node?,
-            val continuation: CancellableContinuation<Unit>? = null,
-            val isBeingDeleted: Boolean = false,
-        )
-        
         val next: AtomicReference<ForwardLink> = AtomicReference(STUB_FORWARD_LINK)
         
         companion object {
@@ -216,4 +204,15 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
             private val STUB_FORWARD_LINK = ForwardLink(null)
         }
     }
+    
+    private /*value*/ data class BackwardLink(
+        val node: Node?,
+        val isBeingDeleted: Boolean = false,
+    )
+    
+    private /*value*/ data class ForwardLink(
+        val node: Node?,
+        val continuation: CancellableContinuation<Unit>? = null,
+        val isBeingDeleted: Boolean = false,
+    )
 }
