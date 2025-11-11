@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.coroutinesMutexes
 
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.next
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -25,5 +27,47 @@ public suspend inline fun <Key, Result> KoneMultiMutex<Key>.withLockFor(key: Key
         action()
     } finally {
         unlockFor(key)
+    }
+}
+
+public suspend fun <Key> KoneMultiMutex<Key>.awaitLockFor(keys: KoneIterable<Key>) {
+    for (key in keys) awaitLockFor(key)
+}
+
+public suspend fun <Key> KoneMultiMutex<Key>.awaitLockFor(vararg keys: Key) {
+    for (key in keys) awaitLockFor(key)
+}
+
+public fun <Key> KoneMultiMutex<Key>.unlockFor(keys: KoneIterable<Key>) {
+    for (key in keys) unlockFor(key)
+}
+
+public fun <Key> KoneMultiMutex<Key>.unlockFor(vararg keys: Key) {
+    for (key in keys) unlockFor(key)
+}
+
+public suspend fun <Key, Result> KoneMultiMutex<Key>.withLockFor(keys: KoneIterable<Key>, action: () -> Result): Result {
+    contract {
+        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+    }
+    
+    awaitLockFor(keys)
+    return try {
+        action()
+    } finally {
+        unlockFor(keys)
+    }
+}
+
+public suspend fun <Key, Result> KoneMultiMutex<Key>.withLockFor(vararg keys: Key, action: () -> Result): Result {
+    contract {
+        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+    }
+    
+    awaitLockFor(*keys)
+    return try {
+        action()
+    } finally {
+        unlockFor(*keys)
     }
 }
