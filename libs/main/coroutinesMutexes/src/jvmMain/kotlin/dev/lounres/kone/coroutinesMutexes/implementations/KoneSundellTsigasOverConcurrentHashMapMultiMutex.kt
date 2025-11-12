@@ -57,28 +57,26 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         while (true) {
             val nodePrevLink = node?.prev?.load() ?: tail[key]
             if (nodePrevLink?.isBeingDeleted == true) break
-            val prev2 = prev?.next?.load() ?: head[key] ?: ForwardLink(null)
-            if (prev2.isBeingDeleted) {
+            val prev2 = prev?.next?.load() ?: head[key]
+            if (prev2?.isBeingDeleted == true) {
                 if (lastLink != None) {
                     lastLink as Some
                     prev.markPrevLink(key)
                     while (true) {
-                        val link = lastLink.value.let { it?.next?.load() ?: head[key] }
+                        val link = lastLink.value?.next?.load() ?: head[key]
                         if (link?.node !== prev || link?.isBeingDeleted == true) break
                         if (prev2.node == null) {
                             if (
                                 if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, null, false))
                                 else head.getCompareAndSet(key, link, null)
                             ) {
-                                // TODO: Maybe the line after the next one is better than the next line?..
-                                link?.continuation?.justResume()
-//                                link?.continuation?.justResume { _, _, _ -> unlockFor(key) }
+                                link?.continuation?.justResume { _, _, _ -> val _ = tryUnlockingFor(key) }
                                 break
                             }
                         } else
                             if (
                                 if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, link.continuation, false))
-                                else head.getCompareAndSet(key, link, null)
+                                else head.getCompareAndSet(key, link, ForwardLink(prev2.node, link?.continuation, false))
                             )
                                 break
                     }
@@ -89,9 +87,9 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                 prev = prev!!.prev.load().node
                 continue
             }
-            if (prev2.node !== node) {
+            if (prev2?.node !== node) {
                 lastLink = Some(prev)
-                prev = prev2.node
+                prev = prev2?.node
                 continue
             }
             if (
@@ -138,7 +136,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     private fun Node.remove(key: Key) {
         while (true) {
             val next = this.next.load()
-            if (next.isBeingDeleted) return
+            if (next.isBeingDeleted || next.continuation === null) return
             if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
                 while (true) {
                     val prev = this.prev.load()
@@ -152,7 +150,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
     }
     
     override suspend fun awaitLockFor(key: Key) {
-        if (!tryLockingFor(key)) suspendCancellableCoroutine {
+        if (!tryLockingFor(key)) suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.prev.store(BackwardLink(null, false))
             val nextLinkToNewNode = ForwardLink(newNode, null, false)
@@ -162,14 +160,14 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                     newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, null)
-                        it.justResume()
+                        continuation.justResume()
                         break
                     }
                 } else {
-                    newNode.next.store(ForwardLink(next.node, it, false))
+                    newNode.next.store(ForwardLink(next.node, continuation, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, next.node)
-                        it.invokeOnCancellation { newNode.remove(key) }
+                        continuation.invokeOnCancellation { newNode.remove(key) }
                         break
                     }
                 }
@@ -177,7 +175,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         }
     }
     
-    override fun unlockFor(key: Key) {
+    override fun tryUnlockingFor(key: Key): Boolean {
         var node = tail[key]?.node
         val newLink = ForwardLink(null, null, true)
         while (true) {
@@ -186,11 +184,11 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                 node = correctPrev(key, node, null)
                 continue
             }
-            if (node === null) error("Mutex is not locked")
+            if (node === null) return false
             if (node.next.compareAndSet(link!!, newLink)) {
                 val prev = node.prev.load().node
                 correctPrev(key, prev, null)
-                return
+                return true
             }
         }
     }
