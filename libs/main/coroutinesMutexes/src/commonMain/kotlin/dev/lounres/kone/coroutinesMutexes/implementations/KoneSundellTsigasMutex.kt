@@ -50,7 +50,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
 
-    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryUnlock() }
+    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryUnlocking() }
     
     @IgnorableReturnValue
     private fun correctPrev(prev: Node, node: Node): Node {
@@ -166,7 +166,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
     
-    override fun tryUnlock(): Boolean {
+    override fun tryUnlocking(): Boolean {
         val next = tail
         var node = next.prev.load()!!.node
         while (true) {

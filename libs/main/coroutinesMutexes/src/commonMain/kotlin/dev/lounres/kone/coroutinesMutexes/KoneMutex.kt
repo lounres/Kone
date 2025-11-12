@@ -13,7 +13,7 @@ public interface KoneMutex {
     public fun tryLocking(): Boolean
     public suspend fun awaitLock()
     @IgnorableReturnValue
-    public fun tryUnlock(): Boolean
+    public fun tryUnlocking(): Boolean
 }
 
 public suspend fun KoneMutex.tryOrAwaitLock() {
@@ -21,7 +21,7 @@ public suspend fun KoneMutex.tryOrAwaitLock() {
 }
 
 public fun KoneMutex.unlock() {
-    if (!tryUnlock()) error("Mutex is not locked")
+    if (!tryUnlocking()) error("KoneMutex is not locked")
 }
 
 public suspend inline fun <Result> KoneMutex.withLock(action: () -> Result): Result {

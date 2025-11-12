@@ -60,7 +60,7 @@ class KoneSundellTsigasMutexConcurrencyTest {
     }
     
     @Operation
-    fun tryUnlock(): Boolean = mutex.tryUnlock()
+    fun tryUnlocking(): Boolean = mutex.tryUnlocking()
     
     @Operation(nonParallelGroup = "jobsDequeue")
     fun cancelFirst() {
@@ -114,7 +114,7 @@ class KoneSundellTsigasMutexConcurrencyTest {
         }
         
         @Operation
-        fun tryUnlock(): Boolean =
+        fun tryUnlocking(): Boolean =
             if (deque == null) false
             else {
                 if (deque!!.isEmpty()) deque = null
