@@ -50,7 +50,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
 
-//    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> unlock() }
+    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryUnlock() }
     
     @IgnorableReturnValue
     private fun correctPrev(prev: Node, node: Node): Node {
@@ -68,9 +68,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
                         if (link.node !== prev || link.isBeingDeleted) break
                         if (prev2.node === tail) {
                             if (lastLink.next.compareAndSet(link, ForwardLink(prev2.node, null, false))) {
-                                // TODO: Maybe the line after the next one is better than the next line?..
-                                link.continuation?.justResume()
-//                                link.continuation?.justResume(onCancellation)
+                                link.continuation?.justResume(onCancellation)
                                 break
                             }
                         } else
@@ -128,7 +126,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
     private fun Node.remove() {
         while (true) {
             val next = this.next.load()!!
-            if (next.isBeingDeleted) return
+            if (next.isBeingDeleted || next.continuation === null) return
             if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
                 while (true) {
                     val prev = this.prev.load()!!
@@ -142,7 +140,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
     }
     
     override suspend fun awaitLock() {
-        if (!tryLocking()) suspendCancellableCoroutine {
+        suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             val prev = head
             newNode.prev.store(BackwardLink(prev, false))
@@ -153,14 +151,14 @@ public class KoneSundellTsigasMutex : KoneMutex {
                     newNode.next.store(ForwardLink(next.node, null, false))
                     if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
-                        it.justResume()
+                        continuation.justResume()
                         break
                     }
                 } else {
-                    newNode.next.store(ForwardLink(next.node, it, false))
+                    newNode.next.store(ForwardLink(next.node, continuation, false))
                     if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
-                        it.invokeOnCancellation { newNode.remove() }
+                        continuation.invokeOnCancellation { newNode.remove() }
                         break
                     }
                 }
@@ -168,7 +166,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
         }
     }
     
-    override fun unlock() {
+    override fun tryUnlock(): Boolean {
         val next = tail
         var node = next.prev.load()!!.node
         while (true) {
@@ -176,11 +174,11 @@ public class KoneSundellTsigasMutex : KoneMutex {
                 node = correctPrev(node, next)
                 continue
             }
-            if (node === head) error("Mutex is not locked")
+            if (node === head) return false
             if (node.next.checkNodeAndIsBeingDeletedEqualityAndSet(next, false, ForwardLink(next, null, true))) {
                 val prev = node.prev.load()!!.node
                 correctPrev(prev, next)
-                return
+                return true
             }
         }
     }

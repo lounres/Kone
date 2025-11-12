@@ -12,7 +12,16 @@ import kotlin.contracts.contract
 public interface KoneMutex {
     public fun tryLocking(): Boolean
     public suspend fun awaitLock()
-    public fun unlock()
+    @IgnorableReturnValue
+    public fun tryUnlock(): Boolean
+}
+
+public suspend fun KoneMutex.tryOrAwaitLock() {
+    if (!tryLocking()) awaitLock()
+}
+
+public fun KoneMutex.unlock() {
+    if (!tryUnlock()) error("Mutex is not locked")
 }
 
 public suspend inline fun <Result> KoneMutex.withLock(action: () -> Result): Result {
@@ -20,7 +29,7 @@ public suspend inline fun <Result> KoneMutex.withLock(action: () -> Result): Res
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    awaitLock()
+    tryOrAwaitLock()
     return try {
         action()
     } finally {
