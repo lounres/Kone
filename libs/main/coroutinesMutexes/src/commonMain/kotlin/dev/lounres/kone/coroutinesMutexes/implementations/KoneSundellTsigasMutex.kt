@@ -114,7 +114,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
         while (true) {
             val next = prev.next.load()!!
             if (next.node !== tail) return false
-            if (next.isBeingDeleted) continue
+            if (next.isBeingDeleted) continue // TODO: Is this line really needed?
             newNode.next.store(next)
             if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
                 newNode.pushEnd(next.node)
@@ -151,7 +151,7 @@ public class KoneSundellTsigasMutex : KoneMutex {
                     newNode.next.store(ForwardLink(next.node, null, false))
                     if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
-                        continuation.justResume()
+                        continuation.justResume() // TODO: Should something be released in case of cancellation?
                         break
                     }
                 } else {

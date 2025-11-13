@@ -65,7 +65,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                     while (true) {
                         val link = lastLink.value?.next?.load() ?: head[key]
                         if (link?.node !== prev || link?.isBeingDeleted == true) break
-                        if (prev2.node == null) {
+                        if (prev2.node === null) {
                             if (
                                 if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, null, false))
                                 else head.getCompareAndSet(key, link, null)
@@ -124,7 +124,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
         while (true) {
             val next = head[key]
             if (next?.node !== null) return false
-            if (next?.isBeingDeleted == true) continue
+            if (next?.isBeingDeleted == true) continue // TODO: Is this line really needed?
             newNode.next.store(next ?: ForwardLink(null))
             if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                 newNode.pushEnd(key, null)
@@ -160,7 +160,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : Kon
                     newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, null)
-                        continuation.justResume()
+                        continuation.justResume() // TODO: Should something be released in case of cancellation?
                         break
                     }
                 } else {
