@@ -9,22 +9,22 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public interface KoneMutex {
+public interface KoneMutualExclusion {
     public fun tryLocking(): Boolean
     public suspend fun awaitLock()
     @IgnorableReturnValue
     public fun tryUnlocking(): Boolean
 }
 
-public suspend fun KoneMutex.tryOrAwaitLock() {
+public suspend fun KoneMutualExclusion.tryOrAwaitLock() {
     if (!tryLocking()) awaitLock()
 }
 
-public fun KoneMutex.unlock() {
-    if (!tryUnlocking()) error("KoneMutex is not locked")
+public fun KoneMutualExclusion.unlock() {
+    if (!tryUnlocking()) error("KoneMutualExclusion is not locked")
 }
 
-public suspend inline fun <Result> KoneMutex.withLock(action: () -> Result): Result {
+public suspend inline fun <Result> KoneMutualExclusion.withLock(action: () -> Result): Result {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }

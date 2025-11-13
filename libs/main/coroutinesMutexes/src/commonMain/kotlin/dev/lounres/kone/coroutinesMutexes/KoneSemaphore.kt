@@ -21,7 +21,7 @@ public suspend fun KoneSemaphore.tryOrAwaitAcquire() {
 }
 
 public fun KoneSemaphore.release() {
-    if (!tryReleasing()) error("KoneMutex is not locked")
+    if (!tryReleasing()) error("KoneSemaphore is not locked")
 }
 
 public suspend inline fun <Result> KoneSemaphore.withPermit(action: () -> Result): Result {
