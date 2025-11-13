@@ -10,13 +10,9 @@ import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.deque.popLast
 import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.remove
-import dev.lounres.kone.collections.map.KoneMutableMap
-import dev.lounres.kone.collections.map.getOrNull
-import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.defaultFor
@@ -24,52 +20,47 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.lincheck.datastructures.IntGen
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.Operation
-import org.jetbrains.lincheck.datastructures.Param
 import org.jetbrains.lincheck.datastructures.StressOptions
 import kotlin.test.Test
 
 
-@Param(name = "key", gen = IntGen::class, conf = "0:0")
-class KoneSundellTsigasOverConcurrentHashMapMultiMutexConcurrencyTest {
-    typealias Key = Int
-    
+class KoneSundellTsigasMutualExclusionConcurrencyTest {
     val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
-    val mutex = KoneSundellTsigasOverConcurrentHashMapMultiMutex<Key>()
+    val mutex = KoneSundellTsigasMutualExclusion()
     val jobsDeque = KoneListBackedDeque<Job>()
     
     @Operation
-    fun tryLockingFor(@Param(name = "key") key: Key) = mutex.tryLockingFor(key)
+    fun tryLocking() = mutex.tryLocking()
     
     @Operation
-    fun awaitLockFor(@Param(name = "key") key: Key) {
+    fun awaitLock() {
         coroutineScope.launch {
-            mutex.awaitLockFor(key)
+            mutex.awaitLock()
         }
     }
     
     @Operation(nonParallelGroup = "jobsDequeue")
-    fun awaitLockForPushFirst(@Param(name = "key") key: Key) {
+    fun awaitLockPushFirst() {
         jobsDeque.addFirst(
             coroutineScope.launch {
-                mutex.awaitLockFor(key)
+                mutex.awaitLock()
             }
         )
     }
     
     @Operation(nonParallelGroup = "jobsDequeue")
-    fun awaitLockForPushLast(@Param(name = "key") key: Key) {
+    fun awaitLockPushLast() {
         jobsDeque.addLast(
             coroutineScope.launch {
-                mutex.awaitLockFor(key)
+                mutex.awaitLock()
             }
         )
     }
     
     @Operation
-    fun tryUnlockingFor(@Param(name = "key") key: Key): Boolean = mutex.tryUnlockingFor(key)
+    fun tryUnlocking(): Boolean = mutex.tryUnlocking()
     
     @Operation(nonParallelGroup = "jobsDequeue")
     fun cancelFirst() {
@@ -83,82 +74,65 @@ class KoneSundellTsigasOverConcurrentHashMapMultiMutexConcurrencyTest {
     
     class SequentialSpecification {
         var jobCounter = 0u
-        val dequeues = KoneMutableMap.of<Key, KoneMutableList<UInt>>()
+        var deque: KoneMutableList<UInt>? = null
         val jobsDeque = KoneListBackedDeque<UInt>()
         
         @Operation
-        fun tryLockingFor(key: Key): Boolean {
-            val dequeue = dequeues.getOrNull(key)
-            if (dequeue == null) {
-                dequeues[key] = KoneMutableList.of()
-                return true
-            } else {
-                return false
-            }
-        }
+        fun tryLocking() =
+            if (deque == null) {
+                deque = KoneMutableList.of()
+                true
+            } else
+                false
         
         @Operation
-        fun awaitLockFor(key: Key) {
-            val dequeue = dequeues.getOrNull(key)
-            if (dequeue == null) {
-                dequeues[key] = KoneMutableList.of()
-            } else {
-                dequeue.add(jobCounter++)
-            }
+        fun awaitLock() {
+            if (deque == null)
+                deque = KoneMutableList.of()
+            else
+                deque!!.add(jobCounter++)
         }
         
         @Operation(nonParallelGroup = "jobsDequeue")
-        fun awaitLockForPushFirst(@Param(name = "key") key: Key) {
+        fun awaitLockPushFirst() {
             val job = jobCounter++
             jobsDeque.addFirst(job)
-            val dequeue = dequeues.getOrNull(key)
-            if (dequeue == null) {
-                dequeues[key] = KoneMutableList.of()
-            } else {
-                dequeue.add(job)
-            }
+            if (deque == null)
+                deque = KoneMutableList.of()
+            else
+                deque!!.add(job)
         }
         
         @Operation(nonParallelGroup = "jobsDequeue")
-        fun awaitLockForPushLast(@Param(name = "key") key: Key) {
+        fun awaitLockPushLast() {
             val job = jobCounter++
             jobsDeque.addLast(job)
-            val dequeue = dequeues.getOrNull(key)
-            if (dequeue == null) {
-                dequeues[key] = KoneMutableList.of()
-            } else {
-                dequeue.add(job)
-            }
+            if (deque == null)
+                deque = KoneMutableList.of()
+            else
+                deque!!.add(job)
         }
         
         @Operation
-        fun tryUnlockingFor(key: Key): Boolean {
-            val deque = dequeues.getOrNull(key)
-            if (deque == null) return false
+        fun tryUnlocking(): Boolean =
+            if (deque == null) false
             else {
-                if (deque.isEmpty()) dequeues.remove(key)
-                else deque.removeAt(0u)
-                return true
+                if (deque!!.isEmpty()) deque = null
+                else deque!!.removeAt(0u)
+                true
             }
-        }
         
         @Operation(nonParallelGroup = "jobsDequeue")
         fun cancelFirst() {
             (Equality.defaultFor<UInt>()) {
-                if (jobsDeque.isNotEmpty()) {
-                    val job = jobsDeque.popFirst()
-                    for (dequeue in dequeues.valuesView) dequeue.remove(job)
-                }
+                if (jobsDeque.isNotEmpty()) deque?.remove(jobsDeque.popFirst())
             }
         }
         
         @Operation(nonParallelGroup = "jobsDequeue")
         fun cancelLast() {
             (Equality.defaultFor<UInt>()) {
-                if (jobsDeque.isNotEmpty()) {
-                    val job = jobsDeque.popLast()
-                    for (dequeue in dequeues.valuesView) dequeue.remove(job)
-                }
+                if (jobsDeque.isNotEmpty()) deque?.remove(jobsDeque.popLast())
             }
         }
     }

@@ -5,14 +5,14 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
-import dev.lounres.kone.coroutinesMutexes.KoneMutex
+import dev.lounres.kone.coroutinesMutexes.KoneMutualExclusion
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
 
-public class KoneSundellTsigasMutex : KoneMutex {
+public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     private val head = Node()
     private val tail = Node()
     

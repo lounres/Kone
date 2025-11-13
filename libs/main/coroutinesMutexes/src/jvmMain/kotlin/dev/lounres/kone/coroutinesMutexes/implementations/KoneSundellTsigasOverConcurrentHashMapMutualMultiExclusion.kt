@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
-import dev.lounres.kone.coroutinesMutexes.KoneMultiMutex
+import dev.lounres.kone.coroutinesMutexes.KoneMutualMultiExclusion
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -16,7 +16,7 @@ import kotlin.concurrent.atomics.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
 
-public class KoneSundellTsigasOverConcurrentHashMapMultiMutex<in Key: Any> : KoneMultiMutex<Key> {
+public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: Any> : KoneMutualMultiExclusion<Key> {
     private val head = ConcurrentHashMap<Key, ForwardLink>()
     private val tail = ConcurrentHashMap<Key, BackwardLink>()
     
