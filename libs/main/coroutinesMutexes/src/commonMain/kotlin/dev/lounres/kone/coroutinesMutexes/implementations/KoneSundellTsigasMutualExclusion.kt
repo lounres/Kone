@@ -6,6 +6,9 @@
 package dev.lounres.kone.coroutinesMutexes.implementations
 
 import dev.lounres.kone.coroutinesMutexes.KoneMutualExclusion
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.concurrent.atomics.AtomicReference
@@ -13,18 +16,13 @@ import kotlin.coroutines.CoroutineContext
 
 
 public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
-    private val head = Node()
-    private val tail = Node()
-    
-    init {
-        head.next.store(ForwardLink(tail))
-        tail.prev.store(BackwardLink(head))
-    }
+    private val head = AtomicReference<ForwardLink>(ForwardLink(null))
+    private val tail = AtomicReference<BackwardLink>(BackwardLink(null))
     
     public companion object {
         @IgnorableReturnValue
         private fun AtomicReference<ForwardLink?>.checkNodeAndIsBeingDeletedEqualityAndSet(
-            expectedNode: Node,
+            expectedNode: Node?,
             expectedIsBeingDeleted: Boolean,
             newValue: ForwardLink,
         ): Boolean {
@@ -38,8 +36,8 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
         // SetMark for `prev` `Link`
         private fun Node.markPrevLink() {
             while (true) {
-                val link = prev.load() ?: error("Marking prev link of node without prev link")
-                if (link.isBeingDeleted || prev.compareAndSet(link, BackwardLink(link.node, true))) break
+                val link = loadPrev()
+                if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
             }
         }
         
@@ -53,54 +51,69 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryUnlocking() }
     
     @IgnorableReturnValue
-    private fun correctPrev(prev: Node, node: Node): Node {
+    private fun correctPrev(prev: Node?, node: Node?): Node? {
         var prev = prev
-        var lastLink: Node? = null
+        var lastLink: Maybe<Node?> = None
         while (true) {
-            val nodePrevLink = node.prev.load()!!
+            val nodePrevLink = node?.loadPrev() ?: tail.load()
             if (nodePrevLink.isBeingDeleted) break
-            val prev2 = prev.next.load()!!
+            val prev2 = prev?.loadNext() ?: head.load()
             if (prev2.isBeingDeleted) {
-                if (lastLink != null) {
-                    prev.markPrevLink()
+                if (lastLink != None) {
+                    lastLink as Some
+                    val lastLinkValue = lastLink.value
+                    prev!!.markPrevLink()
                     while (true) {
-                        val link = lastLink.next.load()!!
+                        val link = lastLinkValue?.loadNext() ?: head.load()
                         if (link.node !== prev || link.isBeingDeleted) break
-                        if (prev2.node === tail) {
-                            if (lastLink.next.compareAndSet(link, ForwardLink(prev2.node, null, false))) {
+                        if (prev2.node === null) {
+                            if (
+                                if (lastLinkValue != null) lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, null, false))
+                                else head.compareAndSet(link, ForwardLink(prev2.node, null, false))
+                            ) {
                                 link.continuation?.justResume(onCancellation)
                                 break
                             }
-                        } else
-                            if (lastLink.next.compareAndSet(link, ForwardLink(prev2.node, link.continuation, false)))
+                        } else {
+                            if (
+                                if (lastLinkValue != null) lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, link.continuation, false))
+                                else head.compareAndSet(link, ForwardLink(prev2.node, link.continuation, false))
+                            )
                                 break
+                        }
                     }
-                    prev = lastLink
-                    lastLink = null
+                    prev = lastLinkValue
+                    lastLink = None
                     continue
                 }
-                prev = prev.prev.load()!!.node
+                prev = (prev?.loadNext() ?: head.load()).node
                 continue
             }
             if (prev2.node !== node) {
-                lastLink = prev
+                lastLink = Some(prev)
                 prev = prev2.node
                 continue
             }
-            if (node.prev.compareAndSet(nodePrevLink, BackwardLink(prev, false))) {
-                if (prev.prev.load()?.isBeingDeleted == true) continue
+            if (
+                if (node != null) node.compareAndSetPrev(nodePrevLink, BackwardLink(prev, false))
+                else tail.compareAndSet(nodePrevLink, BackwardLink(prev, false))
+            ) {
+                if (prev?.loadPrev()?.isBeingDeleted == true) continue
                 break
             }
         }
         return prev
     }
     
-    private fun Node.pushEnd(next: Node) {
+    private fun Node.pushEnd(next: Node?) {
         while (true) {
-            val link = next.prev.load()!!
-            if (link.isBeingDeleted || this.next.load()!!.let { it.node !== next || it.isBeingDeleted }) break
-            if (next.prev.compareAndSet(link, BackwardLink(this, false))) {
-                if (this.prev.load()!!.isBeingDeleted) correctPrev(this, next)
+            val link = next?.loadPrev() ?: tail.load()
+            if (link.isBeingDeleted || this.loadNext().let { it.node !== next || it.isBeingDeleted }) break
+            if (
+                if (next != null) next.compareAndSetPrev(link, BackwardLink(this, false))
+                else tail.compareAndSet(link, BackwardLink(this, false))
+            ) {
+                if (this.loadPrev().isBeingDeleted) correctPrev(this, next)
                 break
             }
         }
@@ -108,15 +121,14 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     
     override fun tryLocking(): Boolean {
         val newNode = Node()
-        val prev = head
-        newNode.prev.store(BackwardLink(prev, false))
+        newNode.storePrev(BackwardLink(null, false))
         val nextLinkToNewNode = ForwardLink(newNode, null, false)
         while (true) {
-            val next = prev.next.load()!!
-            if (next.node !== tail) return false
+            val next = head.load()
+            if (next.node !== null) return false
             if (next.isBeingDeleted) continue // TODO: Is this line really needed?
-            newNode.next.store(next)
-            if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+            newNode.storeNext(next)
+            if (head.compareAndSet(next, nextLinkToNewNode)) {
                 newNode.pushEnd(next.node)
                 return true
             }
@@ -125,12 +137,12 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     
     private fun Node.remove() {
         while (true) {
-            val next = this.next.load()!!
+            val next = this.loadNext()
             if (next.isBeingDeleted || next.continuation === null) return
-            if (this.next.compareAndSet(next, ForwardLink(next.node, null, true))) {
+            if (this.compareAndSetNext(next, ForwardLink(next.node, null, true))) {
                 while (true) {
-                    val prev = this.prev.load()!!
-                    if (prev.isBeingDeleted || this.prev.compareAndSet(prev, BackwardLink(prev.node, true))) {
+                    val prev = this.loadPrev()
+                    if (prev.isBeingDeleted || this.compareAndSetPrev(prev, BackwardLink(prev.node, true))) {
                         correctPrev(prev.node, next.node)
                         return
                     }
@@ -142,21 +154,20 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     override suspend fun awaitLock() {
         suspendCancellableCoroutine { continuation ->
             val newNode = Node()
-            val prev = head
-            newNode.prev.store(BackwardLink(prev, false))
+            newNode.storePrev(BackwardLink(null, false))
             val nextLinkToNewNode = ForwardLink(newNode, null, false)
             while (true) {
-                val next = prev.next.load()!!
-                if (next.node === tail) {
-                    newNode.next.store(ForwardLink(next.node, null, false))
-                    if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                val next = head.load()
+                if (next.node === null) {
+                    newNode.storeNext(ForwardLink(next.node, null, false))
+                    if (head.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
                         continuation.justResume() // TODO: Should something be released in case of cancellation?
                         break
                     }
                 } else {
-                    newNode.next.store(ForwardLink(next.node, continuation, false))
-                    if (prev.next.compareAndSet(next, nextLinkToNewNode)) {
+                    newNode.storeNext(ForwardLink(next.node, continuation, false))
+                    if (head.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
                         continuation.invokeOnCancellation { newNode.remove() }
                         break
@@ -167,34 +178,49 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     }
     
     override fun tryUnlocking(): Boolean {
-        val next = tail
-        var node = next.prev.load()!!.node
+        var node = tail.load().node
         while (true) {
-            if (node.next.load()!!.let { it.node !== next || it.isBeingDeleted }) {
-                node = correctPrev(node, next)
+            if ((node?.loadNext() ?: head.load()).let { it.node !== null || it.isBeingDeleted }) {
+                node = correctPrev(node, null)
                 continue
             }
-            if (node === head) return false
-            if (node.next.checkNodeAndIsBeingDeletedEqualityAndSet(next, false, ForwardLink(next, null, true))) {
-                val prev = node.prev.load()!!.node
-                correctPrev(prev, next)
-                return true
+            if (node === null) return false
+            while (true) {
+                val link = node.loadNext()
+                if (link.node !== null || link.isBeingDeleted) break
+                if (node.compareAndSetNext(link, ForwardLink(null, null, true))) {
+                    val prev = node.loadPrev().node
+                    correctPrev(prev, null)
+                    return true
+                }
             }
         }
     }
     
     private class Node {
-        val prev: AtomicReference<BackwardLink?> = AtomicReference(null)
-        val next: AtomicReference<ForwardLink?> = AtomicReference(null)
+        private val prev: AtomicReference<BackwardLink?> = AtomicReference(null)
+        fun loadPrev(): BackwardLink = prev.load()!!
+        fun storePrev(newValue: BackwardLink) {
+            prev.store(newValue)
+        }
+        fun compareAndSetPrev(expectedValue: BackwardLink, newValue: BackwardLink) =
+            prev.compareAndSet(expectedValue, newValue)
+        private val next: AtomicReference<ForwardLink?> = AtomicReference(null)
+        fun loadNext(): ForwardLink = next.load()!!
+        fun storeNext(newValue: ForwardLink) {
+            next.store(newValue)
+        }
+        fun compareAndSetNext(expectedValue: ForwardLink, newValue: ForwardLink) =
+            next.compareAndSet(expectedValue, newValue)
     }
     
     private /*value*/ data class BackwardLink(
-        val node: Node,
+        val node: Node?,
         val isBeingDeleted: Boolean = false,
     )
     
     private /*value*/ data class ForwardLink(
-        val node: Node,
+        val node: Node?,
         val continuation: CancellableContinuation<Unit>? = null,
         val isBeingDeleted: Boolean = false,
     )

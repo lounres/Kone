@@ -60,9 +60,9 @@ public class KoneSundellTsigasSemaphore(
                 if (prev2.isBeingDeleted) {
                     if (lastLink != None) {
                         lastLink as Some
+                        val lastLinkValue = lastLink.value
                         prev.markPrevLink()
                         while (true) {
-                            val lastLinkValue = lastLink.value
                             if (lastLinkValue != null) {
                                 val link = lastLinkValue.loadNext()
                                 if (link.node !== prev || link.isBeingDeleted) break
@@ -76,7 +76,7 @@ public class KoneSundellTsigasSemaphore(
                                 if (head.compareAndSet(link, HeadForwardLink(prev2.node))) break
                             }
                         }
-                        prev = lastLink.value
+                        prev = lastLinkValue
                         lastLink = None
                         continue
                     }
