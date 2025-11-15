@@ -29,20 +29,7 @@ public class KoneSundellTsigasSemaphore(
     private fun loadHeadForwardLinkOrNull() = head.load().castOrNull<HeadForwardLink>()
 
     public companion object {
-        private val ForwardLink.isBeingDeleted get() = deletionStatus != 0.toByte()
-        
-        @IgnorableReturnValue
-        private fun AtomicReference<ForwardLink?>.checkNodeAndIsBeingDeletedEqualityAndSet(
-            expectedNode: Node,
-            expectedIsBeingDeleted: Boolean,
-            newValue: ForwardLink,
-        ): Boolean {
-            while (true) {
-                val link = load()!!
-                if (link.node !== expectedNode || link.isBeingDeleted != expectedIsBeingDeleted) return false
-                if (compareAndSet(link, newValue)) return true
-            }
-        }
+        private val ForwardLink.isBeingDeleted get() = deletionStatus != NotYetDeleted
 
         private fun CancellableContinuation<Unit>.justResume(
             onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
@@ -52,17 +39,11 @@ public class KoneSundellTsigasSemaphore(
     }
 
     // SetMark for `prev` `Link`
-    private fun Node?.markPrevLink() {
-        if (this != null)
-            while (true) {
-                val link = loadPrev()
-                if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
-            }
-        else
-            while (true) {
-                val link = tail.load()
-                if (link.isBeingDeleted || tail.compareAndSet(link, BackwardLink(link.node, true))) break
-            }
+    private fun Node.markPrevLink() {
+        while (true) {
+            val link = loadPrev()
+            if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
+        }
     }
 
     private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryReleasing() }
@@ -85,8 +66,8 @@ public class KoneSundellTsigasSemaphore(
                             if (lastLinkValue != null) {
                                 val link = lastLinkValue.loadNext()
                                 if (link.node !== prev || link.isBeingDeleted) break
-                                if (lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, link.continuation, 0))) {
-                                    if (prev2.deletionStatus == 1.toByte()) prev2.continuation.justResume(onCancellation)
+                                if (lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, link.continuation, NotYetDeleted))) {
+                                    if (prev2.deletionStatus == ToBeResumedAfterDeletion) prev2.continuation.justResume(onCancellation)
                                     break
                                 }
                             } else {
@@ -153,7 +134,7 @@ public class KoneSundellTsigasSemaphore(
         while (true) {
             val next = this.loadNext()
             if (next.isBeingDeleted) return
-            if (this.compareAndSetNext(next, ForwardLink(next.node, next.continuation, 2))) {
+            if (this.compareAndSetNext(next, ForwardLink(next.node, next.continuation, ToBeIgnoredAfterDeletion))) {
                 while (true) {
                     val prev = this.loadPrev()
                     if (prev.isBeingDeleted || this.compareAndSetPrev(prev, BackwardLink(prev.node, true))) {
@@ -186,7 +167,7 @@ public class KoneSundellTsigasSemaphore(
                             }
                         }
                     is HeadForwardLink -> {
-                        newNode.storeNext(ForwardLink(next.node, continuation, 0))
+                        newNode.storeNext(ForwardLink(next.node, continuation, NotYetDeleted))
                         if (head.compareAndSet(next, nextLinkToNewNode)) {
                             newNode.pushEnd(next.node)
                             continuation.invokeOnCancellation { newNode.remove() }
@@ -209,7 +190,7 @@ public class KoneSundellTsigasSemaphore(
                 while (true) {
                     val link = node.loadNext()
                     if (link.node !== null || link.isBeingDeleted) break
-                    if (node.compareAndSetNext(link, ForwardLink(null, link.continuation, 1))) {
+                    if (node.compareAndSetNext(link, ForwardLink(null, link.continuation, ToBeResumedAfterDeletion))) {
                         val prev = node.loadPrev().node
                         correctPrev(prev, null)
                         return true
@@ -258,17 +239,15 @@ public class KoneSundellTsigasSemaphore(
         val isBeingDeleted: Boolean = false,
     )
     
-    /**
-     * @param deletionStatus Possible values:
-     * - `0` &mdash; is not deleted.
-     * - `1` &mdash; is being deleted and continuation should be resumed.
-     * - `2` &mdash; is being deleted and continuation should be ignored.
-     */
     private /*value*/ data class ForwardLink(
         val node: Node?,
         val continuation: CancellableContinuation<Unit>,
-        val deletionStatus: Byte = 0,
-    )
+        val deletionStatus: DeletionStatus = DeletionStatus.NotYetDeleted,
+    ) {
+        enum class DeletionStatus {
+            NotYetDeleted, ToBeResumedAfterDeletion, ToBeIgnoredAfterDeletion;
+        }
+    }
 
     private /*value*/ data class HeadPermitsLink(
         val availablePermits: UInt,
