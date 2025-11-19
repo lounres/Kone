@@ -152,17 +152,16 @@ public class KoneSundellTsigasSemaphore(
             newNode.storePrev(BackwardLink(null, false))
             val nextLinkToNewNode = HeadForwardLink(newNode)
             while (true) {
-                val next = head.load()
-                when (next) {
+                when (val next = head.load()) {
                     is HeadPermitsLink ->
                         if (next.availablePermits == 1u) {
                             if (head.compareAndSet(next, HeadForwardLink(null))) {
-                                continuation.justResume() // TODO: Should something be released in case of cancellation?
+                                continuation.justResume()
                                 break
                             }
                         } else {
                             if (head.compareAndSet(next, HeadPermitsLink(next.availablePermits - 1u))) {
-                                continuation.justResume() // TODO: Should something be released in case of cancellation?
+                                continuation.justResume()
                                 break
                             }
                         }
@@ -242,7 +241,7 @@ public class KoneSundellTsigasSemaphore(
     private /*value*/ data class ForwardLink(
         val node: Node?,
         val continuation: CancellableContinuation<Unit>,
-        val deletionStatus: DeletionStatus = DeletionStatus.NotYetDeleted,
+        val deletionStatus: DeletionStatus = NotYetDeleted,
     ) {
         enum class DeletionStatus {
             NotYetDeleted, ToBeResumedAfterDeletion, ToBeIgnoredAfterDeletion;

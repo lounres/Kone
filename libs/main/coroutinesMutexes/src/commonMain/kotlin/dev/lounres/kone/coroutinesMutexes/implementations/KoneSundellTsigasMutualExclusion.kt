@@ -162,7 +162,7 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
                     newNode.storeNext(ForwardLink(next.node, null, false))
                     if (head.compareAndSet(next, nextLinkToNewNode)) {
                         newNode.pushEnd(next.node)
-                        continuation.justResume() // TODO: Should something be released in case of cancellation?
+                        continuation.justResume()
                         break
                     }
                 } else {

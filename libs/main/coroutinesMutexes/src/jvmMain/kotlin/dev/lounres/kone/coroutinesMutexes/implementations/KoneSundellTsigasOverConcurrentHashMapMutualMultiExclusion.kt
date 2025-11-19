@@ -160,7 +160,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                     newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         newNode.pushEnd(key, null)
-                        continuation.justResume() // TODO: Should something be released in case of cancellation?
+                        continuation.justResume()
                         break
                     }
                 } else {
