@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
@@ -20,19 +21,18 @@ import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
-import kotlin.math.max
 
 
 @Serializable(with = KoneArrayResizableLinkedNoddedListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal constructor(
     size: UInt,
-    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
+    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u,
     internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
-    data: KoneMutableArray<Node<Element>?> = KoneMutableArray<Node<Element>?>(sizeUpperBound) { null },
-    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
-    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
+    data: KoneMutableArray<Node<Element>?> = KoneMutableArray.generate<Node<Element>?>(sizeUpperBound) { null },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
+    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
 ) : KoneMutableNoddedList<Element>, Disposable {
@@ -104,10 +104,10 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
     }
     private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {
         val oldData = data
-        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        data = KoneMutableArray.generate(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
-        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u }
-        previousNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
+        nextNodeIndex = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u }
+        previousNodeIndex = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
         start = 0u
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Node<Element>?>.(index: UInt) -> Node<Element>?) {

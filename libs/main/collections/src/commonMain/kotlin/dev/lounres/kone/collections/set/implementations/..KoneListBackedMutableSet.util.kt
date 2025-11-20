@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityL
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.list.toKoneMutableNoddedList
 import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
 import dev.lounres.kone.collections.utils.none
@@ -41,7 +42,7 @@ public fun <Element> KoneListBackedMutableSet(
     elementEquality: Equality<Element>,
     size: UInt,
     builder: (UInt) -> Element
-): KoneListBackedMutableSet<Element> = KoneListBackedMutableSet(elementEquality, KoneArrayResizableLinkedList(size, builder))
+): KoneListBackedMutableSet<Element> = KoneListBackedMutableSet(elementEquality, KoneArrayResizableLinkedList.generate(size, builder))
 
 @DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableSet(
@@ -82,7 +83,7 @@ public fun <Element> KoneListBackedMutableReifiedSet(
     elementEquality: Equality<Element>,
     size: UInt,
     builder: (UInt) -> Element
-): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, KoneArrayResizableLinkedList(size, builder))
+): KoneListBackedMutableReifiedSet<Element> = KoneListBackedMutableReifiedSet(elementReification, elementEquality, KoneArrayResizableLinkedList.generate(size, builder))
 
 @DelicateListBackedCollectionsBuilderAPI
 public fun <Element> KoneListBackedMutableReifiedSet(

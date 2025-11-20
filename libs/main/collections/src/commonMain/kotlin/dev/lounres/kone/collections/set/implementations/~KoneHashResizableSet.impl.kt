@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.set.implementations
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
 import dev.lounres.kone.collections.iterables.*
@@ -26,7 +27,6 @@ import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.math.max
 
 
 //@Serializable(with = KoneResizableHashSetWithContextSerializer::class)
@@ -34,12 +34,12 @@ import kotlin.math.max
 public open class KoneHashResizableSet<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = DEFAULT_HASH_TABLE_LOAD_FACTOR,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
+    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
     private var capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
-    data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
+    data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedList() },
     public val elementEquality: Equality<Element>,
     public val elementHashing: Hashing<Element>,
 ) : KoneMutableSet<Element>, Disposable {
@@ -106,7 +106,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
     }
     private fun reinitializeData(newDataSize: UInt = capacityUpperBound) {
         val oldData = data
-        data = KoneArray(newDataSize) { KoneArrayResizableLinkedList() }
+        data = KoneArray.generate(newDataSize) { KoneArrayResizableLinkedList() }
         for (linkedList in oldData) {
             for (element in linkedList) data[element.dataIndex()].add(element)
             linkedList.dispose()
@@ -156,7 +156,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         capacityUpperBound = 2u
         sizeLowerBound = 0u
         sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
-        data = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() }
+        data = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedList() }
         size = 0u
     }
 
@@ -261,12 +261,12 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
 public class KoneHashResizableReifiedSet<Element> @PublishedApi internal constructor(
     size: UInt = 0u,
     loadFactor: Float = DEFAULT_HASH_TABLE_LOAD_FACTOR,
-    dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
+    dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
     capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
-    data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedList() },
+    data: KoneArray<KoneArrayResizableLinkedList<Element>> = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedList() },
     public val elementReification: Reification<Element>,
     elementEquality: Equality<Element>,
     elementHashing: Hashing<Element>,

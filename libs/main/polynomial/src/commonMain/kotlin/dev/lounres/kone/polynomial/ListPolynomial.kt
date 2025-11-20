@@ -13,8 +13,6 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.relations.equalsTo
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.scope
-import kotlin.math.max
-import kotlin.math.min
 
 
 public data class ListPolynomial<Number>(
@@ -37,7 +35,7 @@ public open class ListPolynomialSpace<Number>(
     final override fun valueOf(arg: Number): ListPolynomial<Number> = arg.asListPolynomial()
 
     final override infix fun ListPolynomial<Number>.equalsTo(other: ListPolynomial<Number>): Boolean = ring {
-        for (index in 0u .. max(this.coefficients.lastIndex, other.coefficients.lastIndex))
+        for (index in 0u .. maxOf(this.coefficients.lastIndex, other.coefficients.lastIndex))
             when (index) {
                 !in this.coefficients.indices -> if (other.coefficients[index].isNotZero()) return false
                 !in other.coefficients.indices -> if (this.coefficients[index].isNotZero()) return false
@@ -373,7 +371,7 @@ public open class ListPolynomialSpace<Number>(
         val thisSize = coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         val otherSize = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         ListPolynomial(
-            KoneList(max(thisSize, otherSize)) {
+            KoneList.generate(maxOf(thisSize, otherSize)) {
                 when {
                     it >= thisSize -> other.coefficients[it]
                     it >= otherSize -> coefficients[it]
@@ -386,7 +384,7 @@ public open class ListPolynomialSpace<Number>(
         val thisSize = coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         val otherSize = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } } + 1u
         ListPolynomial(
-            KoneList(max(thisSize, otherSize)) {
+            KoneList.generate(maxOf(thisSize, otherSize)) {
                 when {
                     it >= thisSize -> -other.coefficients[it]
                     it >= otherSize -> coefficients[it]
@@ -400,8 +398,8 @@ public open class ListPolynomialSpace<Number>(
         val otherDegree = other.coefficients.lastIndexThat { _, it -> ring { it.isNotZero() } }
         if (thisDegree == UInt.MAX_VALUE || otherDegree == UInt.MAX_VALUE) return zero
         ListPolynomial(
-            KoneList(thisDegree + otherDegree + 1u) { d ->
-                (max(otherDegree, d) - otherDegree .. min(thisDegree, d))
+            KoneList.generate(thisDegree + otherDegree + 1u) { d ->
+                (maxOf(otherDegree, d) - otherDegree .. minOf(thisDegree, d))
                     .map { coefficients[it] * other.coefficients[d - it] }
                     .reduce { acc, rational -> acc + rational }
             }
@@ -451,8 +449,8 @@ public class ListPolynomialSpaceOverField<Number>(
         )
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]
-        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
-        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { ring.zero }
+        val dividendRestCoefficients = KoneSettableList.generate(dividendDegree + 1u) { this.coefficients[it] }
+        val quotientRestCoefficients = KoneSettableList.generate(dividendDegree - divisorDegree + 1u) { ring.zero }
         
         for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
             val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
@@ -463,7 +461,7 @@ public class ListPolynomialSpaceOverField<Number>(
         
         EuclideanDivisionResult(
             quotient = ListPolynomial(quotientRestCoefficients),
-            remainder = ListPolynomial(KoneList(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] }),
+            remainder = ListPolynomial(KoneList.generate(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] }),
         )
     }
     
@@ -475,8 +473,8 @@ public class ListPolynomialSpaceOverField<Number>(
         if (divisorDegree > dividendDegree) return zero
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]
-        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
-        val quotientRestCoefficients = KoneSettableList(dividendDegree - divisorDegree + 1u) { ring.zero }
+        val dividendRestCoefficients = KoneSettableList.generate(dividendDegree + 1u) { this.coefficients[it] }
+        val quotientRestCoefficients = KoneSettableList.generate(dividendDegree - divisorDegree + 1u) { ring.zero }
         
         for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
             val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
@@ -496,7 +494,7 @@ public class ListPolynomialSpaceOverField<Number>(
         if (divisorDegree > dividendDegree) return this
         
         val divisorLeadingCoefficient = other.coefficients[divisorDegree]
-        val dividendRestCoefficients = KoneSettableList(dividendDegree + 1u) { this.coefficients[it] }
+        val dividendRestCoefficients = KoneSettableList.generate(dividendDegree + 1u) { this.coefficients[it] }
         
         for (divisionDegree in dividendDegree - divisorDegree downTo 0u) {
             val quotientCoefficient = dividendRestCoefficients[divisionDegree + divisorDegree] / divisorLeadingCoefficient
@@ -504,6 +502,6 @@ public class ListPolynomialSpaceOverField<Number>(
                 dividendRestCoefficients[divisionDegree + subtractionDegree] -= quotientCoefficient * other.coefficients[subtractionDegree]
         }
         
-        ListPolynomial(KoneList(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] })
+        ListPolynomial(KoneList.generate(dividendRestCoefficients.lastIndexThat { _, element -> element.isNotZero() } + 1u) { dividendRestCoefficients[it] })
     }
 }

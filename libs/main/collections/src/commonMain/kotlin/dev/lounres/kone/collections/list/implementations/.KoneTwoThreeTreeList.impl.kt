@@ -13,6 +13,7 @@ import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
 import dev.lounres.kone.collections.detachedNodeException
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.indexOutOfBoundsException
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.noNextElementInIteratorException
@@ -102,7 +103,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
             }
         newFirstSubTree.tree = this
         val start = if (rest.size % 2u == 1u) 1u else 2u
-        val newRest = KoneArray((rest.size - start) / 2u) {
+        val newRest = KoneArray.generate((rest.size - start) / 2u) {
             val continuation1 = rest[start + it * 2u]
             val continuation2 = rest[start + it * 2u + 1u]
             FollowingSubtree(
@@ -140,7 +141,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
                         it.tree = this
                         startNode.holder = it
                     },
-                    rest = KoneArray(elements.size / 2u) {
+                    rest = KoneArray.generate(elements.size / 2u) {
                         val intermediateNode = elements[it * 2u + 1u]
                         val wrappedNode = elements[it * 2u + 2u]
                         FollowingSubtree(
@@ -174,7 +175,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
                         startNode1.holder = it
                         startNode2.holder = it
                     },
-                    rest = KoneArray(elements.size / 2u - 1u) {
+                    rest = KoneArray.generate(elements.size / 2u - 1u) {
                         val intermediateNode = elements[it * 2u + 2u]
                         val wrappedNode = elements[it * 2u + 3u]
                         FollowingSubtree(

@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.serializers.serializer
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
-import dev.lounres.kone.collections.list.implementations.KoneArraySettableNoddedList
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.scope
 import kotlinx.serialization.DeserializationStrategy
@@ -40,7 +40,7 @@ internal class MDList2Serializer<E>(
     override fun serialize(encoder: Encoder, value: MDList2<E>) {
         val content = scope {
             val indicesIterator = MDSizeStrides(value.size).iterator()
-            KoneArraySettableList(value.contentSize) { value[indicesIterator.next()] }
+            KoneArraySettableList.generate(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(
@@ -102,7 +102,7 @@ internal class SettableMDList2Serializer<E>(
     override fun serialize(encoder: Encoder, value: SettableMDList2<E>) {
         val content = scope {
             val indicesIterator = MDSizeStrides(value.size).iterator()
-            KoneArraySettableList(value.contentSize) { value[indicesIterator.next()] }
+            KoneArraySettableList.generate(value.contentSize) { value[indicesIterator.next()] }
         }
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(

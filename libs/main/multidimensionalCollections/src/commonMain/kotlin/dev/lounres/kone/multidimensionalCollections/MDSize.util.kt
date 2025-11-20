@@ -8,6 +8,7 @@ package dev.lounres.kone.multidimensionalCollections
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.contentEquals
 import dev.lounres.kone.collections.array.contentHashCode
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.map.getOrSet
 import dev.lounres.kone.collections.map.implementations.KoneHashResizableMap
 import dev.lounres.kone.collections.utils.anyIndexed
@@ -20,9 +21,9 @@ public infix fun MDSize.contentEquals(other: MDSize): Boolean = this.sizes conte
 public fun MDSize.contentHashCode(): Int = this.sizes.contentHashCode()
 
 @Suppress("FunctionName")
-public fun ColumnMDSizeStrides(size: MDSize): MDSizeStrides = MDSizeStrides(size, order = KoneUIntArray(size.size) { it })
+public fun ColumnMDSizeStrides(size: MDSize): MDSizeStrides = MDSizeStrides(size, order = KoneUIntArray.generate(size.size) { it })
 @Suppress("FunctionName")
-public fun RowMDSizeStrides(size: MDSize): MDSizeStrides = MDSizeStrides(size, order = KoneUIntArray(size.size) { size.size - 1u - it })
+public fun RowMDSizeStrides(size: MDSize): MDSizeStrides = MDSizeStrides(size, order = KoneUIntArray.generate(size.size) { size.size - 1u - it })
 
 // TODO: Replace with concurrent map!!!
 //@ThreadLocal

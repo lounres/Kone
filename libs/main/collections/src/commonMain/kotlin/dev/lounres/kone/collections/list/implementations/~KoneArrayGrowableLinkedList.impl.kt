@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
@@ -26,9 +27,9 @@ import kotlinx.serialization.Serializable
 public class KoneArrayGrowableLinkedList<Element> internal constructor(
     size: UInt,
     internal var sizeUpperBound: UInt = powerOf2ArraySizeGreaterOrEqualTo(size),
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
-    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
-    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
+    data: KoneMutableArray<Any?> = KoneMutableArray.generate<Any?>(sizeUpperBound) { null },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u },
+    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
 ) : KoneGrowableMutableList<Element>, Disposable {
@@ -77,10 +78,10 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
     }
     private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
         val oldData = data
-        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        data = KoneMutableArray.generate(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
-        nextNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u }
-        previousNodeIndex = KoneMutableUIntArray(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
+        nextNodeIndex = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == sizeUpperBound - 1u) 0u else it + 1u }
+        previousNodeIndex = KoneMutableUIntArray.generate(sizeUpperBound) { if (it == 0u) sizeUpperBound - 1u else it - 1u }
         start = 0u
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {

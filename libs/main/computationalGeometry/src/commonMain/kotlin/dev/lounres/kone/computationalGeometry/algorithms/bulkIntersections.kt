@@ -15,6 +15,7 @@ import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.build
 import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.computationalGeometry.AffineSpaceOverField
 import dev.lounres.kone.computationalGeometry.curves.Line
@@ -126,7 +127,7 @@ private class PairwiseSegmentsIntersectionsComputerViaBentleyOttmann<N, Vector, 
         val segments = this
         val eventsHeap: MinimumHeap<EventForBentleyOttmann<Point>, Point> = KoneBinaryGCMinimumHeap(pointOrder)
         val segmentsSearchTree = ConnectedSearchTreeForBentleyOttmann<SegmentNodeForBentleyOttmann<Point>>()
-        val segmentsSearchTreeNodes = KoneSettableList<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<Point>>?>(segments.size) { null }
+        val segmentsSearchTreeNodes = KoneSettableList.generate<SearchTreeNodeForBentleyOttmann<SegmentNodeForBentleyOttmann<Point>>?>(segments.size) { null }
         
         for ((index, segment) in segments.withIndex()) {
             val structuralStart = segment.start

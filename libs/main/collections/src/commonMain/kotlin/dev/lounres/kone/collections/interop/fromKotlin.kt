@@ -6,12 +6,15 @@
 package dev.lounres.kone.collections.interop
 
 import dev.lounres.kone.collections.array.*
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.empty
+import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.utils.toOptimizedList
 
 
@@ -25,7 +28,7 @@ public inline fun <reified Element> Iterable<Element>.toKoneMutableArray(): Kone
 }
 public inline fun <reified Element> Collection<Element>.toKoneMutableArray(): KoneMutableArray<Element> {
     val iterator = iterator()
-    return KoneMutableArray(size.toUInt()) { iterator.next() }
+    return KoneMutableArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public inline fun <reified Element> Iterable<Element>.toKoneArray(): KoneArray<Element> {
@@ -37,7 +40,7 @@ public inline fun <reified Element> Iterable<Element>.toKoneArray(): KoneArray<E
 }
 public inline fun <reified Element> Collection<Element>.toKoneArray(): KoneArray<Element> {
     val iterator = iterator()
-    return KoneArray(size.toUInt()) { iterator.next() }
+    return KoneArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
@@ -49,7 +52,7 @@ public fun Iterable<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
 }
 public fun Collection<Byte>.toKoneMutableByteArray(): KoneMutableByteArray {
     val iterator = iterator()
-    return KoneMutableByteArray(size.toUInt()) { iterator.next() }
+    return KoneMutableByteArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Byte>.toKoneByteArray(): KoneByteArray {
@@ -61,7 +64,7 @@ public fun Iterable<Byte>.toKoneByteArray(): KoneByteArray {
 }
 public fun Collection<Byte>.toKoneByteArray(): KoneByteArray {
     val iterator = iterator()
-    return KoneByteArray(size.toUInt()) { iterator.next() }
+    return KoneByteArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Short>.toKoneMutableShortArray(): KoneMutableShortArray {
@@ -73,7 +76,7 @@ public fun Iterable<Short>.toKoneMutableShortArray(): KoneMutableShortArray {
 }
 public fun Collection<Short>.toKoneMutableShortArray(): KoneMutableShortArray {
     val iterator = iterator()
-    return KoneMutableShortArray(size.toUInt()) { iterator.next() }
+    return KoneMutableShortArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Short>.toKoneShortArray(): KoneShortArray {
@@ -85,7 +88,7 @@ public fun Iterable<Short>.toKoneShortArray(): KoneShortArray {
 }
 public fun Collection<Short>.toKoneShortArray(): KoneShortArray {
     val iterator = iterator()
-    return KoneShortArray(size.toUInt()) { iterator.next() }
+    return KoneShortArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
@@ -97,7 +100,7 @@ public fun Iterable<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
 }
 public fun Collection<Int>.toKoneMutableIntArray(): KoneMutableIntArray {
     val iterator = iterator()
-    return KoneMutableIntArray(size.toUInt()) { iterator.next() }
+    return KoneMutableIntArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Int>.toKoneIntArray(): KoneIntArray {
@@ -109,7 +112,7 @@ public fun Iterable<Int>.toKoneIntArray(): KoneIntArray {
 }
 public fun Collection<Int>.toKoneIntArray(): KoneIntArray {
     val iterator = iterator()
-    return KoneIntArray(size.toUInt()) { iterator.next() }
+    return KoneIntArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
@@ -121,7 +124,7 @@ public fun Iterable<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
 }
 public fun Collection<Long>.toKoneMutableLongArray(): KoneMutableLongArray {
     val iterator = iterator()
-    return KoneMutableLongArray(size.toUInt()) { iterator.next() }
+    return KoneMutableLongArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Long>.toKoneLongArray(): KoneLongArray {
@@ -133,7 +136,7 @@ public fun Iterable<Long>.toKoneLongArray(): KoneLongArray {
 }
 public fun Collection<Long>.toKoneLongArray(): KoneLongArray {
     val iterator = iterator()
-    return KoneLongArray(size.toUInt()) { iterator.next() }
+    return KoneLongArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray {
@@ -145,7 +148,7 @@ public fun Iterable<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray {
 }
 public fun Collection<Float>.toKoneMutableFloatArray(): KoneMutableFloatArray {
     val iterator = iterator()
-    return KoneMutableFloatArray(size.toUInt()) { iterator.next() }
+    return KoneMutableFloatArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Float>.toKoneFloatArray(): KoneFloatArray {
@@ -157,7 +160,7 @@ public fun Iterable<Float>.toKoneFloatArray(): KoneFloatArray {
 }
 public fun Collection<Float>.toKoneFloatArray(): KoneFloatArray {
     val iterator = iterator()
-    return KoneFloatArray(size.toUInt()) { iterator.next() }
+    return KoneFloatArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArray {
@@ -169,7 +172,7 @@ public fun Iterable<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArray {
 }
 public fun Collection<Double>.toKoneMutableDoubleArray(): KoneMutableDoubleArray {
     val iterator = iterator()
-    return KoneMutableDoubleArray(size.toUInt()) { iterator.next() }
+    return KoneMutableDoubleArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<Double>.toKoneDoubleArray(): KoneDoubleArray {
@@ -181,7 +184,7 @@ public fun Iterable<Double>.toKoneDoubleArray(): KoneDoubleArray {
 }
 public fun Collection<Double>.toKoneDoubleArray(): KoneDoubleArray {
     val iterator = iterator()
-    return KoneDoubleArray(size.toUInt()) { iterator.next() }
+    return KoneDoubleArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray {
@@ -193,7 +196,7 @@ public fun Iterable<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray {
 }
 public fun Collection<UByte>.toKoneMutableUByteArray(): KoneMutableUByteArray {
     val iterator = iterator()
-    return KoneMutableUByteArray(size.toUInt()) { iterator.next() }
+    return KoneMutableUByteArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UByte>.toKoneUByteArray(): KoneUByteArray {
@@ -205,7 +208,7 @@ public fun Iterable<UByte>.toKoneUByteArray(): KoneUByteArray {
 }
 public fun Collection<UByte>.toKoneUByteArray(): KoneUByteArray {
     val iterator = iterator()
-    return KoneUByteArray(size.toUInt()) { iterator.next() }
+    return KoneUByteArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArray {
@@ -217,7 +220,7 @@ public fun Iterable<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArray {
 }
 public fun Collection<UShort>.toKoneMutableUShortArray(): KoneMutableUShortArray {
     val iterator = iterator()
-    return KoneMutableUShortArray(size.toUInt()) { iterator.next() }
+    return KoneMutableUShortArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UShort>.toKoneUShortArray(): KoneUShortArray {
@@ -229,7 +232,7 @@ public fun Iterable<UShort>.toKoneUShortArray(): KoneUShortArray {
 }
 public fun Collection<UShort>.toKoneUShortArray(): KoneUShortArray {
     val iterator = iterator()
-    return KoneUShortArray(size.toUInt()) { iterator.next() }
+    return KoneUShortArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
@@ -241,7 +244,7 @@ public fun Iterable<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
 }
 public fun Collection<UInt>.toKoneMutableUIntArray(): KoneMutableUIntArray {
     val iterator = iterator()
-    return KoneMutableUIntArray(size.toUInt()) { iterator.next() }
+    return KoneMutableUIntArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<UInt>.toKoneUIntArray(): KoneUIntArray {
@@ -253,7 +256,7 @@ public fun Iterable<UInt>.toKoneUIntArray(): KoneUIntArray {
 }
 public fun Collection<UInt>.toKoneUIntArray(): KoneUIntArray {
     val iterator = iterator()
-    return KoneUIntArray(size.toUInt()) { iterator.next() }
+    return KoneUIntArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<ULong>.toKoneMutableULongArray(): KoneMutableULongArray {
@@ -265,7 +268,7 @@ public fun Iterable<ULong>.toKoneMutableULongArray(): KoneMutableULongArray {
 }
 public fun Collection<ULong>.toKoneMutableULongArray(): KoneMutableULongArray {
     val iterator = iterator()
-    return KoneMutableULongArray(size.toUInt()) { iterator.next() }
+    return KoneMutableULongArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun Iterable<ULong>.toKoneULongArray(): KoneULongArray {
@@ -277,7 +280,7 @@ public fun Iterable<ULong>.toKoneULongArray(): KoneULongArray {
 }
 public fun Collection<ULong>.toKoneULongArray(): KoneULongArray {
     val iterator = iterator()
-    return KoneULongArray(size.toUInt()) { iterator.next() }
+    return KoneULongArray.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
@@ -290,7 +293,7 @@ public fun <Element> Iterable<Element>.toKoneMutableList(): KoneMutableList<Elem
 
 public fun <Element> Collection<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
-    return KoneArrayResizableList(size.toUInt()) { iterator.next() }
+    return KoneArrayResizableList.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
@@ -298,12 +301,12 @@ public fun <Element> Iterable<Element>.toKoneSettableList(): KoneSettableList<El
     
     val result = KoneArrayResizableList<Element>()
     for (element in this) result.add(element)
-    return KoneSettableList(result.size) { result[it] }
+    return KoneSettableList.generate(result.size) { result[it] }
 }
 
 public fun <Element> Collection<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
-    return KoneSettableList(size.toUInt()) { iterator.next() }
+    return KoneSettableList.generate(size.toUInt()) { iterator.next() }
 }
 
 public fun <Element> Iterable<Element>.toKoneList(): KoneList<Element> =

@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
@@ -23,22 +24,22 @@ public fun <Element> KoneArrayGrowableLinkedNoddedList(initialCapacity: UInt): K
         sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity),
     )
 
-public fun <Element> KoneArrayGrowableLinkedNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> {
+public fun <Element> KoneArrayGrowableLinkedNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> {
     val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(size)
     return KoneArrayGrowableLinkedNoddedList(
         size = size,
         sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneArrayGrowableLinkedNoddedList.Node(initializer(it), it) else null },
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) KoneArrayGrowableLinkedNoddedList.Node(initializer(it), it) else null },
     )
 }
 
-public fun <Element> KoneArrayGrowableLinkedNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> {
+public fun <Element> KoneArrayGrowableLinkedNoddedList.Companion.generate(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(capacity)
     return KoneArrayGrowableLinkedNoddedList(
         size = size,
         sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) KoneArrayGrowableLinkedNoddedList.Node(initializer(it), it) else null },
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) KoneArrayGrowableLinkedNoddedList.Node(initializer(it), it) else null },
     )
 }
 
@@ -47,7 +48,7 @@ internal object KoneArrayGrowableLinkedNoddedListProducer : KoneGrowableMutableN
     override fun <Element> produce(initialCapacity: UInt): KoneArrayGrowableLinkedNoddedList<Element> =
         KoneArrayGrowableLinkedNoddedList(initialCapacity)
     override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneArrayGrowableLinkedNoddedList<Element> =
-        KoneArrayGrowableLinkedNoddedList(size = number, capacity = initialCapacity, initializer = builder)
+        KoneArrayGrowableLinkedNoddedList.generate(size = number, capacity = initialCapacity, initializer = builder)
 }
 
 public fun KoneArrayGrowableLinkedNoddedList.Companion.producer(): KoneGrowableMutableNoddedListProducer = KoneArrayGrowableLinkedNoddedListProducer
@@ -61,5 +62,5 @@ internal class KoneArrayGrowableLinkedNoddedListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayGrowableLinkedNoddedList<E> =
-        KoneArrayGrowableLinkedNoddedList(size, initializer)
+        KoneArrayGrowableLinkedNoddedList.generate(size, initializer)
 }

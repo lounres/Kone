@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.array.KoneUByteArray
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.KoneULongArray
 import dev.lounres.kone.collections.array.KoneUShortArray
+import dev.lounres.kone.collections.array.generate
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.Param
@@ -32,7 +33,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_null_generic(blackhole: Blackhole) {
-        blackhole.consume(KoneArray(size) { null })
+        blackhole.consume(KoneArray.generate(size) { null })
     }
     
     @Benchmark
@@ -42,7 +43,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_uint_generic(blackhole: Blackhole) {
-        blackhole.consume(KoneArray(size) { it })
+        blackhole.consume(KoneArray.generate(size) { it })
     }
     
     @Benchmark
@@ -52,7 +53,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_boolean(blackhole: Blackhole) {
-        blackhole.consume(KoneBooleanArray(size) { it % 2u == 0u })
+        blackhole.consume(KoneBooleanArray.generate(size) { it % 2u == 0u })
     }
     
     @Benchmark
@@ -62,7 +63,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_char(blackhole: Blackhole) {
-        blackhole.consume(KoneCharArray(size) { it.toInt().toChar() })
+        blackhole.consume(KoneCharArray.generate(size) { it.toInt().toChar() })
     }
     
     @Benchmark
@@ -72,7 +73,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_byte(blackhole: Blackhole) {
-        blackhole.consume(KoneByteArray(size) { it.toInt().toByte() })
+        blackhole.consume(KoneByteArray.generate(size) { it.toInt().toByte() })
     }
     
     @Benchmark
@@ -82,7 +83,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_short(blackhole: Blackhole) {
-        blackhole.consume(KoneShortArray(size) { it.toInt().toShort() })
+        blackhole.consume(KoneShortArray.generate(size) { it.toInt().toShort() })
     }
     
     @Benchmark
@@ -92,7 +93,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_int(blackhole: Blackhole) {
-        blackhole.consume(KoneIntArray(size) { it.toInt() })
+        blackhole.consume(KoneIntArray.generate(size) { it.toInt() })
     }
     
     @Benchmark
@@ -102,7 +103,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_long(blackhole: Blackhole) {
-        blackhole.consume(KoneLongArray(size) { it.toInt().toLong() })
+        blackhole.consume(KoneLongArray.generate(size) { it.toInt().toLong() })
     }
     
     @Benchmark
@@ -112,7 +113,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_float(blackhole: Blackhole) {
-        blackhole.consume(KoneFloatArray(size) { it.toInt().toFloat() })
+        blackhole.consume(KoneFloatArray.generate(size) { it.toInt().toFloat() })
     }
     
     @Benchmark
@@ -122,7 +123,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_double(blackhole: Blackhole) {
-        blackhole.consume(KoneDoubleArray(size) { it.toInt().toDouble() })
+        blackhole.consume(KoneDoubleArray.generate(size) { it.toInt().toDouble() })
     }
     
     @Benchmark
@@ -132,7 +133,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_ubyte(blackhole: Blackhole) {
-        blackhole.consume(KoneUByteArray(size) { it.toUByte() })
+        blackhole.consume(KoneUByteArray.generate(size) { it.toUByte() })
     }
     
     @Benchmark
@@ -142,7 +143,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_ushort(blackhole: Blackhole) {
-        blackhole.consume(KoneUShortArray(size) { it.toUShort() })
+        blackhole.consume(KoneUShortArray.generate(size) { it.toUShort() })
     }
     
     @Benchmark
@@ -152,7 +153,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_uint(blackhole: Blackhole) {
-        blackhole.consume(KoneUIntArray(size) { it })
+        blackhole.consume(KoneUIntArray.generate(size) { it })
     }
     
     @Benchmark
@@ -162,7 +163,7 @@ class KoneArrayAllocationBenchmarks {
     
     @Benchmark
     fun kone_ulong(blackhole: Blackhole) {
-        blackhole.consume(KoneULongArray(size) { it.toULong() })
+        blackhole.consume(KoneULongArray.generate(size) { it.toULong() })
     }
     
     @Benchmark

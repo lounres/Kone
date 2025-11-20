@@ -8,6 +8,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
@@ -16,27 +17,44 @@ import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescr
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlin.math.max
 
 
 public fun <Element> KoneArrayResizableList(): KoneArrayResizableList<Element> =
     KoneArrayResizableList(size = 0u)
 
-public inline fun <Element> KoneArrayResizableList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableList<Element> {
-    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u
+public inline fun <Element> KoneArrayResizableList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneArrayResizableList<Element> {
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
     return KoneArrayResizableList(
         size = size,
         dataSizeNumber = dataSizeNumber,
         sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) initializer(it) else null },
+    )
+}
+
+public inline fun <Element> KoneArrayResizableList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneArrayResizableList<Element> {
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    var current = initialElement
+    return KoneArrayResizableList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray.generate(sizeUpperBound) {
+            when {
+                it == 0u -> current
+                it < size -> inducer(it, current).also { current = it }
+                else -> null
+            }
+        },
     )
 }
 
 internal object KoneArrayResizableListProducer : KoneResizableMutableListProducer {
     override fun <E> produce(): KoneArrayResizableList<E> = KoneArrayResizableList()
     override fun <E> produceBy(number: UInt, builder: (UInt) -> E): KoneArrayResizableList<E> =
-        KoneArrayResizableList(number, builder)
+        KoneArrayResizableList.generate(number, builder)
 }
 
 public fun KoneArrayResizableList.Companion.producer(): KoneResizableMutableListProducer = KoneArrayResizableListProducer
@@ -50,5 +68,5 @@ internal class KoneArrayResizableListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayResizableList<E> =
-        KoneArrayResizableList(size, initializer)
+        KoneArrayResizableList.generate(size, initializer)
 }

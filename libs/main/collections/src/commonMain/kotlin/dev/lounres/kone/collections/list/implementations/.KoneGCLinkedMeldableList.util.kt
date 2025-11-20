@@ -16,7 +16,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 
 public fun <Element> KoneGCLinkedMeldableList(): KoneGCLinkedMeldableList<Element> = KoneGCLinkedMeldableList(startNode = null, endNode = null)
 
-public inline fun <Element> KoneGCLinkedMeldableList(size: UInt, initializer: (index: UInt) -> Element): KoneGCLinkedMeldableList<Element> {
+public inline fun <Element> KoneGCLinkedMeldableList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneGCLinkedMeldableList<Element> {
     val result = KoneGCLinkedMeldableList<Element>()
     if (size == 0u) return result
     var currentNode = KoneGCLinkedMeldableList.Node(initializer(0u))
@@ -31,7 +31,7 @@ public inline fun <Element> KoneGCLinkedMeldableList(size: UInt, initializer: (i
     return result
 }
 
-public inline fun <Element> KoneGCLinkedMeldableList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneGCLinkedMeldableList<Element> {
+public inline fun <Element> KoneGCLinkedMeldableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneGCLinkedMeldableList<Element> {
     val result = KoneGCLinkedMeldableList<Element>()
     if (indices.isEmpty()) return result
     var currentNode = KoneGCLinkedMeldableList.Node(initializer(indices.first))
@@ -48,7 +48,7 @@ public inline fun <Element> KoneGCLinkedMeldableList(indices: UIntRange, initial
 
 internal object KoneGCLinkedMeldableListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneGCLinkedMeldableList<Element> = KoneGCLinkedMeldableList()
-    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedMeldableList(number, builder)
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedMeldableList.generate(number, builder)
 }
 
 public fun KoneGCLinkedMeldableList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneGCLinkedMeldableListProducer
@@ -115,5 +115,5 @@ internal class KoneGCLinkedMeldableListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneGCLinkedMeldableList<E> =
-        KoneGCLinkedMeldableList(size, initializer)
+        KoneGCLinkedMeldableList.generate(size, initializer)
 }

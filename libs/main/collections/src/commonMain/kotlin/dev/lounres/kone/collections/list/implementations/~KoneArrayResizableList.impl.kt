@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
@@ -18,7 +19,6 @@ import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
-import kotlin.math.max
 
 
 @Suppress("UNCHECKED_CAST")
@@ -26,10 +26,10 @@ import kotlin.math.max
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     size: UInt,
-    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(size, 2u)) - 1u,
+    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u,
     internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+    data: KoneMutableArray<Any?> = KoneMutableArray.generate<Any?>(sizeUpperBound) { null },
 ) : KoneMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
@@ -77,7 +77,7 @@ public class KoneArrayResizableList<Element> @PublishedApi internal constructor(
     }
     private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
         val oldData = data
-        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        data = KoneMutableArray.generate(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {

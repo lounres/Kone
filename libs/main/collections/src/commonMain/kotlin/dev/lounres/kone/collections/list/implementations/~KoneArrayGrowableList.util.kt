@@ -8,6 +8,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
@@ -27,29 +28,29 @@ public fun <Element> KoneArrayGrowableList(initialCapacity: UInt): KoneArrayGrow
         sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity),
     )
 
-public inline fun <Element> KoneArrayGrowableList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
+public inline fun <Element> KoneArrayGrowableList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
     val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(size)
     return KoneArrayGrowableList(
         size = size,
         sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) initializer(it) else null },
     )
 }
 
-public inline fun <Element> KoneArrayGrowableList(initialCapacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
+public inline fun <Element> KoneArrayGrowableList.Companion.generate(initialCapacity: UInt, size: UInt, initializer: (index: UInt) -> Element): KoneArrayGrowableList<Element> {
     require(size <= initialCapacity) { "Provided initial capacity must not be less than provided size" }
     val sizeUpperBound = powerOf2ArraySizeGreaterOrEqualTo(initialCapacity)
     return KoneArrayGrowableList(
         size = size,
         sizeUpperBound = sizeUpperBound,
-        data = KoneMutableArray(sizeUpperBound) { if (it < size) initializer(it) else null },
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) initializer(it) else null },
     )
 }
 
 internal object KoneArrayGrowableListProducer : KoneGrowableMutableListProducer {
     override fun <Element> produce(initialCapacity: UInt): KoneArrayGrowableList<Element> = KoneArrayGrowableList(initialCapacity)
     override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneGrowableMutableList<Element> =
-        KoneArrayGrowableList(initialCapacity, number, builder)
+        KoneArrayGrowableList.generate(initialCapacity, number, builder)
 }
 
 public fun KoneArrayGrowableList.Companion.producer(): KoneGrowableMutableListProducer = KoneArrayGrowableListProducer
@@ -63,5 +64,5 @@ internal class KoneArrayGrowableListSerializer<Element>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> Element): KoneArrayGrowableList<Element> =
-        KoneArrayGrowableList(size, initializer)
+        KoneArrayGrowableList.generate(size, initializer)
 }

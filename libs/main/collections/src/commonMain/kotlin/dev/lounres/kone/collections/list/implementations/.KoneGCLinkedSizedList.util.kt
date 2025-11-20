@@ -16,7 +16,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 
 public fun <Element> KoneGCLinkedSizedList(): KoneGCLinkedSizedList<Element> = KoneGCLinkedSizedList(size = 0u, startNode = null, endNode = null)
 
-public inline fun <Element> KoneGCLinkedSizedList(size: UInt, initializer: (index: UInt) -> Element): KoneGCLinkedSizedList<Element> {
+public inline fun <Element> KoneGCLinkedSizedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneGCLinkedSizedList<Element> {
     val result = KoneGCLinkedSizedList<Element>(size = size)
     if (size == 0u) return result
     var currentNode = result.Node(initializer(0u))
@@ -31,7 +31,7 @@ public inline fun <Element> KoneGCLinkedSizedList(size: UInt, initializer: (inde
     return result
 }
 
-public inline fun <Element> KoneGCLinkedSizedList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneGCLinkedSizedList<Element> {
+public inline fun <Element> KoneGCLinkedSizedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneGCLinkedSizedList<Element> {
     val result = KoneGCLinkedSizedList<Element>(size = if (indices.isEmpty()) 0u else (indices.last + 1u - indices.first))
     if (indices.isEmpty()) return result
     var currentNode = result.Node(initializer(indices.first))
@@ -46,9 +46,39 @@ public inline fun <Element> KoneGCLinkedSizedList(indices: UIntRange, initialize
     return result
 }
 
+public inline fun <Element> KoneGCLinkedSizedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneGCLinkedSizedList<Element> {
+    val result = KoneGCLinkedSizedList<Element>(size = size)
+    if (size == 0u) return result
+    var currentNode = result.Node(initialElement)
+    result.start = currentNode
+    for (index in 1u ..< size) {
+        val newNode = result.Node(inducer(index, currentNode.element))
+        newNode._previousNode = currentNode
+        currentNode._nextNode = newNode
+        currentNode = newNode
+    }
+    result.end = currentNode
+    return result
+}
+
+public inline fun <Element> KoneGCLinkedSizedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneGCLinkedSizedList<Element> {
+    val result = KoneGCLinkedSizedList<Element>(size = if (indices.isEmpty()) 0u else (indices.last + 1u - indices.first))
+    if (indices.isEmpty()) return result
+    var currentNode = result.Node(initialElement)
+    result.start = currentNode
+    for (index in (indices.first + 1u) .. indices.last) {
+        val newNode = result.Node(inducer(index, currentNode.element))
+        newNode._previousNode = currentNode
+        currentNode._nextNode = newNode
+        currentNode = newNode
+    }
+    result.end = currentNode
+    return result
+}
+
 internal object KoneGCLinkedSizedListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneGCLinkedSizedList<Element> = KoneGCLinkedSizedList()
-    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedSizedList(number, builder)
+    override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneMutableNoddedList<Element> = KoneGCLinkedSizedList.generate(number, builder)
 }
 
 public fun KoneGCLinkedSizedList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneGCLinkedSizedListProducer
@@ -109,5 +139,5 @@ internal class KoneGCLinkedSizedListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneGCLinkedSizedList<E> =
-        KoneGCLinkedSizedList(size, initializer)
+        KoneGCLinkedSizedList.generate(size, initializer)
 }

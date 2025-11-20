@@ -26,8 +26,6 @@ import dev.lounres.kone.relations.lt
 import dev.lounres.kone.relations.reificationException
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
-import kotlin.math.max
-import kotlin.math.min
 
 
 @Serializable
@@ -44,7 +42,7 @@ internal fun KoneMutableULongArray.removeLeadingZeros(): KoneULongArray {
         if (this[currentIndex] != 0uL) break
         currentIndex--
     }
-    return KoneULongArray(currentIndex + 1u) { this[it] }
+    return KoneULongArray.generate(currentIndex + 1u) { this[it] }
 }
 
 internal fun KoneULongArray.removeLeadingZeros(): KoneULongArray {
@@ -53,7 +51,7 @@ internal fun KoneULongArray.removeLeadingZeros(): KoneULongArray {
         if (this[currentIndex] != 0uL) break
         currentIndex--
     }
-    return KoneULongArray(currentIndex + 1u) { this[it] }
+    return KoneULongArray.generate(currentIndex + 1u) { this[it] }
 }
 
 internal val ULONG_BIT_SIZE = ULong.SIZE_BITS.toUInt()
@@ -124,8 +122,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
 
     // region UBigLong-UBigLong operations
     override operator fun UBigLong.plus(other: UBigLong): UBigLong {
-        val maxSize = max(this.magnitude.size, other.magnitude.size)
-        val result = KoneMutableULongArray(maxSize + 1u)
+        val maxSize = maxOf(this.magnitude.size, other.magnitude.size)
+        val result = KoneMutableULongArray.fill(maxSize + 1u)
         var carry = 0uL
         for (index in 0u ..< maxSize) {
             val additionResult = add(
@@ -142,7 +140,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     override operator fun UBigLong.minus(other: UBigLong): UBigLong {
         if (this lt other) negativeSubtractionResultInExtendedSemiring()
 
-        val result = KoneMutableULongArray(this.magnitude.size) { this.magnitude[it] }
+        val result = KoneMutableULongArray.generate(this.magnitude.size) { this.magnitude[it] }
         var anticarry = 0uL
         
         for (index in 0u ..< result.size) {
@@ -163,7 +161,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         if (this.isOne()) return other
         if (other.isOne()) return this
         
-        val result = KoneMutableULongArray(this.magnitude.size + other.magnitude.size)
+        val result = KoneMutableULongArray.fill(this.magnitude.size + other.magnitude.size)
         for (thisIndex in 0u ..< this.magnitude.size) for (otherIndex in 0u ..< other.magnitude.size) {
             val productResult = multiply(this.magnitude[thisIndex], other.magnitude[otherIndex])
             var carry = productResult.second
@@ -190,8 +188,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             remainder = this,
         )
 
-        val dividend = KoneMutableULongArray(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray(this.magnitude.size - other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(this.magnitude.size - other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -270,8 +268,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         if (this.magnitude.isEmpty()) return zero
         if (other.magnitude.size > this.magnitude.size) return zero
         
-        val dividend = KoneMutableULongArray(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray(this.magnitude.size - other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(this.magnitude.size - other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -347,7 +345,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         if (this.magnitude.isEmpty()) return zero
         if (other.magnitude.size > this.magnitude.size) return this
         
-        val dividend = KoneMutableULongArray(other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -414,10 +412,10 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
 
         return when {
             fullShifts >= this.magnitude.size -> zero
-            partialShift == 0u -> UBigLong(KoneULongArray(this.magnitude.size - fullShifts) { this.magnitude[it + fullShifts] })
+            partialShift == 0u -> UBigLong(KoneULongArray.generate(this.magnitude.size - fullShifts) { this.magnitude[it + fullShifts] })
             this.magnitude[this.magnitude.size - 1u] shr partialShift.toInt() != 0uL ->
                 UBigLong(
-                    KoneULongArray(this.magnitude.size - fullShifts) {
+                    KoneULongArray.generate(this.magnitude.size - fullShifts) {
                         when {
                             it < this.magnitude.size - fullShifts - 1u ->
                                 (this.magnitude[it + fullShifts + 1u] shl (ULONG_BIT_SIZE - partialShift).toInt()) or (this.magnitude[it + fullShifts] shr partialShift.toInt())
@@ -427,7 +425,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
                 )
             else ->
                 UBigLong(
-                    KoneULongArray(this.magnitude.size - fullShifts - 1u) {
+                    KoneULongArray.generate(this.magnitude.size - fullShifts - 1u) {
                         (this.magnitude[it + fullShifts + 1u] shl (ULONG_BIT_SIZE - partialShift).toInt()) or (this.magnitude[it + fullShifts] shr partialShift.toInt())
                     }
                 )
@@ -442,13 +440,13 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         
         return when {
             partialShift == 0u -> UBigLong(
-                KoneULongArray(this.magnitude.size + fullShifts) {
+                KoneULongArray.generate(this.magnitude.size + fullShifts) {
                     if (it < fullShifts) 0uL else this.magnitude[it - fullShifts]
                 }
             )
             this.magnitude[this.magnitude.size - 1u] shr (ULONG_BIT_SIZE - partialShift).toInt() != 0uL ->
                 UBigLong(
-                    KoneULongArray(this.magnitude.size + fullShifts + 1u) {
+                    KoneULongArray.generate(this.magnitude.size + fullShifts + 1u) {
                         when {
                             it < fullShifts -> 0uL
                             it < fullShifts + 1u -> this.magnitude[it - fullShifts] shl partialShift.toInt()
@@ -460,7 +458,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
                 )
             else ->
                 UBigLong(
-                    KoneULongArray(this.magnitude.size + fullShifts) {
+                    KoneULongArray.generate(this.magnitude.size + fullShifts) {
                         when {
                             it < fullShifts -> 0uL
                             it < fullShifts + 1u -> this.magnitude[it - fullShifts] shl partialShift.toInt()
@@ -473,13 +471,13 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     }
     public infix fun UBigLong.and(other: UBigLong): UBigLong =
         UBigLong(
-            KoneULongArray(min(this.magnitude.size, other.magnitude.size)) {
+            KoneULongArray.generate(minOf(this.magnitude.size, other.magnitude.size)) {
                 this.magnitude[it] and other.magnitude[it]
             }.removeLeadingZeros()
         )
     public infix fun UBigLong.or(other: UBigLong): UBigLong =
         UBigLong(
-            KoneULongArray(max(this.magnitude.size, other.magnitude.size)) {
+            KoneULongArray.generate(maxOf(this.magnitude.size, other.magnitude.size)) {
                 when {
                     it >= this.magnitude.size -> other.magnitude[it]
                     it >= other.magnitude.size -> this.magnitude[it]
@@ -489,7 +487,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         )
     public infix fun UBigLong.xor(other: UBigLong): UBigLong =
         UBigLong(
-            KoneULongArray(max(this.magnitude.size, other.magnitude.size)) {
+            KoneULongArray.generate(maxOf(this.magnitude.size, other.magnitude.size)) {
                 when {
                     it >= this.magnitude.size -> other.magnitude[it]
                     it >= other.magnitude.size -> this.magnitude[it]

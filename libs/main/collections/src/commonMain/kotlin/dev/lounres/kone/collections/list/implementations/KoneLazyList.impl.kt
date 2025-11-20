@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Maybe
@@ -66,7 +67,7 @@ public class KoneLazyList<Element>(
     override val size: UInt,
     private val generator: (index: UInt) -> Element,
 ) : KoneSettableList<Element> {
-    private val buffer: KoneMutableArray<Maybe<Element>> = KoneMutableArray(size) { None }
+    private val buffer: KoneMutableArray<Maybe<Element>> = KoneMutableArray.generate(size) { None }
 
     override fun get(index: UInt): Element = buffer[index].orElse { generator(index).also { buffer[index] = Some(it) } }
     override fun set(index: UInt, element: Element) {

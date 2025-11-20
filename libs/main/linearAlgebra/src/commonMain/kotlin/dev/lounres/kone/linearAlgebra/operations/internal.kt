@@ -6,12 +6,13 @@
 package dev.lounres.kone.linearAlgebra.operations
 
 import dev.lounres.kone.collections.array.KoneMutableBooleanArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.list.KoneList
 
 
 internal fun KoneList<UInt>.isEvenPermutation(): Boolean {
     var permutationIsEven = true
-    val visited = KoneMutableBooleanArray(size) { false } // TODO: Can be replaced with specialised array
+    val visited = KoneMutableBooleanArray.generate(size) { false } // TODO: Can be replaced with specialised array
     for (i in 0u ..< size) if (!visited[i]) {
         var current = i
         visited[i] = true

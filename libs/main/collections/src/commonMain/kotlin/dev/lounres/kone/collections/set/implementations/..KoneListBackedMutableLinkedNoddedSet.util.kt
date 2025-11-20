@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityL
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedList
 import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.list.toKoneMutableNoddedList
 import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
 import dev.lounres.kone.collections.utils.none
@@ -43,7 +44,7 @@ public fun <Element> KoneListBackedMutableLinkedNoddedSet(
     builder: (UInt) -> Element
 ): KoneListBackedMutableLinkedNoddedSet<Element> = KoneListBackedMutableLinkedNoddedSet(
     elementEquality,
-    KoneArrayResizableLinkedNoddedList(size) { KoneListBackedMutableLinkedNoddedSet.Node(builder(it)) }.also {
+    KoneArrayResizableLinkedNoddedList.generate(size) { KoneListBackedMutableLinkedNoddedSet.Node(builder(it)) }.also {
         val iterator = it.iterator()
         while (iterator.hasNext()) {
             iterator.getNext().listNode = iterator.getNextNode()
@@ -114,7 +115,7 @@ public fun <Element> KoneListBackedMutableLinkedNoddedReifiedSet(
 ): KoneListBackedMutableLinkedNoddedReifiedSet<Element> = KoneListBackedMutableLinkedNoddedReifiedSet(
     elementReification,
     elementEquality,
-    KoneArrayResizableLinkedNoddedList(size) { KoneListBackedMutableLinkedNoddedSet.Node(builder(it)) }.also {
+    KoneArrayResizableLinkedNoddedList.generate(size) { KoneListBackedMutableLinkedNoddedSet.Node(builder(it)) }.also {
         val iterator = it.iterator()
         while (iterator.hasNext()) {
             iterator.getNext().listNode = iterator.getNextNode()

@@ -21,6 +21,7 @@ import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.list.of
@@ -132,7 +133,7 @@ internal fun <
         ).also { computedFacesRegistry[vertices] = it }
     }
 
-    val restConvexHullFaces = KoneList(subspaceDimension) {
+    val restConvexHullFaces = KoneList.generate(subspaceDimension) {
         KoneMutableReifiedSet.of(elementReification = polytopeReification, elementEquality = polytopeEquality, elementHashing = polytopeHashing, elementOrder = polytopeOrder)
     }
 
@@ -152,13 +153,13 @@ internal fun <
             val normalGiftWrappingVector: Vector
             val tangentGiftWrappingVector: Vector
             scope {
-                val facetFlag = KoneSettableList(subspaceDimension) { facet }
+                val facetFlag = KoneSettableList.generate(subspaceDimension) { facet }
                 facetFlag[subspaceDimension - 2u] = subfacet
                 if (subspaceDimension >= 3u) for (dim in subspaceDimension - 3u downTo 0u) {
                     facetFlag[dim] = facetFlag[dim+1u].facesOfDimension(dim).first()
                 }
                 startPoint = facetFlag[0u].vertices.single().position
-                val basis = KoneList(subspaceDimension) { index ->
+                val basis = KoneList.generate(subspaceDimension) { index ->
                     if (index < subspaceDimension - 1u) facetFlag[index + 1u].vertices.firstThat { it !in facetFlag[index].vertices }.position - startPoint
                     else allVertices.firstThat { it !in facet.vertices }.position - startPoint
                 }

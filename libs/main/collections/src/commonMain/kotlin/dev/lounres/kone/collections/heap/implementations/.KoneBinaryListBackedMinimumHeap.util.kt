@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableListProducer
 import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.relations.Order
 
 
@@ -31,7 +32,7 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         priorityOrder = priorityOrder,
         data = null,
     )
-    val data = KoneArrayResizableList(size) {
+    val data = KoneArrayResizableList.generate(size) {
         KoneBinaryListBackedMinimumHeap.Node<Element, Priority>(
             element = elementInitializer(it),
             priority = priorityInitializer(it),
@@ -53,7 +54,7 @@ public inline fun <Element, Priority> KoneBinaryListBackedMinimumHeap(
         priorityOrder = priorityOrder,
         data = null,
     )
-    val data = KoneArrayResizableList(size) {
+    val data = KoneArrayResizableList.generate(size) {
         val entry = heapEntryInitializer(it)
         val element = entry.element
         val priority = entry.priority

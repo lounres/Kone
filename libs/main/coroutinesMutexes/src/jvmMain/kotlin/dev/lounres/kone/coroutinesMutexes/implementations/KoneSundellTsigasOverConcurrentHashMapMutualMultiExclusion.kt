@@ -103,15 +103,15 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
         return prev
     }
     
-    private fun Node.pushEnd(key: Key, next: Node?) {
+    private fun pushEnd(key: Key, node: Node, next: Node?) {
         while (true) {
             val link = next?.prev?.load() ?: tail[key]
-            if (link?.isBeingDeleted == true || this.next.load().let { it.node !== next || it.isBeingDeleted }) break
+            if (link?.isBeingDeleted == true || node.next.load().let { it.node !== next || it.isBeingDeleted }) break
             if (
-                if (next != null) next.prev.compareAndSet(link!!, BackwardLink(this, false))
-                else tail.getCompareAndSet(key, link, BackwardLink(this, false))
+                if (next != null) next.prev.compareAndSet(link!!, BackwardLink(node, false))
+                else tail.getCompareAndSet(key, link, BackwardLink(node, false))
             ) {
-                if (this.prev.load().isBeingDeleted) correctPrev(key, this, next)
+                if (node.prev.load().isBeingDeleted) correctPrev(key, node, next)
                 break
             }
         }
@@ -127,7 +127,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
             if (next?.isBeingDeleted == true) continue // TODO: Is this line really needed?
             newNode.next.store(next ?: ForwardLink(null))
             if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
-                newNode.pushEnd(key, null)
+                pushEnd(key, newNode, null)
                 return true
             }
         }
@@ -159,14 +159,14 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                 if (next?.node === null) {
                     newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
-                        newNode.pushEnd(key, null)
+                        pushEnd(key, newNode, null)
                         continuation.justResume()
                         break
                     }
                 } else {
                     newNode.next.store(ForwardLink(next.node, continuation, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
-                        newNode.pushEnd(key, next.node)
+                        pushEnd(key, newNode, next.node)
                         continuation.invokeOnCancellation { newNode.remove(key) }
                         break
                     }

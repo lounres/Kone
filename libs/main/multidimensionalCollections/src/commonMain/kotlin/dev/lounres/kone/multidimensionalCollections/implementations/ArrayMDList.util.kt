@@ -6,6 +6,7 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
@@ -18,7 +19,7 @@ public inline fun <E> ArrayMDList(
     offsetting: MDSizeOffsetting = MDSizeStrides(size),
     initializer: (MDIndex) -> E,
 ): ArrayMDList<E> {
-    val data = KoneMutableArray<Any?>(offsetting.size) { null }
+    val data = KoneMutableArray.generate<Any?>(offsetting.size) { null }
 
     var offset = 0u
     for (index in offsetting) data[offset++] = initializer(index)
@@ -42,7 +43,7 @@ public inline fun <E> ArrayMDList1(
     contentSize: UInt,
     initializer: (index: UInt) -> E,
 ): ArrayMDList1<E> {
-    val data = KoneMutableArray<Any?>(contentSize) { null }
+    val data = KoneMutableArray.generate<Any?>(contentSize) { null }
 
     for (index in  0u ..< contentSize) data[index] = initializer(index)
 
@@ -62,7 +63,7 @@ public inline fun <E> ArrayMDList2(
     columnNumber: UInt,
     initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
 ): ArrayMDList2<E> {
-    val data = KoneMutableArray<Any?>(rowNumber * columnNumber) { null }
+    val data = KoneMutableArray.generate<Any?>(rowNumber * columnNumber) { null }
 
     var row = 0u
     var column = 0u

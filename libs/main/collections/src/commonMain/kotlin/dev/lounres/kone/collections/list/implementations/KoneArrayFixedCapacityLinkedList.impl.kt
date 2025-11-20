@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
@@ -99,9 +100,9 @@ import kotlinx.serialization.Serializable
 public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
     size: UInt,
     internal val capacity: UInt,
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(capacity) { null },
-    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == capacity - 1u) 0u else it + 1u },
-    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray(capacity) { if (it == 0u) capacity - 1u else it - 1u },
+    data: KoneMutableArray<Any?> = KoneMutableArray.generate<Any?>(capacity) { null },
+    nextNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(capacity) { if (it == capacity - 1u) 0u else it + 1u },
+    previousNodeIndex: KoneMutableUIntArray = KoneMutableUIntArray.generate(capacity) { if (it == 0u) capacity - 1u else it - 1u },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else capacity - 1u,
 ) : KoneMutableList<Element>, Disposable {

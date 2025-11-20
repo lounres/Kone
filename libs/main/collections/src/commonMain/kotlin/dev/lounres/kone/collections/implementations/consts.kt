@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.implementations
 
 import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThat
@@ -18,7 +19,7 @@ import kotlin.math.floor
 internal const val MAX_CAPACITY = 0b10000000000000000000000000000000u
 
 @PublishedApi
-internal /*const*/ val POWERS_OF_2: KoneUIntArray = KoneUIntArray(33u) { if (it == 0u) 0u else 1u shl (it.toInt() - 1) }
+internal /*const*/ val POWERS_OF_2: KoneUIntArray = KoneUIntArray.generate(33u) { if (it == 0u) 0u else 1u shl (it.toInt() - 1) }
 
 @PublishedApi
 internal fun powerOf2GreaterOrEqualTo(number: UInt): UInt = POWERS_OF_2.firstThat { it >= number }

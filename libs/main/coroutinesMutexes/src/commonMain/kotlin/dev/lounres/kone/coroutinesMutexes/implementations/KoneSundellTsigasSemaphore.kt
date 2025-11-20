@@ -30,19 +30,19 @@ public class KoneSundellTsigasSemaphore(
 
     public companion object {
         private val ForwardLink.isBeingDeleted get() = deletionStatus != NotYetDeleted
+        
+        // SetMark for `prev` `Link`
+        private fun Node.markPrevLink() {
+            while (true) {
+                val link = loadPrev()
+                if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
+            }
+        }
 
         private fun CancellableContinuation<Unit>.justResume(
             onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
         ) {
             resume(Unit, onCancellation)
-        }
-    }
-
-    // SetMark for `prev` `Link`
-    private fun Node.markPrevLink() {
-        while (true) {
-            val link = loadPrev()
-            if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
         }
     }
 
@@ -107,15 +107,15 @@ public class KoneSundellTsigasSemaphore(
         return prev
     }
 
-    private fun Node.pushEnd(next: Node?) {
+    private fun pushEnd(node: Node, next: Node?) {
         while (true) {
             val link = next?.loadPrev() ?: tail.load()
-            if (link.isBeingDeleted || this.loadNext().let { it.node !== next || it.isBeingDeleted }) break
+            if (link.isBeingDeleted || node.loadNext().let { it.node !== next || it.isBeingDeleted }) break
             if (
-                if (next != null) next.compareAndSetPrev(link, BackwardLink(this, false))
-                else tail.compareAndSet(link, BackwardLink(this, false))
+                if (next != null) next.compareAndSetPrev(link, BackwardLink(node, false))
+                else tail.compareAndSet(link, BackwardLink(node, false))
             ) {
-                if (this.loadPrev().isBeingDeleted) correctPrev(this, next)
+                if (node.loadPrev().isBeingDeleted) correctPrev(node, next)
                 break
             }
         }
@@ -168,7 +168,7 @@ public class KoneSundellTsigasSemaphore(
                     is HeadForwardLink -> {
                         newNode.storeNext(ForwardLink(next.node, continuation, NotYetDeleted))
                         if (head.compareAndSet(next, nextLinkToNewNode)) {
-                            newNode.pushEnd(next.node)
+                            pushEnd(newNode, next.node)
                             continuation.invokeOnCancellation { newNode.remove() }
                             break
                         }

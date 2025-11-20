@@ -22,7 +22,7 @@ internal class KoneListLexicographicOrder<Element>(
     val emptinessGlobalPosition: EmptinessGlobalPosition = EmptinessGlobalPosition.MINIMUM,
 ) : Order<KoneList<Element>> {
     override fun KoneList<Element>.compareWith(other: KoneList<Element>): ComparisonResult {
-        for (i in 0u ..< min(this.size, other.size)) {
+        for (i in 0u ..< minOf(this.size, other.size)) {
             val result = elementOrder { this[i] compareWith other[i] }
             if (result != ComparisonResult.Equal) return result
         }
@@ -53,7 +53,7 @@ internal class KoneListLengthLexicographicOrder<Element>(
             this.size < other.size -> return ComparisonResult.LeftIsLessThanRight
             this.size > other.size -> return ComparisonResult.LeftIsGreaterThanRight
         }
-        for (i in 0u ..< min(this.size, other.size)) {
+        for (i in 0u ..< minOf(this.size, other.size)) {
             val result = elementOrder { this[i] compareWith other[i] }
             if (result != ComparisonResult.Equal) return result
         }

@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.map.implementations
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
 import dev.lounres.kone.collections.iterables.*
@@ -30,19 +31,18 @@ import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.scope
-import kotlin.math.max
 
 
 // TODO: Add customizable list producer.
 public open class KoneHashResizableMap<Key, Value> internal constructor(
     size: UInt = 0u,
     private val loadFactor: Float = 0.75f,
-    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
+    private var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
     private var capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     private var capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     private var sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     private var sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
-    data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
+    data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
     public val keyEquality: Equality<Key>,
     public val keyHashing: Hashing<Key>,
 ) : KoneMutableMap<Key, Value>, Disposable {
@@ -105,7 +105,7 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     }
     private fun reinitializeData(newDataSize: UInt = capacityUpperBound) {
         val oldData = data
-        data = KoneArray(newDataSize) { KoneArrayResizableLinkedNoddedList() }
+        data = KoneArray.generate(newDataSize) { KoneArrayResizableLinkedNoddedList() }
         for (linkedList in oldData) for (mapNode in linkedList) {
             val listNode = data[mapNode.key.dataIndex()].addNode(mapNode)
             mapNode.bucketListNode = listNode
@@ -159,7 +159,7 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         capacityUpperBound = 2u
         sizeLowerBound = 0u
         sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
-        data = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() }
+        data = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() }
         size = 0u
     }
 
@@ -413,12 +413,12 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
 public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal constructor(
     size: UInt = 0u,
     loadFactor: Float = 0.75f,
-    dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(max(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
+    dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(calculateHashTableCapacity(size, loadFactor), 2u)) - 1u,
     capacityLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
     capacityUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     sizeLowerBound: UInt = calculateHashTableSize(capacityLowerBound, loadFactor),
     sizeUpperBound: UInt = calculateHashTableSize(capacityUpperBound, loadFactor),
-    data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
+    data: KoneArray<KoneArrayResizableLinkedNoddedList<Node<Key, Value>>> = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedNoddedList() },
     public val keyReification: Reification<Key>,
     keyEquality: Equality<Key>,
     keyHashing: Hashing<Key>,

@@ -5,9 +5,6 @@
 
 package dev.lounres.kone.util.collectionOperations
 
-import kotlin.math.max
-import kotlin.math.min
-
 
 public inline fun <T> Array<T>.firstThat(predicate: (index: Int, T) -> Boolean): T {
     this.forEachIndexed { index, t -> if (predicate(index, t)) return t }
@@ -337,12 +334,12 @@ public inline fun CharArray.lastIndexThat(predicate: (index: Int, Char) -> Boole
 
 public inline fun IntArray.count(from: Int = 0, to: Int = size, predicate: (Int) -> Boolean): Int {
     var count = 0
-    for (i in max(0, from) .. min(size, to)) if (predicate(this[i])) count++
+    for (i in maxOf(0, from) .. minOf(size, to)) if (predicate(this[i])) count++
     return count
 }
 
 public inline fun BooleanArray.count(from: Int = 0, to: Int = size, predicate: (Boolean) -> Boolean): Int {
     var count = 0
-    for (i in max(0, from) .. min(size, to)) if (predicate(this[i])) count++
+    for (i in maxOf(0, from) .. minOf(size, to)) if (predicate(this[i])) count++
     return count
 }

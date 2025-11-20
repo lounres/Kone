@@ -7,6 +7,7 @@ package dev.lounres.kone.benchmarks.collections.list.implementations
 
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
+import dev.lounres.kone.collections.list.implementations.generate
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.Param
@@ -21,12 +22,12 @@ class KoneListImplementationInstantiationBenchmarks {
     
     @Benchmark
     fun KoneArrayFixedCapacityList_null(blackhole: Blackhole) {
-        blackhole.consume(KoneArrayFixedCapacityList(size) { null })
+        blackhole.consume(KoneArrayFixedCapacityList.generate(size) { null })
     }
     
     @Benchmark
     fun KoneArrayFixedCapacityList_uint(blackhole: Blackhole) {
-        blackhole.consume(KoneArrayFixedCapacityList(size) { it })
+        blackhole.consume(KoneArrayFixedCapacityList.generate(size) { it })
     }
     
     @Benchmark
@@ -36,11 +37,11 @@ class KoneListImplementationInstantiationBenchmarks {
     
     @Benchmark
     fun KoneArraySettableList_null(blackhole: Blackhole) {
-        blackhole.consume(KoneArraySettableList(size) { null })
+        blackhole.consume(KoneArraySettableList.generate(size) { null })
     }
     
     @Benchmark
     fun KoneArraySettableList_uint(blackhole: Blackhole) {
-        blackhole.consume(KoneArraySettableList(size) { it })
+        blackhole.consume(KoneArraySettableList.generate(size) { it })
     }
 }

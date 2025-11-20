@@ -6,6 +6,7 @@
 package dev.lounres.kone.benchmarks.collections.list.implementations
 
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
+import dev.lounres.kone.collections.list.implementations.generate
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.Param
@@ -31,7 +32,7 @@ class KoneListFixedCapacityImplementationElementAdditionBenchmarks {
     
     @Benchmark
     fun KoneArrayFixedCapacityList_instantiate(blackhole: Blackhole) {
-        val result = KoneArrayFixedCapacityList(capacity = capacity, size = size) { it }
+        val result = KoneArrayFixedCapacityList.generate(capacity = capacity, size = size) { it }
         blackhole.consume(result)
     }
     

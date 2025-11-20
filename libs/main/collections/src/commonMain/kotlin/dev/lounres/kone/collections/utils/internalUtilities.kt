@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.list.KoneNoddedList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableNoddedList
+import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.list.singleton.KoneSingletonSettableList
 import dev.lounres.kone.collections.list.singleton.KoneSingletonSettableNoddedList
 
@@ -23,7 +24,7 @@ internal fun <E> KoneList<E>.toOptimizedList(): KoneList<E> =
         1u -> KoneSingletonSettableList(this.first())
         else -> {
             val iterator = this.iterator()
-            KoneArraySettableList(this.size) { iterator.getAndMoveNext() }
+            KoneArraySettableList.generate(this.size) { iterator.getAndMoveNext() }
         }
     }
 
@@ -34,6 +35,6 @@ internal fun <E> KoneList<E>.toOptimizedNoddedList(): KoneNoddedList<E> =
         1u -> KoneSingletonSettableNoddedList(this.first())
         else -> {
             val iterator = this.iterator()
-            KoneArraySettableNoddedList(this.size) { iterator.getAndMoveNext() }
+            KoneArraySettableNoddedList.generate(this.size) { iterator.getAndMoveNext() }
         }
     }

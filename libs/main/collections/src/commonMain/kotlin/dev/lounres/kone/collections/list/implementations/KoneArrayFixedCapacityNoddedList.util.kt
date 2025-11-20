@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
@@ -19,7 +20,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 public fun <Element> KoneArrayFixedCapacityNoddedList(capacity: UInt): KoneArrayFixedCapacityNoddedList<Element> =
     KoneArrayFixedCapacityNoddedList(
         size = 0u,
-        data = KoneMutableArray(capacity) { null },
+        data = KoneMutableArray.generate(capacity) { null },
     )
 
 /**
@@ -29,10 +30,10 @@ public fun <Element> KoneArrayFixedCapacityNoddedList(capacity: UInt): KoneArray
  * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
  * in their order starting with `0`.
  */
-public inline fun <Element> KoneArrayFixedCapacityNoddedList(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> =
+public inline fun <Element> KoneArrayFixedCapacityNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> =
     KoneArrayFixedCapacityNoddedList(
         size = size,
-        data = KoneMutableArray(size) { if (it < size) KoneArrayFixedCapacityNoddedList.Node(initializer(it), it) else null },
+        data = KoneMutableArray.generate(size) { if (it < size) KoneArrayFixedCapacityNoddedList.Node(initializer(it), it) else null },
     )
 
 /**
@@ -42,11 +43,11 @@ public inline fun <Element> KoneArrayFixedCapacityNoddedList(size: UInt, initial
  * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
  * in their order starting with `0`.
  */
-public inline fun <Element> KoneArrayFixedCapacityNoddedList(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> {
+public inline fun <Element> KoneArrayFixedCapacityNoddedList.Companion.generate(size: UInt, capacity: UInt, initializer: (index: UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> {
     require(size <= capacity) { "Cannot initialize KoneFixedCapacityArrayList with size $size and capacity $capacity, because size is greater than capacity" }
     return KoneArrayFixedCapacityNoddedList(
         size = size,
-        data = KoneMutableArray(capacity) { if (it < size) KoneArrayFixedCapacityNoddedList.Node(initializer(it), it) else null },
+        data = KoneMutableArray.generate(capacity) { if (it < size) KoneArrayFixedCapacityNoddedList.Node(initializer(it), it) else null },
     )
 }
 
@@ -57,7 +58,7 @@ internal object KoneArrayFixedCapacityNoddedListProducer : KoneFixedCapacityMuta
     override fun <Element> produce(capacity: UInt): KoneArrayFixedCapacityNoddedList<Element> =
         KoneArrayFixedCapacityNoddedList(capacity)
     override fun <Element> produceBy(initialCapacity: UInt, number: UInt, builder: (UInt) -> Element): KoneArrayFixedCapacityNoddedList<Element> =
-        KoneArrayFixedCapacityNoddedList(capacity = initialCapacity, size = number, initializer = builder)
+        KoneArrayFixedCapacityNoddedList.generate(capacity = initialCapacity, size = number, initializer = builder)
 }
 
 public fun KoneArrayFixedCapacityNoddedList.Companion.producer(): KoneFixedCapacityMutableNoddedListProducer = KoneArrayFixedCapacityNoddedListProducer
@@ -71,5 +72,5 @@ internal class KoneArrayFixedCapacityNoddedListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneArrayFixedCapacityNoddedList<E> =
-        KoneArrayFixedCapacityNoddedList(size, initializer)
+        KoneArrayFixedCapacityNoddedList.generate(size, initializer)
 }

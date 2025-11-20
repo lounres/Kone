@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.collections.accessExtremumOfEmptyHeapException
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.implementations.fibonacciNumberIndexLessOrEqualTo
@@ -111,7 +112,7 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
 
         if (size != 0u) {
             scope {
-                val degrees = KoneMutableArray<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(size) - 1u) { null }
+                val degrees = KoneMutableArray.generate<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(size) - 1u) { null }
                 var currentNode: Node<Element, Priority>? = firstChild
                 while (currentNode != null) {
                     val nextNode = currentNode.nextSibling
@@ -302,7 +303,7 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
                                 }
                                 
                                 scope {
-                                    val degrees = KoneMutableArray<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(heap.size)) { null }
+                                    val degrees = KoneMutableArray.generate<Node<Element, Priority>?>(fibonacciNumberIndexLessOrEqualTo(heap.size)) { null }
                                     var currentNode: Node<Element, Priority>? = heap.firstChild
                                     while (currentNode != null) {
                                         val nextNode = currentNode.nextSibling

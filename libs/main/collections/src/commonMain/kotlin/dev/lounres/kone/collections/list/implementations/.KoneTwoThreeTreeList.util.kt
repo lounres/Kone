@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.indices
@@ -25,7 +26,7 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
     if (elements.size == 0u) return KoneTwoThreeTreeList()
 
     val result = KoneTwoThreeTreeList<Element>(size = elements.size)
-    val nodes = KoneArray(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
+    val nodes = KoneArray.generate(elements.size) { KoneTwoThreeTreeList.Node(elements[it]) }
     for (i in nodes.indices) {
         if (i > 0u) nodes[i].previousNode = nodes[i-1u]
         if (i < nodes.lastIndex) nodes[i].nextNode = nodes[i+1u]
@@ -37,16 +38,22 @@ internal fun <Element> KoneTwoThreeTreeList(elements: KoneArraySettableList<Elem
     return result
 }
 
-public inline fun <Element> KoneTwoThreeTreeList(size: UInt, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
-    KoneTwoThreeTreeList(KoneArraySettableList(size) { initializer(it) })
+public inline fun <Element> KoneTwoThreeTreeList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
+    KoneTwoThreeTreeList(KoneArraySettableList.generate(size, initializer))
 
-public inline fun <Element> KoneTwoThreeTreeList(indices: UIntRange, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
-    KoneTwoThreeTreeList(KoneArraySettableList(indices) { initializer(it) })
+public inline fun <Element> KoneTwoThreeTreeList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneTwoThreeTreeList<Element> =
+    KoneTwoThreeTreeList(KoneArraySettableList.generate(indices, initializer))
+
+public inline fun <Element> KoneTwoThreeTreeList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneTwoThreeTreeList<Element> =
+    KoneTwoThreeTreeList(KoneArraySettableList.induce(size, initialElement, inducer))
+
+public inline fun <Element> KoneTwoThreeTreeList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneTwoThreeTreeList<Element> =
+    KoneTwoThreeTreeList(KoneArraySettableList.induce(indices, initialElement, inducer))
 
 internal object KoneTwoThreeTreeListProducer : KoneResizableMutableNoddedListProducer {
     override fun <Element> produce(): KoneTwoThreeTreeList<Element> = KoneTwoThreeTreeList()
     override fun <Element> produceBy(number: UInt, builder: (UInt) -> Element): KoneTwoThreeTreeList<Element> =
-        KoneTwoThreeTreeList(size = number, initializer = builder)
+        KoneTwoThreeTreeList.generate(size = number, initializer = builder)
 }
 
 public fun KoneTwoThreeTreeList.Companion.producer(): KoneResizableMutableNoddedListProducer = KoneTwoThreeTreeListProducer
@@ -60,5 +67,5 @@ internal class KoneTwoThreeTreeListSerializer<E>(
             elementDescriptor = elementSerializer.descriptor,
         )
     override fun buildCollection(size: UInt, initializer: (UInt) -> E): KoneTwoThreeTreeList<E> =
-        KoneTwoThreeTreeList(size, initializer)
+        KoneTwoThreeTreeList.generate(size, initializer)
 }

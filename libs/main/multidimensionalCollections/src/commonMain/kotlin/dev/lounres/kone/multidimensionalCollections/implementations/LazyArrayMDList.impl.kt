@@ -6,6 +6,7 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.SettableMDList
 import dev.lounres.kone.multidimensionalCollections.SettableMDList1
@@ -21,7 +22,7 @@ public class LazyArrayMDList<E>(
     private val offsetting: MDSizeOffsetting = MDSizeStrides(size),
     private val generator: (index: MDIndex) -> E
 ): SettableMDList<E> {
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(contentSize) { None }
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray.generate(contentSize) { None }
 
     override fun get(index: MDIndex): E {
         requireIndexInSize(index = index, size = size)
@@ -40,7 +41,7 @@ public class LazyArrayMDList1<E>(
 ): SettableMDList1<E> {
     override val size: MDSize = MDSize.of(contentSize)
     
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(contentSize) { None }
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray.generate(contentSize) { None }
 
     override fun get(index: UInt): E {
         if (index >= size[0u]) mdIndexOutOfSizeException(size = size, index = MDIndex.of(index))
@@ -58,7 +59,7 @@ public class LazyArrayMDList2<E>(
     override val columnNumber: UInt,
     private val generator: (rowIndex: UInt, columnIndex: UInt) -> E
 ): SettableMDList2<E> {
-    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray(rowNumber * columnNumber) { None }
+    private val buffer: KoneMutableArray<Maybe<E>> = KoneMutableArray.generate(rowNumber * columnNumber) { None }
 
     override fun get(rowIndex: UInt, columnIndex: UInt): E {
         if (rowIndex >= rowNumber || columnIndex >= columnNumber) mdIndexOutOfSizeException(size = size, index = MDIndex.of(rowIndex, columnIndex))

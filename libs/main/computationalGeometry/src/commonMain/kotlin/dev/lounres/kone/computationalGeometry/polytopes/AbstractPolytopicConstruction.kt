@@ -37,7 +37,7 @@ public class AbstractPolytopicConstruction<Point>(
     override val spaceDimension: UInt,
 ) : MutablePolytopicConstruction<Point, AbstractPolytopicConstruction.Polytope<Point>, AbstractPolytopicConstruction.Vertex<Point>> {
     private val _polytopes: KoneList<KoneMutableNoddedReifiedSet<Polytope<Point>>> =
-        KoneList(spaceDimension + 1u) { KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor()) }
+        KoneList.generate(spaceDimension + 1u) { KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor()) }
     override val polytopes: KoneList<KoneReifiedSet<Polytope<Point>>> get() = _polytopes
     
     internal fun registerPolytope(polytope: Polytope<Point>): KoneMutableSetNode<Polytope<Point>> =
@@ -93,7 +93,7 @@ public class AbstractPolytopicConstruction<Point>(
             faces.map { it.map { it.registerCoface(this) } }
         
         private val _cofaces: KoneList<KoneMutableNoddedReifiedSet<Polytope<Point>>> =
-            KoneList(polytopicConstruction.spaceDimension - dimension) {
+            KoneList.generate(polytopicConstruction.spaceDimension - dimension) {
                 KoneListBackedMutableLinkedNoddedReifiedSet(Reification.defaultFor(), Equality.absoluteFor())
             }
         override val cofaces: KoneList<KoneReifiedSet<Polytope<Point>>>
@@ -179,7 +179,7 @@ internal class AbstractPolytopicConstructionSerializer<Point>(
         val vertices = value.vertices.toKoneList()
         val indexByVertex = vertices.indices.toKoneList().associateBy(keyEquality = Equality.absoluteFor(), keyHashing = Hashing.defaultFor()) { vertices[it] }
         val points = vertices.map { it.position }
-        val indexByPolytope = KoneList(spaceDimension + 1u) { dimension ->
+        val indexByPolytope = KoneList.generate(spaceDimension + 1u) { dimension ->
             val polytopesOfDimension = value.polytopesOfDimension(dimension).toKoneList()
             polytopesOfDimension.indices.toKoneList().associateBy { polytopesOfDimension[it] }
         }

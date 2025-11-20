@@ -40,7 +40,6 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import kotlin.jvm.JvmInline
-import kotlin.math.max
 import kotlin.reflect.KProperty
 
 
@@ -883,7 +882,7 @@ public open class LabeledPolynomialSpace<Number>(
                 iterator.moveNext()
             }
             for (next in iterator) if (next.value.isNotZero()) {
-                maxDegree = max(maxDegree, next.key.valuesView.fold(0u) { acc, deg -> acc + deg })
+                maxDegree = maxOf(maxDegree, next.key.valuesView.fold(0u) { acc, deg -> acc + deg })
             }
             maxDegree
         }
@@ -896,7 +895,7 @@ public open class LabeledPolynomialSpace<Number>(
                     val coef = entry.value
                     if (ring { coef.isNotZero() }) {
                         foundNonZeroCoef = true
-                        degs.copyToBy(this) { _, currentDeg, newDeg -> max(currentDeg, newDeg) }
+                        degs.copyToBy(this) { _, currentDeg, newDeg -> maxOf(currentDeg, newDeg) }
                     }
                 }
                 if (!foundNonZeroCoef) zeroPolynomialDegreeException()
@@ -913,7 +912,7 @@ public open class LabeledPolynomialSpace<Number>(
             }
         }
         for (next in iterator) if (next.value.isNotZero()) {
-            maxDegree = max(maxDegree, next.key.getOrElse(variable) { 0u })
+            maxDegree = maxOf(maxDegree, next.key.getOrElse(variable) { 0u })
         }
         maxDegree
     }
@@ -929,7 +928,7 @@ public open class LabeledPolynomialSpace<Number>(
             }
         }
         for (next in iterator) if (next.value.isNotZero()) {
-            maxDegree = max(maxDegree, next.key.nodesView.fold(0u) { acc, entry -> if (entry.key in variables) acc + entry.value else acc })
+            maxDegree = maxOf(maxDegree, next.key.nodesView.fold(0u) { acc, entry -> if (entry.key in variables) acc + entry.value else acc })
         }
         maxDegree
     }

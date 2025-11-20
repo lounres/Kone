@@ -9,6 +9,8 @@ import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableUIntArray
 import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.asKoneUIntArray
+import dev.lounres.kone.collections.array.fill
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.build
@@ -82,7 +84,7 @@ public class MDSizeStrides(
     init {
         require(mdSize.size == order.size) { "Strides order array must have the same length as MD size."}
         val size: UInt
-        strides = KoneMutableUIntArray(order.size).apply {
+        strides = KoneMutableUIntArray.fill(order.size).apply {
             var last = 1u
             for (i in order) {
                 this[i] = last
@@ -93,7 +95,7 @@ public class MDSizeStrides(
         this.size = size
     }
 
-    override fun index(offset: UInt): MDIndex = KoneMutableUIntArray(mdSize.size).apply {
+    override fun index(offset: UInt): MDIndex = KoneMutableUIntArray.fill(mdSize.size).apply {
         var remainder = offset
         for (i in mdSize.lastIndex downTo 0u) {
             this[order[i]] = remainder / strides[order[i]]
@@ -111,12 +113,12 @@ public class MDSizeStrides(
         return res
     }
     
-    override fun getFirst(): MDIndex = MDIndex(KoneUIntArray(mdSize.size))
+    override fun getFirst(): MDIndex = MDIndex(KoneUIntArray.fill(mdSize.size))
 
     override fun MDIndex.hasNext(): Boolean = anyIndexed { index, value -> mdSize[index] > value + 1u }
 
     override fun MDIndex.getNext(): MDIndex =
-        KoneMutableUIntArray(mdSize.size) { this[it] }.apply {
+        KoneMutableUIntArray.generate(mdSize.size) { this[it] }.apply {
             for (i in order) {
                 if (this[i] == mdSize[i]-1u) {
                     this[i] = 0u

@@ -7,6 +7,7 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.empty
 import dev.lounres.kone.collections.deque.popFirst
@@ -141,10 +142,10 @@ private class KoneTakeIterator<Element>(
 public fun <E> KoneIterator<E>.take(n: UInt): KoneIterator<E> = KoneTakeIterator(this, n)
 
 public fun <E> KoneIterable<E>.take(n: UInt): KoneList<E> {
-    val newSize = min(size, n)
+    val newSize = minOf(size, n)
     if (newSize == 0u) return KoneList.empty()
     val iterator = iterator()
-    return KoneList(newSize) { iterator.getAndMoveNext() }
+    return KoneList.generate(newSize) { iterator.getAndMoveNext() }
 }
 
 private class KoneTakeSequence<Element>(
@@ -162,21 +163,21 @@ public fun <E> KoneIterator<E>.takeLast(n: UInt): KoneIterator<E> {
         deque.addLast(getAndMoveNext())
         if (deque.size > n) deque.removeFirst()
     }
-    return KoneList(deque.size) { deque.popFirst() }.iterator()
+    return KoneList.generate(deque.size) { deque.popFirst() }.iterator()
 }
 
 public fun <E> KoneIterable<E>.takeLast(n: UInt): KoneList<E> {
-    val newSize = min(size, n)
+    val newSize = minOf(size, n)
     if (newSize == 0u) return KoneList.empty()
     val iterator = iterator()
     repeat(size - newSize) { iterator.moveNext() }
-    return KoneList(newSize) { iterator.getAndMoveNext() }
+    return KoneList.generate(newSize) { iterator.getAndMoveNext() }
 }
 
 public fun <E> KoneList<E>.takeLast(n: UInt): KoneList<E> {
-    val newSize = min(size, n)
+    val newSize = minOf(size, n)
     if (newSize == 0u) return KoneList.empty()
-    val result = KoneMutableArray<Any?>(newSize) { null }
+    val result = KoneMutableArray.generate<Any?>(newSize) { null }
     var currentIndex = newSize - 1u
     val iterator = iteratorFrom(size)
     repeat(newSize) {
@@ -205,9 +206,9 @@ public fun <E> KoneIterator<E>.drop(n: UInt): KoneIterator<E> {
     return this
 }
 
-public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - min(size, n))
+public fun <E> KoneIterable<E>.drop(n: UInt): KoneList<E> = takeLast(size - minOf(size, n))
 
-public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - min(size, n))
+public fun <E> KoneList<E>.drop(n: UInt): KoneList<E> = takeLast(size - minOf(size, n))
 
 private class KoneDropSequence<Element>(
     private val source: KoneSequence<Element>,
@@ -221,10 +222,10 @@ public fun <E> KoneSequence<E>.drop(n: UInt): KoneSequence<E> = KoneDropSequence
 public fun <E> KoneIterator<E>.dropLast(n: UInt): KoneIterator<E> {
     val cache = KoneArrayGrowableList<E>()
     while (hasNext()) cache.add(getAndMoveNext())
-    return if (cache.size < n) KoneEmptySettableLinearIterator else KoneList(cache.size - n) { cache[it] }.iterator()
+    return if (cache.size < n) KoneEmptySettableLinearIterator else KoneList.generate(cache.size - n) { cache[it] }.iterator()
 }
 
-public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - min(size, n))
+public fun <E> KoneIterable<E>.dropLast(n: UInt): KoneList<E> = take(size - minOf(size, n))
 
 private class KoneDropLastSequence<Element>(
     private val source: KoneSequence<Element>,
@@ -238,7 +239,7 @@ public fun <E> KoneSequence<E>.dropLast(n: UInt): KoneSequence<E> = KoneDropLast
 public fun <E> KoneList<E>.slice(fromIndex: UInt, untilIndex: UInt): KoneList<E> {
     if (untilIndex <= fromIndex) return KoneList.empty()
     val iterator = iteratorFrom(fromIndex)
-    return KoneList(untilIndex - fromIndex) { iterator.getAndMoveNext() }
+    return KoneList.generate(untilIndex - fromIndex) { iterator.getAndMoveNext() }
 }
 
 public fun <E> KoneSettableList<E>.reverse() {
@@ -259,7 +260,7 @@ public fun <E> KoneSettableList<E>.reverse() {
 public fun <E> KoneIterable<E>.reversed(): KoneList<E> {
     if (isEmpty()) return KoneList.empty()
     
-    val result = KoneMutableArray<Any?>(size) { null }
+    val result = KoneMutableArray.generate<Any?>(size) { null }
     var currentIndex = size - 1u
     val iterator = iterator()
     while (iterator.hasNext()) {
@@ -797,7 +798,7 @@ public fun <E, R> KoneIterator<E>.map(transform: (E) -> R): KoneIterator<R> = Ko
 
 public inline fun <E, R> KoneIterable<E>.map(transform: (E) -> R): KoneList<R> {
     val iterator = iterator()
-    return KoneList(size) { transform(iterator.getAndMoveNext()) }
+    return KoneList.generate(size) { transform(iterator.getAndMoveNext()) }
 }
 
 private class KoneMapSequence<Element, Result>(
@@ -827,7 +828,7 @@ public fun <E, R> KoneIterator<E>.mapIndexed(transform: (index: UInt, E) -> R): 
 public inline fun <E, R> KoneIterable<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneList<R> {
     val iterator = iterator()
     var currentIndex = 0u
-    return KoneList(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
+    return KoneList.generate(size) { transform(currentIndex++, iterator.getAndMoveNext()) }
 }
 
 private class KoneMapIndexedSequence<Element, Result>(
@@ -1225,7 +1226,7 @@ private class KoneRunningFoldIterator<Element, Result>(
 public fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIterator(initial, this, operation)
 
 public inline fun <E, R> KoneIterable<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneList<R> {
-    val result = KoneSettableList(size + 1u) { initial }
+    val result = KoneSettableList.generate(size + 1u) { initial }
     var accumulator = initial
     var index = 0u
     for (element in this) {
@@ -1273,7 +1274,7 @@ private class KoneRunningFoldIndexedIterator<Element, Result>(
 public fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIndexedIterator(initial, this, operation)
 
 public inline fun <E, R> KoneIterable<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneList<R> {
-    val result = KoneSettableList(size + 1u) { initial }
+    val result = KoneSettableList.generate(size + 1u) { initial }
     var accumulator = initial
     var index = 0u
     for (element in this) {

@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
 import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
@@ -25,7 +26,7 @@ import kotlinx.serialization.Serializable
 public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     size: UInt,
     internal var sizeUpperBound: UInt = powerOf2ArraySizeGreaterOrEqualTo(size),
-    data: KoneMutableArray<Any?> = KoneMutableArray<Any?>(sizeUpperBound) { null },
+    data: KoneMutableArray<Any?> = KoneMutableArray.generate<Any?>(sizeUpperBound) { null },
 ) : KoneGrowableMutableList<Element>, Disposable {
     override var isDisposed: Boolean = false
         private set
@@ -60,7 +61,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
     }
     private inline fun reinitializeData(oldSize: UInt = this.size, newDataSize: UInt = sizeUpperBound, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
         val oldData = data
-        data = KoneMutableArray(newDataSize) { oldData.generator(it) }
+        data = KoneMutableArray.generate(newDataSize) { oldData.generator(it) }
         oldData.dispose(oldSize)
     }
     private inline fun reinitializeBoundsAndData(newSize: UInt, generator: KoneMutableArray<Any?>.(index: UInt) -> Any?) {
