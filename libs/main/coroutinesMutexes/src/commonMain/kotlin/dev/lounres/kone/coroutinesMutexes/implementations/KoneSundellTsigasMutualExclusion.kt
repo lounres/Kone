@@ -20,19 +20,6 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     private val tail = AtomicReference<BackwardLink>(BackwardLink(null))
     
     public companion object {
-        @IgnorableReturnValue
-        private fun AtomicReference<ForwardLink?>.checkNodeAndIsBeingDeletedEqualityAndSet(
-            expectedNode: Node?,
-            expectedIsBeingDeleted: Boolean,
-            newValue: ForwardLink,
-        ): Boolean {
-            while (true) {
-                val link = load()!!
-                if (link.node !== expectedNode || link.isBeingDeleted != expectedIsBeingDeleted) return false
-                if (compareAndSet(link, newValue)) return true
-            }
-        }
-        
         // SetMark for `prev` `Link`
         private fun Node.markPrevLink() {
             while (true) {

@@ -75,7 +75,6 @@ internal constructor(
     public object signatureComparator {
         public fun lexBy(variableComparator: Comparator<LabeledVariable>): Comparator<LabeledMonomialSignature> =
             Comparator { left: KoneMap<LabeledVariable, UInt>, right: KoneMap<LabeledVariable, UInt> ->
-                variableComparator
                 if (left === right) return@Comparator ComparisonResult.Equal
                 
                 val commonVariables =
@@ -318,7 +317,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(other) }
-                ) { it -> ring { it + other } }
+                ) { ring { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: Int): LabeledPolynomial<Number> =
@@ -331,7 +330,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring { -ring.valueOf(other) } }
-                ) { it -> ring { it - other } }
+                ) { ring { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: Int): LabeledPolynomial<Number> =
@@ -356,7 +355,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(other) }
-                ) { it -> ring { it + other } }
+                ) { ring { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: UInt): LabeledPolynomial<Number> =
@@ -369,7 +368,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring { -ring.valueOf(other) } }
-                ) { it -> ring { it - other } }
+                ) { ring { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: UInt): LabeledPolynomial<Number> =
@@ -394,7 +393,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(other) }
-                ) { it -> ring { it + other } }
+                ) { ring { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: Long): LabeledPolynomial<Number> =
@@ -407,7 +406,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring { -ring.valueOf(other) } }
-                ) { it -> ring { it - other } }
+                ) { ring { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: Long): LabeledPolynomial<Number> =
@@ -432,7 +431,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(other) }
-                ) { it -> ring { it + other } }
+                ) { ring { it + other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.minus(other: ULong): LabeledPolynomial<Number> =
@@ -445,7 +444,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring { -ring.valueOf(other) } }
-                ) { it -> ring { it - other } }
+                ) { ring { it - other } }
             )
         }
     public override operator fun LabeledPolynomial<Number>.times(other: ULong): LabeledPolynomial<Number> =
@@ -470,7 +469,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(this@plus) }
-                ) { it -> ring { this@plus + it } }
+                ) { ring { this@plus + it } }
             )
         }
     public override operator fun Int.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -483,7 +482,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                 ) {
-                    set(KoneReifiedMap.empty(), other.coefficients.computeOnOrElse(KoneReifiedMap.empty(), { ring.valueOf(this@minus) }) { it -> ring { this@minus - it } })
+                    set(KoneReifiedMap.empty(), other.coefficients.computeOnOrElse(KoneReifiedMap.empty(), { ring.valueOf(this@minus) }) { ring { this@minus - it } })
                     other.coefficients.copyMapToBy(this, { entry -> ring { -entry.value } }) { _, currentC, _ -> currentC }
                     cleanZeroCoefficientsOut()
                 }
@@ -511,7 +510,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                     valueOnSet = { ring.valueOf(this@plus) }
-                ) { it -> ring { this@plus + it } }
+                ) { ring { this@plus + it } }
             )
         }
     public override operator fun UInt.minus(other: LabeledPolynomial<Number>): LabeledPolynomial<Number> =
@@ -524,7 +523,7 @@ public open class LabeledPolynomialSpace<Number>(
                     keyEquality = labeledMonomialSignatureEquality,
                     keyHashing = labeledMonomialSignatureHashing,
                 ) {
-                    set(KoneReifiedMap.empty(), other.coefficients.computeOnOrElse(KoneReifiedMap.empty(), { ring.valueOf(this@minus) }) { it -> ring { this@minus - it } })
+                    set(KoneReifiedMap.empty(), other.coefficients.computeOnOrElse(KoneReifiedMap.empty(), { ring.valueOf(this@minus) }) { ring { this@minus - it } })
                     other.coefficients.copyMapToBy(this, { entry -> ring { -entry.value } }) { _, currentC, _ -> currentC }
                     cleanZeroCoefficientsOut()
                 }

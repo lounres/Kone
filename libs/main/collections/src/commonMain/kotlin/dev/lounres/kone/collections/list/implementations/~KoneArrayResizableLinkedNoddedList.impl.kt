@@ -62,7 +62,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
 
     private fun KoneMutableArray<in Nothing?>.dispose(size: UInt) {
         var currentActualIndexToClear = start
-        for (i in 0u ..< size) {
+        for (_ in 0u ..< size) {
             this[currentActualIndexToClear] = null
             currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
         }
@@ -129,7 +129,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
             }
             else -> {
                 var currentIndex = end
-                for (i in index ..< size-1u) {
+                for (_ in index ..< size-1u) {
                     currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
@@ -151,6 +151,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         }
         size += newElementsNumber
     }
+    @IgnorableReturnValue
     private fun justAddAfterTheEnd(element: Element): Node<Element> {
         end = nextNodeIndex[end]
         val newNode = Node(this, element, end)
@@ -158,6 +159,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         size += 1u
         return newNode
     }
+    @IgnorableReturnValue
     private fun justAddBefore(actualIndex: UInt, element: Element): Node<Element> {
         val freeIndex = nextNodeIndex[end]
         val indexAfterTheFreeIndex = nextNodeIndex[freeIndex]
@@ -481,7 +483,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         append('[')
         if (size > 0u) append(data[start]!!.element)
         var currentIndex = start
-        for (i in 1u..<size) {
+        for (_ in 1u..<size) {
             currentIndex = nextNodeIndex[currentIndex]
             append(", ")
             append(data[currentIndex]!!.element)
@@ -515,7 +517,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
             else -> {
                 var thisCurrentIndex = this.start
                 val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
+                for (_ in 0u ..< size) {
                     if (this.data[thisCurrentIndex]!!.element != otherIterator.getAndMoveNext()) return false
                     thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
                 }

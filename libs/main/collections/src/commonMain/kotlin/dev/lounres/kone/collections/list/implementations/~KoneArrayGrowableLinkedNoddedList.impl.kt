@@ -97,7 +97,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
             }
             else -> {
                 var currentIndex = end
-                for (i in index + 1u ..< size) {
+                for (_ in index + 1u ..< size) {
                     currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
@@ -158,6 +158,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         }
         size += newElementsNumber
     }
+    @IgnorableReturnValue
     private fun justAddAfterTheEnd(element: Element): Node<Element> {
         end = nextNodeIndex[end]
         val newNode = Node(this, element, end)
@@ -165,6 +166,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         size++
         return newNode
     }
+    @IgnorableReturnValue
     private fun justAddBefore(actualIndex: UInt, element: Element): Node<Element> {
         val freeIndex = nextNodeIndex[end]
         val indexAfterTheFreeIndex = nextNodeIndex[freeIndex]
@@ -459,7 +461,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         append('[')
         if (size > 0u) append(data[start]!!.element)
         var currentActualIndex = start
-        for (i in 1u..<size) {
+        for (_ in 1u..<size) {
             currentActualIndex = nextNodeIndex[currentActualIndex]
             append(", ")
             append(data[currentActualIndex]!!.element)

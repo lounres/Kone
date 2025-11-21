@@ -117,7 +117,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
             }
             else -> {
                 var currentIndex = end
-                for (i in index + 1u ..< size) {
+                for (_ in index + 1u ..< size) {
                     currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
@@ -342,7 +342,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
         append('[')
         if (size > 0u) append(data[start])
         var currentActualIndex = start
-        for (i in 1u..<size) {
+        for (_ in 1u..<size) {
             currentActualIndex = nextNodeIndex[currentActualIndex]
             append(", ")
             append(data[currentActualIndex])

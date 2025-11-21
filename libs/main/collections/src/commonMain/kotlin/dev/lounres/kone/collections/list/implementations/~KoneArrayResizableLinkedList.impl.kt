@@ -117,7 +117,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             }
             else -> {
                 var currentIndex = end
-                for (i in index ..< size-1u) {
+                for (_ in index ..< size-1u) {
                     currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
@@ -365,7 +365,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         append('[')
         if (size > 0u) append(data[start])
         var currentIndex = start
-        for (i in 1u..<size) {
+        for (_ in 1u..<size) {
             currentIndex = nextNodeIndex[currentIndex]
             append(", ")
             append(data[currentIndex])
@@ -399,7 +399,7 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             else -> {
                 var thisCurrentIndex = this.start
                 val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
+                for (_ in 0u ..< size) {
                     if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
                     thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
                 }

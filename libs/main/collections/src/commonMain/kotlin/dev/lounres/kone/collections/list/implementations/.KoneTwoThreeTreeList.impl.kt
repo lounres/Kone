@@ -764,6 +764,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         getNode(index).element = element
     }
     
+    @IgnorableReturnValue
     private fun addNodeToTheEnd(element: Element): Node<Element> {
         if (isDisposed) disposedInstanceException()
         if (size == 0u) {
@@ -825,6 +826,7 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         oldLastNodeHolder.dispose()
         return newNode
     }
+    @IgnorableReturnValue
     private fun addNodeBefore(node: Node<Element>, element: Element): Node<Element> {
         val previousNode = node.previousNode
         

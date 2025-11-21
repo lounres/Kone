@@ -10,7 +10,6 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareWith
-import kotlin.math.min
 
 
 public enum class EmptinessGlobalPosition {

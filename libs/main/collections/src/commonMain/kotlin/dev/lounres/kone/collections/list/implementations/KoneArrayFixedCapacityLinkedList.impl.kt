@@ -77,20 +77,20 @@ import kotlinx.serialization.Serializable
  * | [removeAll]                                                        | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
  * | [iterator]                                                         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
  * | [iteratorFrom]                                                     | \(\Theta(\mathrm{size})\)                   | \(\Theta(\mathrm{size})\)                   |
- * | [iterator.hasNext][KoneSettableLinearIterator.hasNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.hasPrevious][KoneSettableLinearIterator.hasPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getNext][KoneSettableLinearIterator.getNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.getPrevious][KoneSettableLinearIterator.getPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.moveNext][KoneSettableLinearIterator.moveNext]           | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.movePrevious][KoneSettableLinearIterator.movePrevious]   | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.setPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addNext][KoneSettableLinearIterator.setNext]             | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.addPrevious][KoneSettableLinearIterator.setPrevious]     | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removeNext][KoneSettableLinearIterator.setNext]          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.removePrevious][KoneSettableLinearIterator.setPrevious]  | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.nextIndex][KoneSettableLinearIterator.nextIndex]         | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
- * | [iterator.previousIndex][KoneSettableLinearIterator.previousIndex] | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.hasNext][KoneMutableLinearIterator.hasNext]              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.hasPrevious][KoneMutableLinearIterator.hasPrevious]      | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getNext][KoneMutableLinearIterator.getNext]              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.getPrevious][KoneMutableLinearIterator.getPrevious]      | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.moveNext][KoneMutableLinearIterator.moveNext]            | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.movePrevious][KoneMutableLinearIterator.movePrevious]    | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setNext][KoneMutableLinearIterator.setNext]              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.setPrevious][KoneMutableLinearIterator.setPrevious]      | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.addNext][KoneMutableLinearIterator.addNext]              | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.addPrevious][KoneMutableLinearIterator.addPrevious]      | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.removeNext][KoneMutableLinearIterator.removeNext]        | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.removePrevious][KoneMutableLinearIterator.removePrevious]| \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.nextIndex][KoneMutableLinearIterator.nextIndex]          | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
+ * | [iterator.previousIndex][KoneMutableLinearIterator.previousIndex]  | \(\Theta(1)\)                               | \(\Theta(1)\)                               |
  *
  * @usesMathJax
  */
@@ -148,7 +148,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             }
             else -> {
                 var currentIndex = end
-                for (i in index + 1u ..< size) {
+                for (_ in index + 1u ..< size) {
                     currentIndex = previousNodeIndex[currentIndex]
                 }
                 currentIndex
@@ -331,7 +331,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         append('[')
         if (size > 0u) append(data[start])
         var currentActualIndex = start
-        for (i in 1u..<size) {
+        for (_ in 1u..<size) {
             currentActualIndex = nextNodeIndex[currentActualIndex]
             append(", ")
             append(data[currentActualIndex])
