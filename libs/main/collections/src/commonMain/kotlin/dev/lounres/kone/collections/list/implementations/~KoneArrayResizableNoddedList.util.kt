@@ -33,6 +33,18 @@ public inline fun <Element> KoneArrayResizableNoddedList.Companion.generate(size
     )
 }
 
+public inline fun <Element> KoneArrayResizableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneArrayResizableNoddedList<Element> {
+    val size = indices.last - indices.last + 1u
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    return KoneArrayResizableNoddedList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) KoneArrayResizableNoddedList.Node(initializer(it + indices.first), it) else null },
+    )
+}
+
 public inline fun <Element> KoneArrayResizableNoddedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneArrayResizableNoddedList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
@@ -45,6 +57,25 @@ public inline fun <Element> KoneArrayResizableNoddedList.Companion.induce(size: 
             when {
                 it == 0u -> KoneArrayResizableNoddedList.Node(current, it)
                 it < size -> KoneArrayResizableNoddedList.Node(inducer(it, current).also { current = it }, it)
+                else -> null
+            }
+        },
+    )
+}
+
+public inline fun <Element> KoneArrayResizableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneArrayResizableNoddedList<Element> {
+    val size = indices.last - indices.last + 1u
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    var current = initialElement
+    return KoneArrayResizableNoddedList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray.generate(sizeUpperBound) {
+            when {
+                it == 0u -> KoneArrayResizableNoddedList.Node(current, it)
+                it < size -> KoneArrayResizableNoddedList.Node(inducer(it + indices.first, current).also { current = it }, it)
                 else -> null
             }
         },

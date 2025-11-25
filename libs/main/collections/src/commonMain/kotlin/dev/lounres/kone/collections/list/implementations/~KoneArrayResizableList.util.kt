@@ -33,6 +33,18 @@ public inline fun <Element> KoneArrayResizableList.Companion.generate(size: UInt
     )
 }
 
+public inline fun <Element> KoneArrayResizableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneArrayResizableList<Element> {
+    val size = indices.last - indices.first + 1u
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    return KoneArrayResizableList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray.generate(sizeUpperBound) { if (it < size) initializer(it + indices.first) else null },
+    )
+}
+
 public inline fun <Element> KoneArrayResizableList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneArrayResizableList<Element> {
     val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
     val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
@@ -45,6 +57,25 @@ public inline fun <Element> KoneArrayResizableList.Companion.induce(size: UInt, 
             when {
                 it == 0u -> current
                 it < size -> inducer(it, current).also { current = it }
+                else -> null
+            }
+        },
+    )
+}
+
+public inline fun <Element> KoneArrayResizableList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneArrayResizableList<Element> {
+    val size = indices.last - indices.first + 1u
+    val dataSizeNumber = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u
+    val sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+    var current = initialElement
+    return KoneArrayResizableList(
+        size = size,
+        dataSizeNumber = dataSizeNumber,
+        sizeUpperBound = sizeUpperBound,
+        data = KoneMutableArray.generate(sizeUpperBound) {
+            when {
+                it == 0u -> current
+                it < size -> inducer(it + indices.first, current).also { current = it }
                 else -> null
             }
         },

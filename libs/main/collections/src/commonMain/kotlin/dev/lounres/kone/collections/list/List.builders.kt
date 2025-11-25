@@ -100,16 +100,14 @@ public inline fun <Element> KoneSettableNoddedList.Companion.generate(indices: U
 public inline fun <Element> KoneMutableList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.generate(size, initializer)
 
-// TODO: Add the following builder
-//public inline fun <Element> KoneMutableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
-//    KoneArrayResizableList(indices, initializer)
+public inline fun <Element> KoneMutableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
+    KoneArrayResizableList.generate(indices, initializer)
 
 public inline fun <Element> KoneMutableNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(size, initializer)
 
-// TODO: Add the following builder
-//public inline fun <Element> KoneMutableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
-//    KoneArrayResizableNoddedList(indices, initializer)
+public inline fun <Element> KoneMutableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
+    KoneArrayResizableNoddedList.generate(indices, initializer)
 
 public inline fun <Element> KoneList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneList<Element> =
     if (size == 0u) KoneList.empty()
@@ -146,18 +144,36 @@ public inline fun <Element> KoneSettableNoddedList.Companion.induce(indices: UIn
 public inline fun <Element> KoneMutableList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.induce(size, initialElement, inducer)
 
-// TODO: Add the following builder
-//public inline fun <Element> KoneMutableList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableList<Element> =
-//    KoneArrayResizableList(indices, initialElement, inducer)
+public inline fun <Element> KoneMutableList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableList<Element> =
+    KoneArrayResizableList.induce(indices, initialElement, inducer)
 
 public inline fun <Element> KoneMutableNoddedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.induce(size, initialElement, inducer)
 
-// TODO: Add the following builder
-//public inline fun <Element> KoneMutableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
-//    KoneArrayResizableNoddedList(indices, initialElement, inducer)
+public inline fun <Element> KoneMutableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
+    KoneArrayResizableNoddedList.induce(indices, initialElement, inducer)
 
-// TODO: Add `fill` for lists.
+public fun <Element> KoneList.Companion.fill(size: UInt, element: Element): KoneList<Element> =
+    if (size == 0u) KoneList.empty()
+    else KoneArraySettableList.generate(size) { element }
+
+public fun <Element> KoneNoddedList.Companion.fill(size: UInt, element: Element): KoneNoddedList<Element> =
+    if (size == 0u) KoneNoddedList.empty()
+    else KoneArraySettableNoddedList.generate(size) { element }
+
+public fun <Element> KoneSettableList.Companion.fill(size: UInt, element: Element): KoneSettableList<Element> =
+    if (size == 0u) KoneSettableList.empty()
+    else KoneArraySettableList.generate(size) { element }
+
+public fun <Element> KoneSettableNoddedList.Companion.fill(size: UInt, element: Element): KoneSettableNoddedList<Element> =
+    if (size == 0u) KoneSettableNoddedList.empty()
+    else KoneArraySettableNoddedList.generate(size) { element }
+
+public fun <Element> KoneMutableList.Companion.fill(size: UInt, element: Element): KoneMutableList<Element> =
+    KoneArrayResizableList.generate(size) { element }
+
+public fun <Element> KoneMutableNoddedList.Companion.fill(size: UInt, element: Element): KoneMutableNoddedList<Element> =
+    KoneArrayResizableNoddedList.generate(size) { element }
 
 public fun <Element> KoneList.Companion.of(): KoneList<Element> = KoneList.empty()
 

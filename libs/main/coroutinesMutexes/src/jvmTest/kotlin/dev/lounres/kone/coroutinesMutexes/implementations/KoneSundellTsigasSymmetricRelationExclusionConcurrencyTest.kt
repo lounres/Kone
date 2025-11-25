@@ -6,11 +6,11 @@
 package dev.lounres.kone.coroutinesMutexes.implementations
 
 
-//const val lastElementIndex = 4u
-//
-//@Param(name = "elementIndex", gen = IntGen::class, conf = "0:$lastElementIndex")
+
+//@Param(name = "elementIndex", gen = IntGen::class, conf = "0:${KoneSundellTsigasSymmetricRelationExclusionConcurrencyTest.lastElementIndex}")
 //class KoneSundellTsigasSymmetricRelationExclusionConcurrencyTest {
 //    companion object {
+//        const val lastElementIndex = 4u
 //        typealias Element = UInt
 //        val elements = KoneList.induce<Element>(lastElementIndex + 1u, 3u) { _, previous -> previous * 2u }
 //        val relation = { element1: Element, element2: Element -> (element1 and element2) != 0u }
@@ -18,23 +18,19 @@ package dev.lounres.kone.coroutinesMutexes.implementations
 //
 //    val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
 //    val mutex = KoneSundellTsigasSymmetricRelationExclusion<Element>(relation)
-//    val locks = ConcurrentHashMap<Element, KoneSymmetricRelationExclusion.Lock>()
 //    val jobsDeque = KoneListBackedDeque<Job>()
 //
 //    @Operation
 //    fun tryLockingBy(@Param(name = "elementIndex") elementIndex: Int): Boolean {
 //        val element = elements[elementIndex.toUInt()]
-//        val lock = mutex.tryLockingBy(element) ?: return false
-//        locks[element] = lock
-//        return true
+//        return mutex.tryLockingBy(element) != null
 //    }
 //
 //    @Operation
 //    fun awaitLockBy(@Param(name = "elementIndex") elementIndex: Int) {
 //        coroutineScope.launch {
 //            val element = elements[elementIndex.toUInt()]
-//            val lock = mutex.awaitLockBy(element)
-//            locks[element] = lock
+//            val _ = mutex.awaitLockBy(element)
 //        }
 //    }
 //
@@ -43,8 +39,7 @@ package dev.lounres.kone.coroutinesMutexes.implementations
 //        jobsDeque.addFirst(
 //            coroutineScope.launch {
 //                val element = elements[elementIndex.toUInt()]
-//                val lock = mutex.awaitLockBy(element)
-//                locks[element] = lock
+//                val _ = mutex.awaitLockBy(element)
 //            }
 //        )
 //    }
@@ -54,15 +49,44 @@ package dev.lounres.kone.coroutinesMutexes.implementations
 //        jobsDeque.addLast(
 //            coroutineScope.launch {
 //                val element = elements[elementIndex.toUInt()]
-//                val lock = mutex.awaitLockBy(element)
-//                locks[element] = lock
+//                val _ = mutex.awaitLockBy(element)
 //            }
 //        )
 //    }
 //
 //    @Operation
-//    fun lockRelease(@Param(name = "elementIndex") elementIndex: Int) {
-//        locks[elements[elementIndex.toUInt()]]?.release()
+//    fun releaseLastLock(): Boolean {
+//        var current: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? = null
+//        while (true) {
+//            var node: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? = current
+//            while (true) {
+//                val prev = if (node != null) node.loadPrev().node else mutex.tail.load().node
+//                when {
+//                    (if (prev != null) prev.loadNext() else mutex.head.load()).let { it.node === node && !it.isBeingDeleted }
+//                            && node?.loadNext()?.isBeingDeleted == false -> {
+//                        if (prev != null) {
+//                            node = prev
+//                            break
+//                        } else {
+//                            return false
+//                        }
+//                    }
+//                    node?.loadNext()?.isBeingDeleted == true -> {
+//                        while (true) {
+//                            if (node == null) break
+//                            val next = node.loadNext().node
+//                            val d = next?.loadNext()?.isBeingDeleted ?: false
+//                            if (d && node.loadNext().let { it.node !== next || !it.isBeingDeleted })
+//                        }
+//                    }
+//                    else -> {
+//                        mutex.correctPrev(prev, node)
+//                    }
+//                }
+//            }
+//            current = node
+//            TODO()
+//        }
 //    }
 //
 //    @Operation(nonParallelGroup = "jobsDequeue")

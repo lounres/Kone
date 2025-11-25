@@ -13,14 +13,14 @@ import dev.lounres.kone.scope
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.concurrent.atomics.AtomicReference
+import kotlin.coroutines.CoroutineContext
 
 
-// TODO: Порезать код на функции
 public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
     private val relation: (Element, Element) -> Boolean,
 ) : KoneSymmetricRelationExclusion<Element> {
-    private val head = AtomicReference(LockForwardLink<Element>(null))
-    private val tail = AtomicReference(LockBackwardLink<Element>(null))
+    internal val head: AtomicReference<LockForwardLink<@UnsafeVariance Element>> = AtomicReference(LockForwardLink<Element>(null))
+    internal val tail: AtomicReference<LockBackwardLink<@UnsafeVariance Element>> = AtomicReference(LockBackwardLink<Element>(null))
     
     public companion object {
         // SetMark for `prev` `Link`
@@ -190,10 +190,52 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
                 }
             }
         }
+        
+        private fun <Element> LockNode<Element>.remove(node: DependencyNode<Element>) {
+            while (true) {
+                val next = node.loadNext()
+                if (next.isBeingDeleted) break
+                if (node.compareAndSetNext(next, next.copy(isBeingDeleted = true))) {
+                    while (true) {
+                        val prev = node.loadPrev()
+                        if (prev.isBeingDeleted || node.compareAndSetPrev(prev, prev.copy(isBeingDeleted = true))) {
+                            correctPrev(prev.node, next.node)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
+        private fun <Element> LockNode<Element>.add(node: DependencyNode<Element>) {
+            node.storePrev(DependencyBackwardLink(null))
+            val nextLinkToNewNode = DependencyForwardLink(node)
+            while (true) {
+                val next = dependencyHead.load()
+                node.storeNext(next)
+                if (dependencyHead.compareAndSet(next, nextLinkToNewNode)) {
+                    pushEnd(node, next.node)
+                    break
+                }
+            }
+        }
+        
+        private fun <Element> LockNode<Element>.add(node: DependantNode<Element>) {
+            node.storePrev(DependantBackwardLink(null))
+            val nextLinkToNewNode = DependantForwardLink(node)
+            while (true) {
+                val next = dependantHead.load()
+                node.storeNext(next)
+                if (dependantHead.compareAndSet(next, nextLinkToNewNode)) {
+                    pushEnd(node, next.node)
+                    break
+                }
+            }
+        }
     }
     
     @IgnorableReturnValue
-    private fun correctPrev(prev: LockNode<Element>?, node: LockNode<Element>?): LockNode<Element>? {
+    internal fun correctPrev(prev: LockNode<@UnsafeVariance Element>?, node: LockNode<@UnsafeVariance Element>?): LockNode<@UnsafeVariance Element>? {
         var prev = prev
         var lastLink: Maybe<LockNode<Element>?> = None
         while (true) {
@@ -264,75 +306,64 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         }
     }
     
-    private fun LockNode<Element>.delete() {
-        this.state.store(Deleted)
-        
-        scope {
-            while (true) {
-                val next = this.loadNext()
-                if (next.isBeingDeleted) break
-                if (this.compareAndSetNext(next, next.copy(isBeingDeleted = true))) {
-                    while (true) {
-                        val prev = this.loadPrev()
-                        if (prev.isBeingDeleted || this.compareAndSetPrev(prev, prev.copy(isBeingDeleted = true))) {
-                            correctPrev(prev.node, next.node)
-                            break
-                        }
+    private fun LockNode<Element>.remove() {
+        while (true) {
+            val next = this.loadNext()
+            if (next.isBeingDeleted) break
+            if (this.compareAndSetNext(next, next.copy(isBeingDeleted = true))) {
+                while (true) {
+                    val prev = this.loadPrev()
+                    if (prev.isBeingDeleted || this.compareAndSetPrev(prev, prev.copy(isBeingDeleted = true))) {
+                        correctPrev(prev.node, next.node)
+                        break
                     }
                 }
-            }
-        }
-        
-        scope {
-            var currentNode = this.dependantHead.load().node
-            while (currentNode != null) {
-                val dependencyNode = currentNode.dependencyNode
-                val dependantLockNode = dependencyNode.lockNode
-                
-                scope {
-                    while (true) {
-                        val next = dependencyNode.loadNext()
-                        if (next.isBeingDeleted) break
-                        if (dependencyNode.compareAndSetNext(next, next.copy(isBeingDeleted = true))) {
-                            while (true) {
-                                val prev = dependencyNode.loadPrev()
-                                if (prev.isBeingDeleted || dependencyNode.compareAndSetPrev(prev, prev.copy(isBeingDeleted = true))) {
-                                    dependantLockNode.correctPrev(prev.node, next.node)
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if (
-                    dependantLockNode.dependencyHead.load().node === null
-                    && dependantLockNode.state.compareAndSet(Initialized, Resumed)
-                ) {
-                    dependantLockNode.continuation
-                        ?.resume(KoneSymmetricRelationExclusion.Lock { dependantLockNode.delete() }) { _, _, _ -> dependantLockNode.delete() }
-                }
-                
-                currentNode = currentNode.loadNext().node
             }
         }
     }
     
-    override fun tryLockingBy(element: Element): KoneSymmetricRelationExclusion.Lock? {
-        val newLockNode = LockNode(element, null)
-        
-        scope {
-            newLockNode.storePrev(LockBackwardLink(null))
-            val nextLinkToNewNode = LockForwardLink(newLockNode)
-            while (true) {
-                val next = head.load()
-                newLockNode.storeNext(next)
-                if (head.compareAndSet(next, nextLinkToNewNode)) {
-                    pushEnd(newLockNode, next.node)
-                    break
-                }
+    private fun add(node: LockNode<Element>) {
+        node.storePrev(LockBackwardLink(null))
+        val nextLinkToNewNode = LockForwardLink(node)
+        while (true) {
+            val next = head.load()
+            node.storeNext(next)
+            if (head.compareAndSet(next, nextLinkToNewNode)) {
+                pushEnd(node, next.node)
+                break
             }
         }
+    }
+    
+    internal fun LockNode<@UnsafeVariance Element>.delete() {
+        this.state.store(Deleted)
+        
+        this.remove()
+        
+        var currentNode = this.dependantHead.load().node
+        while (currentNode != null) {
+            val dependencyNode = currentNode.dependencyNode
+            val dependantLockNode = dependencyNode.lockNode
+            
+            dependantLockNode.remove(dependencyNode)
+            
+            if (
+                dependantLockNode.dependencyHead.load().node === null
+                && dependantLockNode.state.compareAndSet(Initialized, Resumed)
+            ) {
+                dependantLockNode.continuation?.resume(dependantLockNode.lock, dependantLockNode.onCancellation)
+                // TODO
+//                dependantLockNode.continuation = null
+            }
+            
+            currentNode = currentNode.loadNext().node
+        }
+    }
+    
+    override fun tryLockingBy(element: Element): KoneSymmetricRelationExclusion.Lock? {
+        val newLockNode = LockNode(element, null, this)
+        
+        add(newLockNode)
         
         scope {
             var currentNode = newLockNode.loadNext().node
@@ -347,25 +378,14 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         
         val _ = newLockNode.state.compareAndSet(Constructed, Resumed)
         
-        return { newLockNode.delete() }
+        return newLockNode.lock
     }
     
     override suspend fun awaitLockBy(element: Element): KoneSymmetricRelationExclusion.Lock =
         suspendCancellableCoroutine { continuation ->
-            val newLockNode = LockNode(element, continuation)
+            val newLockNode = LockNode(element, continuation, this)
             
-            scope {
-                newLockNode.storePrev(LockBackwardLink(null))
-                val nextLinkToNewNode = LockForwardLink(newLockNode)
-                while (true) {
-                    val next = head.load()
-                    newLockNode.storeNext(next)
-                    if (head.compareAndSet(next, nextLinkToNewNode)) {
-                        pushEnd(newLockNode, next.node)
-                        break
-                    }
-                }
-            }
+            add(newLockNode)
             
             continuation.invokeOnCancellation { newLockNode.delete() }
             
@@ -375,45 +395,9 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
                     if (currentNode.state.load() != Deleted && relation(element, currentNode.element)) {
                         val dependencyNode = DependencyNode(lockNode = newLockNode, dependencyLockNode = currentNode)
                         val dependantNode = dependencyNode.dependantNode
-                        scope {
-                            dependencyNode.storePrev(DependencyBackwardLink(null))
-                            val nextLinkToNewNode = DependencyForwardLink(dependencyNode)
-                            while (true) {
-                                val next = newLockNode.dependencyHead.load()
-                                dependencyNode.storeNext(next)
-                                if (newLockNode.dependencyHead.compareAndSet(next, nextLinkToNewNode)) {
-                                    newLockNode.pushEnd(dependencyNode, next.node)
-                                    break
-                                }
-                            }
-                        }
-                        scope {
-                            dependantNode.storePrev(DependantBackwardLink(null))
-                            val nextLinkToNewNode = DependantForwardLink(dependantNode)
-                            while (true) {
-                                val next = newLockNode.dependantHead.load()
-                                dependantNode.storeNext(next)
-                                if (newLockNode.dependantHead.compareAndSet(next, nextLinkToNewNode)) {
-                                    newLockNode.pushEnd(dependantNode, next.node)
-                                    break
-                                }
-                            }
-                        }
-                        if (currentNode.state.load() == Deleted) {
-                            while (true) {
-                                val next = dependencyNode.loadNext()
-                                if (next.isBeingDeleted) break
-                                if (dependencyNode.compareAndSetNext(next, next.copy(isBeingDeleted = true))) {
-                                    while (true) {
-                                        val prev = dependencyNode.loadPrev()
-                                        if (prev.isBeingDeleted || dependencyNode.compareAndSetPrev(prev, prev.copy(isBeingDeleted = true))) {
-                                            newLockNode.correctPrev(prev.node, next.node)
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        newLockNode.add(dependencyNode)
+                        currentNode.add(dependantNode)
+                        if (currentNode.state.load() == Deleted) newLockNode.remove(dependencyNode)
                     }
                     currentNode = currentNode.loadNext().node
                 }
@@ -425,11 +409,13 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
                 newLockNode.dependencyHead.load().node === null
                 && newLockNode.state.compareAndSet(Initialized, Resumed)
             ) {
-                continuation.resume(KoneSymmetricRelationExclusion.Lock { newLockNode.delete() }) { _, _, _ -> newLockNode.delete() }
+                continuation.resume(newLockNode.lock, newLockNode.onCancellation)
+                // TODO
+//                newLockNode.continuation = null
             }
         }
     
-    private class DependencyNode<Element>(
+    internal class DependencyNode<Element>(
         val lockNode: LockNode<Element>,
         dependencyLockNode: LockNode<Element>,
     ) {
@@ -451,17 +437,17 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
             next.compareAndSet(expectedValue, newValue)
     }
     
-    private /*value*/ data class DependencyBackwardLink<Element>(
+    internal /*value*/ data class DependencyBackwardLink<Element>(
         val node: DependencyNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
     
-    private /*value*/ data class DependencyForwardLink<Element>(
+    internal /*value*/ data class DependencyForwardLink<Element>(
         val node: DependencyNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
     
-    private class DependantNode<Element>(
+    internal class DependantNode<Element>(
         val dependencyLockNode: LockNode<Element>,
         val dependencyNode: DependencyNode<Element>,
     ) {
@@ -481,19 +467,20 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
             next.compareAndSet(expectedValue, newValue)
     }
     
-    private /*value*/ data class DependantBackwardLink<Element>(
+    internal /*value*/ data class DependantBackwardLink<Element>(
         val node: DependantNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
     
-    private /*value*/ data class DependantForwardLink<Element>(
+    internal /*value*/ data class DependantForwardLink<Element>(
         val node: DependantNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
     
-    private class LockNode<Element>(
+    internal class LockNode<Element>(
         val element: Element,
         var continuation: CancellableContinuation<KoneSymmetricRelationExclusion.Lock>?,
+        mutex: KoneSundellTsigasSymmetricRelationExclusion<Element>,
     ) {
         private val prev: AtomicReference<LockBackwardLink<Element>?> = AtomicReference(null)
         fun loadPrev(): LockBackwardLink<Element> = prev.load()!!
@@ -518,6 +505,9 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         val dependantHead = AtomicReference(DependantForwardLink<Element>(null))
         val dependantTail = AtomicReference(DependantBackwardLink<Element>(null))
         
+        val lock = KoneSymmetricRelationExclusion.Lock { with(mutex) { this@LockNode.delete() } }
+        val onCancellation: (cause: Throwable, value: KoneSymmetricRelationExclusion.Lock, context: CoroutineContext) -> Unit = { _, _, _ -> with(mutex) { this@LockNode.delete() } }
+        
         enum class State {
             Constructed,
             Initialized,
@@ -526,12 +516,12 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         }
     }
     
-    private /*value*/ data class LockBackwardLink<Element>(
+    internal /*value*/ data class LockBackwardLink<Element>(
         val node: LockNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
     
-    private /*value*/ data class LockForwardLink<Element>(
+    internal /*value*/ data class LockForwardLink<Element>(
         val node: LockNode<Element>?,
         val isBeingDeleted: Boolean = false,
     )
