@@ -13,6 +13,7 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.fill
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.array.toKoneUIntArray
+import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.build
@@ -25,6 +26,7 @@ import dev.lounres.kone.collections.list.build
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.toKoneList
@@ -621,7 +623,7 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<
             for (i in 1u..size) {
                 var j = i-1u
                 while (j != 0u) {
-                    if (equality { collection[j - 1u] eq collection[i-1u] }) break
+                    if (equality { collection[j - 1u] eq collection[i - 1u] }) break
                     j--
                 }
                 if (j == 0u) {
@@ -700,3 +702,14 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<
         }
     }
 }
+
+public fun <E> KoneList<E>.partitions(numberOfParts: UInt): KoneSequence<KoneList<KoneList<E>>> =
+    (0u ..< numberOfParts).toKoneList().cartesianPower(size).map { parts ->
+        val results = KoneList.generate(numberOfParts) { KoneMutableList.of<E>() }
+        
+        for (index in indices) {
+            results[parts[index]] += this[index]
+        }
+        
+        results
+    }

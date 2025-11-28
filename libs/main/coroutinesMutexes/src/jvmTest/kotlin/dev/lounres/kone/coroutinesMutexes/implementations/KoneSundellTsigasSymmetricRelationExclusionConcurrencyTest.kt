@@ -14,6 +14,59 @@ package dev.lounres.kone.coroutinesMutexes.implementations
 //        typealias Element = UInt
 //        val elements = KoneList.induce<Element>(lastElementIndex + 1u, 3u) { _, previous -> previous * 2u }
 //        val relation = { element1: Element, element2: Element -> (element1 and element2) != 0u }
+//
+//        // SetMark for `prev` `Link`
+//        private fun <Element> KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>.markPrevLink() {
+//            while (true) {
+//                val link = loadPrev()
+//                if (link.isBeingDeleted || compareAndSetPrev(link, KoneSundellTsigasSymmetricRelationExclusion.LockBackwardLink(link.node, true))) break
+//            }
+//        }
+//
+//        internal fun <Element> KoneSundellTsigasSymmetricRelationExclusion<Element>.next(
+//            node: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>?,
+//        ): KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? {
+//            var node = node
+//            while (true) {
+//                val next = if (node != null) node.loadNext().node else head.load().node
+//                if (next == null) return null
+//                val d = next.loadNext().isBeingDeleted
+//                if (d && (if (node != null) node.loadNext() else head.load()).let { !it.isBeingDeleted }) {
+//                    next.markPrevLink()
+//                    if (node !== null) {
+//                        while (true) {
+//                            val link = node.loadNext()
+//                            if (link.node !== next) break
+//                            if (node.compareAndSetNext(link, link.copy(node = next.loadNext().node))) break
+//                        }
+//                    } else {
+//                        while (true) {
+//                            val link = head.load()
+//                            if (link.node !== next) break
+//                            if (head.compareAndSet(link, link.copy(node = next.loadNext().node))) break
+//                        }
+//                    }
+//                    continue
+//                }
+//                if (!d) return next
+//                node = next
+//            }
+//        }
+//
+//        internal fun <Element> KoneSundellTsigasSymmetricRelationExclusion<Element>.prev(
+//            node: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>?,
+//        ): KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? {
+//            var node = node
+//            while (true) {
+//                val prev = if (node != null) node.loadPrev().node else tail.load().node
+//                when {
+//                    (if (prev !== null) prev.loadNext() else head.load()).let { it.node === node && !it.isBeingDeleted }
+//                            && node?.loadNext()?.isBeingDeleted != true -> return prev
+//                    node?.loadNext()?.isBeingDeleted == true -> node = next(node)
+//                    else -> prev = correctPrev(prev, node)
+//                }
+//            }
+//        }
 //    }
 //
 //    val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
@@ -58,34 +111,13 @@ package dev.lounres.kone.coroutinesMutexes.implementations
 //    fun releaseLastLock(): Boolean {
 //        var current: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? = null
 //        while (true) {
-//            var node: KoneSundellTsigasSymmetricRelationExclusion.LockNode<Element>? = current
-//            while (true) {
-//                val prev = if (node != null) node.loadPrev().node else mutex.tail.load().node
-//                when {
-//                    (if (prev != null) prev.loadNext() else mutex.head.load()).let { it.node === node && !it.isBeingDeleted }
-//                            && node?.loadNext()?.isBeingDeleted == false -> {
-//                        if (prev != null) {
-//                            node = prev
-//                            break
-//                        } else {
-//                            return false
-//                        }
-//                    }
-//                    node?.loadNext()?.isBeingDeleted == true -> {
-//                        while (true) {
-//                            if (node == null) break
-//                            val next = node.loadNext().node
-//                            val d = next?.loadNext()?.isBeingDeleted ?: false
-//                            if (d && node.loadNext().let { it.node !== next || !it.isBeingDeleted })
-//                        }
-//                    }
-//                    else -> {
-//                        mutex.correctPrev(prev, node)
-//                    }
-//                }
+//            val prev = mutex.prev(current)
+//            if (prev === null) return false
+//            if (prev.state.load() != Deleted) {
+//                with(mutex) { prev.delete() }
+//                return true
 //            }
-//            current = node
-//            TODO()
+//            current = prev
 //        }
 //    }
 //

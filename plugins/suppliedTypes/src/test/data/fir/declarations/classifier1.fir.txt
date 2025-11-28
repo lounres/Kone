@@ -1,0 +1,11 @@
+FILE: classifier1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final class Baz<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee> : R|kotlin/Any| {
+        public constructor<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee>(): R|foo/bar/Baz<Gee>| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/suppliedTypes/SupplianceProvided|() public constructor<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee>(Gee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB): R|foo/bar/Baz<Gee>|
+
+    }

@@ -1,0 +1,22 @@
+FILE: method2.kt
+    package foo.bar
+
+    public final class Foo : R|kotlin/Any| {
+        public constructor(): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final class Bar : R|kotlin/Any| {
+            public constructor(): R|foo/bar/Foo.Bar| {
+                super<R|kotlin/Any|>()
+            }
+
+            @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee> baz(): R|Gee?| {
+                ^baz Null(null)
+            }
+
+            @R|dev/lounres/kone/suppliedTypes/SupplianceProvided|() public final fun <Gee> baz(supplyForGee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB): R|Gee?|
+
+        }
+
+    }

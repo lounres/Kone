@@ -1,0 +1,10 @@
+FILE: function1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee> baz(): R|Gee?| {
+        ^baz Null(null)
+    }
+FILE: foo/bar/__GENERATED__CALLABLES__.kt
+    package foo.bar
+
+    public final fun baz(): R|Gee?|

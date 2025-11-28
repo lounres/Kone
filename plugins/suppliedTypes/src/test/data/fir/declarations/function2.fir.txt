@@ -1,0 +1,10 @@
+FILE: function2.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee : R|Doo|, Doo : R|kotlin/collections/List<Gee>|> R|kotlin/Int|.baz(arg: R|kotlin/String|): R|Gee?| {
+        ^baz Null(null)
+    }
+FILE: foo/bar/__GENERATED__CALLABLES__.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/SupplianceProvided|() @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final fun <Gee : R|Doo|, Doo : R|kotlin/collections/List<Gee>|> R|kotlin/Int|.baz(supplyForGee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB, arg: R|kotlin/String|): R|Gee?|
