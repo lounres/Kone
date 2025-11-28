@@ -208,6 +208,33 @@ public class EuclideanSpace2OverRing<Number>(
                 ),
                 isNullable = false
             )
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        override val superkeys: List<RegistryKey<in EuclideanSpace2OverRing<Number>>> =
+            listOf(
+                EuclideanSpaceOverRing.Key(
+                    elementType,
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                ),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -352,6 +379,33 @@ public class EuclideanSpace2OverField<Number>(
                     ),
                 ),
                 isNullable = false
+            )
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        override val superkeys: List<RegistryKey<in EuclideanSpace2OverField<Number>>> =
+            listOf(
+                EuclideanSpaceOverField.Key(
+                    elementType,
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                ),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

@@ -129,6 +129,10 @@ public interface Field<Number> : CommutativeRing<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Field<Number>>> =
+            listOf(
+                CommutativeRing.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }

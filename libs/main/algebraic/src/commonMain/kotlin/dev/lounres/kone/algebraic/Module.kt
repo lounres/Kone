@@ -40,6 +40,10 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in LeftModule<Number, Vector>>> =
+            listOf(
+                CommutativeGroup.Key(vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -75,6 +79,10 @@ public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in RightModule<Number, Vector>>> =
+            listOf(
+                CommutativeGroup.Key(vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -106,6 +114,11 @@ public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModul
                     ),
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in Module<Number, Vector>>> =
+            listOf(
+                LeftModule.Key(elementType, vectorType),
+                RightModule.Key(elementType, vectorType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

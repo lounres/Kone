@@ -42,6 +42,11 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in EuclideanSpaceOverRing<Number, Vector, Point>>> =
+            listOf(
+                AffineSpaceOverRing.Key(elementType, vectorType, pointType),
+                EuclideanVectorSpaceOverRing.Key(elementType, vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -78,6 +83,12 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
                     ),
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in EuclideanSpaceOverField<Number, Vector, Point>>> =
+            listOf(
+                EuclideanSpaceOverRing.Key(elementType, vectorType, pointType),
+                AffineSpaceOverField.Key(elementType, vectorType, pointType),
+                EuclideanVectorSpaceOverField.Key(elementType, vectorType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

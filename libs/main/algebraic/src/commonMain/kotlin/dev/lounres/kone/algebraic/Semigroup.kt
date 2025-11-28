@@ -34,6 +34,10 @@ public interface Semigroup<Number> : Equality<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Semigroup<Number>>> =
+            listOf(
+                Equality.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -66,6 +70,10 @@ public interface CommutativeSemigroup<Number> : Semigroup<Number> {
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeSemigroup<Number>>> =
+            listOf(
+                Semigroup.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

@@ -29,6 +29,8 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -164,15 +166,7 @@ public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dim
     
     val module = mdList1(koneContextRegistryBuilder[CommutativeRing.Key<Number>(numberType)], dimension)
     
-    Semigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeSemigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    Monoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeMonoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    Group.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeGroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    LeftModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
-    RightModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
-    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type).withSuperkeys correspondsTo module
 }
 
 private class MDList1VectorSpace<Number>(
@@ -308,14 +302,5 @@ public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType
     
     val module = mdList1(koneContextRegistryBuilder[Field.Key<Number>(numberType)], dimension)
     
-    Semigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeSemigroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    Monoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeMonoid.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    Group.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    CommutativeGroup.Key<MDList1<Number>>(mdList1Type) correspondsTo module
-    LeftModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
-    RightModule.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
-    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
-    VectorSpace.Key<Number, MDList1<Number>>(numberType, mdList1Type) correspondsTo module
+    VectorSpace.Key<Number, MDList1<Number>>(numberType, mdList1Type).withSuperkeys correspondsTo module
 }

@@ -60,6 +60,11 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Algebra<Number, Vector>>> =
+            listOf(
+                Module.Key(elementType, vectorType),
+                Ring.Key(vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -99,6 +104,11 @@ public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, C
                     ),
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeAlgebra<Number, Vector>>> =
+            listOf(
+                Algebra.Key(elementType, vectorType),
+                CommutativeRing.Key(vectorType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

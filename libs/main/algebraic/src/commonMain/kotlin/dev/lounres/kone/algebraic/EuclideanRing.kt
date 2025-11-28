@@ -73,6 +73,10 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in EuclideanSemiring<Number>>> =
+            listOf(
+                CommutativeSemiring.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -125,6 +129,11 @@ public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemir
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in EuclideanRing<Number>>> =
+            listOf(
+                CommutativeRing.Key(elementType),
+                EuclideanSemiring.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

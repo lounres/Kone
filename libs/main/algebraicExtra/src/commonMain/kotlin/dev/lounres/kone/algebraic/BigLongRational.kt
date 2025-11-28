@@ -12,6 +12,9 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -464,19 +467,12 @@ public fun BigLongRationalContext.set(): Unit = with(koneContextRegistryBuilder)
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Equality.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Semigroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    CommutativeSemigroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Monoid.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    CommutativeMonoid.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Group.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    CommutativeGroup.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Semiring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    CommutativeSemiring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Ring.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    CommutativeRing.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Field.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Order.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
-    Hashing.Key<BigLongRational>(bigLongRationalSuppliedType) correspondsTo BigLongRationalContext
+    listOf<RegistryKey<in BigLongRationalContext>>(
+        Reification.Key(bigLongRationalSuppliedType),
+        Field.Key(bigLongRationalSuppliedType),
+        Order.Key(bigLongRationalSuppliedType),
+        Hashing.Key(bigLongRationalSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo BigLongRationalContext
+    }
 }

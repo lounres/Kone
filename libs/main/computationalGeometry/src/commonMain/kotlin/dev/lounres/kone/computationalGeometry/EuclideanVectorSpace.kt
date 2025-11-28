@@ -39,6 +39,10 @@ public interface EuclideanVectorSpaceOverRing<Number, Vector> : Module<Number, V
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in EuclideanVectorSpaceOverRing<Number, Vector>>> =
+            listOf(
+                Module.Key(elementType, vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -72,6 +76,11 @@ public interface EuclideanVectorSpaceOverField<Number, Vector> : VectorSpace<Num
                     ),
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in EuclideanVectorSpaceOverField<Number, Vector>>> =
+            listOf(
+                VectorSpace.Key(elementType, vectorType),
+                EuclideanVectorSpaceOverRing.Key(elementType, vectorType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

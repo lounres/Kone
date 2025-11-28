@@ -19,6 +19,9 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
@@ -148,22 +151,14 @@ public fun ByteContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Equality.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Semigroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    CommutativeSemigroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Monoid.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    CommutativeMonoid.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Group.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    CommutativeGroup.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Semiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    CommutativeSemiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Ring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    CommutativeRing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    EuclideanSemiring.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    EuclideanRing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Order.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
-    Hashing.Key<Byte>(byteSuppliedType) correspondsTo ByteContext
+    listOf<RegistryKey<in ByteContext>>(
+        Reification.Key(byteSuppliedType),
+        EuclideanRing.Key(byteSuppliedType),
+        Order.Key(byteSuppliedType),
+        Hashing.Key(byteSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo ByteContext
+    }
 }
 
 /**
@@ -290,22 +285,14 @@ public fun ShortContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Equality.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Semigroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    CommutativeSemigroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Monoid.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    CommutativeMonoid.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Group.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    CommutativeGroup.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Semiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    CommutativeSemiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Ring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    CommutativeRing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    EuclideanSemiring.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    EuclideanRing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Order.Key<Short>(shortSuppliedType) correspondsTo ShortContext
-    Hashing.Key<Short>(shortSuppliedType) correspondsTo ShortContext
+    listOf<RegistryKey<in ShortContext>>(
+        Reification.Key(shortSuppliedType),
+        EuclideanRing.Key(shortSuppliedType),
+        Order.Key(shortSuppliedType),
+        Hashing.Key(shortSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo ShortContext
+    }
 }
 
 /**
@@ -420,22 +407,14 @@ public fun IntContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Equality.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Semigroup.Key<Int>(intSuppliedType) correspondsTo IntContext
-    CommutativeSemigroup.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Monoid.Key<Int>(intSuppliedType) correspondsTo IntContext
-    CommutativeMonoid.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Group.Key<Int>(intSuppliedType) correspondsTo IntContext
-    CommutativeGroup.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Semiring.Key<Int>(intSuppliedType) correspondsTo IntContext
-    CommutativeSemiring.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Ring.Key<Int>(intSuppliedType) correspondsTo IntContext
-    CommutativeRing.Key<Int>(intSuppliedType) correspondsTo IntContext
-    EuclideanSemiring.Key<Int>(intSuppliedType) correspondsTo IntContext
-    EuclideanRing.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Order.Key<Int>(intSuppliedType) correspondsTo IntContext
-    Hashing.Key<Int>(intSuppliedType) correspondsTo IntContext
+    listOf<RegistryKey<in IntContext>>(
+        Reification.Key(intSuppliedType),
+        EuclideanRing.Key(intSuppliedType),
+        Order.Key(intSuppliedType),
+        Hashing.Key(intSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo IntContext
+    }
 }
 
 /**
@@ -550,22 +529,14 @@ public fun LongContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Equality.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Semigroup.Key<Long>(longSuppliedType) correspondsTo LongContext
-    CommutativeSemigroup.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Monoid.Key<Long>(longSuppliedType) correspondsTo LongContext
-    CommutativeMonoid.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Group.Key<Long>(longSuppliedType) correspondsTo LongContext
-    CommutativeGroup.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Semiring.Key<Long>(longSuppliedType) correspondsTo LongContext
-    CommutativeSemiring.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Ring.Key<Long>(longSuppliedType) correspondsTo LongContext
-    CommutativeRing.Key<Long>(longSuppliedType) correspondsTo LongContext
-    EuclideanSemiring.Key<Long>(longSuppliedType) correspondsTo LongContext
-    EuclideanRing.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Order.Key<Long>(longSuppliedType) correspondsTo LongContext
-    Hashing.Key<Long>(longSuppliedType) correspondsTo LongContext
+    listOf<RegistryKey<in LongContext>>(
+        Reification.Key(longSuppliedType),
+        EuclideanRing.Key(longSuppliedType),
+        Order.Key(longSuppliedType),
+        Hashing.Key(longSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo LongContext
+    }
 }
 
 /**
@@ -663,17 +634,14 @@ public fun UByteContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Equality.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Semigroup.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    CommutativeSemigroup.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Monoid.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    CommutativeMonoid.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Semiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    CommutativeSemiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    EuclideanSemiring.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Order.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
-    Hashing.Key<UByte>(uByteSuppliedType) correspondsTo UByteContext
+    listOf<RegistryKey<in UByteContext>>(
+        Reification.Key(uByteSuppliedType),
+        EuclideanSemiring.Key(uByteSuppliedType),
+        Order.Key(uByteSuppliedType),
+        Hashing.Key(uByteSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo UByteContext
+    }
 }
 
 /**
@@ -771,17 +739,14 @@ public fun UShortContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Equality.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Semigroup.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    CommutativeSemigroup.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Monoid.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    CommutativeMonoid.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Semiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    CommutativeSemiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    EuclideanSemiring.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Order.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
-    Hashing.Key<UShort>(uShortSuppliedType) correspondsTo UShortContext
+    listOf<RegistryKey<in UShortContext>>(
+        Reification.Key(uShortSuppliedType),
+        EuclideanSemiring.Key(uShortSuppliedType),
+        Order.Key(uShortSuppliedType),
+        Hashing.Key(uShortSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo UShortContext
+    }
 }
 
 /**
@@ -869,17 +834,14 @@ public fun UIntContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Equality.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Semigroup.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    CommutativeSemigroup.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Monoid.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    CommutativeMonoid.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Semiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    CommutativeSemiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    EuclideanSemiring.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Order.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
-    Hashing.Key<UInt>(uIntSuppliedType) correspondsTo UIntContext
+    listOf<RegistryKey<in UIntContext>>(
+        Reification.Key(uIntSuppliedType),
+        EuclideanSemiring.Key(uIntSuppliedType),
+        Order.Key(uIntSuppliedType),
+        Hashing.Key(uIntSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo UIntContext
+    }
 }
 
 /**
@@ -967,24 +929,14 @@ public fun ULongContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Equality.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Semiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    EuclideanSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Order.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Hashing.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    
-    Reification.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Equality.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Semigroup.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    CommutativeSemigroup.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Monoid.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    CommutativeMonoid.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Semiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    CommutativeSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    EuclideanSemiring.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Order.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
-    Hashing.Key<ULong>(uLongSuppliedType) correspondsTo ULongContext
+    listOf<RegistryKey<in ULongContext>>(
+        Reification.Key(uLongSuppliedType),
+        EuclideanSemiring.Key(uLongSuppliedType),
+        Order.Key(uLongSuppliedType),
+        Hashing.Key(uLongSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo ULongContext
+    }
 }
 
 /**
@@ -1126,21 +1078,14 @@ public fun DoubleContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Equality.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Semigroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    CommutativeSemigroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Monoid.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    CommutativeMonoid.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Group.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    CommutativeGroup.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Semiring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    CommutativeSemiring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Ring.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    CommutativeRing.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Field.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Order.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
-    Hashing.Key<Double>(doubleSuppliedType) correspondsTo DoubleContext
+    listOf<RegistryKey<in DoubleContext>>(
+        Reification.Key(doubleSuppliedType),
+        Field.Key(doubleSuppliedType),
+        Order.Key(doubleSuppliedType),
+        Hashing.Key(doubleSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo DoubleContext
+    }
 }
 
 /**
@@ -1282,19 +1227,12 @@ public fun FloatContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Equality.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Semigroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    CommutativeSemigroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Monoid.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    CommutativeMonoid.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Group.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    CommutativeGroup.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Semiring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    CommutativeSemiring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Ring.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    CommutativeRing.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Field.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Order.Key<Float>(floatSuppliedType) correspondsTo FloatContext
-    Hashing.Key<Float>(floatSuppliedType) correspondsTo FloatContext
+    listOf<RegistryKey<in FloatContext>>(
+        Reification.Key(floatSuppliedType),
+        Field.Key(floatSuppliedType),
+        Order.Key(floatSuppliedType),
+        Hashing.Key(floatSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo FloatContext
+    }
 }

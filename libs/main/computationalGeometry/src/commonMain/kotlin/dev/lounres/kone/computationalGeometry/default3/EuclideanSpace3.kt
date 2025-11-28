@@ -20,6 +20,7 @@ import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.PointWrapper
+import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverRing
 import dev.lounres.kone.computationalGeometry.mdList1
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -210,6 +211,33 @@ public class EuclideanSpace3OverRing<Number>(
                 ),
                 isNullable = false
             )
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        override val superkeys: List<RegistryKey<in EuclideanSpace3OverRing<Number>>> =
+            listOf(
+                EuclideanSpaceOverRing.Key(
+                    elementType,
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                ),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -354,6 +382,33 @@ public class EuclideanSpace3OverField<Number>(
                     ),
                 ),
                 isNullable = false
+            )
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        override val superkeys: List<RegistryKey<in EuclideanSpace3OverField<Number>>> =
+            listOf(
+                EuclideanSpaceOverField.Key(
+                    elementType,
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                    SuppliedType.Regular(
+                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
+                        typeArguments = listOf(
+                            SuppliedProjection.Regular(
+                                variance = OUT,
+                                type = elementType
+                            ),
+                        ),
+                        isNullable = false
+                    ),
+                ),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

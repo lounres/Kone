@@ -21,6 +21,8 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -208,5 +210,5 @@ public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: 
             ),
             isNullable = false,
         ),
-    ) correspondsTo EuclideanSpaceOverField.mdList1(this[Field.Key<Number>(numberType)], dimension)
+    ).withSuperkeys correspondsTo EuclideanSpaceOverField.mdList1(this[Field.Key<Number>(numberType)], dimension)
 }

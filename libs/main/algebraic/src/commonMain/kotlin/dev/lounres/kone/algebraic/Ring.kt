@@ -194,6 +194,11 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Ring<Number>>> =
+            listOf(
+                Semiring.Key(elementType),
+                CommutativeGroup.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -374,6 +379,11 @@ public interface CommutativeRing<Number> : Ring<Number>, CommutativeSemiring<Num
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeRing<Number>>> =
+            listOf(
+                Ring.Key(elementType),
+                CommutativeSemiring.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

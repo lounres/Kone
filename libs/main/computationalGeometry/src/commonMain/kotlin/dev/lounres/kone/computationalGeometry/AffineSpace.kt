@@ -64,6 +64,10 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in AffineSpaceOverRing<Number, Vector, Point>>> =
+            listOf(
+                Module.Key(elementType, vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -73,13 +77,13 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
 context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
 public operator fun <Vector, Point> Point.plus(other: Vector): Point = with(affineSpace) { this@plus + other }
 
-@JvmName("pointMinusVector")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Point.minus(other: Vector): Point = with(affineSpace) { this@minus - other }
+//@JvmName("pointMinusVector")
+//context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
+//public operator fun <Vector, Point> Point.minus(other: Vector): Point = with(affineSpace) { this@minus - other }
 
-@JvmName("vectorPlusPoint")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Vector.plus(other: Point): Point = with(affineSpace) { this@plus + other }
+//@JvmName("vectorPlusPoint")
+//context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
+//public operator fun <Vector, Point> Vector.plus(other: Point): Point = with(affineSpace) { this@plus + other }
 
 @JvmName("vectorMinusPoint")
 context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
@@ -112,6 +116,11 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
                     ),
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in AffineSpaceOverField<Number, Vector, Point>>> =
+            listOf(
+                VectorSpace.Key(elementType, vectorType),
+                AffineSpaceOverRing.Key(elementType, vectorType, pointType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

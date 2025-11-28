@@ -56,6 +56,10 @@ public interface Monoid<Number> : Semigroup<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Monoid<Number>>> =
+            listOf(
+                Semigroup.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -138,6 +142,11 @@ public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigrou
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeMonoid<Number>>> =
+            listOf(
+                Monoid.Key(elementType),
+                CommutativeSemigroup.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

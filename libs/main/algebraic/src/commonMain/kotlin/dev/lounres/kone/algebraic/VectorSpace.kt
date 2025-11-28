@@ -37,6 +37,10 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in VectorSpace<Number, Vector>>> =
+            listOf(
+                Module.Key(elementType, vectorType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -65,6 +69,10 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                         ),
                     ),
                     isNullable = false
+                )
+            override val superkeys: List<RegistryKey<in FiniteDimensional<Number, Vector>>> =
+                listOf(
+                    VectorSpace.Key(elementType, vectorType),
                 )
             override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
             override fun hashCode(): Int = typeKey.hashCode()

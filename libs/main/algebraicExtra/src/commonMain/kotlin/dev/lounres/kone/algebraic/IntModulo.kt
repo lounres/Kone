@@ -8,7 +8,6 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.reificationException
@@ -16,6 +15,9 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -77,9 +79,12 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
     override operator fun ULong.plus(other: Int): Int = ((this.toLong() + other) % modulus).toInt()
     override operator fun ULong.minus(other: Int): Int = ((this.toLong() - other) % modulus).toInt()
     override operator fun ULong.times(other: Int): Int = ((this.toLong() * other) % modulus).toInt()
+    
+    public companion object
 }
 
-public fun RegistryBuilder<KoneContextRegistry>.setIntModuloContext(modulus: Int) {
+context(_: RegistryBuilder<KoneContextRegistry>)
+public fun IntModuloRing.Companion.set(modulus: Int) {
     val ring = IntModuloRing(modulus)
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intModuloSuppliedType = SuppliedType.Regular(
@@ -87,8 +92,11 @@ public fun RegistryBuilder<KoneContextRegistry>.setIntModuloContext(modulus: Int
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Int>(intModuloSuppliedType) correspondsTo ring
-    Equality.Key<Int>(intModuloSuppliedType) correspondsTo ring
-    Ring.Key<Int>(intModuloSuppliedType) correspondsTo ring
-    Hashing.Key<Int>(intModuloSuppliedType) correspondsTo ring
+    listOf<RegistryKey<in IntModuloRing>>(
+        Reification.Key(intModuloSuppliedType),
+        Ring.Key(intModuloSuppliedType),
+        Hashing.Key(intModuloSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo ring
+    }
 }

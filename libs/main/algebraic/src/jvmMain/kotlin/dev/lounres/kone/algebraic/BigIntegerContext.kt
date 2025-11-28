@@ -17,6 +17,9 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import java.math.BigInteger
@@ -116,27 +119,20 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  * - [Order],
  * - [Hashing].
  */
-public fun RegistryBuilder<KoneContextRegistry>.setBigIntegerContext() {
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun BigIntegerContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigIntegerSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "java.math.BigInteger",
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Equality.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Semigroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    CommutativeSemigroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Monoid.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    CommutativeMonoid.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Group.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    CommutativeGroup.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Semiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    CommutativeSemiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Ring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    CommutativeRing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    EuclideanSemiring.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    EuclideanRing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Order.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
-    Hashing.Key<BigInteger>(bigIntegerSuppliedType) correspondsTo BigIntegerContext
+    listOf<RegistryKey<in BigIntegerContext>>(
+        Reification.Key(bigIntegerSuppliedType),
+        EuclideanRing.Key(bigIntegerSuppliedType),
+        Order.Key(bigIntegerSuppliedType),
+        Hashing.Key(bigIntegerSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo BigIntegerContext
+    }
 }

@@ -18,6 +18,9 @@ import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.KSerializer
@@ -460,19 +463,12 @@ public fun RationalContext.set(): Unit = with(koneContextRegistryBuilder) {
         typeArguments = emptyList(),
         isNullable = false,
     )
-    Reification.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Equality.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Semigroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    CommutativeSemigroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Monoid.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    CommutativeMonoid.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Group.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    CommutativeGroup.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Semiring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    CommutativeSemiring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Ring.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    CommutativeRing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Field.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Order.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
-    Hashing.Key<Rational>(rationalSuppliedType) correspondsTo RationalContext
+    listOf<RegistryKey<in RationalContext>>(
+        Reification.Key(rationalSuppliedType),
+        Field.Key(rationalSuppliedType),
+        Order.Key(rationalSuppliedType),
+        Hashing.Key(rationalSuppliedType),
+    ).forEach {
+        it.withSuperkeys correspondsTo RationalContext
+    }
 }

@@ -52,6 +52,10 @@ public interface Group<Number> : Monoid<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Group<Number>>> =
+            listOf(
+                Monoid.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -133,6 +137,11 @@ public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Num
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeGroup<Number>>> =
+            listOf(
+                Group.Key(elementType),
+                CommutativeMonoid.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

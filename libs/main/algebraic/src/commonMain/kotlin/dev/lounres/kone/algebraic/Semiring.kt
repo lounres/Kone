@@ -189,6 +189,10 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
                 ),
                 isNullable = false
             )
+        override val superkeys: List<RegistryKey<in Semiring<Number>>> =
+            listOf(
+                CommutativeMonoid.Key(elementType),
+            )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
     }
@@ -346,6 +350,10 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
                     )
                 ),
                 isNullable = false
+            )
+        override val superkeys: List<RegistryKey<in CommutativeSemiring<Number>>> =
+            listOf(
+                Semiring.Key(elementType),
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
