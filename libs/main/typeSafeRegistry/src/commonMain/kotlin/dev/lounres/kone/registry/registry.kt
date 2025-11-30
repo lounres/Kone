@@ -87,7 +87,15 @@ public interface Registry {
      */
     public fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?>
     
-    public companion object
+    public companion object;
+    
+    public object Empty : Registry {
+        override fun contains(registryKey: RegistryKey<*>): Boolean = false
+        override fun <T> get(registryKey: RegistryKey<out T>): T {
+            TODO("Not yet implemented")
+        }
+        override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = emptyMap()
+    }
 }
 
 /**
@@ -108,85 +116,20 @@ public fun <T> Registry.getOrDefault(registryKey: RegistryKey<T>, default: T): T
 public inline fun <T> Registry.getOrElse(registryKey: RegistryKey<T>, block: () -> T): T =
     if (contains(registryKey)) get(registryKey) else block()
 
-/**
- * Builder function for [Registry].
- */
-public inline fun <Owner> Registry.Companion.build(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    return RegistryBuilder<Owner>().apply(block).build()
+public interface MutableRegistry : Registry {
+    public operator fun <T> set(registryKey: RegistryKey<in T>, value: T)
+    
+    public fun setFrom(from: Registry)
+    
+    public fun remove(registryKey: RegistryKey<*>)
 }
 
-@Suppress("UNCHECKED_CAST")
-@PublishedApi
-internal class RegistryImpl(private val content: Map<RegistryKeyMapWrapper<*>, Any?>) : Registry {
-    override operator fun contains(registryKey: RegistryKey<*>): Boolean = RegistryKeyMapWrapper(registryKey) in content
-    override operator fun <T> get(registryKey: RegistryKey<out T>): T =  content[RegistryKeyMapWrapper(registryKey)] as T
-    
-    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = content
+context(registry: MutableRegistry)
+public infix fun <T> RegistryKey<in T>.correspondsTo(value: T) {
+    registry[this] = value
 }
 
-/**
- * Mutable version of [Registry] that is used by builder function.
- */
-@Suppress("UNCHECKED_CAST")
-public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Registry {
-    private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
-    
-    override operator fun contains(registryKey: RegistryKey<*>): Boolean {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        return RegistryKeyMapWrapper(registryKey) in content
-    }
-    override operator fun <T> get(registryKey: RegistryKey<out T>): T {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        return content[RegistryKeyMapWrapper(registryKey)] as T
-    }
-    
-    /**
-     * Associates provided [registryKey] with provided [value] overriding existing association of the [registryKey].
-     */
-    public operator fun <T> set(registryKey: RegistryKey<in T>, value: T) {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content[RegistryKeyMapWrapper(registryKey)] = value
-    }
-    
-    /**
-     * Associates [this] registry key with provided [value] overriding existing association of [this] registry key.
-     */
-    public infix fun <T> RegistryKey<in T>.correspondsTo(value: T) {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content[RegistryKeyMapWrapper(this)] = value
-    }
-    
-    /**
-     * Copies associations from the [from] registry overriding existing ones if needed.
-     */
-    public fun setFrom(from: Registry) {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content.putAll(from.toMap())
-    }
-    
-    public fun remove(registryKey: RegistryKey<*>) {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content.remove(RegistryKeyMapWrapper(registryKey))
-    }
-    
-    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        return content.toMap()
-    }
-    
-    @PublishedApi
-    internal fun build(): Registry {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        val result = RegistryImpl(content)
-        this.content = null
-        return result
-    }
-}
-
-context(_: RegistryBuilder<*>)
+context(_: MutableRegistry)
 public val <T> RegistryKey<in T>.withSuperkeys: Set<RegistryKeyMapWrapper<in T>>
     get() = buildSet {
         val keysToCheck = mutableSetOf(RegistryKeyMapWrapper(this@withSuperkeys))
@@ -201,11 +144,92 @@ public val <T> RegistryKey<in T>.withSuperkeys: Set<RegistryKeyMapWrapper<in T>>
         }
     }
 
-public operator fun <T> RegistryBuilder<*>.set(registryKeys: Set<RegistryKeyMapWrapper<in T>>, value: T) {
+public operator fun <T> MutableRegistry.set(registryKeys: Set<RegistryKeyMapWrapper<in T>>, value: T) {
     for (key in registryKeys) set(key.key, value)
 }
 
-context(registryBuilder: RegistryBuilder<*>)
+context(_: MutableRegistry)
 public infix fun <T> Set<RegistryKeyMapWrapper<in T>>.correspondsTo(value: T) {
-    for (key in this) with(registryBuilder) { key.key correspondsTo value }
+    for (key in this) key.key correspondsTo value
+}
+
+@Suppress("UNCHECKED_CAST")
+@PublishedApi
+internal class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMapWrapper<*>, Any?>) : MutableRegistry {
+    override operator fun contains(registryKey: RegistryKey<*>): Boolean = RegistryKeyMapWrapper(registryKey) in content
+    override operator fun <T> get(registryKey: RegistryKey<out T>): T =  content[RegistryKeyMapWrapper(registryKey)] as T
+    override fun <T> set(registryKey: RegistryKey<in T>, value: T) {
+        content[RegistryKeyMapWrapper(registryKey)] = value
+    }
+    override fun setFrom(from: Registry) {
+        content.putAll(from.toMap())
+    }
+    override fun remove(registryKey: RegistryKey<*>) {
+        content.remove(RegistryKeyMapWrapper(registryKey))
+    }
+    
+    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = content
+}
+
+public fun MutableRegistry(): MutableRegistry = MutableRegistryImpl(mutableMapOf())
+
+/**
+ * Mutable version of [Registry] that is used by builder function.
+ */
+@Suppress("UNCHECKED_CAST")
+public class RegistryBuilder<Owner> @PublishedApi internal constructor() : MutableRegistry {
+    private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
+    
+    override operator fun contains(registryKey: RegistryKey<*>): Boolean {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return RegistryKeyMapWrapper(registryKey) in content
+    }
+    override operator fun <T> get(registryKey: RegistryKey<out T>): T {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content[RegistryKeyMapWrapper(registryKey)] as T
+    }
+    
+    /**
+     * Associates provided [registryKey] with provided [value] overriding existing association of the [registryKey].
+     */
+    override operator fun <T> set(registryKey: RegistryKey<in T>, value: T) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        content[RegistryKeyMapWrapper(registryKey)] = value
+    }
+    
+    /**
+     * Copies associations from the [from] registry overriding existing ones if needed.
+     */
+    override fun setFrom(from: Registry) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        content.putAll(from.toMap())
+    }
+    
+    override fun remove(registryKey: RegistryKey<*>) {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        content.remove(RegistryKeyMapWrapper(registryKey))
+    }
+    
+    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content.toMap()
+    }
+    
+    @PublishedApi
+    internal fun build(): Registry {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        val result = MutableRegistryImpl(content)
+        this.content = null
+        return result
+    }
+}
+
+/**
+ * Builder function for [Registry].
+ */
+public inline fun <Owner> Registry.Companion.build(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return RegistryBuilder<Owner>().apply(block).build()
 }
