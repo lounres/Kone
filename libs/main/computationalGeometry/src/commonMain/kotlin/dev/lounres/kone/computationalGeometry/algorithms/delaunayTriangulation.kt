@@ -5,115 +5,391 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms
 
+import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.basis.ModuleBasis
+import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
+import dev.lounres.kone.algebraic.isPositive
+import dev.lounres.kone.algebraic.isZero
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.KoneSettableList
+import dev.lounres.kone.collections.list.empty
+import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.toKoneList
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.associateByTo
+import dev.lounres.kone.collections.map.get
+import dev.lounres.kone.collections.map.of
+import dev.lounres.kone.collections.set.KoneMutableReifiedSet
+import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.collections.utils.filter
+import dev.lounres.kone.collections.utils.first
+import dev.lounres.kone.collections.utils.firstThat
+import dev.lounres.kone.collections.utils.last
+import dev.lounres.kone.collections.utils.map
+import dev.lounres.kone.collections.utils.mapTo
+import dev.lounres.kone.collections.utils.single
+import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
+import dev.lounres.kone.computationalGeometry.dot
+import dev.lounres.kone.computationalGeometry.lengthSquared
+import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
+import dev.lounres.kone.computationalGeometry.polytopes.Polytope
+import dev.lounres.kone.computationalGeometry.polytopes.Position
+import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.build
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.relations.eq
+import dev.lounres.kone.scope
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
-//// TODO: For now the algorithm assumes that result is a triangulation (and there are no 4 or more cocyclic points)
-////   and that there are at least 2 triangles in the triangulation
-//context(_: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
-//public fun <
-//    Number,
-//    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-//    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-//> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructDelaunayTriangulation(
-//    vertexReification: Reification<Vertex>,
-//    vertexEquality: Equality<Vertex>,
-//    vertexHashing: Hashing<Vertex>?,
-//    vertexOrder: Order<Vertex>?,
-//    polytopeReification: Reification<Polytope>,
-//    polytopeEquality: Equality<Polytope>,
-//    polytopeHashing: Hashing<Polytope>?,
-//    polytopeOrder: Order<Polytope>?,
-//    vertices: KoneIterable<Vertex>,
-//): KoneList<Polytope> {
-//    val paraboloidDimension = spaceDimension + 1u
-//
-//    val paraboloidPolytopicConstruction = AbstractPolytopicConstruction<Number>(paraboloidDimension)
-//
-//    val simplicesMapping = KoneMutableMap.of<AbstractPolytopicConstructionPolytope<Number>, Polytope>(keyEquality = Equality.absoluteFor(), keyHashing = Hashing.defaultFor())
-//    val verticesMapping = vertices.associateBy(
-//        keyEquality = Equality.absoluteFor(),
-//        keyHashing = Hashing.defaultFor(),
-//    ) { oldVertex ->
-//        val newVertex = paraboloidPolytopicConstruction.addVertex(VectorSpacePoint(MDList1(paraboloidDimension) { if (it < paraboloidDimension - 1u) oldVertex.position.coordinates[it] else oldVertex.position.sumOf { c -> c * c } }))
-//        simplicesMapping[newVertex.asPolytope()] = oldVertex.asPolytope()
-//        newVertex
-//    }
-//
-//    val convexHull: AbstractPolytopicConstructionPolytope<Number> =
-//        paraboloidPolytopicConstruction.constructConvexHullByGiftWrapping(
-//            vertexReification = Reification.defaultFor(),
-//            vertexEquality = Equality.absoluteFor(),
-//            vertexHashing = Hashing.defaultFor(),
-//            vertexOrder = null,
-//            polytopeReification = Reification.defaultFor(),
-//            polytopeEquality = Equality.absoluteFor(),
-//            polytopeHashing = Hashing.defaultFor(),
-//            polytopeOrder = null,
-//            vertices = verticesMapping.keysView
-//        )
-//    val necessarySimplices = convexHull.facesOfDimension(convexHull.dimension - 1u).filter { simplex ->
-//        val flag = KoneSettableList(simplex.dimension + 2u) { simplex }
-//        flag[simplex.dimension + 1u] = convexHull
-//        for (dim in simplex.dimension - 1u downTo 0u) {
-//            flag[dim] = flag[dim + 1u].facesOfDimension(dim).first()
-//        }
-//        val startPoint = (flag[0u].vertices.single()).position
-//        val basis = KoneSettableList(
-//            simplex.dimension + 1u,
-//        ) { dim -> flag[dim + 1u].vertices.firstThat { it !in flag[dim].vertices }.position - startPoint }
-//        val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
-//        val lastBasisVector = ortogonalizedBasis.last()
-//        !((lastBasisVector dot basis.last()).isPositive() xor lastBasisVector.coordinates[paraboloidDimension - 1u].isPositive())
-//    }
-//
-//    for (simplex in necessarySimplices) {
-//        for (dim in 1u .. simplex.dimension - 1u) for (face in simplex.facesOfDimension(dim)) if (face !in simplicesMapping.keysView)
-//            simplicesMapping[face] = this.addPolytope(
-//                dim,
-//                face.vertices.mapTo(
-//                    KoneMutableReifiedSet.of(
-//                        elementReification = vertexReification,
-//                        elementEquality = vertexEquality,
-//                        elementHashing = vertexHashing,
-//                        elementOrder = vertexOrder,
-//                    )
-//                ) {
-//                    verticesMapping[it]
-//                },
-//                face.faces.map { dimFaces ->
-//                    dimFaces.mapTo(
-//                        KoneMutableReifiedSet.of(
-//                            elementReification = polytopeReification,
-//                            elementEquality = polytopeEquality,
-//                            elementHashing = polytopeHashing,
-//                            elementOrder = polytopeOrder,
-//                        )
-//                    ) { simplicesMapping[it] }
-//                }
-//            )
-//        simplicesMapping[simplex] = this.addPolytope(
-//            simplex.dimension,
-//            simplex.vertices.mapTo(
-//                KoneMutableReifiedSet.of(
-//                    elementReification = vertexReification,
-//                    elementEquality = vertexEquality,
-//                    elementHashing = vertexHashing,
-//                    elementOrder = vertexOrder,
-//                )
-//            ) {
-//                verticesMapping[it]
-//            },
-//            simplex.faces.map { dimFaces ->
-//                dimFaces.mapTo(
-//                    KoneMutableReifiedSet.of(
-//                        elementReification = polytopeReification,
-//                        elementEquality = polytopeEquality,
-//                        elementHashing = polytopeHashing,
-//                        elementOrder = polytopeOrder,
-//                    )
-//                ) { simplicesMapping[it] }
-//            }
-//        )
-//    }
-//
-//    return necessarySimplices.map { simplicesMapping[it] }
-//}
+
+private data class ParaboloidVector<Number, Vector>(
+    val vector: Vector,
+    val extraCoordinate: Number,
+)
+
+private data class ParaboloidPoint<out Number, out Point>(
+    val point: Point,
+    val extraCoordinate: Number,
+)
+
+private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
+    private val ring: Ring<Number>,
+    private val initialEuclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
+) : EuclideanSpaceOverRing<Number, ParaboloidVector<Number, Vector>, ParaboloidPoint<Number, Point>> {
+    // region Constants
+    override val zero: ParaboloidVector<Number, Vector> = ParaboloidVector(
+        vector = initialEuclideanSpaceOverRing.zero,
+        extraCoordinate = ring.zero
+    )
+    // endregion
+
+    // region Equality
+    override fun ParaboloidVector<Number, Vector>.equalsTo(other: ParaboloidVector<Number, Vector>): Boolean =
+        initialEuclideanSpaceOverRing { this.vector eq other.vector } && ring { this.extraCoordinate eq other.extraCoordinate }
+    override fun ParaboloidVector<Number, Vector>.isZero(): Boolean =
+        initialEuclideanSpaceOverRing { this.vector.isZero() } && ring { this.extraCoordinate.isZero() }
+    // FIXME: KT-5351
+    override fun ParaboloidVector<Number, Vector>.isNotZero(): Boolean = !isZero()
+    // endregion
+
+    // region Vector-UInt operations
+    override operator fun ParaboloidVector<Number, Vector>.times(other: UInt): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector * other },
+            extraCoordinate = ring { this.extraCoordinate * other }
+        )
+    // endregion
+
+    // region Vector-Int operations
+    override operator fun ParaboloidVector<Number, Vector>.times(other: Int): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector * other },
+            extraCoordinate = ring { this.extraCoordinate * other }
+        )
+    // endregion
+
+    // region Vector-Long operations
+    override operator fun ParaboloidVector<Number, Vector>.times(other: Long): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector * other },
+            extraCoordinate = ring { this.extraCoordinate * other }
+        )
+    // endregion
+
+    // region Vector-ULong operations
+    override operator fun ParaboloidVector<Number, Vector>.times(other: ULong): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector * other },
+            extraCoordinate = ring { this.extraCoordinate * other }
+        )
+    // endregion
+
+    // region Vector-Number operations
+    override fun ParaboloidVector<Number, Vector>.times(other: Number): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector * other },
+            extraCoordinate = ring { this.extraCoordinate * other }
+        )
+    // endregion
+
+    // region Int-Vector operations
+    override operator fun Int.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this * other.vector },
+            extraCoordinate = ring { this * other.extraCoordinate }
+        )
+    // endregion
+
+    // region UInt-Vector operations
+    override operator fun UInt.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this * other.vector },
+            extraCoordinate = ring { this * other.extraCoordinate }
+        )
+    // endregion
+
+    // region Long-Vector operations
+    override operator fun Long.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this * other.vector },
+            extraCoordinate = ring { this * other.extraCoordinate }
+        )
+    // endregion
+
+    // region ULong-Vector operations
+    override operator fun ULong.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this * other.vector },
+            extraCoordinate = ring { this * other.extraCoordinate }
+        )
+    // endregion
+
+    // region Number-Vector operations
+    override fun Number.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this * other.vector },
+            extraCoordinate = ring { this * other.extraCoordinate }
+        )
+    // endregion
+
+    // region Vector-Vector operations
+    override operator fun ParaboloidVector<Number, Vector>.unaryMinus(): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { -this.vector },
+            extraCoordinate = ring { -this.extraCoordinate }
+        )
+    override operator fun ParaboloidVector<Number, Vector>.plus(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector + other.vector },
+            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+        )
+    override operator fun ParaboloidVector<Number, Vector>.minus(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.vector - other.vector },
+            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+        )
+    // endregion
+
+    override fun ParaboloidPoint<Number, Point>.plus(other: ParaboloidVector<Number, Vector>): ParaboloidPoint<Number, Point> =
+        ParaboloidPoint(
+            point = initialEuclideanSpaceOverRing { this.point + other.vector },
+            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+        )
+
+    override fun ParaboloidVector<Number, Vector>.plus(other: ParaboloidPoint<Number, Point>): ParaboloidPoint<Number, Point> =
+        ParaboloidPoint(
+            point = with(initialEuclideanSpaceOverRing) { this@plus.vector + other.point },
+            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+        )
+
+    override fun ParaboloidPoint<Number, Point>.minus(other: ParaboloidVector<Number, Vector>): ParaboloidPoint<Number, Point> =
+        ParaboloidPoint(
+            point = with(initialEuclideanSpaceOverRing) { this@minus.point - other.vector },
+            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+        )
+
+    override fun ParaboloidPoint<Number, Point>.minus(other: ParaboloidPoint<Number, Point>): ParaboloidVector<Number, Vector> =
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing { this.point - other.point },
+            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+        )
+
+    override fun ParaboloidVector<Number, Vector>.dot(other: ParaboloidVector<Number, Vector>): Number =
+        ring { initialEuclideanSpaceOverRing { this.vector dot other.vector } + this.extraCoordinate * other.extraCoordinate }
+}
+
+@IgnorableReturnValue
+context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+public fun <
+    Number,
+    Vector,
+    Point,
+> MutablePolytopicConstruction.constructDelaunayTriangulation(
+    numberType: SuppliedType,
+    pointType: SuppliedType,
+    vertices: KoneIterable<Point>,
+) {
+    val positionKey = Position<Point>(pointType = pointType)
+    val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>(
+        pointType =
+            @OptIn(DelicateSuppliedTypeConstructor::class)
+            SuppliedType.Regular(
+                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.algorithms.ParaboloidPoint",
+                typeArguments = listOf(
+                    SuppliedProjection.Regular(
+                        variance = OUT,
+                        type = numberType
+                    ),
+                    SuppliedProjection.Regular(
+                        variance = OUT,
+                        type = pointType
+                    ),
+                ),
+                isNullable = false
+            )
+    )
+    
+    val paraboloidEuclideanSpaceOverRing = ParaboloidEuclideanSpaceOverRing(ring, euclideanSpace)
+
+    val verticesDimension: UInt
+    val convexHull: Polytope
+    scope {
+        val verticesIterator = vertices.iterator()
+        val start = verticesIterator.getAndMoveNext()
+        val vectors = verticesIterator.toKoneList().map { it - start }
+        
+        val result = GramSchmidtOrthogonalizationIntermediateState<Number, Vector>(
+            orthogonalizedBasis = KoneArrayGrowableList(),
+            product = ring.one,
+            exclusiveProducts = KoneArrayGrowableList(),
+        )
+        for (vector in vectors) result.gramSchmidtOrthogonalizationStep(vector)
+        
+        verticesDimension = result.orthogonalizedBasis.size
+        
+        val startPosition = vertices.first()
+        
+        convexHull = paraboloidEuclideanSpaceOverRing {
+            constructConvexHullByGiftWrapping(
+                positionKey = paraboloidPositionKey,
+                vertices = vertices.map { oldPosition ->
+                    Polytope(
+                        dimension = 0u,
+                        faces = KoneList.empty(),
+                        properties = Registry.build<Polytope> { paraboloidPositionKey correspondsTo ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared()) }
+                    )
+                },
+                basis = object : ModuleBasis.Finite<Number, ParaboloidVector<Number, Vector>> {
+                    override val size: UInt get() = verticesDimension + 1u
+                    override fun get(index: UInt): ParaboloidVector<Number, Vector> =
+                        if (index < verticesDimension) ParaboloidVector(result.orthogonalizedBasis[index], ring.zero)
+                        else ParaboloidVector(euclideanSpace.zero, ring.one)
+                    override fun decompose(vector: ParaboloidVector<Number, Vector>): ModuleBasisDecomposition.Result<Number, UInt> {
+                        return object : ModuleBasisDecomposition.Result<Number, UInt> {
+                            override val scalar: Number get() = result.product
+                            override fun get(index: UInt): Number =
+                                if (index < verticesDimension) (result.orthogonalizedBasis[index] dot vector.vector) * result.exclusiveProducts[index]
+                                else vector.extraCoordinate
+                        }
+                    }
+                }
+            )
+        }
+    }
+    
+    val simplicesMapping = KoneMutableMap.of<Polytope, Polytope>(
+        keyEquality = Equality.absoluteFor(),
+        keyHashing = Hashing.defaultFor(),
+    )
+    
+    if (convexHull.dimension == verticesDimension) {
+        for (dim in 0u ..< convexHull.dimension) for (face in convexHull.faces[dim]) {
+            val newFace = Polytope(
+                dimension = dim,
+                faces = face.faces.map { dimFaces ->
+                    dimFaces.mapTo(
+                        KoneMutableReifiedSet.of(
+                            elementReification = Reification.defaultFor(),
+                        )
+                    ) {
+                        simplicesMapping[it]
+                    }
+                },
+                properties =
+                    if (dim == 0u) Registry.build<Polytope> { positionKey correspondsTo face.properties[paraboloidPositionKey].point }
+                    else Registry.Empty
+            )
+            simplicesMapping[face] = newFace
+        }
+        val finalPolytope = Polytope(
+            dimension = convexHull.dimension,
+            faces = convexHull.faces.map { dimFaces ->
+                dimFaces.mapTo(
+                    KoneMutableReifiedSet.of(
+                        elementReification = Reification.defaultFor(),
+                    )
+                ) {
+                    simplicesMapping[it]
+                }
+            }
+        )
+        add(finalPolytope)
+    } else {
+        val necessarySimplices = convexHull.faces[convexHull.dimension - 1u].filter { simplex ->
+            paraboloidEuclideanSpaceOverRing {
+                val flag = KoneSettableList.generate(simplex.dimension + 2u) { simplex }
+                flag[simplex.dimension + 1u] = convexHull
+                for (dim in simplex.dimension - 1u downTo 0u) {
+                    flag[dim] = flag[dim + 1u].faces[dim].first()
+                }
+                val startPoint = flag[0u].verticesOrSelf.single().properties[paraboloidPositionKey]
+                val basis = KoneSettableList.generate(
+                    simplex.dimension + 1u,
+                ) { dim -> flag[dim + 1u].verticesOrSelf.firstThat { it !in flag[dim].verticesOrSelf }.properties[paraboloidPositionKey] - startPoint }
+                val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
+                val lastBasisVector = ortogonalizedBasis.last()
+                lastBasisVector.extraCoordinate.isPositive()
+            }
+        }
+        
+        for (simplex in necessarySimplices) {
+            for (dim in 0u .. simplex.dimension - 1u) for (face in simplex.faces[dim]) if (face !in simplicesMapping.keysView) {
+                val polytope = Polytope(
+                    dimension = dim,
+                    faces = face.faces.map { dimFaces ->
+                        dimFaces.mapTo(
+                            KoneMutableReifiedSet.of(
+                                elementReification = Reification.defaultFor(),
+                                elementEquality = Equality.absoluteFor(),
+                                elementHashing = Hashing.defaultFor(),
+                            )
+                        ) {
+                            simplicesMapping[it]
+                        }
+                    },
+                    properties =
+                        if (dim == 0u) Registry.build<Polytope> { positionKey correspondsTo face.properties[paraboloidPositionKey].point }
+                        else Registry.Empty
+                )
+                this.add(polytope)
+                simplicesMapping[face] = polytope
+            }
+            val polytope = Polytope(
+                dimension = simplex.dimension,
+                faces = simplex.faces.map { dimFaces ->
+                    dimFaces.mapTo(
+                        KoneMutableReifiedSet.of(
+                            elementReification = Reification.defaultFor(),
+                            elementEquality = Equality.absoluteFor(),
+                            elementHashing = Hashing.defaultFor(),
+                        )
+                    ) {
+                        simplicesMapping[it]
+                    }
+                }
+            )
+            this.add(polytope)
+            simplicesMapping[simplex] = polytope
+        }
+    }
+}

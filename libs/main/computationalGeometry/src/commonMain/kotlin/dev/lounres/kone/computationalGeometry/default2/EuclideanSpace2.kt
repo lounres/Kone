@@ -70,10 +70,16 @@ public value class Point2<out N>(public val content: MDList1<N>) {
     override fun toString(): String = content.toString()
 }
 
-public fun Point2(x: Double, y: Double): Point2<Double> {
-    val contentArray = KoneDoubleArray.of(x, y)
-    return Point2(MDList1(contentArray.size) { contentArray[it] })
-}
+public fun <Number> Point2(x: Number, y: Number): Point2<Number> =
+    Point2(
+        MDList1(2u) {
+            when (it) {
+                0u -> x
+                1u -> y
+                else -> TODO()
+            }
+        }
+    )
 
 public class EuclideanSpace2OverRing<Number>(
     private val ring: Ring<Number>,

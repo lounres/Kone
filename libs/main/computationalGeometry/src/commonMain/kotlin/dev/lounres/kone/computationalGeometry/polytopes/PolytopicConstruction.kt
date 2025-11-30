@@ -6,89 +6,99 @@
 package dev.lounres.kone.computationalGeometry.polytopes
 
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.collections.utils.forEachIndexed
+import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-public interface PolytopicConstruction<
-    out Point,
-    out Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
-> {
+@Suppress("EqualsOrHashCode")
+public class Polytope(
+    public val dimension: UInt,
+    public val faces: KoneList<KoneReifiedSet<Polytope>>,
+    public val properties: Registry = Registry.Empty,
+) {
+    init {
+        require(faces.size == dimension) { "Cannot instantiate polytope: dimension parameter $dimension is not equal to size ${faces.size} of faces list" }
+    }
+    
+    override fun equals(other: Any?): Boolean = this === other
+}
+
+public interface PolytopicConstruction {
     public val spaceDimension: UInt
-
+    
     public val polytopes: KoneList<KoneReifiedSet<Polytope>>
-    public fun polytopesOfDimension(dim: UInt): KoneReifiedSet<Polytope> = polytopes[dim] // TODO: Add corresponding error
-    public operator fun get(dim: UInt): KoneReifiedSet<Polytope> = polytopesOfDimension(dim)
-
-    public val vertices: KoneReifiedSet<Vertex>
     
-    public interface Polytope<
-        out Point,
-        out PolytopeType: Polytope<Point, PolytopeType, VertexType>,
-        out VertexType: Vertex<Point, PolytopeType, VertexType>,
-    > {
-        public val dimension: UInt
-        public val faces: KoneList<KoneReifiedSet<PolytopeType>>
-        public fun facesOfDimension(dim: UInt): KoneReifiedSet<PolytopeType> = faces[dim] // TODO: Add corresponding error
-        public operator fun get(dim: UInt): KoneReifiedSet<PolytopeType> = facesOfDimension(dim)
-        public val vertices: KoneReifiedSet<VertexType>
-        public val cofaces: KoneList<KoneReifiedSet<PolytopeType>>
-        public fun cofacesOfDimension(dim: UInt): KoneReifiedSet<PolytopeType> = cofaces[dim - dimension - 1u]
+    public val properties: Registry get() = Registry.Empty
+}
+
+public interface MutablePolytopicConstruction : PolytopicConstruction {
+    public fun add(polytope: Polytope)
+    public fun remove(polytope: Polytope)
+    override var properties: Registry
+}
+
+public fun MutablePolytopicConstruction(
+    spaceDimension: UInt,
+    properties: Registry = Registry.Empty,
+): MutablePolytopicConstruction = MutablePolytopicConstructionImpl(
+    spaceDimension = spaceDimension,
+    properties = properties,
+)
+
+private class MutablePolytopicConstructionImpl(
+    override val spaceDimension: UInt,
+    override var properties: Registry
+) : MutablePolytopicConstruction {
+    final override val polytopes: KoneList<KoneReifiedSet<Polytope>>
+        field: KoneList<KoneMutableReifiedSet<Polytope>> =
+        KoneList.generate(spaceDimension + 1u) {
+            KoneMutableReifiedSet.of(
+                elementReification = Reification.defaultFor(),
+                elementEquality = Equality.absoluteFor(),
+                elementHashing = Hashing.defaultFor(),
+            )
+        }
+    
+    override fun add(polytope: Polytope) {
+        require(polytope.dimension <= spaceDimension) { "Cannot add polytope of dimension ${polytope.dimension} in polytiopic construction of dimension $spaceDimension" }
+        polytope.faces.forEachIndexed { dim, faces -> polytopes[dim].addAllFrom(faces) }
+        polytopes[polytope.dimension].add(polytope)
     }
     
-    public interface Vertex<
-        out Point,
-        out PolytopeType: Polytope<Point, PolytopeType, VertexType>,
-        out VertexType: Vertex<Point, PolytopeType, VertexType>,
-    > {
-        public val position: Point
-        public fun asPolytope(): PolytopeType
+    override fun remove(polytope: Polytope) {
+        if (polytope.dimension > spaceDimension) return
+        polytopes[polytope.dimension].remove(polytope)
+        for (dim in polytope.dimension + 1u .. spaceDimension)
+            polytopes[dim].removeAllThat { polytope in it.faces[polytope.dimension] }
     }
 }
 
-public interface ExtendablePolytopicConstruction<
-    Point,
-    out Polytope: PolytopicConstruction.Polytope<Point, Polytope, Vertex>,
-    out Vertex: PolytopicConstruction.Vertex<Point, Polytope, Vertex>,
-> : PolytopicConstruction<Point, Polytope, Vertex> {
-    @IgnorableReturnValue
-    public fun addPolytope(
-        dimension: UInt,
-        vertices: KoneReifiedSet<@UnsafeVariance Vertex>,
-        faces: KoneList<KoneReifiedSet<@UnsafeVariance Polytope>>
-    ): Polytope
-    
-    @IgnorableReturnValue
-    public fun addVertex(position: Point): Vertex
+public class Position<Point>(public val pointType: SuppliedType) : RegistryKey<Point> {
+    override fun equals(other: Any?): Boolean = other is Position<*> && pointType == other.pointType
+    override fun hashCode(): Int = pointType.hashCode()
 }
 
-public interface ReduciblePolytopicConstruction<
-    out Point,
-    out Polytope: ReduciblePolytopicConstruction.Polytope<Point, Polytope, Vertex>,
-    out Vertex: ReduciblePolytopicConstruction.Vertex<Point, Polytope, Vertex>,
-> : PolytopicConstruction<Point, Polytope, Vertex> {
-    public interface Polytope<
-        out Point,
-        out PolytopeType: Polytope<Point, PolytopeType, VertexType>,
-        out VertexType: Vertex<Point, PolytopeType, VertexType>,
-    > : PolytopicConstruction.Polytope<Point, PolytopeType, VertexType> {
-        public fun remove()
-    }
-    
-    public interface Vertex<
-        out Point,
-        out PolytopeType: Polytope<Point, PolytopeType, VertexType>,
-        out VertexType: Vertex<Point, PolytopeType, VertexType>,
-    > : PolytopicConstruction.Vertex<Point, PolytopeType, VertexType> {
-        public fun remove()
-    }
-}
-
-public interface MutablePolytopicConstruction<
-    Point,
-    out Polytope: ReduciblePolytopicConstruction.Polytope<Point, Polytope, Vertex>,
-    out Vertex: ReduciblePolytopicConstruction.Vertex<Point, Polytope, Vertex>,
-> : ExtendablePolytopicConstruction<Point, Polytope, Vertex>, ReduciblePolytopicConstruction<Point, Polytope, Vertex>
+public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
+    get() =
+        if (dimension != 0u) faces[0u]
+        else KoneReifiedSet.of(
+            this,
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
+        )
 
 
 

@@ -72,10 +72,17 @@ public value class Point3<out N>(public val content: MDList1<N>) {
     override fun toString(): String = content.toString()
 }
 
-public fun Point3(x: Double, y: Double, z: Double): Point3<Double> {
-    val contentArray = KoneDoubleArray.of(x, y, z)
-    return Point3(MDList1(contentArray.size) { contentArray[it] })
-}
+public fun <Number> Point3(x: Number, y: Number, z: Number): Point3<Number> =
+    Point3(
+        MDList1(3u) {
+            when (it) {
+                0u -> x
+                1u -> y
+                2u -> z
+                else -> TODO()
+            }
+        }
+    )
 
 public class EuclideanSpace3OverRing<Number>(
     private val ring: Ring<Number>,

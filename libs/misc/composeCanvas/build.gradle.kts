@@ -9,7 +9,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(versions.kotlinx.serialization.json)
-                implementation(compose.foundation)
+                implementation(versions.compose.multiplatform.foundation)
                 api(projects.libs.main.contexts)
                 api(projects.libs.main.relations)
                 api(projects.libs.main.algebraic)

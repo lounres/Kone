@@ -3,7 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.libs.main.state)
-                api(compose.runtime)
+                api(versions.compose.multiplatform.runtime)
             }
         }
     }
