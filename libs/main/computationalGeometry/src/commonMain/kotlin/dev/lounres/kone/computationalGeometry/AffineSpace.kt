@@ -7,23 +7,14 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Module
 import dev.lounres.kone.algebraic.VectorSpace
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.relations.equalsTo
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.jvm.JvmName
-import kotlin.reflect.KVariance.INVARIANT
 
 
 @Suppress("INAPPLICABLE_JVM_NAME")
