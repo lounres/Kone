@@ -112,9 +112,10 @@ public data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<By
     override fun Byte.minus(other: Byte): Byte = (this - other).toByte()
     override fun Byte.times(other: Byte): Byte = (this * other).toByte()
     override fun Byte.divrem(other: Byte): EuclideanDivisionResult<Byte> =
-        EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
-    override fun Byte.div(other: Byte): Byte = (this / other).toByte()
-    override fun Byte.rem(other: Byte): Byte = (this % other).toByte()
+        if (other == 0.toByte()) divisionByZero()
+        else EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
+    override fun Byte.div(other: Byte): Byte = if (other == 0.toByte()) divisionByZero() else (this / other).toByte()
+    override fun Byte.rem(other: Byte): Byte = if (other == 0.toByte()) divisionByZero() else (this % other).toByte()
     // endregion
 }
 
@@ -246,9 +247,10 @@ public data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order
     override fun Short.minus(other: Short): Short = (this - other).toShort()
     override fun Short.times(other: Short): Short = (this * other).toShort()
     override fun Short.divrem(other: Short): EuclideanDivisionResult<Short> =
-        EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
-    override fun Short.div(other: Short): Short = (this / other).toShort()
-    override fun Short.rem(other: Short): Short = (this % other).toShort()
+        if (other == 0.toShort()) divisionByZero()
+        else EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
+    override fun Short.div(other: Short): Short = if (other == 0.toShort()) divisionByZero() else (this / other).toShort()
+    override fun Short.rem(other: Short): Short = if (other == 0.toShort()) divisionByZero() else (this % other).toShort()
     // endregion
 }
 
@@ -332,9 +334,10 @@ public data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>,
     override fun Int.minus(other: Int): Int = this - other
     override fun Int.times(other: Int): Int = this * other
     override fun Int.divrem(other: Int): EuclideanDivisionResult<Int> =
-        EuclideanDivisionResult(quotient = this / other, remainder = this % other)
-    override fun Int.div(other: Int): Int = this / other
-    override fun Int.rem(other: Int): Int = this % other
+        if (other == 0) divisionByZero()
+        else EuclideanDivisionResult(quotient = this / other, remainder = this % other)
+    override fun Int.div(other: Int): Int = if (other == 0) divisionByZero() else this / other
+    override fun Int.rem(other: Int): Int = if (other == 0) divisionByZero() else this % other
     // endregion
     
     // region Int-UInt operations
@@ -454,9 +457,10 @@ public data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Lo
     override fun Long.minus(other: Long): Long = this - other
     override fun Long.times(other: Long): Long = this * other
     override fun Long.divrem(other: Long): EuclideanDivisionResult<Long> =
-        EuclideanDivisionResult(quotient = this / other, remainder = this % other)
-    override fun Long.div(other: Long): Long = this / other
-    override fun Long.rem(other: Long): Long = this % other
+        if (other == 0L) divisionByZero()
+        else EuclideanDivisionResult(quotient = this / other, remainder = this % other)
+    override fun Long.div(other: Long): Long = if (other == 0L) divisionByZero() else this / other
+    override fun Long.rem(other: Long): Long = if (other == 0L) divisionByZero() else this % other
     // endregion
     
     // region Long-Int operations
@@ -593,12 +597,13 @@ public data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, E
     override fun UByte.minus(other: UByte): UByte = (this - other).toUByte()
     override fun UByte.times(other: UByte): UByte = (this * other).toUByte()
     override fun UByte.divrem(other: UByte): EuclideanDivisionResult<UByte> =
-        EuclideanDivisionResult(
+        if (other == 0.toUByte()) divisionByZero()
+        else EuclideanDivisionResult(
             quotient = (this / other).toUByte(),
             remainder = (this % other).toUByte(),
         )
-    override fun UByte.div(other: UByte): UByte = (this / other).toUByte()
-    override fun UByte.rem(other: UByte): UByte = (this % other).toUByte()
+    override fun UByte.div(other: UByte): UByte = if (other == 0.toUByte()) divisionByZero() else (this / other).toUByte()
+    override fun UByte.rem(other: UByte): UByte = if (other == 0.toUByte()) divisionByZero() else (this % other).toUByte()
     override fun power(base: UByte, exponent: UInt): UByte = base squaringPower exponent
     override fun power(base: UByte, exponent: ULong): UByte = base squaringPower exponent
     override infix fun UByte.pow(exponent: UInt): UByte = power(this, exponent)
@@ -698,12 +703,13 @@ public data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>
     override fun UShort.minus(other: UShort): UShort = (this - other).toUShort()
     override fun UShort.times(other: UShort): UShort = (this * other).toUShort()
     override fun UShort.divrem(other: UShort): EuclideanDivisionResult<UShort> =
-        EuclideanDivisionResult(
+        if (other == 0.toUShort()) divisionByZero()
+        else EuclideanDivisionResult(
             quotient = (this / other).toUShort(),
             remainder = (this % other).toUShort(),
         )
-    override fun UShort.div(other: UShort): UShort = (this / other).toUShort()
-    override fun UShort.rem(other: UShort): UShort = (this % other).toUShort()
+    override fun UShort.div(other: UShort): UShort = if (other == 0.toUShort()) divisionByZero() else (this / other).toUShort()
+    override fun UShort.rem(other: UShort): UShort = if (other == 0.toUShort()) divisionByZero() else (this % other).toUShort()
     override fun power(base: UShort, exponent: UInt): UShort = base squaringPower exponent
     override fun power(base: UShort, exponent: ULong): UShort = base squaringPower exponent
     override infix fun UShort.pow(exponent: UInt): UShort = power(this, exponent)
@@ -793,12 +799,13 @@ public data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Exte
     override fun UInt.minus(other: UInt): UInt = this - other
     override fun UInt.times(other: UInt): UInt = this * other
     override fun UInt.divrem(other: UInt): EuclideanDivisionResult<UInt> =
-        EuclideanDivisionResult(
+        if (other == 0u) divisionByZero()
+        else EuclideanDivisionResult(
             quotient = this / other,
             remainder = this % other,
         )
-    override fun UInt.div(other: UInt): UInt = this / other
-    override fun UInt.rem(other: UInt): UInt = this % other
+    override fun UInt.div(other: UInt): UInt = if (other == 0u) divisionByZero() else this / other
+    override fun UInt.rem(other: UInt): UInt = if (other == 0u) divisionByZero() else this % other
     override fun power(base: UInt, exponent: UInt): UInt = base squaringPower exponent
     override fun power(base: UInt, exponent: ULong): UInt = base squaringPower exponent
     override infix fun UInt.pow(exponent: UInt): UInt = power(this, exponent)
@@ -888,12 +895,13 @@ public data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, E
     override fun ULong.minus(other: ULong): ULong = this - other
     override fun ULong.times(other: ULong): ULong = this * other
     override fun ULong.divrem(other: ULong): EuclideanDivisionResult<ULong> =
-        EuclideanDivisionResult(
+        if (other == 0uL) divisionByZero()
+        else EuclideanDivisionResult(
             quotient = this / other,
             remainder = this % other,
         )
-    override fun ULong.div(other: ULong): ULong = this / other
-    override fun ULong.rem(other: ULong): ULong = this % other
+    override fun ULong.div(other: ULong): ULong = if (other == 0uL) divisionByZero() else this / other
+    override fun ULong.rem(other: ULong): ULong = if (other == 0uL) divisionByZero() else this % other
     override fun power(base: ULong, exponent: UInt): ULong = base squaringPower exponent
     override fun power(base: ULong, exponent: ULong): ULong = base squaringPower exponent
     override infix fun ULong.pow(exponent: UInt): ULong = power(this, exponent)
@@ -1036,7 +1044,7 @@ public data object DoubleContext: Reification<Double>, Field<Double>, Order<Doub
     override fun Double.plus(other: Double): Double = this + other
     override fun Double.minus(other: Double): Double = this - other
     override fun Double.times(other: Double): Double = this * other
-    override fun Double.div(other: Double): Double = this / other
+    override fun Double.div(other: Double): Double = if (other == 0.0) divisionByZero() else this / other
     override fun power(base: Double, exponent: UInt): Double = base.kpow(exponent.toDouble())
     override fun power(base: Double, exponent: ULong): Double = base.kpow(exponent.toDouble())
     override fun power(base: Double, exponent: Int): Double = base.kpow(exponent)
@@ -1185,7 +1193,7 @@ public data object FloatContext: Reification<Float>, Field<Float>, Order<Float>,
     override fun Float.plus(other: Float): Float = this + other
     override fun Float.minus(other: Float): Float = this - other
     override fun Float.times(other: Float): Float = this * other
-    override fun Float.div(other: Float): Float = this / other
+    override fun Float.div(other: Float): Float = if (other == 0.0f) divisionByZero() else this / other
     override fun power(base: Float, exponent: UInt): Float = base.kpow(exponent.toFloat())
     override fun power(base: Float, exponent: ULong): Float = base.kpow(exponent.toFloat())
     override fun power(base: Float, exponent: Int): Float = base.kpow(exponent)
