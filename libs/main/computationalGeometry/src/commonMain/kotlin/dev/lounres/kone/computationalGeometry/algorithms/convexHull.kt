@@ -33,11 +33,13 @@ import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.computationalGeometry.polytopes.Position
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.build
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
-
-// TODO: There is a problem: some mandatory contexts are used as implicit contexts taken from `KoneContextRegistry`.
 
 context(ring: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
 internal fun <
@@ -188,7 +190,6 @@ internal fun <
 
     check(subfacetsToProcess.isEmpty()) { "For some reason some subfacets are left after \"gift wrapping increment\" procedure" }
 
-    // TODO: Separate polytope creation and polytope finding
     return Polytope(dimension = subspaceDimension, faces = restConvexHullFaces).also {
         computedFacesRegistry[allVertices] = it
     }
@@ -336,16 +337,23 @@ public fun <
     Vector,
     Point,
 > constructConvexHullByGiftWrapping(
-    positionKey: Position<Point>,
-    vertices: KoneIterable<Polytope>,
+    pointType: SuppliedType,
+    vertices: KoneIterable<Point>,
     basis: ModuleBasis.Finite<Number, Vector>,
 ): Polytope {
     require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
+    val positionKey = Position<Point>(pointType)
     return giftWrappingFull(
         positionKey = positionKey,
         basis = basis,
         subspaceDimension = basis.size,
-        points = vertices,
+        points = vertices.map {
+            Polytope(
+                dimension = 0u,
+                faces = KoneList.empty(),
+                properties = Registry.build<Polytope> { positionKey correspondsTo it }
+            )
+        },
     ).polytope
 }
 
@@ -355,13 +363,13 @@ public fun <
     Vector,
     Point,
 > constructConvexHullByGiftWrapping(
-    positionKey: Position<Point>,
-    vertices: KoneIterable<Polytope>,
+    pointType: SuppliedType,
+    vertices: KoneIterable<Point>,
 ): Polytope {
     require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
     val verticesIterator = vertices.iterator()
-    val start = verticesIterator.getAndMoveNext().properties[positionKey]
-    val vectors = verticesIterator.toKoneList().map { it.properties[positionKey] - start }
+    val start = verticesIterator.getAndMoveNext()
+    val vectors = verticesIterator.toKoneList().map { it - start }
     
     val result = GramSchmidtOrthogonalizationIntermediateState<Number, Vector>(
         orthogonalizedBasis = KoneArrayGrowableList(),
@@ -371,7 +379,7 @@ public fun <
     for (vector in vectors) result.gramSchmidtOrthogonalizationStep(vector)
     
     return constructConvexHullByGiftWrapping(
-        positionKey = positionKey,
+        pointType = pointType,
         vertices = vertices,
         basis = object : ModuleBasis.Finite<Number, Vector> {
             override val size: UInt get() = result.orthogonalizedBasis.size

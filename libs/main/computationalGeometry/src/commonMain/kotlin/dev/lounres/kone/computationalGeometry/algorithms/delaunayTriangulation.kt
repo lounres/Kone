@@ -5,57 +5,28 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.basis.ModuleBasis
 import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
-import dev.lounres.kone.algebraic.isPositive
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.empty
-import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.map.KoneMutableMap
-import dev.lounres.kone.collections.map.associateByTo
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.collections.utils.filter
-import dev.lounres.kone.collections.utils.first
-import dev.lounres.kone.collections.utils.firstThat
-import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.collections.utils.mapTo
-import dev.lounres.kone.collections.utils.single
-import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
-import dev.lounres.kone.computationalGeometry.dot
-import dev.lounres.kone.computationalGeometry.lengthSquared
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
-import dev.lounres.kone.computationalGeometry.polytopes.Polytope
-import dev.lounres.kone.computationalGeometry.polytopes.Position
-import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
+import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.computationalGeometry.*
+import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -224,30 +195,32 @@ public fun <
     Number,
     Vector,
     Point,
-> MutablePolytopicConstruction.constructDelaunayTriangulation(
+> constructDelaunayTriangulation(
     numberType: SuppliedType,
     pointType: SuppliedType,
     vertices: KoneIterable<Point>,
-) {
-    val positionKey = Position<Point>(pointType = pointType)
-    val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>(
-        pointType =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.algorithms.ParaboloidPoint",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = pointType
-                    ),
+): PolytopicConstruction {
+    require(vertices.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
+    
+    val paraboloidPointType =
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        SuppliedType.Regular(
+            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.algorithms.ParaboloidPoint",
+            typeArguments = listOf(
+                SuppliedProjection.Regular(
+                    variance = OUT,
+                    type = numberType
                 ),
-                isNullable = false
-            )
-    )
+                SuppliedProjection.Regular(
+                    variance = OUT,
+                    type = pointType
+                ),
+            ),
+            isNullable = false
+        )
+    
+    val positionKey = Position<Point>(pointType = pointType)
+    val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>(paraboloidPointType)
     
     val paraboloidEuclideanSpaceOverRing = ParaboloidEuclideanSpaceOverRing(ring, euclideanSpace)
 
@@ -271,13 +244,9 @@ public fun <
         
         convexHull = paraboloidEuclideanSpaceOverRing {
             constructConvexHullByGiftWrapping(
-                positionKey = paraboloidPositionKey,
+                pointType = paraboloidPointType,
                 vertices = vertices.map { oldPosition ->
-                    Polytope(
-                        dimension = 0u,
-                        faces = KoneList.empty(),
-                        properties = Registry.build<Polytope> { paraboloidPositionKey correspondsTo ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared()) }
-                    )
+                    ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared())
                 },
                 basis = object : ModuleBasis.Finite<Number, ParaboloidVector<Number, Vector>> {
                     override val size: UInt get() = verticesDimension + 1u
@@ -301,6 +270,8 @@ public fun <
         keyEquality = Equality.absoluteFor(),
         keyHashing = Hashing.defaultFor(),
     )
+    
+    val result = MutablePolytopicConstruction(verticesDimension)
     
     if (convexHull.dimension == verticesDimension) {
         for (dim in 0u ..< convexHull.dimension) for (face in convexHull.faces[dim]) {
@@ -333,7 +304,7 @@ public fun <
                 }
             }
         )
-        add(finalPolytope)
+        result.add(finalPolytope)
     } else {
         val necessarySimplices = convexHull.faces[convexHull.dimension - 1u].filter { simplex ->
             paraboloidEuclideanSpaceOverRing {
@@ -371,7 +342,6 @@ public fun <
                         if (dim == 0u) Registry.build<Polytope> { positionKey correspondsTo face.properties[paraboloidPositionKey].point }
                         else Registry.Empty
                 )
-                this.add(polytope)
                 simplicesMapping[face] = polytope
             }
             val polytope = Polytope(
@@ -388,8 +358,9 @@ public fun <
                     }
                 }
             )
-            this.add(polytope)
-            simplicesMapping[simplex] = polytope
+            result.add(polytope)
         }
     }
+    
+    return result
 }
