@@ -21,10 +21,9 @@ import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.*
+import dev.lounres.kone.computationalGeometry.algorithms.implementations.giftWrapping
 import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
@@ -190,7 +189,7 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
 }
 
 @IgnorableReturnValue
-context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, order: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>, )
 public fun <
     Number,
     Vector,
@@ -242,12 +241,11 @@ public fun <
         
         val startPosition = vertices.first()
         
-        convexHull = paraboloidEuclideanSpaceOverRing {
-            constructConvexHullByGiftWrapping(
-                pointType = paraboloidPointType,
-                vertices = vertices.map { oldPosition ->
-                    ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared())
-                },
+        convexHull = context(paraboloidEuclideanSpaceOverRing, ConvexHullOverRingComputer.giftWrapping(ring, order, paraboloidEuclideanSpaceOverRing)) {
+            vertices.map { oldPosition ->
+                ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared())
+            }.convexHull(
+                pointType = pointType,
                 basis = object : ModuleBasis.Finite<Number, ParaboloidVector<Number, Vector>> {
                     override val size: UInt get() = verticesDimension + 1u
                     override fun get(index: UInt): ParaboloidVector<Number, Vector> =
@@ -286,10 +284,9 @@ public fun <
                         simplicesMapping[it]
                     }
                 },
-                properties =
-                    if (dim == 0u) Registry.build<Polytope> { positionKey correspondsTo face.properties[paraboloidPositionKey].point }
-                    else Registry.Empty
-            )
+            ) {
+                if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
+            }
             simplicesMapping[face] = newFace
         }
         val finalPolytope = Polytope(
@@ -322,7 +319,7 @@ public fun <
                 lastBasisVector.extraCoordinate.isPositive()
             }
         }
-        
+
         for (simplex in necessarySimplices) {
             for (dim in 0u .. simplex.dimension - 1u) for (face in simplex.faces[dim]) if (face !in simplicesMapping.keysView) {
                 val polytope = Polytope(
@@ -338,10 +335,9 @@ public fun <
                             simplicesMapping[it]
                         }
                     },
-                    properties =
-                        if (dim == 0u) Registry.build<Polytope> { positionKey correspondsTo face.properties[paraboloidPositionKey].point }
-                        else Registry.Empty
-                )
+                ) {
+                    if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
+                }
                 simplicesMapping[face] = polytope
             }
             val polytope = Polytope(

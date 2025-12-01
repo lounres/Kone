@@ -12,7 +12,7 @@ import dev.lounres.kone.algebraic.div
 public fun interface ModuleBasisDecomposition<out Number, in Vector, in Index> {
     public fun decompose(vector: Vector): Result<Number, Index>
     
-    public interface Finite<out Number, Vector> : ModuleBasisDecomposition<Number, Vector, UInt> {
+    public interface Finite<out Number, in Vector> : ModuleBasisDecomposition<Number, Vector, UInt> {
         public val size: UInt
     }
     

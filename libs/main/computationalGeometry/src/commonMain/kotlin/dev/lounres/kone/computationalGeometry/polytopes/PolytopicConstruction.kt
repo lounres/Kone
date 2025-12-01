@@ -12,14 +12,15 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.forEachIndexed
+import dev.lounres.kone.registry.MutableRegistry
 import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.build
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 @Suppress("EqualsOrHashCode")
@@ -35,6 +36,27 @@ public class Polytope(
     override fun equals(other: Any?): Boolean = this === other
 }
 
+public fun Polytope(
+    dimension: UInt,
+    faces: KoneList<KoneReifiedSet<Polytope>>,
+    propertiesBuilder: RegistryBuilder<Polytope>.() -> Unit
+): Polytope =
+    Polytope(
+        dimension = dimension,
+        faces = faces,
+        properties = Registry.build(propertiesBuilder),
+    )
+
+public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
+    get() =
+        if (dimension != 0u) faces[0u]
+        else KoneReifiedSet.of(
+            this,
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
+        )
+
 public interface PolytopicConstruction {
     public val spaceDimension: UInt
     
@@ -46,12 +68,12 @@ public interface PolytopicConstruction {
 public interface MutablePolytopicConstruction : PolytopicConstruction {
     public fun add(polytope: Polytope)
     public fun remove(polytope: Polytope)
-    override var properties: Registry
+    override val properties: MutableRegistry
 }
 
 public fun MutablePolytopicConstruction(
     spaceDimension: UInt,
-    properties: Registry = Registry.Empty,
+    properties: MutableRegistry = MutableRegistry(),
 ): MutablePolytopicConstruction = MutablePolytopicConstructionImpl(
     spaceDimension = spaceDimension,
     properties = properties,
@@ -59,7 +81,7 @@ public fun MutablePolytopicConstruction(
 
 private class MutablePolytopicConstructionImpl(
     override val spaceDimension: UInt,
-    override var properties: Registry
+    override val properties: MutableRegistry
 ) : MutablePolytopicConstruction {
     final override val polytopes: KoneList<KoneReifiedSet<Polytope>>
         field: KoneList<KoneMutableReifiedSet<Polytope>> =
@@ -84,21 +106,6 @@ private class MutablePolytopicConstructionImpl(
             polytopes[dim].removeAllThat { polytope in it.faces[polytope.dimension] }
     }
 }
-
-public class Position<Point>(public val pointType: SuppliedType) : RegistryKey<Point> {
-    override fun equals(other: Any?): Boolean = other is Position<*> && pointType == other.pointType
-    override fun hashCode(): Int = pointType.hashCode()
-}
-
-public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
-    get() =
-        if (dimension != 0u) faces[0u]
-        else KoneReifiedSet.of(
-            this,
-            elementReification = Reification.defaultFor(),
-            elementEquality = Equality.absoluteFor(),
-            elementHashing = Hashing.defaultFor(),
-        )
 
 
 
