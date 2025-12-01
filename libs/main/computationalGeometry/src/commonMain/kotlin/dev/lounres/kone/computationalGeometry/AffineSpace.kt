@@ -140,7 +140,7 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vector
 
 @OptIn(DelicateSuppliedTypeConstructor::class)
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType): Unit = with(koneContextRegistryBuilder) {
+public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType) {
     AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>(
         numberType,
         vectorType,
@@ -154,5 +154,5 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(
             ),
             isNullable = false,
         ),
-    ) correspondsTo AffineSpaceOverField.viaVectorSpace(this[VectorSpace.Key<Number, Vector>(numberType, vectorType)])
+    ) correspondsTo AffineSpaceOverField.viaVectorSpace(koneContextRegistryBuilder[VectorSpace.Key<Number, Vector>(numberType, vectorType)])
 }

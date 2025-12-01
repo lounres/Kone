@@ -151,7 +151,7 @@ public fun <Number> Module.Companion.mdList1(ring: CommutativeRing<Number>, dime
     MDList1Module(ring = ring, dimension = dimension)
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val mdList1Type = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
@@ -287,7 +287,7 @@ public fun <Number> VectorSpace.Companion.mdList1(field: Field<Number>, dimensio
     MDList1VectorSpace(field = field, dimension = dimension)
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val mdList1Type = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",

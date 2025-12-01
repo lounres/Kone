@@ -203,7 +203,7 @@ public data object SafeLongContext: Reification<Long>, EuclideanRing<Long>, Orde
 public val Long.Companion.safeContext: SafeLongContext get() = SafeLongContext
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun SafeLongContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun SafeLongContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Long",

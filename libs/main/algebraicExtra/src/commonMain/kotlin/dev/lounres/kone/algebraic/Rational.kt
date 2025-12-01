@@ -456,7 +456,7 @@ public data object RationalContext : Reification<Rational>, Field<Rational>, Ord
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun RationalContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun RationalContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val rationalSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",

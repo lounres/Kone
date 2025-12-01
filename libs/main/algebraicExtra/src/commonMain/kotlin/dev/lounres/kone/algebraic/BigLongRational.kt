@@ -16,7 +16,6 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withSuperkeys
 import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
@@ -28,7 +27,6 @@ import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
-import kotlin.math.sign
 
 
 @Serializable
@@ -154,7 +152,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
                 context(UBigLong.context) { this.denominator equalsTo other.denominator }
     override fun BigLongRational.isZero(): Boolean = context(BigLong.context) { this.numerator.isZero() }
     override fun BigLongRational.isOne(): Boolean =
-        this.numerator.sign == 1 && context(UBigLong.context) { this.numerator.absoluteValue equalsTo this.denominator }
+        this.numerator.sign.isPositive() && context(UBigLong.context) { this.numerator.absoluteValue equalsTo this.denominator }
     // endregion
     
     // region Integers conversion
@@ -186,7 +184,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun BigLongRational.div(other: Int): BigLongRational = context(Int.context, UBigLong.context) {
         if (other == 0) divisionByZero()
-        val sign = this.numerator.sign * other.sign
+        val sign = this.numerator.sign * other.sign()
         val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(abs(other).toUInt()))
         return BigLongRational(
             BigLong(sign, reducedNumerator),
@@ -247,7 +245,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun BigLongRational.div(other: Long): BigLongRational = context(Long.context, UBigLong.context) {
         if (other == 0L) divisionByZero()
-        val sign = this.numerator.sign * other.sign
+        val sign = this.numerator.sign * other.sign()
         val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(abs(other).toULong()))
         return BigLongRational(
             BigLong(sign, reducedNumerator),
@@ -308,7 +306,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun Int.div(other: BigLongRational): BigLongRational = context(Int.context, UBigLong.context) {
         if (other.isZero()) divisionByZero()
-        val sign = this.sign * other.numerator.sign
+        val sign = this.sign() * other.numerator.sign
         val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(abs(this).toUInt()), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
@@ -370,7 +368,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun Long.div(other: BigLongRational): BigLongRational = context(Long.context, UBigLong.context) {
         if (other.isZero()) divisionByZero()
-        val sign = this.sign * other.numerator.sign
+        val sign = this.sign() * other.numerator.sign
         val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(abs(this).toULong()), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
@@ -460,7 +458,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun BigLongRationalContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun BigLongRationalContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigLongRationalSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.BigLongRational",

@@ -321,7 +321,7 @@ public fun <Number> EuclideanSpaceOverField.Companion.mdList1(field: Field<Numbe
     MDList1EuclideanSpaceOverField(field, dimension)
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
         numberType,
@@ -354,11 +354,11 @@ public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: S
             ),
             isNullable = false,
         ),
-    ).withSuperkeys correspondsTo EuclideanSpaceOverRing.mdList1(this[Ring.Key<Number>(numberType)], dimension)
+    ).withSuperkeys correspondsTo EuclideanSpaceOverRing.mdList1(koneContextRegistryBuilder[Ring.Key<Number>(numberType)], dimension)
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt): Unit = with(koneContextRegistryBuilder) {
+public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
         numberType,
@@ -391,5 +391,5 @@ public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: 
             ),
             isNullable = false,
         ),
-    ).withSuperkeys correspondsTo EuclideanSpaceOverField.mdList1(this[Field.Key<Number>(numberType)], dimension)
+    ).withSuperkeys correspondsTo EuclideanSpaceOverField.mdList1(koneContextRegistryBuilder[Field.Key<Number>(numberType)], dimension)
 }

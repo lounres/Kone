@@ -145,7 +145,7 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun ByteContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun ByteContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val byteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Byte",
@@ -280,7 +280,7 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun ShortContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun ShortContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val shortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Short",
@@ -403,7 +403,7 @@ public val Int.Companion.context: IntContext get() = IntContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun IntContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun IntContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Int",
@@ -526,7 +526,7 @@ public val Long.Companion.context: LongContext get() = LongContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun LongContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun LongContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Long",
@@ -632,7 +632,7 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun UByteContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun UByteContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uByteSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UByte",
@@ -738,7 +738,7 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun UShortContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun UShortContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uShortSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UShort",
@@ -834,7 +834,7 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun UIntContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun UIntContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uIntSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.UInt",
@@ -930,7 +930,7 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun ULongContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun ULongContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uLongSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.ULong",
@@ -1079,7 +1079,7 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun DoubleContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun DoubleContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val doubleSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Double",
@@ -1228,7 +1228,7 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * - [Hashing].
  */
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun FloatContext.set(): Unit = with(koneContextRegistryBuilder) {
+public fun FloatContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val floatSuppliedType = SuppliedType.Regular(
         fullyQualifiedName = "kotlin.Float",

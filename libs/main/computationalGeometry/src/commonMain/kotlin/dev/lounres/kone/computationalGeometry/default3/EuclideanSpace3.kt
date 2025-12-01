@@ -249,9 +249,9 @@ public class EuclideanSpace3OverRing<Number>(
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun EuclideanSpace3OverRing.Companion.setFor(numberType: SuppliedType): Unit = with(koneContextRegistryBuilder) {
+public fun EuclideanSpace3OverRing.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace3OverRing.Key<Number>(numberType) correspondsTo EuclideanSpace3OverRing(this[Ring.Key<Number>(numberType)])
+    EuclideanSpace3OverRing.Key<Number>(numberType) correspondsTo EuclideanSpace3OverRing(koneContextRegistryBuilder[Ring.Key<Number>(numberType)])
 }
 
 public class EuclideanSpace3OverField<Number>(
@@ -421,7 +421,7 @@ public class EuclideanSpace3OverField<Number>(
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun EuclideanSpace3OverField.Companion.setFor(numberType: SuppliedType): Unit = with(koneContextRegistryBuilder) {
+public fun EuclideanSpace3OverField.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace3OverField.Key<Number>(numberType) correspondsTo EuclideanSpace3OverField(this[Field.Key<Number>(numberType)])
+    EuclideanSpace3OverField.Key<Number>(numberType) correspondsTo EuclideanSpace3OverField(koneContextRegistryBuilder[Field.Key<Number>(numberType)])
 }
