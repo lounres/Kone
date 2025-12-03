@@ -31,6 +31,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 // TODO: Add `(min|max)Maybe` and `(min|max)OrNull`
+// TODO: Add `KoneSequence`-targeted operations
 
 public fun <E : Comparable<E>> KoneIterable<E>.min(): E {
     val iterator = iterator()

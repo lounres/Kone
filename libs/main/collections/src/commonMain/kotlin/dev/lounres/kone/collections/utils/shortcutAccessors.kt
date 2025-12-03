@@ -8,6 +8,8 @@ package dev.lounres.kone.collections.utils
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.iterables.isEmpty
 import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.list.lastIndex
 
 
@@ -27,27 +29,48 @@ public operator fun <E> KoneList<E>.component13(): E = get(12u)
 public operator fun <E> KoneList<E>.component14(): E = get(13u)
 public operator fun <E> KoneList<E>.component15(): E = get(14u)
 
+public fun <E> KoneIterator<E>.first(): E =
+    if (!hasNext()) throw NoSuchElementException("Iterable is empty.") else getNext()
+
 public fun <E> KoneIterable<E>.first(): E =
+    iterator().let { if (!it.hasNext()) throw NoSuchElementException("Iterable is empty.") else it.getNext() }
+
+public fun <E> KoneSequence<E>.first(): E =
     iterator().let { if (!it.hasNext()) throw NoSuchElementException("Iterable is empty.") else it.getNext() }
 
 public fun <E> KoneList<E>.last(): E =
     if (isEmpty()) throw NoSuchElementException("List is empty.")
     else this[lastIndex]
 
-public fun <E> KoneIterable<E>.single(): E =
-    when {
-        size == 0u -> throw IllegalArgumentException("Iterable is empty")
-        size == 1u -> iterator().getNext()
-        else -> throw IllegalArgumentException("Iterable has more than one element")
-    }
-
-public fun <E> KoneIterable<E>.single(predicate: (E) -> Boolean): E {
-    val iterator = iterator()
-    while (iterator.hasNext() && !predicate(iterator.getNext())) iterator.moveNext()
-    if (!iterator.hasNext()) throw IllegalArgumentException("Iterable has no element matching the predicate")
-    val result = iterator.getNext()
-    iterator.moveNext()
-    while (iterator.hasNext() && !predicate(iterator.getNext())) iterator.moveNext()
-    if (iterator.hasNext()) throw IllegalArgumentException("Iterable has more than one element matching the predicate")
+public fun <E> KoneIterator<E>.single(): E {
+    while (hasNext()) moveNext()
+    if (!hasNext()) throw IllegalArgumentException("Iterable has no element matching the predicate.")
+    val result = getNext()
+    moveNext()
+    while (hasNext()) moveNext()
+    if (hasNext()) throw IllegalArgumentException("Iterable has more than one element matching the predicate.")
     return result
 }
+
+public fun <E> KoneIterable<E>.single(): E =
+    when {
+        size == 0u -> throw IllegalArgumentException("Iterable is empty.")
+        size == 1u -> iterator().getNext()
+        else -> throw IllegalArgumentException("Iterable has more than one element.")
+    }
+
+public fun <E> KoneSequence<E>.single(): E = iterator().single()
+
+public fun <E> KoneIterator<E>.single(predicate: (E) -> Boolean): E {
+    while (hasNext() && !predicate(getNext())) moveNext()
+    if (!hasNext()) throw IllegalArgumentException("Iterable has no element matching the predicate.")
+    val result = getNext()
+    moveNext()
+    while (hasNext() && !predicate(getNext())) moveNext()
+    if (hasNext()) throw IllegalArgumentException("Iterable has more than one element matching the predicate.")
+    return result
+}
+
+public fun <E> KoneIterable<E>.single(predicate: (E) -> Boolean): E = iterator().single(predicate)
+
+public fun <E> KoneSequence<E>.single(predicate: (E) -> Boolean): E = iterator().single(predicate)

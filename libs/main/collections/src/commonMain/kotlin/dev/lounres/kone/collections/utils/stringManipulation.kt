@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.next
 
 
@@ -18,7 +20,7 @@ internal fun <E> Appendable.appendElement(element: E, transform: ((E) -> CharSeq
     }
 }
 
-public fun <E, A : Appendable> KoneIterable<E>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): A {
+public fun <E, A : Appendable> KoneIterator<E>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): A {
     buffer.append(prefix)
     var count = 0u
     for (element in this) {
@@ -32,6 +34,17 @@ public fun <E, A : Appendable> KoneIterable<E>.joinTo(buffer: A, separator: Char
     return buffer
 }
 
-public fun <E> KoneIterable<E>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): String {
-    return joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
-}
+public fun <E, A : Appendable> KoneIterable<E>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): A =
+    iterator().joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
+
+public fun <E, A : Appendable> KoneSequence<E>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): A =
+    iterator().joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
+
+public fun <E> KoneIterator<E>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): String =
+    joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
+
+public fun <E> KoneIterable<E>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): String =
+    joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
+
+public fun <E> KoneSequence<E>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: UInt = UInt.MAX_VALUE, truncated: CharSequence = "...", transform: ((E) -> CharSequence)? = null): String =
+    joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
