@@ -27,7 +27,7 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.LeftModule",
+                fullyQualifiedName = "dev.lounres.kone.algebra.LeftModule",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -66,7 +66,7 @@ public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.RightModule",
+                fullyQualifiedName = "dev.lounres.kone.algebra.RightModule",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -102,7 +102,7 @@ public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModul
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Module",
+                fullyQualifiedName = "dev.lounres.kone.algebra.Module",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,

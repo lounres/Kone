@@ -5,7 +5,7 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package dev.lounres.kone.algebra
+package dev.lounres.kone.algebraic
 
 //import dev.lounres.kone.algebraic.Field
 //import dev.lounres.kone.algebraic.Ring

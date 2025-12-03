@@ -30,14 +30,14 @@ Linear algebra operates on vectors of vector spaces and linear operators from ve
 But in the case of specified bases, vectors and matrices can be represented as rectangular tables called "matrices".
 (Vectors are represented as tables with either column number one or row number one.)
 So there are classes
-<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-matrix/">`Matrix`</ApiLink>,
-<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-row-vector">`RowVector`</ApiLink>
-and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-column-vector/">`ColumnVector`</ApiLink>
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-matrix/">`Matrix`</ApiLink>,
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-row-vector">`RowVector`</ApiLink>
+and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-column-vector/">`ColumnVector`</ApiLink>
 that represent matrices, row vectors (one column tables), and column vectors (one row tables).
 Also, all of them have settable variants:
-<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-settable-matrix/">`SettableMatrix`</ApiLink>,
-<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-settable-row-vector">`SettableRowVector`</ApiLink>
-and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-settable-column-vector/">`SettableColumnVector`</ApiLink>.
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-settable-matrix/">`SettableMatrix`</ApiLink>,
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-settable-row-vector">`SettableRowVector`</ApiLink>
+and <ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-settable-column-vector/">`SettableColumnVector`</ApiLink>.
 
 :::note
 The classes are intended to be value classes.
@@ -48,7 +48,7 @@ But for now inheritance between value classes is [prohibited](https://youtrack.j
 
 Now, the main reason this module exists is our wish to perform algebraic operations on matrices and vectors.
 That's why we have interface
-<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebra/-vector-kategory/">`VectorKategory`</ApiLink>
+<ApiLink to="libs/main/linearAlgebra/dev.lounres.kone.algebraic/-vector-kategory/">`VectorKategory`</ApiLink>
 that represents the context for the operations.
 See its API reference for details about its operations.
 

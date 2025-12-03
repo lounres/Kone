@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.algebra.operations
+package dev.lounres.kone.algebraic.operations
 
 
 //public interface AntisymmetricityComputer<Number, in Content2: MDList2<Number>> : KoneContext {

@@ -47,7 +47,7 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Algebra",
+                fullyQualifiedName = "dev.lounres.kone.algebra.Algebra",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -92,7 +92,7 @@ public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, C
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeAlgebra",
+                fullyQualifiedName = "dev.lounres.kone.algebra.CommutativeAlgebra",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,

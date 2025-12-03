@@ -3,16 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.algebra
+package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.algebraic.Algebra
-import dev.lounres.kone.algebraic.CommutativeRing
-import dev.lounres.kone.algebraic.isOne
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.sumOf

@@ -3,17 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.algebra
+package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.algebraic.CommutativeRing
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Module
-import dev.lounres.kone.algebraic.VectorSpace
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1

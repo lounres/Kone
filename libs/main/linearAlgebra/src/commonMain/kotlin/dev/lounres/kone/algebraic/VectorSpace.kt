@@ -24,7 +24,7 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace",
+                fullyQualifiedName = "dev.lounres.kone.algebra.VectorSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -57,7 +57,7 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
             public val typeKey: SuppliedType.Regular =
                 @OptIn(DelicateSuppliedTypeConstructor::class)
                 SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional",
+                    fullyQualifiedName = "dev.lounres.kone.algebra.VectorSpace.FiniteDimensional",
                     typeArguments = listOf(
                         SuppliedProjection.Regular(
                             variance = INVARIANT,
