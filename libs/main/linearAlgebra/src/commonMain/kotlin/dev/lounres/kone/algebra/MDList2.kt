@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra
+package dev.lounres.kone.algebra
 
 import dev.lounres.kone.algebraic.Algebra
 import dev.lounres.kone.algebraic.CommutativeRing

@@ -3,18 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra.operations
-
-import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.RegistryBuilder
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+package dev.lounres.kone.algebra.operations
 
 
 //public interface AdjugateMatrixComputer<Number, in InputContent2: MDList2<Number>, out OutputContent2: MDList2<Number>> : KoneContext {

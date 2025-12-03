@@ -3,19 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra
+package dev.lounres.kone.algebra
 
-import dev.lounres.kone.algebraic.CommutativeGroup
-import dev.lounres.kone.algebraic.CommutativeMonoid
 import dev.lounres.kone.algebraic.CommutativeRing
-import dev.lounres.kone.algebraic.CommutativeSemigroup
 import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Group
-import dev.lounres.kone.algebraic.LeftModule
 import dev.lounres.kone.algebraic.Module
-import dev.lounres.kone.algebraic.Monoid
-import dev.lounres.kone.algebraic.RightModule
-import dev.lounres.kone.algebraic.Semigroup
 import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.isZero

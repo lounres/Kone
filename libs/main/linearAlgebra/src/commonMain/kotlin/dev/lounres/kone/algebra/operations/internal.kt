@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.linearAlgebra.operations
+package dev.lounres.kone.algebra.operations
 
 import dev.lounres.kone.collections.array.KoneMutableBooleanArray
 import dev.lounres.kone.collections.array.generate
