@@ -9,6 +9,7 @@ import dev.lounres.kone.algebraic.Module
 import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
@@ -31,9 +32,9 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<AffineSpaceOverRing<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -42,7 +43,7 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -55,12 +56,12 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in AffineSpaceOverRing<Number, Vector, Point>>> =
-            listOf(
-                Module.Key(elementType, vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverRing<Number, Vector, Point>> = ImpliedKeysRegistry {
+            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.AffineSpaceOverRing.Key<$numberType, $vectorType, $pointType>"
     }
 }
 
@@ -84,9 +85,9 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<AffineSpaceOverField<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -95,7 +96,7 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -108,13 +109,13 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in AffineSpaceOverField<Number, Vector, Point>>> =
-            listOf(
-                VectorSpace.Key(elementType, vectorType),
-                AffineSpaceOverRing.Key(elementType, vectorType, pointType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverField<Number, Vector, Point>> = ImpliedKeysRegistry {
+            VectorSpace.Key<Number, Vector>(numberType, vectorType) implies { it }
+            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.AffineSpaceOverField.Key<$numberType, $vectorType, $pointType>"
     }
 }
 

@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -38,7 +39,7 @@ public interface Group<Number> : Monoid<Number> {
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<Group<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -47,17 +48,17 @@ public interface Group<Number> : Monoid<Number> {
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     )
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in Group<Number>>> =
-            listOf(
-                Monoid.Key(elementType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<Group<Number>> = ImpliedKeysRegistry {
+            Monoid.Key<Number>(numberType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<$numberType>"
     }
 }
 
@@ -124,7 +125,7 @@ public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Num
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<CommutativeGroup<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -133,18 +134,18 @@ public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Num
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     )
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in CommutativeGroup<Number>>> =
-            listOf(
-                Group.Key(elementType),
-                CommutativeMonoid.Key(elementType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeGroup<Number>> = ImpliedKeysRegistry {
+            Group.Key<Number>(numberType) implies { it }
+            CommutativeMonoid.Key<Number>(numberType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<$numberType>"
     }
 }
 

@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -41,17 +42,17 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     public companion object;
     
     public class Key<Number, Vector>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
     ) : RegistryKey<Algebra<Number, Vector>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebra.Algebra",
+                fullyQualifiedName = "dev.lounres.kone.algebraic.Algebra",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -60,13 +61,13 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in Algebra<Number, Vector>>> =
-            listOf(
-                Module.Key(elementType, vectorType),
-                Ring.Key(vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<Algebra<Number, Vector>> = ImpliedKeysRegistry {
+            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+            Ring.Key<Vector>(vectorType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.Algebra.Key<$numberType, $vectorType>"
     }
 }
 
@@ -86,17 +87,17 @@ public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, C
     public companion object;
     
     public class Key<Number, Vector>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
     ) : RegistryKey<CommutativeAlgebra<Number, Vector>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebra.CommutativeAlgebra",
+                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeAlgebra",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -105,12 +106,12 @@ public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, C
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in CommutativeAlgebra<Number, Vector>>> =
-            listOf(
-                Algebra.Key(elementType, vectorType),
-                CommutativeRing.Key(vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeAlgebra<Number, Vector>> = ImpliedKeysRegistry {
+            Algebra.Key<Number, Vector>(numberType, vectorType) implies { it }
+            CommutativeRing.Key<Vector>(vectorType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeAlgebra.Key<$numberType, $vectorType>"
     }
 }

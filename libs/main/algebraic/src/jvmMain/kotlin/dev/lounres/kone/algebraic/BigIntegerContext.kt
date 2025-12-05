@@ -19,7 +19,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import java.math.BigInteger
@@ -133,6 +133,6 @@ public fun BigIntegerContext.set() {
         Order.Key(bigIntegerSuppliedType),
         Hashing.Key(bigIntegerSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo BigIntegerContext
+        it.withImplied correspondsTo BigIntegerContext
     }
 }

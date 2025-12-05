@@ -18,7 +18,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -216,6 +216,6 @@ public fun SafeLongContext.set() {
         Order.Key(longSuppliedType),
         Hashing.Key(longSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo SafeLongContext
+        it.withImplied correspondsTo SafeLongContext
     }
 }

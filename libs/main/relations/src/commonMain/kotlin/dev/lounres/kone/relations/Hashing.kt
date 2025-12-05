@@ -40,7 +40,7 @@ public interface Hashing<in Element> : KoneContext {
      * Registry key for [Hashing] interface in [KoneContextRegistry].
      */
     public class Key<Element>(
-        elementType: SuppliedType,
+        public val elementType: SuppliedType,
     ) : RegistryKey<Hashing<Element>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -56,6 +56,7 @@ public interface Hashing<in Element> : KoneContext {
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.relations.Hashing.Key<$elementType>"
     }
 }
 

@@ -7,7 +7,6 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
@@ -20,7 +19,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.KSerializer
@@ -469,6 +468,6 @@ public fun RationalContext.set() {
         Order.Key(rationalSuppliedType),
         Hashing.Key(rationalSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo RationalContext
+        it.withImplied correspondsTo RationalContext
     }
 }

@@ -5,72 +5,25 @@
 
 package dev.lounres.kone.registry
 
+import dev.lounres.kone.registry.internal.EmptyIterator
+import dev.lounres.kone.registry.internal.RegistryKeyMapWrapper
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-/**
- * Describes how [RegistryKey]s are equated and stored in [Registry].
- */
-public interface RegistryKeyContext {
-    /**
-     * Checks equality between the [left] and the [right] keys.
-     *
-     * This equality is used by [Registry] to decide how the keys are stored and what value to retrieve by the key.
-     */
-    public fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean
-    
-    /**
-     * Defines hash code of the key.
-     *
-     * This hash code is used by [Registry] to decide how the keys are stored and what value to retrieve by the key.
-     */
-    public fun hashCodeOf(key: RegistryKey<*>): Int
-}
-
-/**
- * Naive implementation of the [RegistryKeyContext].
- */
-// TODO: Review `NaiveRegistryKeyContext` and all `RegistryKey` implementations
-public object NaiveRegistryKeyContext : RegistryKeyContext {
-    override fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean = left::class == right::class && left == right
-    override fun hashCodeOf(key: RegistryKey<*>): Int = key.hashCode()
-}
-
-/**
- * A key that is used to retrieve a value of type [T] from [Registry].
- */
-public interface RegistryKey<T> {
-    /**
-     * Key context that describes equality between this key and the others.
-     */
-    public val context: RegistryKeyContext get() = NaiveRegistryKeyContext
-    public val superkeys: List<RegistryKey<in T>> get() = emptyList()
-}
-
-/**
- * A wrapper of [RegistryKey] that can be used in Kotlin stdlib's maps.
- */
-// TODO: Implement custom map for registry keys and remove `RegistryKeyMapWrapper`.
-public class RegistryKeyMapWrapper<T> internal constructor(public val key: RegistryKey<T>) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RegistryKeyMapWrapper<*>) return false
-        val thisEquality = this.key.context
-        val otherEquality = other.key.context
-        if (thisEquality !== otherEquality) return false
-        
-        return thisEquality.checkEqualityOf(this.key, other.key)
-    }
-    override fun hashCode(): Int = key.context.hashCodeOf(key)
-    override fun toString(): String = key.toString()
-}
+public data class Registration<T>(
+    val key: RegistryKey<T>,
+    val value: T,
+)
 
 /**
  * Represents a type-safe associative array.
  * It means that it stores association like `Key<T> -> T` for arbitrary types `T`.
  */
-public interface Registry {
+public interface Registry : Iterable<Registration<*>> {
     /**
      * Checks if the [registryKey] is stored in the registry and have association with anything.
      */
@@ -82,11 +35,6 @@ public interface Registry {
     // TODO: Define exception that is thrown by this method
     public operator fun <T> get(registryKey: RegistryKey<out T>): T
     
-    /**
-     * Represents this registry as Kotlin stdlib's map.
-     */
-    public fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?>
-    
     public companion object;
     
     public object Empty : Registry {
@@ -94,7 +42,7 @@ public interface Registry {
         override fun <T> get(registryKey: RegistryKey<out T>): T {
             TODO("Not yet implemented")
         }
-        override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = emptyMap()
+        override fun iterator(): Iterator<Registration<*>> = EmptyIterator
     }
 }
 
@@ -129,28 +77,62 @@ public infix fun <T> RegistryKey<in T>.correspondsTo(value: T) {
     registry[this] = value
 }
 
-context(_: MutableRegistry)
-public val <T> RegistryKey<in T>.withSuperkeys: Set<RegistryKeyMapWrapper<in T>>
-    get() = buildSet {
-        val keysToCheck = mutableSetOf(RegistryKeyMapWrapper(this@withSuperkeys))
-        while (keysToCheck.isNotEmpty()) {
-            val nextKey = keysToCheck.first()
-            keysToCheck.remove(nextKey)
-            add(nextKey)
-            for (newKey in nextKey.key.superkeys) {
-                val newKeyWrapper = RegistryKeyMapWrapper(newKey)
-                if (newKeyWrapper !in this) keysToCheck.add(newKeyWrapper)
-            }
-        }
-    }
-
-public operator fun <T> MutableRegistry.set(registryKeys: Set<RegistryKeyMapWrapper<in T>>, value: T) {
-    for (key in registryKeys) set(key.key, value)
+public fun interface RegistryImplication<in T> {
+    public fun substitute(value: T): Registry
 }
 
 context(_: MutableRegistry)
-public infix fun <T> Set<RegistryKeyMapWrapper<in T>>.correspondsTo(value: T) {
-    for (key in this) key.key correspondsTo value
+public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
+    get() {
+        data class RegistryKeyInfo(
+            val path: List<RegistryKeyMapWrapper<*>>,
+            val producer: (T) -> Any?,
+        )
+        val results = buildMap<RegistryKeyMapWrapper<*>, RegistryKeyInfo> {
+            val keysToCheck = mutableMapOf<RegistryKeyMapWrapper<*>, RegistryKeyInfo>(
+                RegistryKeyMapWrapper(this@withImplied) to RegistryKeyInfo(emptyList(), { it })
+            )
+            while (keysToCheck.isNotEmpty()) {
+                val (nextKey, nextInfo) = keysToCheck.entries.first()
+                keysToCheck.remove(nextKey)
+                this[nextKey] = nextInfo
+                val newPath = nextInfo.path + nextKey
+                for ((newKey, newProducer) in nextKey.key.impliedKeys) {
+                    @Suppress("UNCHECKED_CAST")
+                    newProducer as (Any?) -> Any?
+                    val newInfo = RegistryKeyInfo(
+                        path = newPath,
+                        producer = { newProducer(nextInfo.producer(it)) },
+                    )
+                    if (RegistryKeyMapWrapper(newKey) in newPath) error("Cyclic implications: ${(newPath + RegistryKeyMapWrapper(newKey)).joinToString(separator = " -> ") { it.key.toString() }}")
+                    val info = this[RegistryKeyMapWrapper(newKey)] ?: keysToCheck[RegistryKeyMapWrapper(newKey)]
+                    if (info != null) {
+                        if (info.path.withIndex().any { (index, pathKey) -> newPath[index] != pathKey })
+                            error(
+                                "Overload implications for key ${newKey}: " +
+                                        "path # 1 is ${(info.path + RegistryKeyMapWrapper(newKey)).joinToString(separator = " -> ") { it.key.toString() }}, " +
+                                        "path # 2 is ${(newPath + RegistryKeyMapWrapper(newKey)).joinToString(separator = " -> ") { it.key.toString() }}"
+                            )
+                    } else {
+                        keysToCheck[RegistryKeyMapWrapper(newKey)] = newInfo
+                    }
+                }
+            }
+        }
+        return { value ->
+            MutableRegistryImpl(
+                results.mapValuesTo(mutableMapOf()) { it.value.producer(value) },
+            )
+        }
+    }
+
+public operator fun <T> MutableRegistry.set(registryImplication: RegistryImplication<T>, value: T) {
+    setFrom(registryImplication.substitute(value))
+}
+
+context(registry: MutableRegistry)
+public infix fun <T> RegistryImplication<T>.correspondsTo(value: T) {
+    registry.setFrom(this.substitute(value))
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -162,13 +144,15 @@ internal class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMa
         content[RegistryKeyMapWrapper(registryKey)] = value
     }
     override fun setFrom(from: Registry) {
-        content.putAll(from.toMap())
+        for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
     }
     override fun remove(registryKey: RegistryKey<*>) {
         content.remove(RegistryKeyMapWrapper(registryKey))
     }
     
-    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> = content
+    override fun iterator(): Iterator<Registration<*>> {
+        TODO("Not yet implemented")
+    }
 }
 
 public fun MutableRegistry(): MutableRegistry = MutableRegistryImpl(mutableMapOf())
@@ -202,7 +186,7 @@ public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Mutab
      */
     override fun setFrom(from: Registry) {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content.putAll(from.toMap())
+        for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
     }
     
     override fun remove(registryKey: RegistryKey<*>) {
@@ -210,9 +194,8 @@ public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Mutab
         content.remove(RegistryKeyMapWrapper(registryKey))
     }
     
-    override fun toMap(): Map<RegistryKeyMapWrapper<*>, Any?> {
-        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        return content.toMap()
+    override fun iterator(): Iterator<Registration<*>> {
+        TODO("Not yet implemented")
     }
     
     @PublishedApi

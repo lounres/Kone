@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -42,7 +43,7 @@ public interface Monoid<Number> : Semigroup<Number> {
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<Monoid<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -51,17 +52,17 @@ public interface Monoid<Number> : Semigroup<Number> {
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     )
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in Monoid<Number>>> =
-            listOf(
-                Semigroup.Key(elementType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> = ImpliedKeysRegistry {
+            Semigroup.Key<Number>(numberType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.Monoid.Key<$numberType>"
     }
 }
 
@@ -129,7 +130,7 @@ public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigrou
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<CommutativeMonoid<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -138,17 +139,17 @@ public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigrou
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     )
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in CommutativeMonoid<Number>>> =
-            listOf(
-                Monoid.Key(elementType),
-                CommutativeSemigroup.Key(elementType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeMonoid<Number>> = ImpliedKeysRegistry {
+            Monoid.Key<Number>(numberType) implies { it }
+            CommutativeSemigroup.Key<Number>(numberType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeMonoid.Key<$numberType>"
     }
 }

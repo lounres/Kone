@@ -17,7 +17,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
@@ -97,6 +97,6 @@ public fun IntModuloRing.Companion.set(modulus: Int) {
         Ring.Key(intModuloSuppliedType),
         Hashing.Key(intModuloSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo ring
+        it.withImplied correspondsTo ring
     }
 }

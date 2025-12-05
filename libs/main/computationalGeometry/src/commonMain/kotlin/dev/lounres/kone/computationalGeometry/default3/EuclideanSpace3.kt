@@ -27,6 +27,7 @@ import dev.lounres.kone.multidimensionalCollections.contentEquals
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
@@ -176,7 +177,7 @@ public class EuclideanSpace3OverRing<Number>(
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<EuclideanSpace3OverRing<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -185,7 +186,7 @@ public class EuclideanSpace3OverRing<Number>(
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -194,7 +195,7 @@ public class EuclideanSpace3OverRing<Number>(
                             typeArguments = listOf(
                                 SuppliedProjection.Regular(
                                     variance = OUT,
-                                    type = elementType
+                                    type = numberType
                                 ),
                             ),
                             isNullable = false
@@ -207,7 +208,7 @@ public class EuclideanSpace3OverRing<Number>(
                             typeArguments = listOf(
                                 SuppliedProjection.Regular(
                                     variance = OUT,
-                                    type = elementType
+                                    type = numberType
                                 ),
                             ),
                             isNullable = false
@@ -217,34 +218,34 @@ public class EuclideanSpace3OverRing<Number>(
                 isNullable = false
             )
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val superkeys: List<RegistryKey<in EuclideanSpace3OverRing<Number>>> =
-            listOf(
-                EuclideanSpaceOverRing.Key(
-                    elementType,
-                    SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = elementType
-                            ),
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace3OverRing<Number>> = ImpliedKeysRegistry {
+            EuclideanSpaceOverRing.Key<Number, Vector3<Number>, Point3<Number>>(
+                numberType,
+                SuppliedType.Regular(
+                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
+                    typeArguments = listOf(
+                        SuppliedProjection.Regular(
+                            variance = OUT,
+                            type = numberType
                         ),
-                        isNullable = false
                     ),
-                    SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = elementType
-                            ),
-                        ),
-                        isNullable = false
-                    ),
+                    isNullable = false
                 ),
-            )
+                SuppliedType.Regular(
+                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
+                    typeArguments = listOf(
+                        SuppliedProjection.Regular(
+                            variance = OUT,
+                            type = numberType
+                        ),
+                    ),
+                    isNullable = false
+                ),
+            ) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default3.EuclideanSpace3OverRing.Key<$numberType>"
     }
 }
 
@@ -348,7 +349,7 @@ public class EuclideanSpace3OverField<Number>(
     public companion object;
     
     public class Key<Number>(
-        elementType: SuppliedType,
+        public val numberType: SuppliedType,
     ) : RegistryKey<EuclideanSpace3OverField<Number>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -357,7 +358,7 @@ public class EuclideanSpace3OverField<Number>(
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -366,7 +367,7 @@ public class EuclideanSpace3OverField<Number>(
                             typeArguments = listOf(
                                 SuppliedProjection.Regular(
                                     variance = OUT,
-                                    type = elementType
+                                    type = numberType
                                 ),
                             ),
                             isNullable = false
@@ -379,7 +380,7 @@ public class EuclideanSpace3OverField<Number>(
                             typeArguments = listOf(
                                 SuppliedProjection.Regular(
                                     variance = OUT,
-                                    type = elementType
+                                    type = numberType
                                 ),
                             ),
                             isNullable = false
@@ -389,34 +390,34 @@ public class EuclideanSpace3OverField<Number>(
                 isNullable = false
             )
         @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val superkeys: List<RegistryKey<in EuclideanSpace3OverField<Number>>> =
-            listOf(
-                EuclideanSpaceOverField.Key(
-                    elementType,
-                    SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = elementType
-                            ),
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace3OverField<Number>> = ImpliedKeysRegistry {
+            EuclideanSpaceOverField.Key<Number, Vector3<Number>, Point3<Number>>(
+                numberType,
+                SuppliedType.Regular(
+                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default3.Vector3",
+                    typeArguments = listOf(
+                        SuppliedProjection.Regular(
+                            variance = OUT,
+                            type = numberType
                         ),
-                        isNullable = false
                     ),
-                    SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = elementType
-                            ),
-                        ),
-                        isNullable = false
-                    ),
+                    isNullable = false
                 ),
-            )
+                SuppliedType.Regular(
+                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point3",
+                    typeArguments = listOf(
+                        SuppliedProjection.Regular(
+                            variance = OUT,
+                            type = numberType
+                        ),
+                    ),
+                    isNullable = false
+                ),
+            ) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default3.EuclideanSpace3OverField.Key<$numberType>"
     }
 }
 

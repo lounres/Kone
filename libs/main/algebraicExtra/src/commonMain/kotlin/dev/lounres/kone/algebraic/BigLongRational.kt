@@ -14,7 +14,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
@@ -471,6 +471,6 @@ public fun BigLongRationalContext.set() {
         Order.Key(bigLongRationalSuppliedType),
         Hashing.Key(bigLongRationalSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo BigLongRationalContext
+        it.withImplied correspondsTo BigLongRationalContext
     }
 }

@@ -21,7 +21,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.math.pow as kpow
@@ -158,7 +158,7 @@ public fun ByteContext.set() {
         Order.Key(byteSuppliedType),
         Hashing.Key(byteSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo ByteContext
+        it.withImplied correspondsTo ByteContext
     }
 }
 
@@ -293,7 +293,7 @@ public fun ShortContext.set() {
         Order.Key(shortSuppliedType),
         Hashing.Key(shortSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo ShortContext
+        it.withImplied correspondsTo ShortContext
     }
 }
 
@@ -416,7 +416,7 @@ public fun IntContext.set() {
         Order.Key(intSuppliedType),
         Hashing.Key(intSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo IntContext
+        it.withImplied correspondsTo IntContext
     }
 }
 
@@ -539,7 +539,7 @@ public fun LongContext.set() {
         Order.Key(longSuppliedType),
         Hashing.Key(longSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo LongContext
+        it.withImplied correspondsTo LongContext
     }
 }
 
@@ -645,7 +645,7 @@ public fun UByteContext.set() {
         Order.Key(uByteSuppliedType),
         Hashing.Key(uByteSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo UByteContext
+        it.withImplied correspondsTo UByteContext
     }
 }
 
@@ -751,7 +751,7 @@ public fun UShortContext.set() {
         Order.Key(uShortSuppliedType),
         Hashing.Key(uShortSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo UShortContext
+        it.withImplied correspondsTo UShortContext
     }
 }
 
@@ -847,7 +847,7 @@ public fun UIntContext.set() {
         Order.Key(uIntSuppliedType),
         Hashing.Key(uIntSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo UIntContext
+        it.withImplied correspondsTo UIntContext
     }
 }
 
@@ -943,7 +943,7 @@ public fun ULongContext.set() {
         Order.Key(uLongSuppliedType),
         Hashing.Key(uLongSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo ULongContext
+        it.withImplied correspondsTo ULongContext
     }
 }
 
@@ -1092,7 +1092,7 @@ public fun DoubleContext.set() {
         Order.Key(doubleSuppliedType),
         Hashing.Key(doubleSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo DoubleContext
+        it.withImplied correspondsTo DoubleContext
     }
 }
 
@@ -1241,6 +1241,6 @@ public fun FloatContext.set() {
         Order.Key(floatSuppliedType),
         Hashing.Key(floatSuppliedType),
     ).forEach {
-        it.withSuperkeys correspondsTo FloatContext
+        it.withImplied correspondsTo FloatContext
     }
 }

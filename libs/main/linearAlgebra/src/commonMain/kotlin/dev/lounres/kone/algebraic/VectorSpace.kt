@@ -5,11 +5,11 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
 
 
 public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
@@ -18,17 +18,17 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
     public companion object;
     
     public class Key<Number, Vector>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
     ) : RegistryKey<VectorSpace<Number, Vector>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebra.VectorSpace",
+                fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace",
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -37,12 +37,12 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in VectorSpace<Number, Vector>>> =
-            listOf(
-                Module.Key(elementType, vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> = ImpliedKeysRegistry {
+            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.Key<$numberType, $vectorType>"
     }
     
     public interface FiniteDimensional<Number, Vector> : VectorSpace<Number, Vector> {
@@ -51,17 +51,17 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
         public companion object;
         
         public class Key<Number, Vector>(
-            elementType: SuppliedType,
-            vectorType: SuppliedType,
+            public val numberType: SuppliedType,
+            public val vectorType: SuppliedType,
         ) : RegistryKey<FiniteDimensional<Number, Vector>> {
             public val typeKey: SuppliedType.Regular =
                 @OptIn(DelicateSuppliedTypeConstructor::class)
                 SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebra.VectorSpace.FiniteDimensional",
+                    fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional",
                     typeArguments = listOf(
                         SuppliedProjection.Regular(
                             variance = INVARIANT,
-                            type = elementType
+                            type = numberType
                         ),
                         SuppliedProjection.Regular(
                             variance = INVARIANT,
@@ -70,12 +70,12 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                     ),
                     isNullable = false
                 )
-            override val superkeys: List<RegistryKey<in FiniteDimensional<Number, Vector>>> =
-                listOf(
-                    VectorSpace.Key(elementType, vectorType),
-                )
+            override val impliedKeys: ImpliedKeysRegistry<FiniteDimensional<Number, Vector>> = ImpliedKeysRegistry {
+                VectorSpace.Key<Number, Vector>(numberType, vectorType) implies { it }
+            }
             override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
             override fun hashCode(): Int = typeKey.hashCode()
+            override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional.Key<$numberType, $vectorType>"
         }
     }
 }

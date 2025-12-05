@@ -54,7 +54,7 @@ public interface Order<in Element> : KoneContext {
      * Registry key for [Order] interface in [KoneContextRegistry].
      */
     public class Key<Element>(
-        elementType: SuppliedType,
+        public val elementType: SuppliedType,
     ) : RegistryKey<Order<Element>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -70,6 +70,7 @@ public interface Order<in Element> : KoneContext {
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.relations.Order.Key<$elementType>"
     }
 }
 

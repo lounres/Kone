@@ -6,6 +6,7 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -18,9 +19,9 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<EuclideanSpaceOverRing<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -29,7 +30,7 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -42,13 +43,13 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in EuclideanSpaceOverRing<Number, Vector, Point>>> =
-            listOf(
-                AffineSpaceOverRing.Key(elementType, vectorType, pointType),
-                EuclideanVectorSpaceOverRing.Key(elementType, vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpaceOverRing<Number, Vector, Point>> = ImpliedKeysRegistry {
+            EuclideanVectorSpaceOverRing.Key<Number, Vector>(numberType, vectorType) implies { it }
+            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing.Key<$numberType, $vectorType, $pointType>"
     }
 }
 
@@ -60,9 +61,9 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        elementType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<EuclideanSpaceOverField<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -71,7 +72,7 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
                 typeArguments = listOf(
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
-                        type = elementType
+                        type = numberType
                     ),
                     SuppliedProjection.Regular(
                         variance = INVARIANT,
@@ -84,14 +85,14 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
                 ),
                 isNullable = false
             )
-        override val superkeys: List<RegistryKey<in EuclideanSpaceOverField<Number, Vector, Point>>> =
-            listOf(
-                EuclideanSpaceOverRing.Key(elementType, vectorType, pointType),
-                AffineSpaceOverField.Key(elementType, vectorType, pointType),
-                EuclideanVectorSpaceOverField.Key(elementType, vectorType),
-            )
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpaceOverField<Number, Vector, Point>> = ImpliedKeysRegistry {
+            EuclideanVectorSpaceOverField.Key<Number, Vector>(numberType, vectorType) implies { it }
+            AffineSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+            EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+        }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField.Key<$numberType, $vectorType, $pointType>"
     }
 }
 

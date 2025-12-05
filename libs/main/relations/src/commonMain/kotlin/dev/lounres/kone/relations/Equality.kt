@@ -42,7 +42,7 @@ public interface Equality<in Element> : KoneContext {
      * Registry key for [Equality] interface in [KoneContextRegistry].
      */
     public class Key<Element>(
-        elementType: SuppliedType,
+        public val elementType: SuppliedType,
     ) : RegistryKey<Equality<Element>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -58,6 +58,7 @@ public interface Equality<in Element> : KoneContext {
             )
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<$elementType>"
     }
 }
 

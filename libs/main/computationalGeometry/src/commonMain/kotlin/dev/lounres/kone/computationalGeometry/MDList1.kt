@@ -23,7 +23,7 @@ import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withSuperkeys
+import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -354,7 +354,7 @@ public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: S
             ),
             isNullable = false,
         ),
-    ).withSuperkeys correspondsTo EuclideanSpaceOverRing.mdList1(koneContextRegistryBuilder[Ring.Key<Number>(numberType)], dimension)
+    ).withImplied correspondsTo EuclideanSpaceOverRing.mdList1(koneContextRegistryBuilder[Ring.Key<Number>(numberType)], dimension)
 }
 
 context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
@@ -391,5 +391,5 @@ public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: 
             ),
             isNullable = false,
         ),
-    ).withSuperkeys correspondsTo EuclideanSpaceOverField.mdList1(koneContextRegistryBuilder[Field.Key<Number>(numberType)], dimension)
+    ).withImplied correspondsTo EuclideanSpaceOverField.mdList1(koneContextRegistryBuilder[Field.Key<Number>(numberType)], dimension)
 }
