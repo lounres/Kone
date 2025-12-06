@@ -185,7 +185,7 @@ public fun <E> KoneList<E>.allCombinations(): KoneSequence<KoneList<E>> {
             for (i in 0u ..< firstToIncrease) currentState[i] = 0u
             currentElements = KoneList.build {
                 +collection[firstToIncrease]
-                +currentElements.drop(firstToIncrease)
+                this += currentElements.drop(firstToIncrease)
             }
         }
     }

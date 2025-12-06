@@ -6,6 +6,7 @@
 package dev.lounres.kone.collections.heap
 
 import dev.lounres.kone.collections.array.KoneMutableBooleanArray
+import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeapDescription
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryListBackedMinimumHeapOverFixedCapacityListDescription
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryListBackedMinimumHeapOverGrowableListDescription
@@ -14,7 +15,9 @@ import dev.lounres.kone.collections.heap.implementations.KoneFibonacciGCMinimumH
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.addAllFrom
 import dev.lounres.kone.collections.list.build
+import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.collections.list.of
@@ -167,7 +170,7 @@ class MinimumHeapImplementationsTests : FunSpec({
                         nodes.forEach { node.isDetached.shouldBeFalse() }
                     }
 
-                    val isNodeDetached = KoneMutableBooleanArray(nodes.size) { false }
+                    val isNodeDetached = KoneMutableBooleanArray.generate(nodes.size) { false }
 
                     for ((index, item) in init.withIndex()) withClue("Removing element # $index") {
                         val min = heap.takeMinimum()
@@ -226,12 +229,12 @@ class MinimumHeapImplementationsTests : FunSpec({
                             .flatMap { indicesToChange ->
                                 cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
                                     .map { newValues ->
-                                        KoneList(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
+                                        KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
                                     }
                             }
                     ) { changes ->
-                        val newInit = KoneList.build<UInt> {
-                            +newInput
+                        val newInit = KoneList.build {
+                            addAllFrom(newInput)
                             for (change in changes) this[change.index] = change.newValue
                             sort()
                         }
@@ -255,7 +258,7 @@ class MinimumHeapImplementationsTests : FunSpec({
                             for (node in nodes) node.isDetached.shouldBeFalse()
                         }
 
-                        val isNodeDetached = KoneMutableBooleanArray(nodes.size) { false }
+                        val isNodeDetached = KoneMutableBooleanArray.generate(nodes.size) { false }
 
                         for ((index, item) in newInit.withIndex()) withClue("Removing element # $index") {
                             val min = heap.takeMinimum()

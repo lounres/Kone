@@ -372,11 +372,6 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
         result.add(this)
     }
     
-    public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result ?: error("This KoneList builder is already used")
-        result.addAllFrom(this)
-    }
-    
     @PublishedApi
     internal fun build(): KoneList<Element> {
         val result = result ?: error("This KoneList builder is already used")
