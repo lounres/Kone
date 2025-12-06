@@ -36,9 +36,9 @@ public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : K
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        numberType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<ConvexHullOverRingComputer<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -62,6 +62,7 @@ public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : K
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.ConvexHullOverRingComputer.Key<$numberType, $vectorType, $pointType>"
     }
 }
 

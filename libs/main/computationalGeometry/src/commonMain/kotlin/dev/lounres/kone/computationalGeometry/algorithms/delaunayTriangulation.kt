@@ -15,8 +15,6 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.IN
-import kotlin.reflect.KVariance.INVARIANT
 
 
 public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in Point> : KoneContext {
@@ -27,9 +25,9 @@ public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in
     public companion object;
     
     public class Key<Number, Vector, Point>(
-        numberType: SuppliedType,
-        vectorType: SuppliedType,
-        pointType: SuppliedType,
+        public val numberType: SuppliedType,
+        public val vectorType: SuppliedType,
+        public val pointType: SuppliedType,
     ) : RegistryKey<DelaunayTriangulationOverRingComputer<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -53,6 +51,7 @@ public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in
             )
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer.Key<$numberType, $vectorType, $pointType>"
     }
 }
 
