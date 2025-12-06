@@ -30,7 +30,6 @@ import kotlin.reflect.KVariance.INVARIANT
 
 public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : KoneContext {
     public fun KoneIterable<Point>.convexHull(
-        pointType: SuppliedType,
         basis: ModuleBasis.Finite<Number, Vector>,
     ): Polytope
     
@@ -40,7 +39,7 @@ public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : K
         numberType: SuppliedType,
         vectorType: SuppliedType,
         pointType: SuppliedType,
-    ) : RegistryKey<EuclideanSpaceOverRing<Number, Vector, Point>> {
+    ) : RegistryKey<ConvexHullOverRingComputer<Number, Vector, Point>> {
         public val typeKey: SuppliedType.Regular =
             @OptIn(DelicateSuppliedTypeConstructor::class)
             SuppliedType.Regular(
@@ -68,22 +67,19 @@ public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : K
 
 context(convexHullComputer: ConvexHullOverRingComputer<Number, Vector, Point>)
 public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(
-    pointType: SuppliedType,
     basis: ModuleBasis.Finite<Number, Vector>,
 ): Polytope = with(convexHullComputer) {
-    this@convexHull.convexHull(pointType, basis)
+    this@convexHull.convexHull(basis)
 }
 
 context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>, convexHullComputer: ConvexHullOverRingComputer<Number, Vector, Point>)
-public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(
-    pointType: SuppliedType,
-): Polytope = convexHull(
-    pointType = pointType,
+public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(): Polytope = convexHull(
     basis = pointsetBasis(),
 )
 
+// TODO: Move somewhere
 context(ring: Ring<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
-private fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleBasis.Finite<Number, Vector> {
+internal fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleBasis.Finite<Number, Vector> {
     val verticesIterator = this.iterator()
     val start = verticesIterator.getAndMoveNext()
     val vectors = verticesIterator.toKoneList().map { it - start }
@@ -106,31 +102,6 @@ private fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleB
         }
     }
 }
-
-//context(koneContextRegistry: KoneContextRegistry, _: Ring<Number>, _: Order<Number>, _: EuclideanKategory<Number>)
-//public fun <
-//    Number,
-//    Polytope: PolytopicConstructionPolytope<Number, Polytope, Vertex>,
-//    Vertex: PolytopicConstructionVertex<Number, Polytope, Vertex>,
-//> ExtendablePolytopicConstruction<Number, Polytope, Vertex>.constructConvexHullByGiftWrapping(
-//    vertexSuppliedType: SuppliedType,
-//    polytopeSuppliedType: SuppliedType,
-//    vertices: KoneIterable<Vertex>,
-//): Polytope {
-//    require(vertices.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
-//    return giftWrappingFull(
-//        vertexReification = koneContextRegistry[Reification.Key<Vertex>(vertexSuppliedType)],
-//        vertexEquality = koneContextRegistry[Equality.Key<Vertex>(vertexSuppliedType)],
-//        vertexHashing = koneContextRegistry.getOrNull(Hashing.Key<Vertex>(vertexSuppliedType)),
-//        vertexOrder = koneContextRegistry.getOrNull(Order.Key<Vertex>(vertexSuppliedType)),
-//        polytopeReification = koneContextRegistry[Reification.Key<Polytope>(polytopeSuppliedType)],
-//        polytopeEquality = koneContextRegistry[Equality.Key<Polytope>(polytopeSuppliedType)],
-//        polytopeHashing = koneContextRegistry.getOrNull(Hashing.Key<Polytope>(polytopeSuppliedType)),
-//        polytopeOrder = koneContextRegistry.getOrNull(Order.Key<Polytope>(polytopeSuppliedType)),
-//        subspaceDimension = spaceDimension,
-//        points = vertices,
-//    ).polytope
-//}
 
 // TODO: Finish migration to new API.
 

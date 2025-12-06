@@ -331,12 +331,12 @@ private fun <
 }
 
 private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, Point>(
+    private val pointType: SuppliedType,
     private val ring: Ring<Number>,
     private val order: Order<Number>,
     private val euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : ConvexHullOverRingComputer<Number, Vector, Point> {
     override fun KoneIterable<Point>.convexHull(
-        pointType: SuppliedType,
         basis: ModuleBasis.Finite<Number, Vector>
     ): Polytope {
         require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
@@ -360,11 +360,13 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, Point>(
 }
 
 public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.giftWrapping(
+    pointType: SuppliedType,
     ring: Ring<Number>,
     order: Order<Number>,
     euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : ConvexHullOverRingComputer<Number, Vector, Point> =
     ConvexHullOverRingViaGiftWrappingComputer(
+        pointType = pointType,
         ring = ring,
         order = order,
         euclideanSpaceOverRing = euclideanSpaceOverRing,
@@ -375,9 +377,11 @@ public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.setGiftW
     numberType: SuppliedType,
     vectorType: SuppliedType,
     pointType: SuppliedType,
-) : ConvexHullOverRingComputer<Number, Vector, Point> =
-    ConvexHullOverRingViaGiftWrappingComputer(
+) {
+    ConvexHullOverRingComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo ConvexHullOverRingViaGiftWrappingComputer(
+        pointType = pointType,
         ring = koneContextRegistryBuilder[Ring.Key<Number>(numberType)],
         order = koneContextRegistryBuilder[Order.Key<Number>(numberType)],
         euclideanSpaceOverRing = koneContextRegistryBuilder[EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
     )
+}

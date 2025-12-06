@@ -3,13 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.computationalGeometry.algorithms
+package dev.lounres.kone.computationalGeometry.algorithms.implementations
 
+import dev.lounres.kone.algebraic.Sign
+import dev.lounres.kone.algebraic.isPositive
+import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.collections.Disposable
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {
-    fun sign(element: E): Int // TODO: Replace with `ComparisonResult` from Kone
+    fun sign(element: E): Sign
 }
 
 internal interface SearchTreeNodeForBentleyOttmann<E> {
@@ -447,12 +450,12 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                 is TwoNodeHolder -> {
                     val subtreeElementSign = sign.sign(subtree.element.element)
                     when {
-                        subtreeElementSign > 0 -> {
+                        subtreeElementSign.isPositive() -> {
                             upperBound = subtree.element
                             subtree = subtree.firstChild
                         }
                         
-                        subtreeElementSign == 0 -> return onCoincidence(subtree.element)
+                        subtreeElementSign.isZero() -> return onCoincidence(subtree.element)
                         else -> {
                             lowerBound = subtree.element
                             subtree = subtree.secondChild
@@ -463,17 +466,17 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                     val subtreeFirstElementSign = sign.sign(subtree.firstElement.element)
                     val subtreeSecondElementSign = sign.sign(subtree.secondElement.element)
                     when {
-                        subtreeFirstElementSign > 0 -> {
+                        subtreeFirstElementSign.isPositive() -> {
                             upperBound = subtree.firstElement
                             subtree = subtree.firstChild
                         }
-                        subtreeFirstElementSign == 0 -> return onCoincidence(subtree.firstElement)
-                        subtreeSecondElementSign > 0 -> {
+                        subtreeFirstElementSign.isZero() -> return onCoincidence(subtree.firstElement)
+                        subtreeSecondElementSign.isPositive() -> {
                             lowerBound = subtree.firstElement
                             upperBound = subtree.secondElement
                             subtree = subtree.secondChild
                         }
-                        subtreeSecondElementSign == 0 -> return onCoincidence(subtree.secondElement)
+                        subtreeSecondElementSign.isZero() -> return onCoincidence(subtree.secondElement)
                         else -> {
                             lowerBound = subtree.secondElement
                             subtree = subtree.thirdChild
