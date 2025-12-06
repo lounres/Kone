@@ -25,6 +25,7 @@ import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.computationalGeometry.AffineSpaceOverField
+import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.algorithms.BulkPlanarSegmentsIntersectionsOverFieldComputer
 import dev.lounres.kone.computationalGeometry.algorithms.IntersectionComputer
 import dev.lounres.kone.computationalGeometry.algorithms.SegmentWithSegmentIntersectionOverField
@@ -33,7 +34,10 @@ import dev.lounres.kone.computationalGeometry.curves.Line
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareTo
 import dev.lounres.kone.relations.compareWith
@@ -41,6 +45,7 @@ import dev.lounres.kone.relations.contains
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.relations.rangeTo
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 private sealed interface EventForBentleyOttmann<out Number, out Vector, out Point> {
@@ -305,3 +310,16 @@ public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldCompu
         numberOrder = numberOrder,
         euclideanSpace = euclideanSpace,
     )
+
+context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann(
+    numberType: SuppliedType,
+    vectorType: SuppliedType,
+    pointType: SuppliedType,
+) {
+    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann(
+        numberField = koneContextRegistryBuilder[Field.Key<Number>(numberType)],
+        numberOrder = koneContextRegistryBuilder[Order.Key<Number>(numberType)],
+        euclideanSpace = koneContextRegistryBuilder[EuclideanSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+    )
+}
