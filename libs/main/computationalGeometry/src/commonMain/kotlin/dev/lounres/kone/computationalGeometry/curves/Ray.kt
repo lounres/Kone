@@ -7,8 +7,10 @@ package dev.lounres.kone.computationalGeometry.curves
 
 import dev.lounres.kone.computationalGeometry.AffineSpaceOverRing
 import dev.lounres.kone.computationalGeometry.minus
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 //@JvmInline
 public /*value*/ data class Ray<out Vector, out Point>(
     public val start: Point,

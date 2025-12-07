@@ -9,6 +9,7 @@ import dev.lounres.kone.algebraic.Sign
 import dev.lounres.kone.algebraic.isPositive
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.collections.Disposable
+import dev.lounres.kone.collections.detachedNodeException
 
 
 internal fun interface RelativeSignForBentleyOttmann<E> {
@@ -36,6 +37,7 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
     private var minimum: Node<E>? = null
     
     private fun NodeHolder<E>?.replaceChild(oldChild: NodeHolder<E>, newChild: NodeHolder<E>) {
+        newChild.parent = this
         when (this) {
             null -> rootHolder = newChild
             is TwoNodeHolder ->
@@ -54,7 +56,12 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         }
     }
     
-    private tailrec fun NodeHolder<E>?.replaceChild(oldChild: NodeHolder<E>, firstNewChild: NodeHolder<E>, node: Node<E>, secondNewChild: NodeHolder<E>) {
+    private tailrec fun NodeHolder<E>?.replaceChild(
+        oldChild: NodeHolder<E>,
+        firstNewChild: NodeHolder<E>,
+        node: Node<E>,
+        secondNewChild: NodeHolder<E>
+    ) {
         when (this) {
             null -> {
                 check(rootHolder === oldChild) { "Received not a child of the parent" }
@@ -95,8 +102,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                         )
                     else -> throw IllegalStateException("Received not a child of the parent")
                 }
-                
-                newNodeHolder.parent = parent
                 
                 parent.replaceChild(this, newNodeHolder)
             }
@@ -173,7 +178,10 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         }
     }
     
-    private tailrec fun NodeHolder<E>?.replaceChildWithReference(oldChild: NodeHolder<E>, referredChild: NodeHolder<E>?) {
+    private tailrec fun NodeHolder<E>?.replaceChildWithReference(
+        oldChild: NodeHolder<E>,
+        referredChild: NodeHolder<E>?
+    ) {
         when (this) {
             null -> {
                 check(rootHolder === oldChild) { "For some reason non-root holder tries to replace root one" }
@@ -505,7 +513,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                     },
                     secondChild = null,
                 )
-                newHolder.parent = holder.parent
                 holder.parent.replaceChild(holder, newHolder)
                 holder.dispose()
             }
@@ -570,6 +577,7 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                 size--
             }
         }
+        node.detach()
     }
     
     override fun add(element: E, sign: RelativeSignForBentleyOttmann<E>): SearchTreeNodeForBentleyOttmann<E> =
@@ -614,7 +622,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                             oldChild = lowerBoundHolder,
                             newChild = newLowerBoundHolder,
                         )
-                        newLowerBoundHolder.parent = parent
                         lowerBoundHolder.dispose()
                     }
                     upperBoundHolder.isItBottom && upperBoundHolder is TwoNodeHolder -> {
@@ -631,7 +638,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                             oldChild = upperBoundHolder,
                             newChild = newUpperBoundHolder,
                         )
-                        newUpperBoundHolder.parent = parent
                         upperBoundHolder.dispose()
                     }
                     lowerBoundHolder.isItBottom && upperBoundHolder.isItBottom -> {
@@ -721,7 +727,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                             oldChild = minimumHolder,
                             newChild = newMinimumHolder
                         )
-                        newMinimumHolder.parent = parent
                     }
                     is ThreeNodeHolder ->
                         minimumHolder.parent.replaceChild(
@@ -766,7 +771,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
                             oldChild = maximumHolder,
                             newChild = newMaximumHolder
                         )
-                        newMaximumHolder.parent = parent
                     }
                     is ThreeNodeHolder ->
                         maximumHolder.parent.replaceChild(
@@ -807,14 +811,14 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         override var isDisposed: Boolean = false
             private set
         
+        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
+        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override var parent: NodeHolder<E>? = null
         private var _element: Node<E>? = element
         var element: Node<E>
             get() = _element!!
             set(value) { _element = value }
         
-        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
-        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override fun dispose() {
             if (isDisposed) return
             _tree = null
@@ -822,6 +826,7 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
             firstChild = null
             _element = null
             secondChild = null
+            isDisposed = true
         }
     }
     internal class ThreeNodeHolder<E>(
@@ -836,6 +841,8 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         override var isDisposed: Boolean = false
             private set
         
+        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
+        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override var parent: NodeHolder<E>? = null
         private var _firstElement: Node<E>? = firstElement
         var firstElement: Node<E>
@@ -846,8 +853,6 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
             get() = _secondElement!!
             set(value) { _secondElement = value }
         
-        private var _tree: TwoThreeTreeForBentleyOttmann<E>? = tree
-        override val tree: TwoThreeTreeForBentleyOttmann<E> get() = _tree!!
         override fun dispose() {
             if (isDisposed) return
             _tree = null
@@ -915,6 +920,9 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
     internal class Node<E>(
         override var element: E,
     ) : SearchTreeNodeForBentleyOttmann<E> {
+        var isDetached: Boolean = false
+            private set
+        
         private var _holder: NodeHolder<E>? = null
         internal var holder: NodeHolder<E>
             get() = _holder!!
@@ -924,10 +932,17 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         override var previousNode: Node<E>? = null
             internal set
         
-        override fun remove() {
-            if (_holder == null) throw IllegalStateException("The node has already been removed")
-            _holder!!.tree.removeNode(this)
+        fun detach() {
+            if (isDetached) return
             _holder = null
+            nextNode = null
+            previousNode = null
+            isDetached = true
+        }
+        
+        override fun remove() {
+            if (_holder == null) detachedNodeException()
+            _holder!!.tree.removeNode(this)
         }
     }
 }
