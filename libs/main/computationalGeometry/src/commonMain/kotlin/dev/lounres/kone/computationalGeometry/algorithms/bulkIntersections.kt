@@ -16,10 +16,20 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
+public fun interface BulkIntersectionComputer<in Target, out Result> {
+    public fun intersect(leftIndex: UInt, left: Target, rightIndex: UInt, right: Target): Result
+}
+
+public typealias SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point> =
+        BulkIntersectionComputer<Segment<Vector, Point>, SegmentWithSegmentIntersectionOverField<Number, Vector, Point>?>
+
+public fun <Target, Result> IntersectionComputer<Target, Target, Result>.asBulkIntersectionComputer(): BulkIntersectionComputer<Target, Result> =
+    { _, left, _, right -> intersect(left, right) }
+
 public fun interface BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point> : KoneContext {
     public fun KoneList<Segment<Vector, Point>>.intersections(
         basis: VectorSpaceBasis.Finite<Number, Vector>,
-        intersectionComputer: SegmentWithSegmentIntersectionOverFieldComputer<Number, Vector, Point>,
+        intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
     ): KoneSequence<IntersectionResult<Number, Vector, Point>>
     
     public data class IntersectionResult<out Number, out Vector, out Point>(
@@ -66,9 +76,22 @@ public fun interface BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Ve
 context(bulkIntersectionsComputer: BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>)
 public fun <Number, Vector, Point> KoneList<Segment<Vector, Point>>.intersections(
     basis: VectorSpaceBasis.Finite<Number, Vector>,
-    intersectionComputer: SegmentWithSegmentIntersectionOverFieldComputer<Number, Vector, Point>,
+    intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
 ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> =
     with(bulkIntersectionsComputer) { this@intersections.intersections(basis, intersectionComputer) }
+
+context(bulkIntersectionsComputer: BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>)
+public fun <Number, Vector, Point> KoneList<Segment<Vector, Point>>.intersections(
+    basis: VectorSpaceBasis.Finite<Number, Vector>,
+    intersectionComputer: SegmentWithSegmentIntersectionOverFieldComputer<Number, Vector, Point>,
+): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> =
+    intersections(basis, intersectionComputer.asBulkIntersectionComputer())
+
+context(bulkIntersectionsComputer: BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>)
+public fun <Number, Vector, Point> KoneList<Segment<Vector, Point>>.hasIntersections(
+    basis: VectorSpaceBasis.Finite<Number, Vector>,
+    intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
+): Boolean = intersections(basis, intersectionComputer).iterator().hasNext()
 
 context(bulkIntersectionsComputer: BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>)
 public fun <Number, Vector, Point> KoneList<Segment<Vector, Point>>.hasIntersections(
