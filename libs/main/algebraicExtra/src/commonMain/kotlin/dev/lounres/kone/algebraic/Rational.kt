@@ -6,11 +6,11 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
@@ -20,6 +20,7 @@ import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImplied
+import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.KSerializer
@@ -29,445 +30,490 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.jvm.JvmField
 import kotlin.jvm.JvmInline
 
 
-@Serializable(with = RationalSerializer::class)
-public class Rational {
-    @JvmField
-    public val numerator: Long
-    @JvmField
-    public val denominator: Long
+//@Serializable(with = RationalSerializer::class)
+//public class Rational {
+//    @JvmField
+//    public val numerator: Long
+//    @JvmField
+//    public val denominator: Long
+//
+//    internal constructor(numerator: Long, denominator: Long, toCheckInput: Boolean = true) {
+//        if (toCheckInput) {
+//            if (denominator == 0L) divisionByZero()
+//
+//            val greatestCommonDivisor = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
+//
+//            this.numerator = numerator / greatestCommonDivisor
+//            this.denominator = denominator / greatestCommonDivisor
+//        } else {
+//            this.numerator = numerator
+//            this.denominator = denominator
+//        }
+//    }
+//
+//    public constructor(numerator: Long, denominator: Long) {
+//        if (denominator == 0L) divisionByZero()
+//
+//        val greatestCommonDivider = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
+//
+//        this.numerator = numerator / greatestCommonDivider
+//        this.denominator = denominator / greatestCommonDivider
+//    }
+//    public constructor(numerator: Long, denominator: Int) : this(numerator, denominator.toLong())
+//    public constructor(numerator: Int, denominator: Long) : this(numerator.toLong(), denominator)
+//    public constructor(numerator: Int, denominator: Int) : this(numerator.toLong(), denominator.toLong())
+//    public constructor(numerator: Long) {
+//        this.numerator = numerator
+//        this.denominator = 1L
+//    }
+//    public constructor(numerator: Int) : this(numerator.toLong())
+//
+//    override fun equals(other: Any?): Boolean =
+//        if (other is Rational) numerator == other.numerator && denominator == other.denominator
+//        else false
+//
+//    override fun hashCode(): Int = 31 * numerator.hashCode() + denominator.hashCode()
+//
+//    override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
+//
+//    public companion object {
+//        public val context: RationalContext get() = RationalContext
+//    }
+//}
 
-    internal constructor(numerator: Long, denominator: Long, toCheckInput: Boolean = true) {
-        if (toCheckInput) {
-            if (denominator == 0L) divisionByZero()
-
-            val greatestCommonDivisor = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
-
-            this.numerator = numerator / greatestCommonDivisor
-            this.denominator = denominator / greatestCommonDivisor
-        } else {
-            this.numerator = numerator
-            this.denominator = denominator
-        }
-    }
-
-    public constructor(numerator: Long, denominator: Long) {
-        if (denominator == 0L) divisionByZero()
-
-        val greatestCommonDivider = gcd(numerator, denominator).let { if (denominator < 0L) -it else it }
-
-        this.numerator = numerator / greatestCommonDivider
-        this.denominator = denominator / greatestCommonDivider
-    }
-    public constructor(numerator: Long, denominator: Int) : this(numerator, denominator.toLong())
-    public constructor(numerator: Int, denominator: Long) : this(numerator.toLong(), denominator)
-    public constructor(numerator: Int, denominator: Int) : this(numerator.toLong(), denominator.toLong())
-    public constructor(numerator: Long) {
-        this.numerator = numerator
-        this.denominator = 1L
-    }
-    public constructor(numerator: Int) : this(numerator.toLong())
-
-    override fun equals(other: Any?): Boolean =
-        if (other is Rational) numerator == other.numerator && denominator == other.denominator
-        else false
-
-    override fun hashCode(): Int = 31 * numerator.hashCode() + denominator.hashCode()
-
-    override fun toString(): String = if (denominator == 1L) "$numerator" else "$numerator/$denominator"
-
-    public companion object {
-        public val context: RationalContext get() = RationalContext
-    }
-}
-
-internal object RationalSerializer : KSerializer<Rational> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("dev.lounres.kone.algebraic.Rational", PrimitiveKind.STRING)
-    
-    override fun serialize(encoder: Encoder, value: Rational) {
-        encoder.encodeString(value.toString())
-    }
-    
-    override fun deserialize(decoder: Decoder): Rational {
-        val string = decoder.decodeString()
-        return when (string.count { it == '/' }) {
-            0 -> Rational(string.toLong())
-            1 -> Rational(string.substringBefore("/").toLong(), string.substringAfter("/").toLong())
-            else -> TODO()
-        }
-    }
-}
-
-@JvmInline
-internal value class QuotientsByGCD(val first: Long, val second: Long) {
-    operator fun component1(): Long = first
-    operator fun component2(): Long = second
-}
-
-internal fun divideByGCD(first: Long, second: Long): QuotientsByGCD {
-    val gcd = gcd(first, second)
-    return if (gcd == 0L) QuotientsByGCD(0L, 0L) else QuotientsByGCD(first / gcd, second / gcd)
-}
-
-// TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
-
-public data object RationalContext : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
-    // region Reification
-    override fun contains(element: Any?): Boolean = element is Rational
-    override fun reifyMaybe(element: Any?): Maybe<Rational> = if (element is Rational) Some(element) else None
-    override fun reifyOrNull(element: Any?): Rational? = element as? Rational
-    override fun reify(element: Any?): Rational = element as? Rational ?: reificationException()
-    // endregion
-    
-    // region Constants
-    public override val zero: Rational = Rational(0L)
-    public override val one: Rational = Rational(1L)
-    // endregion
-
-    // region Equality, comparison, and hashing
-    public override infix fun Rational.equalsTo(other: Rational): Boolean = this == other
-    public override fun Rational.isZero(): Boolean = numerator == 0L
-    public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1L
-
-    public override fun Rational.compareWith(other: Rational): ComparisonResult {
-        val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
-        val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
-
-        return context(Long.context) { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
-    }
-    public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
-    // endregion
-
-    // region Integers conversion
-    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
-    public override fun valueOf(arg: UInt): Rational = Rational(arg.toLong())
-    public override fun valueOf(arg: Long): Rational = Rational(arg)
-    public override fun valueOf(arg: ULong): Rational = Rational(arg.toLong())
-    // endregion
-    
-    // region Rational-Int operations
-    public override operator fun Rational.plus(other: Int): Rational =
-        Rational(
-            numerator + denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.minus(other: Int): Rational =
-        Rational(
-            numerator - denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    @Suppress("NAME_SHADOWING")
-    public override operator fun Rational.times(other: Int): Rational {
-        val other = other.toLong()
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
-        return Rational(
-            numerator * reducedOther,
-            reducedDenominator,
-            toCheckInput = false
-        )
-    }
-    @Suppress("NAME_SHADOWING")
-    public override operator fun Rational.div(other: Int): Rational {
-        val other = other.toLong()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
-        return Rational(
-            reducedNumerator,
-            denominator * reducedOther,
-            toCheckInput = false
-        )
-    }
-    // endregion
-    
-    // region Rational-UInt operations
-    public override operator fun Rational.plus(other: UInt): Rational =
-        Rational(
-            numerator + denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.minus(other: UInt): Rational =
-        Rational(
-            numerator - denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    @Suppress("NAME_SHADOWING")
-    public override operator fun Rational.times(other: UInt): Rational {
-        val other = other.toLong()
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
-        return Rational(
-            numerator * reducedOther,
-            reducedDenominator,
-            toCheckInput = false
-        )
-    }
-    @Suppress("NAME_SHADOWING")
-    public override operator fun Rational.div(other: UInt): Rational {
-        val other = other.toLong()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
-        return Rational(
-            reducedNumerator,
-            denominator * reducedOther,
-            toCheckInput = false
-        )
-    }
-    // endregion
-
-    // region Rational-Long operations
-    public override operator fun Rational.plus(other: Long): Rational =
-        Rational(
-            numerator + denominator * other,
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.minus(other: Long): Rational =
-        Rational(
-            numerator - denominator * other,
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.times(other: Long): Rational {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
-        return Rational(
-            numerator * reducedOther,
-            reducedDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Rational.div(other: Long): Rational {
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
-        return Rational(
-            reducedNumerator,
-            denominator * reducedOther,
-            toCheckInput = false
-        )
-    }
-    // endregion
-    
-    // region Rational-ULong operations
-    public override operator fun Rational.plus(other: ULong): Rational =
-        Rational(
-            numerator + denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.minus(other: ULong): Rational =
-        Rational(
-            numerator - denominator * other.toLong(),
-            denominator,
-            toCheckInput = false
-        )
-    public override operator fun Rational.times(other: ULong): Rational {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other.toLong())
-        return Rational(
-            numerator * reducedOther,
-            reducedDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Rational.div(other: ULong): Rational {
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other.toLong())
-        return Rational(
-            reducedNumerator,
-            denominator * reducedOther,
-            toCheckInput = false
-        )
-    }
-    // endregion
-
-    // region Int-Rational operations
-    public override operator fun Int.plus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() + other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun Int.minus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() - other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun Int.times(other: Rational): Rational {
-        val thiz = this.toLong()
-        val (reducedThis, reducedOtherDenominator) = divideByGCD(thiz, other.denominator)
-        return Rational(
-            other.numerator * reducedThis,
-            reducedOtherDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Int.div(other: Rational): Rational {
-        val thiz = this.toLong()
-        val (reducedThis, reducedOtherNumerator) = divideByGCD(thiz, other.numerator)
-        return Rational(
-            other.denominator * reducedThis,
-            reducedOtherNumerator,
-            toCheckInput = false
-        )
-    }
-    // endregion
-    
-    // region UInt-Rational operations
-    public override operator fun UInt.plus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() + other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun UInt.minus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() - other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun UInt.times(other: Rational): Rational {
-        val thiz = this.toLong()
-        val (reducedThis, reducedOtherDenominator) = divideByGCD(thiz, other.denominator)
-        return Rational(
-            other.numerator * reducedThis,
-            reducedOtherDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun UInt.div(other: Rational): Rational {
-        val thiz = this.toLong()
-        val (reducedThis, reducedOtherNumerator) = divideByGCD(thiz, other.numerator)
-        return Rational(
-            other.denominator * reducedThis,
-            reducedOtherNumerator,
-            toCheckInput = false
-        )
-    }
-    // endregion
-
-    // region Long-Rational operations
-    public override operator fun Long.plus(other: Rational): Rational =
-        Rational(
-            other.denominator * this + other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun Long.minus(other: Rational): Rational =
-        Rational(
-            other.denominator * this - other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun Long.times(other: Rational): Rational {
-        val (reducedThis, reducedOtherDenominator) = divideByGCD(this, other.denominator)
-        return Rational(
-            other.numerator * reducedThis,
-            reducedOtherDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Long.div(other: Rational): Rational {
-        val (reducedThis, reducedOtherNumerator) = divideByGCD(this, other.numerator)
-        return Rational(
-            other.denominator * reducedThis,
-            reducedOtherNumerator,
-            toCheckInput = false
-        )
-    }
-    // endregion
-    
-    // region ULong-Rational operations
-    public override operator fun ULong.plus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() + other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun ULong.minus(other: Rational): Rational =
-        Rational(
-            other.denominator * this.toLong() - other.numerator,
-            other.denominator,
-            toCheckInput = false
-        )
-    public override operator fun ULong.times(other: Rational): Rational {
-        val (reducedThis, reducedOtherDenominator) = divideByGCD(this.toLong(), other.denominator)
-        return Rational(
-            other.numerator * reducedThis,
-            reducedOtherDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun ULong.div(other: Rational): Rational {
-        val (reducedThis, reducedOtherNumerator) = divideByGCD(this.toLong(), other.numerator)
-        return Rational(
-            other.denominator * reducedThis,
-            reducedOtherNumerator,
-            toCheckInput = false
-        )
-    }
-    // endregion
-
-    // region Rational-Rational operations
-    public override operator fun Rational.unaryMinus(): Rational = Rational(-numerator, denominator, false)
-    public override operator fun Rational.plus(other: Rational): Rational {
-        val denominatorsGcd = gcd(denominator, other.denominator)
-        val reducedThisDenominator = denominator / denominatorsGcd
-        val reducedOtherDenominator = other.denominator / denominatorsGcd
-        val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
-        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
-        return Rational(
-            reducedNumeratorCandidate,
-            reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Rational.minus(other: Rational): Rational {
-        val denominatorsGcd = gcd(denominator, other.denominator)
-        val reducedThisDenominator = denominator / denominatorsGcd
-        val reducedOtherDenominator = other.denominator / denominatorsGcd
-        val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator
-        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
-        return Rational(
-            reducedNumeratorCandidate,
-            reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Rational.times(other: Rational): Rational {
-        val (reducedThisDenominator, reducedOtherNumeratorGcd) = divideByGCD(denominator, other.numerator)
-        val (reducedOtherDenominator, reducedThisNumeratorGcd) = divideByGCD(other.denominator, numerator)
-        return Rational(
-            reducedThisNumeratorGcd * reducedOtherNumeratorGcd,
-            reducedThisDenominator * reducedOtherDenominator,
-            toCheckInput = false
-        )
-    }
-    public override operator fun Rational.div(other: Rational): Rational {
-        val (reducedThisNumerator, reducedOtherNumerator) = divideByGCD(this.numerator, other.numerator)
-        val (reducedThisDenominator, reducedOtherDenominator) = divideByGCD(this.denominator, other.denominator)
-        return Rational(
-            reducedThisNumerator * reducedOtherDenominator,
-            reducedThisDenominator * reducedOtherNumerator
-        )
-    }
-    // endregion
-}
-
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
-public fun RationalContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val rationalSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
-    listOf<RegistryKey<in RationalContext>>(
-        Reification.Key(rationalSuppliedType),
-        Field.Key(rationalSuppliedType),
-        Order.Key(rationalSuppliedType),
-        Hashing.Key(rationalSuppliedType),
-    ).forEach {
-        it.withImplied correspondsTo RationalContext
-    }
-}
+//@Serializable(with = RationalSerializer::class)
+////@JvmInline
+//public /*value*/ data class Rational internal constructor(
+//    public val numerator: Long,
+//    public val denominator: ULong = 1uL,
+//) {
+//    override fun toString(): String =
+//        if (denominator == 1uL) "$numerator"
+//        else "$numerator/$denominator"
+//
+//    public companion object {
+//        public val context: RationalContext get() = RationalContext
+//    }
+//}
+//
+//public fun Rational.Companion.from(numerator: Long, denominator: ULong = 1uL): Rational =
+//    when {
+//        denominator == 0UL -> divisionByZero()
+//        numerator == Long.MIN_VALUE -> {
+//            val numerator = numerator.toULong()
+//            val greatestCommonDivisor = ULong.context { gcd(numerator, denominator) }
+//            Rational(-(numerator / greatestCommonDivisor).toLong(), denominator / greatestCommonDivisor)
+//        }
+//        numerator < 0L -> {
+//            val numerator = (-numerator).toULong()
+//            val greatestCommonDivisor = ULong.context { gcd(numerator, denominator) }
+//            Rational(-(numerator / greatestCommonDivisor).toLong(), denominator / greatestCommonDivisor)
+//        }
+//        else -> {
+//            val numerator = numerator.toULong()
+//            val greatestCommonDivisor = ULong.context { gcd(numerator, denominator) }
+//            Rational((numerator / greatestCommonDivisor).toLong(), denominator / greatestCommonDivisor)
+//        }
+//    }
+//
+//internal object RationalSerializer : KSerializer<Rational> {
+//    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("dev.lounres.kone.algebraic.Rational", PrimitiveKind.STRING)
+//
+//    override fun serialize(encoder: Encoder, value: Rational) {
+//        encoder.encodeString(value.toString())
+//    }
+//
+//    override fun deserialize(decoder: Decoder): Rational {
+//        val string = decoder.decodeString()
+//        return when (string.count { it == '/' }) {
+//            0 -> Rational.from(string.toLong())
+//            1 -> Rational.from(string.substringBefore("/").toLong(), string.substringAfter("/").toULong())
+//            else -> TODO()
+//        }
+//    }
+//}
+//
+//@JvmInline
+//internal value class LongLongQuotientsByGCD(val first: Long, val second: Long) {
+//    operator fun component1(): Long = first
+//    operator fun component2(): Long = second
+//}
+//
+//internal fun divideByGCD(first: Long, second: Long): LongLongQuotientsByGCD {
+//    val gcd = gcd(first, second)
+//    return if (gcd == 0L) LongLongQuotientsByGCD(0L, 0L) else LongLongQuotientsByGCD(first / gcd, second / gcd)
+//}
+//
+//@JvmInline
+//internal value class ULongULongQuotientsByGCD(val first: ULong, val second: ULong) {
+//    operator fun component1(): ULong = first
+//    operator fun component2(): ULong = second
+//}
+//
+//internal fun divideByGCD(first: ULong, second: ULong): ULongULongQuotientsByGCD {
+//    val gcd = ULong.context { gcd(first, second) }
+//    return if (gcd == 0uL) ULongULongQuotientsByGCD(0uL, 0uL) else ULongULongQuotientsByGCD(first / gcd, second / gcd)
+//}
+//
+//// TODO: Fix conversion of ULong to Long: large numbers may be processed incorrectly.
+//
+//public data object RationalContext : Reification<Rational>, Field<Rational>, Order<Rational>, Hashing<Rational> {
+//    // region Reification
+//    override fun contains(element: Any?): Boolean = element is Rational
+//    override fun reifyMaybe(element: Any?): Maybe<Rational> = if (element is Rational) Some(element) else None
+//    override fun reifyOrNull(element: Any?): Rational? = element as? Rational
+//    override fun reify(element: Any?): Rational = element as? Rational ?: reificationException()
+//    // endregion
+//
+//    // region Constants
+//    public override val zero: Rational = Rational(0L)
+//    public override val one: Rational = Rational(1L)
+//    // endregion
+//
+//    // region Equality, comparison, and hashing
+//    public override infix fun Rational.equalsTo(other: Rational): Boolean = this == other
+//    public override fun Rational.isZero(): Boolean = numerator == 0L
+//    public override fun Rational.isOne(): Boolean = numerator == 1L && denominator == 1uL
+//
+//    public override fun Rational.compareWith(other: Rational): ComparisonResult {
+//        val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
+//        val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
+//
+//        return context(Long.context) { (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator) }
+//    }
+//    public override fun Rational.hash(): Int = numerator.toInt() xor denominator.toInt()
+//    // endregion
+//
+//    // region Integers conversion
+//    public override fun valueOf(arg: Int): Rational = Rational(arg.toLong())
+//    public override fun valueOf(arg: UInt): Rational = Rational(arg.toLong())
+//    public override fun valueOf(arg: Long): Rational = Rational(arg)
+//    public override fun valueOf(arg: ULong): Rational = Rational(arg.toLong())
+//    // endregion
+//
+//    // region Rational-Int operations
+//    public override operator fun Rational.plus(other: Int): Rational =
+//        Rational(
+//            numerator + denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.minus(other: Int): Rational =
+//        Rational(
+//            numerator - denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    @Suppress("NAME_SHADOWING")
+//    public override operator fun Rational.times(other: Int): Rational {
+//        val other = other.toLong()
+//        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
+//        return Rational(
+//            numerator * reducedOther,
+//            reducedDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    @Suppress("NAME_SHADOWING")
+//    public override operator fun Rational.div(other: Int): Rational {
+//        val other = other.toLong()
+//        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
+//        return Rational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Rational-UInt operations
+//    public override operator fun Rational.plus(other: UInt): Rational =
+//        Rational(
+//            numerator + denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.minus(other: UInt): Rational =
+//        Rational(
+//            numerator - denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    @Suppress("NAME_SHADOWING")
+//    public override operator fun Rational.times(other: UInt): Rational {
+//        val other = other.toLong()
+//        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
+//        return Rational(
+//            numerator * reducedOther,
+//            reducedDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    @Suppress("NAME_SHADOWING")
+//    public override operator fun Rational.div(other: UInt): Rational {
+//        val other = other.toLong()
+//        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
+//        return Rational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Rational-Long operations
+//    public override operator fun Rational.plus(other: Long): Rational =
+//        Rational(
+//            numerator + denominator * other,
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.minus(other: Long): Rational =
+//        Rational(
+//            numerator - denominator * other,
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.times(other: Long): Rational {
+//        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other)
+//        return Rational(
+//            numerator * reducedOther,
+//            reducedDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Rational.div(other: Long): Rational {
+//        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other)
+//        return Rational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Rational-ULong operations
+//    public override operator fun Rational.plus(other: ULong): Rational =
+//        Rational(
+//            numerator + denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.minus(other: ULong): Rational =
+//        Rational(
+//            numerator - denominator * other.toLong(),
+//            denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Rational.times(other: ULong): Rational {
+//        val (reducedDenominator, reducedOther) = divideByGCD(denominator, other.toLong())
+//        return Rational(
+//            numerator * reducedOther,
+//            reducedDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Rational.div(other: ULong): Rational {
+//        val (reducedNumerator, reducedOther) = divideByGCD(numerator, other.toLong())
+//        return Rational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Int-Rational operations
+//    public override operator fun Int.plus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() + other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Int.minus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() - other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Int.times(other: Rational): Rational {
+//        val thiz = this.toLong()
+//        val (reducedThis, reducedOtherDenominator) = divideByGCD(thiz, other.denominator)
+//        return Rational(
+//            other.numerator * reducedThis,
+//            reducedOtherDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Int.div(other: Rational): Rational {
+//        val thiz = this.toLong()
+//        val (reducedThis, reducedOtherNumerator) = divideByGCD(thiz, other.numerator)
+//        return Rational(
+//            other.denominator * reducedThis,
+//            reducedOtherNumerator,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region UInt-Rational operations
+//    public override operator fun UInt.plus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() + other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun UInt.minus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() - other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun UInt.times(other: Rational): Rational {
+//        val thiz = this.toLong()
+//        val (reducedThis, reducedOtherDenominator) = divideByGCD(thiz, other.denominator)
+//        return Rational(
+//            other.numerator * reducedThis,
+//            reducedOtherDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun UInt.div(other: Rational): Rational {
+//        val thiz = this.toLong()
+//        val (reducedThis, reducedOtherNumerator) = divideByGCD(thiz, other.numerator)
+//        return Rational(
+//            other.denominator * reducedThis,
+//            reducedOtherNumerator,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Long-Rational operations
+//    public override operator fun Long.plus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this + other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Long.minus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this - other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun Long.times(other: Rational): Rational {
+//        val (reducedThis, reducedOtherDenominator) = divideByGCD(this, other.denominator)
+//        return Rational(
+//            other.numerator * reducedThis,
+//            reducedOtherDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Long.div(other: Rational): Rational {
+//        val (reducedThis, reducedOtherNumerator) = divideByGCD(this, other.numerator)
+//        return Rational(
+//            other.denominator * reducedThis,
+//            reducedOtherNumerator,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region ULong-Rational operations
+//    public override operator fun ULong.plus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() + other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun ULong.minus(other: Rational): Rational =
+//        Rational(
+//            other.denominator * this.toLong() - other.numerator,
+//            other.denominator,
+//            toCheckInput = false
+//        )
+//    public override operator fun ULong.times(other: Rational): Rational {
+//        val (reducedThis, reducedOtherDenominator) = divideByGCD(this.toLong(), other.denominator)
+//        return Rational(
+//            other.numerator * reducedThis,
+//            reducedOtherDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun ULong.div(other: Rational): Rational {
+//        val (reducedThis, reducedOtherNumerator) = divideByGCD(this.toLong(), other.numerator)
+//        return Rational(
+//            other.denominator * reducedThis,
+//            reducedOtherNumerator,
+//            toCheckInput = false
+//        )
+//    }
+//    // endregion
+//
+//    // region Rational-Rational operations
+//    public override operator fun Rational.unaryMinus(): Rational = Rational(-numerator, denominator, false)
+//    public override operator fun Rational.plus(other: Rational): Rational {
+//        val denominatorsGcd = gcd(denominator, other.denominator)
+//        val reducedThisDenominator = denominator / denominatorsGcd
+//        val reducedOtherDenominator = other.denominator / denominatorsGcd
+//        val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
+//        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
+//        return Rational(
+//            reducedNumeratorCandidate,
+//            reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Rational.minus(other: Rational): Rational {
+//        val denominatorsGcd = gcd(denominator, other.denominator)
+//        val reducedThisDenominator = denominator / denominatorsGcd
+//        val reducedOtherDenominator = other.denominator / denominatorsGcd
+//        val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator
+//        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
+//        return Rational(
+//            reducedNumeratorCandidate,
+//            reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Rational.times(other: Rational): Rational {
+//        val (reducedThisDenominator, reducedOtherNumeratorGcd) = divideByGCD(denominator, other.numerator)
+//        val (reducedOtherDenominator, reducedThisNumeratorGcd) = divideByGCD(other.denominator, numerator)
+//        return Rational(
+//            reducedThisNumeratorGcd * reducedOtherNumeratorGcd,
+//            reducedThisDenominator * reducedOtherDenominator,
+//            toCheckInput = false
+//        )
+//    }
+//    public override operator fun Rational.div(other: Rational): Rational {
+//        val (reducedThisNumerator, reducedOtherNumerator) = divideByGCD(this.numerator, other.numerator)
+//        val (reducedThisDenominator, reducedOtherDenominator) = divideByGCD(this.denominator, other.denominator)
+//        return Rational(
+//            reducedThisNumerator * reducedOtherDenominator,
+//            reducedThisDenominator * reducedOtherNumerator
+//        )
+//    }
+//    // endregion
+//}
+//
+//context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+//public fun RationalContext.set() {
+//    @OptIn(DelicateSuppliedTypeConstructor::class)
+//    val rationalSuppliedType = SuppliedType.Regular(
+//        fullyQualifiedName = "dev.lounres.kone.algebraic.Rational",
+//        typeArguments = emptyList(),
+//        isNullable = false,
+//    )
+//    listOf<RegistryKey<in RationalContext>>(
+//        Reification.Key(rationalSuppliedType),
+//        Field.Key(rationalSuppliedType),
+//        Order.Key(rationalSuppliedType),
+//        Hashing.Key(rationalSuppliedType),
+//    ).forEach {
+//        it.withImplied correspondsTo RationalContext
+//    }
+//}

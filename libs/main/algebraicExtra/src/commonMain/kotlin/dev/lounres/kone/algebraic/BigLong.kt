@@ -8,6 +8,7 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.algebraic.internal.asDigit
 import dev.lounres.kone.algebraic.internal.possibleDigits
 import dev.lounres.kone.collections.array.KoneULongArray
+import dev.lounres.kone.collections.array.isEmpty
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.slice
@@ -46,12 +47,14 @@ public /*value*/ data class BigLong(public val sign: Sign, public val absoluteVa
 }
 
 public fun BigLong.Companion.from(sign: Sign, magnitude: KoneULongArray): BigLong {
+    val magnitude = magnitude.removeLeadingZeros()
     require(sign.isZero() == magnitude.all { it == 0uL }) { "sign must be 0 iff magnitude does not contain non-zero elements" }
-    return BigLong(sign, UBigLong.from(magnitude))
+    return BigLong(sign, UBigLong(magnitude))
 }
 public fun BigLong.Companion.from(sign: Sign, vararg magnitude: ULong): BigLong {
+    val magnitude = KoneULongArray(magnitude).removeLeadingZeros()
     require(sign.isZero() == magnitude.isEmpty()) { "sign must be 0 iff magnitude does not contain non-zero elements" }
-    return BigLong(sign, UBigLong.from(KoneULongArray(magnitude)))
+    return BigLong(sign, UBigLong(magnitude))
 }
 
 public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Order<BigLong>, Hashing<BigLong> {
