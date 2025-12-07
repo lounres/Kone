@@ -941,7 +941,7 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         }
         
         override fun remove() {
-            if (_holder == null) detachedNodeException()
+            if (isDetached) detachedNodeException()
             _holder!!.tree.removeNode(this)
         }
     }

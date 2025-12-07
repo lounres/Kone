@@ -135,7 +135,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
     ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> = context(numberField, numberOrder, euclideanSpace, intersectionComputer) {
         val pointOrder = Order<Point> { left, right ->
-            val differenceBasisDecomposition = basis.decompose(euclideanSpace { right - left })
+            val differenceBasisDecomposition = basis.decompose(euclideanSpace { left - right })
             numberOrder {
                 when (differenceBasisDecomposition[0u] compareWith numberField.zero) {
                     LeftIsGreaterThanRight -> LeftIsGreaterThanRight
@@ -192,15 +192,12 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                     when (currentEvent) {
                         is EventForBentleyOttmann.SegmentStart<Point> -> {
                             val (sSegmentIndex, start) = currentEvent
-                            val sSegment = segments[sSegmentIndex]
-                            val verticalLine = Line(start, basis[1u])
-                            val sSegmentPointY = sSegment.sectionBySweepingLineAt(start, basis)
                             val sNode = segmentsSearchTree.add(SegmentNodeForBentleyOttmann(sSegmentIndex)) { t ->
                                 val tSegmentIndex = t.segmentIndex
                                 val tSegment = segments[tSegmentIndex]
                                 val tSegmentPointY: Number = tSegment.sectionBySweepingLineAt(start, basis)
                                 
-                                (tSegmentPointY - sSegmentPointY).sign()
+                                tSegmentPointY.sign()
                             }
                             segmentsSearchTreeNodes[sSegmentIndex] = sNode
                             val rNode = sNode.previousNode
@@ -289,7 +286,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                         }
                     }
                     
-                    check(eventsHeap.size == 0u || eventsHeap.takeMinimum().priority >= currentEventPriority) { "For some reason minimum event priority did not increase" }
+                    check(eventsHeap.size == 0u || eventsHeap.takeMinimum().priority > currentEventPriority) { "For some reason minimum event priority did not increase" }
                 }
             }
         }
