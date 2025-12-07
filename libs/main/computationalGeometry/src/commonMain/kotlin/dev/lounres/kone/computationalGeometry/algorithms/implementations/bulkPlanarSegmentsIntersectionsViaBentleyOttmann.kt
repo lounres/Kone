@@ -85,9 +85,6 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
     private val numberOrder: Order<Number>,
     private val euclideanSpace: AffineSpaceOverField<Number, Vector, Point>,
 ) : BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point> {
-    context(intersectionComputer: IntersectionComputer<Left, Right, Result>)
-    private fun <Left, Right, Result> intersect(left: Left, right: Right): Result = intersectionComputer.intersect(left, right)
-    
     context(_: Order<Point>, intersectionComputer: SegmentWithSegmentIntersectionOverFieldComputer<Number, Vector, Point>)
     private fun addIntersectionFor(
         segmentsList: KoneList<Segment<Vector, Point>>,
@@ -100,7 +97,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         val tSegmentIndex = tSegmentNode.segmentIndex
         val sSegment = segmentsList[sSegmentIndex]
         val tSegment = segmentsList[tSegmentIndex]
-        when (val intersectionResult = intersect(sSegment, tSegment)) {
+        when (val intersectionResult = intersectionComputer.intersect(sSegment, tSegment)) {
             null -> {}
             is Subsegment<Number, Vector, Point> -> TODO() // TODO: Think about cases of collinear segments
             is SinglePoint<Number, Point> -> {
