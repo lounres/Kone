@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.basis.VectorSpaceBasis
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.sign
 import dev.lounres.kone.algebraic.times
@@ -29,7 +28,6 @@ import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.algorithms.BulkPlanarSegmentsIntersectionsOverFieldComputer
 import dev.lounres.kone.computationalGeometry.algorithms.SegmentBulkIntersectionOverFieldComputer
 import dev.lounres.kone.computationalGeometry.algorithms.SegmentWithSegmentIntersectionOverField
-import dev.lounres.kone.computationalGeometry.curves.Line
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.minus
@@ -115,21 +113,6 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         }
     }
     
-    private fun Segment<Vector, Point>.sectionBySweepingLineAt(
-        start: Point,
-        basis: VectorSpaceBasis.Finite<Number, Vector>,
-    ): Number = context(numberField, numberOrder, euclideanSpace) {
-        val startDecomposition = basis.decompose(this.start - start)
-        val directionDecomposition = basis.decompose(this.direction)
-        if (directionDecomposition[0u].isZero()) {
-            if (startDecomposition[0u].isZero()) TODO() // TODO: Think about cases of "vertical" segments
-            else error("For some reason sweeping line does not intersect segment in process")
-        }
-        val intersectionStep = -startDecomposition[0u] / directionDecomposition[0u]
-        if (intersectionStep !in numberField.zero .. numberField.one) error("For some reason sweeping line does not intersect segment in process")
-        return startDecomposition[1u] + directionDecomposition[1u] * intersectionStep
-    }
-    
     override fun KoneList<Segment<Vector, Point>>.intersections(
         basis: VectorSpaceBasis.Finite<Number, Vector>,
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
@@ -195,9 +178,15 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                             val sNode = segmentsSearchTree.add(SegmentNodeForBentleyOttmann(sSegmentIndex)) { t ->
                                 val tSegmentIndex = t.segmentIndex
                                 val tSegment = segments[tSegmentIndex]
-                                val tSegmentPointY: Number = tSegment.sectionBySweepingLineAt(start, basis)
-                                
-                                tSegmentPointY.sign()
+                                val startDecomposition = basis.decompose(tSegment.start - start)
+                                val directionDecomposition = basis.decompose(tSegment.direction)
+                                if (directionDecomposition[0u].isZero()) {
+                                    if (startDecomposition[0u].isZero()) TODO() // TODO: Think about cases of "vertical" segments
+                                    else error("For some reason sweeping line does not intersect segment in process")
+                                }
+                                val intersectionStep = -startDecomposition[0u] / directionDecomposition[0u]
+                                if (intersectionStep !in numberField.zero .. numberField.one) error("For some reason sweeping line does not intersect segment in process")
+                                (startDecomposition[1u] + directionDecomposition[1u] * intersectionStep).sign()
                             }
                             segmentsSearchTreeNodes[sSegmentIndex] = sNode
                             val rNode = sNode.previousNode
