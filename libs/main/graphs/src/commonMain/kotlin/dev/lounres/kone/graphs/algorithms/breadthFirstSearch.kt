@@ -5,16 +5,29 @@
 
 package dev.lounres.kone.graphs.algorithms
 
+import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
+import dev.lounres.kone.collections.deque.isNotEmpty
+import dev.lounres.kone.collections.deque.popFirst
+import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.set.KoneMutableSet
+import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.graphs.Hypergraph
+import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.adjacentVerticesOf
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.absoluteFor
 
-//context(Graph<V, E>)
-//public inline fun <V, E> V.breadthFirstSearch(onEach: (vertex: V) -> Unit) {
-//    val queue = ArrayDeque<V>()
-//    queue.add(this)
-//    val exploredVertices = HashSet<V>(vertices.size)
-//    while (queue.isNotEmpty()) {
-//        val v = queue.removeFirst()
-//        exploredVertices.add(v)
-//        for (u in v.adjacentVertices) if (u !in exploredVertices) queue.add(u)
-//        onEach(v)
-//    }
-//}
+
+public inline fun Hypergraph.breadthFirstSearch(startVertex: HypergraphVertex, onEach: (previousVertex: HypergraphVertex, vertex: HypergraphVertex) -> Unit) {
+    val queue = KoneListBackedDeque<HypergraphVertex>()
+    queue.addLast(startVertex)
+    val exploredVertices = KoneMutableSet.of(elementEquality = Equality.absoluteFor<HypergraphVertex>())
+    while (queue.isNotEmpty()) {
+        val v = queue.popFirst()
+        exploredVertices.add(v)
+        for (u in adjacentVerticesOf(v)) if (u !in exploredVertices) {
+            onEach(v, u)
+            queue.addLast(u)
+        }
+    }
+}

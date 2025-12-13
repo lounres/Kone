@@ -12,13 +12,13 @@ import dev.lounres.kone.collections.set.KoneSetIterator
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
-public data class EdgeEnds<out Vertex>(val vertex1: Vertex, val vertex2: Vertex) : KoneReifiedSet<Vertex> {
+public data class HypergraphEdgeEnds(val vertex1: HypergraphVertex, val vertex2: HypergraphVertex) : KoneReifiedSet<HypergraphVertex> {
     override val size: UInt = if (vertex1 === vertex2) 1u else 2u
     
-    override fun contains(element: @UnsafeVariance Vertex): Boolean =
+    override fun contains(element: @UnsafeVariance HypergraphVertex): Boolean =
         element === vertex1 || element === vertex2
     
-    override fun iterator(): KoneSetIterator<Vertex> =
+    override fun iterator(): KoneSetIterator<HypergraphVertex> =
         if (size == 1u) SingleIterator(vertex1)
         else CoupleIterator(vertex1, vertex2)
     
@@ -52,7 +52,7 @@ public data class EdgeEnds<out Vertex>(val vertex1: Vertex, val vertex2: Vertex)
     }
 }
 
-public operator fun <Vertex> EdgeEnds<Vertex>.minus(vertex: Vertex): Vertex =
+public operator fun HypergraphEdgeEnds.minus(vertex: HypergraphVertex): HypergraphVertex =
     when {
         vertex === vertex1 -> vertex2
         vertex === vertex2 -> vertex1

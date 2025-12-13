@@ -5,68 +5,62 @@
 
 package dev.lounres.kone.graphs.algorithms
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.CommutativeMonoid
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.zero
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.list.emptyKoneList
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.map.koneMutableMapOf
-import dev.lounres.kone.collections.map.getMaybe
+import dev.lounres.kone.collections.list.empty
+import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.getOrNull
+import dev.lounres.kone.collections.map.of
+import dev.lounres.kone.graphs.HypergraphEdge
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.absoluteEquality
 import dev.lounres.kone.relations.geq
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.graphs.EdgeWeightedGraphEdge
-import dev.lounres.kone.graphs.EdgeWeightedGraphVertex
+import dev.lounres.kone.graphs.Hypergraph
+import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.ends
+import dev.lounres.kone.graphs.incidentEdgesOf
 import dev.lounres.kone.graphs.minus
-import dev.lounres.kone.option.None
-import dev.lounres.kone.option.Some
-import kotlin.jvm.JvmInline
+import dev.lounres.kone.graphs.weightOfType
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.absoluteFor
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-@JvmInline
-public value class Path<out Weight, out Edge>(public val totalWeight: Weight, public val edges: KoneList<Edge>) {
-    public operator fun component1(): Weight = totalWeight
-    public operator fun component2(): KoneList<Edge> = edges
-}
+//@JvmInline
+public /*value*/ data class Path<out Weight>(public val totalWeight: Weight, public val edges: KoneList<HypergraphEdge>)
 
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-context(_: Ring<Weight>, weightsOrder: Order<Weight>)
-public fun <
-    Weight,
-    Vertex: EdgeWeightedGraphVertex<Weight, Vertex, Edge>,
-    Edge: EdgeWeightedGraphEdge<Weight, Vertex, Edge>
-> shortestPathsMapByDijkstra(
-    from: Vertex,
-): KoneMap<Vertex, Path<Weight, Edge>> {
-    val verticesToCheck = KoneBinaryGCMinimumHeap<Vertex, Weight>(weightsOrder)
-    val queueNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, Weight>>(absoluteEquality())
-    val paths = koneMutableMapOf<Vertex, Path<Weight, Edge>>(absoluteEquality())
+context(weightMonoid: CommutativeMonoid<Weight>, weightsOrder: Order<Weight>)
+public fun <Weight> Hypergraph.shortestPathsMapByDijkstra(weightType: SuppliedType, from: HypergraphVertex): KoneMap<HypergraphVertex, Path<Weight>> {
+    val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
+    val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
+    val paths = KoneMutableMap.of<HypergraphVertex, Path<Weight>>(Equality.absoluteFor())
     
-    queueNodes[from] = verticesToCheck.add(from, zero)
-    paths[from] = Path(zero, emptyKoneList())
+    queueNodes[from] = verticesToCheck.add(from, weightMonoid.zero)
+    paths[from] = Path(weightMonoid.zero, KoneList.empty())
     
     while (verticesToCheck.size != 0u) {
         val currentVertex = verticesToCheck.popMinimum().element
         val (currentWeight, currentPath) = paths[currentVertex]
-        for (edge in currentVertex.incidentEdges) {
+        for (edge in incidentEdgesOf(currentVertex)) {
             val neighbor = edge.ends - currentVertex
-            val currentPathToNeighbor = paths.getMaybe(neighbor)
-            val alternativePath = KoneList(currentPath.size + 1u) { if (it < currentPath.size) currentPath[it] else edge }
-            val alternativeWeight = currentWeight + edge.weight
-            when(currentPathToNeighbor) {
-                None -> {
-                    paths[neighbor] = Path(alternativeWeight, alternativePath)
-                    queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
-                }
-                is Some<Path<Weight, Edge>> -> if (alternativeWeight lt currentPathToNeighbor.value.totalWeight) {
+            val currentPathToNeighbor = paths.getOrNull(neighbor)
+            val alternativePath = KoneList.generate(currentPath.size + 1u) { if (it < currentPath.size) currentPath[it] else edge }
+            val alternativeWeight = currentWeight + edge.weightOfType(weightType)
+            if (currentPathToNeighbor == null) {
+                paths[neighbor] = Path(alternativeWeight, alternativePath)
+                queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
+            } else {
+                if (alternativeWeight lt currentPathToNeighbor.totalWeight) {
                     paths[neighbor] = Path(alternativeWeight, alternativePath)
                     queueNodes[neighbor].priority = alternativeWeight
                 }
@@ -80,19 +74,15 @@ public fun <
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-context(_: Ring<Weight>, weightsOrder: Order<Weight>)
-public fun <
-    Weight,
-    Vertex: EdgeWeightedGraphVertex<Weight, Vertex, Edge>,
-    Edge: EdgeWeightedGraphEdge<Weight, Vertex, Edge>
-> shortestPathByDijkstra(from: Vertex, to: Vertex): Path<Weight, Edge>? {
-    val verticesToCheck = KoneBinaryGCMinimumHeap<Vertex, Weight>(weightsOrder)
-    val queueNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, Weight>>(absoluteEquality())
-    val paths = koneMutableMapOf<Vertex, Path<Weight, Edge>>(absoluteEquality())
-    var optimalPathToTarget: Path<Weight, Edge>? = null
+context(weightMonoid: CommutativeMonoid<Weight>, weightsOrder: Order<Weight>)
+public fun <Weight> Hypergraph.shortestPathByDijkstra(weightType: SuppliedType, from: HypergraphVertex, to: HypergraphVertex): Path<Weight>? {
+    val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
+    val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
+    val paths = KoneMutableMap.of<HypergraphVertex, Path<Weight>>(Equality.absoluteFor())
+    var optimalPathToTarget: Path<Weight>? = null
     
-    queueNodes[from] = verticesToCheck.add(from, zero)
-    paths[from] = Path(zero, emptyKoneList())
+    queueNodes[from] = verticesToCheck.add(from, weightMonoid.zero)
+    paths[from] = Path(weightMonoid.zero, KoneList.empty())
     
     while (verticesToCheck.size != 0u) {
         val currentVertexNode = verticesToCheck.popMinimum()
@@ -100,18 +90,17 @@ public fun <
         
         val currentVertex = currentVertexNode.element
         val (currentWeight, currentPath) = paths[currentVertex]
-        for (edge in currentVertex.incidentEdges) {
+        for (edge in incidentEdgesOf(currentVertex)) {
             val neighbor = edge.ends - currentVertex
-            val currentPathToNeighbor = paths.getMaybe(neighbor)
-            val alternativePath = KoneList(currentPath.size + 1u) { if (it < currentPath.size) currentPath[it] else edge }
-            val alternativeWeight = currentWeight + edge.weight
-            when(currentPathToNeighbor) {
-                None -> {
-                    paths[neighbor] = Path(alternativeWeight, alternativePath)
-                    if (neighbor === to) optimalPathToTarget = Path(alternativeWeight, alternativePath)
-                    queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
-                }
-                is Some<Path<Weight, Edge>> -> if (alternativeWeight lt currentPathToNeighbor.value.totalWeight) {
+            val currentPathToNeighbor = paths.getOrNull(neighbor)
+            val alternativePath = KoneList.generate(currentPath.size + 1u) { if (it < currentPath.size) currentPath[it] else edge }
+            val alternativeWeight = currentWeight + edge.weightOfType(weightType)
+            if (currentPathToNeighbor == null) {
+                paths[neighbor] = Path(alternativeWeight, alternativePath)
+                if (neighbor === to) optimalPathToTarget = Path(alternativeWeight, alternativePath)
+                queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
+            } else {
+                if (alternativeWeight lt currentPathToNeighbor.totalWeight) {
                     paths[neighbor] = Path(alternativeWeight, alternativePath)
                     if (neighbor === to) optimalPathToTarget = Path(alternativeWeight, alternativePath)
                     queueNodes[neighbor].priority = alternativeWeight

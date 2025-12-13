@@ -5,25 +5,33 @@
 
 package dev.lounres.kone.graphs.algorithms
 
+import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
-import dev.lounres.kone.collections.map.koneMutableMapOf
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
-import dev.lounres.kone.relations.absoluteEquality
-import dev.lounres.kone.relations.defaultOrder
-import dev.lounres.kone.graphs.Digraph
-import dev.lounres.kone.graphs.DigraphVertex
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.get
+import dev.lounres.kone.collections.map.of
+import dev.lounres.kone.graphs.Hypergraph
+import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.end
+import dev.lounres.kone.graphs.incomingDegreeOf
+import dev.lounres.kone.graphs.outgoingIncidentEdgesOf
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultFor
 
 
-public fun <Vertex: DigraphVertex<Vertex, *>> Digraph<Vertex, *>.sortVerticesTopologicallyByKahn(): KoneList<Vertex> {
-    val verticesToProcess = KoneBinaryGCMinimumHeap<Vertex, UInt>(defaultOrder<UInt>())
-    val result = KoneArrayFixedCapacityList<Vertex>(vertices.size)
-    val verticesNodes = koneMutableMapOf<Vertex, HeapNode<Vertex, UInt>>(absoluteEquality())
+/**
+ * Topological sort of oriented acyclic graph.
+ */
+public fun Hypergraph.sortVerticesTopologicallyByKahn(): KoneList<HypergraphVertex> {
+    val verticesToProcess = KoneBinaryGCMinimumHeap<HypergraphVertex, UInt>(UInt.context)
+    val result = KoneArrayFixedCapacityList<HypergraphVertex>(vertices.size)
+    val verticesNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, UInt>>(Equality.defaultFor())
     
-    for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, vertex.inDegree)
+    for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, incomingDegreeOf(vertex))
     
     while (verticesToProcess.size != 0u) {
         val currentVertexNode = verticesToProcess.popMinimum()
@@ -32,8 +40,9 @@ public fun <Vertex: DigraphVertex<Vertex, *>> Digraph<Vertex, *>.sortVerticesTop
         
         val currentVertex = currentVertexNode.element
         verticesNodes.remove(currentVertex)
-        for (edge in currentVertex.outgoingEdges) {
-            val nextVertex = edge.tail
+        result.add(currentVertex)
+        for (edge in outgoingIncidentEdgesOf(currentVertex)) {
+            val nextVertex = edge.end
             val nextVertexNode = verticesNodes[nextVertex]
             check(nextVertexNode.priority > 0u) { "Attempt to decrease in-degree that is already zero" }
             nextVertexNode.priority -= 1u
