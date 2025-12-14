@@ -602,7 +602,7 @@ stal {
             }
         }
         "kotlin jvm publication" {
-            pluginManager.withPlugin("com.vanniktech.maven.publish") {
+            pluginManager.withPlugin(versions.plugins.gradle.maven.publish.plugin) {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         KotlinJvm(
@@ -614,7 +614,7 @@ stal {
             }
         }
         "kotlin multiplatform publication" {
-            pluginManager.withPlugin("com.vanniktech.maven.publish") {
+            pluginManager.withPlugin(versions.plugins.gradle.maven.publish.plugin) {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         KotlinMultiplatform(
@@ -628,7 +628,7 @@ stal {
             }
         }
         "publishing" {
-            apply(plugin = "com.vanniktech.maven.publish")
+            apply(versions.plugins.gradle.maven.publish.plugin)
             configure<MavenPublishBaseExtension> {
                 publishToMavenCentral()
                 
