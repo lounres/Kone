@@ -5,6 +5,9 @@
 
 package dev.lounres.kone.collections.heap
 
+import de.infix.testBalloon.framework.core.TestSuite
+import de.infix.testBalloon.framework.core.testSuite
+import de.infix.testBalloon.framework.shared.TestRegistering
 import dev.lounres.kone.collections.array.KoneMutableBooleanArray
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeapDescription
@@ -34,11 +37,6 @@ import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultFor
 import io.kotest.assertions.withClue
-import io.kotest.core.NamedTag
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.scopes.ContainerScope
-import io.kotest.core.spec.style.scopes.FunSpecContainerScope
-import io.kotest.datatest.withData
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -114,22 +112,19 @@ val minHeapImplementations = listOf<MinimumHeapImplementationDescription>(
     KoneFibonacciGCMinimumHeapDescription,
 )
 
-class MinimumHeapImplementationsTests : FunSpec({
-    threads = 16
-    concurrency = 16
-    
+val MinimumHeapImplementationsTests by testSuite {
     val listsToShuffle = listOf(
         KoneList.of(0u, 1u, 2u, 3u),
         KoneList.of(0u, 0u, 2u, 4u, 4u, 4u),
         KoneList.of(0u, 1u, 2u, 3u, 4u),
     )
     
-    for (impl in minHeapImplementations) context(impl.name).config(tags = setOf(NamedTag(impl.name))) {
+    for (impl in minHeapImplementations) testSuite(impl.name) {
         val producer = impl.producer
         
-        context("test generative construction") {
-            withData(nameFn = { "initial list $it" }, listsToShuffle) { init ->
-                withData(nameFn = { "permutation $it" }, init.permutationsWithoutRepetitions()) { input ->
+        testSuite("test generative construction") {
+            for (init in listsToShuffle) testSuite("initial list $init") {
+                for (input in init.permutationsWithoutRepetitions()) test("permutation $input") {
                     val heap = producer.produceBy<String, UInt>(
                         Order.defaultFor(),
                         input.size,
@@ -152,11 +147,12 @@ class MinimumHeapImplementationsTests : FunSpec({
             }
         }
 
-        suspend /*inline*/ fun ContainerScope.testHeapFillingAndEmptying(
+        @TestRegistering
+        /*inline*/ fun TestSuite.testHeapFillingAndEmptying(
             /*crossinline*/ buildHeap: (size: UInt) -> MinimumHeap<String, UInt>,
         ) {
-            withData(nameFn = { "initial list $it" }, listsToShuffle) { init ->
-                withData(nameFn = { "permutation $it" }, init.permutationsWithoutRepetitions()) { input ->
+            for (init in listsToShuffle) testSuite("initial list $init") {
+                for (input in init.permutationsWithoutRepetitions()) test("permutation $input") {
                     val heap = buildHeap(init.size)
                     val nodes = KoneArrayFixedCapacityList<HeapNode<String, UInt>>(init.size)
 
@@ -191,29 +187,30 @@ class MinimumHeapImplementationsTests : FunSpec({
         }
 
         if (producer is MinimumHeapProducer.Resizable)
-            context("test filling and emptying") {
+            testSuite("test filling and emptying") {
                 testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
 
         if (producer is MinimumHeapProducer.Growable) {
-            context("test filling and emptying") {
+            testSuite("test filling and emptying") {
                 testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
-            context("test filling and emptying with predefined capacity") {
+            testSuite("test filling and emptying with predefined capacity") {
                 testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         }
 
         if (producer is MinimumHeapProducer.FixedCapacity)
-            context("test filling and emptying") {
+            testSuite("test filling and emptying") {
                 testHeapFillingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         
-        suspend /*inline*/ fun FunSpecContainerScope.testHeapFillingChangingAndEmptying(
+        @TestRegistering
+        /*inline*/ fun TestSuite.testHeapFillingChangingAndEmptying(
             /*crossinline*/ buildHeap: (size: UInt) -> MinimumHeap<String, UInt>,
         ) {
-            withData(nameFn = { "initial list $it" }, listsToShuffle) { init ->
-                withData(nameFn = { "permutation $it" }, init.permutationsWithoutRepetitions()) { input ->
+            for (init in listsToShuffle) testSuite("initial list $init") {
+                for (input in init.permutationsWithoutRepetitions()) testSuite("permutation $input") {
                     val newInput = input.map { it * 2u + 1u }
                     val limit = newInput.max() + 1u
 
@@ -222,17 +219,16 @@ class MinimumHeapImplementationsTests : FunSpec({
                         val newValue: UInt,
                     )
 
-                    withData(
-                        nameFn = { changes -> "changing elements: ${changes.joinToString { "#${it.index}: ${newInput[it.index]} -> ${it.newValue}" }}" },
-                        ts = newInput.indices.toKoneList()
-                            .combinations(3u)
-                            .flatMap { indicesToChange ->
-                                cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
-                                    .map { newValues ->
-                                        KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
-                                    }
-                            }
-                    ) { changes ->
+                    for (
+                    changes in newInput.indices.toKoneList()
+                        .combinations(3u)
+                        .flatMap { indicesToChange ->
+                            cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
+                                .map { newValues ->
+                                    KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
+                                }
+                        }
+                    ) test("changing elements: ${changes.joinToString { "#${it.index}: ${newInput[it.index]} -> ${it.newValue}" }}") {
                         val newInit = KoneList.build {
                             addAllFrom(newInput)
                             for (change in changes) this[change.index] = change.newValue
@@ -278,24 +274,24 @@ class MinimumHeapImplementationsTests : FunSpec({
                 }
             }
         }
-        
+
         if (producer is MinimumHeapProducer.Resizable)
-            context("test filling, changing, and emptying") {
+            testSuite("test filling, changing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
-        
+
         if (producer is MinimumHeapProducer.Growable) {
-            context("test filling, changing, and emptying") {
+            testSuite("test filling, changing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
-            context("test filling, changing, and emptying with predefined capacity") {
+            testSuite("test filling, changing, and emptying with predefined capacity") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         }
-        
+
         if (producer is MinimumHeapProducer.FixedCapacity)
-            context("test filling, changing, and emptying") {
+            testSuite("test filling, changing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
     }
-})
+}

@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.collections.set
 
+import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.relations.Equality
-import io.kotest.core.spec.style.FunSpec
 
 
 interface KoneMutableSetProducer {
@@ -18,8 +18,6 @@ interface ListImplementationDescription {
     val setProducer: KoneMutableSetProducer
 }
 
-class SetImplementationsTests : FunSpec({
-    threads = 16
-    concurrency = 16
+val SetImplementationsTests by testSuite {
 
-})
+}

@@ -5,20 +5,6 @@
 
 package dev.lounres.kone.collections.searchTree
 
-import dev.lounres.kone.collections.searchTree.implementations.KoneTwoThreeSearchTree
-import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.testEqualityByIteration
-import dev.lounres.kone.collections.list.toKoneList
-import dev.lounres.kone.combinatorics.enumerative.permutations
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.defaultOrder
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.exhaustive
-
 
 //interface SearchTreeBuilder {
 //    fun <E> build(elementContext: Order<E>): SearchTree<E>

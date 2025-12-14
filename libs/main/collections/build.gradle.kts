@@ -19,6 +19,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.libs.main.enumerativeCombinatorics)
+                implementation(versions.kotest.assertions.core)
             }
         }
     }

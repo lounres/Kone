@@ -16,10 +16,10 @@ import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt
-import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import kotlin.test.fail
 
 
 object KoneBinaryListBackedMinimumHeapValidator : MinimumHeapValidator {

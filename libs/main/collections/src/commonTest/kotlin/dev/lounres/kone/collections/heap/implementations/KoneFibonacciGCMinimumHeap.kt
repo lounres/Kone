@@ -17,13 +17,13 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.scope
-import io.kotest.assertions.fail
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import kotlin.test.fail
 
 
 object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescription {

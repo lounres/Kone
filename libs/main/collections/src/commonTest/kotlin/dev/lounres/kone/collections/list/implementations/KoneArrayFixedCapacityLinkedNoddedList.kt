@@ -13,7 +13,7 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import io.kotest.assertions.fail
+import kotlin.test.fail
 
 
 object KoneArrayFixedCapacityLinkedNoddedListDescription : ListImplementationDescription {

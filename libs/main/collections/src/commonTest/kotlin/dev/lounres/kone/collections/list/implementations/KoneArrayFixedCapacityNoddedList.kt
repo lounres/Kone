@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.repeat
-import io.kotest.assertions.fail
+import kotlin.test.fail
 
 
 object KoneArrayFixedCapacityNoddedListDescription : ListImplementationDescription {
