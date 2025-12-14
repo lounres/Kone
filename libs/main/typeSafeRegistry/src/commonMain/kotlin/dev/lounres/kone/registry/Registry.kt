@@ -150,9 +150,7 @@ internal class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMa
         content.remove(RegistryKeyMapWrapper(registryKey))
     }
     
-    override fun iterator(): Iterator<Registration<*>> {
-        TODO("Not yet implemented")
-    }
+    override fun iterator(): Iterator<Registration<*>> = content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
 }
 
 public fun MutableRegistry(): MutableRegistry = MutableRegistryImpl(mutableMapOf())
@@ -195,7 +193,8 @@ public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Mutab
     }
     
     override fun iterator(): Iterator<Registration<*>> {
-        TODO("Not yet implemented")
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
     }
     
     @PublishedApi
