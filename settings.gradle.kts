@@ -79,7 +79,7 @@ stal {
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
         "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
         // Extra
-        "kotest" since { has("libs public") }
+        "testBalloon" since { has("libs public") }
         "kover" since { has("libs public") }
         "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
         "kotlin multiplatform publication" since { hasAnyOf("libs") }

@@ -16,6 +16,7 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.jvm.JvmName
 
 
 @Suppress("INAPPLICABLE_JVM_NAME")

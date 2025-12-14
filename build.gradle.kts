@@ -37,7 +37,7 @@ plugins {
     alias(versions.plugins.compose.multiplatform) apply false
     alias(versions.plugins.kotlin.allopen) apply false
 //    alias(versions.plugins.kotlinx.benchmark) apply false
-    alias(versions.plugins.kotest.multiplatform) apply false
+    alias(versions.plugins.testBalloon) apply false
     alias(versions.plugins.kotlinx.kover) apply false
     id("org.ajoberstar.grgit") version "5.3.0"
     alias(versions.plugins.dokka)
@@ -389,24 +389,16 @@ stal {
             apply(versions.plugins.kotlin.compose)
             apply(versions.plugins.compose.multiplatform)
         }
-        "kotest" {
+        "testBalloon" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                apply(versions.plugins.testBalloon)
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
-                        all {
-                            languageSettings {
-                                optIn("io.kotest.common.ExperimentalKotest")
-                            }
-                        }
                         val test by getting {
                             dependencies {
-                                with(versions.kotest) {
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                    implementation(runner.junit5)
-                                    implementation(projects.libs.util.kotest)
+                                with(versions.testBaloon) {
+                                    implementation(framework.core)
                                 }
                             }
                         }
@@ -414,29 +406,14 @@ stal {
                 }
             }
             pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                apply(versions.plugins.kotest.multiplatform)
+                apply(versions.plugins.testBalloon)
                 configure<KotlinMultiplatformExtension> {
-                    @Suppress("UNUSED_VARIABLE")
                     sourceSets {
-                        all {
-                            languageSettings {
-                                optIn("io.kotest.common.ExperimentalKotest")
-                            }
-                        }
                         commonTest {
                             dependencies {
-                                with(versions.kotest) {
-                                    implementation(framework.engine)
-                                    implementation(framework.datatest)
-                                    implementation(assertions.core)
-                                    implementation(property)
-                                    implementation(projects.libs.util.kotest)
+                                with(versions.testBaloon) {
+                                    implementation(framework.core)
                                 }
-                            }
-                        }
-                        jvmTest {
-                            dependencies {
-                                implementation(versions.kotest.runner.junit5)
                             }
                         }
                     }

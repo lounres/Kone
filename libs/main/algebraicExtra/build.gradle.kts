@@ -18,7 +18,6 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation(projects.libs.util.kotest)
                 implementation(versions.kotlinx.serialization.json)
             }
         }
