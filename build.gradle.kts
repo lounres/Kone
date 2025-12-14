@@ -55,8 +55,8 @@ buildscript {
 val koneBranch: String by lazy { grgit.branch.current().name }
 val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
 // FIXME
-//val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
-val koneVersion = "0.0.0-experiment"
+val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
+//val koneVersion = "0.0.0-experiment"
 val koneGroup = project.properties["group"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
