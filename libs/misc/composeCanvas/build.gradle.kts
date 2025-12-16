@@ -18,5 +18,20 @@ kotlin {
                 api(projects.libs.main.computationalGeometry)
             }
         }
+//        val composeMain by creating {
+//            dependsOn(commonMain.get())
+//            dependencies {
+//                implementation(versions.kotlinx.serialization.json)
+//                implementation(versions.compose.multiplatform.foundation)
+//                api(projects.libs.main.contexts)
+//                api(projects.libs.main.relations)
+//                api(projects.libs.main.algebraic)
+//                api(projects.libs.main.collections)
+//                api(projects.libs.main.linearAlgebra)
+//                api(projects.libs.main.computationalGeometry)
+//            }
+//        }
+//        jvmMain { dependsOn(composeMain) }
+//        webMain { dependsOn(composeMain) }
     }
 }

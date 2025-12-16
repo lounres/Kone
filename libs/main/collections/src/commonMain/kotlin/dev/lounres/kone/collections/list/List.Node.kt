@@ -131,8 +131,9 @@ public interface KoneMutableListNode<Element> : KoneSettableListNode<Element> {
     /**
      * Removes the corresponding place from the list and detaches the node.
      *
-     * The operation must be idempotent.
-     * It means that calling this function again must do nothing at all.
+     * The operation must be "throwing idempotent".
+     * It means that calling this function again must throw an exception.
+     * Here the exception should be [DetachedNodeException].
      */
     public fun remove()
     
