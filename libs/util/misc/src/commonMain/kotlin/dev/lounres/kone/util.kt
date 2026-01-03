@@ -32,6 +32,8 @@ public inline fun repeat(times: UInt, action: (UInt) -> Unit) {
     for (index in 0u ..< times) action(index)
 }
 
+public inline fun <reified T> Any?.checkCast(): Boolean = this is T
+
 public inline fun <reified T> Any?.cast(): T = this as T
 
 public inline fun <reified T> Any?.castOrNull(): T? = this as? T
