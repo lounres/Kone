@@ -6,7 +6,7 @@
 package dev.lounres.kone.hub
 
 
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
     message = "This is primitive internal automaton API. Use with caution."

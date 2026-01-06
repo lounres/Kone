@@ -22,13 +22,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.jvm.JvmInline
 
 
-public interface KoneBlockingHub<Value> {
+public interface KoneBlockingHubView<Value, CallbacksValue> {
     public val value: Value
     
     public fun subscribe(callback: (Value) -> Unit): Subscription
     
     @InternalKoneHubApi
-    public val callbacksValue: Value
+    public val callbacksState: CallbacksState<Value, CallbacksValue>
     @InternalKoneHubApi
     public fun lockSubscriptions()
     @InternalKoneHubApi
@@ -40,75 +40,77 @@ public interface KoneBlockingHub<Value> {
     @InternalKoneHubApi
     public fun unlockSubscriptions()
     @InternalKoneHubApi
-    public fun compareAndSetCallbackValue(expected: Value): Boolean
+    public fun compareAndSetCallbackValue(expected: CallbacksValue): Boolean
     
     public fun interface Subscription {
         public fun cancel()
     }
 }
 
+public typealias KoneBlockingHub<Value> = KoneBlockingHubView<Value, Value>
+
 @JvmInline
-public value class KoneBlockingHub2BlockingSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHub<Value>) {
+public value class KoneBlockingHub2BlockingSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHubView<Value, *>) {
     @Suppress("DEPRECATION")
     @OptIn(InternalKoneHubApi::class)
     @IgnorableReturnValue
-    public fun subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription = hub.subscribeAnyway(callback)
+    public fun subscribe(callback: (Value) -> Unit): KoneBlockingHubView.Subscription = hub.subscribeAnyway(callback)
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value, Result> KoneBlockingHub<Value>.buildSubscriptionLocking(builder: KoneBlockingHub2BlockingSubscriptionScope<Value>.(Value) -> Result): Result {
+public inline fun <Value, Result> KoneBlockingHubView<Value, *>.buildSubscriptionLocking(builder: KoneBlockingHub2BlockingSubscriptionScope<Value>.(Value) -> Result): Result {
     lockSubscriptions()
     val result = try {
-        KoneBlockingHub2BlockingSubscriptionScope(this).builder(callbacksValue)
+        KoneBlockingHub2BlockingSubscriptionScope(this).builder(callbacksState.value)
     } finally {
         unlockSubscriptions()
     }
     return result
 }
 
-public class KoneBlockingHub2AtomicSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHub<Value>) {
+public class KoneBlockingHub2AtomicSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneBlockingHubView<Value, *>) {
     @PublishedApi
-    internal val subscriptions: KoneMutableList<KoneBlockingHub.Subscription> = KoneArrayGrowableList()
+    internal val subscriptions: KoneMutableList<KoneBlockingHubView.Subscription> = KoneArrayGrowableList()
     @Suppress("DEPRECATION")
     @OptIn(InternalKoneHubApi::class)
     @IgnorableReturnValue
-    public fun subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription =
+    public fun subscribe(callback: (Value) -> Unit): KoneBlockingHubView.Subscription =
         hub.subscribeAnyway(callback).also { subscriptions.add(it) }
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value, Result> KoneBlockingHub<Value>.buildSubscriptionAtomic(builder: KoneBlockingHub2AtomicSubscriptionScope<Value>.(Value) -> Result): Result {
+public inline fun <Value, CallbacksValue, Result> KoneBlockingHubView<Value, CallbacksValue>.buildSubscriptionAtomic(builder: KoneBlockingHub2AtomicSubscriptionScope<Value>.(Value) -> Result): Result {
     while (true) {
-        val value = callbacksValue
+        val state = callbacksState
         val scope = KoneBlockingHub2AtomicSubscriptionScope(this)
         var isSuccess = false
         val result = try {
-            scope.builder(value).also { isSuccess = true }
+            scope.builder(state.value).also { isSuccess = true }
         } finally {
             if (!isSuccess) scope.subscriptions.forEach { it.cancel() }
         }
-        if (compareAndSetCallbackValue(value)) return result
+        if (compareAndSetCallbackValue(state.callbacksState)) return result
         else {
             scope.subscriptions.forEach { it.cancel() }
         }
     }
 }
 
-public fun <Value, Result> KoneBlockingHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
-    buildSubscriptionAtomic { initialValue ->
-        val hub = KoneMutableBlockingHub(transform(initialValue), elementEquality)
-        subscribe { hub.set(transform(it)) }
-        hub
-    }
+//public fun <Value, Result> KoneBlockingHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
+//    buildSubscriptionAtomic { initialValue ->
+//        val hub = KoneMutableBlockingHub(transform(initialValue), elementEquality)
+//        subscribe { hub.set(transform(it)) }
+//        hub
+//    }
 
-public fun <Value> KoneBlockingHub<Value>.toStateFlow(): StateFlow<Value> =
+public fun <Value> KoneBlockingHubView<Value, *>.toStateFlow(): StateFlow<Value> =
     buildSubscriptionAtomic { initialValue ->
         val stateFlow = MutableStateFlow(initialValue)
         subscribe { stateFlow.value = it }
         stateFlow
     }
 
-public interface KoneMutableBlockingHub<Value> : KoneBlockingHub<Value> {
+public interface KoneMutableBlockingHubView<Value, CallbacksValue> : KoneBlockingHubView<Value, CallbacksValue> {
     @InternalKoneHubApi
     public fun acquire()
     @InternalKoneHubApi
@@ -116,6 +118,8 @@ public interface KoneMutableBlockingHub<Value> : KoneBlockingHub<Value> {
     @InternalKoneHubApi
     public fun release()
 }
+
+public typealias KoneMutableBlockingHub<Value> = KoneMutableBlockingHubView<Value, Value>
 
 public fun <Value> KoneMutableBlockingHub(
     initialValue: Value,
@@ -134,13 +138,13 @@ private class KoneMutableBlockingHubImpl<Value>(
     override var value: Value = initialValue
     
     // TODO: Replace with concurrent queue
-    override var callbacksValue: Value = initialValue
+    override var callbacksState: CallbacksState<Value, Value> = CallbacksState(initialValue, initialValue)
     private val callbacksLock: ReentrantLock = ReentrantLock()
     private val callbacks: KoneMutableNoddedList<(Value) -> Unit> = KoneGCLinkedSizedList()
-    override fun subscribe(callback: (Value) -> Unit): KoneBlockingHub.Subscription {
+    override fun subscribe(callback: (Value) -> Unit): KoneBlockingHubView.Subscription {
         callbacksLock.withLock {
             val node = callbacks.addNode(callback)
-            return KoneBlockingHub.Subscription {
+            return KoneBlockingHubView.Subscription {
                 callbacksLock.withLock {
                     node.remove()
                 }
@@ -154,9 +158,9 @@ private class KoneMutableBlockingHubImpl<Value>(
         "This method will be removed when implementations will be moved to concurrent queue.",
         level = DeprecationLevel.WARNING
     )
-    override fun subscribeAnyway(callback: (Value) -> Unit): KoneBlockingHub.Subscription {
+    override fun subscribeAnyway(callback: (Value) -> Unit): KoneBlockingHubView.Subscription {
         val node = callbacks.addNode(callback)
-        return KoneBlockingHub.Subscription {
+        return KoneBlockingHubView.Subscription {
             callbacksLock.withLock {
                 node.remove()
             }
@@ -176,7 +180,7 @@ private class KoneMutableBlockingHubImpl<Value>(
     override fun acceptNewValue(newValue: Value) {
         if (elementEquality { newValue eq value }) return
         val callbacksToCall = callbacksLock.withLock {
-            callbacksValue = newValue
+            callbacksState = CallbacksState(newValue, newValue)
             callbacks.toKoneList()
         }
         callbacksToCall.forEach { callback ->
@@ -192,7 +196,7 @@ private class KoneMutableBlockingHubImpl<Value>(
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value, Result> KoneMutableBlockingHub<Value>.updateAndMap(transform: (Value) -> Value, map: (Value, Value) -> Result): Result {
+public inline fun <Value, Result> KoneMutableBlockingHubView<Value, *>.updateAndMap(transform: (Value) -> Value, map: (Value, Value) -> Result): Result {
     acquire()
     try {
         val newValue = transform(value)
@@ -205,7 +209,7 @@ public inline fun <Value, Result> KoneMutableBlockingHub<Value>.updateAndMap(tra
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value> KoneMutableBlockingHub<Value>.update(transform: (Value) -> Value) {
+public inline fun <Value> KoneMutableBlockingHubView<Value, *>.update(transform: (Value) -> Value) {
     acquire()
     try {
         val newValue = transform(value)
@@ -216,7 +220,7 @@ public inline fun <Value> KoneMutableBlockingHub<Value>.update(transform: (Value
 }
 
 @OptIn(InternalKoneHubApi::class)
-public fun <Value> KoneMutableBlockingHub<Value>.set(newValue: Value) {
+public fun <Value> KoneMutableBlockingHubView<Value, *>.set(newValue: Value) {
     acquire()
     try {
         acceptNewValue(newValue)
@@ -226,7 +230,7 @@ public fun <Value> KoneMutableBlockingHub<Value>.set(newValue: Value) {
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value> KoneMutableBlockingHub<Value>.updateAndGet(transform: (Value) -> Value): Value {
+public inline fun <Value> KoneMutableBlockingHubView<Value, *>.updateAndGet(transform: (Value) -> Value): Value {
     acquire()
     try {
         val newValue = transform(value)
@@ -238,7 +242,7 @@ public inline fun <Value> KoneMutableBlockingHub<Value>.updateAndGet(transform: 
 }
 
 @OptIn(InternalKoneHubApi::class)
-public inline fun <Value> KoneMutableBlockingHub<Value>.getAndUpdate(transform: (Value) -> Value): Value {
+public inline fun <Value> KoneMutableBlockingHubView<Value, *>.getAndUpdate(transform: (Value) -> Value): Value {
     acquire()
     try {
         val previousValue = value
@@ -250,39 +254,40 @@ public inline fun <Value> KoneMutableBlockingHub<Value>.getAndUpdate(transform: 
     }
 }
 
-//@OptIn(InternalKoneHubApi::class)
-//public inline fun <SourceValue, TargetValue> KoneMutableBlockingHub2<SourceValue>.view(
-//    crossinline get: (SourceValue) -> TargetValue,
-//    crossinline set: (previousSourceValue: SourceValue, newTargetValue: TargetValue) -> SourceValue,
-//): KoneMutableBlockingHub2<TargetValue> =
-//    object : KoneMutableBlockingHub2<TargetValue> {
-//        override val value: TargetValue get() = get(this@view.value)
-//
-//        override fun subscribe(callback: (TargetValue) -> Unit): KoneBlockingHub2.Subscription =
-//            this@view.subscribe { callback(get(it)) }
-//        override val callbacksValue: TargetValue get() = get(this@view.callbacksValue)
-//        override fun lockSubscriptions() {
-//            this@view.lockSubscriptions()
-//        }
-//        @Deprecated(
-//            "This method will be removed when implementations will be moved to concurrent queue.",
-//            level = DeprecationLevel.WARNING
-//        )
-//        override fun subscribeAnyway(callback: (TargetValue) -> Unit): KoneBlockingHub2.Subscription =
-//            this@view.subscribeAnyway { callback(get(it)) }
-//        override fun unlockSubscriptions() {
-//            this@view.unlockSubscriptions()
-//        }
-//        override fun compareAndSetCallbackValue(expected: TargetValue): Boolean =
-//            this@view.compareAndSetCallbackValue(expected)
-//
-//        override fun acquire() {
-//            this@view.acquire()
-//        }
-//        override fun acceptNewValue(newValue: TargetValue) {
-//            this@view.acceptNewValue(newValue)
-//        }
-//        override fun release() {
-//            mutex.unlock()
-//        }
-//    }
+@OptIn(InternalKoneHubApi::class)
+public inline fun <SourceValue, TargetValue, CallbacksValue> KoneMutableBlockingHubView<SourceValue, CallbacksValue>.view(
+    crossinline get: (SourceValue) -> TargetValue,
+    crossinline set: (previousSourceValue: SourceValue, newTargetValue: TargetValue) -> SourceValue,
+): KoneMutableBlockingHubView<TargetValue, CallbacksValue> =
+    object : KoneMutableBlockingHubView<TargetValue, CallbacksValue> {
+        override val value: TargetValue get() = get(this@view.value)
+
+        override fun subscribe(callback: (TargetValue) -> Unit): KoneBlockingHubView.Subscription =
+            this@view.subscribe { callback(get(it)) }
+        override val callbacksState: CallbacksState<TargetValue, CallbacksValue>
+            get() = this@view.callbacksState.let { CallbacksState(get(it.value), it.callbacksState) }
+        override fun lockSubscriptions() {
+            this@view.lockSubscriptions()
+        }
+        @Deprecated(
+            "This method will be removed when implementations will be moved to concurrent queue.",
+            level = DeprecationLevel.WARNING
+        )
+        override fun subscribeAnyway(callback: (TargetValue) -> Unit): KoneBlockingHubView.Subscription =
+            this@view.subscribeAnyway { callback(get(it)) }
+        override fun unlockSubscriptions() {
+            this@view.unlockSubscriptions()
+        }
+        override fun compareAndSetCallbackValue(expected: CallbacksValue): Boolean =
+            this@view.compareAndSetCallbackValue(expected)
+
+        override fun acquire() {
+            this@view.acquire()
+        }
+        override fun acceptNewValue(newValue: TargetValue) {
+            this@view.acceptNewValue(set(this@view.value, newValue))
+        }
+        override fun release() {
+            this@view.release()
+        }
+    }
