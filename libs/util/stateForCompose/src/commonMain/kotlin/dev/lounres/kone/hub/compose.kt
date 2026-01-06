@@ -31,7 +31,7 @@ private class KoneAsynchronousHubSubscriptionComposeState<Value>(
 @Composable
 public fun <Value> KoneAsynchronousHub<Value>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
     remember(this, policy) {
-        buildSubscription { initialValue ->
+        buildSubscriptionAtomic { initialValue ->
             val state = mutableStateOf(initialValue)
             val subscription = subscribe { state.value = it }
             KoneAsynchronousHubSubscriptionComposeState(subscription, state)
@@ -55,7 +55,7 @@ private class KoneBlockingHubSubscriptionComposeState<Value>(
 @Composable
 public fun <Value> KoneBlockingHub<Value>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
     remember(this, policy) {
-        buildSubscription { initialValue ->
+        buildSubscriptionAtomic { initialValue ->
             val state = mutableStateOf(initialValue)
             val subscription = subscribe { state.value = it }
             KoneBlockingHubSubscriptionComposeState(subscription, state)
