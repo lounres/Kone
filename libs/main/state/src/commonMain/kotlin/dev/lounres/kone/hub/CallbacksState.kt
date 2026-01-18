@@ -7,7 +7,7 @@ package dev.lounres.kone.hub
 
 
 @InternalKoneHubApi
-public data class CallbacksState<Value, CallbacksValue>(
+public data class CallbacksState<out Value, out CallbacksValue>(
     val value: Value,
     val callbacksState: CallbacksValue,
 )

@@ -82,7 +82,7 @@ internal class KoneSingletonSettableNoddedList<Element>(
             if (!hasNext()) indexOutOfBoundsException(1u, 1u)
             currentlyBeforeSingleElement = false
         }
-        override fun nextIndex(): UInt = if (hasNext()) 1u else indexOutOfBoundsException(1u, 1u)
+        override fun nextIndex(): UInt = if (hasNext()) 0u else indexOutOfBoundsException(1u, 1u)
         override fun setNext(element: Element) {
             if (!hasNext()) indexOutOfBoundsException(1u, 1u)
             list.singleElement = element

@@ -25,13 +25,12 @@ import kotlinx.coroutines.sync.Mutex
 import kotlin.jvm.JvmInline
 
 
-public interface KoneAsynchronousHubView<Value, CallbacksValue> {
-    public val value: Value
+public interface KoneAsynchronousHubView<out Value, CallbacksValue> {
+    @InternalKoneHubApi
+    public val callbacksState: CallbacksState<Value, CallbacksValue>
     
     public fun subscribe(callback: suspend (Value) -> Unit): Subscription
     
-    @InternalKoneHubApi
-    public val callbacksState: CallbacksState<Value, CallbacksValue>
     @InternalKoneHubApi
     public fun lockSubscriptions()
     @InternalKoneHubApi
@@ -43,12 +42,15 @@ public interface KoneAsynchronousHubView<Value, CallbacksValue> {
     @InternalKoneHubApi
     public fun unlockSubscriptions()
     @InternalKoneHubApi
-    public fun compareAndSetCallbackValue(expected: CallbacksValue): Boolean
+    public fun compareCallbackValue(expected: CallbacksValue): Boolean
     
     public fun interface Subscription {
         public fun cancel()
     }
 }
+
+@OptIn(InternalKoneHubApi::class)
+public val <Value> KoneAsynchronousHubView<Value, *>.value: Value get() = callbacksState.value
 
 public typealias KoneAsynchronousHub<Value> = KoneAsynchronousHubView<Value, Value>
 
@@ -92,22 +94,49 @@ public inline fun <Value, CallbacksValue, Result> KoneAsynchronousHubView<Value,
         } finally {
             if (!isSuccess) scope.subscriptions.forEach { it.cancel() }
         }
-        if (compareAndSetCallbackValue(callbacksValue.callbacksState)) return result
+        if (compareCallbackValue(callbacksValue.callbacksState)) return result
         else {
             scope.subscriptions.forEach { it.cancel() }
         }
     }
 }
 
-//public fun <Value, Result> KoneAsynchronousHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> =
-//    buildSubscriptionAtomic { initialValue ->
-//        val hub = KoneMutableAsynchronousHub(transform(initialValue), elementEquality)
-//        subscribe { hub.set(transform(it)) }
-//        hub
-//    }
+@OptIn(InternalKoneHubApi::class)
+public inline fun <SourceValue, TargetValue, CallbacksValue> KoneAsynchronousHubView<SourceValue, CallbacksValue>.view(
+    crossinline get: (SourceValue) -> TargetValue,
+): KoneAsynchronousHubView<TargetValue, CallbacksValue> =
+    object : KoneAsynchronousHubView<TargetValue, CallbacksValue> {
+        override val callbacksState: CallbacksState<TargetValue, CallbacksValue>
+            get() = this@view.callbacksState.let { CallbacksState(get(it.value), it.callbacksState) }
+        override fun subscribe(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
+            this@view.subscribe { callback(get(it)) }
+        override fun lockSubscriptions() {
+            this@view.lockSubscriptions()
+        }
+        @Deprecated(
+            "This method will be removed when implementations will be moved to concurrent queue.",
+            level = DeprecationLevel.WARNING
+        )
+        override fun subscribeAnyway(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
+            this@view.subscribeAnyway { callback(get(it)) }
+        override fun unlockSubscriptions() {
+            this@view.unlockSubscriptions()
+        }
+        override fun compareCallbackValue(expected: CallbacksValue): Boolean =
+            this@view.compareCallbackValue(expected)
+    }
+
+public fun <Value, Result> KoneAsynchronousHubView<Value, *>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableAsynchronousHub<Result> =
+    /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
+    buildSubscriptionLocking { initialValue ->
+        val hub = KoneMutableAsynchronousHub(transform(initialValue), elementEquality)
+        subscribe { hub.set(transform(it)) }
+        hub
+    }
 
 public fun <Value> KoneAsynchronousHubView<Value, *>.toStateFlow(): StateFlow<Value> =
-    buildSubscriptionAtomic { initialValue ->
+    /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
+    buildSubscriptionLocking  { initialValue ->
         val stateFlow = MutableStateFlow(initialValue)
         subscribe { stateFlow.value = it }
         stateFlow
@@ -138,8 +167,6 @@ private class KoneMutableAsynchronousHubImpl<Value>(
     initialValue: Value,
     private val elementEquality: Equality<Value> = Equality.defaultFor(),
 ) : KoneMutableAsynchronousHub<Value> {
-    override var value: Value = initialValue
-    
     // TODO: Replace with concurrent queue
     override var callbacksState: CallbacksState<Value, Value> = CallbacksState(initialValue, initialValue)
     private val callbacksLock: ReentrantLock = ReentrantLock()
@@ -172,7 +199,7 @@ private class KoneMutableAsynchronousHubImpl<Value>(
     override fun unlockSubscriptions() {
         callbacksLock.unlock()
     }
-    override fun compareAndSetCallbackValue(expected: Value): Boolean {
+    override fun compareCallbackValue(expected: Value): Boolean {
         TODO("Not yet implemented")
     }
     
@@ -191,7 +218,6 @@ private class KoneMutableAsynchronousHubImpl<Value>(
                 launch { callback(newValue) }
             }
         }
-        value = newValue
     }
     override fun release() {
         mutex.unlock()
@@ -263,12 +289,10 @@ public inline fun <SourceValue, TargetValue, CallbacksValue> KoneMutableAsynchro
     crossinline set: suspend (previousSourceValue: SourceValue, newTargetValue: TargetValue) -> SourceValue,
 ): KoneMutableAsynchronousHubView<TargetValue, CallbacksValue> =
     object : KoneMutableAsynchronousHubView<TargetValue, CallbacksValue> {
-        override val value: TargetValue get() = get(this@view.value)
-
-        override fun subscribe(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
-            this@view.subscribe { callback(get(it)) }
         override val callbacksState: CallbacksState<TargetValue, CallbacksValue>
             get() = this@view.callbacksState.let { CallbacksState(get(it.value), it.callbacksState) }
+        override fun subscribe(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
+            this@view.subscribe { callback(get(it)) }
         override fun lockSubscriptions() {
             this@view.lockSubscriptions()
         }
@@ -281,8 +305,8 @@ public inline fun <SourceValue, TargetValue, CallbacksValue> KoneMutableAsynchro
         override fun unlockSubscriptions() {
             this@view.unlockSubscriptions()
         }
-        override fun compareAndSetCallbackValue(expected: CallbacksValue): Boolean =
-            this@view.compareAndSetCallbackValue(expected)
+        override fun compareCallbackValue(expected: CallbacksValue): Boolean =
+            this@view.compareCallbackValue(expected)
 
         override suspend fun acquire() {
             this@view.acquire()

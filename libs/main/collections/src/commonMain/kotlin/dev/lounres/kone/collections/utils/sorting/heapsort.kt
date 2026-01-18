@@ -62,6 +62,10 @@ public fun <E: Comparable<E>> KoneSettableList<E>.heapsort() {
 
 context(order: Order<E>)
 public fun <E> KoneSettableList<E>.heapsort() {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u
@@ -95,6 +99,10 @@ public fun <E> KoneSettableList<E>.heapsort() {
 }
 
 public fun <E> KoneSettableList<E>.heapsortWith(comparator: Comparator<E>) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u
@@ -128,6 +136,10 @@ public fun <E> KoneSettableList<E>.heapsortWith(comparator: Comparator<E>) {
 }
 
 public fun <E: Comparable<E>> KoneSettableList<E>.heapsortDescending() {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u
@@ -162,6 +174,10 @@ public fun <E: Comparable<E>> KoneSettableList<E>.heapsortDescending() {
 
 context(order: Order<E>)
 public fun <E> KoneSettableList<E>.heapsortDescending() {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u
@@ -195,6 +211,10 @@ public fun <E> KoneSettableList<E>.heapsortDescending() {
 }
 
 public fun <E> KoneSettableList<E>.heapsortWithDescending(comparator: Comparator<E>) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     tailrec fun siftTheNodeUpToTheLeaf(index: UInt, heapSize: UInt) {
         val firstChildIndex = index * 2u + 1u
         val secondChildIndex = firstChildIndex + 1u
@@ -266,6 +286,10 @@ internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortBySiftTheN
 }
 
 public inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortBy(selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortBySiftTheNodeUpToTheLeaf(index, size, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)
@@ -316,6 +340,10 @@ internal inline fun <E, R> KoneSettableList<E>.heapsortBySiftTheNodeUpToTheLeaf(
 
 context(order: Order<R>)
 public inline fun <E, R> KoneSettableList<E>.heapsortBy(selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortBySiftTheNodeUpToTheLeaf(index, size, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)
@@ -359,6 +387,10 @@ internal inline fun <E, R> KoneSettableList<E>.heapsortWithBySiftTheNodeUpToTheL
 }
 
 public inline fun <E, R> KoneSettableList<E>.heapsortWithBy(comparator: Comparator<R>, selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortWithBySiftTheNodeUpToTheLeaf(index, size, comparator, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)
@@ -405,6 +437,10 @@ internal inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortByDescendi
 }
 
 public inline fun <E, R: Comparable<R>> KoneSettableList<E>.heapsortByDescending(selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortByDescendingSiftTheNodeUpToTheLeaf(index, size, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)
@@ -455,6 +491,10 @@ internal inline fun <E, R> KoneSettableList<E>.heapsortByDescendingSiftTheNodeUp
 
 context(order: Order<R>)
 public inline fun <E, R> KoneSettableList<E>.heapsortByDescending(selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortByDescendingSiftTheNodeUpToTheLeaf(index, size, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)
@@ -498,6 +538,10 @@ internal inline fun <E, R> KoneSettableList<E>.heapsortWithByDescendingSiftTheNo
 }
 
 public inline fun <E, R> KoneSettableList<E>.heapsortWithByDescending(comparator: Comparator<R>, selector: (E) -> R) {
+    when (size) {
+        0u -> return
+        1u -> return
+    }
     for (index in (size / 2u - 1u) downTo 0u) heapsortWithByDescendingSiftTheNodeUpToTheLeaf(index, size, comparator, selector)
     for (index in (size - 1u) downTo 1u) {
         swap(0u, index)

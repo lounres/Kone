@@ -58,7 +58,7 @@ internal class KoneSingletonSettableList<Element>(
             if (!hasNext()) noNextElementInIteratorException()
             currentlyBeforeSingleElement = false
         }
-        override fun nextIndex(): UInt = if (hasNext()) 1u else noNextElementInIteratorException()
+        override fun nextIndex(): UInt = if (hasNext()) 0u else noNextElementInIteratorException()
         override fun setNext(element: Element) {
             if (!hasNext()) noNextElementInIteratorException()
             list.singleElement = element

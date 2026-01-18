@@ -22,13 +22,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.jvm.JvmInline
 
 
-public interface KoneBlockingHubView<Value, CallbacksValue> {
-    public val value: Value
+public interface KoneBlockingHubView<out Value, CallbacksValue> {
+    @InternalKoneHubApi
+    public val callbacksState: CallbacksState<Value, CallbacksValue>
     
     public fun subscribe(callback: (Value) -> Unit): Subscription
     
-    @InternalKoneHubApi
-    public val callbacksState: CallbacksState<Value, CallbacksValue>
     @InternalKoneHubApi
     public fun lockSubscriptions()
     @InternalKoneHubApi
@@ -46,6 +45,9 @@ public interface KoneBlockingHubView<Value, CallbacksValue> {
         public fun cancel()
     }
 }
+
+@OptIn(InternalKoneHubApi::class)
+public val <Value> KoneBlockingHubView<Value, *>.value: Value get() = callbacksState.value
 
 public typealias KoneBlockingHub<Value> = KoneBlockingHubView<Value, Value>
 
@@ -96,15 +98,42 @@ public inline fun <Value, CallbacksValue, Result> KoneBlockingHubView<Value, Cal
     }
 }
 
-//public fun <Value, Result> KoneBlockingHub<Value>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
-//    buildSubscriptionAtomic { initialValue ->
-//        val hub = KoneMutableBlockingHub(transform(initialValue), elementEquality)
-//        subscribe { hub.set(transform(it)) }
-//        hub
-//    }
+@OptIn(InternalKoneHubApi::class)
+public inline fun <SourceValue, TargetValue, CallbacksValue> KoneBlockingHubView<SourceValue, CallbacksValue>.view(
+    crossinline get: (SourceValue) -> TargetValue,
+): KoneBlockingHubView<TargetValue, CallbacksValue> =
+    object : KoneBlockingHubView<TargetValue, CallbacksValue> {
+        override val callbacksState: CallbacksState<TargetValue, CallbacksValue>
+            get() = this@view.callbacksState.let { CallbacksState(get(it.value), it.callbacksState) }
+        override fun subscribe(callback: (TargetValue) -> Unit): KoneBlockingHubView.Subscription =
+            this@view.subscribe { callback(get(it)) }
+        override fun lockSubscriptions() {
+            this@view.lockSubscriptions()
+        }
+        @Deprecated(
+            "This method will be removed when implementations will be moved to concurrent queue.",
+            level = DeprecationLevel.WARNING
+        )
+        override fun subscribeAnyway(callback: (TargetValue) -> Unit): KoneBlockingHubView.Subscription =
+            this@view.subscribeAnyway { callback(get(it)) }
+        override fun unlockSubscriptions() {
+            this@view.unlockSubscriptions()
+        }
+        override fun compareAndSetCallbackValue(expected: CallbacksValue): Boolean =
+            this@view.compareAndSetCallbackValue(expected)
+    }
+
+public fun <Value, Result> KoneBlockingHubView<Value, *>.map(elementEquality: Equality<Result> = Equality.defaultFor(), transform: (Value) -> Result): KoneMutableBlockingHub<Result> =
+    /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
+    buildSubscriptionLocking  { initialValue ->
+        val hub = KoneMutableBlockingHub(transform(initialValue), elementEquality)
+        subscribe { hub.set(transform(it)) }
+        hub
+    }
 
 public fun <Value> KoneBlockingHubView<Value, *>.toStateFlow(): StateFlow<Value> =
-    buildSubscriptionAtomic { initialValue ->
+    /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
+    buildSubscriptionLocking  { initialValue ->
         val stateFlow = MutableStateFlow(initialValue)
         subscribe { stateFlow.value = it }
         stateFlow
@@ -135,8 +164,6 @@ private class KoneMutableBlockingHubImpl<Value>(
     initialValue: Value,
     private val elementEquality: Equality<Value> = Equality.defaultFor(),
 ) : KoneMutableBlockingHub<Value> {
-    override var value: Value = initialValue
-    
     // TODO: Replace with concurrent queue
     override var callbacksState: CallbacksState<Value, Value> = CallbacksState(initialValue, initialValue)
     private val callbacksLock: ReentrantLock = ReentrantLock()
@@ -188,7 +215,6 @@ private class KoneMutableBlockingHubImpl<Value>(
                 callback(newValue)
             } catch (_: Exception) {}
         }
-        value = newValue
     }
     override fun release() {
         lock.unlock()
@@ -260,8 +286,6 @@ public inline fun <SourceValue, TargetValue, CallbacksValue> KoneMutableBlocking
     crossinline set: (previousSourceValue: SourceValue, newTargetValue: TargetValue) -> SourceValue,
 ): KoneMutableBlockingHubView<TargetValue, CallbacksValue> =
     object : KoneMutableBlockingHubView<TargetValue, CallbacksValue> {
-        override val value: TargetValue get() = get(this@view.value)
-
         override fun subscribe(callback: (TargetValue) -> Unit): KoneBlockingHubView.Subscription =
             this@view.subscribe { callback(get(it)) }
         override val callbacksState: CallbacksState<TargetValue, CallbacksValue>
