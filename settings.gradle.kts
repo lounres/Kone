@@ -12,9 +12,10 @@ val versions: String by projectProperties
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        google()
         maven("https://repo.kotlin.link")
+        gradlePluginPortal()
         mavenLocal()
     }
     
@@ -25,8 +26,9 @@ dependencyResolutionManagement {
 
 pluginManagement {
     repositories {
-        mavenCentral()
         gradlePluginPortal()
+        google()
+        mavenCentral()
     }
 }
 
@@ -80,7 +82,7 @@ stal {
         "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
         // Extra
         "testBalloon" since { has("libs public") }
-        "kover" since { has("libs public") }
+//        "kover" since { has("libs public") }
         "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
         "kotlin multiplatform publication" since { hasAnyOf("libs") }
         "publishing" since { has("libs") }
@@ -91,6 +93,7 @@ stal {
         gradle.allprojects {
             extra["artifactId"] = ""
             extra["alias"] = ""
+            extra["androidNamespace"] = ""
             extra["isDokkaConfigured"] = false
             extra["jvmTargetVersion"] = settings.extra["jvmTargetVersion"]
             extra["jvmVendor"] = settings.extra["jvmVendor"]
@@ -98,14 +101,17 @@ stal {
         "libs main" {
             extra["artifactId"] = "kone.${project.name}"
             extra["alias"] = project.name
+            extra["androidNamespace"] = "dev.lounres.kone.${project.name}"
         }
         "libs misc" {
             extra["artifactId"] = "kone.misc.${project.name}"
             extra["alias"] = "misc-${project.name}"
+            extra["androidNamespace"] = "dev.lounres.kone.misc.${project.name}"
         }
         "libs util" {
             extra["artifactId"] = "kone.util.${project.name}"
             extra["alias"] = "util-${project.name}"
+            extra["androidNamespace"] = "dev.lounres.kone.util.${project.name}"
         }
         "plugin" {
             extra["artifactId"] = "kone.plugin.${project.name}"

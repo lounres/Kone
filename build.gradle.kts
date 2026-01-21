@@ -1,6 +1,7 @@
 @file:Suppress("SuspiciousCollectionReassignment")
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
@@ -14,6 +15,7 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 //import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
@@ -32,6 +34,7 @@ import kotlin.text.replace
 
 plugins {
 //    alias(versions.plugins.kotlin.multiplatform) apply false
+    alias(versions.plugins.android.library) apply false
     alias(versions.plugins.kotlinx.atomicfu) apply false
     alias(versions.plugins.kotlin.compose) apply false
     alias(versions.plugins.compose.multiplatform) apply false
@@ -261,6 +264,7 @@ stal {
         }
         "kotlin multiplatform" {
             apply(versions.plugins.kotlin.multiplatform)
+            apply(versions.plugins.android.library)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
                 
@@ -297,14 +301,23 @@ stal {
 //                linuxX64()
 //                mingwX64()
 //                macosX64()
+                
+                configure<KotlinMultiplatformAndroidLibraryTarget> {
+                    namespace = project.extra["androidNamespace"] as String
+                    compileSdk = (rootProject.extra["android.compileSdk"] as String).toInt()
+                    minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
+                    
+                    withHostTestBuilder {  }.configure {  }
+                    withDeviceTestBuilder {
+                        sourceSetTreeName = "test"
+                    }
+                }
 
-//                androidTarget()
 //                iosX64()
 //                iosArm64()
 //                iosSimulatorArm64()
 //                macosArm64()
 
-                @Suppress("UNUSED_VARIABLE")
                 sourceSets {
                     commonTest {
                         dependencies {
