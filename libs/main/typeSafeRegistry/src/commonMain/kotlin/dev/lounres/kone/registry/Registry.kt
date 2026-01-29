@@ -81,7 +81,6 @@ public fun interface RegistryImplication<in T> {
     public fun substitute(value: T): Registry
 }
 
-context(_: MutableRegistry)
 public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
     get() {
         data class RegistryKeyInfo(
@@ -159,7 +158,7 @@ public fun MutableRegistry(): MutableRegistry = MutableRegistryImpl(mutableMapOf
  * Mutable version of [Registry] that is used by builder function.
  */
 @Suppress("UNCHECKED_CAST")
-public class RegistryBuilder<Owner> @PublishedApi internal constructor() : MutableRegistry {
+public class RegistryBuilder @PublishedApi internal constructor() : MutableRegistry {
     private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
     
     override operator fun contains(registryKey: RegistryKey<*>): Boolean {
@@ -209,9 +208,9 @@ public class RegistryBuilder<Owner> @PublishedApi internal constructor() : Mutab
 /**
  * Builder function for [Registry].
  */
-public inline fun <Owner> Registry.Companion.build(@BuilderInference block: RegistryBuilder<Owner>.() -> Unit): Registry {
+public inline fun Registry.Companion.build(@BuilderInference block: RegistryBuilder.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return RegistryBuilder<Owner>().apply(block).build()
+    return RegistryBuilder().apply(block).build()
 }

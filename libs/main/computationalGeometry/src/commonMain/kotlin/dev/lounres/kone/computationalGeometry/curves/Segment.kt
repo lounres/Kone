@@ -18,6 +18,8 @@ public /*value*/ data class Segment<out Vector, out Point>(
     public val direction: Vector,
 ) {
     override fun toString() : String = "Segment($start, $direction)"
+    
+    public companion object
 }
 
 context(_: AffineSpaceOverRing<*, Vector, Point>)
@@ -25,4 +27,4 @@ public val <Vector, Point> Segment<Vector, Point>.end: Point
     get() = this.start + this.direction
 
 context(_: AffineSpaceOverRing<*, Vector, Point>)
-public fun <Vector, Point> Segment(start: Point, end: Point): Segment<Vector, Point> = Segment(start = start, direction = end - start)
+public fun <Vector, Point> Segment.Companion.fromEnds(start: Point, end: Point): Segment<Vector, Point> = Segment(start = start, direction = end - start)

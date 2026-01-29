@@ -21,7 +21,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImplied
 import dev.lounres.kone.relations.eq
@@ -320,7 +320,7 @@ public fun <Number> EuclideanSpaceOverRing.Companion.mdList1(ring: Ring<Number>,
 public fun <Number> EuclideanSpaceOverField.Companion.mdList1(field: Field<Number>, dimension: UInt): EuclideanSpaceOverField<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> =
     MDList1EuclideanSpaceOverField(field, dimension)
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
@@ -357,7 +357,7 @@ public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: S
     ).withImplied correspondsTo EuclideanSpaceOverRing.mdList1(koneContextRegistryBuilder[Ring.Key<Number>(numberType)], dimension)
 }
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(

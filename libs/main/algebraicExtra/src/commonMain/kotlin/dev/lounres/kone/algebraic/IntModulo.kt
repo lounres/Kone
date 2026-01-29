@@ -14,7 +14,7 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImplied
@@ -83,7 +83,7 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
     public companion object
 }
 
-context(_: RegistryBuilder<KoneContextRegistry>)
+context(_: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun IntModuloRing.Companion.set(modulus: Int) {
     val ring = IntModuloRing(modulus)
     @OptIn(DelicateSuppliedTypeConstructor::class)

@@ -12,7 +12,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
@@ -114,7 +114,7 @@ public inline fun <Element> Reification.Companion.getForOrElse(suppliedElementTy
  * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
  * The set reification just only checks that the element is of type [Element].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public inline fun <reified Element> Reification.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
     koneContextRegistryBuilder[Reification.Key<Element>(suppliedElementType)] = Reification.defaultFor<Element>()
 }

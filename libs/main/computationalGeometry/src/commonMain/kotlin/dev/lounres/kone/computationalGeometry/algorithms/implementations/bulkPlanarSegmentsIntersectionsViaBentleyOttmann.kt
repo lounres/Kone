@@ -33,7 +33,7 @@ import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareTo
@@ -293,7 +293,7 @@ public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldCompu
         euclideanSpace = euclideanSpace,
     )
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann(
     numberType: SuppliedType,
     vectorType: SuppliedType,

@@ -6,6 +6,7 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SourcesJar
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -264,7 +265,6 @@ stal {
         }
         "kotlin multiplatform" {
             apply(versions.plugins.kotlin.multiplatform)
-            apply(versions.plugins.android.library)
             configure<KotlinMultiplatformExtension> {
                 applyDefaultHierarchyTemplate()
                 
@@ -301,17 +301,6 @@ stal {
 //                linuxX64()
 //                mingwX64()
 //                macosX64()
-                
-                configure<KotlinMultiplatformAndroidLibraryTarget> {
-                    namespace = project.extra["androidNamespace"] as String
-                    compileSdk = (rootProject.extra["android.compileSdk"] as String).toInt()
-                    minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
-                    
-                    withHostTestBuilder {  }.configure {  }
-                    withDeviceTestBuilder {
-                        sourceSetTreeName = "test"
-                    }
-                }
 
 //                iosX64()
 //                iosArm64()
@@ -328,6 +317,23 @@ stal {
             }
             afterEvaluate {
                 yarn.lockFileDirectory = rootDir.resolve("gradle")
+            }
+        }
+        "kotlin android" {
+            apply(versions.plugins.android.library)
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                configure<KotlinMultiplatformExtension> {
+                    configure<KotlinMultiplatformAndroidLibraryTarget> {
+                        namespace = project.extra["androidNamespace"] as String
+                        compileSdk = (rootProject.extra["android.compileSdk"] as String).toInt()
+                        minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
+
+                        withHostTestBuilder { }.configure { }
+                        withDeviceTestBuilder {
+                            sourceSetTreeName = "test"
+                        }
+                    }
+                }
             }
         }
         "kotlin common settings" {
@@ -619,8 +625,10 @@ stal {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         KotlinJvm(
-                            javadocJar = JavadocJar.Empty(),
-                            sourcesJar = true,
+                            javadocJar =
+                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
+                                else JavadocJar.Empty(),
+                            sourcesJar = SourcesJar.Sources(),
                         )
                     )
                 }
@@ -634,7 +642,7 @@ stal {
                             javadocJar =
                                 if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
                                 else JavadocJar.Empty(),
-                            sourcesJar = true,
+                            sourcesJar = SourcesJar.Sources(),
                         )
                     )
                 }

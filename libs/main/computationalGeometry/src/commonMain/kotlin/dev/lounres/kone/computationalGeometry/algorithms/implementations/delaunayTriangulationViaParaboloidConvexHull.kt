@@ -47,7 +47,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.Position
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -397,7 +397,7 @@ public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Compani
         euclideanSpace = euclideanSpace,
     )
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull(
     numberType: SuppliedType,
     vectorType: SuppliedType,

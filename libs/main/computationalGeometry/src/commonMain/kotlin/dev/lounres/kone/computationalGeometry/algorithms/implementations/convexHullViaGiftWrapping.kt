@@ -33,7 +33,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.Position
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
@@ -372,7 +372,7 @@ public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.giftWrap
         euclideanSpaceOverRing = euclideanSpaceOverRing,
     )
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.setGiftWrapping(
     numberType: SuppliedType,
     vectorType: SuppliedType,

@@ -13,9 +13,11 @@ import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.forEachIndexed
 import dev.lounres.kone.registry.MutableRegistry
+import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.build
+import dev.lounres.kone.registry.empty
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -27,7 +29,7 @@ import dev.lounres.kone.relations.defaultFor
 public class Polytope(
     public val dimension: UInt,
     public val faces: KoneList<KoneReifiedSet<Polytope>>,
-    public val properties: Registry = Registry.Empty,
+    public val properties: OwnedRegistry<Polytope> = OwnedRegistry.empty(),
 ) {
     init {
         require(faces.size == dimension) { "Cannot instantiate polytope: dimension parameter $dimension is not equal to size ${faces.size} of faces list" }
@@ -39,12 +41,12 @@ public class Polytope(
 public fun Polytope(
     dimension: UInt,
     faces: KoneList<KoneReifiedSet<Polytope>>,
-    propertiesBuilder: RegistryBuilder<Polytope>.() -> Unit
+    propertiesBuilder: OwnedRegistryBuilder<Polytope>.() -> Unit
 ): Polytope =
     Polytope(
         dimension = dimension,
         faces = faces,
-        properties = Registry.build(propertiesBuilder),
+        properties = OwnedRegistry.build(propertiesBuilder),
     )
 
 public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>

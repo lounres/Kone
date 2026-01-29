@@ -28,7 +28,7 @@ import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.eq
@@ -249,7 +249,7 @@ public class EuclideanSpace3OverRing<Number>(
     }
 }
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun EuclideanSpace3OverRing.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpace3OverRing.Key<Number>(numberType) correspondsTo EuclideanSpace3OverRing(koneContextRegistryBuilder[Ring.Key<Number>(numberType)])
@@ -421,7 +421,7 @@ public class EuclideanSpace3OverField<Number>(
     }
 }
 
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun EuclideanSpace3OverField.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpace3OverField.Key<Number>(numberType) correspondsTo EuclideanSpace3OverField(koneContextRegistryBuilder[Field.Key<Number>(numberType)])

@@ -5,8 +5,9 @@
 
 package dev.lounres.kone.contexts
 
+import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.RegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import kotlin.contracts.InvocationKind
@@ -22,7 +23,7 @@ public value class KoneContextRegistry(
     /**
      * Underlying type-safe registry.
      */
-    public val contexts: Registry
+    public val contexts: OwnedRegistry<KoneContextRegistry>
 ) : Registry by contexts {
     public companion object
 }
@@ -129,9 +130,9 @@ public annotation class KoneContextRegistryBuilderDsl
 /**
  * Builder function for [KoneContextRegistry].
  */
-public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl RegistryBuilder<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
+public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl OwnedRegistryBuilder<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return KoneContextRegistry(Registry.build { this.block() })
+    return KoneContextRegistry(OwnedRegistry.build { this.block() })
 }

@@ -16,7 +16,7 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImplied
@@ -119,7 +119,7 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun BigIntegerContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigIntegerSuppliedType = SuppliedType.Regular(

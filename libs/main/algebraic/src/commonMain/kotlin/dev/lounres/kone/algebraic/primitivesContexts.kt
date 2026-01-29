@@ -18,7 +18,7 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImplied
@@ -144,7 +144,7 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun ByteContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val byteSuppliedType = SuppliedType.Regular(
@@ -279,7 +279,7 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun ShortContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val shortSuppliedType = SuppliedType.Regular(
@@ -402,7 +402,7 @@ public val Int.Companion.context: IntContext get() = IntContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun IntContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val intSuppliedType = SuppliedType.Regular(
@@ -525,7 +525,7 @@ public val Long.Companion.context: LongContext get() = LongContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun LongContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val longSuppliedType = SuppliedType.Regular(
@@ -631,7 +631,7 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun UByteContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uByteSuppliedType = SuppliedType.Regular(
@@ -737,7 +737,7 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun UShortContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uShortSuppliedType = SuppliedType.Regular(
@@ -833,7 +833,7 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun UIntContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uIntSuppliedType = SuppliedType.Regular(
@@ -929,7 +929,7 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun ULongContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val uLongSuppliedType = SuppliedType.Regular(
@@ -1078,7 +1078,7 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun DoubleContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val doubleSuppliedType = SuppliedType.Regular(
@@ -1227,7 +1227,7 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun FloatContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val floatSuppliedType = SuppliedType.Regular(

@@ -9,7 +9,7 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
@@ -94,14 +94,14 @@ public inline fun <Element> Equality.Companion.getForOrElse(suppliedElementType:
 /**
  * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Element> Equality.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
     koneContextRegistryBuilder[Equality.Key<Element>(suppliedElementType)] = Equality.defaultFor<Element>()
 }
 /**
  * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
  */
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Element> Equality.Companion.setAbsoluteFor(suppliedElementType: SuppliedType) {
     koneContextRegistryBuilder[Equality.Key<Element>(suppliedElementType)] = Equality.absoluteFor<Element>()
 }

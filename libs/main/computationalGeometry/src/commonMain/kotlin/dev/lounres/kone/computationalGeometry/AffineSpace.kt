@@ -10,7 +10,7 @@ import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryBuilder
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
@@ -141,7 +141,7 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vector
     AffineSpaceOverFieldViaVectorSpace(vectorSpace)
 
 @OptIn(DelicateSuppliedTypeConstructor::class)
-context(koneContextRegistryBuilder: RegistryBuilder<KoneContextRegistry>)
+context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
 public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType) {
     AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>(
         numberType,
