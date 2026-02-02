@@ -22,6 +22,8 @@ public value class MutableOwnedRegistry<Owner>(public val registry: MutableRegis
 
 public fun <Owner> MutableOwnedRegistry(): MutableOwnedRegistry<Owner> = MutableOwnedRegistry(MutableRegistry())
 
+public fun <Owner> MutableOwnedRegistry<Owner>.asImmutable(): OwnedRegistry<Owner> = OwnedRegistry(this.registry)
+
 @JvmInline
 public value class OwnedRegistryBuilder<Owner> @PublishedApi internal constructor(public val registry: RegistryBuilder) : MutableRegistry by registry
 
