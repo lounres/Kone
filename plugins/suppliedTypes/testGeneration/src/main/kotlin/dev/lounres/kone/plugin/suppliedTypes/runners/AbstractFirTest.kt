@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
-import dev.lounres.kone.plugin.suppliedTypes.services.FirClassSuppliedTypeParametersPropertiesGenerationExtensionConfigurator
-import dev.lounres.kone.plugin.suppliedTypes.services.FirSuppliedTypeCheckersExtensionRegistrarConfigurator
-import dev.lounres.kone.plugin.suppliedTypes.services.FirSuppliedTypeCompleteExtensionRegistrarConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.FirDeclarationsConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.FirDiagnosticConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.FirCompleteExtensionRegistrarConfigurator
 import org.jetbrains.kotlin.test.FirParser
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.directives.configureFirParser
@@ -20,7 +20,7 @@ open class AbstractDeclarationsTest : BaseTestRunner() {
         commonFirWithPluginFrontendConfiguration()
         configureFirParser(FirParser.Psi)
         
-        useConfigurators(::FirClassSuppliedTypeParametersPropertiesGenerationExtensionConfigurator)
+        useConfigurators(::FirDeclarationsConfigurator)
     }
 
     override fun createKotlinStandardLibrariesPathProvider(): KotlinStandardLibrariesPathProvider {
@@ -33,7 +33,7 @@ open class AbstractDiagnosticTest : BaseTestRunner() {
         commonFirWithPluginFrontendConfiguration()
         configureFirParser(FirParser.Psi)
         
-        useConfigurators(::FirSuppliedTypeCheckersExtensionRegistrarConfigurator)
+        useConfigurators(::FirDiagnosticConfigurator)
     }
     
     override fun createKotlinStandardLibrariesPathProvider(): KotlinStandardLibrariesPathProvider {
@@ -46,7 +46,7 @@ open class AbstractFirCompleteTest : BaseTestRunner() {
         commonFirWithPluginFrontendConfiguration()
         configureFirParser(FirParser.Psi)
         
-        useConfigurators(::FirSuppliedTypeCompleteExtensionRegistrarConfigurator)
+        useConfigurators(::FirCompleteExtensionRegistrarConfigurator)
     }
     
     override fun createKotlinStandardLibrariesPathProvider(): KotlinStandardLibrariesPathProvider {

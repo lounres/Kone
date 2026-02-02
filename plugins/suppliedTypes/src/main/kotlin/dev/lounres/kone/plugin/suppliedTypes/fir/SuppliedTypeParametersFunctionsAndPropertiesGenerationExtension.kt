@@ -43,7 +43,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.ConstantValueKind
 
 
-class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSession) : FirDeclarationGenerationExtension(session) {
+class SuppliedTypeParametersFunctionsAndPropertiesGenerationExtension(session: FirSession) : FirDeclarationGenerationExtension(session) {
     object Key : GeneratedDeclarationKey() {
         override fun toString(): String = "SuppliedTypeMemberGeneratorKey"
     }
@@ -326,7 +326,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
         }
     }
     
-    private val suppliedTypeDeprecationAnnotation by lazy {
+    private val suppliedTypePropertyDeprecationAnnotation by lazy {
         buildAnnotation {
             annotationTypeRef = deprecatedFirResolvedTypeRef
             argumentMapping = buildAnnotationArgumentMapping {
@@ -392,7 +392,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
         }.apply {
             replaceAnnotations(
                 buildList {
-                    this += suppliedTypeDeprecationAnnotation
+                    this += suppliedTypePropertyDeprecationAnnotation
                 }
             )
         }

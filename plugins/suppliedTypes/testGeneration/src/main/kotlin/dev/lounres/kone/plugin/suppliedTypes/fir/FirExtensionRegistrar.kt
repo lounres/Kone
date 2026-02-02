@@ -8,13 +8,14 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 
-class ClassSuppliedTypeParametersPropertiesGenerationExtensionRegistrar : FirExtensionRegistrar() {
+class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
-        +::ClassSuppliedTypeParametersPropertiesGenerationExtension
+        +::SuppliedTypeParametersFunctionsAndPropertiesGenerationExtension
+        +::SuppliedClassSupertypeGenerationExtension
     }
 }
 
-class SuppliedTypeCheckersExtensionRegistrar : FirExtensionRegistrar() {
+class DiagnosticExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::SuppliedTypeCheckersExtension
     }

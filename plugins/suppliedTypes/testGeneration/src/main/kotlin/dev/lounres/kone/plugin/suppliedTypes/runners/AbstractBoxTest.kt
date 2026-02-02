@@ -6,7 +6,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
 import dev.lounres.kone.plugin.suppliedTypes.services.ExtensionRegistrarConfigurator
-import dev.lounres.kone.plugin.suppliedTypes.services.FirSuppliedTypeCompleteExtensionRegistrarConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.FirCompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator1
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator2
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator3
@@ -16,7 +16,6 @@ import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.test.FirParser
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.backend.BlackBoxCodegenSuppressor
-import org.jetbrains.kotlin.test.backend.handlers.BytecodeListingHandler
 import org.jetbrains.kotlin.test.backend.handlers.IrTextDumpHandler
 import org.jetbrains.kotlin.test.backend.handlers.IrTreeVerifierHandler
 import org.jetbrains.kotlin.test.backend.handlers.JvmBoxRunner
@@ -76,7 +75,7 @@ open class AbstractBoxTestWithoutPlugin : AbstractBoxTest()
 open class AbstractBoxTestForPhase0 : AbstractBoxTest() {
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
-        builder.useConfigurators(::FirSuppliedTypeCompleteExtensionRegistrarConfigurator)
+        builder.useConfigurators(::FirCompleteExtensionRegistrarConfigurator)
     }
 }
 
