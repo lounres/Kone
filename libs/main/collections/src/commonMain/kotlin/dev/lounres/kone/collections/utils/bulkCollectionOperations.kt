@@ -22,6 +22,7 @@ import dev.lounres.kone.collections.noElementMatchingThePredicateException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.removeAllFrom
 import dev.lounres.kone.collections.utils.sorting.heapsort
 import dev.lounres.kone.collections.utils.sorting.heapsortBy
 import dev.lounres.kone.collections.utils.sorting.heapsortByDescending
@@ -120,6 +121,22 @@ public operator fun <E> KoneMutableList<E>.plusAssign(element: E) {
 
 public operator fun <E> KoneMutableSet<E>.plusAssign(element: E) {
     add(element)
+}
+
+public operator fun <E> KoneMutableSet<E>.minusAssign(elements: KoneIterator<E>) {
+    removeAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableSet<E>.minusAssign(elements: KoneIterable<E>) {
+    removeAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableSet<E>.minusAssign(elements: KoneSequence<E>) {
+    removeAllFrom(elements)
+}
+
+public operator fun <E> KoneMutableSet<E>.minusAssign(element: E) {
+    remove(element)
 }
 
 private class KoneTakeIterator<Element>(

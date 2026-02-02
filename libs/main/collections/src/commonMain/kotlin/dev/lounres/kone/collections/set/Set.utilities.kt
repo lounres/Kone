@@ -9,7 +9,6 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.utils.all
 
 
@@ -28,6 +27,14 @@ public fun <Element> KoneMutableSet<Element>.addAllFrom(elements: KoneSequence<E
     addAllFrom(elements.iterator())
 }
 
+public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneIterator<Element>) {
+    while (elements.hasNext()) remove(elements.getAndMoveNext())
+}
+
 public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneIterable<Element>) {
-    for (element in elements) remove(element)
+    removeAllFrom(elements.iterator())
+}
+
+public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneSequence<Element>) {
+    removeAllFrom(elements.iterator())
 }
