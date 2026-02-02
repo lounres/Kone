@@ -162,8 +162,8 @@ private fun <
                     elementEquality = Equality.absoluteFor(),
                     elementHashing = Hashing.defaultFor(),
                 ) {
-                    +allVertices
-                    -subfacet.verticesOrSelf
+                    this += allVertices
+                    this -= facet.faces[0u]
                 }
             )
             

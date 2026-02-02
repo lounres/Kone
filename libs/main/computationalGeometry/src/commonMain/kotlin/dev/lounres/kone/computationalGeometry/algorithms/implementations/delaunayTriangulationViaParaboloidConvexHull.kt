@@ -220,7 +220,7 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
 
 private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector, Point>(
     numberType: SuppliedType,
-    private val pointType: SuppliedType,
+    pointType: SuppliedType,
     private val ring: Ring<Number>,
     private val order: Order<Number>,
     private val euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
