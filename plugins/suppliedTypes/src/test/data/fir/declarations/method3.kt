@@ -7,7 +7,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 object Foo {
     object Bar {
-        @SuppliedTarget
-        fun <@Supplied Gee> baz(): Gee? = null
+        @Suppliable
+        fun <@Supply Gee> baz(): Gee? = null
     }
 }

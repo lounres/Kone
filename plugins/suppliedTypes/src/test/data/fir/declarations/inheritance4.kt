@@ -4,10 +4,14 @@ import dev.lounres.kone.suppliedTypes.*
 import kotlin.reflect.KVariance
 
 
-interface Foo<@Supplied T>
+@Suppliable
+interface Foo<@Supply T>
 
-interface Bar<@Supplied U> : Foo<Map<out U, String>>
+@Suppliable
+interface Bar<@Supply U> : Foo<Map<out U, String>>
 
-interface Baz<@Supplied V> : Foo<Map<out Int, V>>
+@Suppliable
+interface Baz<@Supply V> : Foo<Map<out Int, V>>
 
+@Suppliable
 interface Gee : Bar<Int>, Baz<String>

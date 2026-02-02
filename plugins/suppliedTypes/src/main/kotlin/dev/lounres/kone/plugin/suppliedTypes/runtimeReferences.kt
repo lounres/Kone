@@ -18,9 +18,9 @@ const val suppliedTypeDynamicShortNameString = "Dynamic"
 const val suppliedProjectionShortNameString = "SuppliedProjection"
 const val suppliedProjectionRegularShortNameString = "Regular"
 const val suppliedProjectionStarShortNameString = "Star"
-const val suppliedShortNameString = "Supplied"
-const val suppliedTargetShortNameString = "SuppliedTarget"
-const val supplianceProvidedShortNameString = "SupplianceProvided"
+const val supplyShortNameString = "Supply"
+const val suppliableShortNameString = "Suppliable"
+//const val supplianceProvidedShortNameString = "SupplianceProvided"
 const val suppliedTypeOfShortNameString = "suppliedTypeOf"
 
 val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString)
@@ -30,9 +30,9 @@ val suppliedTypeDynamicShortName = FqName("$suppliedTypeShortNameString.$supplie
 val suppliedProjectionShortName = FqName(suppliedProjectionShortNameString)
 val suppliedProjectionRegularShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionRegularShortNameString")
 val suppliedProjectionStarShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionStarShortNameString")
-val suppliedShortName = FqName(suppliedShortNameString)
-val suppliedTargetShortName = FqName(suppliedTargetShortNameString)
-val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
+val supplyShortName = FqName(supplyShortNameString)
+val suppliableShortName = FqName(suppliableShortNameString)
+//val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
 val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
 
 val suppliedTypeClassId = ClassId(
@@ -65,19 +65,19 @@ val suppliedProjectionStarClassId = ClassId(
     relativeClassName = suppliedProjectionStarShortName,
     isLocal = false,
 )
-val suppliedClassId = ClassId(
+val supplyClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedShortName,
+    relativeClassName = supplyShortName,
     isLocal = false
 )
-val suppliedTargetClassId = ClassId(
+val suppliableClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedTargetShortName,
+    relativeClassName = suppliableShortName,
     isLocal = false
 )
-val supplianceProvidedClassId = ClassId(
-    packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = supplianceProvidedShortName,
-    isLocal = false
-)
+//val supplianceProvidedClassId = ClassId(
+//    packageFqName = koneSuppliedTypesPackageFQName,
+//    relativeClassName = supplianceProvidedShortName,
+//    isLocal = false
+//)
 val suppliedTypeOfCallableId = CallableId(packageName = koneSuppliedTypesPackageFQName, className = null, callableName = suppliedTypeOfName)

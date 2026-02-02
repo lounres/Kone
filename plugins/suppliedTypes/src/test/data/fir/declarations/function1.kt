@@ -5,5 +5,5 @@ package foo.bar
 import dev.lounres.kone.suppliedTypes.*
 
 
-@SuppliedTarget
-fun <@Supplied Gee> baz(): Gee? = null
+@Suppliable
+fun <@Supply Gee> baz(): Gee? = null

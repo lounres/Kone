@@ -4,10 +4,12 @@
 import dev.lounres.kone.suppliedTypes.*
 
 
-interface Foo<@Supplied T>
+@Suppliable
+interface Foo<@Supply T>
 
 // MODULE: bar(foo)
 import dev.lounres.kone.suppliedTypes.*
 
 
-class Bar<@Supplied U> : Foo<Map<out U, *>>
+@Suppliable
+class Bar<@Supply U> : Foo<Map<out U, *>>

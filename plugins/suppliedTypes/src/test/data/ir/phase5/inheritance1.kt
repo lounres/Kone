@@ -3,6 +3,6 @@
 import dev.lounres.kone.suppliedTypes.*
 
 
-interface Foo<@Supplied T>
+interface Foo<@Supply T>
 
-interface Bar<@Supplied U> : Foo<Map<out U, *>>
+interface Bar<@Supply U> : Foo<Map<out U, *>>

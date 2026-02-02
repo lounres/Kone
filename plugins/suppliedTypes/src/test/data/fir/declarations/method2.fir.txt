@@ -11,11 +11,11 @@ FILE: method2.kt
                 super<R|kotlin/Any|>()
             }
 
-            @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee> baz(): R|Gee?| {
+            @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?| {
                 ^baz Null(null)
             }
 
-            @R|dev/lounres/kone/suppliedTypes/SupplianceProvided|() public final fun <Gee> baz(supplyForGee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB): R|Gee?|
+            public final fun <Gee> baz($supplied_type_parameter_for_Gee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB): R|Gee?|
 
         }
 

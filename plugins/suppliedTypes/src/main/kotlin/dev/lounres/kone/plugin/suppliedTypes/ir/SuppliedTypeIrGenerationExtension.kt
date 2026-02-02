@@ -9,7 +9,7 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
-import dev.lounres.kone.plugin.suppliedTypes.suppliedClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionRegularClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionStarClassId
@@ -24,7 +24,6 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
-import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addBackingField
 import org.jetbrains.kotlin.ir.builders.declarations.buildValueParameter
@@ -39,7 +38,6 @@ import org.jetbrains.kotlin.ir.expressions.IrStatementOriginImpl
 import org.jetbrains.kotlin.ir.expressions.IrTypeOperator
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetEnumValueImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
@@ -71,10 +69,10 @@ inline fun IrPluginContext.referenceFunctionThatOrFail(callableId: CallableId, p
     referenceFunctions(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
 
 val IrDeclarationWithName.fqName: FqName get() = fqNameWhenAvailable ?: error("Expected declaration with available FQ name")
-val IrTypeParameter.isSupplied: Boolean get() = hasAnnotation(suppliedClassId)
+val IrTypeParameter.isSupplied: Boolean get() = hasAnnotation(supplyClassId)
 val IrTypeParameter.providedSupplierParameterName: Name?
     get() {
-        val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == suppliedClassId }
+        val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == supplyClassId }
         val theOnlyArgumentOrNull = supplyingAnnotationConstructorCallOrNull.arguments[0] as IrConst?
         val suppliedParameterName = (theOnlyArgumentOrNull?.value as? String?)?.takeIf { it.isNotEmpty() }
         return suppliedParameterName?.let { Name.identifier(it) }

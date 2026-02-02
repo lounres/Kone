@@ -6,6 +6,9 @@
 package dev.lounres.kone.suppliedTypes
 
 import kotlinx.serialization.Serializable
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 import kotlin.reflect.KVariance
 
 
@@ -99,20 +102,40 @@ public sealed interface SuppliedProjection {
 }
 
 @Target(AnnotationTarget.TYPE_PARAMETER)
-public annotation class Supplied(/*val parameterName: String = ""*/)
+public annotation class Supply(/*val parameterName: String = ""*/)
 
 @Target(
     AnnotationTarget.FUNCTION,
+//    AnnotationTarget.PROPERTY,
     AnnotationTarget.CLASS,
 )
-public annotation class SuppliedTarget
+public annotation class Suppliable
 
-@Target(
-    AnnotationTarget.FUNCTION,
-//    AnnotationTarget.CONSTRUCTOR,
+//@Target(
+//    AnnotationTarget.FUNCTION,
+////    AnnotationTarget.CONSTRUCTOR,
+//)
+//private annotation class SupplianceProvided
+
+private class SuppliedTypeHolder : ReadWriteProperty<Any?, SuppliedType> {
+    private var suppliedType = AtomicReference<SuppliedType?>(null)
+    override fun getValue(thisRef: Any?, property: KProperty<*>): SuppliedType =
+        suppliedType.load() ?: error("Generated SuppliedType property is not yet initialized")
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: SuppliedType) {
+        if (!suppliedType.compareAndSet(null, value)) error("Generated SuppliedType property is already initialized")
+    }
+}
+
+@Deprecated(
+    message = "Internal supplied types API.",
+    level = DeprecationLevel.HIDDEN,
 )
-private annotation class SupplianceProvided
+public fun suppliedTypeHolder(): ReadWriteProperty<Any?, SuppliedType> = SuppliedTypeHolder()
 
-@SuppliedTarget
-public fun <@Supplied T> suppliedTypeOf(): SuppliedType =
+public interface SuppliableClass {
+    public fun afterSuppliance() {}
+}
+
+@Suppliable
+public fun <@Supply T> suppliedTypeOf(): SuppliedType =
     error("Intrinsic function call was not substituted. Be sure to apply supplied types compiler plugin.")

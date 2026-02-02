@@ -1,11 +1,12 @@
 FILE: classifier1.kt
     package foo.bar
 
-    @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() public final class Baz<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee> : R|kotlin/Any| {
-        public constructor<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee>(): R|foo/bar/Baz<Gee>| {
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Baz<@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> : R|kotlin/Any| {
+        public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() Gee>(): R|foo/bar/Baz<Gee>| {
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/suppliedTypes/SupplianceProvided|() public constructor<@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee>(Gee: R|dev/lounres/kone/suppliedTypes/SuppliedType| = STUB): R|foo/bar/Baz<Gee>|
+        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public final val $supplied_type_property_for_foo-bar-Baz_Gee: R|dev/lounres/kone/suppliedTypes/SuppliedType|
+            public get(): R|dev/lounres/kone/suppliedTypes/SuppliedType|
 
     }

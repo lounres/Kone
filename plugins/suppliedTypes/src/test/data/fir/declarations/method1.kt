@@ -6,6 +6,6 @@ import dev.lounres.kone.suppliedTypes.*
 
 
 class Foo {
-    @SuppliedTarget
-    fun <@Supplied Gee> baz(): Gee? = null
+    @Suppliable
+    fun <@Supply Gee> baz(): Gee? = null
 }

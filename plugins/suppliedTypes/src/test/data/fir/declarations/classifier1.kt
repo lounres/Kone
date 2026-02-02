@@ -5,7 +5,7 @@ package foo.bar
 import dev.lounres.kone.suppliedTypes.*
 
 
-@SuppliedTarget
-class Baz<@Supplied Gee> {
+@Suppliable
+class Baz<@Supply Gee> {
     constructor()
 }

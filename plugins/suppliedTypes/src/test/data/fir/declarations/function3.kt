@@ -6,7 +6,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 
 fun foo() {
-    @SuppliedTarget
+    @Suppliable
 //    context(_: Boolean)
-    fun <@Supplied Gee : Doo, Doo : List<Gee>> Int.baz(arg: String): Gee? = null
+    fun <@Supply Gee : Doo, Doo : List<Gee>> Int.baz(arg: String): Gee? = null
 }

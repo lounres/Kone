@@ -1,14 +1,14 @@
 FILE: inheritance1.kt
-    public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supplied|() T> : R|kotlin/Any| {
-        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_variable_for_Foo_T: R|dev/lounres/kone/suppliedTypes/SuppliedType|
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any| {
+        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_property_for_Foo_T: R|dev/lounres/kone/suppliedTypes/SuppliedType|
             public get(): R|dev/lounres/kone/suppliedTypes/SuppliedType|
 
     }
-    public abstract interface Bar<@R|dev/lounres/kone/suppliedTypes/Supplied|() U> : R|Foo<kotlin/collections/Map<out U, *>>| {
-        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_variable_for_Bar_U: R|dev/lounres/kone/suppliedTypes/SuppliedType|
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Foo<kotlin/collections/Map<out U, *>>| {
+        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_property_for_Bar_U: R|dev/lounres/kone/suppliedTypes/SuppliedType|
             public get(): R|dev/lounres/kone/suppliedTypes/SuppliedType|
 
-        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_variable_for_Foo_T: R|dev/lounres/kone/suppliedTypes/SuppliedType|
+        @R|kotlin/Deprecated|(message = String(Supplied type internal property), level = Q|kotlin/DeprecationLevel|.R|kotlin/DeprecationLevel.HIDDEN|) public abstract val $supplied_type_property_for_Foo_T: R|dev/lounres/kone/suppliedTypes/SuppliedType|
             public get(): R|dev/lounres/kone/suppliedTypes/SuppliedType|
 
     }

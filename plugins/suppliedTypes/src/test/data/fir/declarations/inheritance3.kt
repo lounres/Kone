@@ -4,6 +4,8 @@ import dev.lounres.kone.suppliedTypes.*
 import kotlin.reflect.KVariance
 
 
-open class Foo<@Supplied T>
+@Suppliable
+open class Foo<@Supply T>
 
-class Bar<@Supplied U> : Foo<Map<out U, *>>()
+@Suppliable
+class Bar<@Supply U> : Foo<Map<out U, *>>()

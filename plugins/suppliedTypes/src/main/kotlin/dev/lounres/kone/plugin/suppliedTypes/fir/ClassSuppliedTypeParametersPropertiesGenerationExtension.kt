@@ -5,55 +5,41 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
-import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
-import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
+import dev.lounres.kone.plugin.suppliedTypes.*
 import dev.lounres.kone.plugin.suppliedTypes.ir.copyMapToBy
 import dev.lounres.kone.plugin.suppliedTypes.ir.copyToBy
-import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTargetClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.FirConstructor
 import org.jetbrains.kotlin.fir.declarations.FirSimpleFunction
+import org.jetbrains.kotlin.fir.declarations.FirValueParameterKind
+import org.jetbrains.kotlin.fir.declarations.builder.buildValueParameter
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
+import org.jetbrains.kotlin.fir.declarations.origin
+import org.jetbrains.kotlin.fir.declarations.utils.isClass
 import org.jetbrains.kotlin.fir.declarations.utils.isInterface
-import org.jetbrains.kotlin.fir.expressions.builder.buildAnnotation
-import org.jetbrains.kotlin.fir.expressions.builder.buildAnnotationArgumentMapping
-import org.jetbrains.kotlin.fir.expressions.builder.buildCallableReferenceAccess
-import org.jetbrains.kotlin.fir.expressions.builder.buildLiteralExpression
-import org.jetbrains.kotlin.fir.expressions.builder.buildPropertyAccessExpression
-import org.jetbrains.kotlin.fir.expressions.builder.buildResolvedQualifier
-import org.jetbrains.kotlin.fir.expressions.impl.FirEmptyAnnotationArgumentMapping
+import org.jetbrains.kotlin.fir.expressions.builder.*
 import org.jetbrains.kotlin.fir.extensions.*
 import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate
+import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.plugin.SimpleFunctionBuildingContext
-import org.jetbrains.kotlin.fir.plugin.createConstructor
 import org.jetbrains.kotlin.fir.plugin.createMemberFunction
 import org.jetbrains.kotlin.fir.plugin.createMemberProperty
 import org.jetbrains.kotlin.fir.plugin.createTopLevelFunction
 import org.jetbrains.kotlin.fir.references.builder.buildResolvedNamedReference
 import org.jetbrains.kotlin.fir.resolve.defaultType
+import org.jetbrains.kotlin.fir.resolve.providers.getClassDeclaredPropertySymbols
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.toClassSymbol
-import org.jetbrains.kotlin.fir.scopes.getDeclaredConstructors
 import org.jetbrains.kotlin.fir.scopes.getFunctions
 import org.jetbrains.kotlin.fir.scopes.processAllFunctions
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirConstructorSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
-import org.jetbrains.kotlin.fir.visitors.FirVisitor
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.ConstantValueKind
 
 
@@ -63,13 +49,13 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
     }
     
     companion object {
-        private val SUPPLIED_TARGET_PREDICATE = LookupPredicate.create {
-            annotated(suppliedTargetClassId.asSingleFqName())
+        private val SUPPLIABLE_PREDICATE = LookupPredicate.create {
+            annotated(suppliableClassId.asSingleFqName())
         }
     }
     
     override fun FirDeclarationPredicateRegistrar.registerPredicates() {
-        register(SUPPLIED_TARGET_PREDICATE)
+        register(SUPPLIABLE_PREDICATE)
     }
     
     private val predicateBasedProvider by lazy { session.predicateBasedProvider }
@@ -106,76 +92,81 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
     }
     
     private val suppliedTypeConeClassLikeType by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassId)!!.defaultType() }
-    private val supplianceProvidedConeClassLikeType by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedClassId)!!.defaultType() }
+//    private val supplianceProvidedConeClassLikeType by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedClassId)!!.defaultType() }
     private val suppliedTypeFirResolvedTypeRef by lazy {
         buildResolvedTypeRef {
             coneType = suppliedTypeConeClassLikeType
         }
     }
-    private val supplianceProvidedFirResolvedTypeRef by lazy {
-        buildResolvedTypeRef {
-            coneType = supplianceProvidedConeClassLikeType
-        }
-    }
+//    private val supplianceProvidedFirResolvedTypeRef by lazy {
+//        buildResolvedTypeRef {
+//            coneType = supplianceProvidedConeClassLikeType
+//        }
+//    }
     
-    private val suppliedTargets by lazy {
-        predicateBasedProvider.getSymbolsByPredicate(SUPPLIED_TARGET_PREDICATE)
-    }
-    private val suppliedTargetFunctions by lazy {
-        suppliedTargets.filterIsInstance<FirNamedFunctionSymbol>()
-    }
-    private val suppliedTargetTopLevelFunctions by lazy {
-        suppliedTargetFunctions.filter { it.callableId.className == null }
-    }
+    private val suppliables get() =
+        predicateBasedProvider.getSymbolsByPredicate(SUPPLIABLE_PREDICATE)
+    private val suppliableFunctions get() =
+        suppliables.filterIsInstance<FirNamedFunctionSymbol>()
+    private val suppliableTopLevelFunctions get() =
+        suppliableFunctions.filter { it.callableId.className == null }
+    
+    private val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
+    private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
+    private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyClassId, session)
     
     private data class TypeParametersInfo(
         val origin: FirClassSymbol<*>,
         val appearances: Set<FirClassSymbol<*>>,
     )
+    private val allSuppliedTypeParametersInfoRegistry: MutableMap<FirClassSymbol<*>, Map<FirTypeParameterSymbol, TypeParametersInfo>> = mutableMapOf()
     private val allSuperClassesSuppliedTypeParametersInfoRegistry: MutableMap<FirClassSymbol<*>, Map<FirTypeParameterSymbol, TypeParametersInfo>> = mutableMapOf()
     private val FirClassSymbol<*>.allSuppliedTypeParametersInfo: Map<FirTypeParameterSymbol, TypeParametersInfo>
-        get() = buildMap<FirTypeParameterSymbol, TypeParametersInfo> {
-            val typeParameters = typeParameterSymbols
-            typeParameters
-                .filter { it.hasAnnotation(suppliedClassId, session) }
-                .associateWith {
-                    TypeParametersInfo(
-                        origin = this@allSuppliedTypeParametersInfo,
-                        appearances = setOf(this@allSuppliedTypeParametersInfo),
+        get() = allSuppliedTypeParametersInfoRegistry.getOrPut(this) {
+            buildMap<FirTypeParameterSymbol, TypeParametersInfo> {
+                val typeParameters = typeParameterSymbols
+                typeParameters
+                    .filter { it.isSupply }
+                    .associateWith {
+                        TypeParametersInfo(
+                            origin = this@allSuppliedTypeParametersInfo,
+                            appearances = setOf(this@allSuppliedTypeParametersInfo),
+                        )
+                    }.copyToBy(
+                        destination = this,
+                        resolve = { _, currentInfo, newInfo ->
+                            check(currentInfo.origin == newInfo.origin)
+                            TypeParametersInfo(
+                                origin = currentInfo.origin,
+                                appearances = currentInfo.appearances + newInfo.appearances,
+                            )
+                        },
                     )
-                }.copyToBy(
-                    destination = this,
-                    resolve = { _, currentInfo, newInfo ->
-                        check(currentInfo.origin == newInfo.origin)
-                        TypeParametersInfo(
-                            origin = currentInfo.origin,
-                            appearances = currentInfo.appearances + newInfo.appearances,
-                        )
-                    },
-                )
-            allSuperClassesSuppliedTypeParametersInfo
-                .copyMapToBy(
-                    destination = this,
-                    transform = {
-                        TypeParametersInfo(
-                            origin = it.value.origin,
-                            appearances = it.value.appearances + this@allSuppliedTypeParametersInfo
-                        )
-                    },
-                    resolve = { _, currentInfo, newInfo ->
-                        check(currentInfo.origin == newInfo.origin)
-                        TypeParametersInfo(
-                            origin = currentInfo.origin,
-                            appearances = currentInfo.appearances + newInfo.appearances + this@allSuppliedTypeParametersInfo
-                        )
-                    }
-                )
+                allSuperClassesSuppliedTypeParametersInfo
+                    .copyMapToBy(
+                        destination = this,
+                        transform = {
+                            TypeParametersInfo(
+                                origin = it.value.origin,
+                                appearances = it.value.appearances + this@allSuppliedTypeParametersInfo
+                            )
+                        },
+                        resolve = { _, currentInfo, newInfo ->
+                            check(currentInfo.origin == newInfo.origin)
+                            TypeParametersInfo(
+                                origin = currentInfo.origin,
+                                appearances = currentInfo.appearances + newInfo.appearances + this@allSuppliedTypeParametersInfo
+                            )
+                        }
+                    )
+            }
         }
     private val FirClassSymbol<*>.allSuperClassesSuppliedTypeParametersInfo: Map<FirTypeParameterSymbol, TypeParametersInfo>
         get() = allSuperClassesSuppliedTypeParametersInfoRegistry.getOrPut(this) {
             buildMap<FirTypeParameterSymbol, TypeParametersInfo> {
                 for (superType in resolvedSuperTypes) {
                     val superClassSymbol = superType.toClassSymbol(session)!!
+                    if (!superClassSymbol.isSuppliable) continue
                     superClassSymbol.allSuppliedTypeParametersInfo
                         .copyToBy(
                             destination = this,
@@ -191,15 +182,33 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
             }
         }
     
-    @ExperimentalTopLevelDeclarationsGenerationApi
+    private val FirClassSymbol<*>.allNecessarySuppliedTypeParameterProperties: Set<Name>
+        get() {
+            val superClassFinalSuppliedTypes =
+                this
+                    .resolvedSuperTypes
+                    .map { it.toClassSymbol(session)!! }
+                    .singleOrNull { it.isClass }
+                    ?.takeIf { it.isSuppliable }
+                    ?.allSuppliedTypeParametersInfo
+                    ?: emptyMap()
+            return this
+                .allSuppliedTypeParametersInfo
+                .filter { it.key !in superClassFinalSuppliedTypes }
+                .mapTo(mutableSetOf()) { internalSupplierPropertyName(it.value.origin.classId, it.key.name) }
+        }
+    
+    @OptIn(ExperimentalTopLevelDeclarationsGenerationApi::class)
     override fun getTopLevelCallableIds(): Set<CallableId> =
-        suppliedTargetTopLevelFunctions.map { it.callableId }.toSet()
+        suppliableTopLevelFunctions.map { it.callableId }.toSet()
     
     override fun getCallableNamesForClass(classSymbol: FirClassSymbol<*>, context: MemberGenerationContext): Set<Name> =
         buildSet {
-            classSymbol.allSuppliedTypeParametersInfo.mapTo(this) { internalSupplierPropertyName(it.value.origin.classId, it.key.name) }
-            context.declaredScope?.processAllFunctions { if (it.hasAnnotation(suppliedTargetClassId, session)) add(it.name) }
-            if (classSymbol.hasAnnotation(suppliedTargetClassId, session)) add(SpecialNames.INIT)
+            if (classSymbol.isSuppliable) {
+                addAll(classSymbol.allNecessarySuppliedTypeParameterProperties)
+            }
+            context.declaredScope?.processAllFunctions { if (it.isSuppliable) add(it.name) }
+//            if (classSymbol.isSuppliable) add(SpecialNames.INIT) // TODO: Replace with companion methods
         }
     
     @OptIn(ExperimentalTopLevelDeclarationsGenerationApi::class)
@@ -208,10 +217,25 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
         context: MemberGenerationContext?
     ): List<FirNamedFunctionSymbol> {
         fun SimpleFunctionBuildingContext.describe(functionToSupply: FirNamedFunctionSymbol) {
+            source = functionToSupply.source
             visibility = functionToSupply.rawStatus.visibility.takeIf { it != Visibilities.Unknown } ?: Visibilities.DEFAULT_VISIBILITY
-            modality = functionToSupply.rawStatus.modality ?: Modality.FINAL
+            functionToSupply.rawStatus.modality?.let { modality = it }
             status {
-                // TODO: Correct status
+                isExpect = functionToSupply.rawStatus.isExpect
+                isActual = functionToSupply.rawStatus.isActual
+                isOverride = functionToSupply.rawStatus.isOverride
+                isInline = functionToSupply.rawStatus.isInline
+                isTailRec = functionToSupply.rawStatus.isTailRec
+                isExternal = functionToSupply.rawStatus.isExternal
+                isConst = functionToSupply.rawStatus.isConst
+                isLateInit = functionToSupply.rawStatus.isLateInit
+                isInner = functionToSupply.rawStatus.isInner
+                isCompanion = functionToSupply.rawStatus.isCompanion
+                isSuspend = functionToSupply.rawStatus.isSuspend
+                isStatic = functionToSupply.rawStatus.isStatic
+                isFromSealedClass = functionToSupply.rawStatus.isFromSealedClass
+                isFromEnumClass = functionToSupply.rawStatus.isFromEnumClass
+                isFun = functionToSupply.rawStatus.isFun
             }
             for (typeParameterSymbol in functionToSupply.typeParameterSymbols) {
                 typeParameter(
@@ -226,7 +250,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
                         }
                     }
                 }
-                if (typeParameterSymbol.hasAnnotation(suppliedClassId, session)) {
+                if (typeParameterSymbol.isSupply) {
                     valueParameter(
                         name = internalSupplierParameterName(typeParameterSymbol.name),
                         type = suppliedTypeConeClassLikeType,
@@ -247,22 +271,29 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
                 )
             }
             functionToSupply.resolvedReceiverType?.let { extensionReceiverType(it) }
-            for (contextParameterSymbol in functionToSupply.contextParameterSymbols) {
-                TODO("Context parameters are not yet supported")
-            }
-//            extensionReceiverType {
-//                functionToSupply.receiverParameterSymbol?.resolvedType?.replaceArgumentsDeeply {  }
-//            }
         }
         fun FirSimpleFunction.replace(functionToSupply: FirNamedFunctionSymbol) {
-            replaceAnnotations(
-                buildList {
-                    this += buildAnnotation {
-                        annotationTypeRef = supplianceProvidedFirResolvedTypeRef
-                        argumentMapping = FirEmptyAnnotationArgumentMapping
+//            replaceAnnotations(
+//                buildList {
+//                    this += buildAnnotation {
+//                        annotationTypeRef = supplianceProvidedFirResolvedTypeRef
+//                        argumentMapping = FirEmptyAnnotationArgumentMapping
+//                    }
+//                    // TODO: Add old function annotations. For some reason the solution below does not work.
+////                    this += functionToSupply.resolvedAnnotationsWithArguments.also { println(it.map { it.argumentMapping::class }) }
+//                }
+//            )
+            replaceContextParameters(
+                functionToSupply.contextParameterSymbols.map {
+                    buildValueParameter {
+                        moduleData = session.moduleData
+                        origin = Key.origin
+                        name = it.name
+                        symbol = FirValueParameterSymbol()
+                        returnTypeRef = it.resolvedReturnTypeRef
+                        containingDeclarationSymbol = this@replace.symbol
+                        valueParameterKind = FirValueParameterKind.ContextParameter
                     }
-                    // TODO: Add old function annotations. For some reason the solution below does not work.
-//                    this += functionToSupply.resolvedAnnotationsWithArguments.also { println(it.map { it.argumentMapping::class }) }
                 }
             )
         }
@@ -281,7 +312,7 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
                 }.symbol
             }
         } else {
-            suppliedTargetFunctions.filter { it.callableId == callableId }.map {
+            suppliableFunctions.filter { it.callableId == callableId }.map {
                 createTopLevelFunction(
                     key = Key,
                     callableId = callableId,
@@ -295,101 +326,73 @@ class ClassSuppliedTypeParametersPropertiesGenerationExtension(session: FirSessi
         }
     }
     
-    override fun generateConstructors(context: MemberGenerationContext): List<FirConstructorSymbol> {
-        val suppliedTypeParameters = context.owner.ownTypeParameterSymbols.filter { it.hasAnnotation(suppliedClassId, session) }
-        val constructors = context.declaredScope?.getDeclaredConstructors() ?: return emptyList()
-        val constructorsMapping = constructors.associateWith { oldConstructor ->
-            createConstructor(
-                owner = context.owner,
-                key = Key,
-            ) {
-                source = oldConstructor.source
-                for (typeParameter in suppliedTypeParameters) {
-                    valueParameter(
-                        name = typeParameter.name,
-                        type = suppliedTypeConeClassLikeType,
-                        hasDefaultValue = true,
-                        key = Key,
+    private val suppliedTypeDeprecationAnnotation by lazy {
+        buildAnnotation {
+            annotationTypeRef = deprecatedFirResolvedTypeRef
+            argumentMapping = buildAnnotationArgumentMapping {
+                with(mapping) {
+                    put(
+                        Name.identifier("message"),
+                        buildLiteralExpression(
+                            source = null,
+                            kind = ConstantValueKind.String,
+                            value = "Supplied type internal property",
+                            setType = true,
+                        ),
+                    )
+                    put(
+                        Name.identifier("level"),
+                        buildPropertyAccessExpression {
+                            coneTypeOrNull = deprecationLevelConeClassLikeType
+                            val receiver = buildResolvedQualifier {
+                                coneTypeOrNull = deprecationLevelConeClassLikeType
+                                packageFqName = FqName("kotlin")
+                                relativeClassFqName = FqName("DeprecationLevel")
+                                symbol = deprecationLevelClassLikeSymbol
+                                resolvedToCompanionObject = false
+                            }
+                            explicitReceiver = receiver
+                            dispatchReceiver = receiver
+                            calleeReference = buildResolvedNamedReference {
+                                name = Name.identifier("HIDDEN")
+                                resolvedSymbol = session.getClassDeclaredPropertySymbols(
+                                    classId =
+                                        ClassId(
+                                            packageFqName = FqName("kotlin"),
+                                            relativeClassName = FqName("DeprecationLevel"),
+                                            isLocal = false
+                                        ),
+                                    name = Name.identifier("HIDDEN")
+                                ).single()
+                            }
+                        },
                     )
                 }
-                for (valueParameterSymbol in oldConstructor.valueParameterSymbols) {
-                    valueParameter(
-                        name = internalSupplierParameterName(valueParameterSymbol.name),
-                        type = valueParameterSymbol.resolvedReturnType,
-                        isCrossinline = valueParameterSymbol.isCrossinline,
-                        isNoinline = valueParameterSymbol.isNoinline,
-                        isVararg = valueParameterSymbol.isVararg,
-                        hasDefaultValue = valueParameterSymbol.hasDefaultValue,
-                        key = Key,
-                    )
-                }
-            }.apply {
-                replaceAnnotations(
-                    buildList {
-                        this += buildAnnotation {
-                            annotationTypeRef = supplianceProvidedFirResolvedTypeRef
-                            argumentMapping = FirEmptyAnnotationArgumentMapping
-                        }
-                        // TODO: Add old function annotations. For some reason the solution below does not work.
-//                        this += oldConstructor.resolvedAnnotationsWithArguments.also { println(it.map { it.argumentMapping::class }) }
-                    }
-                )
-            }.symbol
+            }
         }
-        for ((oldConstructor, newConstructor) in constructorsMapping) {
-        
-        }
-        return constructorsMapping.values.toList()
     }
-    
+
     override fun generateProperties(
         callableId: CallableId,
         context: MemberGenerationContext?
     ): List<FirPropertySymbol> {
         if (context == null) return emptyList()
         val classSymbol = context.owner
-        
-        val typeParameter = classSymbol.typeParameterSymbols
-            .firstOrNull { internalSupplierPropertyName(classSymbol.classId, it.name) == callableId.callableName }
-            ?: return emptyList()
+        if (!classSymbol.isSuppliable) return emptyList()
+        if (callableId.callableName !in classSymbol.allNecessarySuppliedTypeParameterProperties) return emptyList()
 
         val property = createMemberProperty(
             owner = classSymbol,
             key = Key,
             name = callableId.callableName,
             returnType = suppliedTypeConeClassLikeType,
-            hasBackingField = !classSymbol.isInterface,
+            hasBackingField = false,
         ) {
             modality = if (classSymbol.isInterface) Modality.ABSTRACT else Modality.FINAL
         }.apply {
             replaceAnnotations(
                 buildList {
-                    this += buildAnnotation {
-                        annotationTypeRef = deprecatedFirResolvedTypeRef
-                        argumentMapping = buildAnnotationArgumentMapping {
-                            with(mapping) {
-                                put(
-                                    Name.identifier("message"),
-                                    buildLiteralExpression(
-                                        source = null,
-                                        kind = ConstantValueKind.String,
-                                        value = "Supplied type internal property",
-                                        setType = true,
-                                    ),
-                                )
-                                put(
-                                    Name.identifier("level"),
-                                    buildResolvedQualifier {
-                                        coneTypeOrNull = deprecationLevelConeClassLikeType
-                                        packageFqName = FqName("kotlin")
-                                        relativeClassFqName = FqName("DeprecationLevel")
-                                        symbol = deprecationLevelClassLikeSymbol
-                                        resolvedToCompanionObject = false
-                                    },
-                                )
-                            }
-                        }
-                    }
+                    this += suppliedTypeDeprecationAnnotation
                 }
             )
         }

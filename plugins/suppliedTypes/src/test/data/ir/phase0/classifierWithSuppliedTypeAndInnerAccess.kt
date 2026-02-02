@@ -4,7 +4,7 @@ import dev.lounres.kone.suppliedTypes.*
 import kotlin.reflect.KVariance
 
 
-interface Foo<@Supplied T> {
+interface Foo<@Supply T> {
     fun foo() {
         suppliedTypeOf<List<T>>()
     }

@@ -4,11 +4,13 @@ import dev.lounres.kone.suppliedTypes.*
 
 
 interface Raf {
-    interface Foo<@Supplied T>
+    @Suppliable
+    interface Foo<@Supply T>
 }
 
 class Hou {
     class Kie {
-        class Bar<@Supplied U> : Raf.Foo<Map<out U, *>>
+        @Suppliable
+        class Bar<@Supply U> : Raf.Foo<Map<out U, *>>
     }
 }

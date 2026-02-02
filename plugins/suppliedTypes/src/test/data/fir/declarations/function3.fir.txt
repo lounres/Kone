@@ -2,7 +2,7 @@ FILE: function3.kt
     package foo.bar
 
     public final fun foo(): R|kotlin/Unit| {
-        @R|dev/lounres/kone/suppliedTypes/SuppliedTarget|() local final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() Gee : R|Doo|, Doo : R|kotlin/collections/List<Gee>|> R|kotlin/Int|.baz(arg: R|kotlin/String|): R|Gee?| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() local final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee : R|Doo|, Doo : R|kotlin/collections/List<Gee>|> R|kotlin/Int|.baz(arg: R|kotlin/String|): R|Gee?| {
             ^baz Null(null)
         }
 
