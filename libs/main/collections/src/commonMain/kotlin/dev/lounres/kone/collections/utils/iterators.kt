@@ -16,7 +16,10 @@ import dev.lounres.kone.collections.iterables.KoneReversibleIterator
 import dev.lounres.kone.collections.iterables.KoneReversibleMutableIterator
 import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterator
 import dev.lounres.kone.collections.iterables.KoneReversibleSettableIterator
+import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlin.jvm.JvmInline
 
 
@@ -147,12 +150,12 @@ public data class KoneIndexedValue<out E>(public val index: UInt, public val val
 
 public fun <E> KoneIterator<E>.withIndex(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(this)
 
-internal class KoneIndexingIterator<out T>(private val iterator: KoneIterator<T>) : KoneIterator<KoneIndexedValue<T>> {
+internal class KoneIndexingIterator<out T>(private val source: KoneIterator<T>) : KoneIterator<KoneIndexedValue<T>> {
     private var index = 0u
-    override fun hasNext(): Boolean = iterator.hasNext()
-    override fun getNext(): KoneIndexedValue<T> = KoneIndexedValue(index, iterator.getNext())
+    override fun hasNext(): Boolean = source.hasNext()
+    override fun getNext(): KoneIndexedValue<T> = KoneIndexedValue(index, source.getNext())
     override fun moveNext() {
-        iterator.moveNext()
+        source.moveNext()
         index++
     }
 }
@@ -161,9 +164,25 @@ internal class KoneIndexingIterator<out T>(private val iterator: KoneIterator<T>
 
 public fun <E> KoneIterable<E>.withIndex(): KoneIterable<KoneIndexedValue<E>> = KoneIndexingIterable(this)
 
-internal class KoneIndexingIterable<out E>(private val iterable: KoneIterable<E>) : KoneIterable<KoneIndexedValue<E>> {
-    override val size: UInt get() = iterable.size
-    override fun iterator(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(iterable.iterator())
+internal class KoneIndexingIterable<out E>(private val source: KoneIterable<E>) : KoneIterable<KoneIndexedValue<E>> {
+    override val size: UInt get() = source.size
+    override fun iterator(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(source.iterator())
 }
 
 // TODO: Add indexing iterables
+
+public fun <E> KoneSequence<E>.withIndex(): KoneSequence<KoneIndexedValue<E>> = KoneIndexingSequence(this)
+
+internal class KoneIndexingSequence<out E>(private val source: KoneSequence<E>) : KoneSequence<KoneIndexedValue<E>> {
+    override fun iterator(): KoneIterator<KoneIndexedValue<E>> = KoneIndexingIterator(source.iterator())
+}
+
+// TODO: Add indexing sequences
+
+private class KoneBlockingIterator<Element>(private val source: KoneIterator<Element>) : SynchronizedObject(), KoneIterator<Element> {
+    override fun hasNext(): Boolean = synchronized(this) { source.hasNext() }
+    override fun getNext(): Element = synchronized(this) { source.getNext() }
+    override fun moveNext() { synchronized(this) { source.moveNext() } }
+}
+
+public fun <E> KoneIterator<E>.blocking(): KoneIterator<E> = KoneBlockingIterator(this)

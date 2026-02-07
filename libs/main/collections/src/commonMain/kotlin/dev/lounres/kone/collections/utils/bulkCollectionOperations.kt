@@ -43,6 +43,8 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.maybe.ifSome
+import dev.lounres.kone.maybe.isSome
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -356,6 +358,12 @@ public inline fun <E> KoneIterable<E>.anyIndexed(block: (index: UInt, value: E) 
 
 public inline fun <E> KoneSequence<E>.anyIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().anyIndexed(block)
 
+public fun KoneIterator<Boolean>.any(): Boolean = any { it }
+
+public fun KoneIterable<Boolean>.any(): Boolean = any { it }
+
+public fun KoneSequence<Boolean>.any(): Boolean = any { it }
+
 public inline fun <E> KoneIterator<E>.all(block: (value: E) -> Boolean): Boolean {
     while (hasNext()) if (!block(getNext())) return false else moveNext()
     return true
@@ -375,6 +383,12 @@ public inline fun <E> KoneIterable<E>.allIndexed(block: (index: UInt, value: E) 
 
 public inline fun <E> KoneSequence<E>.allIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().allIndexed(block)
 
+public fun KoneIterator<Boolean>.all(): Boolean = all { it }
+
+public fun KoneIterable<Boolean>.all(): Boolean = all { it }
+
+public fun KoneSequence<Boolean>.all(): Boolean = all { it }
+
 public inline fun <E> KoneIterator<E>.none(block: (value: E) -> Boolean): Boolean {
     while (hasNext()) if (block(getNext())) return false else moveNext()
     return true
@@ -393,6 +407,12 @@ public inline fun <E> KoneIterator<E>.noneIndexed(block: (index: UInt, value: E)
 public inline fun <E> KoneIterable<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().noneIndexed(block)
 
 public inline fun <E> KoneSequence<E>.noneIndexed(block: (index: UInt, value: E) -> Boolean): Boolean = iterator().noneIndexed(block)
+
+public fun KoneIterator<Boolean>.none(): Boolean = none { it }
+
+public fun KoneIterable<Boolean>.none(): Boolean = none { it }
+
+public fun KoneSequence<Boolean>.none(): Boolean = none { it }
 
 public inline fun <E> KoneIterator<E>.count(predicate: (value: E) -> Boolean): UInt {
     var count = 0u
@@ -414,6 +434,12 @@ public inline fun <E> KoneIterator<E>.countIndexed(predicate: (index: UInt, valu
 public inline fun <E> KoneIterable<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt = iterator().countIndexed(predicate)
 
 public inline fun <E> KoneSequence<E>.countIndexed(predicate: (index: UInt, value: E) -> Boolean): UInt = iterator().countIndexed(predicate)
+
+public fun KoneIterator<Boolean>.count(): UInt = count { it }
+
+public fun KoneIterable<Boolean>.count(): UInt = count { it }
+
+public fun KoneSequence<Boolean>.count(): UInt = count { it }
 
 public inline fun <E> KoneIterator<E>.firstThat(predicate: (E) -> Boolean): E {
     while (hasNext()) {
@@ -855,6 +881,249 @@ private class KoneMapIndexedSequence<Element, Result>(
 }
 
 public fun <E, R> KoneSequence<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneSequence<R> = KoneMapIndexedSequence(this, transform)
+
+private class KoneChunkedIterator<Element>(
+    private val source: KoneIterator<Element>,
+    private val chunkSize: UInt,
+) : KoneIterator<KoneList<Element>> {
+    private var currentChunk: KoneList<Element>? = null
+    
+    override fun hasNext(): Boolean = currentChunk != null || source.hasNext()
+    override fun getNext(): KoneList<Element> {
+        if (!hasNext()) noNextElementInIteratorException()
+        if (currentChunk != null) return currentChunk!!
+        
+        val newChunk = KoneArrayFixedCapacityList<Element>(chunkSize)
+        while (newChunk.size < chunkSize && source.hasNext()) newChunk.add(source.getAndMoveNext())
+        
+        currentChunk = newChunk
+        return newChunk
+    }
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        if (currentChunk != null) {
+            currentChunk = null
+            return
+        }
+        
+        var newChunkSize = 0u
+        while (newChunkSize < chunkSize && source.hasNext()) {
+            source.moveNext()
+            newChunkSize++
+        }
+    }
+}
+
+public fun <E> KoneIterator<E>.chunked(size: UInt): KoneIterator<KoneList<E>> = KoneChunkedIterator(this, size)
+
+private class KoneChunkedLambdaIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val chunkSize: UInt,
+    private val mapper: (KoneList<Element>) -> Result
+) : KoneIterator<Result> {
+    private var currentChunk: Maybe<Result> = None
+    
+    override fun hasNext(): Boolean = currentChunk.isSome() || source.hasNext()
+    override fun getNext(): Result {
+        if (!hasNext()) noNextElementInIteratorException()
+        currentChunk.ifSome { return it }
+        
+        val newChunkPremapped = KoneArrayFixedCapacityList<Element>(chunkSize)
+        while (newChunkPremapped.size < chunkSize && source.hasNext()) newChunkPremapped.add(source.getAndMoveNext())
+        val newChunk = mapper(newChunkPremapped)
+        
+        currentChunk = Some(newChunk)
+        return newChunk
+    }
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        if (currentChunk.isSome()) {
+            currentChunk = None
+            return
+        }
+        
+        var newChunkSize = 0u
+        while (newChunkSize < chunkSize && source.hasNext()) {
+            source.moveNext()
+            newChunkSize++
+        }
+    }
+}
+
+public fun <E, R> KoneIterator<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneIterator<R> = KoneChunkedLambdaIterator(this, size, mapper)
+
+public fun <E> KoneIterable<E>.chunked(size: UInt): KoneList<KoneList<E>> {
+    val fullChunks = this@chunked.size / size
+    val allChunks = if (this@chunked.size % size != 0u) fullChunks + 1u else fullChunks
+    val chunks = KoneArrayFixedCapacityList<KoneList<E>>(allChunks)
+    val iterator = iterator()
+    repeat(fullChunks) {
+        chunks += KoneList.generate(size) { iterator.getAndMoveNext() }
+    }
+    if (allChunks > fullChunks) {
+        val lastChunk = KoneArrayFixedCapacityList<E>(size)
+        while (iterator.hasNext()) lastChunk += iterator.getAndMoveNext()
+        chunks += lastChunk
+    }
+    return chunks
+}
+
+public fun <E, R> KoneIterable<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneList<R> {
+    val fullChunks = this@chunked.size / size
+    val allChunks = if (this@chunked.size % size != 0u) fullChunks + 1u else fullChunks
+    val chunks = KoneArrayFixedCapacityList<R>(allChunks)
+    val iterator = iterator()
+    repeat(fullChunks) {
+        chunks += mapper(KoneList.generate(size) { iterator.getAndMoveNext() })
+    }
+    if (allChunks > fullChunks) {
+        val lastChunk = KoneArrayFixedCapacityList<E>(size)
+        while (iterator.hasNext()) lastChunk += iterator.getAndMoveNext()
+        chunks += mapper(lastChunk)
+    }
+    return chunks
+}
+
+private class KoneChunkedSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val chunkSize: UInt,
+) : KoneSequence<KoneList<Element>> {
+    override fun iterator(): KoneIterator<KoneList<Element>> = source.iterator().chunked(chunkSize)
+}
+
+public fun <E> KoneSequence<E>.chunked(size: UInt): KoneSequence<KoneList<E>> = KoneChunkedSequence(this, size)
+
+private class KoneChunkedLambdaSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val chunkSize: UInt,
+    private val mapper: (chunk: KoneList<Element>) -> Result,
+) : KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().chunked(chunkSize, mapper)
+}
+
+public fun <E, R> KoneSequence<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneSequence<R> = KoneChunkedLambdaSequence(this, size, mapper)
+
+private class KoneWindowedIterator<Element>(
+    private val source: KoneIterator<Element>,
+    private val windowSize: UInt,
+    private val windowStep: UInt,
+) : KoneIterator<KoneList<Element>> {
+    init {
+        require(windowStep > 0u) { TODO() }
+    }
+    
+    private var currentWindow: KoneList<Element>? = null
+    
+    init {
+        val initialWindow = KoneArrayFixedCapacityList<Element>(windowSize)
+        while (initialWindow.size < windowSize && source.hasNext()) initialWindow += source.getAndMoveNext()
+        if (initialWindow.size == windowSize) currentWindow = initialWindow
+    }
+    
+    override fun hasNext(): Boolean = currentWindow != null
+    override fun getNext(): KoneList<Element> = currentWindow ?: noNextElementInIteratorException()
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        
+        val previousWindow = currentWindow!!
+        val nextWindow = KoneArrayFixedCapacityList<Element>(windowSize)
+        for (i in windowStep ..< windowSize) nextWindow += previousWindow[i]
+        while (nextWindow.size < windowSize && source.hasNext()) nextWindow += source.getAndMoveNext()
+        
+        currentWindow = if (nextWindow.size == windowSize) nextWindow else null
+    }
+}
+
+public fun <E> KoneIterator<E>.windowed(size: UInt, step: UInt = 1u): KoneIterator<KoneList<E>> = KoneWindowedIterator(this, size, step)
+
+private class KoneWindowedLambdaIterator<Element, Result>(
+    private val source: KoneIterator<Element>,
+    private val windowSize: UInt,
+    private val windowStep: UInt,
+    private val mapper: (window: KoneList<Element>) -> Result,
+) : KoneIterator<Result> {
+    init {
+        require(windowStep > 0u) { TODO() }
+    }
+    
+    private data class State<Element, Result>(val window: KoneList<Element>, val result: Result)
+    
+    private var currentState: State<Element, Result>? = null
+    
+    init {
+        val initialWindow = KoneArrayFixedCapacityList<Element>(windowSize)
+        while (initialWindow.size < windowSize && source.hasNext()) initialWindow += source.getAndMoveNext()
+        if (initialWindow.size == windowSize) currentState = State(initialWindow, mapper(initialWindow))
+    }
+    
+    override fun hasNext(): Boolean = currentState != null
+    override fun getNext(): Result = (currentState ?: noNextElementInIteratorException()).result
+    override fun moveNext() {
+        if (!hasNext()) noNextElementInIteratorException()
+        
+        val previousWindow = currentState!!.window
+        val nextWindow = KoneArrayFixedCapacityList<Element>(windowSize)
+        for (i in windowStep ..< windowSize) nextWindow += previousWindow[i]
+        while (nextWindow.size < windowSize && source.hasNext()) nextWindow += source.getAndMoveNext()
+        
+        currentState = if (nextWindow.size == windowSize) State(nextWindow, mapper(nextWindow)) else null
+    }
+}
+
+public fun <E, R> KoneIterator<E>.windowed(size: UInt, step: UInt = 1u, mapper: (window: KoneList<E>) -> R): KoneIterator<R> = KoneWindowedLambdaIterator(this, size, step, mapper)
+
+public fun <E> KoneIterable<E>.windowed(size: UInt, step: UInt = 1u): KoneList<KoneList<E>> {
+    if (this.size < size) return KoneList.empty()
+    val iterator = iterator()
+    var currentWindow = KoneList.generate(size) { iterator.getAndMoveNext() }
+    val result = KoneArrayFixedCapacityList<KoneList<E>>((this.size - size) / step + 1u)
+    result += currentWindow
+    repeat((this.size - size) / step) {
+        val nextWindow = KoneArrayFixedCapacityList<E>(size)
+        for (i in step ..< size) nextWindow += currentWindow[i]
+        repeat(step) { nextWindow += iterator.getAndMoveNext() }
+        currentWindow = nextWindow
+        result += currentWindow
+    }
+    return result
+}
+
+public fun <E, R> KoneIterable<E>.windowed(size: UInt, step: UInt = 1u, mapper: (window: KoneList<E>) -> R): KoneList<R> {
+    if (this.size < size) return KoneList.empty()
+    val iterator = iterator()
+    var currentWindow = KoneList.generate(size) { iterator.getAndMoveNext() }
+    val result = KoneArrayFixedCapacityList<R>((this.size - size) / step + 1u)
+    result += mapper(currentWindow)
+    repeat((this.size - size) / step) {
+        val nextWindow = KoneArrayFixedCapacityList<E>(size)
+        for (i in step ..< size) nextWindow += currentWindow[i]
+        repeat(step) { nextWindow += iterator.getAndMoveNext() }
+        currentWindow = nextWindow
+        result += mapper(currentWindow)
+    }
+    return result
+}
+
+private class KoneWindowedSequence<Element>(
+    private val source: KoneSequence<Element>,
+    private val size: UInt,
+    private val step: UInt,
+): KoneSequence<KoneList<Element>> {
+    override fun iterator(): KoneIterator<KoneList<Element>> = source.iterator().windowed(size, step)
+}
+
+public fun <E> KoneSequence<E>.windowed(size: UInt, step: UInt = 1u): KoneSequence<KoneList<E>> = KoneWindowedSequence(this, size, step)
+
+private class KoneWindowedLambdaSequence<Element, Result>(
+    private val source: KoneSequence<Element>,
+    private val size: UInt,
+    private val step: UInt,
+    private val mapper: (window: KoneList<Element>) -> Result,
+): KoneSequence<Result> {
+    override fun iterator(): KoneIterator<Result> = source.iterator().windowed(size, step, mapper)
+}
+
+public fun <E, R> KoneSequence<E>.windowed(size: UInt, step: UInt = 1u, mapper: (window: KoneList<E>) -> R): KoneSequence<R> = KoneWindowedLambdaSequence(this, size, step, mapper)
 
 // TODO: Think about other flattening operations
 
