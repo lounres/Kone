@@ -14,6 +14,7 @@ import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.MutableRegistry
 import dev.lounres.kone.registry.Registry
@@ -95,9 +96,9 @@ public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit
                 vertexToIncidentEdgesMapping[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
                 vertexToAdjacentVerticesMapping[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
             }
-            for (edge in edges) for (vertex in vertices) {
+            for (edge in edges) for ((i, vertex) in edge.vertices.withIndex()) {
                 vertexToIncidentEdgesMapping[vertex].add(edge)
-                vertexToAdjacentVerticesMapping[vertex].addAllFrom(edge.vertices)
+                for ((j, otherVertex) in edge.vertices.withIndex()) if (i != j) vertexToAdjacentVerticesMapping[vertex].add(otherVertex)
             }
             
             VertexToIncidentEdgesMapping correspondsTo vertexToIncidentEdgesMapping

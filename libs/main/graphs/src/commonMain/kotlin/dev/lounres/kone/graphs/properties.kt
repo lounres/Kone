@@ -16,6 +16,9 @@ import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.count
 import dev.lounres.kone.collections.utils.filterTo
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.relations.Equality
@@ -23,7 +26,36 @@ import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.jvm.JvmName
 
+
+public val OwnedRegistry<HypergraphVertex>.name: String
+    @JvmName("getHypergraphVertexOwnedRegistryName") get() = get(HypergraphVertex.NameKey)
+
+public var MutableOwnedRegistry<HypergraphVertex>.name: String
+    @JvmName("getHypergraphVertexMutableOwnedRegistryName") get() = get(HypergraphVertex.NameKey)
+    @JvmName("setHypergraphVertexMutableOwnedRegistryName") set(value) { set(HypergraphVertex.NameKey, value) }
+
+public var OwnedRegistryBuilder<HypergraphVertex>.name: String
+    @JvmName("getHypergraphVertexOwnedRegistryBuilderName") get() = get(HypergraphVertex.NameKey)
+    @JvmName("setHypergraphVertexOwnedRegistryBuilderName") set(value) { set(HypergraphVertex.NameKey, value) }
+
+public val HypergraphVertex.name: String
+    @JvmName("getHypergraphVertexName") get() = properties.name
+
+public val OwnedRegistry<HypergraphEdge>.name: String
+    @JvmName("getHypergraphEdgeOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
+
+public var MutableOwnedRegistry<HypergraphEdge>.name: String
+    @JvmName("getHypergraphEdgeMutableOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
+    @JvmName("setHypergraphEdgeMutableOwnedRegistryName") set(value) { set(HypergraphEdge.NameKey, value) }
+
+public var OwnedRegistryBuilder<HypergraphEdge>.name: String
+    @JvmName("getHypergraphEdgeOwnedRegistryBuilderName") get() = get(HypergraphEdge.NameKey)
+    @JvmName("setHypergraphEdgeOwnedRegistryBuilderName") set(value) { set(HypergraphEdge.NameKey, value) }
+
+public val HypergraphEdge.name: String
+    @JvmName("getHypergraphEdgeName") get() = properties.name
 
 public val HypergraphEdge.ends: HypergraphEdgeEnds
     get() {
