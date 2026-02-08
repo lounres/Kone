@@ -41,6 +41,40 @@ public interface MutableHypergraph : Hypergraph {
     public fun remove(edge: HypergraphEdge)
     
     override val properties: MutableRegistry
+    
+    public companion object
+}
+
+public fun MutableHypergraph(
+    properties: MutableRegistry = MutableRegistry(),
+): MutableHypergraph = MutableHypergraphImpl(
+    properties = properties,
+)
+
+private class MutableHypergraphImpl(
+    override val properties: MutableRegistry
+) : MutableHypergraph {
+    override val vertices: KoneMutableReifiedSet<HypergraphVertex> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
+    override val edges: KoneMutableReifiedSet<HypergraphEdge> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
+    
+    override fun add(vertex: HypergraphVertex) {
+        vertices.add(vertex)
+    }
+    override fun add(edge: HypergraphEdge) {
+        if (edge !in edges) {
+            edges.add(edge)
+            vertices.addAllFrom(edge.vertices)
+        }
+    }
+    override fun remove(vertex: HypergraphVertex) {
+        if (vertex in vertices) {
+            vertices.remove(vertex)
+            edges.removeAllThat { (Equality.absoluteFor<HypergraphVertex>()) { vertex in it.vertices } }
+        }
+    }
+    override fun remove(edge: HypergraphEdge) {
+        edges.remove(edge)
+    }
 }
 
 public interface HypergraphBuilder : MutableHypergraph {
@@ -74,8 +108,7 @@ internal class HypergraphBuilderImpl : HypergraphBuilder {
         edges.remove(edge)
     }
     
-    override val properties: MutableRegistry = MutableRegistry().apply {
-    }
+    override val properties: MutableRegistry = MutableRegistry()
 }
 
 public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit): Hypergraph {
@@ -85,24 +118,32 @@ public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit
     return HypergraphBuilderImpl().apply {
         block()
         properties.apply {
-            val vertexToIncidentEdgesMapping = KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphEdge>>(
-                keyEquality = Equality.absoluteFor(),
-            )
-            val vertexToAdjacentVerticesMapping = KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphVertex>>(
-                keyEquality = Equality.absoluteFor(),
-            )
+            val vertexToIncidentEdgesMapping =
+                if (VertexToIncidentEdgesMapping in this) null
+                else KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphEdge>>(
+                    keyEquality = Equality.absoluteFor(),
+                )
+            val vertexToAdjacentVerticesMapping =
+                if (VertexToAdjacentVerticesMapping in this) null
+                else KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphVertex>>(
+                    keyEquality = Equality.absoluteFor(),
+                )
             
-            for (vertex in vertices) {
-                vertexToIncidentEdgesMapping[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
-                vertexToAdjacentVerticesMapping[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
-            }
-            for (edge in edges) for ((i, vertex) in edge.vertices.withIndex()) {
-                vertexToIncidentEdgesMapping[vertex].add(edge)
-                for ((j, otherVertex) in edge.vertices.withIndex()) if (i != j) vertexToAdjacentVerticesMapping[vertex].add(otherVertex)
+            if (vertexToIncidentEdgesMapping != null || vertexToAdjacentVerticesMapping != null) {
+                for (vertex in vertices) {
+                    vertexToIncidentEdgesMapping?.let { it[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor()) }
+                    vertexToAdjacentVerticesMapping?.let { it[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor()) }
+                }
+                for (edge in edges) for ((i, vertex) in edge.vertices.withIndex()) {
+                    vertexToIncidentEdgesMapping?.let { it[vertex].add(edge) }
+                    vertexToAdjacentVerticesMapping?.let {
+                        for ((j, otherVertex) in edge.vertices.withIndex()) if (i != j) it[vertex].add(otherVertex)
+                    }
+                }
             }
             
-            VertexToIncidentEdgesMapping correspondsTo vertexToIncidentEdgesMapping
-            VertexToAdjacentVerticesMapping correspondsTo vertexToAdjacentVerticesMapping
+            vertexToIncidentEdgesMapping?.let { VertexToIncidentEdgesMapping correspondsTo it }
+            vertexToAdjacentVerticesMapping?.let { VertexToAdjacentVerticesMapping correspondsTo it }
         }
     }
 }

@@ -40,10 +40,10 @@ import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.lengthSquared
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.polytopes.MutablePolytopicConstruction
 import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.computationalGeometry.polytopes.Position
+import dev.lounres.kone.computationalGeometry.polytopes.build
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -289,13 +289,28 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector,
             keyHashing = Hashing.defaultFor(),
         )
         
-        val result = MutablePolytopicConstruction(verticesDimension)
-        
-        if (convexHull.dimension == verticesDimension) {
-            for (dim in 0u ..< convexHull.dimension) for (face in convexHull.faces[dim]) {
-                val newFace = Polytope(
-                    dimension = dim,
-                    faces = face.faces.map { dimFaces ->
+        if (convexHull.dimension == verticesDimension)
+            PolytopicConstruction.build {
+                for (dim in 0u ..< convexHull.dimension) for (face in convexHull.faces[dim]) {
+                    val newFace = Polytope(
+                        dimension = dim,
+                        faces = face.faces.map { dimFaces ->
+                            dimFaces.mapTo(
+                                KoneMutableReifiedSet.of(
+                                    elementReification = Reification.defaultFor(),
+                                )
+                            ) {
+                                simplicesMapping[it]
+                            }
+                        },
+                    ) {
+                        if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
+                    }
+                    simplicesMapping[face] = newFace
+                }
+                +Polytope(
+                    dimension = convexHull.dimension,
+                    faces = convexHull.faces.map { dimFaces ->
                         dimFaces.mapTo(
                             KoneMutableReifiedSet.of(
                                 elementReification = Reification.defaultFor(),
@@ -303,48 +318,51 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector,
                         ) {
                             simplicesMapping[it]
                         }
-                    },
-                ) {
-                    if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
-                }
-                simplicesMapping[face] = newFace
+                    }
+                )
             }
-            val finalPolytope = Polytope(
-                dimension = convexHull.dimension,
-                faces = convexHull.faces.map { dimFaces ->
-                    dimFaces.mapTo(
-                        KoneMutableReifiedSet.of(
-                            elementReification = Reification.defaultFor(),
-                        )
-                    ) {
-                        simplicesMapping[it]
+        else
+            PolytopicConstruction.build {
+                val necessarySimplices = convexHull.faces[convexHull.dimension - 1u].filter { simplex ->
+                    paraboloidEuclideanSpaceOverRing {
+                        val flag = KoneSettableList.generate(simplex.dimension + 2u) { simplex }
+                        flag[simplex.dimension + 1u] = convexHull
+                        for (dim in simplex.dimension - 1u downTo 0u) {
+                            flag[dim] = flag[dim + 1u].faces[dim].first()
+                        }
+                        val startPoint = flag[0u].verticesOrSelf.single().properties[paraboloidPositionKey]
+                        val basis = KoneSettableList.generate(
+                            simplex.dimension + 1u,
+                        ) { dim -> flag[dim + 1u].verticesOrSelf.firstThat { it !in flag[dim].verticesOrSelf }.properties[paraboloidPositionKey] - startPoint }
+                        val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
+                        val lastBasisVector = ortogonalizedBasis.last()
+                        lastBasisVector.extraCoordinate.isPositive()
                     }
                 }
-            )
-            result.add(finalPolytope)
-        } else {
-            val necessarySimplices = convexHull.faces[convexHull.dimension - 1u].filter { simplex ->
-                paraboloidEuclideanSpaceOverRing {
-                    val flag = KoneSettableList.generate(simplex.dimension + 2u) { simplex }
-                    flag[simplex.dimension + 1u] = convexHull
-                    for (dim in simplex.dimension - 1u downTo 0u) {
-                        flag[dim] = flag[dim + 1u].faces[dim].first()
+                
+                for (simplex in necessarySimplices) {
+                    for (dim in 0u .. simplex.dimension - 1u) for (face in simplex.faces[dim]) if (face !in simplicesMapping.keysView) {
+                        val polytope = Polytope(
+                            dimension = dim,
+                            faces = face.faces.map { dimFaces ->
+                                dimFaces.mapTo(
+                                    KoneMutableReifiedSet.of(
+                                        elementReification = Reification.defaultFor(),
+                                        elementEquality = Equality.absoluteFor(),
+                                        elementHashing = Hashing.defaultFor(),
+                                    )
+                                ) {
+                                    simplicesMapping[it]
+                                }
+                            },
+                        ) {
+                            if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
+                        }
+                        simplicesMapping[face] = polytope
                     }
-                    val startPoint = flag[0u].verticesOrSelf.single().properties[paraboloidPositionKey]
-                    val basis = KoneSettableList.generate(
-                        simplex.dimension + 1u,
-                    ) { dim -> flag[dim + 1u].verticesOrSelf.firstThat { it !in flag[dim].verticesOrSelf }.properties[paraboloidPositionKey] - startPoint }
-                    val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
-                    val lastBasisVector = ortogonalizedBasis.last()
-                    lastBasisVector.extraCoordinate.isPositive()
-                }
-            }
-            
-            for (simplex in necessarySimplices) {
-                for (dim in 0u .. simplex.dimension - 1u) for (face in simplex.faces[dim]) if (face !in simplicesMapping.keysView) {
-                    val polytope = Polytope(
-                        dimension = dim,
-                        faces = face.faces.map { dimFaces ->
+                    +Polytope(
+                        dimension = simplex.dimension,
+                        faces = simplex.faces.map { dimFaces ->
                             dimFaces.mapTo(
                                 KoneMutableReifiedSet.of(
                                     elementReification = Reification.defaultFor(),
@@ -354,31 +372,10 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector,
                             ) {
                                 simplicesMapping[it]
                             }
-                        },
-                    ) {
-                        if (dim == 0u) positionKey correspondsTo face.properties[paraboloidPositionKey].point
-                    }
-                    simplicesMapping[face] = polytope
-                }
-                val polytope = Polytope(
-                    dimension = simplex.dimension,
-                    faces = simplex.faces.map { dimFaces ->
-                        dimFaces.mapTo(
-                            KoneMutableReifiedSet.of(
-                                elementReification = Reification.defaultFor(),
-                                elementEquality = Equality.absoluteFor(),
-                                elementHashing = Hashing.defaultFor(),
-                            )
-                        ) {
-                            simplicesMapping[it]
                         }
-                    }
-                )
-                result.add(polytope)
+                    )
+                }
             }
-        }
-        
-        return result
     }
 }
 

@@ -14,6 +14,8 @@ import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.empty
 import dev.lounres.kone.registry.getOrElse
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 
 @Suppress("EqualsOrHashCode")
@@ -25,9 +27,23 @@ public class HypergraphEdge(
     
     override fun toString(): String = properties.getOrElse(NameKey) { super.toString() }
     
+    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, HypergraphEdge> =
+        Delegate(
+            HypergraphEdge(
+                vertices = vertices,
+            ) {
+                setFrom(properties)
+                name = property.name
+            }
+        )
+    
     public companion object;
     
     public data object NameKey : RegistryKey<String>
+    
+    private class Delegate(val edge: HypergraphEdge) : ReadOnlyProperty<Any?, HypergraphEdge> {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): HypergraphEdge = edge
+    }
 }
 
 public inline fun HypergraphEdge(
