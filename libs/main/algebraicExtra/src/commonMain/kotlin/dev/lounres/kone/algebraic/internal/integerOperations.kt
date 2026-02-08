@@ -3,14 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.lounres.kone.algebraic.internal
 
 import dev.lounres.kone.scope
 import kotlin.jvm.JvmInline
 
 
-@JvmInline
-public value class ULongX(public val first: ULong, public val second: ULong)
+//@JvmInline
+public /*value*/ data class ULongX(public val first: ULong, public val second: ULong)
 
 public inline fun add(left: ULong, right: ULong): ULongX {
     val first = left + right

@@ -262,13 +262,33 @@ stal {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
+                    progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
+                        "-Xcontext-parameters",
+//                        "-Xvalue-classes",
+//                        "-Xcontract-syntax-v2",
+                        "-Xexplicit-backing-fields",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                     )
+                    optIn.set(
+                        listOf(
+                            "kotlin.experimental.ExperimentalTypeInference",
+                            "kotlin.contracts.ExperimentalContracts",
+                            "kotlin.ExperimentalStdlibApi",
+                            "kotlin.ExperimentalSubclassOptIn",
+                            "kotlin.ExperimentalUnsignedTypes",
+                            "kotlin.uuid.ExperimentalUuidApi",
+                            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
+                            "kotlinx.serialization.ExperimentalSerializationApi",
+                            "dev.lounres.kone.annotations.UnstableKoneAPI",
+                            "dev.lounres.kone.annotations.ExperimentalKoneAPI",
+                        )
+                    )
+                    verbose = true
                 }
 
                 @Suppress("UNUSED_VARIABLE")
@@ -287,13 +307,33 @@ stal {
                 applyDefaultHierarchyTemplate()
                 
                 compilerOptions {
+                    progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
+                        "-Xcontext-parameters",
+//                        "-Xvalue-classes",
+//                        "-Xcontract-syntax-v2",
+                        "-Xexplicit-backing-fields",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                     )
+                    optIn.set(
+                        listOf(
+                            "kotlin.experimental.ExperimentalTypeInference",
+                            "kotlin.contracts.ExperimentalContracts",
+                            "kotlin.ExperimentalStdlibApi",
+                            "kotlin.ExperimentalSubclassOptIn",
+                            "kotlin.ExperimentalUnsignedTypes",
+                            "kotlin.uuid.ExperimentalUuidApi",
+                            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
+                            "kotlinx.serialization.ExperimentalSerializationApi",
+                            "dev.lounres.kone.annotations.UnstableKoneAPI",
+                            "dev.lounres.kone.annotations.ExperimentalKoneAPI",
+                        )
+                    )
+                    verbose = true
                 }
 
                 jvm {
@@ -360,30 +400,6 @@ stal {
                     jvmToolchain {
                         languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
                         vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
-                    }
-                    
-                    sourceSets {
-                        all {
-                            languageSettings {
-                                progressiveMode = true
-                                enableLanguageFeature("ContextParameters")
-                                enableLanguageFeature("ValueClasses")
-                                enableLanguageFeature("ContractSyntaxV2")
-                                enableLanguageFeature("ExplicitBackingFields")
-//                                enableLanguageFeature("ContextSensitiveResolution")
-                                enableLanguageFeature("NestedTypeAliases")
-                                optIn("kotlin.experimental.ExperimentalTypeInference")
-                                optIn("kotlin.contracts.ExperimentalContracts")
-                                optIn("kotlin.ExperimentalStdlibApi")
-                                optIn("kotlin.ExperimentalSubclassOptIn")
-                                optIn("kotlin.ExperimentalUnsignedTypes")
-                                optIn("kotlin.uuid.ExperimentalUuidApi")
-                                optIn("kotlin.concurrent.atomics.ExperimentalAtomicApi")
-                                optIn("kotlinx.serialization.ExperimentalSerializationApi")
-                                optIn("dev.lounres.kone.annotations.UnstableKoneAPI")
-                                optIn("dev.lounres.kone.annotations.ExperimentalKoneAPI")
-                            }
-                        }
                     }
                 }
             }

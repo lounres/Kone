@@ -55,11 +55,8 @@ public fun BigLongRational.Companion.from(numerator: BigLong, denominator: UBigL
     )
 }
 
-@JvmInline
-internal value class BigLongBigLongQuotientsByGCD(val first: BigLong, val second: BigLong) {
-    operator fun component1(): BigLong = first
-    operator fun component2(): BigLong = second
-}
+//@JvmInline
+internal /*value*/ data class BigLongBigLongQuotientsByGCD(val first: BigLong, val second: BigLong)
 
 internal fun divideByGCD(first: BigLong, second: BigLong): BigLongBigLongQuotientsByGCD = context(BigLong.context) {
     val gcd = gcd(first, second).absoluteValue
@@ -71,11 +68,8 @@ internal fun divideByGCD(first: BigLong, second: BigLong): BigLongBigLongQuotien
     )
 }
 
-@JvmInline
-internal value class UBigLongBigLongQuotientsByGCD(val first: UBigLong, val second: BigLong) {
-    operator fun component1(): UBigLong = first
-    operator fun component2(): BigLong = second
-}
+//@JvmInline
+internal /*value*/ data class UBigLongBigLongQuotientsByGCD(val first: UBigLong, val second: BigLong)
 
 internal fun divideByGCD(first: UBigLong, second: BigLong): UBigLongBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
     val gcd = gcd(first, second.absoluteValue)
@@ -87,11 +81,8 @@ internal fun divideByGCD(first: UBigLong, second: BigLong): UBigLongBigLongQuoti
     )
 }
 
-@JvmInline
-internal value class BigLongUBigLongQuotientsByGCD(val first: BigLong, val second: UBigLong) {
-    operator fun component1(): BigLong = first
-    operator fun component2(): UBigLong = second
-}
+//@JvmInline
+internal /*value*/ data class BigLongUBigLongQuotientsByGCD(val first: BigLong, val second: UBigLong)
 
 internal fun divideByGCD(first: BigLong, second: UBigLong): BigLongUBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
     val gcd = gcd(first.absoluteValue, second)
@@ -103,11 +94,8 @@ internal fun divideByGCD(first: BigLong, second: UBigLong): BigLongUBigLongQuoti
     )
 }
 
-@JvmInline
-internal value class UBigLongUBigLongQuotientsByGCD(val first: UBigLong, val second: UBigLong) {
-    operator fun component1(): UBigLong = first
-    operator fun component2(): UBigLong = second
-}
+//@JvmInline
+internal /*value*/ data class UBigLongUBigLongQuotientsByGCD(val first: UBigLong, val second: UBigLong)
 
 internal fun divideByGCD(first: UBigLong, second: UBigLong): UBigLongUBigLongQuotientsByGCD = context(UBigLong.context) {
     val gcd = gcd(first, second)

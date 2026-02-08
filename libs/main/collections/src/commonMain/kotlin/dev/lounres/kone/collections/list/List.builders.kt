@@ -380,13 +380,13 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <Element> KoneList.Companion.build(@BuilderInference builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
+public inline fun <Element> KoneList.Companion.build(builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneListBuilder(KoneMutableList.of<Element>()).apply(builderAction).build().toOptimizedList()
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <Element> KoneList.Companion.build(initialCapacity: UInt, @BuilderInference builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
+public inline fun <Element> KoneList.Companion.build(initialCapacity: UInt, builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneListBuilder(KoneArrayGrowableList<Element>(initialCapacity)).apply(builderAction).build().toOptimizedList()
 }
@@ -493,13 +493,13 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <Element> KoneNoddedList.Companion.build(@BuilderInference builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
+public inline fun <Element> KoneNoddedList.Companion.build(builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneNoddedListBuilder(KoneMutableNoddedList.of<Element>()).apply(builderAction).build().toOptimizedNoddedList()
 }
 
 @OptIn(ExperimentalTypeInference::class)
-public inline fun <Element> KoneNoddedList.Companion.build(initialCapacity: UInt, @BuilderInference builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
+public inline fun <Element> KoneNoddedList.Companion.build(initialCapacity: UInt, builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneNoddedListBuilder(KoneArrayGrowableNoddedList<Element>(initialCapacity)).apply(builderAction).build().toOptimizedNoddedList()
 }

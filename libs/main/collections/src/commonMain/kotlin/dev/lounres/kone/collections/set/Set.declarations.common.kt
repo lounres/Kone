@@ -136,7 +136,9 @@ public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNo
     override fun nodeOfOrNull(element: Element): KoneMutableSetNode<Element>?
     override fun nodeOf(element: Element): KoneMutableSetNode<Element>
     public fun addNode(element: Element): KoneMutableSetNode<Element>
-    override fun add(element: Element) { addNode(element) }
+    override fun add(element: Element) {
+        val _ = addNode(element)
+    }
     
     override fun iterator(): KoneMutableNoddedSetIterator<Element>
     

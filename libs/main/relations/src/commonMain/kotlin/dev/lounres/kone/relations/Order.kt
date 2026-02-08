@@ -314,14 +314,14 @@ public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (T
  * A wrapper data class that contains values [start] and [endInclusive] to be used by [ClosedRange.contains] operator that checks
  * if the provided value lies in a closed interval `[start; endInclusive]`.
  */
-@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
-public value class ClosedRange<out Element>(public val start: Element, public val endInclusive: Element)
+//@JvmInline
+public /*value*/ data class ClosedRange<out Element>(public val start: Element, public val endInclusive: Element)
 /**
  * A wrapper data class that contains values [start] and [endExclusive] to be used by [RightOpenRange.contains] operator that checks
  * if the provided value lies in a right-open interval `[start; endExclusive)`.
  */
-@JvmInline // There might be a problem with the MFVC and context parameters. See KT-72538 for more.
-public value class RightOpenRange<out Element>(public val start: Element, public val endExclusive: Element)
+//@JvmInline
+public /*value*/ data class RightOpenRange<out Element>(public val start: Element, public val endExclusive: Element)
 
 /**
  * Creates [ClosedRange] instance to be used by [ClosedRange.contains] operator that checks if the provided value

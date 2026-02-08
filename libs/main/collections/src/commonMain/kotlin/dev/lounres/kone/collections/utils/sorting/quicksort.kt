@@ -26,11 +26,8 @@ import kotlin.jvm.JvmInline
 // TODO: Quicksort does not work for now. Fix it.
 
 @PublishedApi
-@JvmInline
-internal value class RangeToSort(val from: UInt, val to: UInt) {
-    operator fun component1(): UInt = from
-    operator fun component2(): UInt = to
-}
+//@JvmInline
+internal /*value*/ data class RangeToSort(val from: UInt, val to: UInt)
 
 public fun <E: Comparable<E>> KoneSettableList<E>.quicksort() {
     fun swap(i: UInt, j: UInt) {

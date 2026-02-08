@@ -91,7 +91,7 @@ private fun <
     
     if (subspaceDimension == 1u) {
         val startPoint = startFacet.properties[positionKey]
-        val endVertex = otherPoints.maxBy { // TODO: Может быть это можно оптимизировать
+        val endVertex = otherPoints.maxBy<_, Number> { // TODO: Может быть это можно оптимизировать
             val radiusVector = it.properties[positionKey] - startPoint
             radiusVector dot radiusVector
         }
@@ -308,7 +308,7 @@ private fun <
     }
     
     val somePoint = points.first().properties[positionKey]
-    val startPoints = points.minListBy { basis.decompose(it.properties[positionKey] - somePoint)[subspaceDimension - 1u] }
+    val startPoints = points.minListBy<_, Number> { basis.decompose(it.properties[positionKey] - somePoint)[subspaceDimension - 1u] }
     val wrappingResult = giftWrappingFull(
         positionKey = positionKey,
         basis = basis,

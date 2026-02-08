@@ -18,6 +18,7 @@ import dev.lounres.kone.collections.map.relations.equality
 import dev.lounres.kone.collections.map.relations.hashing
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
+import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.collections.utils.computeOnOrElse
@@ -937,7 +938,7 @@ public open class LabeledPolynomialSpace<Number>(
                 coefficients.nodesView.forEach { entry ->
                     val degs = entry.key
                     val coef = entry.value
-                    if (ring { coef.isNotZero() }) +degs.keys
+                    if (ring { coef.isNotZero() }) addAllFrom(degs.keys)
                 }
             }
     public val LabeledPolynomial<Number>.numberOfVariables: UInt get() = variables.size

@@ -432,10 +432,10 @@ public fun <E> KoneIterator<E>.maxList(): KoneList<E> {
 }
 
 context(_: Order<E>)
-public fun <E : Comparable<E>> KoneIterable<E>.maxList(): KoneList<E> = iterator().maxList()
+public fun <E> KoneIterable<E>.maxList(): KoneList<E> = iterator().maxList()
 
 context(_: Order<E>)
-public fun <E : Comparable<E>> KoneSequence<E>.maxList(): KoneList<E> = iterator().maxList()
+public fun <E> KoneSequence<E>.maxList(): KoneList<E> = iterator().maxList()
 
 public inline fun <E> KoneIterator<E>.minWithOrElse(comparator: Comparator<E>, default: () -> E): E {
     if (!hasNext()) return default()

@@ -600,7 +600,7 @@ public inline fun <Element> KoneSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
+    builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
@@ -614,7 +614,7 @@ public inline fun <Element> KoneSet.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneSet.Companion.buildContextual(
     elementType: SuppliedType,
-    @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
+    builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> =
     KoneSet.build(
         elementEquality = Equality.getFor(elementType),
@@ -628,7 +628,7 @@ public inline fun <reified Element> KoneReifiedSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
         elementReification = Reification.defaultFor(),
@@ -644,7 +644,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
@@ -658,7 +658,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
     elementType: SuppliedType,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
         elementReification = Reification.getFor(elementType),
@@ -674,7 +674,7 @@ public inline fun <Element> KoneSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
+    builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
@@ -689,7 +689,7 @@ context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneSet.Companion.buildContextual(
     initialCapacity: UInt,
     elementType: SuppliedType,
-    @BuilderInference builderAction: KoneSetBuilder<Element>.() -> Unit,
+    builderAction: KoneSetBuilder<Element>.() -> Unit,
 ): KoneSet<Element> =
     KoneSet.build(
         initialCapacity = initialCapacity,
@@ -705,7 +705,7 @@ public inline fun <reified Element> KoneReifiedSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
         initialCapacity = initialCapacity,
@@ -723,7 +723,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
     elementOrder: Order<Element>? = null,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
 ): KoneReifiedSet<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     // TODO: Insert growable hash set implementation for hashing element context
@@ -738,7 +738,7 @@ context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
     initialCapacity: UInt,
     elementType: SuppliedType,
-    @BuilderInference builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
+    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
 ): KoneReifiedSet<Element> =
     KoneReifiedSet.build(
         initialCapacity = initialCapacity,

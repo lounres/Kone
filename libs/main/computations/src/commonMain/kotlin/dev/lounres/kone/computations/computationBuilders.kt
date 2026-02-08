@@ -43,7 +43,7 @@ public fun <R> ComputationScope.async(
 public fun <R> ComputationScope.channelComputation(
     context: CoroutineContext = EmptyCoroutineContext,
     start: ComputationStart = ComputationStart.ACTIVE,
-    @BuilderInference logic: suspend ResultProducingComputationScope<R>.() -> Unit,
+    logic: suspend ResultProducingComputationScope<R>.() -> Unit,
 ): ChannelComputation<R> {
     TODO("Not yet implemented")
 }
@@ -51,7 +51,7 @@ public fun <R> ComputationScope.channelComputation(
 public fun <R> ComputationScope.flowComputation(
     context: CoroutineContext = EmptyCoroutineContext,
     start: ComputationStart = ComputationStart.ACTIVE,
-    @BuilderInference logic: suspend ResultProducingComputationScope<R>.() -> Unit,
+    logic: suspend ResultProducingComputationScope<R>.() -> Unit,
 ): FlowComputation<R> {
     TODO("Not yet implemented")
 }

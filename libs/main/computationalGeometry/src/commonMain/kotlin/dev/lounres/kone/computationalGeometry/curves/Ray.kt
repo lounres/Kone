@@ -17,7 +17,9 @@ public /*value*/ data class Ray<out Vector, out Point>(
     public val direction: Vector,
 ) {
     override fun toString() : String = "Ray($start, $direction)"
+    
+    public companion object
 }
 
 context(_: AffineSpaceOverRing<*, Vector, Point>)
-public fun <Vector, Point> Ray(start: Point, end: Point): Ray<Vector, Point> = Ray(start = start, direction = end - start)
+public fun <Vector, Point> Ray.Companion.byTwoPoints(start: Point, end: Point): Ray<Vector, Point> = Ray(start = start, direction = end - start)

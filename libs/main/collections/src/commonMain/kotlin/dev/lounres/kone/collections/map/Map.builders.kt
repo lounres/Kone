@@ -466,7 +466,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing)
@@ -477,7 +477,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneMap.Companion.buildContextual(
     keyType: SuppliedType,
-    @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
         keyEquality = Equality.getFor(keyType),
@@ -490,7 +490,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build<Key, Value>(
         keyReification = Reification.defaultFor(),
@@ -505,7 +505,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing)
@@ -516,7 +516,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
 context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
     keyType: SuppliedType,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
         keyReification = Reification.getFor(keyType),
@@ -531,7 +531,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
@@ -543,7 +543,7 @@ context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneMap.Companion.buildContextual(
     initialCapacity: UInt,
     keyType: SuppliedType,
-    @BuilderInference builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
 ): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneMap.build(
         initialCapacity = initialCapacity,
@@ -558,7 +558,7 @@ public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build<Key, Value>(
         initialCapacity = initialCapacity,
@@ -575,7 +575,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
     keyHashing: Hashing<Key>? = null,
     keyOrder: Order<Key>? = null,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] {
     val mapBuilder =
         if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing) // TODO: Replace with growable hash map
@@ -587,7 +587,7 @@ context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
     initialCapacity: UInt,
     keyType: SuppliedType,
-    @BuilderInference builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
 ): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
     KoneReifiedMap.build(
         initialCapacity = initialCapacity,

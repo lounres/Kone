@@ -22,8 +22,8 @@ import kotlin.math.*
  * Container for [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor).
  */
-@JvmInline
-public value class BezoutCoefficientsWithGCD<T>(public val first: T, public val second: T, public val gcd: T)
+//@JvmInline
+public /*value*/ data class BezoutCoefficientsWithGCD<T>(public val first: T, public val second: T, public val gcd: T)
 
 // region Int
 

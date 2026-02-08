@@ -17,7 +17,9 @@ public /*value*/ data class Line<out Vector, out Point>(
     public val direction: Vector,
 ) {
     override fun toString() : String = "Line($start, $direction)"
+    
+    public companion object
 }
 
 context(_: AffineSpaceOverRing<*, Vector, Point>)
-public fun <Vector, Point> Line(start: Point, end: Point): Line<Vector, Point> = Line(start = start, direction = end - start)
+public fun <Vector, Point> Line.Companion.byTwoPoints(start: Point, end: Point): Line<Vector, Point> = Line(start = start, direction = end - start)

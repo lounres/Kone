@@ -208,7 +208,7 @@ public class RegistryBuilder @PublishedApi internal constructor() : MutableRegis
 /**
  * Builder function for [Registry].
  */
-public inline fun Registry.Companion.build(@BuilderInference block: RegistryBuilder.() -> Unit): Registry {
+public inline fun Registry.Companion.build(block: RegistryBuilder.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

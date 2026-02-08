@@ -232,7 +232,7 @@ private class KoneOfSequence<Element>(
     override fun iterator(): KoneIterator<Element> = elements.iterator()
 }
 
-public fun <Element> KoneSequence.Companion.build(@BuilderInference builder: suspend KoneIteratorBuilder<Element>.() -> Unit): KoneSequence<Element> =
+public fun <Element> KoneSequence.Companion.build(builder: suspend KoneIteratorBuilder<Element>.() -> Unit): KoneSequence<Element> =
     KoneSequence { KoneIterator.build(builder) }
 
 public fun <Element> KoneIterator<Element>.asKoneSequence(): KoneSequence<Element> = KoneSequence { this }

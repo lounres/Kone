@@ -142,5 +142,5 @@ private class KoneIteratorBuilderImpl<Element>(builder: suspend KoneIteratorBuil
     }
 }
 
-public fun <Element> KoneIterator.Companion.build(@BuilderInference builder: suspend KoneIteratorBuilder<Element>.() -> Unit): KoneIterator<Element> =
+public fun <Element> KoneIterator.Companion.build(builder: suspend KoneIteratorBuilder<Element>.() -> Unit): KoneIterator<Element> =
     KoneIteratorBuilderImpl(builder)

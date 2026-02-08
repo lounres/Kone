@@ -27,7 +27,7 @@ public fun <Owner> MutableOwnedRegistry<Owner>.asImmutable(): OwnedRegistry<Owne
 @JvmInline
 public value class OwnedRegistryBuilder<Owner> @PublishedApi internal constructor(public val registry: RegistryBuilder) : MutableRegistry by registry
 
-public inline fun <Owner> OwnedRegistry.Companion.build(@BuilderInference block: OwnedRegistryBuilder<Owner>.() -> Unit): OwnedRegistry<Owner> {
+public inline fun <Owner> OwnedRegistry.Companion.build(block: OwnedRegistryBuilder<Owner>.() -> Unit): OwnedRegistry<Owner> {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

@@ -117,6 +117,7 @@ public inline fun <SourceValue, TargetValue, CallbacksValue> KoneAsynchronousHub
             "This method will be removed when implementations will be moved to concurrent queue.",
             level = DeprecationLevel.WARNING
         )
+        @Suppress("DEPRECATION")
         override fun subscribeAnyway(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
             this@view.subscribeAnyway { callback(get(it)) }
         override fun unlockSubscriptions() {
@@ -300,6 +301,7 @@ public inline fun <SourceValue, TargetValue, CallbacksValue> KoneMutableAsynchro
             "This method will be removed when implementations will be moved to concurrent queue.",
             level = DeprecationLevel.WARNING
         )
+        @Suppress("DEPRECATION")
         override fun subscribeAnyway(callback: suspend (TargetValue) -> Unit): KoneAsynchronousHubView.Subscription =
             this@view.subscribeAnyway { callback(get(it)) }
         override fun unlockSubscriptions() {
