@@ -65,7 +65,7 @@ stal {
                 subdirs("libs util")
             }
         }
-        "bom"("bom")
+//        "bom"("bom")
         "plugins" {
             subdirs("kotlin compiler plugin") {
                 "testGeneration"("kotlin compiler plugin test generator")
