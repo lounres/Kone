@@ -65,6 +65,7 @@ stal {
                 subdirs("libs util")
             }
         }
+        "bom"("bom")
         "plugins" {
             subdirs("kotlin compiler plugin") {
                 "testGeneration"("kotlin compiler plugin test generator")
@@ -72,7 +73,6 @@ stal {
             }
         }
         "docs"()
-        "sandbox"("kotlin multiplatform")
     }
 
     tag {
@@ -85,16 +85,16 @@ stal {
         "benchmarks" since { has("libs main benchmarks") }
         "examples" since { has("libs main examples") }
         // Kotlin set up
-        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra") }
+        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom") }
         "kotlin jvm" since { hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
-        "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs") }
+        "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "bom") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { hasAnyOf("libs", "algorithms") }
+        "kotlin library settings" since { hasAnyOf("libs", "algorithms", "bom") }
         // Extra
         "testBalloon" since { has("libs public") }
 //        "kover" since { has("libs public") }
         "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
-        "kotlin multiplatform publication" since { hasAnyOf("libs") }
+        "kotlin multiplatform publication" since { hasAnyOf("libs", "bom") }
         "publishing" since { has("libs") }
         "dokka" since { has("libs") }
     }
@@ -122,6 +122,11 @@ stal {
             extra["artifactId"] = "kone.util.${project.name}"
             extra["alias"] = "util-${project.name}"
             extra["androidNamespace"] = "dev.lounres.kone.util.${project.name}"
+        }
+        "bom" {
+            extra["artifactId"] = "kone.bom"
+            extra["alias"] = "bom"
+            extra["androidNamespace"] = "dev.lounres.kone.bom"
         }
         "plugin" {
             extra["artifactId"] = "kone.plugin.${project.name}"

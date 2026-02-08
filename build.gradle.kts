@@ -236,6 +236,24 @@ gradle.projectsEvaluated {
         bundle("public", bundleMainAliases + bundleMiscAliases)
         bundle("all", bundleMainAliases + bundleMiscAliases + bundleUtilAliases)
     }
+    
+    val libsProjects = stal.lookUp.projectsThat { has("libs") }
+    project(":bom") {
+//        dependencies {
+//            constraints {
+//                libsProjects.forEach { add("api", it) }
+//            }
+//        }
+        configure<KotlinMultiplatformExtension> {
+            sourceSets {
+                commonMain {
+                    dependencies {
+                        libsProjects.forEach { api(it) }
+                    }
+                }
+            }
+        }
+    }
 }
 
 stal {
