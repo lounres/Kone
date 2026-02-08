@@ -1,4 +1,4 @@
-<div align="center">
+<div style="text-align: center;">
     <img src="assets/social-media/kone-logo-colored.svg" alt="Kone logo" style="width: 60%;">
 </div>
 

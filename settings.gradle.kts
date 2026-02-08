@@ -2,6 +2,15 @@ rootProject.name = "Kone"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+val localProperties = java.util.Properties()
+file("local.properties").inputStream().use {
+    localProperties.load(it)
+}
+
+gradle.projectsLoaded {
+    for ((key, property) in localProperties) gradle.rootProject.extra[key.toString()] = property
+}
+
 val projectProperties = java.util.Properties()
 file("gradle.properties").inputStream().use {
     projectProperties.load(it)
