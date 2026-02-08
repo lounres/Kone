@@ -39,7 +39,9 @@ public class HypergraphEdge(
     
     public companion object;
     
-    public data object NameKey : RegistryKey<String>
+    public data object NameKey : RegistryKey<String> {
+        override fun toString(): String = "dev.lounres.kone.graphs.HypergraphEdge.NameKey"
+    }
     
     private class Delegate(val edge: HypergraphEdge) : ReadOnlyProperty<Any?, HypergraphEdge> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): HypergraphEdge = edge

@@ -48,7 +48,9 @@ public class Polytope(
             }
         )
     
-    public data object NameKey : RegistryKey<String>
+    public data object NameKey : RegistryKey<String> {
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.polytopes.Polytope.NameKey"
+    }
     
     private class Delegate(val vertex: Polytope) : ReadOnlyProperty<Any?, Polytope> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Polytope = vertex

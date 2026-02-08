@@ -40,7 +40,9 @@ public class HypergraphVertex(
             )
     }
     
-    public data object NameKey : RegistryKey<String>
+    public data object NameKey : RegistryKey<String> {
+        override fun toString(): String = "dev.lounres.kone.graphs.HypergraphVertex.NameKey"
+    }
     
     private class Delegate(val vertex: HypergraphVertex) : ReadOnlyProperty<Any?, HypergraphVertex> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): HypergraphVertex = vertex

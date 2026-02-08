@@ -90,7 +90,9 @@ public val HypergraphEdge.end: HypergraphVertex
         }
     }
 
-public data object VertexToIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>>
+public data object VertexToIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>> {
+    override fun toString(): String = "dev.lounres.kone.graphs.VertexToIncidentEdgesMapping"
+}
 
 public fun Hypergraph.incidentEdgesOf(vertex: HypergraphVertex): KoneReifiedSet<HypergraphEdge> {
     val vertexToEdgesMapping = this.properties.getOrNull(VertexToIncidentEdgesMapping)
@@ -98,7 +100,9 @@ public fun Hypergraph.incidentEdgesOf(vertex: HypergraphVertex): KoneReifiedSet<
     return edges.filterTo(KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())) { (Equality.absoluteFor<HypergraphVertex>()) { vertex in it.vertices } }
 }
 
-public data object VertexToAdjacentVerticesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphVertex>>>
+public data object VertexToAdjacentVerticesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphVertex>>> {
+    override fun toString(): String = "dev.lounres.kone.graphs.VertexToAdjacentVerticesMapping"
+}
 
 public fun Hypergraph.adjacentVerticesOf(vertex: HypergraphVertex): KoneReifiedSet<HypergraphVertex> {
     val vertexToAdjacentVerticesMapping = this.properties.getOrNull(VertexToAdjacentVerticesMapping)
@@ -127,8 +131,12 @@ public fun Hypergraph.adjacentVerticesOf(vertex: HypergraphVertex): KoneReifiedS
     return result
 }
 
-public data object VertexToOutgoingIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>>
-public data object VertexToIncomingIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>>
+public data object VertexToOutgoingIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>> {
+    override fun toString(): String = "dev.lounres.kone.graphs.VertexToOutgoingIncidentEdgesMapping"
+}
+public data object VertexToIncomingIncidentEdgesMapping : RegistryKey<KoneReifiedMap<HypergraphVertex, KoneReifiedSet<HypergraphEdge>>> {
+    override fun toString(): String = "dev.lounres.kone.graphs.VertexToIncomingIncidentEdgesMapping"
+}
 
 public fun Hypergraph.outgoingIncidentEdgesOf(vertex: HypergraphVertex): KoneReifiedSet<HypergraphEdge> {
     val vertexToOutgoingEdgesMapping = this.properties.getOrNull(VertexToOutgoingIncidentEdgesMapping)
