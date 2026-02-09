@@ -688,7 +688,7 @@ stal {
                 publishToMavenCentral()
                 
                 // FIXME
-//                signAllPublications()
+                signAllPublications()
                 
                 coordinates(groupId = project.group as String, artifactId = project.artifact, version = project.version as String)
 
