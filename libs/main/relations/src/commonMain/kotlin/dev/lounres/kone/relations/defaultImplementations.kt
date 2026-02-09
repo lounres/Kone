@@ -14,6 +14,14 @@ internal object AbsoluteEquality: Equality<Any?> {
     override fun Any?.equalsTo(other: Any?): Boolean = this === other
 }
 
+internal object AllwaysAcceptingEquality: Equality<Any?> {
+    override fun Any?.equalsTo(other: Any?): Boolean = true
+}
+
+internal object AllwaysDenyingEquality: Equality<Any?> {
+    override fun Any?.equalsTo(other: Any?): Boolean = true
+}
+
 internal object DefaultHashing: Hashing<Any?> {
     override fun Any?.hash(): Int = this.hashCode()
 }

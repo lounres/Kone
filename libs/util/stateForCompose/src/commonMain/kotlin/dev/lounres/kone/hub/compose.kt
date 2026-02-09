@@ -16,7 +16,7 @@ import androidx.compose.runtime.structuralEqualityPolicy
 
 
 private class KoneAsynchronousHubViewSubscriptionComposeState<Value>(
-    private val subscription: KoneAsynchronousHubView.Subscription,
+    private val subscription: KoneAsynchronousHub.Subscription,
     private val actualState: MutableState<Value>,
 ) : RememberObserver, MutableState<Value> by actualState {
     override fun onRemembered() {}
@@ -29,10 +29,9 @@ private class KoneAsynchronousHubViewSubscriptionComposeState<Value>(
 }
 
 @Composable
-public fun <Value> KoneAsynchronousHubView<Value, *>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
+public fun <Value> KoneAsynchronousHub<Value>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
     remember(this, policy) {
-        /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
-        buildSubscriptionLocking { initialValue ->
+        buildSubscriptionAtomic { initialValue ->
             val state = mutableStateOf(initialValue)
             val subscription = subscribe { state.value = it }
             KoneAsynchronousHubViewSubscriptionComposeState(subscription, state)
@@ -41,7 +40,7 @@ public fun <Value> KoneAsynchronousHubView<Value, *>.subscribeAsState(policy: Sn
 
 
 private class KoneBlockingHubViewSubscriptionComposeState<Value>(
-    private val subscription: KoneBlockingHubView.Subscription,
+    private val subscription: KoneBlockingHub.Subscription,
     private val actualState: MutableState<Value>,
 ) : RememberObserver, MutableState<Value> by actualState {
     override fun onRemembered() {}
@@ -54,10 +53,9 @@ private class KoneBlockingHubViewSubscriptionComposeState<Value>(
 }
 
 @Composable
-public fun <Value> KoneBlockingHubView<Value, *>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
+public fun <Value> KoneBlockingHub<Value>.subscribeAsState(policy: SnapshotMutationPolicy<Value> = structuralEqualityPolicy()): State<Value> =
     remember(this, policy) {
-        /*buildSubscriptionAtomic*/ /* FIXME: Replace when `buildSubscriptionAtomic` will be available*/
-        buildSubscriptionLocking { initialValue ->
+        buildSubscriptionAtomic { initialValue ->
             val state = mutableStateOf(initialValue)
             val subscription = subscribe { state.value = it }
             KoneBlockingHubViewSubscriptionComposeState(subscription, state)

@@ -182,3 +182,5 @@ public fun <Element> Equality.Companion.defaultFor(): Equality<Element> = Defaul
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
 public fun <Element> Equality.Companion.absoluteFor(): Equality<Element> = AbsoluteEquality
+public fun <Element> Equality.Companion.allwaysAcceptingFor(): Equality<Element> = AllwaysAcceptingEquality
+public fun <Element> Equality.Companion.allwaysDenyingFor(): Equality<Element> = AllwaysDenyingEquality

@@ -3,8 +3,10 @@ rootProject.name = "Kone"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 val localProperties = java.util.Properties()
-file("local.properties").inputStream().use {
-    localProperties.load(it)
+file("local.properties").let { localPropertiesFile ->
+    if (localPropertiesFile.exists()) localPropertiesFile.inputStream().use {
+        localProperties.load(it)
+    }
 }
 
 gradle.projectsLoaded {
