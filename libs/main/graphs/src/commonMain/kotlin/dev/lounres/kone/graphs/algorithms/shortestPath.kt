@@ -5,22 +5,15 @@
 
 package dev.lounres.kone.graphs.algorithms
 
-import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.graphs.Hypergraph
-import dev.lounres.kone.graphs.HypergraphEdge
 import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.Path
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
-
-//@JvmInline
-public /*value*/ data class Path<out Weight>(
-    public val weight: Weight,
-    public val vertices: KoneList<HypergraphVertex>,
-    public val edges: KoneList<HypergraphEdge>,
-)
 
 public fun interface HypergraphShortestPathWithFixedEndsProvider<out Weight> {
     public fun get(): Path<Weight>?
@@ -47,7 +40,7 @@ public fun <Weight> HypergraphShortestPathWithoutFixedEndsProvider<Weight>.asHyp
     start: HypergraphVertex
 ): HypergraphShortestPathWithFixedStartProvider<Weight> = HypergraphShortestPathWithFixedStartProvider { this[start, it] }
 
-public fun interface HypergraphShortestPathWithFixedEndsComputer<out Weight> {
+public fun interface HypergraphShortestPathWithFixedEndsComputer<out Weight> : KoneContext {
     public fun Hypergraph.shortestPathWithFixedEndsProvider(start: HypergraphVertex, end: HypergraphVertex): HypergraphShortestPathWithFixedEndsProvider<Weight>
     
     public companion object;
@@ -77,7 +70,7 @@ context(computer: HypergraphShortestPathWithFixedEndsComputer<Weight>)
 public fun <Weight> Hypergraph.shortestPathWithFixedEndsProvider(start: HypergraphVertex, end: HypergraphVertex): HypergraphShortestPathWithFixedEndsProvider<Weight> =
     with(computer){ this@shortestPathWithFixedEndsProvider.shortestPathWithFixedEndsProvider(start, end) }
     
-public fun interface HypergraphShortestPathWithFixedStartComputer<out Weight> {
+public fun interface HypergraphShortestPathWithFixedStartComputer<out Weight> : KoneContext {
     public fun Hypergraph.shortestPathWithFixedStartProvider(start: HypergraphVertex): HypergraphShortestPathWithFixedStartProvider<Weight>
     
     public companion object;
@@ -107,7 +100,7 @@ context(computer: HypergraphShortestPathWithFixedStartComputer<Weight>)
 public fun <Weight> Hypergraph.shortestPathWithFixedStartProvider(start: HypergraphVertex): HypergraphShortestPathWithFixedStartProvider<Weight> =
     with(computer){ this@shortestPathWithFixedStartProvider.shortestPathWithFixedStartProvider(start) }
 
-public fun interface HypergraphShortestPathWithoutFixedEndsComputer<out Weight> {
+public fun interface HypergraphShortestPathWithoutFixedEndsComputer<out Weight> : KoneContext {
     public fun Hypergraph.shortestPathWithoutFixedEndsProvider(): HypergraphShortestPathWithoutFixedEndsProvider<Weight>
     
     public companion object;

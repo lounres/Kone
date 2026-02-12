@@ -24,11 +24,11 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.Path
 import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsComputer
 import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsProvider
 import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartComputer
 import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartProvider
-import dev.lounres.kone.graphs.algorithms.Path
 import dev.lounres.kone.graphs.ends
 import dev.lounres.kone.graphs.incidentEdgesOf
 import dev.lounres.kone.graphs.minus

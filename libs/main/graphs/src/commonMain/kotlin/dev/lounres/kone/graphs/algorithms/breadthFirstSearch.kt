@@ -10,7 +10,6 @@ import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.build
-import dev.lounres.kone.collections.iterables.cached
 import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
@@ -72,7 +71,7 @@ public fun Hypergraph.breadthFirstSearch(startVertex: HypergraphVertex): Breadth
                     queue.addLast(u)
                 }
             }
-        }.cached(),
+        },
     )
 
 public fun Hypergraph.breadthFirstDirectedSearch(startVertex: HypergraphVertex): BreadthFirstSearch =
@@ -96,7 +95,7 @@ public fun Hypergraph.breadthFirstDirectedSearch(startVertex: HypergraphVertex):
                     queue.addLast(e.end)
                 }
             }
-        }.cached(),
+        },
     )
 
 public fun Hypergraph.connectedComponentOf(vertex: HypergraphVertex): KoneReifiedSet<HypergraphVertex> =
