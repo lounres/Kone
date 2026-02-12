@@ -50,7 +50,6 @@ public val <Value> KoneAsynchronousHub<Value>.value: Value get() = callbacksValu
 
 @JvmInline
 public value class KoneAsynchronousHubBlockingSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneAsynchronousHub<Value>) {
-    @OptIn(InternalKoneHubApi::class)
     @IgnorableReturnValue
     public fun subscribe(callback: suspend (Value) -> Unit): KoneAsynchronousHub.Subscription = hub.subscribe(callback)
 }
@@ -69,7 +68,6 @@ public inline fun <Value, Result> KoneAsynchronousHub<Value>.buildSubscriptionLo
 public class KoneAsynchronousHubAtomicSubscriptionScope<out Value> @PublishedApi internal constructor(private val hub: KoneAsynchronousHub<Value>) {
     @PublishedApi
     internal val subscriptions: KoneMutableList<KoneAsynchronousHub.Subscription> = KoneArrayGrowableList()
-    @OptIn(InternalKoneHubApi::class)
     @IgnorableReturnValue
     public fun subscribe(callback: suspend (Value) -> Unit): KoneAsynchronousHub.Subscription =
         hub.subscribe(callback).also { subscriptions.add(it) }
@@ -130,6 +128,8 @@ public interface KoneMutableAsynchronousHub<Value> : KoneAsynchronousHub<Value> 
     public suspend fun acceptNewValue(newValue: Value)
     @InternalKoneHubApi
     public fun release()
+    
+    public companion object
 }
 
 public fun <Value> KoneMutableAsynchronousHub(initialValue: Value): KoneMutableAsynchronousHub<Value> =
@@ -165,6 +165,60 @@ private class KoneMutableAsynchronousHubImpl<Value>(initialValue: Value) : KoneM
     }
     override suspend fun acceptNewValue(newValue: Value) {
         val callbacksToLaunch = callbacksValueLock.withLock {
+            callbacksValue = newValue
+            callbacksLock.withLock { callbacks.toKoneList() }
+        }
+        supervisorScope {
+            callbacksToLaunch.forEach { callback ->
+                launch { callback(newValue) }
+            }
+        }
+    }
+    override fun release() {
+        mutex.unlock()
+    }
+}
+
+public fun <Value> KoneMutableAsynchronousHub.Companion.acceptingNew(
+    initialValue: Value,
+    valueEquality: Equality<Value> = Equality.defaultFor(),
+): KoneMutableAsynchronousHub<Value> =
+    KoneMutableAsynchronousHubAcceptingNewImpl(initialValue = initialValue, valueEquality = valueEquality)
+
+@OptIn(InternalKoneHubApi::class)
+private class KoneMutableAsynchronousHubAcceptingNewImpl<Value>(
+    initialValue: Value,
+    val valueEquality: Equality<Value>,
+) : KoneMutableAsynchronousHub<Value> {
+    // TODO: Replace with concurrent queue
+    override var callbacksValue: Value = initialValue
+    private val callbacksValueLock: ReentrantLock = ReentrantLock()
+    private val callbacks: KoneMutableNoddedList<suspend (Value) -> Unit> = KoneGCLinkedSizedList()
+    private val callbacksLock: ReentrantLock = ReentrantLock()
+    override fun subscribe(callback: suspend (Value) -> Unit): KoneAsynchronousHub.Subscription {
+        callbacksLock.withLock {
+            val node = callbacks.addNode(callback)
+            return KoneAsynchronousHub.Subscription {
+                callbacksLock.withLock {
+                    node.remove()
+                }
+            }
+        }
+    }
+    override fun lockCallbacksValue() {
+        callbacksValueLock.lock()
+    }
+    override fun unlockCallbacksValue() {
+        callbacksValueLock.unlock()
+    }
+    
+    private val mutex = Mutex()
+    override suspend fun acquire() {
+        mutex.lock()
+    }
+    override suspend fun acceptNewValue(newValue: Value) {
+        val callbacksToLaunch = callbacksValueLock.withLock {
+            if (valueEquality { newValue eq callbacksValue }) return
             callbacksValue = newValue
             callbacksLock.withLock { callbacks.toKoneList() }
         }

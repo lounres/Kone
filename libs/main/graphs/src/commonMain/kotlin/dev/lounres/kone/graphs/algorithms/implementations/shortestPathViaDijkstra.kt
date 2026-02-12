@@ -71,7 +71,7 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<Weight>(
                     edges = KoneList.empty(),
                 )
                 
-                while (verticesToCheck.size != 0u) {
+                while (verticesToCheck.isNotEmpty()) {
                     val currentVertexNode = verticesToCheck.takeMinimum()
                     if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
                     currentVertexNode.remove()

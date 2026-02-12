@@ -16,6 +16,8 @@ import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
+import dev.lounres.kone.collections.heap.isEmpty
+import dev.lounres.kone.collections.heap.isNotEmpty
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.build
 import dev.lounres.kone.collections.iterables.next
@@ -167,7 +169,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                     )
                 }
                 
-                while (eventsHeap.size != 0u) {
+                while (eventsHeap.isNotEmpty()) {
                     val currentEventNode = eventsHeap.popMinimum()
                     val currentEventPriority = currentEventNode.priority
                     val currentEvent = currentEventNode.element
@@ -275,7 +277,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                         }
                     }
                     
-                    check(eventsHeap.size == 0u || eventsHeap.takeMinimum().priority > currentEventPriority) { "For some reason minimum event priority did not increase" }
+                    check(eventsHeap.isEmpty() || eventsHeap.takeMinimum().priority > currentEventPriority) { "For some reason minimum event priority did not increase" }
                 }
             }
         }

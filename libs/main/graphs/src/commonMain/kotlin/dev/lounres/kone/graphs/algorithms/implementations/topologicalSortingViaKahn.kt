@@ -8,6 +8,7 @@ package dev.lounres.kone.graphs.algorithms.implementations
 import dev.lounres.kone.algebraic.context
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
+import dev.lounres.kone.collections.heap.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
@@ -38,7 +39,7 @@ private object TopologicalSortingComputerByKahn : TopologicalSortingComputer {
         
         for (vertex in vertices) verticesNodes[vertex] = verticesToProcess.add(vertex, incomingDegreeOf(vertex))
         
-        while (verticesToProcess.size != 0u) {
+        while (verticesToProcess.isNotEmpty()) {
             val currentVertexNode = verticesToProcess.popMinimum()
             val currentPriority = currentVertexNode.priority
             if (currentPriority != 0u) throw IllegalArgumentException("Cannot topologically sort a graph with cycles by Kahn's algorithm")
