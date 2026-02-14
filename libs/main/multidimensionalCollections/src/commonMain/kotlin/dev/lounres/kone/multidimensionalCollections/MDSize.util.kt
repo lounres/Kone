@@ -17,8 +17,10 @@ import dev.lounres.kone.multidimensionalCollections.relations.hashing
 
 
 public infix fun MDSize.contentEquals(other: MDSize): Boolean = this.sizes contentEquals other.sizes
+public infix fun MDIndex.contentEquals(other: MDIndex): Boolean = this.indices contentEquals other.indices
 
 public fun MDSize.contentHashCode(): Int = this.sizes.contentHashCode()
+public fun MDIndex.contentHashCode(): Int = this.indices.contentHashCode()
 
 @Suppress("FunctionName")
 public fun ColumnMDSizeStrides(size: MDSize): MDSizeStrides = MDSizeStrides(size, order = KoneUIntArray.generate(size.size) { it })

@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.multidimensionalCollections.relations
 
-import dev.lounres.kone.collections.array.contentHashCode
 import dev.lounres.kone.multidimensionalCollections.MDSize
 import dev.lounres.kone.multidimensionalCollections.contentEquals
+import dev.lounres.kone.multidimensionalCollections.contentHashCode
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 
@@ -19,7 +19,7 @@ private object MDSizeEquality : Equality<MDSize> {
 public fun MDSize.Companion.equality(): Equality<MDSize> = MDSizeEquality
 
 private object MDSizeHashing : Hashing<MDSize> {
-    override fun MDSize.hash(): Int = this.sizes.contentHashCode()
+    override fun MDSize.hash(): Int = this.contentHashCode()
 }
 
 public fun MDSize.Companion.hashing(): Hashing<MDSize> = MDSizeHashing
