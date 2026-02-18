@@ -2,6 +2,9 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
+import dev.lounres.kone.registry.ImpliedKeysRegistry
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 // The underlying ring is commutative
@@ -51,6 +54,16 @@ public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneC
     public operator fun Matrix.plus(other: Matrix): Matrix
     public operator fun Matrix.minus(other: Matrix): Matrix
     // endregion
+    
+    public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<MatrixCategoryOverRing<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverRing.Key<?, $matrixType>"
+    }
 }
 
 context(matrixCategory: MatrixCategoryOverRing<Number, Matrix>)
@@ -125,6 +138,19 @@ public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : Matr
     // region Matrix-Number operations
     public operator fun Matrix.div(other: Number): Matrix
     // endregion
+    
+    public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<MatrixCategoryOverField<Number, Matrix>> {
+        override val impliedKeys: ImpliedKeysRegistry<MatrixCategoryOverField<Number, Matrix>> = ImpliedKeysRegistry {
+            MatrixCategoryOverRing.Key<Number, Matrix>(matrixType = matrixType) implies { it }
+        }
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverField.Key<?, $matrixType>"
+    }
 }
 
 context(matrixCategory: MatrixCategoryOverField<Number, Matrix>)
