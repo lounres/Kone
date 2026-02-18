@@ -3,14 +3,12 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
 import dev.lounres.kone.collections.utils.all
-import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.get
@@ -19,24 +17,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance.OUT
 
-
-public interface MatrixFactory<Number, Matrix: MDList2<Number>> : KoneContext {
-    // TODO: Think about adding:
-//    public fun convertMatrix(matrix: MDList2<Number>): Matrix
-    public fun generateMatrix(rowNumber: UInt, columnNumber: UInt, generator: (row: UInt, column: UInt) -> Number): Matrix
-    public fun fillMatrix(rowNumber: UInt, columnNumber: UInt, number: Number): Matrix = generateMatrix(rowNumber, columnNumber) { _, _ -> number }
-    public fun mapMatrix(rowNumber: UInt, columnNumber: UInt, numbers: KoneMap<MDIndex, Number>): Matrix
-    
-    public companion object;
-    
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<MatrixFactory<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixFactory.Key<?, $matrixType>"
-    }
-}
 
 private class MDList2MatrixFactory<Number>(
     private val ring: CommutativeRing<Number>
@@ -56,15 +36,15 @@ private class MDList2MatrixFactory<Number>(
     }
 }
 
-public fun <Number> MatrixFactory.Companion.mdList2(ring: CommutativeRing<Number>): MatrixFactory<Number, MDList2<Number>> =
+public fun <Number> MatrixFactory.Companion.default(ring: CommutativeRing<Number>): MatrixFactory<Number, MDList2<Number>> =
     MDList2MatrixFactory(ring = ring)
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixFactory.Companion.mdList2(numberType: SuppliedType): MatrixFactory<Number, MDList2<Number>> =
-    mdList2(ring = koneContextRegistry.get()[CommutativeRing.Key<Number>(numberType = numberType)])
+public fun <Number> MatrixFactory.Companion.default(numberType: SuppliedType): MatrixFactory<Number, MDList2<Number>> =
+    default(ring = koneContextRegistry.get()[CommutativeRing.Key<Number>(numberType = numberType)])
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> MatrixFactory.Companion.setMDList2(numberType: SuppliedType) {
+public fun <Number> MatrixFactory.Companion.setDefault(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
@@ -77,6 +57,6 @@ public fun <Number> MatrixFactory.Companion.setMDList2(numberType: SuppliedType)
         isNullable = false,
     )
     MatrixFactory.Key<Number, MDList2<Number>>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        mdList2(numberType = numberType)
+        default(numberType = numberType)
     }
 }

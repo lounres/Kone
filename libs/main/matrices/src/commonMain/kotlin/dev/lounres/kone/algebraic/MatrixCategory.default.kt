@@ -9,249 +9,209 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-private class MDList2MatrixCategoryOverRing<Number>(
-    private val matrixFactory: MatrixFactory<Number, MDList2<Number>>,
+private class MatrixCategoryOverRingViaDefault<Number, Matrix : MDList2<Number>>(
+    private val matrixFactory: MatrixFactory<Number, Matrix>,
     private val ring: CommutativeRing<Number>,
-) : MatrixCategoryOverRing<Number, MDList2<Number>> {
-    // region MDList2-Int operations
-    override fun MDList2<Number>.times(other: Int): MDList2<Number> =
+) : MatrixCategoryOverRing<Number, Matrix> {
+    // region Matrix-Int operations
+    override fun Matrix.times(other: Int): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] * other } }
     // endregion
     
-    // region MDList2-UInt operations
-    override fun MDList2<Number>.times(other: UInt): MDList2<Number> =
+    // region Matrix-UInt operations
+    override fun Matrix.times(other: UInt): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] * other } }
     // endregion
     
-    // region MDList2-Long operations
-    override fun MDList2<Number>.times(other: Long): MDList2<Number> =
+    // region Matrix-Long operations
+    override fun Matrix.times(other: Long): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] * other } }
     // endregion
     
-    // region MDList2-ULong operations
-    override fun MDList2<Number>.times(other: ULong): MDList2<Number> =
+    // region Matrix-ULong operations
+    override fun Matrix.times(other: ULong): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] * other } }
     // endregion
     
-    // region Int-MDList2 operations
-    override fun Int.times(other: MDList2<Number>): MDList2<Number> =
+    // region Int-Matrix operations
+    override fun Int.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring { this * other[row, column] } }
     // endregion
     
-    // region UInt-MDList2 operations
-    override fun UInt.times(other: MDList2<Number>): MDList2<Number> =
+    // region UInt-Matrix operations
+    override fun UInt.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring { this * other[row, column] } }
     // endregion
     
-    // region Long-MDList2 operations
-    override fun Long.times(other: MDList2<Number>): MDList2<Number> =
+    // region Long-Matrix operations
+    override fun Long.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring { this * other[row, column] } }
     // endregion
     
-    // region ULong-MDList2 operations
-    override fun ULong.times(other: MDList2<Number>): MDList2<Number> =
+    // region ULong-Matrix operations
+    override fun ULong.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring { this * other[row, column] } }
     // endregion
     
-    // region MDList2-Number operations
-    override fun MDList2<Number>.times(other: Number): MDList2<Number> =
+    // region Matrix-Number operations
+    override fun Matrix.times(other: Number): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] * other } }
     // endregion
     
-    // region Number-MDList2 operations
-    override fun Number.times(other: MDList2<Number>): MDList2<Number> =
+    // region Number-Matrix operations
+    override fun Number.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring { this * other[row, column] } }
     // endregion
     
-    // region MDList2-MDList2 operations
-    override fun MDList2<Number>.unaryMinus(): MDList2<Number> =
+    // region Matrix-Matrix operations
+    override fun Matrix.unaryMinus(): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { -this[row, column] } }
-    override fun MDList2<Number>.plus(other: MDList2<Number>): MDList2<Number> =
+    override fun Matrix.plus(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] + other[row, column] } }
-    override fun MDList2<Number>.minus(other: MDList2<Number>): MDList2<Number> =
+    override fun Matrix.minus(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring { this[row, column] - other[row, column] } }
     // endregion
 }
 
-public fun <Number> MatrixCategoryOverRing.Companion.mdList2(
-    matrixFactory: MatrixFactory<Number, MDList2<Number>>,
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.viaDefault(
+    matrixFactory: MatrixFactory<Number, Matrix>,
     ring: CommutativeRing<Number>,
-): MatrixCategoryOverRing<Number, MDList2<Number>> = MDList2MatrixCategoryOverRing(
+): MatrixCategoryOverRing<Number, Matrix> = MatrixCategoryOverRingViaDefault(
     matrixFactory = matrixFactory,
     ring = ring,
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixCategoryOverRing.Companion.mdList2(
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.viaDefault(
     numberType: SuppliedType,
-): MatrixCategoryOverRing<Number, MDList2<Number>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            )
-        ),
-        isNullable = false,
-    )
+    matrixType: SuppliedType,
+): MatrixCategoryOverRing<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
-    return mdList2(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MDList2<Number>>(matrixType = matrixType)],
+    return viaDefault(
+        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)],
         ring = koneContextRegistry[CommutativeRing.Key<Number>(numberType)],
     )
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixCategoryOverRing.Companion.setMDList2(
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.setViaDefault(
     numberType: SuppliedType,
+    matrixType: SuppliedType,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            )
-        ),
-        isNullable = false,
-    )
-    MatrixCategoryOverRing.Key<Number, MDList2<Number>>(matrixType) correspondsTo RegisteredValueProvider.cached {
-        mdList2<Number>(
+    MatrixCategoryOverRing.Key<Number, Matrix>(matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaDefault<Number, Matrix>(
             numberType = numberType,
+            matrixType = matrixType,
         )
     }
 }
 
-private class MDList2MatrixCategoryOverField<Number>(
-    private val matrixFactory: MatrixFactory<Number, MDList2<Number>>,
+private class MatrixCategoryOverFieldViaDefault<Number, Matrix : MDList2<Number>>(
+    private val matrixFactory: MatrixFactory<Number, Matrix>,
     private val field: Field<Number>,
-) : MatrixCategoryOverField<Number, MDList2<Number>> {
-    // region MDList2-Int operations
-    override fun MDList2<Number>.times(other: Int): MDList2<Number> =
+) : MatrixCategoryOverField<Number, Matrix> {
+    // region Matrix-Int operations
+    override fun Matrix.times(other: Int): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] * other } }
-    override fun MDList2<Number>.div(other: Int): MDList2<Number> =
+    override fun Matrix.div(other: Int): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] / other } }
     // endregion
     
-    // region MDList2-UInt operations
-    override fun MDList2<Number>.times(other: UInt): MDList2<Number> =
+    // region Matrix-UInt operations
+    override fun Matrix.times(other: UInt): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] * other } }
-    override fun MDList2<Number>.div(other: UInt): MDList2<Number> =
+    override fun Matrix.div(other: UInt): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] / other } }
     // endregion
     
-    // region MDList2-Long operations
-    override fun MDList2<Number>.times(other: Long): MDList2<Number> =
+    // region Matrix-Long operations
+    override fun Matrix.times(other: Long): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] * other } }
-    override fun MDList2<Number>.div(other: Long): MDList2<Number> =
+    override fun Matrix.div(other: Long): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] / other } }
     // endregion
     
-    // region MDList2-ULong operations
-    override fun MDList2<Number>.times(other: ULong): MDList2<Number> =
+    // region Matrix-ULong operations
+    override fun Matrix.times(other: ULong): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] * other } }
-    override fun MDList2<Number>.div(other: ULong): MDList2<Number> =
+    override fun Matrix.div(other: ULong): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] / other } }
     // endregion
     
-    // region Int-MDList2 operations
-    override fun Int.times(other: MDList2<Number>): MDList2<Number> =
+    // region Int-Matrix operations
+    override fun Int.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field { this * other[row, column] } }
     // endregion
     
-    // region UInt-MDList2 operations
-    override fun UInt.times(other: MDList2<Number>): MDList2<Number> =
+    // region UInt-Matrix operations
+    override fun UInt.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field { this * other[row, column] } }
     // endregion
     
-    // region Long-MDList2 operations
-    override fun Long.times(other: MDList2<Number>): MDList2<Number> =
+    // region Long-Matrix operations
+    override fun Long.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field { this * other[row, column] } }
     // endregion
     
-    // region ULong-MDList2 operations
-    override fun ULong.times(other: MDList2<Number>): MDList2<Number> =
+    // region ULong-Matrix operations
+    override fun ULong.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field { this * other[row, column] } }
     // endregion
     
-    // region MDList2-Number operations
-    override fun MDList2<Number>.times(other: Number): MDList2<Number> =
+    // region Matrix-Number operations
+    override fun Matrix.times(other: Number): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] * other } }
-    override fun MDList2<Number>.div(other: Number): MDList2<Number> =
+    override fun Matrix.div(other: Number): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] / other } }
     // endregion
     
-    // region Number-MDList2 operations
-    override fun Number.times(other: MDList2<Number>): MDList2<Number> =
+    // region Number-Matrix operations
+    override fun Number.times(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field { this * other[row, column] } }
     // endregion
     
-    // region MDList2-MDList2 operations
-    override fun MDList2<Number>.unaryMinus(): MDList2<Number> =
+    // region Matrix-Matrix operations
+    override fun Matrix.unaryMinus(): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { -this[row, column] } }
-    override fun MDList2<Number>.plus(other: MDList2<Number>): MDList2<Number> =
+    override fun Matrix.plus(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] + other[row, column] } }
-    override fun MDList2<Number>.minus(other: MDList2<Number>): MDList2<Number> =
+    override fun Matrix.minus(other: Matrix): Matrix =
         matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field { this[row, column] - other[row, column] } }
     // endregion
 }
 
-public fun <Number> MatrixCategoryOverField.Companion.mdList2(
-    matrixFactory: MatrixFactory<Number, MDList2<Number>>,
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.viaDefault(
+    matrixFactory: MatrixFactory<Number, Matrix>,
     field: Field<Number>,
-): MatrixCategoryOverField<Number, MDList2<Number>> = MDList2MatrixCategoryOverField(
+): MatrixCategoryOverField<Number, Matrix> = MatrixCategoryOverFieldViaDefault(
     matrixFactory = matrixFactory,
     field = field,
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixCategoryOverField.Companion.mdList2(
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.viaDefault(
     numberType: SuppliedType,
-): MatrixCategoryOverField<Number, MDList2<Number>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            )
-        ),
-        isNullable = false,
-    )
+    matrixType: SuppliedType,
+): MatrixCategoryOverField<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
-    return mdList2(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MDList2<Number>>(matrixType = matrixType)],
+    return viaDefault(
+        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)],
         field = koneContextRegistry[Field.Key<Number>(numberType)],
     )
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixCategoryOverField.Companion.setMDList2(
+public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.setViaDefault(
     numberType: SuppliedType,
+    matrixType: SuppliedType,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            )
-        ),
-        isNullable = false,
-    )
-    MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        mdList2<Number>(
+    MatrixCategoryOverField.Key<Number, Matrix>(matrixType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+        viaDefault<Number, Matrix>(
             numberType = numberType,
+            matrixType = matrixType,
         )
     }
 }
