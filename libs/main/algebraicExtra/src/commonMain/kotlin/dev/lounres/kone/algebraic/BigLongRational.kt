@@ -11,10 +11,10 @@ import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImplied
+import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
@@ -445,7 +445,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     // endregion
 }
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun BigLongRationalContext.set() {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val bigLongRationalSuppliedType = SuppliedType.Regular(
@@ -459,6 +459,6 @@ public fun BigLongRationalContext.set() {
         Order.Key(bigLongRationalSuppliedType),
         Hashing.Key(bigLongRationalSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo BigLongRationalContext
+        it.withImpliedUsingFirst correspondsTo BigLongRationalContext
     }
 }

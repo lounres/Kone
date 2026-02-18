@@ -5,33 +5,6 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.numberTheory.gcd
-import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.maybe.None
-import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.RegistryBuilder
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImplied
-import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlin.jvm.JvmInline
-
 
 //@Serializable(with = RationalSerializer::class)
 //public class Rational {
