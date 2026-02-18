@@ -23,10 +23,10 @@ import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.graphs.adjacentVerticesOf
 import dev.lounres.kone.graphs.algorithms.TopologicalSortingComputer
 import dev.lounres.kone.graphs.algorithms.TopologicallySortedVertices
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.graphs.algorithms.adjacentVerticesOf
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.absoluteFor
@@ -85,7 +85,7 @@ private object TopologicalSortingComputerViaDepthFirstSearch : TopologicalSortin
 
 public fun TopologicalSortingComputer.Companion.depthFirstSearch(): TopologicalSortingComputer = TopologicalSortingComputerViaDepthFirstSearch
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun TopologicalSortingComputer.Companion.setDepthFirstSearch() {
     TopologicalSortingComputer.Key correspondsTo depthFirstSearch()
 }

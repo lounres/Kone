@@ -13,6 +13,8 @@ import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.registry.MutableRegistry
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.get
+import dev.lounres.kone.registry.set
 import kotlin.jvm.JvmName
 
 

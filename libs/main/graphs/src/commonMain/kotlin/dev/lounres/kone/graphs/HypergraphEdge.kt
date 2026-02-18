@@ -7,13 +7,16 @@ package dev.lounres.kone.graphs
 
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.OwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.empty
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.set
+import kotlin.jvm.JvmName
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -50,7 +53,7 @@ public class HypergraphEdge(
 
 public inline fun HypergraphEdge(
     vertices: KoneList<HypergraphVertex>,
-    propertiesBuilder: OwnedRegistryBuilder<HypergraphEdge>.() -> Unit
+    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit
 ): HypergraphEdge =
     HypergraphEdge(
         vertices = vertices,
@@ -68,7 +71,7 @@ public fun HypergraphEdge(
 
 public inline fun HypergraphEdge(
     vararg vertices: HypergraphVertex,
-    propertiesBuilder: OwnedRegistryBuilder<HypergraphEdge>.() -> Unit
+    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit
 ): HypergraphEdge =
     HypergraphEdge(
         vertices = KoneArray(vertices),
@@ -88,9 +91,19 @@ public fun HypergraphEdge.Companion.directed(
 public inline fun HypergraphEdge.Companion.directed(
     start: HypergraphVertex,
     end: HypergraphVertex,
-    propertiesBuilder: OwnedRegistryBuilder<HypergraphEdge>.() -> Unit,
+    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit,
 ): HypergraphEdge =
     HypergraphEdge(start, end) {
         propertiesBuilder()
         GraphEdgeDirection.Key correspondsTo GraphEdgeDirection.FromFirstToSecond
     }
+
+public val OwnedRegistry<HypergraphEdge>.name: String
+    @JvmName("getHypergraphEdgeOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
+
+public var MutableOwnedRegistry<HypergraphEdge>.name: String
+    @JvmName("getHypergraphEdgeMutableOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
+    @JvmName("setHypergraphEdgeMutableOwnedRegistryName") set(value) { set(HypergraphEdge.NameKey, value) }
+
+public val HypergraphEdge.name: String
+    @JvmName("getHypergraphEdgeName") get() = properties.name

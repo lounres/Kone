@@ -25,9 +25,7 @@ import dev.lounres.kone.collections.set.toKoneMutableSet
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.graphs.adjacentVerticesOf
 import dev.lounres.kone.graphs.end
-import dev.lounres.kone.graphs.outgoingIncidentEdgesOf
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.absoluteFor
 

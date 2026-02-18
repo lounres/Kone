@@ -6,19 +6,14 @@
 package dev.lounres.kone.graphs
 
 import dev.lounres.kone.collections.iterables.contains
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.map.KoneMutableReifiedMap
-import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.collections.utils.withIndex
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.MutableRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.graphs.Hypergraph.Provider
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.absoluteFor
 import kotlin.contracts.InvocationKind
@@ -31,7 +26,47 @@ public interface Hypergraph {
     
     public val properties: Registry get() = Registry.Empty
     
-    public companion object
+    public companion object;
+    
+    public fun interface Provider {
+        public fun get(): Hypergraph
+    }
+    
+    public fun interface Factory {
+        @InternalApi
+        public fun builder(): HypergraphBuilderWithProvider
+        
+        @InternalApi
+        public interface Provider : Hypergraph.Provider {
+            public fun initialize()
+        }
+        
+        @InternalApi
+        public data class HypergraphBuilderWithProvider(
+            val builder: HypergraphBuilder,
+            val provider: Provider
+        )
+        
+        @RequiresOptIn(
+            level = RequiresOptIn.Level.WARNING,
+        )
+        public annotation class InternalApi
+        
+        public data object Key : RegistryKey<Factory> {
+            override fun toString(): String = "dev.lounres.kone.graphs.Hypergraph.Factory.Key"
+        }
+    }
+}
+
+@OptIn(Hypergraph.Factory.InternalApi::class)
+public inline fun Hypergraph.Factory.Hypergraph(block: HypergraphBuilder.(graph: Provider) -> Unit): Hypergraph {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    val (builder, provider) = builder()
+    block(builder, provider)
+    provider.initialize()
+    return builder
 }
 
 public interface MutableHypergraph : Hypergraph {
@@ -43,6 +78,10 @@ public interface MutableHypergraph : Hypergraph {
     override val properties: MutableRegistry
     
     public companion object
+}
+
+public inline fun MutableHypergraph.properties(block: MutableOwnedRegistry<Hypergraph>.() -> Unit) {
+    MutableOwnedRegistry<Hypergraph>(this.properties).block()
 }
 
 public fun MutableHypergraph(
@@ -108,42 +147,41 @@ internal class HypergraphBuilderImpl : HypergraphBuilder {
         edges.remove(edge)
     }
     
-    override val properties: MutableRegistry = MutableRegistry()
+    override val properties = MutableRegistry()
 }
 
 public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit): Hypergraph {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return HypergraphBuilderImpl().apply {
-        block()
-        properties.apply {
-            val vertexToIncidentEdgesMapping =
-                if (VertexToIncidentEdgesMapping in this) null
-                else KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphEdge>>(
-                    keyEquality = Equality.absoluteFor(),
-                )
-            val vertexToAdjacentVerticesMapping =
-                if (VertexToAdjacentVerticesMapping in this) null
-                else KoneMutableReifiedMap.of<HypergraphVertex, KoneMutableReifiedSet<HypergraphVertex>>(
-                    keyEquality = Equality.absoluteFor(),
-                )
-            
-            if (vertexToIncidentEdgesMapping != null || vertexToAdjacentVerticesMapping != null) {
-                for (vertex in vertices) {
-                    vertexToIncidentEdgesMapping?.let { it[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor()) }
-                    vertexToAdjacentVerticesMapping?.let { it[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor()) }
-                }
-                for (edge in edges) for ((i, vertex) in edge.vertices.withIndex()) {
-                    vertexToIncidentEdgesMapping?.let { it[vertex].add(edge) }
-                    vertexToAdjacentVerticesMapping?.let {
-                        for ((j, otherVertex) in edge.vertices.withIndex()) if (i != j) it[vertex].add(otherVertex)
-                    }
-                }
+    return HypergraphBuilderImpl().apply(block)
+}
+
+@OptIn(Hypergraph.Factory.InternalApi::class)
+public fun Hypergraph.Companion.Factory(
+    block: context(Provider) HypergraphBuilder.() -> Unit = {},
+): Hypergraph.Factory =
+    Hypergraph.Factory {
+        val builder = HypergraphBuilderImpl()
+        val provider = object : Hypergraph.Factory.Provider {
+            private var isInitialized = false
+            override fun get(): Hypergraph =
+                if (isInitialized) builder
+                else error("Hypergraph is not yet initialized but was requested by its properties.")
+            override fun initialize() {
+                isInitialized = true
             }
-            
-            vertexToIncidentEdgesMapping?.let { VertexToIncidentEdgesMapping correspondsTo it }
-            vertexToAdjacentVerticesMapping?.let { VertexToAdjacentVerticesMapping correspondsTo it }
         }
+        block(provider, builder)
+        Hypergraph.Factory.HypergraphBuilderWithProvider(
+            builder = builder,
+            provider = provider,
+        )
     }
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Hypergraph.Companion.setFactory(
+    block: context(Provider) HypergraphBuilder.() -> Unit = {},
+) {
+    Hypergraph.Factory.Key correspondsTo RegisteredValueProvider.cached { Hypergraph.Factory(block) }
 }

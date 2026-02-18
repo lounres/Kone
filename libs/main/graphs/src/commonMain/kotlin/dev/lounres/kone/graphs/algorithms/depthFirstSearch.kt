@@ -5,24 +5,6 @@
 
 package dev.lounres.kone.graphs.algorithms
 
-import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.array.of
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.isNotEmpty
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.lastIndex
-import dev.lounres.kone.collections.set.KoneMutableSet
-import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.graphs.Hypergraph
-import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.graphs.adjacentVerticesOf
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.absoluteFor
-
 
 // TODO: Repeat after BFS
 
