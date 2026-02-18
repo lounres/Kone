@@ -10,9 +10,12 @@ import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -141,7 +144,7 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vector
     AffineSpaceOverFieldViaVectorSpace(vectorSpace)
 
 @OptIn(DelicateSuppliedTypeConstructor::class)
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType) {
     AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>(
         numberType,
@@ -156,5 +159,8 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(
             ),
             isNullable = false,
         ),
-    ) correspondsTo AffineSpaceOverField.viaVectorSpace(koneContextRegistryBuilder[VectorSpace.Key<Number, Vector>(numberType, vectorType)])
+    ) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        viaVectorSpace(koneContextRegistry[VectorSpace.Key<Number, Vector>(numberType, vectorType)])
+    }
 }

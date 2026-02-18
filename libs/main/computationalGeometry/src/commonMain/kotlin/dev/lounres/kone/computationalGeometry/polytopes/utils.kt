@@ -34,8 +34,8 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.OwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -89,7 +89,7 @@ public inline fun Polytope.copyMapping(
 }
 
 public inline fun Polytope.copyBuilding(
-    propertiesMapper: OwnedRegistryBuilder<Polytope>.(currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> Unit
+    propertiesMapper: MutableOwnedRegistry<Polytope>.(currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> Unit
 ): Polytope = copyMapping { currentPolytope, polytopesMapping -> OwnedRegistry.build { propertiesMapper(currentPolytope, polytopesMapping) } }
 
 public fun simplexOn(vertices: KoneList<Polytope>): Polytope {

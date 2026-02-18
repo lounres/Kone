@@ -28,9 +28,12 @@ import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -246,10 +249,13 @@ public class EuclideanSpace2OverRing<Number>(
     }
 }
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun EuclideanSpace2OverRing.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace2OverRing.Key<Number>(numberType) correspondsTo EuclideanSpace2OverRing(koneContextRegistryBuilder[Ring.Key<Number>(numberType)])
+    EuclideanSpace2OverRing.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        EuclideanSpace2OverRing(koneContextRegistry[Ring.Key<Number>(numberType)])
+    }
 }
 
 public class EuclideanSpace2OverField<Number>(
@@ -418,8 +424,11 @@ public class EuclideanSpace2OverField<Number>(
     }
 }
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun EuclideanSpace2OverField.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace2OverField.Key<Number>(numberType) correspondsTo EuclideanSpace2OverField(koneContextRegistryBuilder[Field.Key<Number>(numberType)])
+    EuclideanSpace2OverField.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        EuclideanSpace2OverField(koneContextRegistry[Field.Key<Number>(numberType)])
+    }
 }

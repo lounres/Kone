@@ -8,17 +8,20 @@ package dev.lounres.kone.computationalGeometry.polytopes
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.OwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistryBuilder
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.empty
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
+import dev.lounres.kone.registry.set
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.defaultFor
+import kotlin.jvm.JvmName
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -60,7 +63,7 @@ public class Polytope(
 public fun Polytope(
     dimension: UInt,
     faces: KoneList<KoneReifiedSet<Polytope>>,
-    propertiesBuilder: OwnedRegistryBuilder<Polytope>.() -> Unit
+    propertiesBuilder: MutableOwnedRegistry<Polytope>.() -> Unit
 ): Polytope =
     Polytope(
         dimension = dimension,
@@ -77,3 +80,13 @@ public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
             elementEquality = Equality.absoluteFor(),
             elementHashing = Hashing.defaultFor(),
         )
+
+public val OwnedRegistry<Polytope>.name: String
+    @JvmName("getPolytopeOwnedRegistryName") get() = get(Polytope.NameKey)
+
+public var MutableOwnedRegistry<Polytope>.name: String
+    @JvmName("getPolytopeMutableOwnedRegistryName") get() = get(Polytope.NameKey)
+    @JvmName("setPolytopeMutableOwnedRegistryName") set(value) { set(Polytope.NameKey, value) }
+
+public val Polytope.name: String
+    @JvmName("getPolytopeName") get() = properties.name

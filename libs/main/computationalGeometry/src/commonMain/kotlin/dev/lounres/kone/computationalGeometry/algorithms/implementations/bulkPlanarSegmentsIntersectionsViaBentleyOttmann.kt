@@ -35,8 +35,11 @@ import dev.lounres.kone.computationalGeometry.curves.end
 import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareTo
 import dev.lounres.kone.relations.compareWith
@@ -295,15 +298,18 @@ public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldCompu
         euclideanSpace = euclideanSpace,
     )
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann(
     numberType: SuppliedType,
     vectorType: SuppliedType,
     pointType: SuppliedType,
 ) {
-    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann(
-        numberField = koneContextRegistryBuilder[Field.Key<Number>(numberType)],
-        numberOrder = koneContextRegistryBuilder[Order.Key<Number>(numberType)],
-        euclideanSpace = koneContextRegistryBuilder[EuclideanSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
-    )
+    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        bentleyOttmann(
+            numberField = koneContextRegistry[Field.Key<Number>(numberType)],
+            numberOrder = koneContextRegistry[Order.Key<Number>(numberType)],
+            euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+        )
+    }
 }

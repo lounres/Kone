@@ -47,8 +47,11 @@ import dev.lounres.kone.computationalGeometry.polytopes.build
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
@@ -394,17 +397,20 @@ public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Compani
         euclideanSpace = euclideanSpace,
     )
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull(
     numberType: SuppliedType,
     vectorType: SuppliedType,
     pointType: SuppliedType,
 ) {
-    DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo DelaunayTriangulationOverRingComputerViaConvexHull(
-        numberType = numberType,
-        pointType = pointType,
-        ring = koneContextRegistryBuilder[Ring.Key<Number>(numberType)],
-        order = koneContextRegistryBuilder[Order.Key<Number>(numberType)],
-        euclideanSpace = koneContextRegistryBuilder[EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
-    )
+    DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        convexHull(
+            numberType = numberType,
+            pointType = pointType,
+            ring = koneContextRegistry[Ring.Key<Number>(numberType)],
+            order = koneContextRegistry[Order.Key<Number>(numberType)],
+            euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+        )
+    }
 }

@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
