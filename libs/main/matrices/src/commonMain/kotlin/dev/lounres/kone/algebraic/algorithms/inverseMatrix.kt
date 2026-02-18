@@ -8,7 +8,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 
 public class InverseMatrixKey<Number, Matrix : MDList2<Number>>(
     public val matrixType: SuppliedType,
-) : RegistryKey<Matrix> {
+) : RegistryKey<Matrix?> {
     override fun equals(other: Any?): Boolean = other is InverseMatrixKey<*, *> && matrixType == other.matrixType
     override fun hashCode(): Int = matrixType.hashCode()
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixKey<?, $matrixType>"
@@ -18,6 +18,14 @@ public fun interface InverseMatrixComputer<out Number, Matrix : MDList2<Number>>
     public fun Matrix.invert(): Matrix?
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<InverseMatrixComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer.Key<?, $matrixType>"
+    }
 }
 
 context(inverseMatrixComputer: InverseMatrixComputer<Number, Matrix>)

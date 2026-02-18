@@ -1,20 +1,23 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.MatrixBuilder
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.algorithms.InverseMatrixKey
+import dev.lounres.kone.algebraic.algorithms.invert
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.scope
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance.INVARIANT
 
 
 private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDList2<Number>>(
-    private val matrixBuilder: MatrixBuilder<Number, Matrix>,
+    private val matrixFactory: MatrixFactory<Number, Matrix>,
     private val field: Field<Number>,
 ) : InverseMatrixComputer<Number, Matrix> {
     override fun Matrix.invert(): Matrix? {
@@ -69,15 +72,87 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
             }
         }
         
-        return matrixBuilder.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> result[row, column] }
+        return matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> result[row, column] }
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaGaussianElimination(
-    matrixBuilder: MatrixBuilder<Number, Matrix>,
+    matrixFactory: MatrixFactory<Number, Matrix>,
     field: Field<Number>,
 ): InverseMatrixComputer<Number, Matrix> = InverseMatrixComputerViaGaussianElimination(
-    matrixBuilder = matrixBuilder,
+    matrixFactory = matrixFactory,
     field = field,
 )
+
+context(koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaGaussianElimination(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+): InverseMatrixComputer<Number, Matrix> {
+    val koneContextRegistry = koneContextRegistry.get()
+    return InverseMatrixComputerViaGaussianElimination(
+        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType)],
+        field = koneContextRegistry[Field.Key<Number>(numberType)],
+    )
+}
+
+context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+    field: Field<Number>,
+) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val matrixWithPropertiesType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = INVARIANT,
+                type = numberType,
+            ),
+            SuppliedProjection.Regular(
+                variance = INVARIANT,
+                type = matrixType,
+            ),
+        ),
+        isNullable = false,
+    )
+    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+        (viaGaussianElimination(matrixFactory = matrixFactory, field = field)) {
+            matrix.get().invert()
+        }
+    }
+}
+
+context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val matrixWithPropertiesType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = INVARIANT,
+                type = numberType,
+            ),
+            SuppliedProjection.Regular(
+                variance = INVARIANT,
+                type = matrixType,
+            ),
+        ),
+        isNullable = false,
+    )
+    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        val inverseMatrixComputer = viaGaussianElimination(
+            matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
+            field = koneContextRegistry[Field.Key<Number>(numberType)],
+        )
+        inverseMatrixComputer {
+            matrix.get().invert()
+        }
+    }
+}

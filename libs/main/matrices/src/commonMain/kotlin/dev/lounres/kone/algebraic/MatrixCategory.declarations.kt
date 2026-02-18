@@ -50,7 +50,6 @@ public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneC
     public operator fun Matrix.unaryMinus(): Matrix
     public operator fun Matrix.plus(other: Matrix): Matrix
     public operator fun Matrix.minus(other: Matrix): Matrix
-    public operator fun Matrix.times(other: Matrix): Matrix
     // endregion
 }
 
@@ -105,10 +104,6 @@ public operator fun <Number, Matrix : MDList2<Number>> Matrix.plus(other: Matrix
 context(matrixCategory: MatrixCategoryOverRing<Number, Matrix>)
 public operator fun <Number, Matrix : MDList2<Number>> Matrix.minus(other: Matrix): Matrix =
     with(matrixCategory) { this@minus - other }
-
-context(matrixCategory: MatrixCategoryOverRing<Number, Matrix>)
-public operator fun <Number, Matrix : MDList2<Number>> Matrix.times(other: Matrix): Matrix =
-    with(matrixCategory) { this@times * other }
 
 public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : MatrixCategoryOverRing<Number, Matrix> {
     // region Matrix-Int operations
