@@ -5,18 +5,44 @@
 
 package dev.lounres.kone.registry
 
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.maybe.ifSome
 import dev.lounres.kone.registry.internal.EmptyIterator
 import dev.lounres.kone.registry.internal.RegistryKeyMapWrapper
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlin.collections.component1
 import kotlin.collections.component2
+import kotlin.collections.plus
 import kotlin.collections.set
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
+public fun interface RegisteredValueProvider<out T> {
+    public fun get(): T
+    
+    public companion object;
+}
+
+public fun <T> RegisteredValueProvider.Companion.cached(provider: RegisteredValueProvider<T>): RegisteredValueProvider<T> =
+    object : SynchronizedObject(), RegisteredValueProvider<T> {
+        private var result: Maybe<T> = None
+        override fun get(): T {
+            result.ifSome { return it }
+            
+            synchronized(this) {
+                result.ifSome { return it }
+                return provider.get().also { result = Some(it) }
+            }
+        }
+    }
+
 public data class Registration<T>(
     val key: RegistryKey<T>,
-    val value: T,
+    val value: RegisteredValueProvider<T>,
 )
 
 /**
@@ -29,47 +55,63 @@ public interface Registry : Iterable<Registration<*>> {
      */
     public operator fun contains(registryKey: RegistryKey<*>): Boolean
     
-    /**
-     * Retrieves value by this [registryKey] or throws exception if no association is present.
-     */
-    // TODO: Define exception that is thrown by this method
-    public operator fun <T> get(registryKey: RegistryKey<out T>): T
+    public fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>?
     
     public companion object;
     
     public object Empty : Registry {
         override fun contains(registryKey: RegistryKey<*>): Boolean = false
-        override fun <T> get(registryKey: RegistryKey<out T>): T {
+        override fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T> {
             TODO("Not yet implemented")
         }
         override fun iterator(): Iterator<Registration<*>> = EmptyIterator
+        override fun toString(): String = "{}"
     }
 }
 
+public fun <T> Registry.provide(registryKey: RegistryKey<out T>): RegisteredValueProvider<T> =
+    provideOrNull(registryKey) ?: throw IllegalArgumentException("Cannot provide registry key $registryKey as it is absent.")
+
+/**
+ * Retrieves value by this [registryKey] or throws exception if no association is present.
+ */
+// TODO: Define exception that is thrown by this method
+public operator fun <T> Registry.get(registryKey: RegistryKey<out T>): T = provide(registryKey).get()
 /**
  * Retrieves value by this [registryKey] or returns `null` if no association is present.
  */
-public fun <T> Registry.getOrNull(registryKey: RegistryKey<T>): T? =
-    if (contains(registryKey)) get(registryKey) else null
-
+public fun <T> Registry.getOrNull(registryKey: RegistryKey<T>): T? = provideOrNull(registryKey)?.get()
 /**
  * Retrieves value by this [registryKey] or returns [default] value if no association is present.
  */
-public fun <T> Registry.getOrDefault(registryKey: RegistryKey<T>, default: T): T =
-    if (contains(registryKey)) get(registryKey) else default
+public fun <T> Registry.getOrDefault(registryKey: RegistryKey<T>, default: T): T {
+    val provider = provideOrNull(registryKey)
+    return if (provider != null) provider.get() else default
+}
 
 /**
  * Retrieves value by this [registryKey] or computes [block] and returns its value if no association is present.
  */
-public inline fun <T> Registry.getOrElse(registryKey: RegistryKey<T>, block: () -> T): T =
-    if (contains(registryKey)) get(registryKey) else block()
+public inline fun <T> Registry.getOrElse(registryKey: RegistryKey<out T>, block: () -> T): T {
+    val provider = provideOrNull(registryKey)
+    return if (provider != null) provider.get() else block()
+}
 
 public interface MutableRegistry : Registry {
-    public operator fun <T> set(registryKey: RegistryKey<in T>, value: T)
+    public operator fun <T> set(registryKey: RegistryKey<in T>, provider: RegisteredValueProvider<T>)
     
     public fun setFrom(from: Registry)
     
     public fun remove(registryKey: RegistryKey<*>)
+}
+
+public operator fun <T> MutableRegistry.set(registryKey: RegistryKey<in T>, value: T) {
+    set(registryKey) { value }
+}
+
+context(registry: MutableRegistry)
+public infix fun <T> RegistryKey<in T>.correspondsTo(provider: RegisteredValueProvider<T>) {
+    registry[this] = provider
 }
 
 context(registry: MutableRegistry)
@@ -78,7 +120,7 @@ public infix fun <T> RegistryKey<in T>.correspondsTo(value: T) {
 }
 
 public fun interface RegistryImplication<in T> {
-    public fun substitute(value: T): Registry
+    public fun substitute(provider: RegisteredValueProvider<T>): Registry
 }
 
 public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
@@ -118,29 +160,100 @@ public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
                 }
             }
         }
-        return { value ->
-            MutableRegistryImpl(
-                results.mapValuesTo(mutableMapOf()) { it.value.producer(value) },
-            )
+        return RegistryImplication { provider ->
+            @Suppress("UNCHECKED_CAST")
+            object : Registry {
+                private val content: Map<RegistryKeyMapWrapper<*>, RegisteredValueProvider<*>> =
+                    results.mapValues { RegisteredValueProvider { it.value.producer(provider.get()) } }
+                
+                override operator fun contains(registryKey: RegistryKey<*>): Boolean =
+                    RegistryKeyMapWrapper(registryKey) in content
+                override fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>? =
+                    content[RegistryKeyMapWrapper(registryKey)] as RegisteredValueProvider<T>?
+                
+                override fun iterator(): Iterator<Registration<*>> =
+                    content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
+                
+                override fun toString(): String = content.keys.joinToString(separator = ", ", prefix = "{", postfix = "}")
+            }
         }
     }
 
+public val <T> RegistryKey<in T>.withImpliedUsingFirst: RegistryImplication<T>
+    get() {
+        val results = buildMap<RegistryKeyMapWrapper<*>, (T) -> Any?> {
+            data class KeyToProcess(
+                val key: RegistryKeyMapWrapper<*>,
+                val producer: (T) -> Any?,
+            )
+            val keysToProcess = ArrayDeque<KeyToProcess>()
+            keysToProcess.addLast(
+                KeyToProcess(
+                    key = RegistryKeyMapWrapper(this@withImpliedUsingFirst),
+                    producer = { it },
+                )
+            )
+            while (keysToProcess.isNotEmpty()) {
+                val (nextKey, nextProducer) = keysToProcess.removeFirst()
+                if (nextKey in this) continue
+                this[nextKey] = nextProducer
+                for ((newKey, newProducer) in nextKey.key.impliedKeys) {
+                    @Suppress("UNCHECKED_CAST")
+                    newProducer as (Any?) -> Any?
+                    keysToProcess.addLast(
+                        KeyToProcess(
+                            key = RegistryKeyMapWrapper(newKey),
+                            producer = { newProducer(nextProducer(it)) },
+                        )
+                    )
+                }
+            }
+        }
+        return RegistryImplication { provider ->
+            @Suppress("UNCHECKED_CAST")
+            object : Registry {
+                private val content: Map<RegistryKeyMapWrapper<*>, RegisteredValueProvider<*>> =
+                    results.mapValues { RegisteredValueProvider { it.value(provider.get()) } }
+                
+                override operator fun contains(registryKey: RegistryKey<*>): Boolean =
+                    RegistryKeyMapWrapper(registryKey) in content
+                override fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>? =
+                    content[RegistryKeyMapWrapper(registryKey)] as RegisteredValueProvider<T>?
+                
+                override fun iterator(): Iterator<Registration<*>> =
+                    content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
+                
+                override fun toString(): String = content.keys.joinToString(separator = ", ", prefix = "{", postfix = "}")
+            }
+        }
+    }
+
+public operator fun <T> MutableRegistry.set(registryImplication: RegistryImplication<T>, provider: RegisteredValueProvider<T>) {
+    setFrom(registryImplication.substitute(provider))
+}
+
 public operator fun <T> MutableRegistry.set(registryImplication: RegistryImplication<T>, value: T) {
-    setFrom(registryImplication.substitute(value))
+    setFrom(registryImplication.substitute { value })
+}
+
+context(registry: MutableRegistry)
+public infix fun <T> RegistryImplication<T>.correspondsTo(provider: RegisteredValueProvider<T>) {
+    registry.setFrom(this.substitute(provider))
 }
 
 context(registry: MutableRegistry)
 public infix fun <T> RegistryImplication<T>.correspondsTo(value: T) {
-    registry.setFrom(this.substitute(value))
+    registry.setFrom(this.substitute { value })
 }
 
 @Suppress("UNCHECKED_CAST")
-@PublishedApi
-internal class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMapWrapper<*>, Any?>) : MutableRegistry {
-    override operator fun contains(registryKey: RegistryKey<*>): Boolean = RegistryKeyMapWrapper(registryKey) in content
-    override operator fun <T> get(registryKey: RegistryKey<out T>): T =  content[RegistryKeyMapWrapper(registryKey)] as T
-    override fun <T> set(registryKey: RegistryKey<in T>, value: T) {
-        content[RegistryKeyMapWrapper(registryKey)] = value
+private class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMapWrapper<*>, RegisteredValueProvider<*>>) : MutableRegistry {
+    override operator fun contains(registryKey: RegistryKey<*>): Boolean =
+        RegistryKeyMapWrapper(registryKey) in content
+    override fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>? =
+        content[RegistryKeyMapWrapper(registryKey)] as RegisteredValueProvider<T>?
+    override fun <T> set(registryKey: RegistryKey<in T>, provider: RegisteredValueProvider<T>) {
+        content[RegistryKeyMapWrapper(registryKey)] = provider
     }
     override fun setFrom(from: Registry) {
         for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
@@ -149,38 +262,33 @@ internal class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMa
         content.remove(RegistryKeyMapWrapper(registryKey))
     }
     
-    override fun iterator(): Iterator<Registration<*>> = content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
+    override fun iterator(): Iterator<Registration<*>> =
+        content.entries.map { Registration(it.key.key as RegistryKey<Any?>, it.value) }.iterator()
+    
+    override fun toString(): String = content.keys.joinToString(separator = ", ", prefix = "{", postfix = "}")
 }
 
 public fun MutableRegistry(): MutableRegistry = MutableRegistryImpl(mutableMapOf())
 
-/**
- * Mutable version of [Registry] that is used by builder function.
- */
 @Suppress("UNCHECKED_CAST")
-public class RegistryBuilder @PublishedApi internal constructor() : MutableRegistry {
-    private var content: MutableMap<RegistryKeyMapWrapper<*>, Any?>? = mutableMapOf()
+@PublishedApi
+internal class RegistryBuilder : MutableRegistry {
+    private var content: MutableMap<RegistryKeyMapWrapper<*>, RegisteredValueProvider<*>>? = mutableMapOf()
     
-    override operator fun contains(registryKey: RegistryKey<*>): Boolean {
+    override fun contains(registryKey: RegistryKey<*>): Boolean {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         return RegistryKeyMapWrapper(registryKey) in content
     }
-    override operator fun <T> get(registryKey: RegistryKey<out T>): T {
+    override fun <T> provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>? {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        return content[RegistryKeyMapWrapper(registryKey)] as T
+        return content[RegistryKeyMapWrapper(registryKey)] as RegisteredValueProvider<T>?
     }
     
-    /**
-     * Associates provided [registryKey] with provided [value] overriding existing association of the [registryKey].
-     */
-    override operator fun <T> set(registryKey: RegistryKey<in T>, value: T) {
+    override fun <T> set(registryKey: RegistryKey<in T>, provider: RegisteredValueProvider<T>) {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        content[RegistryKeyMapWrapper(registryKey)] = value
+        content[RegistryKeyMapWrapper(registryKey)] = provider
     }
     
-    /**
-     * Copies associations from the [from] registry overriding existing ones if needed.
-     */
     override fun setFrom(from: Registry) {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
         for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
@@ -203,12 +311,17 @@ public class RegistryBuilder @PublishedApi internal constructor() : MutableRegis
         this.content = null
         return result
     }
+    
+    override fun toString(): String {
+        val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
+        return content.keys.joinToString(separator = ", ", prefix = "{", postfix = "}")
+    }
 }
 
 /**
  * Builder function for [Registry].
  */
-public inline fun Registry.Companion.build(block: RegistryBuilder.() -> Unit): Registry {
+public inline fun Registry.Companion.build(block: MutableRegistry.() -> Unit): Registry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

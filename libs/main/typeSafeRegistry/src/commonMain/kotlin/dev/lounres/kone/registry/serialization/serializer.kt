@@ -8,6 +8,8 @@ package dev.lounres.kone.registry.serialization
 import dev.lounres.kone.registry.MutableRegistry
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.get
+import dev.lounres.kone.registry.set
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer

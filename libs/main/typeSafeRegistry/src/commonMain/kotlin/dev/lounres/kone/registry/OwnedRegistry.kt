@@ -12,24 +12,25 @@ import kotlin.jvm.JvmInline
 
 @JvmInline
 public value class OwnedRegistry<Owner>(public val registry: Registry) : Registry by registry {
+    override fun toString(): String = registry.toString()
+    
     public companion object
 }
 
 public fun <Owner> OwnedRegistry.Companion.empty(): OwnedRegistry<Owner> = OwnedRegistry(Registry.Empty)
 
 @JvmInline
-public value class MutableOwnedRegistry<Owner>(public val registry: MutableRegistry) : MutableRegistry by registry
+public value class MutableOwnedRegistry<Owner>(public val registry: MutableRegistry) : MutableRegistry by registry {
+    override fun toString(): String = registry.toString()
+}
 
 public fun <Owner> MutableOwnedRegistry(): MutableOwnedRegistry<Owner> = MutableOwnedRegistry(MutableRegistry())
 
 public fun <Owner> MutableOwnedRegistry<Owner>.asImmutable(): OwnedRegistry<Owner> = OwnedRegistry(this.registry)
 
-@JvmInline
-public value class OwnedRegistryBuilder<Owner> @PublishedApi internal constructor(public val registry: RegistryBuilder) : MutableRegistry by registry
-
-public inline fun <Owner> OwnedRegistry.Companion.build(block: OwnedRegistryBuilder<Owner>.() -> Unit): OwnedRegistry<Owner> {
+public inline fun <Owner> OwnedRegistry.Companion.build(block: MutableOwnedRegistry<Owner>.() -> Unit): OwnedRegistry<Owner> {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return OwnedRegistry(registry = Registry.build { OwnedRegistryBuilder<Owner>(this).block() })
+    return OwnedRegistry(registry = Registry.build { MutableOwnedRegistry<Owner>(this).block() })
 }
