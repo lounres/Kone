@@ -18,12 +18,11 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImplied
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.withImpliedUsingFirst
+import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.pow as kpow
 
 
@@ -144,21 +143,16 @@ public val Byte.Companion.context: ByteContext get() = ByteContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun ByteContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val byteSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Byte",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val byteSuppliedType = Byte.suppliedType
     listOf<RegistryKey<in ByteContext>>(
         Reification.Key(byteSuppliedType),
         EuclideanRing.Key(byteSuppliedType),
         Order.Key(byteSuppliedType),
         Hashing.Key(byteSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo ByteContext
+        it.withImpliedUsingFirst correspondsTo ByteContext
     }
 }
 
@@ -279,21 +273,16 @@ public val Short.Companion.context: ShortContext get() = ShortContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun ShortContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val shortSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Short",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val shortSuppliedType = Short.suppliedType
     listOf<RegistryKey<in ShortContext>>(
         Reification.Key(shortSuppliedType),
         EuclideanRing.Key(shortSuppliedType),
         Order.Key(shortSuppliedType),
         Hashing.Key(shortSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo ShortContext
+        it.withImpliedUsingFirst correspondsTo ShortContext
     }
 }
 
@@ -402,21 +391,16 @@ public val Int.Companion.context: IntContext get() = IntContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun IntContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val intSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Int",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val intSuppliedType = Int.suppliedType
     listOf<RegistryKey<in IntContext>>(
         Reification.Key(intSuppliedType),
         EuclideanRing.Key(intSuppliedType),
         Order.Key(intSuppliedType),
         Hashing.Key(intSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo IntContext
+        it.withImpliedUsingFirst correspondsTo IntContext
     }
 }
 
@@ -525,21 +509,16 @@ public val Long.Companion.context: LongContext get() = LongContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun LongContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val longSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Long",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val longSuppliedType = Long.suppliedType
     listOf<RegistryKey<in LongContext>>(
         Reification.Key(longSuppliedType),
         EuclideanRing.Key(longSuppliedType),
         Order.Key(longSuppliedType),
         Hashing.Key(longSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo LongContext
+        it.withImpliedUsingFirst correspondsTo LongContext
     }
 }
 
@@ -631,21 +610,16 @@ public val UByte.Companion.context: UByteContext get() = UByteContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun UByteContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uByteSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.UByte",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val uByteSuppliedType = UByte.suppliedType
     listOf<RegistryKey<in UByteContext>>(
         Reification.Key(uByteSuppliedType),
         EuclideanSemiring.Key(uByteSuppliedType),
         Order.Key(uByteSuppliedType),
         Hashing.Key(uByteSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo UByteContext
+        it.withImpliedUsingFirst correspondsTo UByteContext
     }
 }
 
@@ -737,21 +711,16 @@ public val UShort.Companion.context: UShortContext get() = UShortContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun UShortContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uShortSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.UShort",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val uShortSuppliedType = UShort.suppliedType
     listOf<RegistryKey<in UShortContext>>(
         Reification.Key(uShortSuppliedType),
         EuclideanSemiring.Key(uShortSuppliedType),
         Order.Key(uShortSuppliedType),
         Hashing.Key(uShortSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo UShortContext
+        it.withImpliedUsingFirst correspondsTo UShortContext
     }
 }
 
@@ -833,21 +802,16 @@ public val UInt.Companion.context: UIntContext get() = UIntContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun UIntContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uIntSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.UInt",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val uIntSuppliedType = UInt.suppliedType
     listOf<RegistryKey<in UIntContext>>(
         Reification.Key(uIntSuppliedType),
         EuclideanSemiring.Key(uIntSuppliedType),
         Order.Key(uIntSuppliedType),
         Hashing.Key(uIntSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo UIntContext
+        it.withImpliedUsingFirst correspondsTo UIntContext
     }
 }
 
@@ -929,21 +893,16 @@ public val ULong.Companion.context: ULongContext get() = ULongContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun ULongContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val uLongSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.ULong",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val uLongSuppliedType = ULong.suppliedType
     listOf<RegistryKey<in ULongContext>>(
         Reification.Key(uLongSuppliedType),
         EuclideanSemiring.Key(uLongSuppliedType),
         Order.Key(uLongSuppliedType),
         Hashing.Key(uLongSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo ULongContext
+        it.withImpliedUsingFirst correspondsTo ULongContext
     }
 }
 
@@ -1078,21 +1037,16 @@ public val Double.Companion.context: DoubleContext get() = DoubleContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun DoubleContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val doubleSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Double",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val doubleSuppliedType = Double.suppliedType
     listOf<RegistryKey<in DoubleContext>>(
         Reification.Key(doubleSuppliedType),
         Field.Key(doubleSuppliedType),
         Order.Key(doubleSuppliedType),
         Hashing.Key(doubleSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo DoubleContext
+        it.withImpliedUsingFirst correspondsTo DoubleContext
     }
 }
 
@@ -1227,20 +1181,15 @@ public val Float.Companion.context: FloatContext get() = FloatContext
  * - [Order],
  * - [Hashing].
  */
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun FloatContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val floatSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Float",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val floatSuppliedType = Float.suppliedType
     listOf<RegistryKey<in FloatContext>>(
         Reification.Key(floatSuppliedType),
         Field.Key(floatSuppliedType),
         Order.Key(floatSuppliedType),
         Hashing.Key(floatSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo FloatContext
+        it.withImpliedUsingFirst correspondsTo FloatContext
     }
 }

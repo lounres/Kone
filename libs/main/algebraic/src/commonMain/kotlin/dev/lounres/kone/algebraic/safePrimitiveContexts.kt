@@ -15,12 +15,11 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.OwnedRegistryBuilder
+import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImplied
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.withImpliedUsingFirst
+import dev.lounres.kone.suppliedTypes.suppliedType
 
 
 // TODO: Add other safe contexts
@@ -202,20 +201,15 @@ public data object SafeLongContext: Reification<Long>, EuclideanRing<Long>, Orde
 
 public val Long.Companion.safeContext: SafeLongContext get() = SafeLongContext
 
-context(koneContextRegistryBuilder: OwnedRegistryBuilder<KoneContextRegistry>)
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
 public fun SafeLongContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val longSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Long",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
+    val longSuppliedType = Long.suppliedType
     listOf<RegistryKey<in SafeLongContext>>(
         Reification.Key(longSuppliedType),
         EuclideanRing.Key(longSuppliedType),
         Order.Key(longSuppliedType),
         Hashing.Key(longSuppliedType),
     ).forEach {
-        it.withImplied correspondsTo SafeLongContext
+        it.withImpliedUsingFirst correspondsTo SafeLongContext
     }
 }
