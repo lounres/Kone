@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.algebraic.context
+import dev.lounres.kone.algebraic.primaryFor
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
@@ -13,6 +13,8 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.repeat
 import kotlin.test.fail
 
@@ -32,7 +34,7 @@ object KoneArrayGrowableNoddedListDescription : ListImplementationDescription {
             val size = list.size
             val data = list.data
             
-            if (context(UInt.context) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+            if ((Equality.primaryFor(UInt)) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
             if (size > sizeUpperBound) fail("The list is invalid")
             if (data.size != sizeUpperBound) fail("The list is invalid")
             

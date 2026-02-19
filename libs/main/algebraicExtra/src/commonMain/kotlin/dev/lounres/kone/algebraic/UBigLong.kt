@@ -498,6 +498,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     // endregion
 }
 
+// TODO: Replace with context-providing functions that hide the ccontext object
 public val UBigLong.Companion.context: UBigLongContext get() = UBigLongContext
 
 // region UBigLong-UBigLong operations

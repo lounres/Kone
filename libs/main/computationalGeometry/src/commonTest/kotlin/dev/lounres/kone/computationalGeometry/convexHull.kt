@@ -5,10 +5,6 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.context
-import kotlin.test.Test
-import kotlin.test.assertTrue
-
 
 //class ConvexHullTest {
 //    @Test

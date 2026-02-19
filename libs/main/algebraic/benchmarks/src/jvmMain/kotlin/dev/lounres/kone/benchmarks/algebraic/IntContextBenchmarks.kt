@@ -7,8 +7,11 @@
 
 package dev.lounres.kone.benchmarks.algebraic
 
-import dev.lounres.kone.algebraic.context
+import dev.lounres.kone.algebraic.primaryFor
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.lt
 import kotlinx.benchmark.Benchmark
@@ -33,7 +36,7 @@ class IntContextEqualityBenchmarks {
     @Param("0", "1")
     final var b: Int = 0
     
-    final val equality = Int.context
+    final val equality = Equality.primaryFor(Int)
     
     @Benchmark
     fun equality_via_primitives() = a == b
@@ -51,7 +54,7 @@ class IntContextEqualityBulkBenchmarks {
     
     final var index: Int = 0
     
-    final val equality = Int.context
+    final val equality = Equality.primaryFor(Int)
     
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -82,7 +85,7 @@ class IntContextOrderBenchmarks {
     @Param("0", "1")
     final var b: Int = 0
     
-    val order = Int.context
+    val order = Order.primaryFor(Int)
     
     @Benchmark
     fun comparison_via_primitives() = a < b
@@ -98,7 +101,7 @@ class IntContextOrderBulkBenchmarks {
     
     final var index: Int = 0
     
-    final val order = Int.context
+    final val order = Order.primaryFor(Int)
     
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -135,10 +138,10 @@ class IntContextOrderBulkBenchmarks {
 //    fun Any_hashCode_for_generic_Int() = tryAnyHashCode(a)
 //
 //    @Benchmark
-//    fun Hashing_hash_for_Int() = Int.context { a.hash() }
+//    fun Hashing_hash_for_Int() = Hashing.primaryFor(Int) { a.hash() }
 //
 //    @Benchmark
-//    fun Hashing_hash_for_generic_Int() = tryHashingHash(a, Int.context)
+//    fun Hashing_hash_for_generic_Int() = tryHashingHash(a, Hashing.primaryFor(Int))
 //    // endregion
 //
 //    // region Semiring
@@ -151,7 +154,7 @@ class IntContextOrderBulkBenchmarks {
 class IntContextReificationBenchmarks {
     var a: Int = 1846030199
 
-    val reification = Int.context
+    val reification = Reification.primaryFor(Int)
 
     @Benchmark
     fun reifibility_successful() = a in reification

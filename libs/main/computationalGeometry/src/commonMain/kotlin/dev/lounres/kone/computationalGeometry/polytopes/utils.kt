@@ -5,7 +5,8 @@
 
 package dev.lounres.kone.computationalGeometry.polytopes
 
-import dev.lounres.kone.algebraic.context
+import dev.lounres.kone.algebraic.Monoid
+import dev.lounres.kone.algebraic.primaryFor
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
@@ -101,18 +102,18 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
     val faces = KoneArrayFixedCapacityList<KoneMap<KoneList<UInt>, Polytope>>(dimension + 2u)
     faces.add(
         vertices.withIndex().associate(
-            keyEquality = KoneList.equality(UInt.context),
-            keyHashing = KoneList.hashing(UInt.context),
+            keyEquality = KoneList.equality(Equality.primaryFor(UInt)),
+            keyHashing = KoneList.hashing(Hashing.primaryFor(UInt)),
         ) { (index, vertex) ->
             KoneList.generate(dimension + 1u) { if (it == index) 1u else 0u } mapsTo vertex
         }
     )
     for (dim in 1u .. dimension + 1u) faces.add(
         KoneMap.build(
-            keyEquality = KoneList.equality(UInt.context),
-            keyHashing = KoneList.hashing(UInt.context),
+            keyEquality = KoneList.equality(Equality.primaryFor(UInt)),
+            keyHashing = KoneList.hashing(Hashing.primaryFor(UInt)),
         ) {
-            for (flags in KoneList.generate(dimension + 1u) { if (it <= dim) 1u else 0u }.permutationsWithoutRepetitions(equality = UInt.context))
+            for (flags in KoneList.generate(dimension + 1u) { if (it <= dim) 1u else 0u }.permutationsWithoutRepetitions(equality = Equality.primaryFor(UInt)))
                 this[flags] = Polytope(
                     dimension = dim,
                     faces = KoneList.generate(dim) {
@@ -121,8 +122,8 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
                             elementHashing = Hashing.defaultFor(),
                         )
                     }.apply {
-                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() })) if (UInt.context { subflags.sum() } in 1u .. dim)
-                            this[UInt.context { subflags.sum() } - 1u].add(faces[UInt.context { subflags.sum() } - 1u][subflags])
+                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() })) if ((Monoid.primaryFor(UInt)) { subflags.sum() } in 1u .. dim)
+                            this[(Monoid.primaryFor(UInt)) { subflags.sum() } - 1u].add(faces[(Monoid.primaryFor(UInt)) { subflags.sum() } - 1u][subflags])
                     }
                 )
         }

@@ -172,6 +172,8 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     public infix fun Number.pow(exponent: ULong): Number = power(this, exponent)
     // endregion
     
+    public companion object;
+    
     /**
      * Registry key for [Semiring] interface in [KoneContextRegistry].
      */

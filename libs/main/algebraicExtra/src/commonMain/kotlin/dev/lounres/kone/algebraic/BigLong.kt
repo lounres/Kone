@@ -98,13 +98,13 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // endregion
     
     // region Conversion
-    override fun valueOf(arg: Int): BigLong = when (with(Int.context) { arg compareWith 0 }) {
+    override fun valueOf(arg: Int): BigLong = when (with(Order.primaryFor(Int)) { arg compareWith 0 }) {
         ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg.toUInt()))
         ComparisonResult.LeftIsLessThanRight -> BigLong(sign = Negative, absoluteValue = UBigLong.context.valueOf((-arg).toUInt()))
         ComparisonResult.Equal -> zero
     }
     override fun valueOf(arg: UInt): BigLong = if (arg == 0u) zero else BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg))
-    override fun valueOf(arg: Long): BigLong = when (with(Long.context) { arg compareWith 0 }) {
+    override fun valueOf(arg: Long): BigLong = when (with(Order.primaryFor(Long)) { arg compareWith 0 }) {
         ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg.toULong()))
         ComparisonResult.LeftIsLessThanRight -> BigLong(sign = Negative, absoluteValue = UBigLong.context.valueOf(arg.toULong()))
         ComparisonResult.Equal -> zero
@@ -443,6 +443,7 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // endregion
 }
 
+// TODO: Replace with context-providing functions that hide the ccontext object
 public val BigLong.Companion.context: BigLongContext get() = BigLongContext
 
 public fun String.toBigLong(radix: UInt = 10u): BigLong {
