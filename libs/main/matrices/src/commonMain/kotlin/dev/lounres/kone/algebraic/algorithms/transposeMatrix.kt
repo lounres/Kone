@@ -18,6 +18,14 @@ public fun interface TransposeMatrixComputer<out Number, Matrix : MDList2<Number
     public fun Matrix.transpose(): Matrix
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<TransposeMatrixComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.TransposeMatrixComputer.Key<?, $matrixType>"
+    }
 }
 
 context(transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>)

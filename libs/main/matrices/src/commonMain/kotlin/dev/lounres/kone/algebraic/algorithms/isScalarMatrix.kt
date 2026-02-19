@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
 public object IsScalarMatrixKey : RegistryKey<Boolean> {
@@ -13,6 +14,14 @@ public fun interface IsScalarMatrixChecker<out Number, in Matrix : MDList2<Numbe
     public fun Matrix.isScalar(): Boolean
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<IsScalarMatrixChecker<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsScalarMatrixChecker.Key<?, $matrixType>"
+    }
 }
 
 context(isScalarMatrixChecker: IsScalarMatrixChecker<Number, Matrix>)

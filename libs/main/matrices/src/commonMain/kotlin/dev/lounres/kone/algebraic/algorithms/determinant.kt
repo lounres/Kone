@@ -23,6 +23,14 @@ public fun interface DeterminantComputer<out Number, Matrix : MDList2<Number>> :
     public fun Matrix.determinant(): Number
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<DeterminantComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.DeterminantComputer.Key<?, $matrixType>"
+    }
 }
 
 context(determinantComputer: DeterminantComputer<Number, Matrix>)

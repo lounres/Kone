@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 
+// TODO: Finish moving to the new API:
 
 //public interface MinorComputer<out Number, in Matrix> : KoneContext {
 //    public fun Matrix.minor(rowIndices: KoneUIntArray, columnIndices: KoneUIntArray): Number

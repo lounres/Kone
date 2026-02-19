@@ -11,7 +11,6 @@ private class InverseMatrixComputerViaAdjugateMatrixAndDeterminant<Number, Matri
     override fun Matrix.invert(): Matrix? = TODO()
 }
 
-@Suppress("UNCHECKED_CAST")
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaAdjugateMatrixAndDeterminant(
     matrixFactory: MatrixFactory<Number, Matrix>,
 ): InverseMatrixComputer<Number, Matrix> = InverseMatrixComputerViaAdjugateMatrixAndDeterminant(

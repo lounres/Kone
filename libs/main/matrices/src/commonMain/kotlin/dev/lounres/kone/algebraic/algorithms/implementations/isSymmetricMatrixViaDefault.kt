@@ -19,7 +19,7 @@ private class IsSymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Number
     }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsSymmetricMatrixChecker<Number, Matrix> = IsSymmetricMatrixCheckerViaDefault(
     numberRing = numberRing,

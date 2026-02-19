@@ -33,7 +33,6 @@ private class LogarithmMatrixComputerViaSchurParlett<Number, Matrix : MDList2<Nu
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.viaGaussianElimination(
     matrixFactory: MatrixFactory<Number, Matrix>,
     field: Field<Number>,

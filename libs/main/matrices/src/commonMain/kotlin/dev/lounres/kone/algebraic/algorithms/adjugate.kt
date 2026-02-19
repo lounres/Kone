@@ -6,6 +6,8 @@
 package dev.lounres.kone.algebraic.algorithms
 
 
+// TODO: Finish moving to the new API:
+
 //public interface AdjugateMatrixComputer<Number, in InputContent2: MDList2<Number>, out OutputContent2: MDList2<Number>> : KoneContext {
 //    public fun Matrix<Number, InputContent2>.adjugate(): Matrix<Number, OutputContent2>
 //

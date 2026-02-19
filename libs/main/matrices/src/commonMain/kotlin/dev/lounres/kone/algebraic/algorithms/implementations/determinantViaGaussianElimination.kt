@@ -56,7 +56,6 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(
     field: Field<Number>,
 ): DeterminantComputer<Number, Matrix> = DeterminantComputerViaGaussianElimination(

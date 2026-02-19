@@ -14,7 +14,7 @@ private class IsZeroMatrixCheckerViaDefault<out Number, in Matrix : MDList2<Numb
     override fun Matrix.isZero(): Boolean = this.all { numberRing { it.isZero() } }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsZeroMatrixChecker<Number, Matrix> = IsZeroMatrixCheckerViaDefault(
     numberRing = numberRing,

@@ -20,7 +20,7 @@ private class IsDiagonalMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>
     }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsDiagonalMatrixChecker<Number, Matrix> = IsDiagonalMatrixCheckerViaDefault(
     numberRing = numberRing,

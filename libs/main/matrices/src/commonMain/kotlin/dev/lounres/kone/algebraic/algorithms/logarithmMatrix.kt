@@ -8,7 +8,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 
 public class LogarithmMatrixKey<Number, Matrix : MDList2<Number>>(
     public val matrixType: SuppliedType,
-) : RegistryKey<Matrix> {
+) : RegistryKey<Matrix?> {
     override fun equals(other: Any?): Boolean = other is LogarithmMatrixKey<*, *> && matrixType == other.matrixType
     override fun hashCode(): Int = matrixType.hashCode()
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmMatrixKey<?, $matrixType>"
@@ -18,6 +18,14 @@ public fun interface LogarithmMatrixComputer<out Number, Matrix : MDList2<Number
     public fun Matrix.logarithm(): Matrix?
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<LogarithmMatrixComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmMatrixComputer.Key<?, $matrixType>"
+    }
 }
 
 context(logarithmMatrixComputer: LogarithmMatrixComputer<Number, Matrix>)

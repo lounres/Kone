@@ -22,6 +22,8 @@ package dev.lounres.kone.algebraic
 //import kotlin.reflect.KClass
 //
 //
+// TODO: Move to the new API:
+//
 //public data class RankMatrixFeature(val rank: UInt)
 //
 //public class RankMatrixFeatureProvider<N>(private val ring: Ring<N>, private val mdListTransformer: SettableMDListTransformer): FeatureProvider<Matrix<N>> {

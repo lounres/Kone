@@ -21,7 +21,7 @@ private class IsAntisymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Nu
     }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsAntisymmetricMatrixChecker<Number, Matrix> = IsAntisymmetricMatrixCheckerViaDefault(
     numberRing = numberRing,

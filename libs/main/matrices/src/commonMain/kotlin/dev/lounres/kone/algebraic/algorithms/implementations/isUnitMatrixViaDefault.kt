@@ -18,7 +18,7 @@ private class IsUnitMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
         }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsUnitMatrixChecker<Number, Matrix> = IsUnitMatrixCheckerViaDefault(
     numberRing = numberRing,

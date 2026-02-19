@@ -25,6 +25,14 @@ public fun interface SchurDecompositionComputer<out Number, Matrix : MDList2<Num
     public fun Matrix.schurDecomposition(): SchurDecomposition<Number, Matrix>
     
     public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<SchurDecompositionComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.SchurDecompositionComputer.Key<?, $matrixType>"
+    }
 }
 
 context(schurDecompositionComputer: SchurDecompositionComputer<Number, Matrix>)

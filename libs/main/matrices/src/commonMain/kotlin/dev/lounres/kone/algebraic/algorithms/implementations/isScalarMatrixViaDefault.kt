@@ -25,7 +25,7 @@ private class IsScalarMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
     }
 }
 
-public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.default(
+public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.viaDefault(
     numberRing: CommutativeRing<Number>,
 ): IsScalarMatrixChecker<Number, Matrix> = IsScalarMatrixCheckerViaDefault(
     numberRing = numberRing,
