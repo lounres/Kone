@@ -1,27 +1,38 @@
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.get
+import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.hash
 import dev.lounres.kone.relations.reificationException
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KVariance.OUT
 
 
 @Serializable
-public data class ComplexNumber<Number>(
+public data class ComplexNumber<out Number>(
     val realPart: Number,
     val imaginaryPart: Number,
 ) {
-    public companion object
+    public companion object;
 }
 
-private class ComplexNumberEquality<Number>(
+private class ComplexNumberEquality<in Number>(
     private val numberEquality: Equality<Number>
 ) : Equality<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.equalsTo(other: ComplexNumber<Number>): Boolean =
@@ -31,7 +42,7 @@ private class ComplexNumberEquality<Number>(
 public fun <Number> ComplexNumber.Companion.equality(numberEquality: Equality<Number>): Equality<ComplexNumber<Number>> =
     ComplexNumberEquality(numberEquality)
 
-private class ComplexNumberHashing<Number>(
+private class ComplexNumberHashing<in Number>(
     private val numberHashing: Hashing<Number>
 ) : Hashing<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.hash(): Int =
@@ -42,7 +53,7 @@ public fun <Number> ComplexNumber.Companion.hashing(numberHashing: Hashing<Numbe
     ComplexNumberHashing(numberHashing)
 
 @Suppress("UNCHECKED_CAST")
-private class ComplexNumberReification<Number>(
+private class ComplexNumberReification<out Number>(
     private val numberReification: Reification<Number>
 ) : Reification<ComplexNumber<Number>> {
     override fun contains(element: Any?): Boolean =
@@ -311,5 +322,26 @@ private class ComplexNumberField<Number>(
     // endregion
 }
 
-public fun <Number> ComplexNumber.Companion.field(numberField: Field<Number>): Field<ComplexNumber<Number>> =
+public fun <Number> Field.Companion.primaryForComplexOver(numberField: Field<Number>): Field<ComplexNumber<Number>> =
     ComplexNumberField(numberField)
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number> Field.Companion.setPrimaryForComplexOver(numberType: SuppliedType) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val complexNumberType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = OUT,
+                type = numberType,
+            )
+        ),
+        isNullable = false,
+    )
+    Field.Key<ComplexNumber<Number>>(numberType = complexNumberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        primaryForComplexOver(
+            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+        )
+    }
+}
