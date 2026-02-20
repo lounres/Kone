@@ -1,0 +1,38 @@
+package dev.lounres.kone.algebraic.algorithms
+
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.multidimensionalCollections.MDList2
+import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.SuppliedType
+
+
+public data class QRDecomposition<out Number, out Matrix : MDList2<Number>>(
+    val leftUnitary: Matrix,
+    val rightUpperTriangular: Matrix,
+) {
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<QRDecomposition<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecomposition.Key<?, $matrixType>"
+    }
+}
+
+public fun interface QRDecompositionComputer<out Number, Matrix : MDList2<Number>> : KoneContext {
+    public fun Matrix.qrDecomposition(): QRDecomposition<Number, Matrix>
+    
+    public companion object;
+    
+    public class Key<Number, Matrix : MDList2<Number>>(
+        public val matrixType: SuppliedType,
+    ) : RegistryKey<QRDecompositionComputer<Number, Matrix>> {
+        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
+        override fun hashCode(): Int = matrixType.hashCode()
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer.Key<?, $matrixType>"
+    }
+}
+
+context(schurDecompositionComputer: QRDecompositionComputer<Number, Matrix>)
+public fun <Number, Matrix : MDList2<Number>> Matrix.qrDecomposition(): QRDecomposition<Number, Matrix> =
+    with(schurDecompositionComputer) { this@qrDecomposition.qrDecomposition() }

@@ -74,6 +74,15 @@ public inline fun <Element> Maybe<Element>.orElse(default: () -> Element): Eleme
     }
 
 /**
+ * Returns the value if it is present or `null` otherwise.
+ */
+public fun <Element> Maybe<Element>.orNull(): Element? =
+    when(this) {
+        None -> null
+        is Some -> value
+    }
+
+/**
  * Computes the [compute] on the value and returns it wrapped in [Some] if the value is present
  * or just returns `None` otherwise.
  */

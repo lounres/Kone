@@ -1,9 +1,12 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.MatrixWithProperties
-import dev.lounres.kone.algebraic.algorithms.LogarithmMatrixComputer
-import dev.lounres.kone.algebraic.algorithms.LogarithmMatrixKey
+import dev.lounres.kone.algebraic.algorithms.LogarithmComputer
+import dev.lounres.kone.algebraic.algorithms.LogarithmKey
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.orNull
+import dev.lounres.kone.maybe.orThrow
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -16,11 +19,11 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance.INVARIANT
 
 
-private class LogarithmMatrixComputerViaProperties<Number, Matrix : MDList2<Number>>(
+private class LogarithmComputerViaProperties<Number, Matrix : MDList2<Number>>(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    private val fallbackLogarithmMatrixComputer: LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) : LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> {
+    private val fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
+) : LogarithmComputer<MatrixWithProperties<Number, Matrix>> {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     private val matrixWithPropertiesType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
@@ -36,39 +39,49 @@ private class LogarithmMatrixComputerViaProperties<Number, Matrix : MDList2<Numb
         ),
         isNullable = false,
     )
-    override fun MatrixWithProperties<Number, Matrix>.logarithm(): MatrixWithProperties<Number, Matrix>? =
-        properties.getOrElse(LogarithmMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType)) {
+    override fun MatrixWithProperties<Number, Matrix>.logarithm(): MatrixWithProperties<Number, Matrix> {
+        val key = LogarithmKey<MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType)
+        val provider = properties.provideOrNull(key) ?: return with(fallbackLogarithmMatrixComputer) { this@logarithm.logarithm() }
+        return provider.get().orThrow { IllegalArgumentException("Cannot compute logarithm of $this: it has a property $key that corresponds to 'None'") }
+    }
+    override fun MatrixWithProperties<Number, Matrix>.logarithmOrNull(): MatrixWithProperties<Number, Matrix>? {
+        val key = LogarithmKey<MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType)
+        val provider = properties.provideOrNull(key) ?: return with(fallbackLogarithmMatrixComputer) { this@logarithmOrNull.logarithmOrNull() }
+        return provider.get().orNull()
+    }
+    override fun MatrixWithProperties<Number, Matrix>.logarithmMaybe(): Maybe<MatrixWithProperties<Number, Matrix>> =
+        properties.getOrElse(LogarithmKey<MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType)) {
             with(fallbackLogarithmMatrixComputer) {
-                this@logarithm.logarithm()
+                this@logarithmMaybe.logarithmMaybe()
             }
         }
 }
 
-public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.viaProperties(
+public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    fallbackLogarithmMatrixComputer: LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = LogarithmMatrixComputerViaProperties(
+    fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
+): LogarithmComputer<MatrixWithProperties<Number, Matrix>> = LogarithmComputerViaProperties(
     numberType = numberType,
     matrixType = matrixType,
     fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
 )
 
-public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.viaProperties(
+public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    block: LogarithmMatrixComputer.Companion.() -> LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
+    block: LogarithmComputer.Companion.() -> LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
+): LogarithmComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
     numberType = numberType,
     matrixType = matrixType,
     fallbackLogarithmMatrixComputer = block(),
 )
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.setViaProperties(
+public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    fallbackLogarithmMatrixComputer: LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(
@@ -85,7 +98,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.
         ),
         isNullable = false,
     )
-    LogarithmMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
         viaProperties(
             numberType = numberType,
             matrixType = matrixType,
@@ -95,10 +108,10 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.setViaProperties(
+public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    block: LogarithmMatrixComputer.Companion.() -> LogarithmMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    block: LogarithmComputer.Companion.() -> LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(
@@ -115,7 +128,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.
         ),
         isNullable = false,
     )
-    LogarithmMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
         viaProperties(
             numberType = numberType,
             matrixType = matrixType,

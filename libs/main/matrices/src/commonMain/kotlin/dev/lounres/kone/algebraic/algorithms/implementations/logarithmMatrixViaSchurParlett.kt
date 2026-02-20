@@ -4,13 +4,14 @@ import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.MatrixCategoryOverField
 import dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixChecker
-import dev.lounres.kone.algebraic.algorithms.LogarithmMatrixComputer
+import dev.lounres.kone.algebraic.algorithms.LogarithmComputer
 import dev.lounres.kone.algebraic.algorithms.MatrixProductComputer
 import dev.lounres.kone.algebraic.algorithms.SchurDecompositionComputer
 import dev.lounres.kone.algebraic.algorithms.isDiagonal
 import dev.lounres.kone.algebraic.algorithms.schurDecomposition
 import dev.lounres.kone.algebraic.algorithms.times
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.multidimensionalCollections.MDList2
 
 
@@ -21,8 +22,8 @@ private class LogarithmMatrixComputerViaSchurParlett<Number, Matrix : MDList2<Nu
     private val matrixProductComputer: MatrixProductComputer<Number, Matrix>,
     private val schurDecompositionComputer: SchurDecompositionComputer<Number, Matrix>,
     private val isDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, Matrix>,
-) : LogarithmMatrixComputer<Number, Matrix> {
-    override fun Matrix.logarithm(): Matrix? {
+) : LogarithmComputer<Matrix> {
+    override fun Matrix.logarithm(): Matrix {
         val schurDecomposition = schurDecompositionComputer { this.schurDecomposition() }
         val t = schurDecomposition.middleUpperTriangular
         if (isDiagonalMatrixChecker { t.isDiagonal() }) {
@@ -31,16 +32,22 @@ private class LogarithmMatrixComputerViaSchurParlett<Number, Matrix : MDList2<Nu
         }
         TODO()
     }
+    override fun Matrix.logarithmOrNull(): Matrix? {
+        TODO("Not yet implemented")
+    }
+    override fun Matrix.logarithmMaybe(): Maybe<Matrix> {
+        TODO("Not yet implemented")
+    }
 }
 
-public fun <Number, Matrix : MDList2<Number>> LogarithmMatrixComputer.Companion.viaGaussianElimination(
+public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaGaussianElimination(
     matrixFactory: MatrixFactory<Number, Matrix>,
     field: Field<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
     matrixProductComputer: MatrixProductComputer<Number, Matrix>,
     schurDecompositionComputer: SchurDecompositionComputer<Number, Matrix>,
     isDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, Matrix>,
-): LogarithmMatrixComputer<Number, Matrix> = LogarithmMatrixComputerViaSchurParlett(
+): LogarithmComputer<Matrix> = LogarithmMatrixComputerViaSchurParlett(
     matrixFactory = matrixFactory,
     field = field,
     matrixCategoryOverField = matrixCategoryOverField,
