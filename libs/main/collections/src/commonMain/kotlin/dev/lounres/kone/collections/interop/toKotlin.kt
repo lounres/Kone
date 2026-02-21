@@ -28,7 +28,7 @@ internal class KoneIteratorAsKotlinIteratorWrapper<Element>(val iterator: KoneIt
     override fun next(): Element = iterator.getAndMoveNext()
 }
 
-public fun <Element> KoneIterator<Element>.asKotlin(): Iterator<Element> = KoneIteratorAsKotlinIteratorWrapper(this)
+public fun <Element> KoneIterator<Element>.asKotlinIterator(): Iterator<Element> = KoneIteratorAsKotlinIteratorWrapper(this)
 
 internal class KoneIterableAsKotlinCollectionWrapper<Element>(
     val iterable: KoneIterable<Element>,
@@ -42,5 +42,5 @@ internal class KoneIterableAsKotlinCollectionWrapper<Element>(
     override fun containsAll(elements: Collection<Element>): Boolean = elements.all { contains(it) }
 }
 
-public fun <Element> KoneIterable<Element>.asKotlin(): Collection<Element> = KoneIterableAsKotlinCollectionWrapper(this)
+public fun <Element> KoneIterable<Element>.asKotlinCollection(): Collection<Element> = KoneIterableAsKotlinCollectionWrapper(this)
 // endregion

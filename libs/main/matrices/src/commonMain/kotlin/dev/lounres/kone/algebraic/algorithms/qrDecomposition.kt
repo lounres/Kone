@@ -6,6 +6,7 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
+// A = QR where Q is unitary and R is upper triangular
 public data class QRDecomposition<out Number, out Matrix : MDList2<Number>>(
     val leftUnitary: Matrix,
     val rightUpperTriangular: Matrix,
@@ -33,6 +34,6 @@ public fun interface QRDecompositionComputer<out Number, Matrix : MDList2<Number
     }
 }
 
-context(schurDecompositionComputer: QRDecompositionComputer<Number, Matrix>)
+context(qrDecompositionComputer: QRDecompositionComputer<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> Matrix.qrDecomposition(): QRDecomposition<Number, Matrix> =
-    with(schurDecompositionComputer) { this@qrDecomposition.qrDecomposition() }
+    with(qrDecompositionComputer) { this@qrDecomposition.qrDecomposition() }

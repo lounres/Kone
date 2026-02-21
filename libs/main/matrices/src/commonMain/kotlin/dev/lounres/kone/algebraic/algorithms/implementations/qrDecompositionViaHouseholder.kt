@@ -1,26 +1,26 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.MatrixWithProperties
-import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
-import dev.lounres.kone.algebraic.algorithms.QRDecomposition
-import dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer
-import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
-import dev.lounres.kone.algebraic.algorithms.qrDecomposition
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.algorithms.*
+import dev.lounres.kone.collections.interop.asKoneSequence
+import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.build
+import dev.lounres.kone.collections.utils.sum
+import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.SettableMDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
+import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.multidimensionalCollections.relations.equality
+import dev.lounres.kone.multidimensionalCollections.relations.hashing
+import dev.lounres.kone.registry.*
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.lt
+import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -28,25 +28,113 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 
 private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Number>>(
     private val matrixFactory: MatrixFactory<Number, Matrix>,
-    private val field: Field<Number>,
+    private val numberField: Field<Number>,
+    private val numberOrder: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    private val matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
+    private val matrixProductComputer: MatrixProductComputer<Number, Matrix>,
+    private val transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>,
 ) : QRDecompositionComputer<Number, Matrix> {
     override fun Matrix.qrDecomposition(): QRDecomposition<Number, Matrix> {
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
         
-        TODO()
+        var q = matrixFactory.mapMatrix(
+            rowNumber = n,
+            columnNumber = n,
+            numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
+                for (i in 0u ..< n) set(MDIndex.of(i, i), numberField.one)
+            }
+        )
+        var r = this
+        
+        for (k in 0u ..< n) context(
+            numberField,
+            numberOrder,
+            positiveSquareRootComputer,
+            matrixCategoryOverField,
+            matrixProductComputer,
+            transposeMatrixComputer,
+        ) {
+            val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it * it } }
+            val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
+            val maxXElementIndex = scope { // TODO: Move to collections module
+                val iterator = xElementNormsSquared.iterator()
+                if (!iterator.hasNext()) throw NoSuchElementException()
+                var maxIndex = iterator.nextIndex()
+                var maxElement = iterator.getAndMoveNext()
+                if (!iterator.hasNext()) return@scope maxIndex
+                do {
+                    val nextIndex = iterator.nextIndex()
+                    val nextElement = iterator.getAndMoveNext()
+                    if (maxElement lt nextElement) {
+                        maxIndex = nextIndex
+                        maxElement = nextElement
+                    }
+                } while (iterator.hasNext())
+                if (maxElement.isZero()) continue
+                return@scope maxIndex
+            } + k
+            if (maxXElementIndex != k) {
+                val permutation = matrixFactory.mapMatrix(
+                    rowNumber = n,
+                    columnNumber = n,
+                    numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
+                        for (i in 0u ..< n) {
+                            if (i == k || i == maxXElementIndex) continue
+                            set(MDIndex.of(i, i), numberField.one)
+                        }
+                        set(MDIndex.of(k, maxXElementIndex), numberField.one)
+                        set(MDIndex.of(maxXElementIndex, k), numberField.one)
+                    }
+                )
+                r = permutation * r
+                q *= permutation
+            }
+            
+            val u = matrixFactory.generateMatrix(rowNumber = n, columnNumber = 1u) { row, _ ->
+                when {
+                    row < k -> numberField.zero
+                    row == k -> r[k, k] + (xNorm * r[k, k].signInt())
+                    else -> r[row, k]
+                }
+            }
+            val v = u / (k ..< n).asKoneSequence().sumOf { index -> u[index, 0u].let { it * it } }.positiveSquareRoot()
+            val qk = matrixFactory.mapMatrix(
+                rowNumber = n,
+                columnNumber = n,
+                numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
+                    for (i in 0u ..< n) set(MDIndex.of(i, i), numberField.one)
+                }
+            ) - 2 * v * v.transpose()
+            
+            r = qk * r
+            q *= qk.transpose()
+        }
+        
+        return QRDecomposition(
+            leftUnitary = q,
+            rightUpperTriangular = r,
+        )
     }
 }
 
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaHouseholder(
     matrixFactory: MatrixFactory<Number, Matrix>,
-    field: Field<Number>,
+    numberField: Field<Number>,
+    numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
+    matrixProductComputer: MatrixProductComputer<Number, Matrix>,
+    transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>,
 ): QRDecompositionComputer<Number, Matrix> = QRDecompositionComputerViaHouseholder(
     matrixFactory = matrixFactory,
-    field = field,
+    numberField = numberField,
+    numberOrder = numberOrder,
     positiveSquareRootComputer = positiveSquareRootComputer,
+    matrixCategoryOverField = matrixCategoryOverField,
+    matrixProductComputer = matrixProductComputer,
+    transposeMatrixComputer = transposeMatrixComputer,
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
@@ -57,8 +145,12 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     val koneContextRegistry = koneContextRegistry.get()
     return viaHouseholder(
         matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)],
-        field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)]
+        numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+        numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
+        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
+        matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<Number, Matrix>(matrixType = matrixType)],
+        matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<Number, Matrix>(matrixType = matrixType)],
+        transposeMatrixComputer = koneContextRegistry[TransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)],
     )
 }
 
@@ -67,8 +159,12 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     numberType: SuppliedType,
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
-    field: Field<Number>,
+    numberField: Field<Number>,
+    numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
+    matrixProductComputer: MatrixProductComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    transposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(
@@ -88,8 +184,12 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
         val qrDecompositionComputer = viaHouseholder(
             matrixFactory = matrixFactory,
-            field = field,
+            numberField = numberField,
+            numberOrder = numberOrder,
             positiveSquareRootComputer = positiveSquareRootComputer,
+            matrixCategoryOverField = matrixCategoryOverField,
+            matrixProductComputer = matrixProductComputer,
+            transposeMatrixComputer = transposeMatrixComputer,
         )
         qrDecompositionComputer { matrix.get().qrDecomposition() }
     }
@@ -119,8 +219,12 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
         val koneContextRegistry = koneContextRegistry.get()
         val qrDecompositionComputer = viaHouseholder(
             matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
             positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
+            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
+            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
+            transposeMatrixComputer = koneContextRegistry[TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
         )
         qrDecompositionComputer { matrix.get().qrDecomposition() }
     }

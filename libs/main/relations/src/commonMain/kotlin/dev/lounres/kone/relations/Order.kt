@@ -21,7 +21,8 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.Comparator as KotlinStdlibComparator
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmInline
+import kotlin.ranges.ClosedRange as KotlinClosedRange
+import kotlin.ranges.OpenEndRange as KotlinOpenEndRange
 
 
 /**
@@ -313,17 +314,17 @@ public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (T
 }
 
 /**
- * A wrapper data class that contains values [start] and [endInclusive] to be used by [ClosedRange.contains] operator that checks
- * if the provided value lies in a closed interval `[start; endInclusive]`.
+ * A wrapper data class that contains values [startInclusive] and [endInclusive] to be used by [ClosedRange.contains] operator that checks
+ * if the provided value lies in a closed interval `[startInclusive; endInclusive]`.
  */
 //@JvmInline
-public /*value*/ data class ClosedRange<out Element>(public val start: Element, public val endInclusive: Element)
+public /*value*/ data class ClosedRange<out Element>(public val startInclusive: Element, public val endInclusive: Element)
 /**
- * A wrapper data class that contains values [start] and [endExclusive] to be used by [RightOpenRange.contains] operator that checks
- * if the provided value lies in a right-open interval `[start; endExclusive)`.
+ * A wrapper data class that contains values [startInclusive] and [endExclusive] to be used by [OpenEndRange.contains] operator that checks
+ * if the provided value lies in a right-open interval `[startInclusive; endExclusive)`.
  */
 //@JvmInline
-public /*value*/ data class RightOpenRange<out Element>(public val start: Element, public val endExclusive: Element)
+public /*value*/ data class OpenEndRange<out Element>(public val startInclusive: Element, public val endExclusive: Element)
 
 /**
  * Creates [ClosedRange] instance to be used by [ClosedRange.contains] operator that checks if the provided value
@@ -331,20 +332,26 @@ public /*value*/ data class RightOpenRange<out Element>(public val start: Elemen
  */
 public operator fun <Element> Element.rangeTo(other: Element): ClosedRange<Element> = ClosedRange(this, other)
 /**
- * Creates [RightOpenRange] instance to be used by [RightOpenRange.contains] operator that checks if the provided value
+ * Creates [OpenEndRange] instance to be used by [OpenEndRange.contains] operator that checks if the provided value
  * lies in a right-open interval from [this] to [other].
  */
-public operator fun <Element> Element.rangeUntil(other: Element): RightOpenRange<Element> = RightOpenRange(this, other)
+public operator fun <Element> Element.rangeUntil(other: Element): OpenEndRange<Element> = OpenEndRange(this, other)
 
 /**
- * Checks if the provided [element] lies in a closed interval from [ClosedRange.start] to [ClosedRange.endInclusive]
+ * Checks if the provided [element] lies in a closed interval from [ClosedRange.startInclusive] to [ClosedRange.endInclusive]
  * with respect to contextual order.
  */
 context(_: Order<Element>)
-public operator fun <Element> ClosedRange<Element>.contains(element: Element): Boolean = element geq start && element leq endInclusive
+public operator fun <Element> ClosedRange<Element>.contains(element: Element): Boolean = element geq startInclusive && element leq endInclusive
 /**
- * Checks if the provided [element] lies in a right-open interval from [RightOpenRange.start] to [RightOpenRange.endExclusive]
+ * Checks if the provided [element] lies in a right-open interval from [OpenEndRange.startInclusive] to [OpenEndRange.endExclusive]
  * with respect to contextual order.
  */
 context(_: Order<Element>)
-public operator fun <Element> RightOpenRange<Element>.contains(element: Element): Boolean = element geq start && element lt endExclusive
+public operator fun <Element> OpenEndRange<Element>.contains(element: Element): Boolean = element geq startInclusive && element lt endExclusive
+
+public fun <Element : Comparable<Element>> KotlinClosedRange<Element>.toKoneClosedRange(): ClosedRange<Element> =
+    ClosedRange(startInclusive = start, endInclusive = endInclusive)
+
+public fun <Element : Comparable<Element>> KotlinOpenEndRange<Element>.toKoneOpenEndRange(): OpenEndRange<Element> =
+    OpenEndRange(startInclusive = start, endExclusive = endExclusive)
