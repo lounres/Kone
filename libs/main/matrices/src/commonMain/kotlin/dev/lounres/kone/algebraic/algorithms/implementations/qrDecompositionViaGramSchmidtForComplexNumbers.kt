@@ -2,6 +2,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.ComplexNumber
 import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.FieldExtension
 import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
@@ -41,7 +42,7 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
         
         val qBuilder = SettableMDList2(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
-        val complexField = Field.primaryForComplexOver(field)
+        val complexField = FieldExtension.primaryForComplexOver(field)
         fun ComplexNumber<Number>.conjugate(): ComplexNumber<Number> =
             ComplexNumber(realPart = realPart, imaginaryPart = field { -imaginaryPart })
         
@@ -65,7 +66,7 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
             if (row > column) return@generateMatrix complexField.zero
             var scalarProduct = complexField.zero
             for (t in 0u ..< n) complexField {
-                scalarProduct += qBuilder[t, row] * this[t, column].conjugate()
+                scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
             }
             scalarProduct
         }
