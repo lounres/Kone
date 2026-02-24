@@ -12,6 +12,7 @@ kotlin {
                 api(projects.libs.main.annotations)
                 api(projects.libs.main.relations)
                 api(projects.libs.main.algebraic)
+                api(projects.libs.main.linearAlgebra)
                 implementation(projects.libs.main.collections)
                 implementation(versions.kotlinx.serialization.core)
             }

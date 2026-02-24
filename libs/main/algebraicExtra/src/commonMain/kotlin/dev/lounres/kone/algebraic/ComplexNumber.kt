@@ -72,9 +72,9 @@ public fun <Number> ComplexNumber.Companion.reification(numberReification: Reifi
     ComplexNumberReification(numberReification)
 
 @Suppress("UNCHECKED_CAST")
-private class ComplexNumberField<Number>(
+private class ComplexNumberFieldExtension<Number>(
     private val numberField: Field<Number>
-) : Field<ComplexNumber<Number>> {
+) : FieldExtension<Number, ComplexNumber<Number>> {
     // region Constants
     override val zero: ComplexNumber<Number> = ComplexNumber(numberField.zero, numberField.zero)
     override val one: ComplexNumber<Number> = ComplexNumber(numberField.one, numberField.zero)
@@ -90,6 +90,10 @@ private class ComplexNumberField<Number>(
     override fun valueOf(arg: Int): ComplexNumber<Number> = ComplexNumber(numberField.valueOf(arg), numberField.zero)
     override fun valueOf(arg: ULong): ComplexNumber<Number> = ComplexNumber(numberField.valueOf(arg), numberField.zero)
     override fun valueOf(arg: Long): ComplexNumber<Number> = ComplexNumber(numberField.valueOf(arg), numberField.zero)
+    // endregion
+    
+    // region Field conversions
+    override fun valueOf(arg: Number): ComplexNumber<Number> = ComplexNumber(arg, numberField.zero)
     // endregion
     
     // region ComplexNumber-UInt operations
@@ -178,6 +182,29 @@ private class ComplexNumberField<Number>(
             imaginaryPart = numberField { imaginaryPart * other }
         )
     override fun ComplexNumber<Number>.div(other: Long): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { realPart / other },
+            imaginaryPart = numberField { imaginaryPart / other }
+        )
+    // endregion
+    
+    // region ComplexNumber-Number operations
+    override fun ComplexNumber<Number>.plus(other: Number): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { realPart + other },
+            imaginaryPart = imaginaryPart
+        )
+    override fun ComplexNumber<Number>.minus(other: Number): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { realPart - other },
+            imaginaryPart = imaginaryPart
+        )
+    override fun ComplexNumber<Number>.times(other: Number): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { realPart * other },
+            imaginaryPart = numberField { imaginaryPart * other }
+        )
+    override fun ComplexNumber<Number>.div(other: Number): ComplexNumber<Number> =
         ComplexNumber(
             realPart = numberField { realPart / other },
             imaginaryPart = numberField { imaginaryPart / other }
@@ -284,6 +311,31 @@ private class ComplexNumberField<Number>(
     }
     // endregion
     
+    // region Long-ComplexNumber operations
+    override fun Number.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { this + other.realPart },
+            imaginaryPart = other.imaginaryPart
+        )
+    override fun Number.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { this - other.realPart },
+            imaginaryPart = other.imaginaryPart
+        )
+    override fun Number.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
+        ComplexNumber(
+            realPart = numberField { this * other.realPart },
+            imaginaryPart = numberField { this * other.imaginaryPart }
+        )
+    override fun Number.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
+        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
+        ComplexNumber(
+            realPart = other.realPart * commonMultiplier,
+            imaginaryPart = -other.imaginaryPart * commonMultiplier
+        )
+    }
+    // endregion
+    
     // region ComplexNumber-ComplexNumber operations
     override fun ComplexNumber<Number>.unaryMinus(): ComplexNumber<Number> =
         ComplexNumber(
@@ -322,11 +374,11 @@ private class ComplexNumberField<Number>(
     // endregion
 }
 
-public fun <Number> Field.Companion.primaryForComplexOver(numberField: Field<Number>): Field<ComplexNumber<Number>> =
-    ComplexNumberField(numberField)
+public fun <Number> FieldExtension.Companion.primaryForComplexOver(numberField: Field<Number>): FieldExtension<Number, ComplexNumber<Number>> =
+    ComplexNumberFieldExtension(numberField)
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> Field.Companion.setPrimaryForComplexOver(numberType: SuppliedType) {
+public fun <Number> FieldExtension.Companion.setPrimaryForComplexOver(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val complexNumberType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
@@ -338,7 +390,7 @@ public fun <Number> Field.Companion.setPrimaryForComplexOver(numberType: Supplie
         ),
         isNullable = false,
     )
-    Field.Key<ComplexNumber<Number>>(numberType = complexNumberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+    FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         primaryForComplexOver(
             numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
