@@ -27,7 +27,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
+private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val numberField: Field<Number>,
     private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
@@ -36,25 +36,26 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     private val matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     private val conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
-) : QRDecompositionComputer<ComplexNumber<Number>, Matrix> {
-    override fun Matrix.qrDecomposition(): QRDecomposition<ComplexNumber<Number>, Matrix> {
+) : HessenbergDecompositionComputer<ComplexNumber<Number>, Matrix> {
+    override fun Matrix.hessenbergDecomposition(): HessenbergDecomposition<ComplexNumber<Number>, Matrix> {
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
-        if (n == 0u) return QRDecomposition(
+        if (n == 0u) return HessenbergDecomposition(
             leftUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
-            rightUpperTriangular = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") }
+            middleUpperHessenberg = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
+            rightUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
         )
         
         var q = matrixFactory.mapMatrix(
             rowNumber = n,
             columnNumber = n,
-            numbers = KoneMap.build(keyEquality = MDIndex.equality( ), keyHashing = MDIndex.hashing()) {
+            numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
                 for (i in 0u ..< n) set(MDIndex.of(i, i), complexNumberFieldExtension.one)
             }
         )
         var r = this
         
-        for (k in 0u ..< n - 1u) context(
+        for (k in 0u ..< n - 2u) context(
             numberField,
             complexNumberFieldExtension,
             numberOrder,
@@ -63,7 +64,7 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
-            val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } // TODO: Replace with complex number norm
+            val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } // TODO: Replace with complex number norm
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = scope { // TODO: Move to collections module
                 val iterator = xElementNormsSquared.iterator()
@@ -81,32 +82,16 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
                 } while (iterator.hasNext())
                 if (maxElement.isZero()) continue
                 return@scope maxIndex
-            } + k
-            if (maxXElementIndex != k) {
-                val permutation = matrixFactory.mapMatrix(
-                    rowNumber = n,
-                    columnNumber = n,
-                    numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
-                        for (i in 0u ..< n) {
-                            if (i == k || i == maxXElementIndex) continue
-                            set(MDIndex.of(i, i), complexNumberFieldExtension.one)
-                        }
-                        set(MDIndex.of(k, maxXElementIndex), complexNumberFieldExtension.one)
-                        set(MDIndex.of(maxXElementIndex, k), complexNumberFieldExtension.one)
-                    }
-                )
-                r = permutation * r
-                q *= permutation
-            }
+            } + k + 1u
             
             val u = matrixFactory.generateMatrix(rowNumber = n, columnNumber = 1u) { row, _ ->
                 when {
-                    row < k -> ComplexNumber(numberField.zero, numberField.zero)
-                    row == k -> r[k, k] + (xNorm * r[k, k] / r[k, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart }.positiveSquareRoot())
+                    row < k + 1u -> complexNumberFieldExtension.zero
+                    row == k + 1u -> r[k + 1u, k] + (xNorm * r[k + 1u, k] / r[k + 1u, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart }.positiveSquareRoot()) // TODO: Add corrections for small r[k + 1u, k]
                     else -> r[row, k]
                 }
             }
-            val v = u / complexNumberFieldExtension.valueOf((k ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } } }.positiveSquareRoot()) // TODO: Replace with complex number norm
+            val v = u / complexNumberFieldExtension.valueOf((k + 1u ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } } }.positiveSquareRoot())
             val qk = matrixFactory.mapMatrix(
                 rowNumber = n,
                 columnNumber = n,
@@ -114,19 +99,23 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
                     for (i in 0u ..< n) set(MDIndex.of(i, i), complexNumberFieldExtension.one)
                 }
             ) - 2 * v * v.conjugateTranspose()
+            val qkInverse = qk.conjugateTranspose()
             
-            r = qk * r
-            q *= qk.conjugateTranspose()
+            r = qk * r * qkInverse
+            q *= qkInverse
         }
         
-        return QRDecomposition(
+        return HessenbergDecomposition(
             leftUnitary = q,
-            rightUpperTriangular = r,
+            middleUpperHessenberg = matrixFactory.generateMatrix(r.rowNumber, r.columnNumber) { row, column ->
+                if (row > column + 1u) complexNumberFieldExtension.zero else r[row, column]
+            },
+            rightUnitary = conjugateTransposeMatrixComputer { q.conjugateTranspose() },
         )
     }
 }
 
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.viaHouseholderForComplexNumbers(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.viaHouseholderForComplexNumbers(
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     numberField: Field<Number>,
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
@@ -135,7 +124,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
-): QRDecompositionComputer<ComplexNumber<Number>, Matrix> = QRDecompositionComputerViaHouseholderForComplexNumbers(
+): HessenbergDecompositionComputer<ComplexNumber<Number>, Matrix> = HessenbergDecompositionComputerViaHouseholderForComplexNumbers(
     matrixFactory = matrixFactory,
     numberField = numberField,
     complexNumberFieldExtension = complexNumberFieldExtension,
@@ -147,10 +136,10 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.viaHouseholderForComplexNumbers(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.viaHouseholderForComplexNumbers(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-): QRDecompositionComputer<ComplexNumber<Number>, Matrix> {
+): HessenbergDecompositionComputer<ComplexNumber<Number>, Matrix> {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val complexNumberType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
@@ -175,8 +164,65 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     )
 }
 
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+    numberField: Field<Number>,
+    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    numberOrder: Order<Number>,
+    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
+    matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
+    conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
+) {
+    HessenbergDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaHouseholderForComplexNumbers(
+            matrixFactory = matrixFactory,
+            numberField = numberField,
+            complexNumberFieldExtension = complexNumberFieldExtension,
+            numberOrder = numberOrder,
+            positiveSquareRootComputer = positiveSquareRootComputer,
+            matrixCategoryOverField = matrixCategoryOverField,
+            matrixProductComputer = matrixProductComputer,
+            conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
+        )
+    }
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    @OptIn(DelicateSuppliedTypeConstructor::class)
+    val complexNumberType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = OUT,
+                type = numberType,
+            ),
+        ),
+        isNullable = false,
+    )
+    HessenbergDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        val koneContextRegistry = koneContextRegistry.get()
+        viaHouseholderForComplexNumbers(
+            matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
+            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+            complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
+            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
+            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
+            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
+            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
+            conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)],
+        )
+    }
+}
+
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
     numberType: SuppliedType,
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
@@ -214,8 +260,8 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
         ),
         isNullable = false,
     )
-    QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val qrDecompositionComputer = viaHouseholderForComplexNumbers(
+    HessenbergDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+        val hessenbergDecompositionComputer = viaHouseholderForComplexNumbers(
             matrixFactory = matrixFactory,
             numberField = numberField,
             complexNumberFieldExtension = complexNumberFieldExtension,
@@ -225,12 +271,12 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
             matrixProductComputer = matrixProductComputer,
             conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
         )
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+        hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
     }
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
     numberType: SuppliedType,
     matrixType: SuppliedType,
 ) {
@@ -251,7 +297,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = INVARIANT,
-                type = numberType,
+                type = complexNumberType,
             ),
             SuppliedProjection.Regular(
                 variance = INVARIANT,
@@ -260,9 +306,9 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
         ),
         isNullable = false,
     )
-    QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    HessenbergDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        val qrDecompositionComputer = viaHouseholderForComplexNumbers(
+        val hessenbergDecompositionComputer = viaHouseholderForComplexNumbers(
             matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
             numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
             complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
@@ -272,6 +318,6 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
             matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
             conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
         )
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+        hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
     }
 }
