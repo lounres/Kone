@@ -511,6 +511,294 @@ public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, C
     )
 }
 
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Result> KoneContextRegistry.koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        this[key1],
+        this[key2],
+        this[key3],
+        this[key4],
+        this[key5],
+        this[key6],
+        this[key7],
+        this[key8],
+        this[key9],
+        this[key10],
+        this[key11],
+    )
+}
+
+@JvmName("koneContextContextual")
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+        koneContextRegistry[key5],
+        koneContextRegistry[key6],
+        koneContextRegistry[key7],
+        koneContextRegistry[key8],
+        koneContextRegistry[key9],
+        koneContextRegistry[key10],
+        koneContextRegistry[key11],
+    )
+}
+
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Result> KoneContextRegistry.koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        this[key1],
+        this[key2],
+        this[key3],
+        this[key4],
+        this[key5],
+        this[key6],
+        this[key7],
+        this[key8],
+        this[key9],
+        this[key10],
+        this[key11],
+        this[key12],
+    )
+}
+
+@JvmName("koneContextContextual")
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+        koneContextRegistry[key5],
+        koneContextRegistry[key6],
+        koneContextRegistry[key7],
+        koneContextRegistry[key8],
+        koneContextRegistry[key9],
+        koneContextRegistry[key10],
+        koneContextRegistry[key11],
+        koneContextRegistry[key12],
+    )
+}
+
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Result> KoneContextRegistry.koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    key13: RegistryKey<Context13>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        this[key1],
+        this[key2],
+        this[key3],
+        this[key4],
+        this[key5],
+        this[key6],
+        this[key7],
+        this[key8],
+        this[key9],
+        this[key10],
+        this[key11],
+        this[key12],
+        this[key13],
+    )
+}
+
+@JvmName("koneContextContextual")
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    key13: RegistryKey<Context13>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+        koneContextRegistry[key5],
+        koneContextRegistry[key6],
+        koneContextRegistry[key7],
+        koneContextRegistry[key8],
+        koneContextRegistry[key9],
+        koneContextRegistry[key10],
+        koneContextRegistry[key11],
+        koneContextRegistry[key12],
+        koneContextRegistry[key13],
+    )
+}
+
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Context14, Result> KoneContextRegistry.koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    key13: RegistryKey<Context13>,
+    key14: RegistryKey<Context14>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Context14) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        this[key1],
+        this[key2],
+        this[key3],
+        this[key4],
+        this[key5],
+        this[key6],
+        this[key7],
+        this[key8],
+        this[key9],
+        this[key10],
+        this[key11],
+        this[key12],
+        this[key13],
+        this[key14],
+    )
+}
+
+@JvmName("koneContextContextual")
+context(koneContextRegistry: KoneContextRegistry)
+public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Context14, Result> koneContext(
+    key1: RegistryKey<Context1>,
+    key2: RegistryKey<Context2>,
+    key3: RegistryKey<Context3>,
+    key4: RegistryKey<Context4>,
+    key5: RegistryKey<Context5>,
+    key6: RegistryKey<Context6>,
+    key7: RegistryKey<Context7>,
+    key8: RegistryKey<Context8>,
+    key9: RegistryKey<Context9>,
+    key10: RegistryKey<Context10>,
+    key11: RegistryKey<Context11>,
+    key12: RegistryKey<Context12>,
+    key13: RegistryKey<Context13>,
+    key14: RegistryKey<Context14>,
+    block: context(Context1, Context2, Context3, Context4, Context5, Context6, Context7, Context8, Context9, Context10, Context11, Context12, Context13, Context14) () -> Result
+): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(
+        koneContextRegistry[key1],
+        koneContextRegistry[key2],
+        koneContextRegistry[key3],
+        koneContextRegistry[key4],
+        koneContextRegistry[key5],
+        koneContextRegistry[key6],
+        koneContextRegistry[key7],
+        koneContextRegistry[key8],
+        koneContextRegistry[key9],
+        koneContextRegistry[key10],
+        koneContextRegistry[key11],
+        koneContextRegistry[key12],
+        koneContextRegistry[key13],
+        koneContextRegistry[key14],
+    )
+}
+
 @DslMarker
 @Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 public annotation class KoneContextRegistryBuilderDsl
