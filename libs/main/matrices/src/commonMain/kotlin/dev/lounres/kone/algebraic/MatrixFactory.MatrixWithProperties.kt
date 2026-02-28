@@ -63,7 +63,7 @@ context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneC
 public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit,
+    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(

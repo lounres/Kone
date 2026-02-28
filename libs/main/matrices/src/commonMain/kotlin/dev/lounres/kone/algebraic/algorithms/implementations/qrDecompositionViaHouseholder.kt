@@ -38,6 +38,10 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
     override fun Matrix.qrDecomposition(): QRDecomposition<Number, Matrix> {
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
+        if (n == 0u) return QRDecomposition(
+            leftUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
+            rightUpperTriangular = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") }
+        )
         
         var q = matrixFactory.mapMatrix(
             rowNumber = n,
@@ -48,7 +52,7 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
         )
         var r = this
         
-        for (k in 0u ..< n) context(
+        for (k in 0u ..< n - 1u) context(
             numberField,
             numberOrder,
             positiveSquareRootComputer,
