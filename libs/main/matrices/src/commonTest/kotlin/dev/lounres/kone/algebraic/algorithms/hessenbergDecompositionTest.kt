@@ -1,8 +1,21 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
-import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.ComplexNumber
+import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.FieldExtension
+import dev.lounres.kone.algebraic.MatrixCategoryOverField
+import dev.lounres.kone.algebraic.MatrixFactory
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefault
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaGaussianElimination
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholder
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholderForComplexNumbers
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.setDefault
+import dev.lounres.kone.algebraic.setPrimaryFor
+import dev.lounres.kone.algebraic.setPrimaryForComplexOver
+import dev.lounres.kone.algebraic.setViaDefault
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -24,7 +37,7 @@ import kotlin.reflect.KVariance.OUT
 import kotlin.test.assertTrue
 
 
-val QRDecompositionImplementationsTests by testSuite {
+val HessenbergDecompositionTests by testSuite {
     testSuite("real case") {
         val numberType = Double.suppliedType
         
@@ -63,52 +76,6 @@ val QRDecompositionImplementationsTests by testSuite {
             ),
         )
         
-        testSuite("via Gram-Schmidt") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Double>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Double, MDList2<Double>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidt<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                MatrixProductComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                TransposeMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-            ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^T differs from Q^-1 in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                }
-            }
-        }
-        
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
                 Field.setPrimaryFor(Double)
@@ -119,7 +86,7 @@ val QRDecompositionImplementationsTests by testSuite {
                 MatrixProductComputer.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
                 TransposeMatrixComputer.setViaDefault<Double, MDList2<Double>>(matrixType = matrixType)
                 InverseMatrixComputer.setViaGaussianElimination<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholder<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
+                HessenbergDecompositionComputer.setViaHouseholder<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
             }
             
             koneContextRegistry.koneContext(
@@ -127,29 +94,36 @@ val QRDecompositionImplementationsTests by testSuite {
                 MatrixProductComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
                 InverseMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
+                HessenbergDecompositionComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
+                    val (q, h, p) = input.hessenbergDecomposition()
                     
                     scope {
-                        val dif = input - q * r
+                        val dif = input - q * h * p
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                            assertTrue("Input differs from QHQ^* in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
                         }
                     }
                     
                     scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
+                        h.forEachIndexed { rowIndex, columnIndex, value ->
+                            if (rowIndex > columnIndex + 1u)
                                 assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
+                        }
+                    }
+                    
+                    scope {
+                        val dif = q.transpose() - p
+                        dif.forEachIndexed { rowIndex, columnIndex, value ->
+                            assertTrue("Left matrix's transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
                         }
                     }
                     
                     scope {
                         val dif = q.transpose() - q.invert()!!
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^T differs from Q^-1 in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
                         }
                     }
                 }
@@ -237,59 +211,6 @@ val QRDecompositionImplementationsTests by testSuite {
             ),
         )
         
-        testSuite("via Gram-Schmidt") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidtForComplexNumbers<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                MatrixProductComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                ConjugateTransposeMatrixComputer.Key<Double, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-            ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-                    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
-                        }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") {
-                                    value.realPart == 0.0 && value.imaginaryPart == 0.0
-                                }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^* differs from Q^-1 in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
                 Field.setPrimaryFor(Double)
@@ -301,34 +222,31 @@ val QRDecompositionImplementationsTests by testSuite {
                 MatrixProductComputer.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
                 ConjugateTransposeMatrixComputer.setViaDefault<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
                 InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholderForComplexNumbers<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
+                HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
             }
-
+            
             koneContextRegistry.koneContext(
                 MatrixCategoryOverField.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
                 ConjugateTransposeMatrixComputer.Key<Double, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
                 InverseMatrixComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
+                HessenbergDecompositionComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-                    
-                    println(q)
-                    println(r)
+                    val (q, h, p) = input.hessenbergDecomposition()
                     
                     scope {
-                        val dif = input - q * r
+                        val dif = input - q * h * p
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") {
+                            assertTrue("Input differs from QHQ^* in ($rowIndex, $columnIndex) by $value") {
                                 abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
                             }
                         }
                     }
                     
                     scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
+                        h.forEachIndexed { rowIndex, columnIndex, value ->
+                            if (rowIndex > columnIndex + 1u)
                                 assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") {
                                     value.realPart == 0.0 && value.imaginaryPart == 0.0
                                 }
@@ -336,9 +254,18 @@ val QRDecompositionImplementationsTests by testSuite {
                     }
                     
                     scope {
+                        val dif = q.conjugateTranspose() - p
+                        dif.forEachIndexed { rowIndex, columnIndex, value ->
+                            assertTrue("Left matrix's conjugate transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") {
+                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
+                            }
+                        }
+                    }
+                    
+                    scope {
                         val dif = q.conjugateTranspose() - q.invert()!!
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^* differs from Q^-1 in ($rowIndex, $columnIndex) by $value") {
+                            assertTrue("Left matrix's conjugate transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") {
                                 abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
                             }
                         }
