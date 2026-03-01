@@ -1,5 +1,6 @@
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDIndex
@@ -8,7 +9,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -83,7 +83,9 @@ public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatr
     MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         forMatrixWithProperties(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)],
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
+                "MatrixFactory.setForMatrixWithProperties<$numberType, $matrixType>"
+            },
             propertiesBuilder = propertiesBuilder,
         )
     }

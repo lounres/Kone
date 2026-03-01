@@ -274,15 +274,9 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
         isNullable = false,
     )
     QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val qrDecompositionComputer = viaHouseholder(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            transposeMatrixComputer = koneContextRegistry[TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
+        val qrDecompositionComputer = viaHouseholder<Number, MatrixWithProperties<Number, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType,
         )
         qrDecompositionComputer { matrix.get().qrDecomposition() }
     }
