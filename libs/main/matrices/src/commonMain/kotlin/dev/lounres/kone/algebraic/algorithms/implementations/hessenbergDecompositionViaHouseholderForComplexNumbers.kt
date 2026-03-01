@@ -2,6 +2,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
@@ -153,14 +154,30 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecomposi
     )
     val koneContextRegistry = koneContextRegistry.get()
     return viaHouseholderForComplexNumbers(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-        complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-        numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-        matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)],
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        numberField = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)) {
+            "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
     )
 }
 
@@ -195,28 +212,10 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecomposi
     numberType: SuppliedType,
     matrixType: SuppliedType,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
     HessenbergDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        viaHouseholderForComplexNumbers(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-            complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-            conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)],
+        viaHouseholderForComplexNumbers<Number, Matrix>(
+            numberType = numberType,
+            matrixType = matrixType,
         )
     }
 }
@@ -307,16 +306,9 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> HessenbergDecomposi
         isNullable = false,
     )
     HessenbergDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val hessenbergDecompositionComputer = viaHouseholderForComplexNumbers(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-            complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
+        val hessenbergDecompositionComputer = viaHouseholderForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType,
         )
         hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
     }

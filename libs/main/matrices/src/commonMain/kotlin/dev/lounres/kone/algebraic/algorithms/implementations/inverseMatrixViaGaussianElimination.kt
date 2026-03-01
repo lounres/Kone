@@ -91,7 +91,7 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.vi
     matrixType: SuppliedType,
 ): InverseMatrixComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
-    return InverseMatrixComputerViaGaussianElimination(
+    return viaGaussianElimination(
         matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
             "InverseMatrixComputer.viaGaussianElimination<$numberType, $matrixType>"
         },
@@ -178,10 +178,9 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.us
         isNullable = false,
     )
     InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val inverseMatrixComputer = viaGaussianElimination(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            field = koneContextRegistry[Field.Key<Number>(numberType)],
+        val inverseMatrixComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType,
         )
         inverseMatrixComputer {
             matrix.get().invert()

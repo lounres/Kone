@@ -4,6 +4,7 @@ import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.TransposeMatrixComputer
 import dev.lounres.kone.algebraic.algorithms.TransposeMatrixKey
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.transpose
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -12,7 +13,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -38,7 +38,9 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
 ): TransposeMatrixComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)]
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
+            "TransposeMatrixComputer.viaDefault<?, $matrixType>"
+        }
     )
 }
 
@@ -54,7 +56,7 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaDefault(
     matrixType: SuppliedType,
 ) {
@@ -93,7 +95,7 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.useViaDefault(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -114,7 +116,6 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
         isNullable = false,
     )
     TransposeMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
         val transposeMatrixComputer = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
             matrixType = matrixWithPropertiesType
         )
