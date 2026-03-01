@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer
 import dev.lounres.kone.algebraic.algorithms.InverseMatrixKey
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.invert
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -91,9 +92,40 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.vi
 ): InverseMatrixComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return InverseMatrixComputerViaGaussianElimination(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType)],
-        field = koneContextRegistry[Field.Key<Number>(numberType)],
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
+            "InverseMatrixComputer.viaGaussianElimination<$numberType, $matrixType>"
+        },
+        field = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
+            "InverseMatrixComputer.viaGaussianElimination<$numberType, $matrixType>"
+        },
     )
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<Number, Matrix>,
+    field: Field<Number>,
+) {
+    InverseMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaGaussianElimination<Number, Matrix>(
+            matrixFactory = matrixFactory,
+            field = field,
+        )
+    }
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    InverseMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaGaussianElimination<Number, Matrix>(
+            numberType = numberType,
+            matrixType = matrixType,
+        )
+    }
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)

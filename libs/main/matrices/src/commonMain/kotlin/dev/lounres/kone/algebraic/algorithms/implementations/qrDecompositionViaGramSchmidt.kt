@@ -6,6 +6,7 @@ import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
 import dev.lounres.kone.algebraic.algorithms.QRDecomposition
 import dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.algebraic.algorithms.qrDecomposition
 import dev.lounres.kone.algebraic.div
@@ -20,7 +21,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -84,10 +84,45 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
 ): QRDecompositionComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaGramSchmidt(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)],
-        field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)]
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
+            "QRDecompositionComputer.viaGramSchmidt<$numberType, $matrixType>"
+        },
+        field = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
+            "QRDecompositionComputer.viaGramSchmidt<$numberType, $matrixType>"
+        },
+        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
+            "QRDecompositionComputer.viaGramSchmidt<$numberType, $matrixType>"
+        },
     )
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt(
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<Number, Matrix>,
+    field: Field<Number>,
+    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+) {
+    QRDecompositionComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaGramSchmidt(
+            matrixFactory = matrixFactory,
+            field = field,
+            positiveSquareRootComputer = positiveSquareRootComputer,
+        )
+    }
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    QRDecompositionComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaGramSchmidt<Number, Matrix>(
+            numberType = numberType,
+            matrixType = matrixType,
+        )
+    }
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
@@ -144,11 +179,9 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
         isNullable = false,
     )
     QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val qrDecompositionComputer = viaGramSchmidt(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)],
-            field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
+        val qrDecompositionComputer = viaGramSchmidt<Number, MatrixWithProperties<Number, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType
         )
         qrDecompositionComputer { matrix.get().qrDecomposition() }
     }

@@ -2,6 +2,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
@@ -121,7 +122,9 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
         
         return QRDecomposition(
             leftUnitary = q,
-            rightUpperTriangular = r,
+            rightUpperTriangular = matrixFactory.generateMatrix(columnNumber = r.columnNumber, rowNumber = r.rowNumber) { row, column ->
+                if (row > column) complexNumberFieldExtension.zero else r[row, column]
+            },
         )
     }
 }
@@ -164,15 +167,70 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     )
     val koneContextRegistry = koneContextRegistry.get()
     return viaHouseholderForComplexNumbers(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-        complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-        numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-        matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)],
-        conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)],
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        numberField = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
+        conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)) {
+            "QRDecompositionComputer.viaHouseholderForComplexNumbers<$numberType, $matrixType>"
+        },
     )
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+    numberField: Field<Number>,
+    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    numberOrder: Order<Number>,
+    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
+    matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
+    conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
+) {
+    QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaHouseholderForComplexNumbers<Number, Matrix>(
+            matrixFactory = matrixFactory,
+            numberField = numberField,
+            complexNumberFieldExtension = complexNumberFieldExtension,
+            numberOrder = numberOrder,
+            positiveSquareRootComputer = positiveSquareRootComputer,
+            matrixCategoryOverField = matrixCategoryOverField,
+            matrixProductComputer = matrixProductComputer,
+            conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
+        )
+    }
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaHouseholderForComplexNumbers<Number, Matrix>(
+            numberType = numberType,
+            matrixType = matrixType,
+        )
+    }
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
@@ -251,7 +309,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = INVARIANT,
-                type = numberType,
+                type = complexNumberType,
             ),
             SuppliedProjection.Regular(
                 variance = INVARIANT,
@@ -261,16 +319,9 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
         isNullable = false,
     )
     QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val qrDecompositionComputer = viaHouseholderForComplexNumbers(
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-            complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-            numberOrder = koneContextRegistry[Order.Key<Number>(elementType = numberType)],
-            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)],
-            matrixCategoryOverField = koneContextRegistry[MatrixCategoryOverField.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            matrixProductComputer = koneContextRegistry[MatrixProductComputer.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
-            conjugateTransposeMatrixComputer = koneContextRegistry[ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)],
+        val qrDecompositionComputer = viaHouseholderForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType,
         )
         qrDecompositionComputer { matrix.get().qrDecomposition() }
     }

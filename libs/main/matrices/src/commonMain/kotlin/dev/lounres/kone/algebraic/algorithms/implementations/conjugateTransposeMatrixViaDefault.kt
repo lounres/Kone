@@ -6,10 +6,8 @@ import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixComputer
 import dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixKey
-import dev.lounres.kone.algebraic.algorithms.TransposeMatrixComputer
-import dev.lounres.kone.algebraic.algorithms.TransposeMatrixKey
 import dev.lounres.kone.algebraic.algorithms.conjugateTranspose
-import dev.lounres.kone.algebraic.algorithms.transpose
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -18,7 +16,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -52,9 +49,40 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeM
 ): ConjugateTransposeMatrixComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault(
-        numberCommutativeRing = koneContextRegistry[CommutativeRing.Key<Number>(numberType = numberType)],
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)]
+        numberCommutativeRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>(numberType = numberType)) {
+            "ConjugateTransposeMatrixComputer.viaDefault<$numberType, $matrixType>"
+        },
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
+            "ConjugateTransposeMatrixComputer.viaDefault<$numberType, $matrixType>"
+        },
     )
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault(
+    matrixType: SuppliedType,
+    numberCommutativeRing: CommutativeRing<Number>,
+    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+) {
+    ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaDefault<Number, Matrix>(
+            numberCommutativeRing = numberCommutativeRing,
+            matrixFactory = matrixFactory,
+        )
+    }
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault(
+    numberType: SuppliedType,
+    matrixType: SuppliedType,
+) {
+    ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaDefault<Number, Matrix>(
+            numberType = numberType,
+            matrixType = matrixType,
+        )
+    }
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
@@ -129,10 +157,9 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeM
         isNullable = false,
     )
     ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        val conjugateTransposeMatrixComputer = viaDefault(
-            numberCommutativeRing = koneContextRegistry[CommutativeRing.Key<Number>(numberType = numberType)],
-            matrixFactory = koneContextRegistry[MatrixFactory.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)]
+        val conjugateTransposeMatrixComputer = viaDefault<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
+            numberType = numberType,
+            matrixType = matrixWithPropertiesType,
         )
         conjugateTransposeMatrixComputer {
             matrix.get().conjugateTranspose()

@@ -1,5 +1,6 @@
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.getOrElse
 import dev.lounres.kone.collections.utils.all
@@ -11,7 +12,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -40,8 +40,14 @@ public fun <Number> MatrixFactory.Companion.default(ring: CommutativeRing<Number
     MDList2MatrixFactory(ring = ring)
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixFactory.Companion.default(numberType: SuppliedType): MatrixFactory<Number, MDList2<Number>> =
-    default(ring = koneContextRegistry.get()[CommutativeRing.Key<Number>(numberType = numberType)])
+public fun <Number> MatrixFactory.Companion.default(numberType: SuppliedType): MatrixFactory<Number, MDList2<Number>> {
+    val koneContextRegistry = koneContextRegistry.get()
+    return default(
+        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>(numberType = numberType)) {
+            "MatrixFactory.default<$numberType>"
+        }
+    )
+}
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number> MatrixFactory.Companion.setDefault(numberType: SuppliedType) {

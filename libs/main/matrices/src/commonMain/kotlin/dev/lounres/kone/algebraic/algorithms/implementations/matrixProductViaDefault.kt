@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.algorithms.MatrixProductComputer
+import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -12,7 +13,6 @@ import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
@@ -50,9 +50,27 @@ public fun <Number, Matrix : MDList2<Number>> MatrixProductComputer.Companion.vi
 ): MatrixProductComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault(
-        matrixFactory = koneContextRegistry[MatrixFactory.Key<Number, Matrix>(matrixType)],
-        ring = koneContextRegistry[CommutativeRing.Key<Number>(numberType)],
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType)) {
+            "MatrixProductComputer.viaDefault<$numberType, $matrixType>"
+        },
+        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>(numberType)) {
+            "MatrixProductComputer.viaDefault<$numberType, $matrixType>"
+        },
     )
+}
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun <Number, Matrix : MDList2<Number>> MatrixProductComputer.Companion.setViaDefault(
+    matrixType: SuppliedType,
+    matrixFactory: MatrixFactory<Number, Matrix>,
+    ring: CommutativeRing<Number>,
+) {
+    MatrixProductComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+        viaDefault(
+            matrixFactory = matrixFactory,
+            ring = ring,
+        )
+    }
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
