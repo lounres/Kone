@@ -374,11 +374,19 @@ private class ComplexNumberFieldExtension<Number>(
     // endregion
 }
 
-public fun <Number> FieldExtension.Companion.primaryForComplexOver(numberField: Field<Number>): FieldExtension<Number, ComplexNumber<Number>> =
+public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberField: Field<Number>): FieldExtension<Number, ComplexNumber<Number>> =
     ComplexNumberFieldExtension(numberField)
 
+context(koneContextRegistry: KoneContextRegistry.Provider)
+public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberType: SuppliedType): FieldExtension<Number, ComplexNumber<Number>> {
+    val koneContextRegistry = koneContextRegistry.get()
+    return fieldExtensionOver(
+        numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+    )
+}
+
 context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> FieldExtension.Companion.setPrimaryForComplexOver(numberType: SuppliedType) {
+public fun <Number> ComplexNumber.Companion.setFieldExtensionOver(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val complexNumberType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
@@ -391,9 +399,8 @@ public fun <Number> FieldExtension.Companion.setPrimaryForComplexOver(numberType
         isNullable = false,
     )
     FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        primaryForComplexOver(
-            numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+        fieldExtensionOver(
+            numberType = numberType,
         )
     }
 }

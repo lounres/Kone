@@ -273,6 +273,7 @@ stal {
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
+                        "-Xlocal-type-aliases",
                     )
                     optIn.set(
                         listOf(
@@ -318,6 +319,7 @@ stal {
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
+                        "-Xlocal-type-aliases",
                     )
                     optIn.set(
                         listOf(

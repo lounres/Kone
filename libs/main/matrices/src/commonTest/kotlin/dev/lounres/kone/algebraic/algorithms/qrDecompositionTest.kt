@@ -26,7 +26,8 @@ import kotlin.test.assertTrue
 
 val QRDecompositionImplementationsTests by testSuite {
     testSuite("real case") {
-        val numberType = Double.suppliedType
+        typealias Number = Double
+        val numberType = Number.suppliedType
         
         @OptIn(DelicateSuppliedTypeConstructor::class)
         val matrixType = SuppliedType.Regular(
@@ -40,7 +41,7 @@ val QRDecompositionImplementationsTests by testSuite {
             isNullable = false,
         )
         
-        val inputs = KoneList.of<MDList2<Double>>(
+        val inputs = KoneList.of<MDList2<Number>>(
             MDList2.of(
                 rowNumber = 2u,
                 columnNumber = 2u,
@@ -73,22 +74,22 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Gram-Schmidt") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Double.setSafeField()
+                Number.setSafeField()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Double>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Double, MDList2<Double>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidt<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
+                MatrixFactory.setDefault<Number>(numberType = numberType)
+                MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
+                InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                QRDecompositionComputer.setViaGramSchmidt<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
             }
             
             koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                MatrixProductComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                TransposeMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
+                MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                InverseMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, r) = input.qrDecomposition()
@@ -119,23 +120,23 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Double.setSafeField()
-                Double.setSafeOrder()
+                Number.setSafeField()
+                Number.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Double>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Double, MDList2<Double>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholder<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
+                MatrixFactory.setDefault<Number>(numberType = numberType)
+                MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
+                InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                QRDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
             }
             
             koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                MatrixProductComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                TransposeMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<Double, MDList2<Double>>(matrixType = matrixType),
+                MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                InverseMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
+                QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, r) = input.qrDecomposition()
@@ -166,7 +167,8 @@ val QRDecompositionImplementationsTests by testSuite {
     }
     
     testSuite("complex case") {
-        val numberType = Double.suppliedType
+        typealias Number = Double
+        val numberType = Number.suppliedType
         
         @OptIn(DelicateSuppliedTypeConstructor::class)
         val complexNumberType = SuppliedType.Regular(
@@ -192,7 +194,7 @@ val QRDecompositionImplementationsTests by testSuite {
             isNullable = false,
         )
         
-        val inputs = KoneList.of<MDList2<ComplexNumber<Double>>>(
+        val inputs = KoneList.of<MDList2<ComplexNumber<Number>>>(
             MDList2.of(
                 rowNumber = 2u,
                 columnNumber = 2u,
@@ -267,23 +269,23 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Gram-Schmidt") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Double.setSafeField()
+                Number.setSafeField()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
-                FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidtForComplexNumbers<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
+                ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
+                MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
+                MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                QRDecompositionComputer.setViaGramSchmidtForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
             }
             
             koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                MatrixProductComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                ConjugateTransposeMatrixComputer.Key<Double, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
+                MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                InverseMatrixComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, r) = input.qrDecomposition()
@@ -320,24 +322,24 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Double.setSafeField()
-                Double.setSafeOrder()
+                Number.setSafeField()
+                Number.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
-                FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholderForComplexNumbers<Double, MDList2<ComplexNumber<Double>>>(numberType = numberType, matrixType = matrixType)
+                ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
+                MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
+                MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                QRDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
             }
 
             koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                MatrixProductComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                ConjugateTransposeMatrixComputer.Key<Double, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<ComplexNumber<Double>, MDList2<ComplexNumber<Double>>>(matrixType = matrixType),
+                MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                InverseMatrixComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
+                QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, r) = input.qrDecomposition()
