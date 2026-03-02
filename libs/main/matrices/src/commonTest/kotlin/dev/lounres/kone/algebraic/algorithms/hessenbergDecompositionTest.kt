@@ -72,20 +72,30 @@ val HessenbergDecompositionTests by testSuite {
             ),
         )
         
-        testSuite("via Householder") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                Number.setSafeOrder()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Number>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
+        data class Algorithm(
+            val name: String,
+            val koneContextRegistry: KoneContextRegistry,
+        )
+        
+        val algorithms = KoneList.of<Algorithm>(
+            Algorithm(
+                name = "via Householder",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setDefault<Number>(numberType = numberType)
+                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                },
+            ),
+        )
+        
+        for (algorithm in algorithms) testSuite(algorithm.name) {
+            algorithm.koneContextRegistry.koneContext(
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
@@ -228,21 +238,31 @@ val HessenbergDecompositionTests by testSuite {
             ),
         )
         
-        testSuite("via Householder") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                Number.setSafeOrder()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
+        data class Algorithm(
+            val name: String,
+            val koneContextRegistry: KoneContextRegistry,
+        )
+        
+        val algorithms = KoneList.of<Algorithm>(
+            Algorithm(
+                name = "via Householder",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
+                    MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
+                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                }
+            ),
+        )
+        
+        for (algorithm in algorithms) testSuite(algorithm.name) {
+            algorithm.koneContextRegistry.koneContext(
                 MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),

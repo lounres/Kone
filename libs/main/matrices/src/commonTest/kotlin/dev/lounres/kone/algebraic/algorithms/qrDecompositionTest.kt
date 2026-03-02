@@ -72,66 +72,43 @@ val QRDecompositionImplementationsTests by testSuite {
             ),
         )
         
-        testSuite("via Gram-Schmidt") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Number>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidt<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
-                MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
-                TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
-            ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^T differs from Q^-1 in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                }
-            }
-        }
+        data class Algorithm(
+            val name: String,
+            val koneContextRegistry: KoneContextRegistry,
+        )
         
-        testSuite("via Householder") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                Number.setSafeOrder()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                MatrixFactory.setDefault<Number>(numberType = numberType)
-                MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
+        val algorithms = KoneList.of<Algorithm>(
+            Algorithm(
+                name = "via Gram-Schmidt",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setDefault<Number>(numberType = numberType)
+                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    QRDecompositionComputer.setViaGramSchmidt<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                },
+            ),
+            Algorithm(
+                name = "via Householder",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setDefault<Number>(numberType = numberType)
+                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    QRDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                },
+            ),
+        )
+        
+        for (algorithm in algorithms) testSuite(algorithm.name) {
+            algorithm.koneContextRegistry.koneContext(
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
@@ -267,74 +244,45 @@ val QRDecompositionImplementationsTests by testSuite {
             ),
         )
         
-        testSuite("via Gram-Schmidt") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaGramSchmidtForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-            }
-            
-            koneContextRegistry.koneContext(
-                MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
-                MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
-                ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
-                InverseMatrixComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
-                QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
-            ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-                    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
-                        }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") {
-                                    value.realPart == 0.0 && value.imaginaryPart == 0.0
-                                }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^* differs from Q^-1 in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        data class Algorithm(
+            val name: String,
+            val koneContextRegistry: KoneContextRegistry,
+        )
         
-        testSuite("via Householder") {
-            val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Number.setSafeField()
-                Number.setSafeOrder()
-                PositiveSquareRootComputer.setViaDefaultForDouble()
-                ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
-                MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
-                MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-                InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
-                QRDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
-            }
-
-            koneContextRegistry.koneContext(
+        val algorithms = KoneList.of<Algorithm>(
+            Algorithm(
+                name = "via Gram-Schmidt",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
+                    MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
+                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    QRDecompositionComputer.setViaGramSchmidtForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                },
+            ),
+            Algorithm(
+                name = "via Householder",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
+                    MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
+                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                    InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
+                    QRDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(numberType = numberType, matrixType = matrixType)
+                },
+            ),
+        )
+        
+        for (algorithm in algorithms) testSuite(algorithm.name) {
+            algorithm.koneContextRegistry.koneContext(
                 MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
