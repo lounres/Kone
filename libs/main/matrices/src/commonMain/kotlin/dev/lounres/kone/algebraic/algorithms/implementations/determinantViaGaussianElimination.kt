@@ -15,6 +15,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -30,7 +31,7 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
         require(rowNumber == columnNumber) { "Cannot compute determinant of matrix with non-equal numbers of rows and columns." }
         
         val n = rowNumber
-        val source = SettableMDList2(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         var result = field.one
         
         for (currentRow in 0u ..< n) {

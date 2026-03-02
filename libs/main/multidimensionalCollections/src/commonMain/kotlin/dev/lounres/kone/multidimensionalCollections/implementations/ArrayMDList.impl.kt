@@ -37,6 +37,8 @@ public class ArrayMDList<E>
             !(this.size contentEquals other.size) -> false
             else -> MDSizeStrides(this.size).all { this[it] == other[it] }
         }
+    
+    public companion object
 }
 
 public class ArrayMDList1<E>
@@ -67,6 +69,8 @@ public class ArrayMDList1<E>
 
         return MDSizeStrides(this.size).all { this[it] == other[it] }
     }
+    
+    public companion object
 }
 
 public class ArrayMDList2<E>(
@@ -102,4 +106,6 @@ public class ArrayMDList2<E>(
 
         return  MDSizeStrides(this.size).all { this[it] == other[it] }
     }
+    
+    public companion object
 }

@@ -19,6 +19,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.MutableOwnedRegistry
@@ -38,7 +39,7 @@ private class MDList1EuclideanSpaceOverRing<Number>(
     private val dimension: UInt,
 ) : EuclideanSpaceOverRing<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> {
     // region Constants
-    override val zero: MDList1<Number> = MDList1(dimension) { field.zero }
+    override val zero: MDList1<Number> = MDList1.generate(dimension) { field.zero }
     // endregion
     
     // region Equality
@@ -133,37 +134,37 @@ private class MDList1EuclideanSpaceOverRing<Number>(
     override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] + other[it] } }
+        return MDList1.generate(dimension) { field { this[it] + other[it] } }
     }
     override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] - other[it] } }
+        return MDList1.generate(dimension) { field { this[it] - other[it] } }
     }
     // endregion
     
     override fun PointWrapper<MDList1<Number>>.plus(other: MDList1<Number>): PointWrapper<MDList1<Number>> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this.vector[it] + other[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this.vector[it] + other[it] } })
     }
     
     override fun MDList1<Number>.plus(other: PointWrapper<MDList1<Number>>): PointWrapper<MDList1<Number>> {
         require(this.contentSize == dimension) { TODO() }
         require(other.vector.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this[it] + other.vector[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this[it] + other.vector[it] } })
     }
     
     override fun PointWrapper<MDList1<Number>>.minus(other: MDList1<Number>): PointWrapper<MDList1<Number>> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this.vector[it] - other[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this.vector[it] - other[it] } })
     }
     
     override fun PointWrapper<MDList1<Number>>.minus(other: PointWrapper<MDList1<Number>>): MDList1<Number> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.vector.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this.vector[it] - other.vector[it] } }
+        return MDList1.generate(dimension) { field { this.vector[it] - other.vector[it] } }
     }
     
     override fun MDList1<Number>.dot(other: MDList1<Number>): Number {
@@ -178,7 +179,7 @@ private class MDList1EuclideanSpaceOverField<Number>(
     private val dimension: UInt,
 ) : EuclideanSpaceOverField<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> {
     // region Constants
-    override val zero: MDList1<Number> = MDList1(dimension) { field.zero }
+    override val zero: MDList1<Number> = MDList1.generate(dimension) { field.zero }
     // endregion
     
     // region Equality
@@ -277,37 +278,37 @@ private class MDList1EuclideanSpaceOverField<Number>(
     override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] + other[it] } }
+        return MDList1.generate(dimension) { field { this[it] + other[it] } }
     }
     override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] - other[it] } }
+        return MDList1.generate(dimension) { field { this[it] - other[it] } }
     }
     // endregion
     
     override fun PointWrapper<MDList1<Number>>.plus(other: MDList1<Number>): PointWrapper<MDList1<Number>> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this.vector[it] + other[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this.vector[it] + other[it] } })
     }
     
     override fun MDList1<Number>.plus(other: PointWrapper<MDList1<Number>>): PointWrapper<MDList1<Number>> {
         require(this.contentSize == dimension) { TODO() }
         require(other.vector.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this[it] + other.vector[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this[it] + other.vector[it] } })
     }
     
     override fun PointWrapper<MDList1<Number>>.minus(other: MDList1<Number>): PointWrapper<MDList1<Number>> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return PointWrapper(MDList1(dimension) { field { this.vector[it] - other[it] } })
+        return PointWrapper(MDList1.generate(dimension) { field { this.vector[it] - other[it] } })
     }
     
     override fun PointWrapper<MDList1<Number>>.minus(other: PointWrapper<MDList1<Number>>): MDList1<Number> {
         require(this.vector.contentSize == dimension) { TODO() }
         require(other.vector.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this.vector[it] - other.vector[it] } }
+        return MDList1.generate(dimension) { field { this.vector[it] - other.vector[it] } }
     }
     
     override fun MDList1<Number>.dot(other: MDList1<Number>): Number {

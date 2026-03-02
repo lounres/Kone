@@ -16,6 +16,7 @@ import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 
@@ -40,7 +41,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
         val (q0, h0) = hessenbergDecompositionComputer { this.hessenbergDecomposition() }
         
         var q = q0
-        val h = SettableMDList2(n, n) { row, column -> h0[row, column] }
+        val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
         context(
             numberField,

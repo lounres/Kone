@@ -17,6 +17,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -35,7 +36,7 @@ private class QRDecompositionComputerViaGramSchmidt<Number, Matrix : MDList2<Num
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
         
-        val qBuilder = SettableMDList2(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
         for (i in 0u ..< n) field {
             for (j in 0u ..< i) {

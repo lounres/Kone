@@ -24,6 +24,7 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.MDSize
 import dev.lounres.kone.multidimensionalCollections.contentEquals
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
@@ -59,7 +60,7 @@ public value class Vector3<out N>(public val content: MDList1<N>) {
 
 public fun Vector3(x: Double, y: Double, z: Double): Vector3<Double> {
     val contentArray = KoneDoubleArray.of(x, y, z)
-    return Vector3(MDList1(contentArray.size) { contentArray[it] })
+    return Vector3(MDList1.generate(contentArray.size) { contentArray[it] })
 }
 
 @Serializable
@@ -78,7 +79,7 @@ public value class Point3<out N>(public val content: MDList1<N>) {
 
 public fun <Number> Point3(x: Number, y: Number, z: Number): Point3<Number> =
     Point3(
-        MDList1(3u) {
+        MDList1.generate(3u) {
             when (it) {
                 0u -> x
                 1u -> y
@@ -92,7 +93,7 @@ public class EuclideanSpace3OverRing<Number>(
     private val ring: Ring<Number>,
 ) : EuclideanSpaceOverRing<Number, Vector3<Number>, Point3<Number>> {
     // region Constants
-    override val zero: Vector3<Number> = Vector3(MDList1(3u) { ring.zero })
+    override val zero: Vector3<Number> = Vector3(MDList1.generate(3u) { ring.zero })
     // endregion
     
     // region Equality
@@ -157,22 +158,22 @@ public class EuclideanSpace3OverRing<Number>(
     override operator fun Vector3<Number>.unaryMinus(): Vector3<Number> =
         Vector3(this.content.map { ring { -it } })
     override operator fun Vector3<Number>.plus(other: Vector3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { ring { this.content[it] + other.content[it] } })
+        Vector3(MDList1.generate(3u) { ring { this.content[it] + other.content[it] } })
     override operator fun Vector3<Number>.minus(other: Vector3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { ring { this.content[it] - other.content[it] } })
+        Vector3(MDList1.generate(3u) { ring { this.content[it] - other.content[it] } })
     // endregion
     
     override fun Point3<Number>.plus(other: Vector3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { ring { this.content[it] + other.content[it] } })
+        Point3(MDList1.generate(3u) { ring { this.content[it] + other.content[it] } })
     
     override fun Vector3<Number>.plus(other: Point3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { ring { this.content[it] + other.content[it] } })
+        Point3(MDList1.generate(3u) { ring { this.content[it] + other.content[it] } })
     
     override fun Point3<Number>.minus(other: Vector3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { ring { this.content[it] - other.content[it] } })
+        Point3(MDList1.generate(3u) { ring { this.content[it] - other.content[it] } })
     
     override fun Point3<Number>.minus(other: Point3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { ring { this.content[it] - other.content[it] } })
+        Vector3(MDList1.generate(3u) { ring { this.content[it] - other.content[it] } })
     
     override fun Vector3<Number>.dot(other: Vector3<Number>): Number =
         ring { (0u ..< 3u).toKoneList().sumOf { this.content[it] * other.content[it] } }
@@ -265,7 +266,7 @@ public class EuclideanSpace3OverField<Number>(
     private val field: Field<Number>,
 ) : EuclideanSpaceOverField<Number, Vector3<Number>, Point3<Number>> {
     // region Constants
-    override val zero: Vector3<Number> = Vector3(MDList1(3u) { field.zero })
+    override val zero: Vector3<Number> = Vector3(MDList1.generate(3u) { field.zero })
     // endregion
     
     // region Equality
@@ -332,22 +333,22 @@ public class EuclideanSpace3OverField<Number>(
     override operator fun Vector3<Number>.unaryMinus(): Vector3<Number> =
         Vector3(this.content.map { field { -it } })
     override operator fun Vector3<Number>.plus(other: Vector3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { field { this.content[it] + other.content[it] } })
+        Vector3(MDList1.generate(3u) { field { this.content[it] + other.content[it] } })
     override operator fun Vector3<Number>.minus(other: Vector3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { field { this.content[it] - other.content[it] } })
+        Vector3(MDList1.generate(3u) { field { this.content[it] - other.content[it] } })
     // endregion
     
     override fun Point3<Number>.plus(other: Vector3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { field { this.content[it] + other.content[it] } })
+        Point3(MDList1.generate(3u) { field { this.content[it] + other.content[it] } })
     
     override fun Vector3<Number>.plus(other: Point3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { field { this.content[it] + other.content[it] } })
+        Point3(MDList1.generate(3u) { field { this.content[it] + other.content[it] } })
     
     override fun Point3<Number>.minus(other: Vector3<Number>): Point3<Number> =
-        Point3(MDList1(3u) { field { this.content[it] - other.content[it] } })
+        Point3(MDList1.generate(3u) { field { this.content[it] - other.content[it] } })
     
     override fun Point3<Number>.minus(other: Point3<Number>): Vector3<Number> =
-        Vector3(MDList1(3u) { field { this.content[it] - other.content[it] } })
+        Vector3(MDList1.generate(3u) { field { this.content[it] - other.content[it] } })
     
     override fun Vector3<Number>.dot(other: Vector3<Number>): Number =
         field { (0u ..< 3u).toKoneList().sumOf { this.content[it] * other.content[it] } }

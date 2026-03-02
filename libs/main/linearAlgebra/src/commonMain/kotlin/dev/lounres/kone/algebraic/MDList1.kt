@@ -9,6 +9,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.MutableOwnedRegistry
@@ -28,7 +29,7 @@ private class MDList1Module<Number>(
     private val dimension: UInt,
 ) : Module<Number, MDList1<Number>> {
     // region Constants
-    override val zero: MDList1<Number> = MDList1(dimension) { ring.zero }
+    override val zero: MDList1<Number> = MDList1.generate(dimension) { ring.zero }
     // endregion
     
     // region Equality
@@ -123,12 +124,12 @@ private class MDList1Module<Number>(
     override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { ring { this[it] + other[it] } }
+        return MDList1.generate(dimension) { ring { this[it] + other[it] } }
     }
     override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { ring { this[it] + other[it] } }
+        return MDList1.generate(dimension) { ring { this[it] + other[it] } }
     }
     // endregion
 }
@@ -161,7 +162,7 @@ private class MDList1VectorSpace<Number>(
     override val dimension: UInt,
 ) : VectorSpace.FiniteDimensional<Number, MDList1<Number>> {
     // region Constants
-    override val zero: MDList1<Number> = MDList1(dimension) { field.zero }
+    override val zero: MDList1<Number> = MDList1.generate(dimension) { field.zero }
     // endregion
     
     // region Equality
@@ -260,12 +261,12 @@ private class MDList1VectorSpace<Number>(
     override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] + other[it] } }
+        return MDList1.generate(dimension) { field { this[it] + other[it] } }
     }
     override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1(dimension) { field { this[it] + other[it] } }
+        return MDList1.generate(dimension) { field { this[it] + other[it] } }
     }
     // endregion
 }

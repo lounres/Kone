@@ -6,19 +6,20 @@
 package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
+import dev.lounres.kone.multidimensionalCollections.implementations.generate
 
 
-public fun <E> MDList1(vararg elements: E): MDList1<E> =
-    ArrayMDList1(elements.size.toUInt()) { index -> elements[index.toInt()] }
+public fun <E> MDList1.Companion.of(vararg elements: E): MDList1<E> =
+    ArrayMDList1.generate(elements.size.toUInt()) { index -> elements[index.toInt()] }
 
-public inline fun <E> MDList1(contentSize: UInt, initializer: (index: UInt) -> E): MDList1<E> =
-    ArrayMDList1(contentSize = contentSize, initializer = initializer)
+public inline fun <E> MDList1.Companion.generate(contentSize: UInt, initializer: (index: UInt) -> E): MDList1<E> =
+    ArrayMDList1.generate(contentSize = contentSize, initializer = initializer)
 
-public fun <E> SettableMDList1(vararg elements: E): SettableMDList1<E> =
-    ArrayMDList1(elements.size.toUInt()) { index -> elements[index.toInt()] }
+public fun <E> SettableMDList1.Companion.of(vararg elements: E): SettableMDList1<E> =
+    ArrayMDList1.generate(elements.size.toUInt()) { index -> elements[index.toInt()] }
 
-public inline fun <E> SettableMDList1(contentSize: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
-    ArrayMDList1(contentSize = contentSize, initializer = initializer)
+public inline fun <E> SettableMDList1.Companion.generate(contentSize: UInt, initializer: (index: UInt) -> E): SettableMDList1<E> =
+    ArrayMDList1.generate(contentSize = contentSize, initializer = initializer)
 
 public val MDList1<*>.indices: UIntRange get() = 0u ..< size[0u]
 

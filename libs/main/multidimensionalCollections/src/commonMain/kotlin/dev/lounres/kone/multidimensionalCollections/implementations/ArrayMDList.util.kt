@@ -14,7 +14,7 @@ import dev.lounres.kone.multidimensionalCollections.producers.MDList2Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDListProducer
 
 
-public inline fun <E> ArrayMDList(
+public inline fun <E> ArrayMDList.Companion.generate(
     size: MDSize,
     offsetting: MDSizeOffsetting = MDSizeStrides(size),
     initializer: (MDIndex) -> E,
@@ -36,10 +36,10 @@ public object ArrayMDListProducer : MDListProducer {
         size: MDSize,
         offsetting: MDSizeOffsetting,
         initializer: (MDIndex) -> Element
-    ): MDList<Element> = ArrayMDList(size, offsetting, initializer)
+    ): MDList<Element> = ArrayMDList.generate(size, offsetting, initializer)
 }
 
-public inline fun <E> ArrayMDList1(
+public inline fun <E> ArrayMDList1.Companion.generate(
     contentSize: UInt,
     initializer: (index: UInt) -> E,
 ): ArrayMDList1<E> {
@@ -55,10 +55,10 @@ public inline fun <E> ArrayMDList1(
 
 public object ArrayMDList1Producer : MDList1Producer {
     override fun <Element> produceBy(size: UInt, initializer: (UInt) -> Element): MDList1<Element> =
-        ArrayMDList1(size, initializer)
+        ArrayMDList1.generate(size, initializer)
 }
 
-public inline fun <E> ArrayMDList2(
+public inline fun <E> ArrayMDList2.Companion.generate(
     rowNumber: UInt,
     columnNumber: UInt,
     initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
@@ -97,5 +97,5 @@ public object ArrayMDList2Producer : MDList2Producer {
         columnNumber: UInt,
         initializer: (UInt, UInt) -> Element
     ): MDList2<Element> =
-        ArrayMDList2(rowNumber, columnNumber, initializer)
+        ArrayMDList2.generate(rowNumber, columnNumber, initializer)
 }

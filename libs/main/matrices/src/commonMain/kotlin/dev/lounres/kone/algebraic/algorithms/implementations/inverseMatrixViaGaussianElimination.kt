@@ -9,6 +9,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
@@ -25,8 +26,8 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
         if (rowNumber != columnNumber) return null
         
         val n = rowNumber
-        val source = SettableMDList2(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
-        val result = SettableMDList2(rowNumber = n, columnNumber = n) { row, column ->
+        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        val result = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column ->
             if (row == column) field.one else field.zero
         }
         

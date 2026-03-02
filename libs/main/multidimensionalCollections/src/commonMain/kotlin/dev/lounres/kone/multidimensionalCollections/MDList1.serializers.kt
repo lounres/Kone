@@ -10,6 +10,7 @@ package dev.lounres.kone.multidimensionalCollections
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
+import dev.lounres.kone.multidimensionalCollections.implementations.generate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -31,7 +32,7 @@ internal class MDList1Serializer<E>(
 
     override fun deserialize(decoder: Decoder): MDList1<E> {
         val content = decoder.decodeSerializableValue(settableListSerializer)
-        return ArrayMDList1(content.size) { content[it] }
+        return ArrayMDList1.generate(content.size) { content[it] }
     }
 }
 
@@ -49,6 +50,6 @@ internal class SettableMDList1Serializer<E>(
 
     override fun deserialize(decoder: Decoder): SettableMDList1<E> {
         val content = decoder.decodeSerializableValue(settableListSerializer)
-        return ArrayMDList1(content.size) { content[it] }
+        return ArrayMDList1.generate(content.size) { content[it] }
     }
 }

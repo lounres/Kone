@@ -10,13 +10,14 @@ import dev.lounres.kone.algebraic.primaryFor
 import dev.lounres.kone.collections.utils.product
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
+import dev.lounres.kone.multidimensionalCollections.implementations.generate
 
 
-public fun <E> MDList(
+public fun <E> MDList.Companion.generate(
     size: MDSize,
     offsetting: MDSizeOffsetting = MDSizeStrides(size),
     initializer: (index: MDIndex) -> E
-): MDList<E> = ArrayMDList(size = size, offsetting = offsetting, initializer = initializer)
+): MDList<E> = ArrayMDList.generate(size = size, offsetting = offsetting, initializer = initializer)
 
 public val MDList<*>.dimension: UInt get() = size.size
 public val MDList<*>.contentSize: UInt get() = (Semiring.primaryFor(UInt)) { size.product() }

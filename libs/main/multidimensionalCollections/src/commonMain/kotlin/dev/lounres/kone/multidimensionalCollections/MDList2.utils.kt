@@ -12,22 +12,33 @@ import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.KoneVirtualList
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
+import dev.lounres.kone.multidimensionalCollections.implementations.generate
 
 
-public inline fun <E> MDList2(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): MDList2<E> =
-    ArrayMDList2(rowNumber, columnNumber) { row, column -> initializer(row, column) }
+public inline fun <E> MDList2.Companion.generate(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): MDList2<E> =
+    ArrayMDList2.generate(rowNumber, columnNumber) { row, column -> initializer(row, column) }
 
-public inline fun <E> SettableMDList2(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): SettableMDList2<E> =
-    ArrayMDList2(rowNumber, columnNumber) { row, column -> initializer(row, column) }
+public inline fun <E> SettableMDList2.Companion.generate(rowNumber: UInt, columnNumber: UInt, initializer: (row: UInt, column: UInt) -> E): SettableMDList2<E> =
+    ArrayMDList2.generate(rowNumber, columnNumber) { row, column -> initializer(row, column) }
 
-public fun <E> MDList2(vararg elements: KoneList<E>): MDList2<E> {
+public fun <E> MDList2.Companion.fromRows(vararg elements: KoneList<E>): MDList2<E> {
     require(elements.all { it.size == elements[0].size }) { "Cannot construct MDList2 from list of lists of different sizes" }
-    return ArrayMDList2(elements.size.toUInt(), elements[0].size) { row, column -> elements[row.toInt()][column] }
+    return ArrayMDList2.generate(elements.size.toUInt(), elements[0].size) { row, column -> elements[row.toInt()][column] }
 }
 
-public fun <E> SettableMDList2(vararg elements: KoneList<E>): SettableMDList2<E> {
-    require(elements.all { it.size == elements[0].size }) { "Cannot construct MDList2 from list of lists of different sizes" }
-    return ArrayMDList2(elements.size.toUInt(), elements[0].size) { row, column -> elements[row.toInt()][column] }
+public fun <E> SettableMDList2.Companion.fromRows(vararg elements: KoneList<E>): SettableMDList2<E> {
+    require(elements.all { it.size == elements[0].size }) { "Cannot construct SettableMDList2 from list of lists of different sizes" }
+    return ArrayMDList2.generate(elements.size.toUInt(), elements[0].size) { row, column -> elements[row.toInt()][column] }
+}
+
+public fun <E> MDList2.Companion.of(rowNumber: UInt, columnNumber: UInt, vararg elements: E): MDList2<E> {
+    require(elements.size.toUInt() == rowNumber * columnNumber) { "Cannot construct MDList2 of elements which number mismatches the size of the list." }
+    return ArrayMDList2.generate(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> elements[(row * columnNumber + column).toInt()] }
+}
+
+public fun <E> SettableMDList2.Companion.of(rowNumber: UInt, columnNumber: UInt, vararg elements: E): SettableMDList2<E> {
+    require(elements.size.toUInt() == rowNumber * columnNumber) { "Cannot construct SettableMDList2 of elements which number mismatches the size of the list." }
+    return ArrayMDList2.generate(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> elements[(row * columnNumber + column).toInt()] }
 }
 
 public val <E> MDList2<E>.rowsView: KoneList<KoneList<E>>

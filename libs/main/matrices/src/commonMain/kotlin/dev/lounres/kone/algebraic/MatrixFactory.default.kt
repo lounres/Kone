@@ -7,6 +7,7 @@ import dev.lounres.kone.collections.utils.all
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
+import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.MutableOwnedRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -25,14 +26,14 @@ private class MDList2MatrixFactory<Number>(
         rowNumber: UInt,
         columnNumber: UInt,
         generator: (row: UInt, column: UInt) -> Number
-    ): MDList2<Number> = MDList2(rowNumber = rowNumber, columnNumber = columnNumber, initializer = generator)
+    ): MDList2<Number> = MDList2.generate(rowNumber = rowNumber, columnNumber = columnNumber, initializer = generator)
     
     override fun fillMatrix(rowNumber: UInt, columnNumber: UInt, number: Number): MDList2<Number> =
-        MDList2(rowNumber = rowNumber, columnNumber = columnNumber) { _, _ ->  number }
+        MDList2.generate(rowNumber = rowNumber, columnNumber = columnNumber) { _, _ ->  number }
     
     override fun mapMatrix(rowNumber: UInt, columnNumber: UInt, numbers: KoneMap<MDIndex, Number>): MDList2<Number> {
         require(numbers.keysView.all { it.size == 2u && it[0u] < rowNumber && it[1u] < columnNumber }) { TODO() }
-        return MDList2(rowNumber, columnNumber) { row, column -> numbers.getOrElse(MDIndex.of(row, column)) { ring.zero } }
+        return MDList2.generate(rowNumber, columnNumber) { row, column -> numbers.getOrElse(MDIndex.of(row, column)) { ring.zero } }
     }
 }
 

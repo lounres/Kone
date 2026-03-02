@@ -18,6 +18,7 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
+import dev.lounres.kone.multidimensionalCollections.implementations.generate
 import dev.lounres.kone.multidimensionalCollections.indices
 import dev.lounres.kone.multidimensionalCollections.rowIndices
 
@@ -115,22 +116,22 @@ public inline fun <E> MDList2<E>.noneIndexed(block: (rowIndex: UInt, columnIndex
 }
 
 public inline fun <E, R> MDList<E>.map(transform: (E) -> R): MDList<R> =
-    ArrayMDList(size) { transform(get(it)) }
+    ArrayMDList.generate(size) { transform(get(it)) }
 
 public inline fun <E, R> MDList<E>.mapIndexed(transform: (index: MDIndex, E) -> R): MDList<R> =
-    ArrayMDList(size) { transform(it, get(it)) }
+    ArrayMDList.generate(size) { transform(it, get(it)) }
 
 public inline fun <E, R> MDList1<E>.map(transform: (E) -> R): MDList1<R> =
-    ArrayMDList1(contentSize) { transform(get(it)) }
+    ArrayMDList1.generate(contentSize) { transform(get(it)) }
 
 public inline fun <E, R> MDList1<E>.mapIndexed(transform: (index: UInt, E) -> R): MDList1<R> =
-    ArrayMDList1(contentSize) { transform(it, get(it)) }
+    ArrayMDList1.generate(contentSize) { transform(it, get(it)) }
 
 public inline fun <E, R> MDList2<E>.map(transform: (E) -> R): MDList2<R> =
-    ArrayMDList2(rowNumber, columnNumber) { row, column -> transform(get(row, column)) }
+    ArrayMDList2.generate(rowNumber, columnNumber) { row, column -> transform(get(row, column)) }
 
 public inline fun <E, R> MDList2<E>.mapIndexed(transform: (rowIndex: UInt, columnIndex: UInt, E) -> R): MDList2<R> =
-    ArrayMDList2(rowNumber, columnNumber) { row, column -> transform(row, column, get(row, column)) }
+    ArrayMDList2.generate(rowNumber, columnNumber) { row, column -> transform(row, column, get(row, column)) }
 
 public inline fun <E, R> MDList<E>.fold(initial: R, operation: (acc: R, E) -> R): R {
     var accumulator = initial
