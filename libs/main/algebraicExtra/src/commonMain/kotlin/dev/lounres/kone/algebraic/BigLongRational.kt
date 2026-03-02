@@ -170,7 +170,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
             denominator = reducedDenominator,
         )
     }
-    override fun BigLongRational.div(other: Int): BigLongRational = context(Group.primaryFor(Int), Order.primaryFor(Int), UBigLong.context) {
+    override fun BigLongRational.div(other: Int): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
         if (other == 0) divisionByZero()
         val sign = this.numerator.sign * other.sign()
         val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(abs(other).toUInt()))
@@ -231,7 +231,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
             denominator = reducedDenominator,
         )
     }
-    override fun BigLongRational.div(other: Long): BigLongRational = context(Group.primaryFor(Long), Order.primaryFor(Long), UBigLong.context) {
+    override fun BigLongRational.div(other: Long): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
         if (other == 0L) divisionByZero()
         val sign = this.numerator.sign * other.sign()
         val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(abs(other).toULong()))
@@ -292,7 +292,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
             denominator = reducedDenominator,
         )
     }
-    override fun Int.div(other: BigLongRational): BigLongRational = context(Group.primaryFor(Int), Order.primaryFor(Int), UBigLong.context) {
+    override fun Int.div(other: BigLongRational): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = this.sign() * other.numerator.sign
         val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(abs(this).toUInt()), other.numerator.absoluteValue)
@@ -354,7 +354,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
             denominator = reducedDenominator,
         )
     }
-    override fun Long.div(other: BigLongRational): BigLongRational = context(Group.primaryFor(Long), Order.primaryFor(Long), UBigLong.context) {
+    override fun Long.div(other: BigLongRational): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = this.sign() * other.numerator.sign
         val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(abs(this).toULong()), other.numerator.absoluteValue)

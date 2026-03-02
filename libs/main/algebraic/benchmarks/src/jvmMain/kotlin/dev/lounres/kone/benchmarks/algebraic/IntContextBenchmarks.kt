@@ -7,7 +7,9 @@
 
 package dev.lounres.kone.benchmarks.algebraic
 
-import dev.lounres.kone.algebraic.primaryFor
+import dev.lounres.kone.algebraic.equality
+import dev.lounres.kone.algebraic.order
+import dev.lounres.kone.algebraic.reification
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
@@ -36,7 +38,7 @@ class IntContextEqualityBenchmarks {
     @Param("0", "1")
     final var b: Int = 0
     
-    final val equality = Equality.primaryFor(Int)
+    final val equality = Int.equality()
     
     @Benchmark
     fun equality_via_primitives() = a == b
@@ -54,7 +56,7 @@ class IntContextEqualityBulkBenchmarks {
     
     final var index: Int = 0
     
-    final val equality = Equality.primaryFor(Int)
+    final val equality = Int.equality()
     
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -85,7 +87,7 @@ class IntContextOrderBenchmarks {
     @Param("0", "1")
     final var b: Int = 0
     
-    val order = Order.primaryFor(Int)
+    val order = Int.order()
     
     @Benchmark
     fun comparison_via_primitives() = a < b
@@ -101,7 +103,7 @@ class IntContextOrderBulkBenchmarks {
     
     final var index: Int = 0
     
-    final val order = Order.primaryFor(Int)
+    final val order = Int.order()
     
     @Benchmark
     fun Blackhole.idle_on_inputs() {
@@ -154,7 +156,7 @@ class IntContextOrderBulkBenchmarks {
 class IntContextReificationBenchmarks {
     var a: Int = 1846030199
 
-    val reification = Reification.primaryFor(Int)
+    val reification = Int.reification()
 
     @Benchmark
     fun reifibility_successful() = a in reification

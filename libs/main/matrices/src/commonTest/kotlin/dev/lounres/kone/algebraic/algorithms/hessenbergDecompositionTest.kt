@@ -1,21 +1,8 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
-import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.FieldExtension
-import dev.lounres.kone.algebraic.MatrixCategoryOverField
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefault
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaGaussianElimination
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholder
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholderForComplexNumbers
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.setDefault
-import dev.lounres.kone.algebraic.setPrimaryFor
-import dev.lounres.kone.algebraic.setPrimaryForComplexOver
-import dev.lounres.kone.algebraic.setViaDefault
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.algorithms.implementations.*
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -26,7 +13,6 @@ import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.relations.Order
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -87,8 +73,8 @@ val HessenbergDecompositionTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                Order.setPrimaryFor(Double)
+                Double.setSafeField()
+                Double.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 MatrixFactory.setDefault<Double>(numberType = numberType)
                 MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
@@ -242,8 +228,8 @@ val HessenbergDecompositionTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                Order.setPrimaryFor(Double)
+                Double.setSafeField()
+                Double.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
                 MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)

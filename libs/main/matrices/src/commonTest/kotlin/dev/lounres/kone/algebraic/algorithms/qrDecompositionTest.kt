@@ -13,7 +13,6 @@ import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.relations.Order
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -74,7 +73,7 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Gram-Schmidt") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
+                Double.setSafeField()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 MatrixFactory.setDefault<Double>(numberType = numberType)
                 MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
@@ -120,8 +119,8 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                Order.setPrimaryFor(Double)
+                Double.setSafeField()
+                Double.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 MatrixFactory.setDefault<Double>(numberType = numberType)
                 MatrixCategoryOverField.setViaDefault<Double, MDList2<Double>>(numberType = numberType, matrixType = matrixType)
@@ -268,7 +267,7 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Gram-Schmidt") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
+                Double.setSafeField()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
                 MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)
@@ -321,8 +320,8 @@ val QRDecompositionImplementationsTests by testSuite {
         
         testSuite("via Householder") {
             val koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                Field.setPrimaryFor(Double)
-                Order.setPrimaryFor(Double)
+                Double.setSafeField()
+                Double.setSafeOrder()
                 PositiveSquareRootComputer.setViaDefaultForDouble()
                 FieldExtension.setPrimaryForComplexOver<Double>(numberType = numberType)
                 MatrixFactory.setDefault<ComplexNumber<Double>>(numberType = complexNumberType)
@@ -342,9 +341,6 @@ val QRDecompositionImplementationsTests by testSuite {
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, r) = input.qrDecomposition()
-                    
-                    println(q)
-                    println(r)
                     
                     scope {
                         val dif = input - q * r

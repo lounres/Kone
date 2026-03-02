@@ -22,6 +22,7 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.suppliedType
+import kotlin.math.pow as kpow
 
 
 // TODO: Add other safe contexts
@@ -201,84 +202,425 @@ private data object SafeLongContext: Reification<Long>, EuclideanRing<Long>, Ord
     // endregion
 }
 
-public fun Reification.Companion.safeFor(target: Long.Companion): Reification<Long> = SafeLongContext
-public fun Order.Companion.safeFor(target: Long.Companion): Order<Long> = SafeLongContext
-public fun Hashing.Companion.safeFor(target: Long.Companion): Hashing<Long> = SafeLongContext
-public fun EuclideanRing.Companion.safeFor(target: Long.Companion): EuclideanRing<Long> = SafeLongContext
-public fun EuclideanSemiring.Companion.safeFor(target: Long.Companion): EuclideanSemiring<Long> = SafeLongContext
-public fun CommutativeRing.Companion.safeFor(target: Long.Companion): CommutativeRing<Long> = SafeLongContext
-public fun Ring.Companion.safeFor(target: Long.Companion): Ring<Long> = SafeLongContext
-public fun CommutativeSemiring.Companion.safeFor(target: Long.Companion): CommutativeSemiring<Long> = SafeLongContext
-public fun Semiring.Companion.safeFor(target: Long.Companion): Semiring<Long> = SafeLongContext
-public fun CommutativeGroup.Companion.safeFor(target: Long.Companion): CommutativeGroup<Long> = SafeLongContext
-public fun Group.Companion.safeFor(target: Long.Companion): Group<Long> = SafeLongContext
-public fun CommutativeMonoid.Companion.safeFor(target: Long.Companion): CommutativeMonoid<Long> = SafeLongContext
-public fun Monoid.Companion.safeFor(target: Long.Companion): Monoid<Long> = SafeLongContext
-public fun CommutativeSemigroup.Companion.safeFor(target: Long.Companion): CommutativeSemigroup<Long> = SafeLongContext
-public fun Semigroup.Companion.safeFor(target: Long.Companion): Semigroup<Long> = SafeLongContext
-public fun Equality.Companion.safeFor(target: Long.Companion): Equality<Long> = SafeLongContext
+public fun Long.Companion.safeReification(): Reification<Long> = SafeLongContext
+public fun Long.Companion.safeOrder(): Order<Long> = SafeLongContext
+public fun Long.Companion.safeHashing(): Hashing<Long> = SafeLongContext
+public fun Long.Companion.safeEuclideanRing(): EuclideanRing<Long> = SafeLongContext
+public fun Long.Companion.safeEuclideanSemiring(): EuclideanSemiring<Long> = SafeLongContext
+public fun Long.Companion.safeCommutativeRing(): CommutativeRing<Long> = SafeLongContext
+public fun Long.Companion.safeRing(): Ring<Long> = SafeLongContext
+public fun Long.Companion.safeCommutativeSemiring(): CommutativeSemiring<Long> = SafeLongContext
+public fun Long.Companion.safeSemiring(): Semiring<Long> = SafeLongContext
+public fun Long.Companion.safeCommutativeGroup(): CommutativeGroup<Long> = SafeLongContext
+public fun Long.Companion.safeGroup(): Group<Long> = SafeLongContext
+public fun Long.Companion.safeCommutativeMonoid(): CommutativeMonoid<Long> = SafeLongContext
+public fun Long.Companion.safeMonoid(): Monoid<Long> = SafeLongContext
+public fun Long.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Long> = SafeLongContext
+public fun Long.Companion.safeSemigroup(): Semigroup<Long> = SafeLongContext
+public fun Long.Companion.safeEquality(): Equality<Long> = SafeLongContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeReification() {
     Reification.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeOrder() {
     Order.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeHashing() {
     Hashing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanRing.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeEuclideanRing() {
     EuclideanRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeEuclideanSemiring() {
     EuclideanSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeCommutativeRing() {
     CommutativeRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeRing() {
     Ring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeCommutativeSemiring() {
     CommutativeSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeSemiring() {
     Semiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeCommutativeGroup() {
     CommutativeGroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeGroup() {
     Group.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeCommutativeMonoid() {
     CommutativeMonoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeMonoid() {
     Monoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeCommutativeSemigroup() {
     CommutativeSemigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeSemigroup() {
     Semigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setSafeFor(target: Long.Companion) {
+public fun Long.Companion.setSafeEquality() {
     Equality.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
+}
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+private data object SafeDoubleContext: Reification<Double>, Field<Double>, Order<Double>, Hashing<Double> {
+    private fun Double.validate() {
+        when {
+            this.isNaN() -> throw IllegalArgumentException("NaN encountered!")
+            this.isInfinite() -> throw IllegalArgumentException("Infinity encountered!")
+        }
+    }
+    
+    // region Reification
+    override fun contains(element: Any?): Boolean =
+        if (element is Double) {
+            element.validate()
+            true
+        } else false
+    override fun reifyMaybe(element: Any?): Maybe<Double> =
+        if (element is Double) {
+            element.validate()
+            Some(element)
+        } else None
+    override fun reifyOrNull(element: Any?): Double? =
+        if (element is Double) {
+            element.validate()
+            element
+        } else null
+    override fun reify(element: Any?): Double =
+        if (element is Double) {
+            element.validate()
+            element
+        } else reificationException()
+    // endregion
+    
+    // region Order
+    override fun Double.compareWith(other: Double): ComparisonResult {
+        this.validate()
+        other.validate()
+        return this.compareTo(other).asComparisonResult()
+    }
+    // endregion
+    
+    // region Constants
+    override val zero: Double get() = 0.0
+    override val one: Double get() = 1.0
+    // endregion
+    
+    // region Equality
+    override fun Double.equalsTo(other: Double): Boolean {
+        this.validate()
+        other.validate()
+        return this == other
+    }
+    // endregion
+    
+    // region Conversion
+    override fun valueOf(arg: Int): Double = arg.toDouble()
+    override fun valueOf(arg: UInt): Double = arg.toDouble()
+    override fun valueOf(arg: Long): Double = arg.toDouble()
+    override fun valueOf(arg: ULong): Double = arg.toDouble()
+    // endregion
+    
+    // region Double-Int operations
+    override fun Double.plus(other: Int): Double {
+        this.validate()
+        return this + other
+    }
+    override fun Double.minus(other: Int): Double {
+        this.validate()
+        return this - other
+    }
+    override fun Double.times(other: Int): Double {
+        this.validate()
+        return this * other
+    }
+    override fun Double.div(other: Int): Double {
+        this.validate()
+        if (other == 0) divisionByZero()
+        return this / other
+    }
+    // endregion
+    
+    // region Double-UInt operations
+    override fun Double.plus(other: UInt): Double {
+        this.validate()
+        return this + other.toDouble()
+    }
+    override fun Double.minus(other: UInt): Double {
+        this.validate()
+        return this - other.toDouble()
+    }
+    override fun Double.times(other: UInt): Double {
+        this.validate()
+        return this * other.toDouble()
+    }
+    override fun Double.div(other: UInt): Double {
+        this.validate()
+        if (other == 0u) divisionByZero()
+        return this / other.toDouble()
+    }
+    // endregion
+    
+    // region Double-Long operations
+    override fun Double.plus(other: Long): Double {
+        this.validate()
+        return this + other
+    }
+    override fun Double.minus(other: Long): Double {
+        this.validate()
+        return this - other
+    }
+    override fun Double.times(other: Long): Double {
+        this.validate()
+        return this * other
+    }
+    override fun Double.div(other: Long): Double {
+        this.validate()
+        if (other == 0L) divisionByZero()
+        return this / other
+    }
+    // endregion
+    
+    // region Double-ULong operations
+    override fun Double.plus(other: ULong): Double {
+        this.validate()
+        return this + other.toDouble()
+    }
+    override fun Double.minus(other: ULong): Double {
+        this.validate()
+        return this - other.toDouble()
+    }
+    override fun Double.times(other: ULong): Double {
+        this.validate()
+        return this * other.toDouble()
+    }
+    override fun Double.div(other: ULong): Double {
+        this.validate()
+        if (other == 0uL) divisionByZero()
+        return this / other.toDouble()
+    }
+    // endregion
+    
+    // region Int-Double operations
+    override fun Int.plus(other: Double): Double {
+        other.validate()
+        return this + other
+    }
+    override fun Int.minus(other: Double): Double {
+        other.validate()
+        return this - other
+    }
+    override fun Int.times(other: Double): Double {
+        other.validate()
+        return this * other
+    }
+    override fun Int.div(other: Double): Double {
+        other.validate()
+        if (other == 0.0) divisionByZero()
+        return this / other
+    }
+    // endregion
+    
+    // region UInt-Double operations
+    override fun UInt.plus(other: Double): Double {
+        other.validate()
+        return this.toDouble() + other
+    }
+    override fun UInt.minus(other: Double): Double {
+        other.validate()
+        return this.toDouble() - other
+    }
+    override fun UInt.times(other: Double): Double {
+        other.validate()
+        return this.toDouble() * other
+    }
+    override fun UInt.div(other: Double): Double {
+        other.validate()
+        if (other == 0.0) divisionByZero()
+        return this.toDouble() / other
+    }
+    // endregion
+    
+    // region Long-Double operations
+    override fun Long.plus(other: Double): Double {
+        other.validate()
+        return this + other
+    }
+    override fun Long.minus(other: Double): Double {
+        other.validate()
+        return this - other
+    }
+    override fun Long.times(other: Double): Double {
+        other.validate()
+        return this * other
+    }
+    override fun Long.div(other: Double): Double {
+        other.validate()
+        if (other == 0.0) divisionByZero()
+        return this / other
+    }
+    // endregion
+    
+    // region ULong-Double operations
+    override fun ULong.plus(other: Double): Double {
+        other.validate()
+        return this.toDouble() + other
+    }
+    override fun ULong.minus(other: Double): Double {
+        other.validate()
+        return this.toDouble() - other
+    }
+    override fun ULong.times(other: Double): Double {
+        other.validate()
+        return this.toDouble() * other
+    }
+    override fun ULong.div(other: Double): Double {
+        other.validate()
+        if (other == 0.0) divisionByZero()
+        return this.toDouble() / other
+    }
+    // endregion
+    
+    // region Double-Double operations
+    override fun Double.unaryMinus(): Double {
+        this.validate()
+        return -this
+    }
+    override fun Double.plus(other: Double): Double {
+        this.validate()
+        other.validate()
+        return this + other
+    }
+    override fun Double.minus(other: Double): Double {
+        this.validate()
+        other.validate()
+        return this - other
+    }
+    override fun Double.times(other: Double): Double {
+        this.validate()
+        other.validate()
+        return this * other
+    }
+    override fun Double.div(other: Double): Double {
+        this.validate()
+        other.validate()
+        if (other == 0.0) divisionByZero()
+        return this / other
+    }
+    override fun power(base: Double, exponent: UInt): Double {
+        base.validate()
+        if (base <= 0.0) throw IllegalArgumentException("Cannot take power of non-positive number $base")
+        return base.kpow(exponent.toDouble())
+    }
+    override fun power(base: Double, exponent: ULong): Double {
+        base.validate()
+        if (base <= 0.0) throw IllegalArgumentException("Cannot take power of non-positive number $base")
+        return base.kpow(exponent.toDouble())
+    }
+    override fun power(base: Double, exponent: Int): Double {
+        base.validate()
+        if (base <= 0.0) throw IllegalArgumentException("Cannot take power of non-positive number $base")
+        return base.kpow(exponent)
+    }
+    override fun power(base: Double, exponent: Long): Double {
+        base.validate()
+        if (base <= 0.0) throw IllegalArgumentException("Cannot take power of non-positive number $base")
+        return base.kpow(exponent.toDouble())
+    }
+    // endregion
+}
+
+public fun Double.Companion.safeReification(): Reification<Double> = SafeDoubleContext
+public fun Double.Companion.safeOrder(): Order<Double> = SafeDoubleContext
+public fun Double.Companion.safeHashing(): Hashing<Double> = SafeDoubleContext
+public fun Double.Companion.safeField(): Field<Double> = SafeDoubleContext
+public fun Double.Companion.safeCommutativeRing(): CommutativeRing<Double> = SafeDoubleContext
+public fun Double.Companion.safeRing(): Ring<Double> = SafeDoubleContext
+public fun Double.Companion.safeCommutativeSemiring(): CommutativeSemiring<Double> = SafeDoubleContext
+public fun Double.Companion.safeSemiring(): Semiring<Double> = SafeDoubleContext
+public fun Double.Companion.safeCommutativeGroup(): CommutativeGroup<Double> = SafeDoubleContext
+public fun Double.Companion.safeGroup(): Group<Double> = SafeDoubleContext
+public fun Double.Companion.safeCommutativeMonoid(): CommutativeMonoid<Double> = SafeDoubleContext
+public fun Double.Companion.safeMonoid(): Monoid<Double> = SafeDoubleContext
+public fun Double.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Double> = SafeDoubleContext
+public fun Double.Companion.safeSemigroup(): Semigroup<Double> = SafeDoubleContext
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeReification() {
+    Reification.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeOrder() {
+    Order.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeHashing() {
+    Hashing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeField() {
+    Field.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeCommutativeRing() {
+    CommutativeRing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeRing() {
+    Ring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeCommutativeSemiring() {
+    CommutativeSemiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeSemiring() {
+    Semiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeCommutativeGroup() {
+    CommutativeGroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeGroup() {
+    Group.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeCommutativeMonoid() {
+    CommutativeMonoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeMonoid() {
+    Monoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeCommutativeSemigroup() {
+    CommutativeSemigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
+}
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun Double.Companion.setSafeSemigroup() {
+    Semigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }

@@ -98,13 +98,13 @@ public object BigLongContext: Reification<BigLong>, EuclideanRing<BigLong>, Orde
     // endregion
     
     // region Conversion
-    override fun valueOf(arg: Int): BigLong = when (with(Order.primaryFor(Int)) { arg compareWith 0 }) {
+    override fun valueOf(arg: Int): BigLong = when ((Int.order()) { arg compareWith 0 }) {
         ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg.toUInt()))
         ComparisonResult.LeftIsLessThanRight -> BigLong(sign = Negative, absoluteValue = UBigLong.context.valueOf((-arg).toUInt()))
         ComparisonResult.Equal -> zero
     }
     override fun valueOf(arg: UInt): BigLong = if (arg == 0u) zero else BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg))
-    override fun valueOf(arg: Long): BigLong = when (with(Order.primaryFor(Long)) { arg compareWith 0 }) {
+    override fun valueOf(arg: Long): BigLong = when ((Long.order()) { arg compareWith 0 }) {
         ComparisonResult.LeftIsGreaterThanRight -> BigLong(sign = Positive, absoluteValue = UBigLong.context.valueOf(arg.toULong()))
         ComparisonResult.LeftIsLessThanRight -> BigLong(sign = Negative, absoluteValue = UBigLong.context.valueOf(arg.toULong()))
         ComparisonResult.Equal -> zero

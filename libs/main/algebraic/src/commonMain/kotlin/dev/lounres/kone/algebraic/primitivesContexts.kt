@@ -113,85 +113,85 @@ private data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<B
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Byte.Companion): Reification<Byte> = ByteContext
-public fun Order.Companion.primaryFor(target: Byte.Companion): Order<Byte> = ByteContext
-public fun Hashing.Companion.primaryFor(target: Byte.Companion): Hashing<Byte> = ByteContext
-public fun EuclideanRing.Companion.primaryFor(target: Byte.Companion): EuclideanRing<Byte> = ByteContext
-public fun EuclideanSemiring.Companion.primaryFor(target: Byte.Companion): EuclideanSemiring<Byte> = ByteContext
-public fun CommutativeRing.Companion.primaryFor(target: Byte.Companion): CommutativeRing<Byte> = ByteContext
-public fun Ring.Companion.primaryFor(target: Byte.Companion): Ring<Byte> = ByteContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Byte.Companion): CommutativeSemiring<Byte> = ByteContext
-public fun Semiring.Companion.primaryFor(target: Byte.Companion): Semiring<Byte> = ByteContext
-public fun CommutativeGroup.Companion.primaryFor(target: Byte.Companion): CommutativeGroup<Byte> = ByteContext
-public fun Group.Companion.primaryFor(target: Byte.Companion): Group<Byte> = ByteContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Byte.Companion): CommutativeMonoid<Byte> = ByteContext
-public fun Monoid.Companion.primaryFor(target: Byte.Companion): Monoid<Byte> = ByteContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Byte.Companion): CommutativeSemigroup<Byte> = ByteContext
-public fun Semigroup.Companion.primaryFor(target: Byte.Companion): Semigroup<Byte> = ByteContext
-public fun Equality.Companion.primaryFor(target: Byte.Companion): Equality<Byte> = ByteContext
+public fun Byte.Companion.reification(): Reification<Byte> = ByteContext
+public fun Byte.Companion.order(): Order<Byte> = ByteContext
+public fun Byte.Companion.hashing(): Hashing<Byte> = ByteContext
+public fun Byte.Companion.euclideanRing(): EuclideanRing<Byte> = ByteContext
+public fun Byte.Companion.euclideanSemiring(): EuclideanSemiring<Byte> = ByteContext
+public fun Byte.Companion.commutativeRing(): CommutativeRing<Byte> = ByteContext
+public fun Byte.Companion.ring(): Ring<Byte> = ByteContext
+public fun Byte.Companion.commutativeSemiring(): CommutativeSemiring<Byte> = ByteContext
+public fun Byte.Companion.semiring(): Semiring<Byte> = ByteContext
+public fun Byte.Companion.commutativeGroup(): CommutativeGroup<Byte> = ByteContext
+public fun Byte.Companion.group(): Group<Byte> = ByteContext
+public fun Byte.Companion.commutativeMonoid(): CommutativeMonoid<Byte> = ByteContext
+public fun Byte.Companion.monoid(): Monoid<Byte> = ByteContext
+public fun Byte.Companion.commutativeSemigroup(): CommutativeSemigroup<Byte> = ByteContext
+public fun Byte.Companion.semigroup(): Semigroup<Byte> = ByteContext
+public fun Byte.Companion.equality(): Equality<Byte> = ByteContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setReification() {
     Reification.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setOrder() {
     Order.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setHashing() {
     Hashing.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanRing.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setEuclideanRing() {
     EuclideanRing.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setCommutativeRing() {
     CommutativeRing.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setRing() {
     Ring.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setSemiring() {
     Semiring.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setGroup() {
     Group.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setMonoid() {
     Monoid.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setSemigroup() {
     Semigroup.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: Byte.Companion) {
+public fun Byte.Companion.setEquality() {
     Equality.Key<Byte>(Byte.suppliedType).withImpliedUsingFirst correspondsTo ByteContext
 }
 
@@ -281,85 +281,85 @@ private data object ShortContext: Reification<Short>, EuclideanRing<Short>, Orde
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Short.Companion): Reification<Short> = ShortContext
-public fun Order.Companion.primaryFor(target: Short.Companion): Order<Short> = ShortContext
-public fun Hashing.Companion.primaryFor(target: Short.Companion): Hashing<Short> = ShortContext
-public fun EuclideanRing.Companion.primaryFor(target: Short.Companion): EuclideanRing<Short> = ShortContext
-public fun EuclideanSemiring.Companion.primaryFor(target: Short.Companion): EuclideanSemiring<Short> = ShortContext
-public fun CommutativeRing.Companion.primaryFor(target: Short.Companion): CommutativeRing<Short> = ShortContext
-public fun Ring.Companion.primaryFor(target: Short.Companion): Ring<Short> = ShortContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Short.Companion): CommutativeSemiring<Short> = ShortContext
-public fun Semiring.Companion.primaryFor(target: Short.Companion): Semiring<Short> = ShortContext
-public fun CommutativeGroup.Companion.primaryFor(target: Short.Companion): CommutativeGroup<Short> = ShortContext
-public fun Group.Companion.primaryFor(target: Short.Companion): Group<Short> = ShortContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Short.Companion): CommutativeMonoid<Short> = ShortContext
-public fun Monoid.Companion.primaryFor(target: Short.Companion): Monoid<Short> = ShortContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Short.Companion): CommutativeSemigroup<Short> = ShortContext
-public fun Semigroup.Companion.primaryFor(target: Short.Companion): Semigroup<Short> = ShortContext
-public fun Equality.Companion.primaryFor(target: Short.Companion): Equality<Short> = ShortContext
+public fun Short.Companion.reification(): Reification<Short> = ShortContext
+public fun Short.Companion.order(): Order<Short> = ShortContext
+public fun Short.Companion.hashing(): Hashing<Short> = ShortContext
+public fun Short.Companion.euclideanRing(): EuclideanRing<Short> = ShortContext
+public fun Short.Companion.euclideanSemiring(): EuclideanSemiring<Short> = ShortContext
+public fun Short.Companion.commutativeRing(): CommutativeRing<Short> = ShortContext
+public fun Short.Companion.ring(): Ring<Short> = ShortContext
+public fun Short.Companion.commutativeSemiring(): CommutativeSemiring<Short> = ShortContext
+public fun Short.Companion.semiring(): Semiring<Short> = ShortContext
+public fun Short.Companion.commutativeGroup(): CommutativeGroup<Short> = ShortContext
+public fun Short.Companion.group(): Group<Short> = ShortContext
+public fun Short.Companion.commutativeMonoid(): CommutativeMonoid<Short> = ShortContext
+public fun Short.Companion.monoid(): Monoid<Short> = ShortContext
+public fun Short.Companion.commutativeSemigroup(): CommutativeSemigroup<Short> = ShortContext
+public fun Short.Companion.semigroup(): Semigroup<Short> = ShortContext
+public fun Short.Companion.equality(): Equality<Short> = ShortContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setReification() {
     Reification.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setOrder() {
     Order.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setHashing() {
     Hashing.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanRing.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setEuclideanRing() {
     EuclideanRing.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setCommutativeRing() {
     CommutativeRing.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setRing() {
     Ring.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setSemiring() {
     Semiring.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setGroup() {
     Group.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setMonoid() {
     Monoid.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setSemigroup() {
     Semigroup.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: Short.Companion) {
+public fun Short.Companion.setEquality() {
     Equality.Key<Short>(Short.suppliedType).withImpliedUsingFirst correspondsTo ShortContext
 }
 
@@ -437,85 +437,85 @@ private data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Int.Companion): Reification<Int> = IntContext
-public fun Order.Companion.primaryFor(target: Int.Companion): Order<Int> = IntContext
-public fun Hashing.Companion.primaryFor(target: Int.Companion): Hashing<Int> = IntContext
-public fun EuclideanRing.Companion.primaryFor(target: Int.Companion): EuclideanRing<Int> = IntContext
-public fun EuclideanSemiring.Companion.primaryFor(target: Int.Companion): EuclideanSemiring<Int> = IntContext
-public fun CommutativeRing.Companion.primaryFor(target: Int.Companion): CommutativeRing<Int> = IntContext
-public fun Ring.Companion.primaryFor(target: Int.Companion): Ring<Int> = IntContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Int.Companion): CommutativeSemiring<Int> = IntContext
-public fun Semiring.Companion.primaryFor(target: Int.Companion): Semiring<Int> = IntContext
-public fun CommutativeGroup.Companion.primaryFor(target: Int.Companion): CommutativeGroup<Int> = IntContext
-public fun Group.Companion.primaryFor(target: Int.Companion): Group<Int> = IntContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Int.Companion): CommutativeMonoid<Int> = IntContext
-public fun Monoid.Companion.primaryFor(target: Int.Companion): Monoid<Int> = IntContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Int.Companion): CommutativeSemigroup<Int> = IntContext
-public fun Semigroup.Companion.primaryFor(target: Int.Companion): Semigroup<Int> = IntContext
-public fun Equality.Companion.primaryFor(target: Int.Companion): Equality<Int> = IntContext
+public fun Int.Companion.reification(): Reification<Int> = IntContext
+public fun Int.Companion.order(): Order<Int> = IntContext
+public fun Int.Companion.hashing(): Hashing<Int> = IntContext
+public fun Int.Companion.euclideanRing(): EuclideanRing<Int> = IntContext
+public fun Int.Companion.euclideanSemiring(): EuclideanSemiring<Int> = IntContext
+public fun Int.Companion.commutativeRing(): CommutativeRing<Int> = IntContext
+public fun Int.Companion.ring(): Ring<Int> = IntContext
+public fun Int.Companion.commutativeSemiring(): CommutativeSemiring<Int> = IntContext
+public fun Int.Companion.semiring(): Semiring<Int> = IntContext
+public fun Int.Companion.commutativeGroup(): CommutativeGroup<Int> = IntContext
+public fun Int.Companion.group(): Group<Int> = IntContext
+public fun Int.Companion.commutativeMonoid(): CommutativeMonoid<Int> = IntContext
+public fun Int.Companion.monoid(): Monoid<Int> = IntContext
+public fun Int.Companion.commutativeSemigroup(): CommutativeSemigroup<Int> = IntContext
+public fun Int.Companion.semigroup(): Semigroup<Int> = IntContext
+public fun Int.Companion.equality(): Equality<Int> = IntContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setReification() {
     Reification.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setOrder() {
     Order.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setHashing() {
     Hashing.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanRing.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setEuclideanRing() {
     EuclideanRing.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setCommutativeRing() {
     CommutativeRing.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setRing() {
     Ring.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setSemiring() {
     Semiring.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setGroup() {
     Group.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setMonoid() {
     Monoid.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setSemigroup() {
     Semigroup.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: Int.Companion) {
+public fun Int.Companion.setEquality() {
     Equality.Key<Int>(Int.suppliedType).withImpliedUsingFirst correspondsTo IntContext
 }
 
@@ -593,85 +593,85 @@ private data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<L
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Long.Companion): Reification<Long> = LongContext
-public fun Order.Companion.primaryFor(target: Long.Companion): Order<Long> = LongContext
-public fun Hashing.Companion.primaryFor(target: Long.Companion): Hashing<Long> = LongContext
-public fun EuclideanRing.Companion.primaryFor(target: Long.Companion): EuclideanRing<Long> = LongContext
-public fun EuclideanSemiring.Companion.primaryFor(target: Long.Companion): EuclideanSemiring<Long> = LongContext
-public fun CommutativeRing.Companion.primaryFor(target: Long.Companion): CommutativeRing<Long> = LongContext
-public fun Ring.Companion.primaryFor(target: Long.Companion): Ring<Long> = LongContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Long.Companion): CommutativeSemiring<Long> = LongContext
-public fun Semiring.Companion.primaryFor(target: Long.Companion): Semiring<Long> = LongContext
-public fun CommutativeGroup.Companion.primaryFor(target: Long.Companion): CommutativeGroup<Long> = LongContext
-public fun Group.Companion.primaryFor(target: Long.Companion): Group<Long> = LongContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Long.Companion): CommutativeMonoid<Long> = LongContext
-public fun Monoid.Companion.primaryFor(target: Long.Companion): Monoid<Long> = LongContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Long.Companion): CommutativeSemigroup<Long> = LongContext
-public fun Semigroup.Companion.primaryFor(target: Long.Companion): Semigroup<Long> = LongContext
-public fun Equality.Companion.primaryFor(target: Long.Companion): Equality<Long> = LongContext
+public fun Long.Companion.reification(): Reification<Long> = LongContext
+public fun Long.Companion.order(): Order<Long> = LongContext
+public fun Long.Companion.hashing(): Hashing<Long> = LongContext
+public fun Long.Companion.euclideanRing(): EuclideanRing<Long> = LongContext
+public fun Long.Companion.euclideanSemiring(): EuclideanSemiring<Long> = LongContext
+public fun Long.Companion.commutativeRing(): CommutativeRing<Long> = LongContext
+public fun Long.Companion.ring(): Ring<Long> = LongContext
+public fun Long.Companion.commutativeSemiring(): CommutativeSemiring<Long> = LongContext
+public fun Long.Companion.semiring(): Semiring<Long> = LongContext
+public fun Long.Companion.commutativeGroup(): CommutativeGroup<Long> = LongContext
+public fun Long.Companion.group(): Group<Long> = LongContext
+public fun Long.Companion.commutativeMonoid(): CommutativeMonoid<Long> = LongContext
+public fun Long.Companion.monoid(): Monoid<Long> = LongContext
+public fun Long.Companion.commutativeSemigroup(): CommutativeSemigroup<Long> = LongContext
+public fun Long.Companion.semigroup(): Semigroup<Long> = LongContext
+public fun Long.Companion.equality(): Equality<Long> = LongContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setReification() {
     Reification.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setOrder() {
     Order.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setHashing() {
     Hashing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanRing.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setEuclideanRing() {
     EuclideanRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setCommutativeRing() {
     CommutativeRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setRing() {
     Ring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setSemiring() {
     Semiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setGroup() {
     Group.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setMonoid() {
     Monoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setSemigroup() {
     Semigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: Long.Companion) {
+public fun Long.Companion.setEquality() {
     Equality.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo LongContext
 }
 
@@ -737,60 +737,60 @@ private data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, 
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: UByte.Companion): Reification<UByte> = UByteContext
-public fun Order.Companion.primaryFor(target: UByte.Companion): Order<UByte> = UByteContext
-public fun Hashing.Companion.primaryFor(target: UByte.Companion): Hashing<UByte> = UByteContext
-public fun EuclideanSemiring.Companion.primaryFor(target: UByte.Companion): EuclideanSemiring<UByte> = UByteContext
-public fun CommutativeSemiring.Companion.primaryFor(target: UByte.Companion): CommutativeSemiring<UByte> = UByteContext
-public fun Semiring.Companion.primaryFor(target: UByte.Companion): Semiring<UByte> = UByteContext
-public fun CommutativeMonoid.Companion.primaryFor(target: UByte.Companion): CommutativeMonoid<UByte> = UByteContext
-public fun Monoid.Companion.primaryFor(target: UByte.Companion): Monoid<UByte> = UByteContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: UByte.Companion): CommutativeSemigroup<UByte> = UByteContext
-public fun Semigroup.Companion.primaryFor(target: UByte.Companion): Semigroup<UByte> = UByteContext
-public fun Equality.Companion.primaryFor(target: UByte.Companion): Equality<UByte> = UByteContext
+public fun UByte.Companion.reification(): Reification<UByte> = UByteContext
+public fun UByte.Companion.order(): Order<UByte> = UByteContext
+public fun UByte.Companion.hashing(): Hashing<UByte> = UByteContext
+public fun UByte.Companion.euclideanSemiring(): EuclideanSemiring<UByte> = UByteContext
+public fun UByte.Companion.commutativeSemiring(): CommutativeSemiring<UByte> = UByteContext
+public fun UByte.Companion.semiring(): Semiring<UByte> = UByteContext
+public fun UByte.Companion.commutativeMonoid(): CommutativeMonoid<UByte> = UByteContext
+public fun UByte.Companion.monoid(): Monoid<UByte> = UByteContext
+public fun UByte.Companion.commutativeSemigroup(): CommutativeSemigroup<UByte> = UByteContext
+public fun UByte.Companion.semigroup(): Semigroup<UByte> = UByteContext
+public fun UByte.Companion.equality(): Equality<UByte> = UByteContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setReification() {
     Reification.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setOrder() {
     Order.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setHashing() {
     Hashing.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setSemiring() {
     Semiring.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setMonoid() {
     Monoid.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setSemigroup() {
     Semigroup.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: UByte.Companion) {
+public fun UByte.Companion.setEquality() {
     Equality.Key<UByte>(UByte.suppliedType).withImpliedUsingFirst correspondsTo UByteContext
 }
 
@@ -856,60 +856,60 @@ private data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: UShort.Companion): Reification<UShort> = UShortContext
-public fun Order.Companion.primaryFor(target: UShort.Companion): Order<UShort> = UShortContext
-public fun Hashing.Companion.primaryFor(target: UShort.Companion): Hashing<UShort> = UShortContext
-public fun EuclideanSemiring.Companion.primaryFor(target: UShort.Companion): EuclideanSemiring<UShort> = UShortContext
-public fun CommutativeSemiring.Companion.primaryFor(target: UShort.Companion): CommutativeSemiring<UShort> = UShortContext
-public fun Semiring.Companion.primaryFor(target: UShort.Companion): Semiring<UShort> = UShortContext
-public fun CommutativeMonoid.Companion.primaryFor(target: UShort.Companion): CommutativeMonoid<UShort> = UShortContext
-public fun Monoid.Companion.primaryFor(target: UShort.Companion): Monoid<UShort> = UShortContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: UShort.Companion): CommutativeSemigroup<UShort> = UShortContext
-public fun Semigroup.Companion.primaryFor(target: UShort.Companion): Semigroup<UShort> = UShortContext
-public fun Equality.Companion.primaryFor(target: UShort.Companion): Equality<UShort> = UShortContext
+public fun UShort.Companion.reification(): Reification<UShort> = UShortContext
+public fun UShort.Companion.order(): Order<UShort> = UShortContext
+public fun UShort.Companion.hashing(): Hashing<UShort> = UShortContext
+public fun UShort.Companion.euclideanSemiring(): EuclideanSemiring<UShort> = UShortContext
+public fun UShort.Companion.commutativeSemiring(): CommutativeSemiring<UShort> = UShortContext
+public fun UShort.Companion.semiring(): Semiring<UShort> = UShortContext
+public fun UShort.Companion.commutativeMonoid(): CommutativeMonoid<UShort> = UShortContext
+public fun UShort.Companion.monoid(): Monoid<UShort> = UShortContext
+public fun UShort.Companion.commutativeSemigroup(): CommutativeSemigroup<UShort> = UShortContext
+public fun UShort.Companion.semigroup(): Semigroup<UShort> = UShortContext
+public fun UShort.Companion.equality(): Equality<UShort> = UShortContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setReification() {
     Reification.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setOrder() {
     Order.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setHashing() {
     Hashing.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setSemiring() {
     Semiring.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setMonoid() {
     Monoid.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setSemigroup() {
     Semigroup.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: UShort.Companion) {
+public fun UShort.Companion.setEquality() {
     Equality.Key<UShort>(UShort.suppliedType).withImpliedUsingFirst correspondsTo UShortContext
 }
 
@@ -965,60 +965,60 @@ private data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Ext
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: UInt.Companion): Reification<UInt> = UIntContext
-public fun Order.Companion.primaryFor(target: UInt.Companion): Order<UInt> = UIntContext
-public fun Hashing.Companion.primaryFor(target: UInt.Companion): Hashing<UInt> = UIntContext
-public fun EuclideanSemiring.Companion.primaryFor(target: UInt.Companion): EuclideanSemiring<UInt> = UIntContext
-public fun CommutativeSemiring.Companion.primaryFor(target: UInt.Companion): CommutativeSemiring<UInt> = UIntContext
-public fun Semiring.Companion.primaryFor(target: UInt.Companion): Semiring<UInt> = UIntContext
-public fun CommutativeMonoid.Companion.primaryFor(target: UInt.Companion): CommutativeMonoid<UInt> = UIntContext
-public fun Monoid.Companion.primaryFor(target: UInt.Companion): Monoid<UInt> = UIntContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: UInt.Companion): CommutativeSemigroup<UInt> = UIntContext
-public fun Semigroup.Companion.primaryFor(target: UInt.Companion): Semigroup<UInt> = UIntContext
-public fun Equality.Companion.primaryFor(target: UInt.Companion): Equality<UInt> = UIntContext
+public fun UInt.Companion.reification(): Reification<UInt> = UIntContext
+public fun UInt.Companion.order(): Order<UInt> = UIntContext
+public fun UInt.Companion.hashing(): Hashing<UInt> = UIntContext
+public fun UInt.Companion.euclideanSemiring(): EuclideanSemiring<UInt> = UIntContext
+public fun UInt.Companion.commutativeSemiring(): CommutativeSemiring<UInt> = UIntContext
+public fun UInt.Companion.semiring(): Semiring<UInt> = UIntContext
+public fun UInt.Companion.commutativeMonoid(): CommutativeMonoid<UInt> = UIntContext
+public fun UInt.Companion.monoid(): Monoid<UInt> = UIntContext
+public fun UInt.Companion.commutativeSemigroup(): CommutativeSemigroup<UInt> = UIntContext
+public fun UInt.Companion.semigroup(): Semigroup<UInt> = UIntContext
+public fun UInt.Companion.equality(): Equality<UInt> = UIntContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setReification() {
     Reification.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setOrder() {
     Order.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setHashing() {
     Hashing.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setSemiring() {
     Semiring.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setMonoid() {
     Monoid.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setSemigroup() {
     Semigroup.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: UInt.Companion) {
+public fun UInt.Companion.setEquality() {
     Equality.Key<UInt>(UInt.suppliedType).withImpliedUsingFirst correspondsTo UIntContext
 }
 
@@ -1074,60 +1074,60 @@ private data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, 
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: ULong.Companion): Reification<ULong> = ULongContext
-public fun Order.Companion.primaryFor(target: ULong.Companion): Order<ULong> = ULongContext
-public fun Hashing.Companion.primaryFor(target: ULong.Companion): Hashing<ULong> = ULongContext
-public fun EuclideanSemiring.Companion.primaryFor(target: ULong.Companion): EuclideanSemiring<ULong> = ULongContext
-public fun CommutativeSemiring.Companion.primaryFor(target: ULong.Companion): CommutativeSemiring<ULong> = ULongContext
-public fun Semiring.Companion.primaryFor(target: ULong.Companion): Semiring<ULong> = ULongContext
-public fun CommutativeMonoid.Companion.primaryFor(target: ULong.Companion): CommutativeMonoid<ULong> = ULongContext
-public fun Monoid.Companion.primaryFor(target: ULong.Companion): Monoid<ULong> = ULongContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: ULong.Companion): CommutativeSemigroup<ULong> = ULongContext
-public fun Semigroup.Companion.primaryFor(target: ULong.Companion): Semigroup<ULong> = ULongContext
-public fun Equality.Companion.primaryFor(target: ULong.Companion): Equality<ULong> = ULongContext
+public fun ULong.Companion.reification(): Reification<ULong> = ULongContext
+public fun ULong.Companion.order(): Order<ULong> = ULongContext
+public fun ULong.Companion.hashing(): Hashing<ULong> = ULongContext
+public fun ULong.Companion.euclideanSemiring(): EuclideanSemiring<ULong> = ULongContext
+public fun ULong.Companion.commutativeSemiring(): CommutativeSemiring<ULong> = ULongContext
+public fun ULong.Companion.semiring(): Semiring<ULong> = ULongContext
+public fun ULong.Companion.commutativeMonoid(): CommutativeMonoid<ULong> = ULongContext
+public fun ULong.Companion.monoid(): Monoid<ULong> = ULongContext
+public fun ULong.Companion.commutativeSemigroup(): CommutativeSemigroup<ULong> = ULongContext
+public fun ULong.Companion.semigroup(): Semigroup<ULong> = ULongContext
+public fun ULong.Companion.equality(): Equality<ULong> = ULongContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setReification() {
     Reification.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setOrder() {
     Order.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setHashing() {
     Hashing.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun EuclideanSemiring.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setSemiring() {
     Semiring.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setMonoid() {
     Monoid.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setSemigroup() {
     Semigroup.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Equality.Companion.setPrimaryFor(target: ULong.Companion) {
+public fun ULong.Companion.setEquality() {
     Equality.Key<ULong>(ULong.suppliedType).withImpliedUsingFirst correspondsTo ULongContext
 }
 
@@ -1221,85 +1221,83 @@ private data object DoubleContext: Reification<Double>, Field<Double>, Order<Dou
     override fun Double.plus(other: Double): Double = this + other
     override fun Double.minus(other: Double): Double = this - other
     override fun Double.times(other: Double): Double = this * other
-    override fun Double.div(other: Double): Double = if (other == 0.0) divisionByZero() else this / other
+    override fun Double.div(other: Double): Double = this / other
     override fun power(base: Double, exponent: UInt): Double = base.kpow(exponent.toDouble())
     override fun power(base: Double, exponent: ULong): Double = base.kpow(exponent.toDouble())
     override fun power(base: Double, exponent: Int): Double = base.kpow(exponent)
-    override fun power(base: Double, exponent: Long): Double =
-        if (exponent >= 0) base.kpow(exponent.toDouble())
-        else 1/base.kpow(-exponent.toDouble())
+    override fun power(base: Double, exponent: Long): Double = base.kpow(exponent.toDouble())
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Double.Companion): Reification<Double> = DoubleContext
-public fun Order.Companion.primaryFor(target: Double.Companion): Order<Double> = DoubleContext
-public fun Hashing.Companion.primaryFor(target: Double.Companion): Hashing<Double> = DoubleContext
-public fun Field.Companion.primaryFor(target: Double.Companion): Field<Double> = DoubleContext
-public fun CommutativeRing.Companion.primaryFor(target: Double.Companion): CommutativeRing<Double> = DoubleContext
-public fun Ring.Companion.primaryFor(target: Double.Companion): Ring<Double> = DoubleContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Double.Companion): CommutativeSemiring<Double> = DoubleContext
-public fun Semiring.Companion.primaryFor(target: Double.Companion): Semiring<Double> = DoubleContext
-public fun CommutativeGroup.Companion.primaryFor(target: Double.Companion): CommutativeGroup<Double> = DoubleContext
-public fun Group.Companion.primaryFor(target: Double.Companion): Group<Double> = DoubleContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Double.Companion): CommutativeMonoid<Double> = DoubleContext
-public fun Monoid.Companion.primaryFor(target: Double.Companion): Monoid<Double> = DoubleContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Double.Companion): CommutativeSemigroup<Double> = DoubleContext
-public fun Semigroup.Companion.primaryFor(target: Double.Companion): Semigroup<Double> = DoubleContext
+public fun Double.Companion.reification(): Reification<Double> = DoubleContext
+public fun Double.Companion.order(): Order<Double> = DoubleContext
+public fun Double.Companion.hashing(): Hashing<Double> = DoubleContext
+public fun Double.Companion.field(): Field<Double> = DoubleContext
+public fun Double.Companion.commutativeRing(): CommutativeRing<Double> = DoubleContext
+public fun Double.Companion.ring(): Ring<Double> = DoubleContext
+public fun Double.Companion.commutativeSemiring(): CommutativeSemiring<Double> = DoubleContext
+public fun Double.Companion.semiring(): Semiring<Double> = DoubleContext
+public fun Double.Companion.commutativeGroup(): CommutativeGroup<Double> = DoubleContext
+public fun Double.Companion.group(): Group<Double> = DoubleContext
+public fun Double.Companion.commutativeMonoid(): CommutativeMonoid<Double> = DoubleContext
+public fun Double.Companion.monoid(): Monoid<Double> = DoubleContext
+public fun Double.Companion.commutativeSemigroup(): CommutativeSemigroup<Double> = DoubleContext
+public fun Double.Companion.semigroup(): Semigroup<Double> = DoubleContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setReification() {
     Reification.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setOrder() {
     Order.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setHashing() {
     Hashing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Field.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setField() {
     Field.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setCommutativeRing() {
     CommutativeRing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setRing() {
     Ring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setSemiring() {
     Semiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setGroup() {
     Group.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setMonoid() {
     Monoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Double.Companion) {
+public fun Double.Companion.setSemigroup() {
     Semigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo DoubleContext
 }
 
@@ -1393,84 +1391,82 @@ private data object FloatContext: Reification<Float>, Field<Float>, Order<Float>
     override fun Float.plus(other: Float): Float = this + other
     override fun Float.minus(other: Float): Float = this - other
     override fun Float.times(other: Float): Float = this * other
-    override fun Float.div(other: Float): Float = if (other == 0.0f) divisionByZero() else this / other
+    override fun Float.div(other: Float): Float = this / other
     override fun power(base: Float, exponent: UInt): Float = base.kpow(exponent.toFloat())
     override fun power(base: Float, exponent: ULong): Float = base.kpow(exponent.toFloat())
     override fun power(base: Float, exponent: Int): Float = base.kpow(exponent)
-    override fun power(base: Float, exponent: Long): Float =
-        if (exponent >= 0) base.kpow(exponent.toFloat())
-        else 1 / base.kpow(-exponent.toFloat())
+    override fun power(base: Float, exponent: Long): Float = base.kpow(exponent.toFloat())
     // endregion
 }
 
-public fun Reification.Companion.primaryFor(target: Float.Companion): Reification<Float> = FloatContext
-public fun Order.Companion.primaryFor(target: Float.Companion): Order<Float> = FloatContext
-public fun Hashing.Companion.primaryFor(target: Float.Companion): Hashing<Float> = FloatContext
-public fun Field.Companion.primaryFor(target: Float.Companion): Field<Float> = FloatContext
-public fun CommutativeRing.Companion.primaryFor(target: Float.Companion): CommutativeRing<Float> = FloatContext
-public fun Ring.Companion.primaryFor(target: Float.Companion): Ring<Float> = FloatContext
-public fun CommutativeSemiring.Companion.primaryFor(target: Float.Companion): CommutativeSemiring<Float> = FloatContext
-public fun Semiring.Companion.primaryFor(target: Float.Companion): Semiring<Float> = FloatContext
-public fun CommutativeGroup.Companion.primaryFor(target: Float.Companion): CommutativeGroup<Float> = FloatContext
-public fun Group.Companion.primaryFor(target: Float.Companion): Group<Float> = FloatContext
-public fun CommutativeMonoid.Companion.primaryFor(target: Float.Companion): CommutativeMonoid<Float> = FloatContext
-public fun Monoid.Companion.primaryFor(target: Float.Companion): Monoid<Float> = FloatContext
-public fun CommutativeSemigroup.Companion.primaryFor(target: Float.Companion): CommutativeSemigroup<Float> = FloatContext
-public fun Semigroup.Companion.primaryFor(target: Float.Companion): Semigroup<Float> = FloatContext
+public fun Float.Companion.reification(): Reification<Float> = FloatContext
+public fun Float.Companion.order(): Order<Float> = FloatContext
+public fun Float.Companion.hashing(): Hashing<Float> = FloatContext
+public fun Float.Companion.field(): Field<Float> = FloatContext
+public fun Float.Companion.commutativeRing(): CommutativeRing<Float> = FloatContext
+public fun Float.Companion.ring(): Ring<Float> = FloatContext
+public fun Float.Companion.commutativeSemiring(): CommutativeSemiring<Float> = FloatContext
+public fun Float.Companion.semiring(): Semiring<Float> = FloatContext
+public fun Float.Companion.commutativeGroup(): CommutativeGroup<Float> = FloatContext
+public fun Float.Companion.group(): Group<Float> = FloatContext
+public fun Float.Companion.commutativeMonoid(): CommutativeMonoid<Float> = FloatContext
+public fun Float.Companion.monoid(): Monoid<Float> = FloatContext
+public fun Float.Companion.commutativeSemigroup(): CommutativeSemigroup<Float> = FloatContext
+public fun Float.Companion.semigroup(): Semigroup<Float> = FloatContext
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Reification.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setReification() {
     Reification.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Order.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setOrder() {
     Order.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Hashing.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setHashing() {
     Hashing.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Field.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setField() {
     Field.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeRing.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setCommutativeRing() {
     CommutativeRing.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Ring.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setRing() {
     Ring.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemiring.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semiring.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setSemiring() {
     Semiring.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeGroup.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Group.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setGroup() {
     Group.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeMonoid.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Monoid.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setMonoid() {
     Monoid.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun CommutativeSemigroup.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun Semigroup.Companion.setPrimaryFor(target: Float.Companion) {
+public fun Float.Companion.setSemigroup() {
     Semigroup.Key<Float>(Float.suppliedType).withImpliedUsingFirst correspondsTo FloatContext
 }

@@ -1,42 +1,5 @@
 package dev.lounres.kone.algebraic.algorithms
 
-import de.infix.testBalloon.framework.core.testSuite
-import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.FieldExtension
-import dev.lounres.kone.algebraic.MatrixCategoryOverField
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefault
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaGaussianElimination
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholder
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholderForComplexNumbers
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.setDefault
-import dev.lounres.kone.algebraic.setPrimaryFor
-import dev.lounres.kone.algebraic.setPrimaryForComplexOver
-import dev.lounres.kone.algebraic.setViaDefault
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.collections.utils.withIndex
-import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.koneContext
-import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.of
-import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.scope
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import dev.lounres.kone.suppliedTypes.suppliedType
-import kotlin.math.abs
-import kotlin.math.sqrt
-import kotlin.reflect.KVariance.OUT
-import kotlin.test.assertTrue
-
 
 //val SchurDecompositionTests by testSuite {
 //    testSuite("real case") {
