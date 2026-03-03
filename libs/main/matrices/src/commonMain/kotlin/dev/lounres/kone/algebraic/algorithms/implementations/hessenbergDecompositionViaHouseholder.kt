@@ -64,7 +64,7 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
         ) {
             val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
-            val maxXElementIndex = scope { // TODO: Move to collections module
+            val _ = scope { // TODO: Move to collections module
                 val iterator = xElementNormsSquared.iterator()
                 if (!iterator.hasNext()) throw NoSuchElementException()
                 var maxIndex = iterator.nextIndex()

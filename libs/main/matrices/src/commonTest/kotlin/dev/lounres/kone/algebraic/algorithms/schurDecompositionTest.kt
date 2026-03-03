@@ -2,10 +2,16 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.MatrixCategoryOverField
+import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefault
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
 import dev.lounres.kone.algebraic.algorithms.implementations.setViaGaussianElimination
 import dev.lounres.kone.algebraic.algorithms.implementations.setViaGolubVanLoan
+import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholder
 import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.setDefault
+import dev.lounres.kone.algebraic.setSafeField
+import dev.lounres.kone.algebraic.setSafeOrder
 import dev.lounres.kone.algebraic.setViaDefault
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
@@ -59,6 +65,20 @@ val SchurDecompositionTests by testSuite {
             MDList2.of(
                 rowNumber = 3u,
                 columnNumber = 3u,
+                1.0, 0.0, 0.0,
+                2.0, 3.0, 0.0,
+                0.0, 4.0, 5.0,
+            ),
+            MDList2.of(
+                rowNumber = 3u,
+                columnNumber = 3u,
+                1.0, 0.0, 0.0,
+                1.0, 1.001, 0.0,
+                0.0, 1.0, 1.002,
+            ),
+            MDList2.of(
+                rowNumber = 3u,
+                columnNumber = 3u,
                 0.685478, 0.495653, 0.479176,
                 0.224358, 0.906969, 0.876226,
                 0.896518, 0.217051, 0.806911,
@@ -83,10 +103,15 @@ val SchurDecompositionTests by testSuite {
             Algorithm(
                 name = "via Golub and Van Loan",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setDefault<Number>(numberType = numberType)
                     MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
                     MatrixProductComputer.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
                     TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>(matrixType = matrixType)
                     InverseMatrixComputer.setViaGaussianElimination<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
+                    HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
                     SchurDecompositionComputer.setViaGolubVanLoan<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType, tolerance = 1E-10)
                 }
             )
@@ -103,6 +128,9 @@ val SchurDecompositionTests by testSuite {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, t, p) = input.schurDecomposition()
                     
+                    println()
+                    println(q * q.transpose())
+                    
                     scope {
                         val dif = input - q * t * p
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
@@ -112,9 +140,16 @@ val SchurDecompositionTests by testSuite {
                     
                     scope {
                         t.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
+                            if (rowIndex > columnIndex + 1u)
                                 assertTrue("T has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
                         }
+                    }
+                    
+                    scope {
+                        for (i in 2u ..< t.rowNumber)
+                            assertTrue("T has two consecutive subdiagonal non-zero values at (${i - 1u}, ${i - 2u}) and ($i, ${i - 1u})") {
+                                t[i, i - 1u] == 0.0 || t[i - 1u, i - 2u] == 0.0
+                            }
                     }
                     
                     scope {
