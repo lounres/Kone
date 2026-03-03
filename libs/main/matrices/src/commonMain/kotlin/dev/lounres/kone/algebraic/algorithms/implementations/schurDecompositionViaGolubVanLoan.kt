@@ -77,17 +77,6 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
         val q = SettableMDList2.generate(n, n) { row, column -> q0[row, column] }
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
-        val matrixFactory2 = MatrixFactory.default(numberField)
-        fun printDif() {
-            context(
-                MatrixCategoryOverField.viaDefault(matrixFactory2, numberField),
-                MatrixProductComputer.viaDefault(matrixFactory2, numberField),
-                TransposeMatrixComputer.viaDefault(matrixFactory2),
-            ) {
-                println(this - q * h * q.transpose())
-            }
-        }
-        
         context(
             numberField,
             numberOrder,
@@ -116,8 +105,6 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                 var l = 3u
                 while (k + l < n && h[n - k - l, n - k - l - 1u].isNotZero()) l++
                 val m = n - k - l
-                
-                printDif()
                 
                 var x: Number
                 var y: Number
@@ -204,8 +191,6 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                     if (t < l - 3u) {
                         z = h[t + m + 3u, t + m]
                     }
-                    
-                    printDif()
                 }
                 
                 if (x != 0.0 || y != 0.0) {
@@ -270,8 +255,6 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                     }
                     
                     for (i in 2u ..< n) for (j in 0u .. i - 2u) h[i, j] = numberField.zero
-                    
-                    printDif()
                 }
             }
         }

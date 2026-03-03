@@ -92,6 +92,15 @@ val SchurDecompositionTests by testSuite {
                 0.4608372955168507, 0.5288264683170789, 0.1623419993788311, 0.25222970651843246, 0.4140459121616542,
                 0.6946824973673238, 0.1703905471138405, 0.7068176866026521, 0.9822287486511017, 0.548470697381017,
             ),
+            MDList2.of(
+                rowNumber = 5u,
+                columnNumber = 5u,
+                1.0, 0.0, 0.0, 0.0, 0.0,
+                1.0, 1.0001, 0.0, 0.0, 0.0,
+                0.0, 1.0, 1.0002, 0.0, 0.0,
+                0.0, 0.0, 1.0, 1.0003, 0.0,
+                0.0, 0.0, 0.0, 1.0, 1.0004,
+            ),
         )
         
         data class Algorithm(
@@ -128,9 +137,6 @@ val SchurDecompositionTests by testSuite {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, t, p) = input.schurDecomposition()
                     
-                    println()
-                    println(q * q.transpose())
-                    
                     scope {
                         val dif = input - q * t * p
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
@@ -159,10 +165,17 @@ val SchurDecompositionTests by testSuite {
                         }
                     }
                     
+//                    scope {
+//                        val dif = q.transpose() - q.invert()!!
+//                        dif.forEachIndexed { rowIndex, columnIndex, value ->
+//                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+//                        }
+//                    }
+                    
                     scope {
-                        val dif = q.transpose() - q.invert()!!
+                        val dif = q * q.transpose()
                         dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                            assertTrue("QQ^* matrix differs from unit matrix in ($rowIndex, $columnIndex) by $value") { abs(value - if (rowIndex == columnIndex) 1.0 else 0.0) < 1E-10 }
                         }
                     }
                 }
