@@ -86,6 +86,13 @@ val SchurDecompositionTests by testSuite {
             MDList2.of(
                 rowNumber = 3u,
                 columnNumber = 3u,
+                1.0, 0.0, 0.0,
+                1.0, 1.0, 0.0,
+                0.0, 1.0, 1.0,
+            ),
+            MDList2.of(
+                rowNumber = 3u,
+                columnNumber = 3u,
                 0.685478, 0.495653, 0.479176,
                 0.224358, 0.906969, 0.876226,
                 0.896518, 0.217051, 0.806911,
@@ -139,8 +146,7 @@ val SchurDecompositionTests by testSuite {
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 SchurDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
-                for ((index, input) in inputs.withIndex())
-                    test("input #$index") {
+                for ((index, input) in inputs.withIndex()) test("input #$index") {
                     val (q, t, p) = input.schurDecomposition()
                     
                     scope {
@@ -241,6 +247,18 @@ val SchurDecompositionTests by testSuite {
                 columnNumber = 2u,
                 ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
                 ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+            ),
+            MDList2.of(
+                rowNumber = 2u,
+                columnNumber = 2u,
+                ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
+            ),
+            MDList2.of(
+                rowNumber = 2u,
+                columnNumber = 2u,
+                ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
+                ComplexNumber(1.0, 0.0), ComplexNumber(1.0, 0.0),
             ),
             MDList2.of(
                 rowNumber = 3u,
