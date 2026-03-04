@@ -1,42 +1,15 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.MatrixCategoryOverField
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.MatrixWithProperties
-import dev.lounres.kone.algebraic.abs
-import dev.lounres.kone.algebraic.algorithms.HessenbergDecompositionComputer
-import dev.lounres.kone.algebraic.algorithms.MatrixProductComputer
-import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
-import dev.lounres.kone.algebraic.algorithms.SchurDecomposition
-import dev.lounres.kone.algebraic.algorithms.SchurDecompositionComputer
-import dev.lounres.kone.algebraic.algorithms.TransposeMatrixComputer
-import dev.lounres.kone.algebraic.algorithms.hessenbergDecomposition
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
-import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
-import dev.lounres.kone.algebraic.algorithms.schurDecomposition
-import dev.lounres.kone.algebraic.algorithms.times
-import dev.lounres.kone.algebraic.algorithms.transpose
-import dev.lounres.kone.algebraic.default
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isNotZero
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.signInt
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.viaDefault
 import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.multidimensionalCollections.MDIndex
-import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.SettableMDList2
-import dev.lounres.kone.multidimensionalCollections.generate
-import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
 import dev.lounres.kone.registry.MutableOwnedRegistry
@@ -193,7 +166,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                     }
                 }
                 
-                if (x != 0.0 || y != 0.0) {
+                if (x.isNotZero() || y.isNotZero()) {
                     val norm = (x * x + y * y).positiveSquareRoot()
                     val u = matrixFactory.mapMatrix(
                         rowNumber = 2u,
@@ -254,7 +227,8 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                         q[s, m + l - 1u] = newRow[0u, 1u]
                     }
                     
-                    for (i in 2u ..< n) for (j in 0u .. i - 2u) h[i, j] = numberField.zero
+                    for (i in 2u ..< n) h[i, i - 2u] = numberField.zero
+                    for (i in 3u ..< n) h[i, i - 3u] = numberField.zero
                 }
             }
         }
