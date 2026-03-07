@@ -80,9 +80,8 @@ context(ring: Monoid<Number>, _: Order<Number>)
 public fun <Number> Number.signInt(): Int = this.compareWith(ring.zero).asKotlinComparisonResult()
 
 /**
- * Returns absolute value of the [number].
- * I.e. if the [number] is non-negative it is returned, otherwise its negation is returned.
+ * Returns absolute value of [this number][this].
+ * I.e. if [this number][this] is non-negative it is returned, otherwise its negation is returned.
  */
 context(_: Group<Number>, _: Order<Number>)
-public fun <Number> abs(number: Number): Number =
-    if (number.isNonNegative()) number else -number
+public fun <Number> Number.absoluteValue(): Number = if (this.isNonNegative()) this else -this

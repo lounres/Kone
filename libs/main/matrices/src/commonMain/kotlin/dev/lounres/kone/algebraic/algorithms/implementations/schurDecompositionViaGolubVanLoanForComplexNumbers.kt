@@ -61,11 +61,6 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
-            fun ComplexNumber<Number>.norm(): Number = realPart * realPart + imaginaryPart * imaginaryPart
-            fun ComplexNumber<Number>.absoluteValue(): Number = norm().positiveSquareRoot()
-            fun ComplexNumber<Number>.conjugate(): ComplexNumber<Number> =
-                ComplexNumber(realPart = realPart, imaginaryPart = -imaginaryPart)
-            
             var k = 0u
             
             while (true) {

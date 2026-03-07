@@ -3,6 +3,13 @@ package dev.lounres.kone.algebraic.algorithms
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.Expect
+import dev.lounres.kone.assertions.of
+import dev.lounres.kone.assertions.softly
+import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
+import dev.lounres.kone.algebraic.assertions.toBeUpperHessenbergMatrix
+import dev.lounres.kone.assertions.withClue
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -12,16 +19,12 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
-import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.scope
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.suppliedType
-import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.reflect.KVariance.OUT
-import kotlin.test.assertTrue
 
 
 val HessenbergDecompositionTests by testSuite {
@@ -96,6 +99,8 @@ val HessenbergDecompositionTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
@@ -103,33 +108,22 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, h, p) = input.hessenbergDecomposition()
-                    
-                    scope {
-                        val dif = input - q * h * p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QHQ^* in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                    AssertionScope.softly {
+                        val (q, h, p) = input.hessenbergDecomposition()
+                        
+                        withClue("Input differs from QHP.") {
+                            Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
                         }
-                    }
-                    
-                    scope {
-                        h.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex + 1u)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
+                        withClue("H is not upper-hessenberg.") {
+                            Expect.of(h).toBeUpperHessenbergMatrix()
                         }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                        Expect.of(q.transpose()) {
+                            withClue("Transpose of Q is not P.") {
+                                toBeEqualToWithTolerance(p, 1E-10)
+                            }
+                            withClue("Q is not unitary.") {
+                                toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                            }
                         }
                     }
                 }
@@ -263,6 +257,10 @@ val HessenbergDecompositionTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
+                PositiveSquareRootComputer.Key<Number>(numberType = numberType),
+                FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType),
                 MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
@@ -270,40 +268,21 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, h, p) = input.hessenbergDecomposition()
-                    
-                    scope {
-                        val dif = input - q * h * p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QHQ^* in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
+                    AssertionScope.softly {
+                        val (q, h, p) = input.hessenbergDecomposition()
+                        
+                        withClue("Input differs from QHP.") {
+                            Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
+                        }
+                        withClue("H is not upper-hessenberg.") {
+                            Expect.of(h).toBeUpperHessenbergMatrix()
+                        }
+                        Expect.of(q.conjugateTranspose()) {
+                            withClue("Transpose of Q is not P.") {
+                                toBeEqualToWithTolerance(p, 1E-10)
                             }
-                        }
-                    }
-                    
-                    scope {
-                        h.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex + 1u)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") {
-                                    value.realPart == 0.0 && value.imaginaryPart == 0.0
-                                }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's conjugate transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's conjugate transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
+                            withClue("Q is not unitary.") {
+                                toBeEqualToWithTolerance(q.invert()!!, 1E-10)
                             }
                         }
                     }

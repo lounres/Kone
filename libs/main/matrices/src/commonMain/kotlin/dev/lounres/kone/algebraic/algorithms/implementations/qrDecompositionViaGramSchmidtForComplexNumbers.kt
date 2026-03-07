@@ -13,6 +13,7 @@ import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.algebraic.algorithms.qrDecomposition
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.norm
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
@@ -56,7 +57,7 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
             }
             
             var normSquared = numberField.zero
-            for (t in 0u ..< n) normSquared += qBuilder[t, i].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart }
+            for (t in 0u ..< n) normSquared += qBuilder[t, i].norm()
             val norm = positiveSquareRootComputer { normSquared.positiveSquareRoot() }
             for (t in 0u ..< n) qBuilder[t, i] /= norm
         }

@@ -262,6 +262,7 @@ stal {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
+                    languageVersion = KotlinVersion.KOTLIN_2_4
                     progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
@@ -291,15 +292,6 @@ stal {
                     )
                     verbose = true
                 }
-
-                @Suppress("UNUSED_VARIABLE")
-                sourceSets {
-                    val test by getting {
-                        dependencies {
-                            implementation(kotlin("test"))
-                        }
-                    }
-                }
             }
         }
         "kotlin multiplatform" {
@@ -308,6 +300,7 @@ stal {
                 applyDefaultHierarchyTemplate()
                 
                 compilerOptions {
+                    languageVersion = KotlinVersion.KOTLIN_2_4
                     progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
@@ -366,14 +359,6 @@ stal {
 //                iosArm64()
 //                iosSimulatorArm64()
 //                macosArm64()
-
-                sourceSets {
-                    commonTest {
-                        dependencies {
-                            implementation(kotlin("test"))
-                        }
-                    }
-                }
             }
             afterEvaluate {
                 yarn.lockFileDirectory = rootDir.resolve("gradle")
@@ -495,6 +480,80 @@ stal {
                                 if (parentProject != null) implementation(project(parentProject.path))
                             }
                         }
+                        commonTest {
+                            dependencies {
+                                val parentProject = project.parent
+                                if (parentProject != null) {
+                                    val assertionsSibling = parentProject.childProjects["assertions"]
+                                    if (assertionsSibling != null) {
+                                        implementation(project(assertionsSibling.path))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "assertions" {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                logger.error("assertions source set setting is not yet implemented for Kotlin/JVM plug-in")
+//                configure<KotlinJvmProjectExtension> {
+//                    // ...
+//                }
+            }
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                @Suppress("UNUSED_VARIABLE")
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        commonMain {
+                            dependencies {
+                                api(projects.libs.util.assertions)
+                                val parentProject = project.parent
+                                if (parentProject != null) api(project(parentProject.path))
+                            }
+                        }
+                    }
+                }
+            }
+            val thisProject = project
+            project.parent?.run {
+                pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                    logger.error("assertions source set setting is not yet implemented for Kotlin/JVM plug-in")
+//                    configure<KotlinJvmProjectExtension> {
+//                        // ...
+//                    }
+                }
+                pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                    @Suppress("UNUSED_VARIABLE")
+                    configure<KotlinMultiplatformExtension> {
+                        sourceSets {
+                            commonTest {
+                                dependencies {
+                                    implementation(project(thisProject.path))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "libs main" {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                logger.error("libs main source set setting is not yet implemented for Kotlin/JVM plug-in")
+//                configure<KotlinJvmProjectExtension> {
+//                    // ...
+//                }
+            }
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                @Suppress("UNUSED_VARIABLE")
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        commonTest {
+                            dependencies {
+                                implementation(projects.libs.util.assertions)
+                            }
+                        }
                     }
                 }
             }
@@ -609,8 +668,7 @@ stal {
                     sourceSets {
                         commonMain {
                             dependencies {
-                                // TODO: Investigate why it creates tasks cycle.
-//                                implementation(projects.libs.util.examples)
+                                implementation(projects.libs.util.examples)
 
                                 val parentProject = project.parent
                                 if (parentProject != null) implementation(project(parentProject.path))
@@ -692,7 +750,7 @@ stal {
                 // FIXME
                 signAllPublications()
                 
-                coordinates(groupId = project.group as String, artifactId = project.artifact, version = project.version as String)
+                coordinates(groupId = rootProject.properties["group"] as String, artifactId = project.artifact, version = project.version as String)
 
                 pom {
                     name = "Kone library"

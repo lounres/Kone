@@ -64,7 +64,7 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
-            val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } // TODO: Replace with complex number norm
+            val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].norm() } // TODO: Replace with complex number norm
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = scope { // TODO: Move to collections module
                 val iterator = xElementNormsSquared.iterator()
@@ -103,11 +103,11 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
             val u = matrixFactory.generateMatrix(rowNumber = n, columnNumber = 1u) { row, _ ->
                 when {
                     row < k -> ComplexNumber(numberField.zero, numberField.zero)
-                    row == k -> r[k, k] + (xNorm * r[k, k] / r[k, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart }.positiveSquareRoot())
+                    row == k -> r[k, k] + (xNorm * r[k, k] / r[k, k].absoluteValue())
                     else -> r[row, k]
                 }
             }
-            val v = u / complexNumberFieldExtension.valueOf((k ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } } }.positiveSquareRoot()) // TODO: Replace with complex number norm
+            val v = u / complexNumberFieldExtension.valueOf((k ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].norm() } } }.positiveSquareRoot()) // TODO: Replace with complex number norm
             val qk = matrixFactory.mapMatrix(
                 rowNumber = n,
                 columnNumber = n,

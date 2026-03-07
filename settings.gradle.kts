@@ -56,6 +56,7 @@ stal {
             "main" {
                 subdirs("libs main", includeIf = { it.name !in listOf<String>("hooks", "computations", "polynomial") }) { // TODO: Enable the projects eventually
                     "algorithms"("libs main algorithms")
+                    "assertions"("libs main assertions")
                     "benchmarks"("libs main benchmarks")
                     "examples"("libs main examples")
                 }
@@ -79,11 +80,12 @@ stal {
 
     tag {
         // Grouping tags
-        "libs main extra" since { hasAnyOf("libs main algorithms", "libs main benchmarks", "libs main examples") }
+        "libs main extra" since { hasAnyOf("libs main algorithms", "libs main assertions", "libs main benchmarks", "libs main examples") }
         "libs public" since { hasAnyOf("libs main", "libs misc") }
         "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
         // Extra structure
         "algorithms" since { has("libs main algorithms") }
+        "assertions" since { has("libs main assertions") }
         "benchmarks" since { has("libs main benchmarks") }
         "examples" since { has("libs main examples") }
         // Kotlin set up
@@ -91,7 +93,7 @@ stal {
         "kotlin jvm" since { hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
         "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "bom") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { hasAnyOf("libs", "algorithms", "bom") }
+        "kotlin library settings" since { hasAnyOf("libs", "algorithms", "assertions", "bom") }
         // Extra
         "testBalloon" since { has("libs public") }
 //        "kover" since { has("libs public") }
@@ -114,6 +116,13 @@ stal {
             extra["artifactId"] = "kone.${project.name}"
             extra["alias"] = project.name
             extra["androidNamespace"] = "dev.lounres.kone.${project.name}"
+        }
+        "libs main extra" {
+            val parentProject = project.parent!!
+            group = "${settings.extra["group"]}${parentProject.path.replace(':', '.')}"
+            extra["artifactId"] = "kone.${parentProject.name}.${project.name}"
+            extra["alias"] = "${parentProject.name}.${project.name}"
+            extra["androidNamespace"] = "dev.lounres.kone.${parentProject.name}.${project.name}"
         }
         "libs misc" {
             extra["artifactId"] = "kone.misc.${project.name}"

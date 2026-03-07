@@ -65,7 +65,7 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
-            val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } // TODO: Replace with complex number norm
+            val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].norm() } // TODO: Replace with complex number norm
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = scope { // TODO: Move to collections module
                 val iterator = xElementNormsSquared.iterator()
@@ -88,11 +88,11 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
             val u = matrixFactory.generateMatrix(rowNumber = n, columnNumber = 1u) { row, _ ->
                 when {
                     row < k + 1u -> complexNumberFieldExtension.zero
-                    row == k + 1u -> r[k + 1u, k] + (xNorm * r[k + 1u, k] / r[k + 1u, k].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart }.positiveSquareRoot()) // TODO: Add corrections for small r[k + 1u, k]
+                    row == k + 1u -> r[k + 1u, k] + (xNorm * r[k + 1u, k] / r[k + 1u, k].absoluteValue()) // TODO: Add corrections for small r[k + 1u, k]
                     else -> r[row, k]
                 }
             }
-            val v = u / complexNumberFieldExtension.valueOf((k + 1u ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart } } } }.positiveSquareRoot())
+            val v = u / complexNumberFieldExtension.valueOf((k + 1u ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].norm() } } }.positiveSquareRoot())
             val qk = matrixFactory.mapMatrix(
                 rowNumber = n,
                 columnNumber = n,

@@ -1,24 +1,16 @@
 package dev.lounres.kone.algebraic.algorithms
 
-import de.infix.testBalloon.framework.core.TestConfig
-import de.infix.testBalloon.framework.core.disable
 import de.infix.testBalloon.framework.core.testSuite
-import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.FieldExtension
-import dev.lounres.kone.algebraic.MatrixCategoryOverField
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefault
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaGolubVanLoan
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaGolubVanLoanForComplexNumbers
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholder
-import dev.lounres.kone.algebraic.algorithms.implementations.setViaHouseholderForComplexNumbers
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.setDefault
-import dev.lounres.kone.algebraic.setFieldExtensionOver
-import dev.lounres.kone.algebraic.setSafeField
-import dev.lounres.kone.algebraic.setSafeOrder
-import dev.lounres.kone.algebraic.setViaDefault
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
+import dev.lounres.kone.algebraic.assertions.toBeQuasiUpperTriangularMatrix
+import dev.lounres.kone.algebraic.assertions.toBeUnitMatrixWithTolerance
+import dev.lounres.kone.algebraic.assertions.toBeUpperTriangularMatrix
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.Expect
+import dev.lounres.kone.assertions.of
+import dev.lounres.kone.assertions.softly
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -28,15 +20,11 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
-import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.scope
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.suppliedType
-import kotlin.math.abs
-import kotlin.math.sqrt
-import kotlin.test.assertTrue
 
 
 val SchurDecompositionTests by testSuite {
@@ -141,54 +129,21 @@ val SchurDecompositionTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 SchurDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, t, p) = input.schurDecomposition()
-                    
-                    scope {
-                        val dif = input - q * t * p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QTQ^* in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                    
-                    scope {
-                        t.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex + 1u)
-                                assertTrue("T has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
-                        }
-                    }
-                    
-                    scope {
-                        for (i in 2u ..< t.rowNumber)
-                            assertTrue("T has two consecutive subdiagonal non-zero values at (${i - 1u}, ${i - 2u}) and ($i, ${i - 1u})") {
-                                t[i, i - 1u] == 0.0 || t[i - 1u, i - 2u] == 0.0
-                            }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-                        }
-                    }
-                    
-//                    scope {
-//                        val dif = q.transpose() - q.invert()!!
-//                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-//                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-//                        }
-//                    }
-                    
-                    scope {
-                        val dif = q * q.transpose()
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("QQ^* matrix differs from unit matrix in ($rowIndex, $columnIndex) by $value") { abs(value - if (rowIndex == columnIndex) 1.0 else 0.0) < 1E-10 }
-                        }
+                    AssertionScope.softly {
+                        val (q, t, p) = input.schurDecomposition()
+                        
+                        Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                        Expect.of(t).toBeQuasiUpperTriangularMatrix()
+                        Expect.of(q.transpose()).toBeEqualToWithTolerance(p, 1E-10)
+                        Expect.of(q * q.transpose()).toBeUnitMatrixWithTolerance(1E-10)
                     }
                 }
             }
@@ -333,6 +288,9 @@ val SchurDecompositionTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
+                PositiveSquareRootComputer.Key<Number>(numberType = numberType),
                 FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType),
                 MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
@@ -340,49 +298,13 @@ val SchurDecompositionTests by testSuite {
                 SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, t, p) = input.schurDecomposition()
-                    
-                    scope {
-                        val dif = input - q * t * p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QTQ^* in ($rowIndex, $columnIndex) by $value") {
-                                sqrt(value.realPart * value.realPart + value.imaginaryPart * value.imaginaryPart) < 1E-10
-                            }
-                        }
-                    }
-                    
-                    scope {
-                        t.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("T has in ($rowIndex, $columnIndex) non-zero value $value") {
-                                    value.realPart == 0.0 && value.imaginaryPart == 0.0
-                                }
-                        }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - p
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Left matrix's transposed matrix differs from right matrix in ($rowIndex, $columnIndex) by $value") {
-                                sqrt(value.realPart * value.realPart + value.imaginaryPart * value.imaginaryPart) < 1E-10
-                            }
-                        }
-                    }
-
-//                    scope {
-//                        val dif = q.conjugateTranspose() - q.invert()!!
-//                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-//                            assertTrue("Left matrix's transposed matrix differs from its inverse matrix in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
-//                        }
-//                    }
-                    
-                    scope {
-                        val dif = q * q.conjugateTranspose()
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("QQ^* matrix differs from unit matrix in ($rowIndex, $columnIndex) by $value") {
-                                (value - if (rowIndex == columnIndex) 1.0 else 0.0).let { sqrt(it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart) } < 1E-10
-                            }
-                        }
+                    AssertionScope.softly {
+                        val (q, t, p) = input.schurDecomposition()
+                        
+                        Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                        Expect.of(t).toBeUpperTriangularMatrix()
+                        Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(p, 1E-10)
+                        Expect.of(q * q.conjugateTranspose()).toBeUnitMatrixWithTolerance(1E-10)
                     }
                 }
             }

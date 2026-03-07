@@ -1,5 +1,7 @@
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
+import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.Maybe
@@ -404,3 +406,14 @@ public fun <Number> ComplexNumber.Companion.setFieldExtensionOver(numberType: Su
         )
     }
 }
+
+context(_: CommutativeRing<Number>)
+public fun <Number> ComplexNumber<Number>.conjugate(): ComplexNumber<Number> =
+    ComplexNumber(
+        realPart = realPart,
+        imaginaryPart = -imaginaryPart,
+    )
+context(_: CommutativeRing<Number>)
+public fun <Number> ComplexNumber<Number>.norm(): Number = realPart * realPart + imaginaryPart * imaginaryPart
+context(_: CommutativeRing<Number>, _: PositiveSquareRootComputer<Number>)
+public fun <Number> ComplexNumber<Number>.absoluteValue(): Number = norm().positiveSquareRoot()

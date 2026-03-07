@@ -3,6 +3,13 @@ package dev.lounres.kone.algebraic.algorithms
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
+import dev.lounres.kone.algebraic.assertions.toBeUpperTriangularMatrix
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.Expect
+import dev.lounres.kone.assertions.of
+import dev.lounres.kone.assertions.softly
+import dev.lounres.kone.assertions.withClue
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -12,16 +19,12 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
-import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
-import dev.lounres.kone.scope
+import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.suppliedType
-import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.reflect.KVariance.OUT
-import kotlin.test.assertTrue
 
 
 val QRDecompositionImplementationsTests by testSuite {
@@ -82,6 +85,7 @@ val QRDecompositionImplementationsTests by testSuite {
                 name = "via Gram-Schmidt",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setDefault<Number>(numberType = numberType)
                     MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>(numberType = numberType, matrixType = matrixType)
@@ -109,6 +113,8 @@ val QRDecompositionImplementationsTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 MatrixProductComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
@@ -116,26 +122,17 @@ val QRDecompositionImplementationsTests by testSuite {
                 QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-                    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                    AssertionScope.softly {
+                        val (q, r) = input.qrDecomposition()
+                        
+                        withClue("Input differs from QR.") {
+                            Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
                         }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") { value == 0.0 }
+                        withClue("R is not upper-triangular.") {
+                            Expect.of(r).toBeUpperTriangularMatrix()
                         }
-                    }
-                    
-                    scope {
-                        val dif = q.transpose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^T differs from Q^-1 in ($rowIndex, $columnIndex) by $value") { abs(value) < 1E-10 }
+                        withClue("Q is not unitary.") {
+                            Expect.of(q.transpose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
                         }
                     }
                 }
@@ -254,6 +251,7 @@ val QRDecompositionImplementationsTests by testSuite {
                 name = "via Gram-Schmidt",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
                     MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
@@ -283,6 +281,10 @@ val QRDecompositionImplementationsTests by testSuite {
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
+                Field.Key<Number>(numberType = numberType),
+                Order.Key<Number>(elementType = numberType),
+                PositiveSquareRootComputer.Key<Number>(numberType = numberType),
+                FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType),
                 MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
@@ -290,32 +292,17 @@ val QRDecompositionImplementationsTests by testSuite {
                 QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, r) = input.qrDecomposition()
-                    
-                    scope {
-                        val dif = input - q * r
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Input differs from QR in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
+                    AssertionScope.softly {
+                        val (q, r) = input.qrDecomposition()
+                        
+                        withClue("Input differs from QR.") {
+                            Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
                         }
-                    }
-                    
-                    scope {
-                        r.forEachIndexed { rowIndex, columnIndex, value ->
-                            if (rowIndex > columnIndex)
-                                assertTrue("R has in ($rowIndex, $columnIndex) non-zero value $value") {
-                                    value.realPart == 0.0 && value.imaginaryPart == 0.0
-                                }
+                        withClue("R is not upper-triangular.") {
+                            Expect.of(r).toBeUpperTriangularMatrix()
                         }
-                    }
-                    
-                    scope {
-                        val dif = q.conjugateTranspose() - q.invert()!!
-                        dif.forEachIndexed { rowIndex, columnIndex, value ->
-                            assertTrue("Q^* differs from Q^-1 in ($rowIndex, $columnIndex) by $value") {
-                                abs(sqrt(value.let { it.realPart * it.realPart + it.imaginaryPart * it.imaginaryPart })) < 1E-10
-                            }
+                        withClue("Q is not unitary.") {
+                            Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
                         }
                     }
                 }

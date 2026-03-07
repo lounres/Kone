@@ -62,7 +62,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
             
             while (true) {
                 for (i in 0u ..< n - 1u)
-                    if (abs(h[i + 1u, i]) leq tolerance * (abs(h[i, i]) + abs(h[i + 1u, i + 1u])))
+                    if (h[i + 1u, i].absoluteValue() leq tolerance * (h[i, i].absoluteValue() + h[i + 1u, i + 1u].absoluteValue()))
                         h[i + 1u, i] = numberField.zero
                 
                 while (k < n)
