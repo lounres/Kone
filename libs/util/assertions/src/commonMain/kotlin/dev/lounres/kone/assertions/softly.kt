@@ -18,7 +18,7 @@ public inline fun AssertionScope.softly(block: context(AssertionScope) () -> Uni
                 AssertionScope.Assertion(
                     message = assertionResults.joinToString(
                         prefix = "Soft assertion failed:\n",
-                        separator = "\n",
+                        separator = "",
                     ) {
                         buildString {
                             val message = it.message

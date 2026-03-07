@@ -11,6 +11,7 @@ import dev.lounres.kone.assertions.AssertionScope
 import dev.lounres.kone.assertions.Expect
 import dev.lounres.kone.assertions.of
 import dev.lounres.kone.assertions.softly
+import dev.lounres.kone.assertions.withClue
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -140,10 +141,18 @@ val SchurDecompositionTests by testSuite {
                     AssertionScope.softly {
                         val (q, t, p) = input.schurDecomposition()
                         
-                        Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
-                        Expect.of(t).toBeQuasiUpperTriangularMatrix()
-                        Expect.of(q.transpose()).toBeEqualToWithTolerance(p, 1E-10)
-                        Expect.of(q * q.transpose()).toBeUnitMatrixWithTolerance(1E-10)
+                        withClue("Input differs from QTP.") {
+                            Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                        }
+                        withClue("T is not quasi-upper-triangular.") {
+                            Expect.of(t).toBeQuasiUpperTriangularMatrix()
+                        }
+                        withClue("Transpose of Q is not P.") {
+                            Expect.of(q.transpose()).toBeEqualToWithTolerance(p, 1E-10)
+                        }
+                        withClue("Q is not unitary.") {
+                            Expect.of(q * q.transpose()).toBeUnitMatrixWithTolerance(1E-10)
+                        }
                     }
                 }
             }
@@ -301,10 +310,18 @@ val SchurDecompositionTests by testSuite {
                     AssertionScope.softly {
                         val (q, t, p) = input.schurDecomposition()
                         
-                        Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
-                        Expect.of(t).toBeUpperTriangularMatrix()
-                        Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(p, 1E-10)
-                        Expect.of(q * q.conjugateTranspose()).toBeUnitMatrixWithTolerance(1E-10)
+                        withClue("Input differs from QTP.") {
+                            Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                        }
+                        withClue("T is not upper-triangular.") {
+                            Expect.of(t).toBeUpperTriangularMatrix()
+                        }
+                        withClue("Conjugate transpose of Q is not P.") {
+                            Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(p, 1E-10)
+                        }
+                        withClue("Q is not unitary.") {
+                            Expect.of(q * q.conjugateTranspose()).toBeUnitMatrixWithTolerance(1E-10)
+                        }
                     }
                 }
             }

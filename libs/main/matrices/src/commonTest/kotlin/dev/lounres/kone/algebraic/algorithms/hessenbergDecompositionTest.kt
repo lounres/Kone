@@ -278,7 +278,7 @@ val HessenbergDecompositionTests by testSuite {
                             Expect.of(h).toBeUpperHessenbergMatrix()
                         }
                         Expect.of(q.conjugateTranspose()) {
-                            withClue("Transpose of Q is not P.") {
+                            withClue("Conjugate transpose of Q is not P.") {
                                 toBeEqualToWithTolerance(p, 1E-10)
                             }
                             withClue("Q is not unitary.") {
