@@ -19,7 +19,7 @@ fun MDList2<*>.toMatrixString(): String {
     return buildString {
         append('⎛')
         repeat(columnNumber * 2u + 1u) {
-            if (it % 2u == 0u) append(' ')
+            if (it % 2u == 0u) append("   ")
             else repeat(maxLengths[it / 2u]) { append(' ') }
         }
         appendLine('⎞')
@@ -27,7 +27,7 @@ fun MDList2<*>.toMatrixString(): String {
             if (row != 0u) {
                 append('⎜')
                 repeat(columnNumber * 2u + 1u) {
-                    if (it % 2u == 0u) append(' ')
+                    if (it % 2u == 0u) append("   ")
                     else repeat(maxLengths[it / 2u]) { append(' ') }
                 }
                 appendLine('⎟')
@@ -35,7 +35,7 @@ fun MDList2<*>.toMatrixString(): String {
             append('⎜')
             repeat(columnNumber * 2u + 1u) { column ->
                 append(
-                    if (column % 2u == 0u) ' '
+                    if (column % 2u == 0u) "   "
                     else representations[row, column / 2u].padStart(maxLengths[column / 2u].toInt(), ' ')
                 )
             }
@@ -43,7 +43,7 @@ fun MDList2<*>.toMatrixString(): String {
         }
         append('⎝')
         repeat(columnNumber * 2u + 1u) {
-            if (it % 2u == 0u) append(' ')
+            if (it % 2u == 0u) append("   ")
             else repeat(maxLengths[it / 2u]) { append(' ') }
         }
         appendLine('⎠')
@@ -63,7 +63,7 @@ fun MDList2<ComplexNumber<*>>.toMatrixString(): String {
     return buildString {
         append('⎛')
         repeat(columnNumber * 2u + 1u) {
-            if (it % 2u == 0u) append(' ')
+            if (it % 2u == 0u) append("   ")
             else repeat(maxLengths[it / 2u].let { it.first + it.second + 5u }) { append(' ') }
         }
         appendLine('⎞')
@@ -71,7 +71,7 @@ fun MDList2<ComplexNumber<*>>.toMatrixString(): String {
             if (row != 0u) {
                 append('⎜')
                 repeat(columnNumber * 2u + 1u) {
-                    if (it % 2u == 0u) append(' ')
+                    if (it % 2u == 0u) append("   ")
                     else repeat(maxLengths[it / 2u].let { it.first + it.second + 5u }) { append(' ') }
                 }
                 appendLine('⎟')
@@ -79,7 +79,7 @@ fun MDList2<ComplexNumber<*>>.toMatrixString(): String {
             append('⎜')
             repeat(columnNumber * 2u + 1u) { column ->
                 append(
-                    if (column % 2u == 0u) ' '
+                    if (column % 2u == 0u) "   "
                     else buildString {
                         val representation = representations[row, column / 2u]
                         append(representation.first.padStart(maxLengths[column / 2u].first.toInt(), ' '))
@@ -93,7 +93,7 @@ fun MDList2<ComplexNumber<*>>.toMatrixString(): String {
         }
         append('⎝')
         repeat(columnNumber * 2u + 1u) {
-            if (it % 2u == 0u) append(' ')
+            if (it % 2u == 0u) append("   ")
             else repeat(maxLengths[it / 2u].let { it.first + it.second + 5u }) { append(' ') }
         }
         appendLine('⎠')
