@@ -44,7 +44,38 @@ public fun fail(message: String, cause: Throwable? = null) {
 }
 
 context(assertionScope: AssertionScope)
-public inline fun Expect.Companion.toThrow(block: () -> Unit)  {
+public inline fun Expect.Companion.notToThrow(crossinline block: () -> Unit) {
+    try {
+        block()
+    } catch (throwable: Throwable) {
+        fail(
+            message = "Exception was thrown.",
+            cause = throwable,
+        )
+    }
+}
+
+context(assertionScope: AssertionScope)
+public inline fun <Result> Expect.Companion.notToThrow(crossinline block: () -> Result, checker: Expect<Result>.() -> Unit) {
+    var result: Result?
+    var toCheck: Boolean
+    try {
+        result = block()
+        toCheck = true
+    } catch (throwable: Throwable) {
+        fail(
+            message = "Exception was thrown.",
+            cause = throwable,
+        )
+        result = null
+        toCheck = false
+    }
+    @Suppress("UNCHECKED_CAST")
+    if (toCheck) of(result as Result, checker)
+}
+
+context(assertionScope: AssertionScope)
+public inline fun Expect.Companion.toThrow(crossinline block: () -> Unit) {
     try {
         block()
         fail("No exception was thrown.")
@@ -52,7 +83,7 @@ public inline fun Expect.Companion.toThrow(block: () -> Unit)  {
 }
 
 context(assertionScope: AssertionScope)
-public inline fun Expect.Companion.toThrow(block: () -> Unit, checker: Expect<Throwable>.() -> Unit)  {
+public inline fun Expect.Companion.toThrow(crossinline block: () -> Unit, checker: Expect<Throwable>.() -> Unit) {
     try {
         block()
         fail("No exception was thrown.")
@@ -63,7 +94,7 @@ public inline fun Expect.Companion.toThrow(block: () -> Unit, checker: Expect<Th
 
 @JvmName("orThrowCheckingType")
 context(assertionScope: AssertionScope)
-public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(block: () -> Unit)  {
+public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(crossinline block: () -> Unit) {
     try {
         block()
         fail("No exception was thrown.")
@@ -75,7 +106,7 @@ public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(bl
 
 @JvmName("orThrowCheckingType")
 context(assertionScope: AssertionScope)
-public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(block: () -> Unit, checker: Expect<ThrowableType>.() -> Unit)  {
+public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(crossinline block: () -> Unit, checker: Expect<ThrowableType>.() -> Unit) {
     try {
         block()
         fail("No exception was thrown.")

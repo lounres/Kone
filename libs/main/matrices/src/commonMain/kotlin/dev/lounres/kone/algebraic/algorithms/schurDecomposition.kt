@@ -6,7 +6,7 @@ import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-// X = Q T Q^*, Q - unitary, T - upper triangular
+// X = Q T Q^*, Q - unitary, T - (quasi-)upper-triangular
 public data class SchurDecomposition<out Number, out Matrix : MDList2<Number>>(
     val leftUnitary: Matrix,
     val middleUpperTriangular: Matrix,

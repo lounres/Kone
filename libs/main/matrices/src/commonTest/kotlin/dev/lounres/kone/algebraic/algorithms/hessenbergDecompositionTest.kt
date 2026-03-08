@@ -10,6 +10,7 @@ import dev.lounres.kone.assertions.of
 import dev.lounres.kone.assertions.softly
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeUpperHessenbergMatrix
+import dev.lounres.kone.assertions.notToThrow
 import dev.lounres.kone.assertions.withClue
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
@@ -109,37 +110,47 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, h, p) = input.hessenbergDecomposition()
-                    
                     AssertionScope.withClue(
                         {
                             buildString {
-                                appendLine("Received the following matrices to check.")
+                                appendLine("Received the following matrix to decompose.")
                                 appendLine()
                                 appendLine("Input:")
                                 appendLine(input.toMatrixString())
-                                appendLine("Q:")
-                                appendLine(q.toMatrixString())
-                                appendLine("H:")
-                                appendLine(h.toMatrixString())
-                                appendLine("P:")
-                                appendLine(p.toMatrixString())
                             }
                         }
                     ) {
-                        softly {
-                            withClue("Input differs from QHP.") {
-                                Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
-                            }
-                            withClue("H is not upper-hessenberg.") {
-                                Expect.of(h).toBeUpperHessenbergMatrix()
-                            }
-                            Expect.of(q.transpose()) {
-                                withClue("Transpose of Q is not P.") {
-                                    toBeEqualToWithTolerance(p, 1E-10)
+                        Expect.notToThrow({ input.hessenbergDecomposition() }) {
+                            val (q, h, p) = exposeValue()
+                            withClue(
+                                {
+                                    buildString {
+                                        appendLine("Received the following matrices to check.")
+                                        appendLine()
+                                        appendLine("Q:")
+                                        appendLine(q.toMatrixString())
+                                        appendLine("H:")
+                                        appendLine(h.toMatrixString())
+                                        appendLine("P:")
+                                        appendLine(p.toMatrixString())
+                                    }
                                 }
-                                withClue("Q is not unitary.") {
-                                    toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                            ) {
+                                softly {
+                                    withClue("Input differs from QHP.") {
+                                        Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
+                                    }
+                                    withClue("H is not upper-hessenberg.") {
+                                        Expect.of(h).toBeUpperHessenbergMatrix()
+                                    }
+                                    Expect.of(q.transpose()) {
+                                        withClue("Transpose of Q is not P.") {
+                                            toBeEqualToWithTolerance(p, 1E-10)
+                                        }
+                                        withClue("Q is not unitary.") {
+                                            toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -286,37 +297,47 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    val (q, h, p) = input.hessenbergDecomposition()
-                    
                     AssertionScope.withClue(
                         {
                             buildString {
-                                appendLine("Received the following matrices to check.")
+                                appendLine("Received the following matrix to decompose.")
                                 appendLine()
                                 appendLine("Input:")
                                 appendLine(input.toMatrixString())
-                                appendLine("Q:")
-                                appendLine(q.toMatrixString())
-                                appendLine("H:")
-                                appendLine(h.toMatrixString())
-                                appendLine("P:")
-                                appendLine(p.toMatrixString())
                             }
                         }
                     ) {
-                        softly {
-                            withClue("Input differs from QHP.") {
-                                Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
-                            }
-                            withClue("H is not upper-hessenberg.") {
-                                Expect.of(h).toBeUpperHessenbergMatrix()
-                            }
-                            Expect.of(q.conjugateTranspose()) {
-                                withClue("Conjugate transpose of Q is not P.") {
-                                    toBeEqualToWithTolerance(p, 1E-10)
+                        Expect.notToThrow({ input.hessenbergDecomposition() }) {
+                            val (q, h, p) = exposeValue()
+                            withClue(
+                                {
+                                    buildString {
+                                        appendLine("Received the following matrices to check.")
+                                        appendLine()
+                                        appendLine("Q:")
+                                        appendLine(q.toMatrixString())
+                                        appendLine("H:")
+                                        appendLine(h.toMatrixString())
+                                        appendLine("P:")
+                                        appendLine(p.toMatrixString())
+                                    }
                                 }
-                                withClue("Q is not unitary.") {
-                                    toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                            ) {
+                                softly {
+                                    withClue("Input differs from QHP.") {
+                                        Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
+                                    }
+                                    withClue("H is not upper-hessenberg.") {
+                                        Expect.of(h).toBeUpperHessenbergMatrix()
+                                    }
+                                    Expect.of(q.conjugateTranspose()) {
+                                        withClue("Conjugate transpose of Q is not P.") {
+                                            toBeEqualToWithTolerance(p, 1E-10)
+                                        }
+                                        withClue("Q is not unitary.") {
+                                            toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                                        }
+                                    }
                                 }
                             }
                         }
