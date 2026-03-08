@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.assertions.AssertionScope
 import dev.lounres.kone.assertions.Expect
 import dev.lounres.kone.assertions.of
@@ -108,21 +109,38 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, h, p) = input.hessenbergDecomposition()
-                        
-                        withClue("Input differs from QHP.") {
-                            Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
-                        }
-                        withClue("H is not upper-hessenberg.") {
-                            Expect.of(h).toBeUpperHessenbergMatrix()
-                        }
-                        Expect.of(q.transpose()) {
-                            withClue("Transpose of Q is not P.") {
-                                toBeEqualToWithTolerance(p, 1E-10)
+                    val (q, h, p) = input.hessenbergDecomposition()
+                    
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("H:")
+                                appendLine(h.toMatrixString())
+                                appendLine("P:")
+                                appendLine(p.toMatrixString())
                             }
-                            withClue("Q is not unitary.") {
-                                toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                        }
+                    ) {
+                        softly {
+                            withClue("Input differs from QHP.") {
+                                Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("H is not upper-hessenberg.") {
+                                Expect.of(h).toBeUpperHessenbergMatrix()
+                            }
+                            Expect.of(q.transpose()) {
+                                withClue("Transpose of Q is not P.") {
+                                    toBeEqualToWithTolerance(p, 1E-10)
+                                }
+                                withClue("Q is not unitary.") {
+                                    toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                                }
                             }
                         }
                     }
@@ -268,21 +286,38 @@ val HessenbergDecompositionTests by testSuite {
                 HessenbergDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, h, p) = input.hessenbergDecomposition()
-                        
-                        withClue("Input differs from QHP.") {
-                            Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
-                        }
-                        withClue("H is not upper-hessenberg.") {
-                            Expect.of(h).toBeUpperHessenbergMatrix()
-                        }
-                        Expect.of(q.conjugateTranspose()) {
-                            withClue("Conjugate transpose of Q is not P.") {
-                                toBeEqualToWithTolerance(p, 1E-10)
+                    val (q, h, p) = input.hessenbergDecomposition()
+                    
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("H:")
+                                appendLine(h.toMatrixString())
+                                appendLine("P:")
+                                appendLine(p.toMatrixString())
                             }
-                            withClue("Q is not unitary.") {
-                                toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                        }
+                    ) {
+                        softly {
+                            withClue("Input differs from QHP.") {
+                                Expect.of(q * h * p).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("H is not upper-hessenberg.") {
+                                Expect.of(h).toBeUpperHessenbergMatrix()
+                            }
+                            Expect.of(q.conjugateTranspose()) {
+                                withClue("Conjugate transpose of Q is not P.") {
+                                    toBeEqualToWithTolerance(p, 1E-10)
+                                }
+                                withClue("Q is not unitary.") {
+                                    toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                                }
                             }
                         }
                     }

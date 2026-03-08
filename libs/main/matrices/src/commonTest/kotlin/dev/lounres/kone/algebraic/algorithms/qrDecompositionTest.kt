@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeUpperTriangularMatrix
 import dev.lounres.kone.assertions.AssertionScope
@@ -122,17 +123,32 @@ val QRDecompositionImplementationsTests by testSuite {
                 QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, r) = input.qrDecomposition()
-                        
-                        withClue("Input differs from QR.") {
-                            Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                    val (q, r) = input.qrDecomposition()
+                    
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("R:")
+                                appendLine(r.toMatrixString())
+                            }
                         }
-                        withClue("R is not upper-triangular.") {
-                            Expect.of(r).toBeUpperTriangularMatrix()
-                        }
-                        withClue("Q is not unitary.") {
-                            Expect.of(q.transpose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                    ) {
+                        softly {
+                            withClue("Input differs from QR.") {
+                                Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("R is not upper-triangular.") {
+                                Expect.of(r).toBeUpperTriangularMatrix()
+                            }
+                            withClue("Q is not unitary.") {
+                                Expect.of(q.transpose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                            }
                         }
                     }
                 }
@@ -292,17 +308,32 @@ val QRDecompositionImplementationsTests by testSuite {
                 QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, r) = input.qrDecomposition()
-                        
-                        withClue("Input differs from QR.") {
-                            Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                    val (q, r) = input.qrDecomposition()
+                    
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("R:")
+                                appendLine(r.toMatrixString())
+                            }
                         }
-                        withClue("R is not upper-triangular.") {
-                            Expect.of(r).toBeUpperTriangularMatrix()
-                        }
-                        withClue("Q is not unitary.") {
-                            Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                    ) {
+                        softly {
+                            withClue("Input differs from QR.") {
+                                Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("R is not upper-triangular.") {
+                                Expect.of(r).toBeUpperTriangularMatrix()
+                            }
+                            withClue("Q is not unitary.") {
+                                Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
+                            }
                         }
                     }
                 }

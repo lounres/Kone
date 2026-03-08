@@ -3,6 +3,7 @@ package dev.lounres.kone.algebraic.algorithms
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.implementations.*
+import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeQuasiUpperTriangularMatrix
 import dev.lounres.kone.algebraic.assertions.toBeUnitMatrixWithTolerance
@@ -138,20 +139,36 @@ val SchurDecompositionTests by testSuite {
                 SchurDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, t, p) = input.schurDecomposition()
-                        
-                        withClue("Input differs from QTP.") {
-                            Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                    val (q, t, p) = input.schurDecomposition()
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("T:")
+                                appendLine(t.toMatrixString())
+                                appendLine("P:")
+                                appendLine(p.toMatrixString())
+                            }
                         }
-                        withClue("T is not quasi-upper-triangular.") {
-                            Expect.of(t).toBeQuasiUpperTriangularMatrix()
-                        }
-                        withClue("Transpose of Q is not P.") {
-                            Expect.of(q.transpose()).toBeEqualToWithTolerance(p, 1E-10)
-                        }
-                        withClue("Q is not unitary.") {
-                            Expect.of(q * q.transpose()).toBeUnitMatrixWithTolerance(1E-10)
+                    ) {
+                        softly {
+                            withClue("Input differs from QTP.") {
+                                Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("T is not quasi-upper-triangular.") {
+                                Expect.of(t).toBeQuasiUpperTriangularMatrix()
+                            }
+                            withClue("Transpose of Q is not P.") {
+                                Expect.of(q.transpose()).toBeEqualToWithTolerance(p, 1E-10)
+                            }
+                            withClue("Q is not unitary.") {
+                                Expect.of(q * q.transpose()).toBeUnitMatrixWithTolerance(1E-10)
+                            }
                         }
                     }
                 }
@@ -307,20 +324,36 @@ val SchurDecompositionTests by testSuite {
                 SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
                 for ((index, input) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.softly {
-                        val (q, t, p) = input.schurDecomposition()
-                        
-                        withClue("Input differs from QTP.") {
-                            Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                    val (q, t, p) = input.schurDecomposition()
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Received the following matrices to check.")
+                                appendLine()
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
+                                appendLine("Q:")
+                                appendLine(q.toMatrixString())
+                                appendLine("T:")
+                                appendLine(t.toMatrixString())
+                                appendLine("P:")
+                                appendLine(p.toMatrixString())
+                            }
                         }
-                        withClue("T is not upper-triangular.") {
-                            Expect.of(t).toBeUpperTriangularMatrix()
-                        }
-                        withClue("Conjugate transpose of Q is not P.") {
-                            Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(p, 1E-10)
-                        }
-                        withClue("Q is not unitary.") {
-                            Expect.of(q * q.conjugateTranspose()).toBeUnitMatrixWithTolerance(1E-10)
+                    ) {
+                        softly {
+                            withClue("Input differs from QTP.") {
+                                Expect.of(q * t * p).toBeEqualToWithTolerance(input, 1E-10)
+                            }
+                            withClue("T is not upper-triangular.") {
+                                Expect.of(t).toBeUpperTriangularMatrix()
+                            }
+                            withClue("Conjugate transpose of Q is not P.") {
+                                Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(p, 1E-10)
+                            }
+                            withClue("Q is not unitary.") {
+                                Expect.of(q * q.conjugateTranspose()).toBeUnitMatrixWithTolerance(1E-10)
+                            }
                         }
                     }
                 }
