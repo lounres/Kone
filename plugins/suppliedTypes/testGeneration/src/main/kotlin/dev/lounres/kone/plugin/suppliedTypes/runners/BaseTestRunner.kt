@@ -46,6 +46,4 @@ fun TestConfigurationBuilder.commonFirWithPluginFrontendConfiguration() {
     useConfigurators(
         ::PluginRuntimeProvider
     )
-    
-    service
 }
