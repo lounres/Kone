@@ -49,6 +49,7 @@ public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () 
  * @param transform transformation to apply.
  * @return result of the transformation
  */
+@IgnorableReturnValue
 public inline fun <K, V> MutableMap<in K, V>.applyToKey(key: K, transform: (currentValue: V?) -> V): V {
     contract {
         callsInPlace(transform, EXACTLY_ONCE)
@@ -66,6 +67,7 @@ public inline fun <K, V> MutableMap<in K, V>.applyToKey(key: K, transform: (curr
  * current value as a parameter.
  * @return result value corresponding to the [key].
  */
+@IgnorableReturnValue
 public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): V {
     contract {
         callsInPlace(valueOnPut, AT_MOST_ONCE)
@@ -120,6 +122,7 @@ public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -
  * @param destination map to receive copies.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D): D {
     for ((key, value) in this) {
         destination[key] = value
@@ -137,6 +140,7 @@ public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D
  * a new one and returns value to associate to the key.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for ((key, value) in this) {
         destination.putOrChange(key, { value }, { resolve(key, it, value) })
@@ -157,6 +161,7 @@ public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(de
  * the same as initial entry.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destination: D, transform: (Map.Entry<K, V>) -> W): D {
     for (entry in this) {
         destination[entry.key] = transform(entry)
@@ -179,6 +184,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
  * a new one and returns value to associate to the key.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
         val (key, value) = entry
@@ -200,6 +206,7 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  * @param destination the map where result of the merge is put.
  * @return the destination.
  */
+@IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: Map<out K, V>, destination: D): D {
     for ((key, value) in map1) {
         destination.put(key, value)
@@ -224,6 +231,7 @@ public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: 
  * @param destination the map where the result of the merge is put.
  * @return the destination.
  */
+@IgnorableReturnValue
 public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<out K, V1>, map2: Map<out K, V2>, destination: D, resolve: (key: K, value1: V1, value2: V2) -> W): D {
     for (key in map2.keys) {
         destination.remove(key)
@@ -282,6 +290,7 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<o
  * corresponding values.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
         val (key, value) = transform(element)
@@ -304,6 +313,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destin
  * corresponding values.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, valueTransform: (T) -> V, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
         val key = keySelector(element)
@@ -326,6 +336,7 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(dest
  * corresponding values.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, resolve: (key: K, currentValue: T, newValue: T) -> T): D {
     for (element in this) {
         val key = keySelector(element)
@@ -395,6 +406,7 @@ public inline fun <T, K> Iterable<T>.associateBy(keySelector: (T) -> K, resolve:
  * corresponding values.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <K, V, W, D : MutableMap<K, W>> Map<out K, V>.mapValuesTo(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: W) -> W): D =
     entries.associateByTo(destination, { it.key }, transform, resolve)
 
@@ -411,6 +423,7 @@ public inline fun <K, V, W, D : MutableMap<K, W>> Map<out K, V>.mapValuesTo(dest
  * corresponding values.
  * @return the [destination].
  */
+@IgnorableReturnValue
 public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destination: D, transform: (Map.Entry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): D =
     entries.associateByTo(destination, transform, { it.value }, resolve)
 

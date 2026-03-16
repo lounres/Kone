@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll
 import dev.lounres.kone.plugin.suppliedTypes.services.PluginRuntimeProvider
 import org.jetbrains.kotlin.test.configuration.baseFirDiagnosticTestConfiguration
 import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives
+import org.jetbrains.kotlin.test.frontend.fir.FirCliJvmFacade
 
 
 abstract class BaseTestRunner : AbstractKotlinCompilerTest() {
@@ -32,7 +33,9 @@ abstract class BaseTestRunner : AbstractKotlinCompilerTest() {
 }
 
 fun TestConfigurationBuilder.commonFirWithPluginFrontendConfiguration() {
-    baseFirDiagnosticTestConfiguration()
+    baseFirDiagnosticTestConfiguration(
+        frontendFacade = ::FirCliJvmFacade
+    )
 
     defaultDirectives {
         +FirDiagnosticsDirectives.ENABLE_PLUGIN_PHASES
@@ -43,4 +46,6 @@ fun TestConfigurationBuilder.commonFirWithPluginFrontendConfiguration() {
     useConfigurators(
         ::PluginRuntimeProvider
     )
+    
+    service
 }

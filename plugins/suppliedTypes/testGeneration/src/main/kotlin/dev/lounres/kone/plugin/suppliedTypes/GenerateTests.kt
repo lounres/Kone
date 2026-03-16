@@ -50,6 +50,7 @@ fun main() {
             testClass<AbstractBoxTestForPhase5> {
                 model("ir/phase5")
             }
+            
             testClass<AbstractBoxTestComplete> {
                 model("ir/complete")
             }

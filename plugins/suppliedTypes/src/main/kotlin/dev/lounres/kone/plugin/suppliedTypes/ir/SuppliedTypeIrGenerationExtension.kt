@@ -7,462 +7,97 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
-import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
-import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
-import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionRegularClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionStarClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeDynamicClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfCallableId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeRegularClassId
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.*
-import org.jetbrains.kotlin.ir.builders.declarations.addBackingField
-import org.jetbrains.kotlin.ir.builders.declarations.buildValueParameter
 import org.jetbrains.kotlin.ir.declarations.*
-import org.jetbrains.kotlin.ir.expressions.IrCall
-import org.jetbrains.kotlin.ir.expressions.IrConst
-import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
-import org.jetbrains.kotlin.ir.expressions.IrDelegatingConstructorCall
-import org.jetbrains.kotlin.ir.expressions.IrEnumConstructorCall
-import org.jetbrains.kotlin.ir.expressions.IrExpression
-import org.jetbrains.kotlin.ir.expressions.IrStatementOriginImpl
-import org.jetbrains.kotlin.ir.expressions.IrTypeOperator
+import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetEnumValueImpl
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrScriptSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSymbol
-import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
-import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
-import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
+import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.Variance
-import kotlin.collections.iterator
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind.AT_MOST_ONCE
-import kotlin.contracts.contract
 
-
-fun couldNotFindClass(classId: ClassId): Nothing =
-    error("Could not find class '${classId.asFqNameString()}'")
-fun couldNotFindCorrespondingCallable(callableId: CallableId): Nothing =
-    error("Could not find corresponding callable '${callableId.asSingleFqName()}'.")
-
-fun IrPluginContext.referenceClassOrFail(classId: ClassId): IrClassSymbol =
-    referenceClass(classId) ?: couldNotFindClass(classId)
-inline fun IrPluginContext.referenceFunctionThatOrFail(callableId: CallableId, predicate: (IrSimpleFunctionSymbol) -> Boolean = { true }): IrSimpleFunctionSymbol =
-    referenceFunctions(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
-
-val IrDeclarationWithName.fqName: FqName get() = fqNameWhenAvailable ?: error("Expected declaration with available FQ name")
-val IrTypeParameter.isSupplied: Boolean get() = hasAnnotation(supplyClassId)
-val IrTypeParameter.providedSupplierParameterName: Name?
-    get() {
-        val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == supplyClassId }
-        val theOnlyArgumentOrNull = supplyingAnnotationConstructorCallOrNull.arguments[0] as IrConst?
-        val suppliedParameterName = (theOnlyArgumentOrNull?.value as? String?)?.takeIf { it.isNotEmpty() }
-        return suppliedParameterName?.let { Name.identifier(it) }
-    }
-val IrTypeParameter.internalSupplierPropertyName: Name get() = internalSupplierPropertyName(parent.kotlinFqName, name)
-val IrTypeParameter.internalSupplierParameterName: Name get() = internalSupplierParameterName(name)
-val IrTypeParameter.supplierParameterName: Name get() = /*providedSupplierParameterName ?:*/ internalSupplierParameterName
-
-class IrRuntimeReferences(pluginContext: IrPluginContext) {
-    val suppliedTypeIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeClassId)
-    val suppliedTypeIrType: IrType = suppliedTypeIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedTypeRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeRegularClassId)
-    val suppliedTypeRegularIrType: IrType = suppliedTypeRegularIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedTypeDynamicClassId)
-    val suppliedTypeDynamicIrType: IrType = suppliedTypeDynamicIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedProjectionIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionClassId)
-    val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionRegularClassId)
-    val suppliedProjectionStarIrClassSymbol: IrClassSymbol = pluginContext.referenceClassOrFail(suppliedProjectionStarClassId)
-    val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = pluginContext.referenceFunctionThatOrFail(suppliedTypeOfCallableId)
-}
 
 class SuppliedTypeIrGenerationExtension(
     private val messageCollector: MessageCollector,
 ) : IrGenerationExtension {
+    companion object {
+        val phases: List<(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext, irRuntimeReferences: IrRuntimeReferences, suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor) -> Unit> = listOf(
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+                supplyFunctionsParameters(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                )
+                
+                supplyConstructorsParameters(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                )
+            },
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+                moduleFragment.transform(
+                    SuppliableCallSubstitutionTransformer(
+                        pluginContext = pluginContext,
+                        irRuntimeReferences = irRuntimeReferences,
+                        suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                    ),
+                    null,
+                )
+            },
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+                supplyFunctionsBodies(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                )
+                
+                supplyConstructorsBodies(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                )
+            },
+//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+//
+//            },
+//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+//                moduleFragment.transform(
+//                    SuppliedTypeOfSubstitutionTransformer(
+//                        pluginContext = pluginContext,
+//                        irRuntimeReferences = irRuntimeReferences,
+//                    ),
+//                    SuppliedTypeOfSubstitutionTransformer.TransformationContext(emptyMap(), emptyMap(), null)
+//                )
+//            },
+        )
+    }
+    
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
-
-        moduleFragment.transform(
-            ClassSuppliedTypeParametersPropertiesGenerationTransformer(
-                pluginContext = pluginContext,
-                irRuntimeReferences = irRuntimeReferences,
-            ),
-            null
-        )
-
-        moduleFragment.transform(
-            ClassSuppliedTypeParametersOverridesGenerationTransformer(
-                pluginContext = pluginContext,
-                irRuntimeReferences = irRuntimeReferences,
-            ),
-            null
+        val suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor = SuppliabilityCollectionVisitor(
+            pluginContext = pluginContext,
+            irRuntimeReferences = irRuntimeReferences,
         )
         
-        moduleFragment.transform(
-            FunctionsWithSuppliedTypeParametersModificationTransformer(
-                pluginContext = pluginContext,
-                irRuntimeReferences = irRuntimeReferences,
-            ),
-            null
-        )
+        moduleFragment.acceptVoid(suppliabilityCollectionVisitor)
         
-        moduleFragment.transform(
-            FunctionsWithSuppliedTypeParametersUsageTransformer(
-                pluginContext = pluginContext,
-                irRuntimeReferences = irRuntimeReferences,
-            ),
-            null
-        )
-        
-        moduleFragment.transform(
-            SuppliedTypeOfSubstitutionTransformer(
-                pluginContext = pluginContext,
-                irRuntimeReferences = irRuntimeReferences,
-            ),
-            SuppliedTypeOfSubstitutionTransformer.TransformationContext(emptyMap(), emptyMap(), null)
-        )
+        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor)
     }
 }
-
-// region Phase 1
-class ClassSuppliedTypeParametersPropertiesGenerationTransformer(
-    val pluginContext: IrPluginContext,
-    val irRuntimeReferences: IrRuntimeReferences,
-) : IrElementTransformerVoid() {
-    private val CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_ORIGIN by IrDeclarationOriginImpl
-    private val CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN by IrStatementOriginImpl
-    override fun visitClass(declaration: IrClass): IrStatement {
-        when (declaration.kind) {
-            ClassKind.INTERFACE -> {
-                for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
-                    check(declaration.properties.count { it.name == typeParameter.internalSupplierPropertyName } == 1)
-                }
-            }
-            ClassKind.CLASS -> {
-                check(!(declaration.isValue && declaration.typeParameters.any { it.isSupplied })) { "Found IrClass with `isValue = true` that unexpectedly has supplied type parameters:\n${declaration.symbol}" }
-                for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
-                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
-                    val backingField = property.backingField!!
-                    backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
-                        irExprBody(
-                            irCallWithSubstitutedType(
-                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                                listOf(typeParameter.defaultType)
-                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_PROPERTIES_GENERATION_STATEMENT_ORIGIN }
-                        )
-                    }
-                }
-            }
-            ClassKind.ENUM_CLASS,
-            ClassKind.ENUM_ENTRY,
-            ClassKind.ANNOTATION_CLASS,
-            ClassKind.OBJECT -> check(declaration.typeParameters.none()) { "Found IrClass that unexpectedly has type parameters:\n${declaration.symbol}" }
-        }
-        return super.visitClass(declaration)
-    }
-}
-// endregion
-
-// region Phase 2
-val IrType.arguments
-    get() =
-        (this as? IrSimpleType ?: error("Super type\n${this.dumpKotlinLike()}\nis not IrSimpleType"))
-            .arguments.map { it as? IrType ?: error("Type argument\n${it.dumpKotlinLike()}\nis not IrType") }
-
-@OptIn(ExperimentalContracts::class)
-public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () -> R, compute: (value: V) -> R): R {
-    contract {
-        callsInPlace(defaultResult, AT_MOST_ONCE)
-        callsInPlace(compute, AT_MOST_ONCE)
-    }
-    @Suppress("UNCHECKED_CAST")
-    return (if (key !in this) defaultResult() else compute(get(key) as V))
-}
-
-@OptIn(ExperimentalContracts::class)
-@IgnorableReturnValue
-public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): V {
-    contract {
-        callsInPlace(valueOnPut, AT_MOST_ONCE)
-        callsInPlace(transformOnChange, AT_MOST_ONCE)
-    }
-    return computeOnOrElse(key, valueOnPut, transformOnChange).also { this[key] = it }
-}
-
-@IgnorableReturnValue
-public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
-    for ((key, value) in this) {
-        destination.putOrChange(key, { value }, { resolve(key, it, value) })
-    }
-    return destination
-}
-
-@IgnorableReturnValue
-public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
-    for (entry in this) {
-        val (key, value) = entry
-        destination.putOrChange(key, { transform(entry) }, { resolve(key, it, value) })
-    }
-    return destination
-}
-
-class ClassSuppliedTypeParametersOverridesGenerationTransformer(
-    val pluginContext: IrPluginContext,
-    val irRuntimeReferences: IrRuntimeReferences,
-) : IrElementTransformerVoid() {
-    private val CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN by IrDeclarationOriginImpl
-    private val CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN by IrStatementOriginImpl
-    private data class TypeParametersInfo(
-        val type: IrType,
-        val appearances: Set<IrClass>,
-    )
-    private val allSuperClassesSuppliedTypeParametersInfoRegistry: MutableMap<IrClass, Map<IrTypeParameter, TypeParametersInfo>> = mutableMapOf()
-    private val IrClass.allSuperClassesSuppliedTypeParametersInfo: Map<IrTypeParameter, TypeParametersInfo>
-        get() = allSuperClassesSuppliedTypeParametersInfoRegistry.getOrPut(this) {
-            buildMap<IrTypeParameter, TypeParametersInfo> {
-                for (superType in superTypes) {
-                    val superClass = superType.classifierOrFail.owner as IrClass
-                    val typeArguments = superType.arguments
-                    check(superClass.typeParameters.size == typeArguments.size) { TODO() }
-                    val substitutions = superClass.typeParameters.map { it.symbol }.zip(typeArguments).toMap()
-                    superClass.typeParameters.filter { it.isSupplied }.associateWith {
-                        TypeParametersInfo(
-                            type = it.defaultType.substitute(substitutions),
-                            appearances = setOf(superClass)
-                        )
-                    }.copyToBy(
-                        destination = this,
-                        resolve = { typeParameter, currentInfo, newInfo ->
-                            check(currentInfo.type == newInfo.type) {
-                                "For some reason interface was inherited twice with different type arguments. " +
-                                        "The resulting type of type parameter\n${typeParameter.symbol}\nis both\n${currentInfo.type.dumpKotlinLike()}\nand\n${newInfo.type.dumpKotlinLike()}"
-                            }
-                            TypeParametersInfo(
-                                type = currentInfo.type,
-                                appearances = currentInfo.appearances + newInfo.appearances,
-                            )
-                        }
-                    )
-                    superClass.allSuperClassesSuppliedTypeParametersInfo
-                        .copyMapToBy(
-                            destination = this,
-                            transform = {
-                                TypeParametersInfo(
-                                    type = it.value.type.substitute(substitutions),
-                                    appearances = it.value.appearances + superClass
-                                )
-                            },
-                            resolve = { typeParameter, currentInfo, newInfo ->
-                                check(currentInfo.type == newInfo.type.substitute(substitutions)) {
-                                    "For some reason interface was inherited twice with different type arguments." +
-                                            "The resulting type of type parameter\n${typeParameter.symbol}\nis both\n${currentInfo.type.dumpKotlinLike()}\nand\n${newInfo.type.dumpKotlinLike()}"
-                                }
-                                TypeParametersInfo(
-                                    type = currentInfo.type,
-                                    appearances = currentInfo.appearances + newInfo.appearances + superClass,
-                                )
-                            },
-                        )
-                }
-            }
-        }
-    override fun visitClass(declaration: IrClass): IrStatement {
-        when (declaration.kind) {
-            ClassKind.INTERFACE -> {
-                val suppliedTypeParametersToOverride = declaration.allSuperClassesSuppliedTypeParametersInfo
-                for ((typeParameter, info) in suppliedTypeParametersToOverride) {
-                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
-                    val getter = property.getter!!
-//                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
-//                        irExprBody(
-//                            irCallWithSubstitutedType(
-//                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-//                                listOf(info.type)
-//                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
-//                        )
-//                    }
-                }
-            }
-            ClassKind.CLASS,
-            ClassKind.ENUM_CLASS,
-            ClassKind.ENUM_ENTRY,
-            ClassKind.OBJECT, -> {
-                // TODO: Add checks on value classes
-                val superClass = declaration.superClass
-                val suppliedTypeParametersToOverride =
-                    if (superClass == null) declaration.allSuperClassesSuppliedTypeParametersInfo
-                    else declaration.allSuperClassesSuppliedTypeParametersInfo.filterKeys { it !in superClass.allSuperClassesSuppliedTypeParametersInfo }
-                for ((typeParameter, info) in suppliedTypeParametersToOverride) {
-                    val property = declaration.properties.single { it.name == typeParameter.internalSupplierPropertyName }
-                    val backingField = property.addBackingField {
-                        name = typeParameter.internalSupplierPropertyName
-                        type = irRuntimeReferences.suppliedTypeIrType
-                        origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_ORIGIN
-                    }
-                    backingField.initializer = DeclarationIrBuilder(pluginContext, backingField.symbol).run {
-                        irExprBody(
-                            irCallWithSubstitutedType(
-                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                                listOf(info.type)
-                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
-                        )
-                    }
-//                    val getter = property.getter!!
-//                    val getterDispatchReceiver = getter.dispatchReceiverParameter!!
-//                    getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
-//                        irExprBody(
-//                            irGetField(
-//                                irGet(getterDispatchReceiver),
-//                                backingField,
-//                            ).also { it.origin = CLASS_SUPPLIED_TYPE_PARAMETERS_OVERRIDES_GENERATION_STATEMENT_ORIGIN }
-//                        )
-//                    }
-                }
-            }
-            ClassKind.ANNOTATION_CLASS -> {}
-        }
-        return super.visitClass(declaration)
-    }
-}
-// endregion
-
-// region Phase 3
-class FunctionsWithSuppliedTypeParametersModificationTransformer(
-    val pluginContext: IrPluginContext,
-    val irRuntimeReferences: IrRuntimeReferences,
-) : IrElementTransformerVoid() {
-    private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN by IrDeclarationOriginImpl
-    override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
-        val suppliedValueArguments =
-            declaration.typeParameters
-                .filter { it.isSupplied }
-                .map {
-                    buildValueParameter(declaration) {
-                        kind = IrParameterKind.Regular
-                        name = it.supplierParameterName
-                        // TODO
-//                        isHidden = true
-                        type = irRuntimeReferences.suppliedTypeIrType
-                        origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN
-                    }
-                }
-        declaration.parameters = suppliedValueArguments + declaration.parameters
-        return super.visitSimpleFunction(declaration)
-    }
-    override fun visitConstructor(declaration: IrConstructor): IrStatement {
-        val suppliedValueArguments =
-            declaration.parentAsClass.typeParameters
-                .filter { it.isSupplied }
-                .map {
-                    buildValueParameter(declaration) {
-                        kind = IrParameterKind.Regular
-                        name = it.supplierParameterName
-//                        isHidden = true
-                        type = irRuntimeReferences.suppliedTypeIrType
-                        origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_MODIFICATION_ORIGIN
-                    }
-                }
-        declaration.parameters = suppliedValueArguments + declaration.parameters
-        return super.visitConstructor(declaration)
-    }
-}
-// endregion
-
-// region Phase 4
-class FunctionsWithSuppliedTypeParametersUsageTransformer(
-    val pluginContext: IrPluginContext,
-    val irRuntimeReferences: IrRuntimeReferences,
-) : IrElementTransformerVoid() {
-    private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_ORIGIN by IrDeclarationOriginImpl
-    private val FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN by IrStatementOriginImpl
-    data class TypeArgumentInfo(
-        val typeParameter: IrTypeParameter,
-        val typeArgument: IrType,
-    )
-    override fun visitCall(expression: IrCall): IrExpression {
-        val declaration = expression.symbol.owner
-        if (declaration.callableId != suppliedTypeOfCallableId) {
-            val suppliedValueArguments =
-                declaration.typeParameters
-                    .zip(expression.typeArguments) { typeParameter, typeArgument -> TypeArgumentInfo(typeParameter, typeArgument!!) }
-                    .filter { (typeParameter, _) -> typeParameter.isSupplied }
-                    .map { (_, typeArgument) ->
-                        DeclarationIrBuilder(pluginContext, declaration.symbol)
-                            .irCallWithSubstitutedType(
-                                irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                                listOf(typeArgument)
-                            ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
-                    }
-            expression.arguments.addAll(0, suppliedValueArguments)
-        }
-        return super.visitCall(expression)
-    }
-    override fun visitConstructorCall(expression: IrConstructorCall): IrExpression {
-        val constructorSymbol = expression.symbol
-        val declaration = expression.symbol.owner.parentAsClass
-        val suppliedValueArguments =
-            declaration.typeParameters
-                .zip(expression.typeArguments) { typeParameter, typeArgument -> TypeArgumentInfo(typeParameter, typeArgument!!) }
-                .filter { (typeParameter, _) -> typeParameter.isSupplied }
-                .map { (_, typeArgument) ->
-                    DeclarationIrBuilder(pluginContext, declaration.symbol)
-                        .irCallWithSubstitutedType(
-                            irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                            listOf(typeArgument)
-                        ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
-                }
-        expression.arguments.addAll(0, suppliedValueArguments)
-        println(declaration.dump())
-        val newExpression = DeclarationIrBuilder(pluginContext, declaration.symbol)
-            .irCallConstructor(
-                callee = constructorSymbol,
-                typeArguments = expression.typeArguments.map { it!! },
-            ).also {
-                it.arguments.addAll(suppliedValueArguments + expression.arguments)
-            }
-//        return super.visitConstructorCall(expression)
-        return super.visitConstructorCall(newExpression)
-    }
-    override fun visitDelegatingConstructorCall(expression: IrDelegatingConstructorCall): IrExpression {
-        val declaration = expression.symbol.owner.parentAsClass
-        val suppliedValueArguments =
-            declaration.typeParameters
-                .zip(expression.typeArguments) { typeParameter, typeArgument -> TypeArgumentInfo(typeParameter, typeArgument!!) }
-                .filter { (typeParameter, _) -> typeParameter.isSupplied }
-                .map { (_, typeArgument) ->
-                    DeclarationIrBuilder(pluginContext, declaration.symbol)
-                        .irCallWithSubstitutedType(
-                            irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol,
-                            listOf(typeArgument)
-                        ).also { it.origin = FUNCTIONS_WITH_SUPPLIED_TYPE_PARAMETERS_USAGE_STATEMENT_ORIGIN }
-                }
-        expression.arguments.addAll(0, suppliedValueArguments)
-        return super.visitDelegatingConstructorCall(expression)
-    }
-    override fun visitEnumConstructorCall(expression: IrEnumConstructorCall): IrExpression {
-        return super.visitEnumConstructorCall(expression)
-    }
-}
-// endregion
 
 // region Phase 5
 fun IrBuilderWithScope.irGetEnumEntry(enumEntry: IrEnumEntry) =
@@ -472,21 +107,21 @@ class SuppliedTypeOfSubstitutionTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
 ) : IrTransformer<SuppliedTypeOfSubstitutionTransformer.TransformationContext>() {
+    private val SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN by IrDeclarationOriginImpl.Regular
+    private val SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN by IrStatementOriginImpl
+    
     data class TransformationContext(
         val typeParametersMapping: Map<IrTypeParameter, DeclarationIrBuilder.(dispatchReceiversMapping: Map<IrClassSymbol, IrValueParameter>) -> IrExpression>,
         val dispatchReceiversMapping: Map<IrClassSymbol, IrValueParameter>,
         val localSymbol: IrSymbol?,
     )
     
-    private val SUPPLIED_TYPE_OF_SUBSTITUTION_ORIGIN by IrDeclarationOriginImpl
-    private val SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN by IrStatementOriginImpl
-    
     private val listOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        pluginContext.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
+        pluginContext.finderForBuiltins().referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
             val parameters = symbol.owner.parameters
             parameters.size == 1 && parameters[0].isVararg
         }
-    private val kVarianceIrClass = pluginContext.referenceClassOrFail(ClassId(FqName("kotlin.reflect"), FqName("KVariance"), false)).owner
+    private val kVarianceIrClass = pluginContext.finderForBuiltins().referenceClassOrFail(ClassId(FqName("kotlin.reflect"), FqName("KVariance"), false)).owner
     private val kVarianceIrEnumEntries = kVarianceIrClass.declarations.filterIsInstance<IrEnumEntry>()
     private val kVarianceINVARIANTIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("INVARIANT") }
     private val kVarianceINIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("IN") }
@@ -694,7 +329,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     ): IrStatement {
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
-            for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
+            for (typeParameter in declaration.typeParameters) if (typeParameter.isSupply) {
                 put(typeParameter) { _: Map<IrClassSymbol, IrValueParameter> ->
                     val valueParameter = declaration.parameters.first { it.name == typeParameter.supplierParameterName }
                     irGet(valueParameter).also { it.origin = SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN }
@@ -716,7 +351,7 @@ class SuppliedTypeOfSubstitutionTransformer(
         val irClass = declaration.parentAsClass
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
-            for (typeParameter in irClass.typeParameters) if (typeParameter.isSupplied) {
+            for (typeParameter in irClass.typeParameters) if (typeParameter.isSupply) {
                 put(typeParameter) { _: Map<IrClassSymbol, IrValueParameter> ->
                     val valueParameter = declaration.parameters.first { it.name == typeParameter.supplierParameterName }
                     irGet(valueParameter).also { it.origin = SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN }
@@ -743,7 +378,7 @@ class SuppliedTypeOfSubstitutionTransformer(
         val primaryConstructor = irClass.primaryConstructor ?: return super.visitField(declaration, data)
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
-            for (typeParameter in irClass.typeParameters) if (typeParameter.isSupplied) {
+            for (typeParameter in irClass.typeParameters) if (typeParameter.isSupply) {
                 put(typeParameter) { _: Map<IrClassSymbol, IrValueParameter> ->
                     val valueParameter = primaryConstructor.parameters.first { it.name == typeParameter.supplierParameterName }
                     irGet(valueParameter).also { it.origin = SUPPLIED_TYPE_OF_SUBSTITUTION_STATEMENT_ORIGIN }
@@ -764,7 +399,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     ): IrStatement {
         val newTypeParametersMapping = buildMap {
             putAll(data.typeParametersMapping)
-            for (typeParameter in declaration.typeParameters) if (typeParameter.isSupplied) {
+            for (typeParameter in declaration.typeParameters) if (typeParameter.isSupply) {
                 put(typeParameter) { receivers: Map<IrClassSymbol, IrValueParameter> ->
                     val property = declaration.properties.first { it.name == typeParameter.internalSupplierPropertyName }
                     irCall(property.getter!!).also {

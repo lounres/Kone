@@ -111,18 +111,23 @@ public annotation class Supply(/*val parameterName: String = ""*/)
 )
 public annotation class Suppliable
 
-//@Target(
-//    AnnotationTarget.FUNCTION,
-////    AnnotationTarget.CONSTRUCTOR,
-//)
-//private annotation class SupplianceProvided
+@Deprecated(
+    message = "Internal supplied types API.",
+    level = DeprecationLevel.HIDDEN,
+)
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.VALUE_PARAMETER,
+)
+@Retention(AnnotationRetention.BINARY)
+private annotation class SupplianceProvided
 
-private class SuppliedTypeHolder : ReadWriteProperty<Any?, SuppliedType> {
-    private var suppliedType = AtomicReference<SuppliedType?>(null)
-    override fun getValue(thisRef: Any?, property: KProperty<*>): SuppliedType =
-        suppliedType.load() ?: error("Generated SuppliedType property is not yet initialized")
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: SuppliedType) {
-        if (!suppliedType.compareAndSet(null, value)) error("Generated SuppliedType property is already initialized")
+private class SuppliedTypesStorageDelegate : ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> {
+    private val field = AtomicReference<Map<String, List<SuppliedType>>?>(null)
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Map<String, List<SuppliedType>> =
+        field.load() ?: error("Supplied types storage is not yet initialized.")
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Map<String, List<SuppliedType>>) {
+        if (!field.compareAndSet(null, value)) error("Supplied types storage is already initialized.")
     }
 }
 
@@ -130,9 +135,16 @@ private class SuppliedTypeHolder : ReadWriteProperty<Any?, SuppliedType> {
     message = "Internal supplied types API.",
     level = DeprecationLevel.HIDDEN,
 )
-public fun suppliedTypeHolder(): ReadWriteProperty<Any?, SuppliedType> = SuppliedTypeHolder()
+public fun suppliedTypesStorageDelegate(): ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> = SuppliedTypesStorageDelegate()
 
+@Suppliable
 public interface SuppliableClass {
+    @Deprecated(
+        message = "Internal supplied types API.",
+        level = DeprecationLevel.HIDDEN,
+    )
+    public var suppliedTypesStorage: Map<String, List<SuppliedType>>
+    
     public fun afterSuppliance() {}
 }
 

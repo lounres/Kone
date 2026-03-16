@@ -11,7 +11,9 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::SuppliedClassSupertypeGenerationExtension
-        +::SuppliedTypeParametersFunctionsAndPropertiesGenerationExtension
+        +::SuppliedTypesStoragePropertyGenerationExtension
+        +::SuppliableFunctionsDuplicatesGenerationExtension
+        +::SuppliableConstructorsDuplicatesGenerationExtension
 //        +::SuppliedTypeCheckersExtension
     }
 }

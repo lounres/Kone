@@ -20,8 +20,8 @@ const val suppliedProjectionRegularShortNameString = "Regular"
 const val suppliedProjectionStarShortNameString = "Star"
 const val supplyShortNameString = "Supply"
 const val suppliableShortNameString = "Suppliable"
-//const val supplianceProvidedShortNameString = "SupplianceProvided"
-const val suppliedTypeHolderShortNameString = "suppliedTypeHolder"
+const val supplianceProvidedShortNameString = "SupplianceProvided"
+const val suppliedTypesStorageDelegateShortNameString = "suppliedTypesStorageDelegate"
 const val suppliableClassShortNameString = "SuppliableClass"
 const val suppliedTypeOfShortNameString = "suppliedTypeOf"
 
@@ -34,8 +34,8 @@ val suppliedProjectionRegularShortName = FqName("$suppliedProjectionShortNameStr
 val suppliedProjectionStarShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionStarShortNameString")
 val supplyShortName = FqName(supplyShortNameString)
 val suppliableShortName = FqName(suppliableShortNameString)
-//val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
-val suppliedTypeHolderShortName = Name.identifier(suppliedTypeHolderShortNameString)
+val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
+val suppliedTypesStorageDelegateShortName = Name.identifier(suppliedTypesStorageDelegateShortNameString)
 val suppliableClassShortName = FqName(suppliableClassShortNameString)
 val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
 
@@ -79,15 +79,15 @@ val suppliableClassId = ClassId(
     relativeClassName = suppliableShortName,
     isLocal = false
 )
-//val supplianceProvidedClassId = ClassId(
-//    packageFqName = koneSuppliedTypesPackageFQName,
-//    relativeClassName = supplianceProvidedShortName,
-//    isLocal = false
-//)
-val suppliedTypeHolderCallableId = CallableId(
+val supplianceProvidedClassId = ClassId(
+    packageFqName = koneSuppliedTypesPackageFQName,
+    relativeClassName = supplianceProvidedShortName,
+    isLocal = false
+)
+val suppliedTypesStorageDelegateCallableId = CallableId(
     packageName = koneSuppliedTypesPackageFQName,
     className = null,
-    callableName = suppliedTypeHolderShortName,
+    callableName = suppliedTypesStorageDelegateShortName,
 )
 val suppliableClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,

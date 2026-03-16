@@ -1,32 +1,9 @@
-FILE fqName:<root> fileName:/test.kt
-  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any]
-    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo
-    PROPERTY name:a visibility:public modality:FINAL [val]
-      FIELD PROPERTY_BACKING_FIELD name:a type:kotlin.Unit visibility:private [final]
-        EXPRESSION_BODY
-          CALL 'public final fun println (message: kotlin.Int): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
-            ARG message: CONST Int type=kotlin.Int value=57
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-a> visibility:public modality:FINAL returnType:kotlin.Unit
-        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
-        correspondingProperty: PROPERTY name:a visibility:public modality:FINAL [val]
-        BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-a> (): kotlin.Unit declared in <root>.Foo'
-            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:a type:kotlin.Unit visibility:private [final]' type=kotlin.Unit origin=null
-              receiver: GET_VAR '<this>: <root>.Foo declared in <root>.Foo.<get-a>' type=<root>.Foo origin=null
-    CONSTRUCTOR visibility:public returnType:<root>.Foo [primary]
-      BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
-        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
-      overridden:
-        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
-    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      overridden:
-        public open fun hashCode (): kotlin.Int declared in kotlin.Any
-    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      overridden:
-        public open fun toString (): kotlin.String declared in kotlin.Any
+FILE fqName:gee fileName:/test.kt
+  FUN name:bar visibility:public modality:FINAL returnType:kotlin.Unit
+    BLOCK_BODY
+      CALL 'public final fun foo (arg: kotlin.Int): kotlin.Unit declared in gee' type=kotlin.Unit origin=null
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER kind:Regular name:arg index:0 type:kotlin.Int
+      EXPRESSION_BODY
+        CONST Int type=kotlin.Int value=57
+    BLOCK_BODY

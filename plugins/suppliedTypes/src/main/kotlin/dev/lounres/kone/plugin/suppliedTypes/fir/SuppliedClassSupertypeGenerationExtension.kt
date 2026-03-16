@@ -38,13 +38,14 @@ class SuppliedClassSupertypeGenerationExtension(session: FirSession) : FirSupert
     private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
     private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyClassId, session)
     
-    override fun needTransformSupertypes(declaration: FirClassLikeDeclaration): Boolean = false
+    override fun needTransformSupertypes(declaration: FirClassLikeDeclaration): Boolean =
+        declaration.isSuppliable
     
     override fun computeAdditionalSupertypes(
         classLikeDeclaration: FirClassLikeDeclaration,
         resolvedSupertypes: List<FirResolvedTypeRef>,
         typeResolver: TypeResolveService
     ): List<ConeKotlinType> =
-        TODO()
-//        if (classLikeDeclaration.isSuppliable) listOf() else emptyList()
+        if (classLikeDeclaration.isSuppliable) listOf(suppliableClassConeClassLikeType)
+        else emptyList()
 }

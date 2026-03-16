@@ -1,4 +1,6 @@
 dependencies {
+    implementation(projects.libs.util.mapOperations)
+    
     val kotlinVersion = versions.versions.kotlin.asProvider().get()
     
     "org.jetbrains.kotlin:kotlin-compiler:$kotlinVersion".let {

@@ -18,7 +18,7 @@ import java.io.FilenameFilter
 class PluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurator(testServices) {
     companion object {
         private const val RUNTIME_JAR_DIR = "../../libs/main/suppliedTypes/build/libs/"
-        private val RUNTIME_JAR_FILTER = FilenameFilter { _, name -> name.startsWith("suppliedTypes") && name.endsWith(".jar") }
+        private val RUNTIME_JAR_FILTER = FilenameFilter { _, name -> name.startsWith("suppliedTypes-jvm-") && name.endsWith(".jar") }
     }
 
     override fun configureCompilerConfiguration(configuration: CompilerConfiguration, module: TestModule) {

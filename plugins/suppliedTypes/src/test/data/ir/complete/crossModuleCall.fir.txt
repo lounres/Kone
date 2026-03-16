@@ -1,9 +1,0 @@
-Module: foo
-FILE: module_foo_crossModuleCall.kt
-    public final fun <@R|dev/lounres/kone/suppliedTypes/Supplied|() T> Foo(): R|kotlin/Unit| {
-    }
-Module: bar
-FILE: module_bar_crossModuleCall.kt
-    public final fun box(): R|kotlin/Unit| {
-        R|/Foo|<R|kotlin/String|>()
-    }
