@@ -8,24 +8,21 @@
 package dev.lounres.kone.plugin.suppliedTypes.services
 
 import dev.lounres.kone.plugin.suppliedTypes.fir.DeclarationExtensionRegistrar
-import dev.lounres.kone.plugin.suppliedTypes.fir.FirSuppliedTypeExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.fir.DiagnosticExtensionRegistrar
-import dev.lounres.kone.plugin.suppliedTypes.ir.IrRuntimeReferences
-import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliabilityCollectionVisitor
+import dev.lounres.kone.plugin.suppliedTypes.fir.FirSuppliedTypeExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
-import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.test.model.TestModule
-import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
-import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
+import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
-import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.test.Constructor
+import org.jetbrains.kotlin.test.model.TestModule
+import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
+import org.jetbrains.kotlin.test.services.TestServices
 
 
 class FirDeclarationsConfigurator(testServices: TestServices) : EnvironmentConfigurator(testServices) {
@@ -63,8 +60,15 @@ class FirCompleteExtensionRegistrarConfigurator(testServices: TestServices) : En
 
 class IrPartialExtensionRegistrarConfigurator(
     testServices: TestServices,
-    private val phases:  List<(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext, irRuntimeReferences: IrRuntimeReferences, suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor) -> Unit>,
+    private val phases: List<SuppliedTypeIrGenerationExtension.Phase>,
 ) : EnvironmentConfigurator(testServices) {
+    companion object {
+        fun Constructor(
+            phases: List<SuppliedTypeIrGenerationExtension.Phase>
+        ): Constructor<IrPartialExtensionRegistrarConfigurator> =
+            { testServices -> IrPartialExtensionRegistrarConfigurator(testServices = testServices, phases = phases) }
+    }
+    
     override fun ExtensionStorage.registerCompilerExtensions(
         module: TestModule,
         configuration: CompilerConfiguration

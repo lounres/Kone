@@ -12,16 +12,17 @@ import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase2
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase3
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase4
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase5
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestWithoutPlugin
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractTestWithoutPlugin
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDeclarationsTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDiagnosticTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFirCompleteTest
+import generatedTestsPath
 import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
 import testDataPath
 
 fun main() {
     generateTestGroupSuiteWithJUnit5 {
-        testGroup(testDataRoot = testDataPath, testsRoot = "../build/generated/kotlinCompilerPluginTestGenerator/test") {
+        testGroup(testDataRoot = testDataPath, testsRoot = generatedTestsPath) {
             testClass<AbstractDeclarationsTest> {
                 model("fir/declarations")
             }
@@ -55,7 +56,7 @@ fun main() {
                 model("ir/complete")
             }
             
-            testClass<AbstractBoxTestWithoutPlugin> {
+            testClass<AbstractTestWithoutPlugin> {
                 model("ir/test")
             }
         }

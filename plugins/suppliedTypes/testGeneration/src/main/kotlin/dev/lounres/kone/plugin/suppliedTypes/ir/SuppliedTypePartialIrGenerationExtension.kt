@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
 class SuppliedTypePartialIrGenerationExtension(
     private val messageCollector: MessageCollector,
-    private val phases: List<(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext, irRuntimeReferences: IrRuntimeReferences, suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor) -> Unit>,
+    private val phases: List<SuppliedTypeIrGenerationExtension.Phase>,
 ) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
@@ -23,17 +23,8 @@ class SuppliedTypePartialIrGenerationExtension(
             irRuntimeReferences = irRuntimeReferences,
         )
         
-//        moduleFragment.acceptVoid(suppliabilityCollectionVisitor)
+        moduleFragment.acceptVoid(suppliabilityCollectionVisitor)
         
-//        println(
-//            """
-//                functionsSuppliableToSupplianceMapping = ${suppliabilityCollectionVisitor.functionsSuppliableToSupplianceMapping}
-//                functionsSupplianceToSuppliableMapping = ${suppliabilityCollectionVisitor.functionsSupplianceToSuppliableMapping}
-//                constructorsSuppliableToSupplianceMapping = ${suppliabilityCollectionVisitor.constructorsSuppliableToSupplianceMapping}
-//                constructorsSupplianceToSuppliableMapping = ${suppliabilityCollectionVisitor.constructorsSupplianceToSuppliableMapping}
-//            """.trimIndent()
-//        )
-        
-//        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor)
+        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor)
     }
 }

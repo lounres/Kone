@@ -71,6 +71,7 @@ stal {
 //        "bom"("bom")
         "plugins" {
             subdirs("kotlin compiler plugin") {
+                "runtime"("kotlin compiler plugin runtime")
                 "testGeneration"("kotlin compiler plugin test generator")
 //                "gradleWrapper"()
             }
@@ -89,18 +90,18 @@ stal {
         "benchmarks" since { has("libs main benchmarks") }
         "examples" since { has("libs main examples") }
         // Kotlin set up
-        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom") }
+        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom", "kotlin compiler plugin runtime") }
         "kotlin jvm" since { hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
         "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "bom") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { hasAnyOf("libs", "algorithms", "assertions", "bom") }
+        "kotlin library settings" since { hasAnyOf("libs", "kotlin compiler plugin runtime", "algorithms", "assertions", "bom") }
         // Extra
         "testBalloon" since { has("libs public") }
 //        "kover" since { has("libs public") }
         "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
-        "kotlin multiplatform publication" since { hasAnyOf("libs", "bom") }
-        "publishing" since { has("libs") }
-        "dokka" since { has("libs") }
+        "kotlin multiplatform publication" since { hasAnyOf("libs", "bom", "kotlin compiler plugin runtime") }
+        "publishing" since { hasAnyOf("libs", /*"kotlin compiler plugin", "kotlin compiler plugin runtime", "bom"*/) }
+        "dokka" since { hasAnyOf("libs", /*"kotlin compiler plugin runtime"*/) }
     }
 
     action {
@@ -139,9 +140,14 @@ stal {
             extra["alias"] = "bom"
             extra["androidNamespace"] = "dev.lounres.kone.bom"
         }
-        "plugin" {
+        "kotlin compiler plugin" {
             extra["artifactId"] = "kone.plugin.${project.name}"
             extra["alias"] = "plugin-${project.name}"
+        }
+        "kotlin compiler plugin runtime" {
+            extra["artifactId"] = "kone.plugin.${project.parent!!.name}.runtime"
+            extra["alias"] = "plugin-${project.parent!!.name}-runtime"
+            extra["androidNamespace"] = "dev.lounres.kone.plugin.${project.parent!!.name}.runtime"
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"

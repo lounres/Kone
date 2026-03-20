@@ -6,7 +6,7 @@ kotlin {
     sourceSets {
         jvmMain {
             dependencies {
-                implementation(versions.kaml)
+                implementation(versions.kotaml)
             }
         }
     }

@@ -33,8 +33,15 @@ import org.jetbrains.kotlin.types.Variance
 class SuppliedTypeIrGenerationExtension(
     private val messageCollector: MessageCollector,
 ) : IrGenerationExtension {
+    typealias Phase = (
+        moduleFragment: IrModuleFragment,
+        pluginContext: IrPluginContext,
+        irRuntimeReferences: IrRuntimeReferences,
+        suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    ) -> Unit
+    
     companion object {
-        val phases: List<(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext, irRuntimeReferences: IrRuntimeReferences, suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor) -> Unit> = listOf(
+        val phases: List<Phase> = listOf(
             { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
                 supplyFunctionsParameters(
                     pluginContext = pluginContext,

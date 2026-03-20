@@ -1,8 +1,8 @@
 kotlin {
     sourceSets {
-        main {
+        commonMain {
             dependencies {
-                implementation(projects.libs.util.mapOperations)
+                api(projects.libs.main.suppliedTypes)
             }
         }
     }

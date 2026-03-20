@@ -400,23 +400,136 @@ stal {
                 explicitApi = Warning
             }
         }
+        val generatedTestsDirectory = "build/generated/kotlinCompilerPluginTestGenerator/test"
         "kotlin compiler plugin" {
             apply(plugin = "org.gradle.java")
             configure<SourceSetContainer> {
                 named("test") {
-                    java.setSrcDirs(listOf("src/test/java", "build/generated/kotlinCompilerPluginTestGenerator/test"))
+                    java.srcDir(generatedTestsDirectory)
                 }
             }
-            configure<KotlinJvmProjectExtension> {
-                sourceSets {
-                    named("test") {
-//                        kotlin.setSrcDirs(listOf("src/test/kotlin", "src/testGenerated/kotlin" /*"build/generated/kotlinCompilerPluginTestGenerator/test"*/))
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    sourceSets {
+                        named("main") {
+                            dependencies {
+                                compileOnly(versions.kotlin.compiler)
+                            }
+                        }
+                        named("test") {
+                            dependencies {
+                                runtimeOnly(versions.kotlin.test)
+                                runtimeOnly(versions.kotlin.script.runtime)
+                                runtimeOnly(versions.kotlin.annotations.jvm)
+                                
+                                implementation(versions.kotlin.compiler)
+                                implementation(versions.kotlin.reflect)
+                                implementation(versions.kotlin.compiler.internal.test.framework)
+
+//                                implementation(project.dependencies.platform(versions.junit.bom))
+                                implementation(versions.junit.jupiter)
+                                implementation(versions.junit.platform.commons)
+                                implementation(versions.junit.platform.launcher)
+//                                implementation(versions.junit.platform.runner)
+                                implementation(versions.junit.platform.suite.api)
+                                
+                                implementation(project.childProjects["testGeneration"]!!)
+                            }
+                        }
                     }
+                }
+            }
+            tasks.named("compileTestKotlin") {
+                dependsOn(project.childProjects["testGeneration"]!!.tasks.named("generateTests"))
+            }
+            tasks.named<Test>("test") {
+                useJUnitPlatform()
+                
+                doFirst {
+                    val testRuntimeClasspathFiles = project
+                        .configurations
+                        .getByName("testRuntimeClasspath")
+                        .files
+                    
+                    fun setLibraryProperty(propName: String, jarName: String) {
+                        val path = testRuntimeClasspathFiles
+                            .find { """$jarName-\d.*jar""".toRegex().matches(it.name) }
+                            ?.absolutePath
+                            ?: return
+                        systemProperty(propName, path)
+                    }
+                    
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
+                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
                 }
             }
         }
         "kotlin compiler plugin test generator" {
-        
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    sourceSets {
+                        named("main") {
+                            dependencies {
+                                runtimeOnly(versions.kotlin.test)
+                                runtimeOnly(versions.kotlin.script.runtime)
+                                runtimeOnly(versions.kotlin.annotations.jvm)
+                                
+                                implementation(versions.kotlin.compiler)
+                                implementation(versions.kotlin.reflect)
+                                implementation(versions.kotlin.compiler.internal.test.framework)
+                                
+                                api(project.parent!!)
+                                api(projects.libs.util.kotlinCompilerTestUtils)
+                            }
+                        }
+                    }
+                }
+            }
+            
+            val testPathsSourceSetDirectory = projectDir.resolve("build/generated/paths/main")
+            
+            configure<SourceSetContainer> {
+                named("main") {
+                    java.srcDirs(testPathsSourceSetDirectory)
+                }
+            }
+            
+            val compilerPluginRuntimeDependencies by configurations.creating {
+                exclude(group = "org.jetbrains.kotlin")
+            }
+            
+            dependencies {
+                compilerPluginRuntimeDependencies(project.parent!!.childProjects["runtime"]!!)
+            }
+            
+            val writePaths by tasks.registering {
+                dependsOn(compilerPluginRuntimeDependencies)
+                doFirst {
+                    val testDataPath = project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")
+                    val generatedTestsPath = project.parent!!.projectDir.resolve(generatedTestsDirectory).absolutePath.replace("\\", "/")
+                    testPathsSourceSetDirectory.also { it.mkdirs() }.resolve("Paths.kt").writeText(
+                        """
+                            internal val testDataPath: String = "$testDataPath"
+                            internal val generatedTestsPath: String = "$generatedTestsPath"
+                            internal val testJvmClasspathRoots: List<String> = listOf(${compilerPluginRuntimeDependencies.resolve().joinToString { "\"${it.absolutePath.replace("\\", "/")}\"" }})
+                        """.trimIndent()
+                    )
+                }
+            }
+            
+            val compileKotlin by tasks.getting {
+                dependsOn(writePaths)
+            }
+            
+            tasks.register("generateTests", JavaExec::class) {
+                dependsOn(compileKotlin)
+                classpath = project.the<SourceSetContainer>().getByName("main").runtimeClasspath
+                mainClass.set("dev.lounres.kone.plugin.suppliedTypes.GenerateTestsKt")
+            }
         }
         "atomicfu" {
             apply(versions.plugins.kotlinx.atomicfu)
