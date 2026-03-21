@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
 
 class SuppliedTypePartialIrGenerationExtension(
@@ -18,13 +17,12 @@ class SuppliedTypePartialIrGenerationExtension(
 ) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
-        val suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor = SuppliabilityCollectionVisitor(
+        val suppliabilityMapper: SuppliabilityMapper = SuppliabilityMapper(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
+            moduleFragment = moduleFragment
         )
         
-        moduleFragment.acceptVoid(suppliabilityCollectionVisitor)
-        
-        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor)
+        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper)
     }
 }

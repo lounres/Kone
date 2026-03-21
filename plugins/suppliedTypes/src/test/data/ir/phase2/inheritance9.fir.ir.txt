@@ -1,0 +1,195 @@
+FILE fqName:<root> fileName:/inheritance9.kt
+  CLASS CLASS name:Hou modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Hou
+    CLASS CLASS name:Kie modality:FINAL visibility:public superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Hou.Kie
+      CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[<root>.Raf.Foo<kotlin.collections.Map<out U of <root>.Hou.Kie.Bar, *>>; dev.lounres.kone.suppliedTypes.SuppliableClass]
+        annotations:
+          Suppliable
+        thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar>
+        TYPE_PARAMETER name:U index:0 variance: superTypes:[kotlin.Any?] reified:false
+          annotations:
+            Supply
+        PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+          overridden:
+            public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Raf.Foo
+            public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+          FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final]
+            EXPRESSION_BODY
+              CALL 'public final fun suppliedTypesStorageDelegate (): kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> declared in dev.lounres.kone.suppliedTypes' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+          FUN DELEGATED_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar>
+            correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+            overridden:
+              public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Raf.Foo
+              public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+            BLOCK_BODY
+              RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Hou.Kie.Bar'
+                GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Hou.Kie.Bar' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                  receiver: GET_VAR '<this>: <root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> declared in <root>.Hou.Kie.Bar.<get-suppliedTypesStorage>' type=<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> origin=null
+          FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar>
+            VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+            correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+            overridden:
+              public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Raf.Foo
+              public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+            BLOCK_BODY
+              SET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Hou.Kie.Bar' type=kotlin.Unit origin=null
+                receiver: GET_VAR '<this>: <root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> declared in <root>.Hou.Kie.Bar.<set-suppliedTypesStorage>' type=<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> origin=null
+                value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Hou.Kie.Bar.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+        CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar>
+          VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForU index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+            annotations:
+              SupplianceProvided
+            EXPRESSION_BODY
+              CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                TYPE_ARG T: U of <root>.Hou.Kie.Bar
+          annotations:
+            SupplianceProvided
+          BLOCK_BODY
+            DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Hou.Kie.Bar'
+              TYPE_ARG U: U of <root>.Hou.Kie.Bar
+        CONSTRUCTOR visibility:public returnType:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> [primary]
+          BLOCK_BODY
+            DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Raf.Foo'
+              TYPE_ARG T: kotlin.collections.Map<out U of <root>.Hou.Kie.Bar, *>
+            INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Bar modality:FINAL visibility:public superTypes:[<root>.Raf.Foo<kotlin.collections.Map<out U of <root>.Hou.Kie.Bar, *>>; dev.lounres.kone.suppliedTypes.SuppliableClass]' type=kotlin.Unit
+        FUN FAKE_OVERRIDE name:afterSuppliance visibility:public modality:OPEN returnType:kotlin.Unit [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
+          overridden:
+            public open fun afterSuppliance (): kotlin.Unit declared in <root>.Raf.Foo
+            public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+        FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+          VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+          overridden:
+            public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Raf.Foo
+            public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+        FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+          overridden:
+            public open fun hashCode (): kotlin.Int declared in <root>.Raf.Foo
+            public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+        FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+          overridden:
+            public open fun toString (): kotlin.String declared in <root>.Raf.Foo
+            public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      CONSTRUCTOR visibility:public returnType:<root>.Hou.Kie [primary]
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Kie modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+        overridden:
+          public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+      FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun hashCode (): kotlin.Int declared in kotlin.Any
+      FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun toString (): kotlin.String declared in kotlin.Any
+    CONSTRUCTOR visibility:public returnType:<root>.Hou [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Hou modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS INTERFACE name:Raf modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Raf
+    CLASS CLASS name:Foo modality:OPEN visibility:public superTypes:[kotlin.Any; dev.lounres.kone.suppliedTypes.SuppliableClass]
+      annotations:
+        Suppliable
+      thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Raf.Foo<T of <root>.Raf.Foo>
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+        annotations:
+          Supply
+      PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+        overridden:
+          public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+        FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final]
+          EXPRESSION_BODY
+            CALL 'public final fun suppliedTypesStorageDelegate (): kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> declared in dev.lounres.kone.suppliedTypes' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+        FUN DELEGATED_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Raf.Foo<T of <root>.Raf.Foo>
+          correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+          overridden:
+            public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Raf.Foo'
+              GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Raf.Foo' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                receiver: GET_VAR '<this>: <root>.Raf.Foo<T of <root>.Raf.Foo> declared in <root>.Raf.Foo.<get-suppliedTypesStorage>' type=<root>.Raf.Foo<T of <root>.Raf.Foo> origin=null
+        FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Raf.Foo<T of <root>.Raf.Foo>
+          VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+          correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+          overridden:
+            public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+          BLOCK_BODY
+            SET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Raf.Foo' type=kotlin.Unit origin=null
+              receiver: GET_VAR '<this>: <root>.Raf.Foo<T of <root>.Raf.Foo> declared in <root>.Raf.Foo.<set-suppliedTypesStorage>' type=<root>.Raf.Foo<T of <root>.Raf.Foo> origin=null
+              value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Raf.Foo.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+      CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:<root>.Raf.Foo<T of <root>.Raf.Foo>
+        VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+          annotations:
+            SupplianceProvided
+          EXPRESSION_BODY
+            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+              TYPE_ARG T: T of <root>.Raf.Foo
+        annotations:
+          SupplianceProvided
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Raf.Foo'
+            TYPE_ARG T: T of <root>.Raf.Foo
+      CONSTRUCTOR visibility:public returnType:<root>.Raf.Foo<T of <root>.Raf.Foo> [primary]
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:OPEN visibility:public superTypes:[kotlin.Any; dev.lounres.kone.suppliedTypes.SuppliableClass]' type=kotlin.Unit
+      FUN FAKE_OVERRIDE name:afterSuppliance visibility:public modality:OPEN returnType:kotlin.Unit [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
+        overridden:
+          public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+        overridden:
+          public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+          public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun hashCode (): kotlin.Int declared in kotlin.Any
+          public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+        overridden:
+          public open fun toString (): kotlin.String declared in kotlin.Any
+          public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any

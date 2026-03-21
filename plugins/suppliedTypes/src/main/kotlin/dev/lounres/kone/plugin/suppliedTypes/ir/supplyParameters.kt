@@ -10,15 +10,16 @@ import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.types.defaultType
+import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.parentAsClass
 
 
 fun supplyFunctionsParameters(
     pluginContext: IrPluginContext,
     irRuntimeReferences: IrRuntimeReferences,
-    suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for ((suppliance, suppliable) in suppliabilityCollectionVisitor.functionsSupplianceToSuppliableMapping) {
+    for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         var parameterCounter = 0
         var supplyTypeArgumentCounter = 0
         for (parameter in suppliance.parameters)
@@ -37,7 +38,7 @@ fun supplyFunctionsParameters(
                 }
                 supplyTypeArgumentCounter++
             } else {
-                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue
+                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue?.deepCopyWithSymbols(initialParent = suppliance)
                 parameterCounter++
             }
     }
@@ -46,9 +47,9 @@ fun supplyFunctionsParameters(
 fun supplyConstructorsParameters(
     pluginContext: IrPluginContext,
     irRuntimeReferences: IrRuntimeReferences,
-    suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for ((suppliance, suppliable) in suppliabilityCollectionVisitor.constructorsSupplianceToSuppliableMapping) {
+    for ((suppliance, suppliable) in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
         var parameterCounter = 0
         var supplyTypeArgumentCounter = 0
         for (parameter in suppliance.parameters)
@@ -67,7 +68,7 @@ fun supplyConstructorsParameters(
                 }
                 supplyTypeArgumentCounter++
             } else {
-                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue
+                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue?.deepCopyWithSymbols(initialParent = suppliance)
                 parameterCounter++
             }
     }

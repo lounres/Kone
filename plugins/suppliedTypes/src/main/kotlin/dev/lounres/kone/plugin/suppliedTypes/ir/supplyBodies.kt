@@ -14,9 +14,9 @@ import org.jetbrains.kotlin.ir.util.statements
 fun supplyFunctionsBodies(
     pluginContext: IrPluginContext,
     irRuntimeReferences: IrRuntimeReferences,
-    suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for ((suppliance, suppliable) in suppliabilityCollectionVisitor.functionsSupplianceToSuppliableMapping) {
+    for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         suppliance.body = suppliable.body/*!!.deepCopyWithSymbols(initialParent = suppliance)*/
     }
 }
@@ -24,9 +24,9 @@ fun supplyFunctionsBodies(
 fun supplyConstructorsBodies(
     pluginContext: IrPluginContext,
     irRuntimeReferences: IrRuntimeReferences,
-    suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for (suppliance in suppliabilityCollectionVisitor.constructorsSupplianceToSuppliableMapping.keys) {
+    for (suppliance in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping.keys) {
         val oldBody = suppliance.body!!
         suppliance.body = DeclarationIrBuilder(
             generatorContext = pluginContext,

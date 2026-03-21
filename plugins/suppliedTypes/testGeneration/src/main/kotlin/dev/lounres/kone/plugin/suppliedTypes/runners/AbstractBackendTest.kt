@@ -23,11 +23,10 @@ import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
 import org.jetbrains.kotlin.test.services.TestPhase
 
 
-open class AbstractBackendTest(
+abstract class AbstractBackendTest(
     private val pluginConfigurator: Constructor<EnvironmentConfigurator>,
     private val runJvmBoxTest: Boolean = false,
 ) : KoneSuppliedTypesTestRunner() {
-    final override val runPipelineTillPhase: TestPhase = TestPhase.BACKEND
     final override fun configure(builder: TestConfigurationBuilder) = with(builder) {
         defaultDirectives {
             +CodegenTestDirectives.DUMP_IR
@@ -76,6 +75,7 @@ open class AbstractBoxTestForPhase(
     private val phases: List<SuppliedTypeIrGenerationExtension.Phase>
 ) : AbstractBackendTest(IrPartialExtensionRegistrarConfigurator.Constructor(phases)) {
     constructor(phases: Int) : this(SuppliedTypeIrGenerationExtension.phases.take(phases))
+    override val runPipelineTillPhase: TestPhase get() = TestPhase.FIR2IR
 }
 
 open class AbstractBoxTestForPhase0 : AbstractBoxTestForPhase(0)
@@ -85,4 +85,6 @@ open class AbstractBoxTestForPhase3 : AbstractBoxTestForPhase(3)
 open class AbstractBoxTestForPhase4 : AbstractBoxTestForPhase(4)
 open class AbstractBoxTestForPhase5 : AbstractBoxTestForPhase(5)
 
-open class AbstractBoxTestComplete : AbstractBackendTest(::ExtensionRegistrarConfigurator, runJvmBoxTest = true)
+open class AbstractBoxTestComplete : AbstractBackendTest(::ExtensionRegistrarConfigurator, runJvmBoxTest = true) {
+    override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
+}

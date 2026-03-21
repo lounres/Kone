@@ -22,7 +22,6 @@ import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
-import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
@@ -37,51 +36,51 @@ class SuppliedTypeIrGenerationExtension(
         moduleFragment: IrModuleFragment,
         pluginContext: IrPluginContext,
         irRuntimeReferences: IrRuntimeReferences,
-        suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+        suppliabilityMapper: SuppliabilityMapper,
     ) -> Unit
     
     companion object {
         val phases: List<Phase> = listOf(
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
                 supplyFunctionsParameters(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                    suppliabilityMapper = suppliabilityMapper,
                 )
                 
                 supplyConstructorsParameters(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                    suppliabilityMapper = suppliabilityMapper,
                 )
             },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
                 moduleFragment.transform(
                     SuppliableCallSubstitutionTransformer(
                         pluginContext = pluginContext,
                         irRuntimeReferences = irRuntimeReferences,
-                        suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                        suppliabilityMapper = suppliabilityMapper,
                     ),
                     null,
                 )
             },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
                 supplyFunctionsBodies(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                    suppliabilityMapper = suppliabilityMapper,
                 )
                 
                 supplyConstructorsBodies(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityCollectionVisitor = suppliabilityCollectionVisitor,
+                    suppliabilityMapper = suppliabilityMapper,
                 )
             },
-//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
 //
 //            },
-//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor ->
+//            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
 //                moduleFragment.transform(
 //                    SuppliedTypeOfSubstitutionTransformer(
 //                        pluginContext = pluginContext,
@@ -95,14 +94,13 @@ class SuppliedTypeIrGenerationExtension(
     
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
-        val suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor = SuppliabilityCollectionVisitor(
+        val suppliabilityMapper: SuppliabilityMapper = SuppliabilityMapper(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
+            moduleFragment = moduleFragment,
         )
         
-        moduleFragment.acceptVoid(suppliabilityCollectionVisitor)
-        
-        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityCollectionVisitor)
+        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper)
     }
 }
 

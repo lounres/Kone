@@ -1,5 +1,5 @@
 Module: foo
-FILE fqName:<root> fileName:/fooContent.kt
+FILE fqName:<root> fileName:/module_foo_crossModuleInheritance1.kt
   CLASS INTERFACE name:Foo modality:ABSTRACT visibility:public superTypes:[kotlin.Any; dev.lounres.kone.suppliedTypes.SuppliableClass]
     annotations:
       Suppliable
@@ -44,7 +44,7 @@ FILE fqName:<root> fileName:/fooContent.kt
         overridden:
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
 Module: bar
-FILE fqName:<root> fileName:/barContent.kt
+FILE fqName:<root> fileName:/module_bar_crossModuleInheritance1.kt
   CLASS INTERFACE name:Bar modality:ABSTRACT visibility:public superTypes:[<root>.Foo<kotlin.collections.Map<out U of <root>.Bar, *>>; dev.lounres.kone.suppliedTypes.SuppliableClass]
     annotations:
       Suppliable

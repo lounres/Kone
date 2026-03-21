@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.ir.expressions.IrDeclarationReference
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
@@ -23,68 +24,71 @@ import org.jetbrains.kotlin.ir.visitors.IrTransformer
 class SuppliableCallSubstitutionTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
-    val suppliabilityCollectionVisitor: SuppliabilityCollectionVisitor,
+    val suppliabilityMapper: SuppliabilityMapper,
 ) : IrTransformer<IrSymbol?>() {
-    override fun visitDeclarationReference(expression: IrDeclarationReference, data: IrSymbol?): IrExpression {
-        return super.visitDeclarationReference(expression, expression.symbol)
-    }
+    override fun visitDeclarationReference(expression: IrDeclarationReference, data: IrSymbol?): IrExpression =
+        super.visitDeclarationReference(expression, expression.symbol)
     
     override fun visitConstructorCall(expression: IrConstructorCall, data: IrSymbol?): IrElement {
-        val constructor = expression.symbol.owner
-        require(suppliabilityCollectionVisitor.checkSuppliable(constructor))
-        val supplianceConstructor = suppliabilityCollectionVisitor.mapSuppliableToSuppliance(constructor)
+        val suppliable = expression.symbol.owner
+        val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitConstructorCall(expression, data)
         
-        return DeclarationIrBuilder(
-            generatorContext = pluginContext,
-            symbol = data!!,
-            startOffset = expression.startOffset,
-            endOffset = expression.endOffset,
-        ).run {
-            irCallConstructor(
-                callee = supplianceConstructor.symbol,
-                typeArguments = expression.typeArguments.requireNoNulls(),
-            ).apply {
-                var initialParameterIndex = 0
-                for ((parameterIndex, parameter) in supplianceConstructor.parameters.withIndex()) {
-                    arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
-                        irCall(
-                            callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                        )
-                    } else {
-                        constructor.parameters[initialParameterIndex++].defaultValue?.expression
+        return super.visitConstructorCall(
+            DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = data!!,
+                startOffset = expression.startOffset,
+                endOffset = expression.endOffset,
+            ).run {
+                irCallConstructor(
+                    callee = suppliance.symbol,
+                    typeArguments = expression.typeArguments.requireNoNulls(),
+                ).apply {
+                    var initialParameterIndex = 0
+                    for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
+                        arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
+                            irCall(
+                                callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
+                            )
+                        } else {
+                            suppliable.parameters[initialParameterIndex++].defaultValue?.expression?.deepCopyWithSymbols()
+                        }
                     }
                 }
-            }
-        }
+            },
+            data,
+        )
     }
     
     override fun visitCall(expression: IrCall, data: IrSymbol?): IrElement {
-        val function = expression.symbol.owner
-        require(suppliabilityCollectionVisitor.checkSuppliable(function))
-        val supplianceFunction = suppliabilityCollectionVisitor.mapSuppliableToSuppliance(function)
+        val suppliable = expression.symbol.owner
+        val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitCall(expression, data)
         
-        return DeclarationIrBuilder(
-            generatorContext = pluginContext,
-            symbol = data!!,
-            startOffset = expression.startOffset,
-            endOffset = expression.endOffset,
-        ).run {
-            irCall(
-                callee = supplianceFunction.symbol,
-            ).apply {
-                var initialParameterIndex = 0
-                for ((parameterIndex, parameter) in supplianceFunction.parameters.withIndex()) {
-                    arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
-                        irCall(
-                            callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                        )
-                    } else {
-                        function.parameters[initialParameterIndex++].defaultValue?.expression
+        return super.visitCall(
+            DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = data!!,
+                startOffset = expression.startOffset,
+                endOffset = expression.endOffset,
+            ).run {
+                irCall(
+                    callee = suppliance.symbol,
+                ).apply {
+                    var initialParameterIndex = 0
+                    for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
+                        arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
+                            irCall(
+                                callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
+                            )
+                        } else {
+                            suppliable.parameters[initialParameterIndex++].defaultValue?.expression?.deepCopyWithSymbols()
+                        }
                     }
+                    typeArguments.clear()
+                    typeArguments += expression.typeArguments
                 }
-                typeArguments.clear()
-                typeArguments += expression.typeArguments
-            }
-        }
+            },
+            data,
+        )
     }
 }
