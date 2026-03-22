@@ -61,6 +61,7 @@ class SuppliableCallSubstitutionTransformer(
     override fun visitCall(expression: IrCall, data: IrSymbol?): IrElement {
         val suppliable = expression.symbol.owner
         val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitCall(expression, data)
+        val suppliedTypeParametersIndices = suppliable.typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
         
         return super.visitCall(
             DeclarationIrBuilder(
@@ -77,7 +78,9 @@ class SuppliableCallSubstitutionTransformer(
                         arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
                             irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                            )
+                            ).apply {
+                                typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
+                            }
                         } else {
                             suppliable.parameters[initialParameterIndex++].defaultValue?.expression?.deepCopyWithSymbols()
                         }

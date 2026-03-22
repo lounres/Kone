@@ -50,9 +50,9 @@ abstract class AbstractBackendTest(
 
 open class AbstractBackendTestForPhase(
     phases: List<SuppliedTypeIrGenerationExtension.Phase>
-) : AbstractBackendTest(IrPartialExtensionRegistrarConfigurator.Constructor(phases), runJvmBoxTest = true) {
+) : AbstractBackendTest(IrPartialExtensionRegistrarConfigurator.Constructor(phases)) {
     constructor(phases: Int) : this(SuppliedTypeIrGenerationExtension.phases.take(phases))
-    override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
+    override val runPipelineTillPhase: TestPhase get() = TestPhase.FIR2IR
 }
 
 open class AbstractBackendTestForPhase0 : AbstractBackendTestForPhase(0)
