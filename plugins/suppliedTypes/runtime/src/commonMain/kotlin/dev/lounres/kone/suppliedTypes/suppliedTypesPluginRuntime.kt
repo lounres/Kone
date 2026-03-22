@@ -59,4 +59,4 @@ public interface SuppliableClass {
 
 @Suppliable
 public fun <@Supply T> suppliedTypeOf(): SuppliedType =
-    error("Intrinsic function call was not substituted. Be sure to apply supplied types compiler plugin.")
+    error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")

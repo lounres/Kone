@@ -276,7 +276,7 @@ stal {
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
                     )
-                    optIn.set(
+                    optIn.addAll(
                         listOf(
                             "kotlin.experimental.ExperimentalTypeInference",
                             "kotlin.contracts.ExperimentalContracts",
@@ -410,6 +410,11 @@ stal {
             }
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 configure<KotlinJvmProjectExtension> {
+                    compilerOptions {
+                        optIn.add(
+                            "org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI"
+                        )
+                    }
                     sourceSets {
                         named("main") {
                             dependencies {

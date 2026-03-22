@@ -8,26 +8,24 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
+import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
-import org.jetbrains.kotlin.ir.expressions.IrDeclarationReference
-import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
-import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
-@OptIn(UnsafeDuringIrConstructionAPI::class)
 class SuppliableCallSubstitutionTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
     val suppliabilityMapper: SuppliabilityMapper,
 ) : IrTransformer<IrSymbol?>() {
-    override fun visitDeclarationReference(expression: IrDeclarationReference, data: IrSymbol?): IrExpression =
-        super.visitDeclarationReference(expression, expression.symbol)
+    override fun visitDeclaration(declaration: IrDeclarationBase, data: IrSymbol?): IrStatement =
+        super.visitDeclaration(declaration, declaration.symbol)
     
     override fun visitConstructorCall(expression: IrConstructorCall, data: IrSymbol?): IrElement {
         val suppliable = expression.symbol.owner

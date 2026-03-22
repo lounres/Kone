@@ -5,13 +5,13 @@
 
 package dev.lounres.kone.plugin.suppliedTypes
 
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestComplete
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase0
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase1
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase2
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase3
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase4
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTestForPhase5
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestComplete
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase0
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase1
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase2
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase3
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase4
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractTestWithoutPlugin
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDeclarationsTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDiagnosticTest
@@ -33,27 +33,26 @@ fun main() {
                 model("fir/complete")
             }
             
-            testClass<AbstractBoxTestForPhase0> {
+            testClass<AbstractBackendTestForPhase0> {
                 model("ir/phase0")
             }
-            testClass<AbstractBoxTestForPhase1> {
+            testClass<AbstractBackendTestForPhase1> {
                 model("ir/phase1")
             }
-            testClass<AbstractBoxTestForPhase2> {
+            testClass<AbstractBackendTestForPhase2> {
                 model("ir/phase2")
             }
-            testClass<AbstractBoxTestForPhase3> {
+            testClass<AbstractBackendTestForPhase3> {
                 model("ir/phase3")
             }
-            testClass<AbstractBoxTestForPhase4> {
+            testClass<AbstractBackendTestForPhase4> {
                 model("ir/phase4")
             }
-            testClass<AbstractBoxTestForPhase5> {
-                model("ir/phase5")
-            }
-            
-            testClass<AbstractBoxTestComplete> {
+            testClass<AbstractBackendTestComplete> {
                 model("ir/complete")
+            }
+            testClass<AbstractBoxTest> {
+                model("ir/box")
             }
             
             testClass<AbstractTestWithoutPlugin> {

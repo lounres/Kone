@@ -7,6 +7,7 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
+import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassId
@@ -19,6 +20,7 @@ import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeRegularClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
 import org.jetbrains.kotlin.backend.common.extensions.DeclarationFinder
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.jvm.functionByName
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
@@ -33,6 +35,8 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.util.classId
 import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
+import org.jetbrains.kotlin.ir.util.getPropertyGetter
+import org.jetbrains.kotlin.ir.util.getPropertySetter
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.ir.util.parentAsClass
@@ -40,6 +44,7 @@ import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.name.SpecialNames
 
 
 fun couldNotFindClass(classId: ClassId): Nothing =
@@ -53,6 +58,7 @@ inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId,
     findFunctions(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
 
 val IrDeclarationWithName.fqName: FqName get() = fqNameWhenAvailable ?: error("Expected declaration with available FQ name")
+val IrClass.fqNameStringForSuppliedTypes: String get() = fqNameWhenAvailable?.toString() ?: "${SpecialNames.LOCAL}.$name"
 val IrTypeParameter.isSupply: Boolean get() = hasAnnotation(supplyClassId)
 val IrClass.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId)
 val IrSimpleFunction.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId)
@@ -82,5 +88,10 @@ class IrRuntimeReferences(pluginContext: IrPluginContext) {
     val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionRegularClassId)
     val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarClassId)
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
+    
+    val suppliableClassIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliableClassClassId)
+    val suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertyGetter("suppliedTypesStorage")!!
+    val suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertySetter("suppliedTypesStorage")!!
+    val suppliableClassAfterSupplianceIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = suppliableClassIrClassSymbol.functionByName("afterSuppliance")
     val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfCallableId)
 }
