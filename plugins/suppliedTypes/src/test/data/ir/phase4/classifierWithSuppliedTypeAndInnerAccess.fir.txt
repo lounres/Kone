@@ -1,0 +1,7 @@
+FILE: classifierWithSuppliedTypeAndInnerAccess.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        public open fun foo(): R|kotlin/Unit| {
+            R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>()
+        }
+
+    }

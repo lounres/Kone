@@ -1,6 +1,8 @@
-package gee
+// SUPPRESS_WARNINGS: PRE_RELEASE_CLASS
 
-fun foo(arg: Int = 57) {}
-fun bar() {
-    foo()
+import foo.bar.baz
+
+fun box(): String {
+    baz()
+    return "OK"
 }
