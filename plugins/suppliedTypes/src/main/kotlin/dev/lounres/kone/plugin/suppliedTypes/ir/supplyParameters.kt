@@ -7,11 +7,15 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
+import org.jetbrains.kotlin.ir.declarations.IrTypeParameter
+import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.parentAsClass
+import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 
 
 fun supplyFunctionsParameters(
@@ -20,6 +24,12 @@ fun supplyFunctionsParameters(
     suppliabilityMapper: SuppliabilityMapper,
 ) {
     for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
+        val supplianceSupplyTypeParameters = suppliable.typeParameters.withIndex().filter { it.value.isSupply }.map { suppliance.typeParameters[it.index] }
+        val parametersSubstitutionTransformer = ParametersSubstitutionTransformer(
+            typeParametersSubstitution = suppliable.typeParameters.zip(suppliance.typeParameters).toMap(),
+            valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),
+        )
+        
         var parameterCounter = 0
         var supplyTypeArgumentCounter = 0
         for (parameter in suppliance.parameters)
@@ -32,13 +42,15 @@ fun supplyFunctionsParameters(
                         value = irCall(
                             callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                         ).apply {
-                            typeArguments[0] = suppliance.typeParameters[supplyTypeArgumentCounter].defaultType
+                            typeArguments[0] = supplianceSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
                         }
                     )
                 }
                 supplyTypeArgumentCounter++
             } else {
-                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue?.deepCopyWithSymbols(initialParent = suppliance)
+                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue
+                    ?.deepCopyWithSymbols(initialParent = suppliance)
+                    ?.transform(parametersSubstitutionTransformer, null)
                 parameterCounter++
             }
     }
@@ -50,6 +62,11 @@ fun supplyConstructorsParameters(
     suppliabilityMapper: SuppliabilityMapper,
 ) {
     for ((suppliance, suppliable) in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
+        val classSupplyTypeParameters = suppliance.parentAsClass.typeParameters.filter { it.isSupply }
+        val parametersSubstitutionTransformer = ParametersSubstitutionTransformer(
+            valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),
+        )
+        
         var parameterCounter = 0
         var supplyTypeArgumentCounter = 0
         for (parameter in suppliance.parameters)
@@ -62,13 +79,15 @@ fun supplyConstructorsParameters(
                         value = irCall(
                             callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                         ).apply {
-                            typeArguments[0] = suppliance.parentAsClass.typeParameters[supplyTypeArgumentCounter].defaultType
+                            typeArguments[0] = classSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
                         }
                     )
                 }
                 supplyTypeArgumentCounter++
             } else {
-                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue?.deepCopyWithSymbols(initialParent = suppliance)
+                parameter.defaultValue = suppliable.parameters[parameterCounter].defaultValue
+                    ?.deepCopyWithSymbols(initialParent = suppliance)
+                    ?.transform(parametersSubstitutionTransformer, null)
                 parameterCounter++
             }
     }

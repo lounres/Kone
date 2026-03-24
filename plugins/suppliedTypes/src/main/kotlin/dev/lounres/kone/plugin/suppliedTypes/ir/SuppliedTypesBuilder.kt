@@ -146,7 +146,10 @@ class SuppliedTypesBuilder(
                             }
                             is IrTypeParameterSymbol -> {
                                 val typeParameter = classifierSymbol.owner
-                                val suppliedTypeVariable = suppliedTypes.getOrElse(typeParameter.defaultType) { error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.") }.value
+                                val typeParameterType = typeParameter.defaultType
+                                if (typeParameterType == type)
+                                    error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.")
+                                val suppliedTypeVariable = resolve(typeParameterType)
                                 val nullability = type.nullability
                                 
                                 when (nullability) {

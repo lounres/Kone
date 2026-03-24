@@ -1,8 +1,12 @@
 // SUPPRESS_WARNINGS: PRE_RELEASE_CLASS
 
-import foo.bar.baz
 
-fun box(): String {
-    baz()
-    return "OK"
+class Foo {
+    val gee: Int = 57
+    
+    inner class Bar {
+        inner class Baz {
+            fun doo(): Int = gee + 179
+        }
+    }
 }

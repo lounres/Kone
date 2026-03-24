@@ -21,6 +21,6 @@ open class AbstractFrontendTest(private val pluginConfigurator: Constructor<Envi
     }
 }
 
-open class AbstractDeclarationsTest : AbstractFrontendTest(::FirDeclarationsConfigurator)
-open class AbstractDiagnosticTest : AbstractFrontendTest(::FirDiagnosticConfigurator)
-open class AbstractFirCompleteTest : AbstractFrontendTest(::FirCompleteExtensionRegistrarConfigurator)
+open class AbstractFrontendTestDeclarations : AbstractFrontendTest(::FirDeclarationsConfigurator)
+open class AbstractFrontendTestDiagnostic : AbstractFrontendTest(::FirDiagnosticConfigurator)
+open class AbstractFrontendTestComplete : AbstractFrontendTest(::FirCompleteExtensionRegistrarConfigurator)

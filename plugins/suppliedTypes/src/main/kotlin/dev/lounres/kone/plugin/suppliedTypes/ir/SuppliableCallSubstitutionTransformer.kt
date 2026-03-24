@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
-import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
+import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
@@ -30,6 +30,7 @@ class SuppliableCallSubstitutionTransformer(
     override fun visitConstructorCall(expression: IrConstructorCall, data: IrSymbol?): IrElement {
         val suppliable = expression.symbol.owner
         val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitConstructorCall(expression, data)
+        val suppliedTypeParametersIndices = suppliable.parentAsClass.typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
         
         return super.visitConstructorCall(
             DeclarationIrBuilder(
@@ -44,12 +45,15 @@ class SuppliableCallSubstitutionTransformer(
                 ).apply {
                     var initialParameterIndex = 0
                     for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
-                        arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
-                            irCall(
+                        if (parameter.isSupplianceProvided) {
+                            arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                            )
+                            ).apply {
+                                typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
+                            }
                         } else {
-                            suppliable.parameters[initialParameterIndex++].defaultValue?.expression?.deepCopyWithSymbols()
+                            arguments[parameterIndex] = expression.arguments[parameterIndex] // ?: suppliable.parameters[initialParameterIndex].defaultValue?.expression?.deepCopyWithSymbols()
+                            initialParameterIndex++
                         }
                     }
                 }
@@ -75,14 +79,15 @@ class SuppliableCallSubstitutionTransformer(
                 ).apply {
                     var initialParameterIndex = 0
                     for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
-                        arguments[parameterIndex] = arguments[parameterIndex] ?: if (parameter.isSupplianceProvided) {
-                            irCall(
+                        if (parameter.isSupplianceProvided) {
+                            arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                             ).apply {
                                 typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
                             }
                         } else {
-                            suppliable.parameters[initialParameterIndex++].defaultValue?.expression?.deepCopyWithSymbols()
+                            arguments[parameterIndex] = expression.arguments[parameterIndex] // ?: suppliable.parameters[initialParameterIndex].defaultValue?.expression?.deepCopyWithSymbols()
+                            initialParameterIndex++
                         }
                     }
                     typeArguments.clear()

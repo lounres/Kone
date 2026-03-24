@@ -36,7 +36,7 @@ FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
                 ARG <this>: TYPE_OP type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=IMPLICIT_CAST typeOperand=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                   CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=V of kotlin.collections.Map? origin=null
                     ARG <this>: CALL 'public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-                      ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo' type=<root>.Foo<T of <root>.Foo> origin=null
+                      ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.foo' type=<root>.Foo<T of <root>.Foo> origin=null
                     ARG key: CONST String type=kotlin.String value="Foo"
                 ARG index: CONST Int type=kotlin.Int value=0
             VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]

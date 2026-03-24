@@ -1,0 +1,5 @@
+FILE: suppliedTypeOfUsage2.kt
+    public final fun box(): R|kotlin/String| {
+        R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<kotlin/collections/Map<out kotlin/String, kotlin/String?>>|>())
+        ^box String(OK)
+    }

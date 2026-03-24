@@ -13,9 +13,9 @@ import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase4
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractTestWithoutPlugin
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDeclarationsTest
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractDiagnosticTest
-import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFirCompleteTest
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFrontendTestDeclarations
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFrontendTestDiagnostic
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFrontendTestComplete
 import generatedTestsPath
 import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
 import testDataPath
@@ -23,13 +23,13 @@ import testDataPath
 fun main() {
     generateTestGroupSuiteWithJUnit5 {
         testGroup(testDataRoot = testDataPath, testsRoot = generatedTestsPath) {
-            testClass<AbstractDeclarationsTest> {
+            testClass<AbstractFrontendTestDeclarations> {
                 model("fir/declarations")
             }
-            testClass<AbstractDiagnosticTest> {
+            testClass<AbstractFrontendTestDiagnostic> {
                 model("fir/diagnostics")
             }
-            testClass<AbstractFirCompleteTest> {
+            testClass<AbstractFrontendTestComplete> {
                 model("fir/complete")
             }
             
