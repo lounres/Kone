@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
+import dev.lounres.kone.plugin.suppliedTypes.services.PluginRuntimeClasspathProvider
 import dev.lounres.kone.plugin.suppliedTypes.services.PluginRuntimeProvider
 import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.KoneTestRunner
 import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.commonTestRunnerConfiguration
@@ -22,5 +23,6 @@ abstract class KoneSuppliedTypesTestRunner : KoneTestRunner() {
         )
         configure(builder)
         builder.useConfigurators(::PluginRuntimeProvider)
+        builder.useCustomRuntimeClasspathProviders(::PluginRuntimeClasspathProvider)
     }
 }

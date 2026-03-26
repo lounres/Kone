@@ -7,7 +7,6 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
@@ -15,8 +14,6 @@ import org.jetbrains.kotlin.fir.declarations.hasAnnotation
 import org.jetbrains.kotlin.fir.extensions.FirSupertypeGenerationExtension
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
