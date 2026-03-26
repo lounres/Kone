@@ -14,8 +14,8 @@ import org.jetbrains.kotlin.test.backend.handlers.IrTextDumpHandler
 import org.jetbrains.kotlin.test.backend.handlers.IrTreeVerifierHandler
 import org.jetbrains.kotlin.test.backend.handlers.JvmBoxRunner
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
+import org.jetbrains.kotlin.test.builders.configureJvmArtifactsHandlersStep
 import org.jetbrains.kotlin.test.builders.irHandlersStep
-import org.jetbrains.kotlin.test.builders.jvmArtifactsHandlersStep
 import org.jetbrains.kotlin.test.directives.CodegenTestDirectives
 import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
 import org.jetbrains.kotlin.test.services.TestPhase
@@ -42,7 +42,7 @@ abstract class AbstractBackendTest(
         useAfterAnalysisCheckers(::BlackBoxCodegenSuppressor)
         
         if (runJvmBoxTest)
-            jvmArtifactsHandlersStep {
+            configureJvmArtifactsHandlersStep {
                 useHandlers(::JvmBoxRunner)
             }
     }
