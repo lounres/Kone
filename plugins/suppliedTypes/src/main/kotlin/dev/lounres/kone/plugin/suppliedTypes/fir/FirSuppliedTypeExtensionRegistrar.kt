@@ -14,6 +14,6 @@ class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
         +::SuppliedTypesStoragePropertyGenerationExtension
         +::SuppliableFunctionsDuplicatesGenerationExtension
         +::SuppliableConstructorsDuplicatesGenerationExtension
-//        +::SuppliedTypeCheckersExtension
+        +::SuppliedTypeCheckersExtension
     }
 }
