@@ -24,6 +24,16 @@ class SuppliedTypeIrGenerationExtension(
     companion object {
         val phases: List<Phase> = listOf(
             { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
+                moduleFragment.transform(
+                    SuppliedTypesStorageAccessorsTransformer(
+                        pluginContext = pluginContext,
+                        irRuntimeReferences = irRuntimeReferences,
+                        suppliabilityMapper = suppliabilityMapper,
+                    ),
+                    null
+                )
+            },
+            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
                 supplyFunctionsParameters(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,

@@ -60,6 +60,7 @@ open class AbstractBackendTestForPhase1 : AbstractBackendTestForPhase(1)
 open class AbstractBackendTestForPhase2 : AbstractBackendTestForPhase(2)
 open class AbstractBackendTestForPhase3 : AbstractBackendTestForPhase(3)
 open class AbstractBackendTestForPhase4 : AbstractBackendTestForPhase(4)
+open class AbstractBackendTestForPhase5 : AbstractBackendTestForPhase(5)
 
 open class AbstractBackendTestComplete : AbstractBackendTest(::ExtensionRegistrarConfigurator) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND

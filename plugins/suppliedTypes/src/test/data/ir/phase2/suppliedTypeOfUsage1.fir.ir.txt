@@ -28,17 +28,13 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage1.kt
       Suppliable
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun bar <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>'
-        CALL 'public final fun foo <T> (suppliedTypeParameterForT: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+        CALL 'public final fun foo <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
           TYPE_ARG T: kotlin.collections.Map<out T of <root>.bar, T of <root>.bar?>
-          ARG suppliedTypeParameterForT: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: kotlin.collections.Map<out T of <root>.bar, T of <root>.bar?>
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
       CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
-        ARG message: CALL 'public final fun bar <T> (suppliedTypeParameterForT: dev.lounres.kone.suppliedTypes.SuppliedType): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+        ARG message: CALL 'public final fun bar <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
           TYPE_ARG T: kotlin.String
-          ARG suppliedTypeParameterForT: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: kotlin.String
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
         CONST String type=kotlin.String value="OK"
   FUN name:foo visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType

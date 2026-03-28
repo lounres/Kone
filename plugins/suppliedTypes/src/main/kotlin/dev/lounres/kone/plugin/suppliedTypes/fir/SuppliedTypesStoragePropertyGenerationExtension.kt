@@ -69,6 +69,8 @@ class SuppliedTypesStoragePropertyGenerationExtension(session: FirSession) : Fir
                     coneTypeOrNull = suppliedTypesStorageDelegateFirNamedFunctionSymbol.resolvedReturnType
                 }
             )
+            replaceGetter(null)
+            replaceSetter(null)
         }
         
         listOf(property.symbol)

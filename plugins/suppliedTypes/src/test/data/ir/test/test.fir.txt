@@ -7,22 +7,8 @@ FILE: test.kt
         public final val gee: R|kotlin/Int| = Int(57)
             public get(): R|kotlin/Int|
 
-        public final inner class Bar : R|kotlin/Any| {
-            public Foo.constructor(): R|Foo.Bar| {
-                super<R|kotlin/Any|>()
-            }
-
-            public final inner class Baz : R|kotlin/Any| {
-                public Foo.Bar.constructor(): R|Foo.Bar.Baz| {
-                    super<R|kotlin/Any|>()
-                }
-
-                public final fun doo(): R|kotlin/Int| {
-                    ^doo this@R|/Foo|.R|/Foo.gee|.R|kotlin/Int.plus|(Int(179))
-                }
-
-            }
-
+        public final fun bar(): R|kotlin/Unit| {
+            ::R|/Foo.gee|
         }
 
     }

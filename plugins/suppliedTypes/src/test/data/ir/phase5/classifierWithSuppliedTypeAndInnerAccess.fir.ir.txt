@@ -1,0 +1,68 @@
+FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
+  CLASS INTERFACE name:Foo modality:ABSTRACT visibility:public superTypes:[kotlin.Any; dev.lounres.kone.suppliedTypes.SuppliableClass]
+    annotations:
+      Suppliable
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo<T of <root>.Foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    FUN FAKE_OVERRIDE name:afterSuppliance visibility:public modality:OPEN returnType:kotlin.Unit [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
+      overridden:
+        public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+    FUN name:foo visibility:public modality:OPEN returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
+      BLOCK_BODY
+        TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+          BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+            VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:E of kotlin.collections.List [val]
+              CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=E of kotlin.collections.List origin=null
+                ARG <this>: TYPE_OP type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=IMPLICIT_CAST typeOperand=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
+                  CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=V of kotlin.collections.Map? origin=null
+                    ARG <this>: CALL 'public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                      ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.foo' type=<root>.Foo<T of <root>.Foo> origin=null
+                    ARG key: CONST String type=kotlin.String value="Foo"
+                ARG index: CONST Int type=kotlin.Int value=0
+            VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
+              CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+                ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.collections.List"
+                ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=null
+                  TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
+                  ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
+                    CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=null
+                      ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:OUT' type=kotlin.reflect.KVariance
+                      ARG type: GET_VAR 'val tmp_0: E of kotlin.collections.List declared in <root>.Foo.foo' type=E of kotlin.collections.List origin=null
+                ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
+            GET_VAR 'val tmp_1: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.Foo.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+    PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
+      annotations:
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+      overridden:
+        public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      FUN FAKE_OVERRIDE name:<get-suppliedTypesStorage> visibility:public modality:ABSTRACT returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
+        overridden:
+          public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
+      FUN FAKE_OVERRIDE name:<set-suppliedTypesStorage> visibility:public modality:ABSTRACT returnType:kotlin.Unit [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
+        overridden:
+          public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass

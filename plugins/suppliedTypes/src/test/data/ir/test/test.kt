@@ -4,9 +4,7 @@
 class Foo {
     val gee: Int = 57
     
-    inner class Bar {
-        inner class Baz {
-            fun doo(): Int = gee + 179
-        }
+    fun bar() {
+        ::gee
     }
 }

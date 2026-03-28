@@ -29,9 +29,6 @@ FILE fqName:foo.bar fileName:/method1.kt
             TYPE_ARG T: Gee of foo.bar.Foo.baz
       annotations:
         SupplianceProvided
-      BLOCK_BODY
-        RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.Foo.baz? declared in foo.bar.Foo'
-          CONST Null type=kotlin.Nothing? value=null
     FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.Foo.baz?
       TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
         annotations:
@@ -39,6 +36,6 @@ FILE fqName:foo.bar fileName:/method1.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo
       annotations:
         Suppliable
-      EXPRESSION_BODY
-        CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-          ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.Foo.baz? declared in foo.bar.Foo'
+          CONST Null type=kotlin.Nothing? value=null

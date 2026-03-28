@@ -18,10 +18,6 @@ FILE fqName:<root> fileName:/inheritance5.kt
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Bar
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Baz
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Gee'
-            GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Gee' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-              receiver: GET_VAR '<this>: <root>.Gee declared in <root>.Gee.<get-suppliedTypesStorage>' type=<root>.Gee origin=null
       FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Gee
         VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
@@ -30,10 +26,6 @@ FILE fqName:<root> fileName:/inheritance5.kt
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Bar
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Baz
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        BLOCK_BODY
-          SET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Gee' type=kotlin.Unit origin=null
-            receiver: GET_VAR '<this>: <root>.Gee declared in <root>.Gee.<set-suppliedTypesStorage>' type=<root>.Gee origin=null
-            value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Gee.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
     CONSTRUCTOR visibility:public returnType:<root>.Gee [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
