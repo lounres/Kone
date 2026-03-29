@@ -2,9 +2,13 @@
 
 
 class Foo {
-    val gee: Int = 57
+    val gee: Int
     
     fun bar() {
         ::gee
+    }
+    
+    init {
+        gee = 57
     }
 }

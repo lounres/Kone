@@ -7,10 +7,10 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSuppliedTypesStoragePropertyName
 import org.jetbrains.kotlin.GeneratedDeclarationKey
+import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.utils.isClass
 import org.jetbrains.kotlin.fir.expressions.builder.buildFunctionCall
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationPredicateRegistrar
@@ -34,7 +34,7 @@ class SuppliedTypesStoragePropertyGenerationExtension(session: FirSession) : Fir
     }
     
     override fun getCallableNamesForClass(classSymbol: FirClassSymbol<*>, context: MemberGenerationContext): Set<Name> = with(utils) {
-        if (classSymbol.isSuppliable && classSymbol.isClass) setOf(internalSuppliedTypesStoragePropertyName) else emptySet()
+        if (classSymbol.isSuppliable && classSymbol.classKind in listOf<ClassKind>(CLASS, /*ENUM_CLASS,*/ OBJECT)) setOf(internalSuppliedTypesStoragePropertyName) else emptySet()
     }
     
     override fun generateProperties(
@@ -44,7 +44,7 @@ class SuppliedTypesStoragePropertyGenerationExtension(session: FirSession) : Fir
         if (callableId.callableName != internalSuppliedTypesStoragePropertyName) return emptyList()
         if (context == null) return emptyList()
         val classSymbol = context.owner
-        if (!classSymbol.isClass) return emptyList()
+        if (classSymbol.classKind !in listOf<ClassKind>(CLASS, /*ENUM_CLASS,*/ OBJECT)) return emptyList()
         if (!classSymbol.isSuppliable) return emptyList()
         
         val property = createMemberProperty(

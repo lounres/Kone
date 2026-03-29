@@ -31,6 +31,12 @@ public annotation class Suppliable
 @Retention(AnnotationRetention.BINARY)
 private annotation class SupplianceProvided
 
+@Deprecated(
+    message = "Internal supplied types API.",
+    level = DeprecationLevel.HIDDEN,
+)
+public object NoSuppliedTypeParameterInClassStub
+
 private class SuppliedTypesStorageDelegate : ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> {
     private val field = AtomicReference<Map<String, List<SuppliedType>>?>(null)
     override fun getValue(thisRef: Any?, property: KProperty<*>): Map<String, List<SuppliedType>> =

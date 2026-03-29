@@ -7,6 +7,7 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
@@ -89,6 +90,7 @@ class IrRuntimeReferences(pluginContext: IrPluginContext) {
     val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarClassId)
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
     
+    val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubClassId)
     val suppliableClassIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliableClassClassId)
     val suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertyGetter("suppliedTypesStorage")!!
     val suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertySetter("suppliedTypesStorage")!!

@@ -8,7 +8,9 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.backend.common.lower.irBlockBody
+import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.IrStatement
+import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
@@ -18,7 +20,6 @@ import org.jetbrains.kotlin.ir.declarations.IrProperty
 import org.jetbrains.kotlin.ir.expressions.impl.IrPropertyReferenceImpl
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
-import org.jetbrains.kotlin.ir.util.isClass
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
@@ -38,7 +39,7 @@ class SuppliedTypesStorageAccessorsTransformer(
     private val mapIrClassSymbol = pluginContext.finderForBuiltins().findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("Map")))!!
     private val mapOfStringAndListOfSuppliedTypeIrType = mapIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
     override fun visitClass(declaration: IrClass): IrStatement {
-        if (declaration.isSuppliable && declaration.isClass) {
+        if (declaration.isSuppliable && declaration.kind in listOf<ClassKind>(CLASS, OBJECT)) {
             val suppliedTypesStorageProperty = declaration.declarations.filterIsInstanceAnd<IrProperty> { it.name.asString() == "suppliedTypesStorage" }.single()
             val delegate = suppliedTypesStorageProperty.backingField!!
             val getter = suppliedTypesStorageProperty.getter!!
@@ -55,8 +56,8 @@ class SuppliedTypesStorageAccessorsTransformer(
                         )
                         arguments[1] = irGet(getter.parameters[0])
                         arguments[2] = IrPropertyReferenceImpl(
-                            startOffset = -1,
-                            endOffset = -1,
+                            startOffset = UNDEFINED_OFFSET,
+                            endOffset = UNDEFINED_OFFSET,
                             type = readWritePropertyIrClassSymbol.createType(
                                 hasQuestionMark = false,
                                 arguments = listOf(
@@ -88,8 +89,8 @@ class SuppliedTypesStorageAccessorsTransformer(
                         )
                         arguments[1] = irGet(setter.parameters[0])
                         arguments[2] = IrPropertyReferenceImpl(
-                            startOffset = -1,
-                            endOffset = -1,
+                            startOffset = UNDEFINED_OFFSET,
+                            endOffset = UNDEFINED_OFFSET,
                             type = readWritePropertyIrClassSymbol.createType(
                                 hasQuestionMark = false,
                                 arguments = listOf(

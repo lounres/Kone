@@ -7,6 +7,7 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import org.jetbrains.kotlin.backend.common.extensions.DeclarationFinder
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
@@ -47,7 +48,7 @@ class SuppliabilityMapper(
     
     private val IrSimpleFunction.isReallySuppliable: Boolean get() = isSuppliable && typeParameters.any { it.isSupply } && symbol != irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
     private val IrSimpleFunction.isReallySuppliance: Boolean get() = isSupplianceProvided
-    private val IrConstructor.isReallySuppliable: Boolean get() = !isSupplianceProvided && parentAsClass.let { it.isSuppliable && it.typeParameters.any { it.isSupply } }
+    private val IrConstructor.isReallySuppliable: Boolean get() = !isSupplianceProvided && parentAsClass.let { it.isSuppliable && it.kind in listOf<ClassKind>(CLASS) }
     private val IrConstructor.isReallySuppliance: Boolean get() = isSupplianceProvided
     
     fun mapSuppliableToSupplianceOrNull(function: IrSimpleFunction): IrSimpleFunction? =
@@ -137,7 +138,7 @@ private class IrSimpleFunctionSuppliabilityScope{
         suppliance[signature] = function
     }
 }
-private class IrConstructorSuppliabilityScope{
+private class IrConstructorSuppliabilityScope {
     val suppliable: Map<IrConstructorSignature, IrConstructor>
         field: MutableMap<IrConstructorSignature, IrConstructor> = mutableMapOf()
     val suppliance: Map<IrConstructorSignature, IrConstructor>
@@ -167,7 +168,7 @@ fun SuppliabilityMapper(
 ): SuppliabilityMapper {
     fun IrSimpleFunction.isReallySuppliable(): Boolean = isSuppliable && typeParameters.any { it.isSupply } && this != irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
     fun IrSimpleFunction.isReallySuppliance(): Boolean = isSupplianceProvided
-    fun IrConstructor.isReallySuppliable(): Boolean = !isSupplianceProvided && parentAsClass.let { it.isSuppliable && it.typeParameters.any { it.isSupply } }
+    fun IrConstructor.isReallySuppliable(): Boolean = !isSupplianceProvided && parentAsClass.let { it.isSuppliable && it.kind in listOf<ClassKind>(CLASS) }
     fun IrConstructor.isReallySuppliance(): Boolean = isSupplianceProvided
     
     val moduleScopeToSuppliabilityFunctions = mutableMapOf<IrDeclaration, IrSimpleFunctionSuppliabilityScope>()

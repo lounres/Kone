@@ -68,6 +68,15 @@ class SuppliedTypeIrGenerationExtension(
                     irRuntimeReferences = irRuntimeReferences,
                     suppliabilityMapper = suppliabilityMapper,
                 )
+                
+                moduleFragment.accept(
+                    SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
+                        pluginContext = pluginContext,
+                        irRuntimeReferences = irRuntimeReferences,
+                        suppliabilityMapper = suppliabilityMapper,
+                    ),
+                    null
+                )
             },
             { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
                 moduleFragment.transform(

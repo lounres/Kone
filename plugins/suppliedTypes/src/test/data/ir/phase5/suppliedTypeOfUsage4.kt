@@ -4,16 +4,16 @@ import dev.lounres.kone.suppliedTypes.*
 
 
 @Suppliable
-abstract class Foo<@Supply T> {
+interface Foo<@Supply T> {
     fun foo() {
         println(suppliedTypeOf<List<T>>())
     }
 }
 
 @Suppliable
-object Bar : Foo<String>()
+class Bar : Foo<String>
 
 fun box(): String {
-    Bar.foo()
+    Bar().foo()
     return "OK"
 }

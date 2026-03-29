@@ -5,22 +5,18 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypesStorageDelegateCallableId
-import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
+import dev.lounres.kone.plugin.suppliedTypes.*
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
 import org.jetbrains.kotlin.fir.extensions.predicate.AbstractPredicate
 import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate
-import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate.BuilderContext.annotated
 import org.jetbrains.kotlin.fir.extensions.predicateBasedProvider
 import org.jetbrains.kotlin.fir.references.builder.buildResolvedNamedReference
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.constructType
@@ -57,7 +53,7 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
                 relativeClassName = FqName("DeprecationLevel"),
                 isLocal = false
             )
-        )!!
+        )!! as FirRegularClassSymbol
     }
     val deprecationLevelConeClassLikeType by lazy { deprecationLevelClassLikeSymbol.defaultType() }
     val deprecatedFirResolvedTypeRef by lazy {
@@ -73,6 +69,7 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     
     val suppliedTypeFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassId)!! }
     val supplianceProvidedFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedClassId)!! }
+    val noSuppliedTypeParameterInClassStubFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(noSuppliedTypeParameterInClassStubClassId)!! }
     val suppliedTypesStorageDelegateFirNamedFunctionSymbol by lazy {
         symbolProvider.getTopLevelFunctionSymbols(
             packageFqName = suppliedTypesStorageDelegateCallableId.packageName,
@@ -82,6 +79,7 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     
     val suppliedTypeConeClassLikeType by lazy { suppliedTypeFirClassLikeSymbol.defaultType() }
     val supplianceProvidedConeClassLikeType by lazy { supplianceProvidedFirClassLikeSymbol.defaultType() }
+    val noSuppliedTypeParameterInClassStubConeClassLikeType by lazy { noSuppliedTypeParameterInClassStubFirClassLikeSymbol.defaultType() }
     val suppliedTypesStorageConeClassLikeType by lazy {
         symbolProvider.getClassLikeSymbolByClassId(
             ClassId(

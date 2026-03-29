@@ -9,9 +9,11 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
+import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.parentAsClass
+import org.jetbrains.kotlin.name.Name
 
 
 fun supplyFunctionsParameters(
@@ -71,13 +73,21 @@ fun supplyConstructorsParameters(
                     generatorContext = pluginContext,
                     symbol = parameter.symbol,
                 ).run {
-                    irExprBody(
-                        value = irCall(
-                            callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                        ).apply {
-                            typeArguments[0] = classSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
-                        }
-                    )
+                    if (parameter.name == Name.special("<supplianceStub>"))
+                        irExprBody(
+                            value = irGetObjectValue(
+                                type = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol.defaultType,
+                                classSymbol = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol,
+                            )
+                        )
+                    else
+                        irExprBody(
+                            value = irCall(
+                                callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
+                            ).apply {
+                                typeArguments[0] = classSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
+                            }
+                        )
                 }
                 supplyTypeArgumentCounter++
             } else {

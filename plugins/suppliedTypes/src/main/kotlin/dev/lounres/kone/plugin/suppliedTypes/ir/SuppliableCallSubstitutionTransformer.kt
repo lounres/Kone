@@ -11,12 +11,15 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
+import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
+import org.jetbrains.kotlin.name.Name
 
 
 class SuppliableCallSubstitutionTransformer(
@@ -46,13 +49,20 @@ class SuppliableCallSubstitutionTransformer(
                     var initialParameterIndex = 0
                     for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
                         if (parameter.isSupplianceProvided) {
-                            arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
-                                callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
-                            ).apply {
-                                typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
-                            }
+                            arguments[parameterIndex] =
+                                if (parameter.name == Name.special("<supplianceStub>"))
+                                    irGetObjectValue(
+                                        type = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol.defaultType,
+                                        classSymbol = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol,
+                                    )
+                                else
+                                    irCall(
+                                        callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
+                                    ).apply {
+                                        typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
+                                    }
                         } else {
-                            arguments[parameterIndex] = expression.arguments[parameterIndex] // ?: suppliable.parameters[initialParameterIndex].defaultValue?.expression?.deepCopyWithSymbols()
+                            arguments[parameterIndex] = expression.arguments[initialParameterIndex]
                             initialParameterIndex++
                         }
                     }

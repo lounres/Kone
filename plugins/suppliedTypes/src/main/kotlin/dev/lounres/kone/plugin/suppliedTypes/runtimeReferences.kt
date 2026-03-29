@@ -21,6 +21,7 @@ const val suppliedProjectionStarShortNameString = "Star"
 const val supplyShortNameString = "Supply"
 const val suppliableShortNameString = "Suppliable"
 const val supplianceProvidedShortNameString = "SupplianceProvided"
+const val noSuppliedTypeParameterInClassStubShortNameString = "NoSuppliedTypeParameterInClassStub"
 const val suppliedTypesStorageDelegateShortNameString = "suppliedTypesStorageDelegate"
 const val suppliableClassShortNameString = "SuppliableClass"
 const val suppliedTypeOfShortNameString = "suppliedTypeOf"
@@ -35,6 +36,7 @@ val suppliedProjectionStarShortName = FqName("$suppliedProjectionShortNameString
 val supplyShortName = FqName(supplyShortNameString)
 val suppliableShortName = FqName(suppliableShortNameString)
 val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
+val noSuppliedTypeParameterInClassStubShortName = FqName(noSuppliedTypeParameterInClassStubShortNameString)
 val suppliedTypesStorageDelegateShortName = Name.identifier(suppliedTypesStorageDelegateShortNameString)
 val suppliableClassShortName = FqName(suppliableClassShortNameString)
 val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
@@ -83,6 +85,11 @@ val supplianceProvidedClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = supplianceProvidedShortName,
     isLocal = false
+)
+val noSuppliedTypeParameterInClassStubClassId = ClassId(
+    packageFqName = koneSuppliedTypesPackageFQName,
+    relativeClassName = noSuppliedTypeParameterInClassStubShortName,
+    isLocal = false,
 )
 val suppliedTypesStorageDelegateCallableId = CallableId(
     packageName = koneSuppliedTypesPackageFQName,
