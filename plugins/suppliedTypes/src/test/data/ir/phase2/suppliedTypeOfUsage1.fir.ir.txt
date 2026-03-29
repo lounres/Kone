@@ -1,5 +1,5 @@
 FILE fqName:<root> fileName:/__GENERATED__CALLABLES__.kt
-  FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:bar visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+  FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:bar visibility:public modality:FINAL returnType:kotlin.String
     TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
     VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
       annotations:
@@ -9,7 +9,7 @@ FILE fqName:<root> fileName:/__GENERATED__CALLABLES__.kt
           TYPE_ARG T: T of <root>.bar
     annotations:
       SupplianceProvided
-  FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:foo visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+  FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:foo visibility:public modality:FINAL returnType:kotlin.String
     TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
     VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
       annotations:
@@ -20,30 +20,38 @@ FILE fqName:<root> fileName:/__GENERATED__CALLABLES__.kt
     annotations:
       SupplianceProvided
 FILE fqName:<root> fileName:/suppliedTypeOfUsage1.kt
-  FUN name:bar visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+  FUN name:bar visibility:public modality:FINAL returnType:kotlin.String
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supply
     annotations:
       Suppliable
     BLOCK_BODY
-      RETURN type=kotlin.Nothing from='public final fun bar <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>'
-        CALL 'public final fun foo <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+      RETURN type=kotlin.Nothing from='public final fun bar <T> (): kotlin.String declared in <root>'
+        CALL 'public final fun foo <T> (): kotlin.String declared in <root>' type=kotlin.String origin=null
           TYPE_ARG T: kotlin.collections.Map<out T of <root>.bar, T of <root>.bar?>
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
-        ARG message: CALL 'public final fun bar <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-          TYPE_ARG T: kotlin.String
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
-        CONST String type=kotlin.String value="OK"
-  FUN name:foo visibility:public modality:FINAL returnType:dev.lounres.kone.suppliedTypes.SuppliedType
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+              ARG arg0: CALL 'public final fun bar <T> (): kotlin.String declared in <root>' type=kotlin.String origin=null
+                TYPE_ARG T: kotlin.String
+              ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>"
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.String
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supply
     annotations:
       Suppliable
     BLOCK_BODY
-      RETURN type=kotlin.Nothing from='public final fun foo <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>'
-        CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-          TYPE_ARG T: kotlin.collections.List<T of <root>.foo>
+      RETURN type=kotlin.Nothing from='public final fun foo <T> (): kotlin.String declared in <root>'
+        CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
+          ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
+            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+              TYPE_ARG T: kotlin.collections.List<T of <root>.foo>

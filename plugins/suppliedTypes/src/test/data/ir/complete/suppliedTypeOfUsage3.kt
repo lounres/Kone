@@ -5,12 +5,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 class Foo<@Supply T> {
-    fun foo() {
-        println(suppliedTypeOf<List<T>>())
-    }
+    fun foo() = suppliedTypeOf<List<T>>().toString()
 }
 
-fun box(): String {
-    Foo<String>().foo()
-    return "OK"
-}
+fun box(): String = if (Foo<String>().foo() == "kotlin.collections.List<out kotlin.String>") "OK" else "INCORRECT"

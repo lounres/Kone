@@ -90,30 +90,32 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage5.kt
       overridden:
         public open fun toString (): kotlin.String declared in kotlin.Any
         public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-    FUN name:foo visibility:public modality:FINAL returnType:kotlin.Unit
+    FUN name:foo visibility:public modality:FINAL returnType:kotlin.String
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
       BLOCK_BODY
-        CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
-          ARG message: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-            VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:E of kotlin.collections.List [val]
-              CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=E of kotlin.collections.List origin=null
-                ARG <this>: TYPE_OP type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=IMPLICIT_CAST typeOperand=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
-                  CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=V of kotlin.collections.Map? origin=null
-                    ARG <this>: CALL 'public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-                      ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.foo' type=<root>.Foo<T of <root>.Foo> origin=null
-                    ARG key: CONST String type=kotlin.String value="Foo"
-                ARG index: CONST Int type=kotlin.Int value=0
-            VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
-              CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-                ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.collections.List"
-                ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=null
-                  TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
-                  ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
-                    CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=null
-                      ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:OUT' type=kotlin.reflect.KVariance
-                      ARG type: GET_VAR 'val tmp_1: E of kotlin.collections.List declared in <root>.Foo.foo' type=E of kotlin.collections.List origin=null
-                ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
-            GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.Foo.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+        RETURN type=kotlin.Nothing from='public final fun foo (): kotlin.String declared in <root>.Foo'
+          CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
+            ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
+              BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+                VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:E of kotlin.collections.List [val]
+                  CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=E of kotlin.collections.List origin=null
+                    ARG <this>: TYPE_OP type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=IMPLICIT_CAST typeOperand=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
+                      CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=V of kotlin.collections.Map? origin=null
+                        ARG <this>: CALL 'public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                          ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.foo' type=<root>.Foo<T of <root>.Foo> origin=null
+                        ARG key: CONST String type=kotlin.String value="Foo"
+                    ARG index: CONST Int type=kotlin.Int value=0
+                VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
+                  CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+                    ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.collections.List"
+                    ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=null
+                      TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
+                      ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
+                        CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=null
+                          ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:OUT' type=kotlin.reflect.KVariance
+                          ARG type: GET_VAR 'val tmp_1: E of kotlin.collections.List declared in <root>.Foo.foo' type=E of kotlin.collections.List origin=null
+                    ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
+                GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.Foo.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
   CLASS OBJECT name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.String>; dev.lounres.kone.suppliedTypes.SuppliableClass]
     annotations:
       Suppliable
@@ -192,10 +194,10 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage5.kt
       overridden:
         public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in <root>.Foo
         public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-    FUN FAKE_OVERRIDE name:foo visibility:public modality:FINAL returnType:kotlin.Unit [fake_override]
+    FUN FAKE_OVERRIDE name:foo visibility:public modality:FINAL returnType:kotlin.String [fake_override]
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<kotlin.String>
       overridden:
-        public final fun foo (): kotlin.Unit declared in <root>.Foo
+        public final fun foo (): kotlin.String declared in <root>.Foo
     FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
@@ -208,7 +210,14 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage5.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun foo (): kotlin.Unit declared in <root>.Bar' type=kotlin.Unit origin=null
-        ARG <this>: GET_OBJECT 'CLASS OBJECT name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.String>; dev.lounres.kone.suppliedTypes.SuppliableClass]' type=<root>.Bar
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
-        CONST String type=kotlin.String value="OK"
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+              ARG arg0: CALL 'public final fun foo (): kotlin.String declared in <root>.Bar' type=kotlin.String origin=null
+                ARG <this>: GET_OBJECT 'CLASS OBJECT name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo<kotlin.String>; dev.lounres.kone.suppliedTypes.SuppliableClass]' type=<root>.Bar
+              ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.String>"
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"
