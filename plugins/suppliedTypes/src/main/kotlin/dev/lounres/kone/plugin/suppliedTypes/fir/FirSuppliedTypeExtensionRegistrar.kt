@@ -15,5 +15,7 @@ class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
         +::SuppliableFunctionsDuplicatesGenerationExtension
         +::SuppliableConstructorsDuplicatesGenerationExtension
         +::SuppliedTypeCheckersExtension
+        
+        registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)
     }
 }
