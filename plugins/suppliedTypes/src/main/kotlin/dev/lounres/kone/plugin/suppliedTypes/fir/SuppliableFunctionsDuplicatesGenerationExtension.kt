@@ -8,6 +8,7 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
 import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
 import org.jetbrains.kotlin.GeneratedDeclarationKey
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirNamedFunction
@@ -69,6 +70,12 @@ class SuppliableFunctionsDuplicatesGenerationExtension(session: FirSession) : Fi
             source = functionToSupply.source
             visibility = functionToSupply.rawStatus.visibility.takeIf { it != Visibilities.Unknown } ?: Visibilities.DEFAULT_VISIBILITY
             functionToSupply.rawStatus.modality?.let { modality = it }
+            modality = functionToSupply.rawStatus.modality
+                ?: when {
+                    !functionToSupply.hasBody -> Modality.ABSTRACT
+                    functionToSupply.rawStatus.isOverride -> Modality.OPEN
+                    else -> Modality.FINAL
+                }
             status {
                 isExpect = functionToSupply.rawStatus.isExpect
                 isActual = functionToSupply.rawStatus.isActual

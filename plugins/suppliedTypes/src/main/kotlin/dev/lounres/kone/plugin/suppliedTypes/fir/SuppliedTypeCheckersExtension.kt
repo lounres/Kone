@@ -60,6 +60,8 @@ import org.jetbrains.kotlin.fir.types.unwrapLowerBound
 import org.jetbrains.kotlin.psi.KtElement
 
 
+// TODO: Сделать диагностики на:
+//  - наследование suppliable функций.\
 class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckersExtension(session) {
     companion object {
         context(context: CheckerContext)
@@ -226,7 +228,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
                             val typeArgumentConeTypeProjection = expression.typeArguments[index].toConeTypeProjection() as ConeKotlinType
                             if (!typeArgumentConeTypeProjection.checkFullSuppliance())
                                 reporter.reportOn(
-                                    source = expression.typeArguments[index].source,
+                                    source = expression.typeArguments[index].source ?: expression.source,
                                     factory = Errors.NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT,
                                     a = calleeSymbol.typeParameterSymbols[index],
                                     b = typeArgumentConeTypeProjection,
@@ -245,7 +247,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
                             val typeArgumentConeTypeProjection = expression.typeArguments[index].toConeTypeProjection() as ConeKotlinType
                             if (!typeArgumentConeTypeProjection.checkFullSuppliance())
                                 reporter.reportOn(
-                                    source = expression.typeArguments[index].source,
+                                    source = expression.typeArguments[index].source ?: expression.source,
                                     factory = Errors.NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT,
                                     a = classSymbol.typeParameterSymbols[index],
                                     b = typeArgumentConeTypeProjection,
@@ -292,7 +294,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         val NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT = KtDiagnosticFactory2<FirTypeParameterSymbol, ConeKotlinType>(
             name = "NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT",
             severity = ERROR,
-            defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
+            defaultPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
             psiType = KtElement::class,
             rendererFactory = getRendererFactory()
         )

@@ -53,9 +53,9 @@ fun supplyFunctionsBodies(
         .single()
     
     for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
-        suppliance.body = suppliable.body!!
-            .deepCopyWithSymbols(initialParent = suppliance)
-            .transform(
+        suppliance.body = suppliable.body
+            ?.deepCopyWithSymbols(initialParent = suppliance)
+            ?.transform(
                 ParametersSubstitutionTransformer(
                     typeParametersSubstitution = suppliable.typeParameters.zip(suppliance.typeParameters).toMap(),
                     valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),
