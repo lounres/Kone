@@ -7,14 +7,18 @@
 
 package dev.lounres.kone.collections.utils
 
+import dev.lounres.kone.collections.array.KoneUIntArray
+import dev.lounres.kone.collections.array.empty
+import dev.lounres.kone.collections.array.of
+import dev.lounres.kone.collections.array.toKoneUIntArray
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.empty
+import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.contextualOf
@@ -107,7 +111,8 @@ public fun <E : Comparable<E>> KoneIterator<E>.minList(): KoneList<E> {
     if (!hasNext()) return KoneList.empty()
     var minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -116,17 +121,110 @@ public fun <E : Comparable<E>> KoneIterator<E>.minList(): KoneList<E> {
             comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minElement = nextElement
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public fun <E : Comparable<E>> KoneIterable<E>.minList(): KoneList<E> = iterator().minList()
 
 public fun <E : Comparable<E>> KoneSequence<E>.minList(): KoneList<E> = iterator().minList()
+
+public inline fun <E : Comparable<E>> KoneIterator<E>.minIndexOrElse(default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement > nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E : Comparable<E>> KoneList<E>.minIndexOrElse(default: () -> UInt): UInt = iterator().minIndexOrElse(default)
+
+public inline fun <E : Comparable<E>> KoneSequence<E>.minIndexOrElse(default: () -> UInt): UInt = iterator().minIndexOrElse(default)
+
+public fun <E : Comparable<E>> KoneIterator<E>.minIndex(): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement > nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public fun <E : Comparable<E>> KoneList<E>.minIndex(): UInt = iterator().minIndex()
+
+public fun <E : Comparable<E>> KoneSequence<E>.minIndex(): UInt = iterator().minIndex()
+
+public fun <E : Comparable<E>> KoneIterator<E>.minIndexOrNull(): UInt? {
+    if (!hasNext()) return null
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement > nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public fun <E : Comparable<E>> KoneList<E>.minIndexOrNull(): UInt? = iterator().minIndexOrNull()
+
+public fun <E : Comparable<E>> KoneSequence<E>.minIndexOrNull(): UInt? = iterator().minIndexOrNull()
+
+public fun <E : Comparable<E>> KoneIterator<E>.minIndexList(): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minIndexList = KoneArrayGrowableList<UInt>()
+    minIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        val comparisonResult = minElement.compareTo(nextElement)
+        when {
+            comparisonResult == 0 -> minIndexList.add(currentIndex)
+            comparisonResult > 0 -> {
+                minElement = nextElement
+                minIndexList.dispose()
+                minIndexList = KoneArrayGrowableList()
+                minIndexList.add(currentIndex)
+            }
+        }
+    } while (hasNext())
+    return minIndexList.toKoneUIntArray()
+}
+
+public fun <E : Comparable<E>> KoneList<E>.minIndexList(): KoneUIntArray = iterator().minIndexList()
+
+public fun <E : Comparable<E>> KoneSequence<E>.minIndexList(): KoneUIntArray = iterator().minIndexList()
 
 public inline fun <E : Comparable<E>> KoneIterator<E>.maxOrElse(default: () -> E): E {
     if (!hasNext()) return default()
@@ -200,7 +298,8 @@ public fun <E : Comparable<E>> KoneIterator<E>.maxList(): KoneList<E> {
     if (!hasNext()) return KoneList.empty()
     var maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -209,17 +308,110 @@ public fun <E : Comparable<E>> KoneIterator<E>.maxList(): KoneList<E> {
             comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxElement = nextElement
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public fun <E : Comparable<E>> KoneIterable<E>.maxList(): KoneList<E> = iterator().maxList()
 
 public fun <E : Comparable<E>> KoneSequence<E>.maxList(): KoneList<E> = iterator().maxList()
+
+public inline fun <E : Comparable<E>> KoneIterator<E>.maxIndexOrElse(default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement < nextElement) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E : Comparable<E>> KoneList<E>.maxIndexOrElse(default: () -> UInt): UInt = iterator().maxIndexOrElse(default)
+
+public inline fun <E : Comparable<E>> KoneSequence<E>.maxIndexOrElse(default: () -> UInt): UInt = iterator().maxIndexOrElse(default)
+
+public fun <E : Comparable<E>> KoneIterator<E>.maxIndex(): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement < nextElement) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public fun <E : Comparable<E>> KoneList<E>.maxIndex(): UInt = iterator().maxIndex()
+
+public fun <E : Comparable<E>> KoneSequence<E>.maxIndex(): UInt = iterator().maxIndex()
+
+public fun <E : Comparable<E>> KoneIterator<E>.maxIndexOrNull(): UInt? {
+    if (!hasNext()) return null
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement < nextElement) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public fun <E : Comparable<E>> KoneList<E>.maxIndexOrNull(): UInt? = iterator().maxIndexOrNull()
+
+public fun <E : Comparable<E>> KoneSequence<E>.maxIndexOrNull(): UInt? = iterator().maxIndexOrNull()
+
+public fun <E : Comparable<E>> KoneIterator<E>.maxIndexList(): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        val comparisonResult = maxElement.compareTo(nextElement)
+        when {
+            comparisonResult == 0 -> maxIndexList.add(currentIndex)
+            comparisonResult < 0 -> {
+                maxElement = nextElement
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+public fun <E : Comparable<E>> KoneList<E>.maxIndexList(): KoneUIntArray = iterator().maxIndexList()
+
+public fun <E : Comparable<E>> KoneSequence<E>.maxIndexList(): KoneUIntArray = iterator().maxIndexList()
 
 context(_: Order<E>)
 public inline fun <E> KoneIterator<E>.minOrElse(default: () -> E): E {
@@ -306,7 +498,8 @@ public fun <E> KoneIterator<E>.minList(): KoneList<E> {
     if (!hasNext()) return KoneList.empty()
     var minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -314,13 +507,14 @@ public fun <E> KoneIterator<E>.minList(): KoneList<E> {
             ComparisonResult.Equal -> minList.add(nextElement)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minElement = nextElement
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 context(_: Order<E>)
@@ -328,6 +522,109 @@ public fun <E> KoneIterable<E>.minList(): KoneList<E> = iterator().minList()
 
 context(_: Order<E>)
 public fun <E> KoneSequence<E>.minList(): KoneList<E> = iterator().minList()
+
+context(_: Order<E>)
+public inline fun <E> KoneIterator<E>.minIndexOrElse(default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement gt nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<E>)
+public inline fun <E> KoneList<E>.minIndexOrElse(default: () -> UInt): UInt = iterator().minIndexOrElse(default)
+
+context(_: Order<E>)
+public inline fun <E> KoneSequence<E>.minIndexOrElse(default: () -> UInt): UInt = iterator().minIndexOrElse(default)
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.minIndex(): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement gt nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.minIndex(): UInt = iterator().minIndex()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.minIndex(): UInt = iterator().minIndex()
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.minIndexOrNull(): UInt? {
+    if (!hasNext()) return null
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (minElement gt nextElement) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.minIndexOrNull(): UInt? = iterator().minIndexOrNull()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.minIndexOrNull(): UInt? = iterator().minIndexOrNull()
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.minIndexList(): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minIndexList = KoneArrayGrowableList<UInt>()
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        when (minElement compareWith nextElement) {
+            ComparisonResult.Equal -> minIndexList.add(currentIndex)
+            ComparisonResult.LeftIsGreaterThanRight -> {
+                minElement = nextElement
+                minIndexList.dispose()
+                minIndexList = KoneArrayGrowableList()
+                minIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsLessThanRight -> {}
+        }
+    } while (hasNext())
+    return minIndexList.toKoneUIntArray()
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.minIndexList(): KoneUIntArray = iterator().minIndexList()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.minIndexList(): KoneUIntArray = iterator().minIndexList()
 
 context(_: Order<E>)
 public inline fun <E> KoneIterator<E>.maxOrElse(default: () -> E): E {
@@ -414,7 +711,8 @@ public fun <E> KoneIterator<E>.maxList(): KoneList<E> {
     if (!hasNext()) return KoneList.empty()
     var maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -422,13 +720,14 @@ public fun <E> KoneIterator<E>.maxList(): KoneList<E> {
             ComparisonResult.Equal -> maxList.add(nextElement)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxElement = nextElement
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 context(_: Order<E>)
@@ -436,6 +735,110 @@ public fun <E> KoneIterable<E>.maxList(): KoneList<E> = iterator().maxList()
 
 context(_: Order<E>)
 public fun <E> KoneSequence<E>.maxList(): KoneList<E> = iterator().maxList()
+
+context(_: Order<E>)
+public inline fun <E> KoneIterator<E>.maxIndexOrElse(default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement lt nextElement) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<E>)
+public inline fun <E> KoneList<E>.maxIndexOrElse(default: () -> UInt): UInt = iterator().maxIndexOrElse(default)
+
+context(_: Order<E>)
+public inline fun <E> KoneSequence<E>.maxIndexOrElse(default: () -> UInt): UInt = iterator().maxIndexOrElse(default)
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.maxIndex(): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement lt nextElement) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.maxIndex(): UInt = iterator().maxIndex()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.maxIndex(): UInt = iterator().maxIndex()
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.maxIndexOrNull(): UInt? {
+    if (!hasNext()) return null
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (maxElement lt nextElement) {
+            maxElement = nextElement
+            maxIndex++
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.maxIndexOrNull(): UInt? = iterator().maxIndexOrNull()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.maxIndexOrNull(): UInt? = iterator().maxIndexOrNull()
+
+context(_: Order<E>)
+public fun <E> KoneIterator<E>.maxIndexList(): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        when(maxElement compareWith nextElement) {
+            ComparisonResult.Equal -> maxIndexList.add(currentIndex)
+            ComparisonResult.LeftIsLessThanRight -> {
+                maxElement = nextElement
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsGreaterThanRight -> {}
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+context(_: Order<E>)
+public fun <E> KoneList<E>.maxIndexList(): KoneUIntArray = iterator().maxIndexList()
+
+context(_: Order<E>)
+public fun <E> KoneSequence<E>.maxIndexList(): KoneUIntArray = iterator().maxIndexList()
 
 public inline fun <E> KoneIterator<E>.minWithOrElse(comparator: Comparator<E>, default: () -> E): E {
     if (!hasNext()) return default()
@@ -509,7 +912,8 @@ public fun <E> KoneIterator<E>.minListWith(comparator: Comparator<E>): KoneList<
     if (!hasNext()) return KoneList.empty()
     var minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -517,18 +921,110 @@ public fun <E> KoneIterator<E>.minListWith(comparator: Comparator<E>): KoneList<
             ComparisonResult.Equal -> minList.add(nextElement)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minElement = nextElement
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public fun <E> KoneIterable<E>.minListWith(comparator: Comparator<E>): KoneList<E> = iterator().minListWith(comparator)
 
 public fun <E> KoneSequence<E>.minListWith(comparator: Comparator<E>): KoneList<E> = iterator().minListWith(comparator)
+
+public inline fun <E> KoneIterator<E>.minIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E> KoneList<E>.minIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt = iterator().minIndexWithOrElse(comparator, default)
+
+public inline fun <E> KoneSequence<E>.minIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt = iterator().minIndexWithOrElse(comparator, default)
+
+public fun <E> KoneIterator<E>.minIndexWith(comparator: Comparator<E>): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public fun <E> KoneList<E>.minIndexWith(comparator: Comparator<E>): UInt = iterator().minIndexWith(comparator)
+
+public fun <E> KoneSequence<E>.minIndexWith(comparator: Comparator<E>): UInt = iterator().minIndexWith(comparator)
+
+public fun <E> KoneIterator<E>.minIndexWithOrNull(comparator: Comparator<E>): UInt? {
+    if (!hasNext()) return null
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(minElement, nextElement) == ComparisonResult.LeftIsGreaterThanRight) {
+            minElement = nextElement
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public fun <E> KoneList<E>.minIndexWithOrNull(comparator: Comparator<E>): UInt? = iterator().minIndexWithOrNull(comparator)
+
+public fun <E> KoneSequence<E>.minIndexWithOrNull(comparator: Comparator<E>): UInt? = iterator().minIndexWithOrNull(comparator)
+
+public fun <E> KoneIterator<E>.minIndexListWith(comparator: Comparator<E>): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minIndexList = KoneArrayGrowableList<UInt>()
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        when (comparator.compare(minElement, nextElement)) {
+            ComparisonResult.Equal -> minIndexList.add(currentIndex)
+            ComparisonResult.LeftIsGreaterThanRight -> {
+                minElement = nextElement
+                minIndexList.dispose()
+                minIndexList = KoneArrayGrowableList()
+                minIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsLessThanRight -> {}
+        }
+    } while (hasNext())
+    return minIndexList.toKoneUIntArray()
+}
+
+public fun <E> KoneList<E>.minIndexListWith(comparator: Comparator<E>): KoneUIntArray = iterator().minIndexListWith(comparator)
+
+public fun <E> KoneSequence<E>.minIndexListWith(comparator: Comparator<E>): KoneUIntArray = iterator().minIndexListWith(comparator)
 
 public inline fun <E> KoneIterator<E>.maxWithOrElse(comparator: Comparator<E>, default: () -> E): E {
     if (!hasNext()) return default()
@@ -602,7 +1098,8 @@ public fun <E> KoneIterator<E>.maxListWith(comparator: Comparator<E>): KoneList<
     if (!hasNext()) return KoneList.empty()
     var maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
 
@@ -610,18 +1107,111 @@ public fun <E> KoneIterator<E>.maxListWith(comparator: Comparator<E>): KoneList<
             ComparisonResult.Equal -> maxList.add(nextElement)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxElement = nextElement
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public fun <E> KoneIterable<E>.maxListWith(comparator: Comparator<E>): KoneList<E> = iterator().maxListWith(comparator)
 
 public fun <E> KoneSequence<E>.maxListWith(comparator: Comparator<E>): KoneList<E> = iterator().maxListWith(comparator)
+
+public inline fun <E> KoneIterator<E>.maxIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt {
+    if (!hasNext()) return default()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E> KoneList<E>.maxIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt = iterator().maxIndexWithOrElse(comparator, default)
+
+public inline fun <E> KoneSequence<E>.maxIndexWithOrElse(comparator: Comparator<E>, default: () -> UInt): UInt = iterator().maxIndexWithOrElse(comparator, default)
+
+public fun <E> KoneIterator<E>.maxIndexWith(comparator: Comparator<E>): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public fun <E> KoneList<E>.maxIndexWith(comparator: Comparator<E>): UInt = iterator().maxIndexWith(comparator)
+
+public fun <E> KoneSequence<E>.maxIndexWith(comparator: Comparator<E>): UInt = iterator().maxIndexWith(comparator)
+
+public fun <E> KoneIterator<E>.maxIndexWithOrNull(comparator: Comparator<E>): UInt? {
+    if (!hasNext()) return null
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        if (comparator.compare(maxElement, nextElement) == ComparisonResult.LeftIsLessThanRight) {
+            maxElement = nextElement
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public fun <E> KoneList<E>.maxIndexWithOrNull(comparator: Comparator<E>): UInt? = iterator().maxIndexWithOrNull(comparator)
+
+public fun <E> KoneSequence<E>.maxIndexWithOrNull(comparator: Comparator<E>): UInt? = iterator().maxIndexWithOrNull(comparator)
+
+public fun <E> KoneIterator<E>.maxIndexListWith(comparator: Comparator<E>): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    var maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        currentIndex++
+        
+        when (comparator.compare(maxElement, nextElement)) {
+            ComparisonResult.Equal -> maxIndexList.add(currentIndex)
+            ComparisonResult.LeftIsLessThanRight -> {
+                maxElement = nextElement
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsGreaterThanRight -> {}
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+public fun <E> KoneList<E>.maxIndexListWith(comparator: Comparator<E>): KoneUIntArray = iterator().maxIndexListWith(comparator)
+
+public fun <E> KoneSequence<E>.maxIndexListWith(comparator: Comparator<E>): KoneUIntArray = iterator().maxIndexListWith(comparator)
 
 public inline fun <E, R : Comparable<R>> KoneIterator<E>.minOfOrElse(default: () -> R, selector: (E) -> R): R {
     if (!hasNext()) return default()
@@ -699,7 +1289,8 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.minListOf(selector: (E)
     if (!hasNext()) return KoneList.empty()
     var minValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(minValue)
-    val minList = KoneMutableList.of(minValue)
+    var minList = KoneArrayGrowableList<R>()
+    minList.add(minValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -709,12 +1300,13 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.minListOf(selector: (E)
             comparisonResult == 0 -> minList.add(nextValue)
             comparisonResult > 0 -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextValue)
             }
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public inline fun <E, R : Comparable<R>> KoneIterable<E>.minListOf(selector: (E) -> R): KoneList<R> = iterator().minListOf(selector)
@@ -797,7 +1389,8 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxListOf(selector: (E)
     if (!hasNext()) return KoneList.empty()
     var maxValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(maxValue)
-    val maxList = KoneMutableList.of(maxValue)
+    var maxList = KoneArrayGrowableList<R>()
+    maxList.add(maxValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -807,12 +1400,13 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxListOf(selector: (E)
             comparisonResult == 0 -> maxList.add(nextValue)
             comparisonResult < 0 -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextValue)
             }
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public inline fun <E, R : Comparable<R>> KoneIterable<E>.maxListOf(selector: (E) -> R): KoneList<R> = iterator().maxListOf(selector)
@@ -908,7 +1502,8 @@ public inline fun <E, R> KoneIterator<E>.minListOf(selector: (E) -> R): KoneList
     if (!hasNext()) return KoneList.empty()
     var minValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(minValue)
-    val minList = KoneMutableList.of(minValue)
+    var minList = KoneArrayGrowableList<R>()
+    minList.add(minValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -917,13 +1512,14 @@ public inline fun <E, R> KoneIterator<E>.minListOf(selector: (E) -> R): KoneList
             ComparisonResult.Equal -> minList.add(nextValue)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextValue)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 context(_: Order<R>)
@@ -1021,7 +1617,8 @@ public inline fun <E, R> KoneIterator<E>.maxListOf(selector: (E) -> R): KoneList
     if (!hasNext()) return KoneList.empty()
     var maxValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(maxValue)
-    val maxList = KoneMutableList.of(maxValue)
+    var maxList = KoneArrayGrowableList<R>()
+    maxList.add(maxValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1030,13 +1627,14 @@ public inline fun <E, R> KoneIterator<E>.maxListOf(selector: (E) -> R): KoneList
             ComparisonResult.Equal -> maxList.add(nextValue)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextValue)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 context(_: Order<R>)
@@ -1121,7 +1719,8 @@ public inline fun <E, R> KoneIterator<E>.minListWithOf(comparator: Comparator<R>
     if (!hasNext()) return KoneList.empty()
     var minValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(minValue)
-    val minList = KoneMutableList.of(minValue)
+    var minList = KoneArrayGrowableList<R>()
+    minList.add(minValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1130,13 +1729,14 @@ public inline fun <E, R> KoneIterator<E>.minListWithOf(comparator: Comparator<R>
             ComparisonResult.Equal -> minList.add(nextValue)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextValue)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public inline fun <E, R> KoneIterable<E>.minListWithOf(comparator: Comparator<R>, selector: (E) -> R): KoneList<R> = iterator().minListWithOf(comparator, selector)
@@ -1219,7 +1819,8 @@ public inline fun <E, R> KoneIterator<E>.maxListWithOf(comparator: Comparator<R>
     if (!hasNext()) return KoneList.empty()
     var maxValue = selector(getAndMoveNext())
     if (!hasNext()) return KoneList.of(maxValue)
-    val maxList = KoneMutableList.of(maxValue)
+    var maxList = KoneArrayGrowableList<R>()
+    maxList.add(maxValue)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1228,13 +1829,14 @@ public inline fun <E, R> KoneIterator<E>.maxListWithOf(comparator: Comparator<R>
             ComparisonResult.Equal -> maxList.add(nextValue)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextValue)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public inline fun <E, R> KoneIterable<E>.maxListWithOf(comparator: Comparator<R>, selector: (E) -> R): KoneList<R> = iterator().maxListWithOf(comparator, selector)
@@ -1326,7 +1928,8 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.minListBy(selector: (E)
     val minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1336,17 +1939,115 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.minListBy(selector: (E)
             comparisonResult == 0 -> minList.add(nextElement)
             comparisonResult > 0 -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public inline fun <E, R : Comparable<R>> KoneIterable<E>.minListBy(selector: (E) -> R): KoneList<E> = iterator().minListBy(selector)
 
 public inline fun <E, R : Comparable<R>> KoneSequence<E>.minListBy(selector: (E) -> R): KoneList<E> = iterator().minListBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (minValue > nextValue) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexByOrElse(default, selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexByOrElse(default, selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.minIndexBy(selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (minValue > nextValue) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.minIndexBy(selector: (E) -> R): UInt = iterator().minIndexBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.minIndexBy(selector: (E) -> R): UInt = iterator().minIndexBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.minIndexByOrNull(selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        if (minValue > nextValue) {
+            minValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.minIndexByOrNull(selector: (E) -> R): UInt? = iterator().minIndexByOrNull(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.minIndexyOrNull(selector: (E) -> R): UInt? = iterator().minIndexByOrNull(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minValue = selector(minElement)
+    var minIndexList = KoneArrayGrowableList<UInt>()
+    minIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        
+        val comparisonResult = minValue.compareTo(nextValue)
+        when {
+            comparisonResult == 0 -> minIndexList.add(currentIndex)
+            comparisonResult > 0 -> {
+                minValue = nextValue
+                minIndexList.dispose()
+                minIndexList = KoneArrayGrowableList()
+                minIndexList.add(currentIndex)
+            }
+        }
+    } while (hasNext())
+    return minIndexList.toKoneUIntArray()
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().minIndexListBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().minIndexListBy(selector)
 
 public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxByOrElse(default: () -> E, selector: (E) -> R): E {
     if (!hasNext()) return default()
@@ -1433,7 +2134,8 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxListBy(selector: (E)
     val maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1443,17 +2145,115 @@ public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxListBy(selector: (E)
             comparisonResult == 0 -> maxList.add(nextElement)
             comparisonResult < 0 -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public inline fun <E, R : Comparable<R>> KoneIterable<E>.maxListBy(selector: (E) -> R): KoneList<E> = iterator().maxListBy(selector)
 
 public inline fun <E, R : Comparable<R>> KoneSequence<E>.maxListBy(selector: (E) -> R): KoneList<E> = iterator().maxListBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (maxValue < nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexByOrElse(default, selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexByOrElse(default, selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxIndexBy(selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (maxValue < nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.maxIndexBy(selector: (E) -> R): UInt = iterator().maxIndexBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.maxIndexBy(selector: (E) -> R): UInt = iterator().maxIndexBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxIndexByOrNull(selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (maxValue < nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.maxIndexByOrNull(selector: (E) -> R): UInt? = iterator().maxIndexByOrNull(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.maxIndexByOrNull(selector: (E) -> R): UInt? = iterator().maxIndexByOrNull(selector)
+
+public inline fun <E, R : Comparable<R>> KoneIterator<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxValue = selector(maxElement)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        
+        val comparisonResult = maxValue.compareTo(nextValue)
+        when {
+            comparisonResult == 0 -> maxIndexList.add(currentIndex)
+            comparisonResult < 0 -> {
+                maxValue = nextValue
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+public inline fun <E, R : Comparable<R>> KoneList<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().maxIndexListBy(selector)
+
+public inline fun <E, R : Comparable<R>> KoneSequence<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().maxIndexListBy(selector)
 
 context(_: Order<R>)
 public inline fun <E, R> KoneIterator<E>.minByOrElse(default: () -> E, selector: (E) -> R): E {
@@ -1553,7 +2353,8 @@ public inline fun <E, R> KoneIterator<E>.minListBy(selector: (E) -> R): KoneList
     val minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1562,13 +2363,14 @@ public inline fun <E, R> KoneIterator<E>.minListBy(selector: (E) -> R): KoneList
             ComparisonResult.Equal -> minList.add(nextElement)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 context(_: Order<R>)
@@ -1576,6 +2378,116 @@ public inline fun <E, R> KoneIterable<E>.minListBy(selector: (E) -> R): KoneList
 
 context(_: Order<R>)
 public inline fun <E, R> KoneSequence<E>.minListBy(selector: (E) -> R): KoneList<E> = iterator().minListBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        if (minValue gt nextValue) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexByOrElse(default, selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.minIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexByOrElse(default, selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.minIndexBy(selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (minValue gt nextValue) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.minIndexBy(selector: (E) -> R): UInt = iterator().minIndexBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.minIndexBy(selector: (E) -> R): UInt = iterator().minIndexBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.minIndexByOrNull(selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (minValue gt nextValue) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.minIndexByOrNull(selector: (E) -> R): UInt? = iterator().minIndexByOrNull(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.minIndexByOrNull(selector: (E) -> R): UInt? = iterator().minIndexByOrNull(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minValue = selector(minElement)
+    var minIndexList = KoneArrayGrowableList<UInt>()
+    minIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        
+        when (minValue compareWith nextValue) {
+            ComparisonResult.Equal -> minIndexList.add(currentIndex)
+            ComparisonResult.LeftIsGreaterThanRight -> {
+                minValue = nextValue
+                minIndexList.dispose()
+                minIndexList = KoneArrayGrowableList()
+                minIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsLessThanRight -> {}
+        }
+    } while (hasNext())
+    return minIndexList.toKoneUIntArray()
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().minIndexListBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.minIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().minIndexListBy(selector)
 
 context(_: Order<R>)
 public inline fun <E, R> KoneIterator<E>.maxByOrElse(default: () -> E, selector: (E) -> R): E {
@@ -1675,7 +2587,8 @@ public inline fun <E, R> KoneIterator<E>.maxListBy(selector: (E) -> R): KoneList
     val maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1684,13 +2597,14 @@ public inline fun <E, R> KoneIterator<E>.maxListBy(selector: (E) -> R): KoneList
             ComparisonResult.Equal -> maxList.add(nextElement)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 context(_: Order<R>)
@@ -1698,6 +2612,116 @@ public inline fun <E, R> KoneIterable<E>.maxListBy(selector: (E) -> R): KoneList
 
 context(_: Order<R>)
 public inline fun <E, R> KoneSequence<E>.maxListBy(selector: (E) -> R): KoneList<E> = iterator().maxListBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (maxValue lt nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexByOrElse(default, selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.maxIndexByOrElse(default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexByOrElse(default, selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.maxIndexBy(selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (maxValue lt nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.maxIndexBy(selector: (E) -> R): UInt = iterator().maxIndexBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.maxIndexBy(selector: (E) -> R): UInt = iterator().maxIndexBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.maxIndexByOrNull(selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        if (maxValue lt nextValue) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.maxIndexByOrNull(selector: (E) -> R): UInt? = iterator().maxIndexByOrNull(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.maxIndexByOrNull(selector: (E) -> R): UInt? = iterator().maxIndexByOrNull(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneIterator<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxValue = selector(maxElement)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        
+        when (maxValue compareWith nextValue) {
+            ComparisonResult.Equal -> maxIndexList.add(currentIndex)
+            ComparisonResult.LeftIsLessThanRight -> {
+                maxValue = nextValue
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsGreaterThanRight -> {}
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+context(_: Order<R>)
+public inline fun <E, R> KoneList<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().maxIndexListBy(selector)
+
+context(_: Order<R>)
+public inline fun <E, R> KoneSequence<E>.maxIndexListBy(selector: (E) -> R): KoneUIntArray = iterator().maxIndexListBy(selector)
 
 public inline fun <E, R> KoneIterator<E>.minWithByOrElse(comparator: Comparator<R>, default: () -> E, selector: (E) -> R): E {
     if (!hasNext()) return default()
@@ -1784,7 +2808,8 @@ public inline fun <E, R> KoneIterator<E>.minListWithBy(comparator: Comparator<R>
     val minElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(minElement)
     var minValue = selector(minElement)
-    val minList = KoneMutableList.of(minElement)
+    var minList = KoneArrayGrowableList<E>()
+    minList.add(minElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1793,18 +2818,116 @@ public inline fun <E, R> KoneIterator<E>.minListWithBy(comparator: Comparator<R>
             ComparisonResult.Equal -> minList.add(nextElement)
             ComparisonResult.LeftIsGreaterThanRight -> {
                 minValue = nextValue
-                minList.removeAll()
+                minList.dispose()
+                minList = KoneArrayGrowableList()
                 minList.add(nextElement)
             }
             ComparisonResult.LeftIsLessThanRight -> {}
         }
     } while (hasNext())
-    return minList
+    return minList.toOptimizedList()
 }
 
 public inline fun <E, R> KoneIterable<E>.minListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneList<E> = iterator().minListWithBy(comparator, selector)
 
 public inline fun <E, R> KoneSequence<E>.minListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneList<E> = iterator().minListWithBy(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.minIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E, R> KoneList<E>.minIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexWithByOrElse(comparator, default, selector)
+
+public inline fun <E, R> KoneSequence<E>.minIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt = iterator().minIndexWithByOrElse(comparator, default, selector)
+
+public inline fun <E, R> KoneIterator<E>.minIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E, R> KoneList<E>.minIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt = iterator().minIndexWithBy(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.minIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt = iterator().minIndexWithBy(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.minIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var minValue = selector(minElement)
+    var minIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(minValue, nextValue) == ComparisonResult.LeftIsGreaterThanRight) {
+            minValue = nextValue
+            minIndex = currentIndex
+        }
+    } while (hasNext())
+    return minIndex
+}
+
+public inline fun <E, R> KoneList<E>.minIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? = iterator().minIndexWithByOrNull(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.minIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? = iterator().minIndexWithByOrNull(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.minIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val minElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var minValue = selector(minElement)
+    var minList = KoneArrayGrowableList<UInt>()
+    minList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        
+        when (comparator.compare(minValue, nextValue)) {
+            ComparisonResult.Equal -> minList.add(currentIndex)
+            ComparisonResult.LeftIsGreaterThanRight -> {
+                minValue = nextValue
+                minList.dispose()
+                minList = KoneArrayGrowableList()
+                minList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsLessThanRight -> {}
+        }
+    } while (hasNext())
+    return minList.toKoneUIntArray()
+}
+
+public inline fun <E, R> KoneList<E>.minIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray = iterator().minIndexListWithBy(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.minIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray = iterator().minIndexListWithBy(comparator, selector)
 
 public inline fun <E, R> KoneIterator<E>.maxWithByOrElse(comparator: Comparator<R>, default: () -> E, selector: (E) -> R): E {
     if (!hasNext()) return default()
@@ -1891,7 +3014,8 @@ public inline fun <E, R> KoneIterator<E>.maxListWithBy(comparator: Comparator<R>
     val maxElement = getAndMoveNext()
     if (!hasNext()) return KoneList.of(maxElement)
     var maxValue = selector(maxElement)
-    val maxList = KoneMutableList.of(maxElement)
+    var maxList = KoneArrayGrowableList<E>()
+    maxList.add(maxElement)
     do {
         val nextElement = getAndMoveNext()
         val nextValue = selector(nextElement)
@@ -1900,18 +3024,116 @@ public inline fun <E, R> KoneIterator<E>.maxListWithBy(comparator: Comparator<R>
             ComparisonResult.Equal -> maxList.add(nextElement)
             ComparisonResult.LeftIsLessThanRight -> {
                 maxValue = nextValue
-                maxList.removeAll()
+                maxList.dispose()
+                maxList = KoneArrayGrowableList()
                 maxList.add(nextElement)
             }
             ComparisonResult.LeftIsGreaterThanRight -> {}
         }
     } while (hasNext())
-    return maxList
+    return maxList.toOptimizedList()
 }
 
 public inline fun <E, R> KoneIterable<E>.maxListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneList<E> = iterator().maxListWithBy(comparator, selector)
 
 public inline fun <E, R> KoneSequence<E>.maxListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneList<E> = iterator().maxListWithBy(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.maxIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt {
+    if (!hasNext()) return default()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R> KoneList<E>.maxIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexWithByOrElse(comparator, default, selector)
+
+public inline fun <E, R> KoneSequence<E>.maxIndexWithByOrElse(comparator: Comparator<R>, default: () -> UInt, selector: (E) -> R): UInt = iterator().maxIndexWithByOrElse(comparator, default, selector)
+
+public inline fun <E, R> KoneIterator<E>.maxIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt {
+    if (!hasNext()) throw NoSuchElementException()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R> KoneList<E>.maxIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt = iterator().maxIndexWithBy(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.maxIndexWithBy(comparator: Comparator<R>, selector: (E) -> R): UInt = iterator().maxIndexWithBy(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.maxIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? {
+    if (!hasNext()) return null
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return 0u
+    var maxValue = selector(maxElement)
+    var maxIndex = 0u
+    var currentIndex = 0u
+    do {
+        val nextValue = selector(getAndMoveNext())
+        currentIndex++
+        if (comparator.compare(maxValue, nextValue) == ComparisonResult.LeftIsLessThanRight) {
+            maxValue = nextValue
+            maxIndex = currentIndex
+        }
+    } while (hasNext())
+    return maxIndex
+}
+
+public inline fun <E, R> KoneList<E>.maxIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? = iterator().maxIndexWithByOrNull(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.maxIndexWithByOrNull(comparator: Comparator<R>, selector: (E) -> R): UInt? = iterator().maxIndexWithByOrNull(comparator, selector)
+
+public inline fun <E, R> KoneIterator<E>.maxIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray {
+    if (!hasNext()) return KoneUIntArray.empty()
+    val maxElement = getAndMoveNext()
+    if (!hasNext()) return KoneUIntArray.of(0u)
+    var maxValue = selector(maxElement)
+    var maxIndexList = KoneArrayGrowableList<UInt>()
+    maxIndexList.add(0u)
+    var currentIndex = 0u
+    do {
+        val nextElement = getAndMoveNext()
+        val nextValue = selector(nextElement)
+        currentIndex++
+        
+        when (comparator.compare(maxValue, nextValue)) {
+            ComparisonResult.Equal -> maxIndexList.add(currentIndex)
+            ComparisonResult.LeftIsLessThanRight -> {
+                maxValue = nextValue
+                maxIndexList.dispose()
+                maxIndexList = KoneArrayGrowableList()
+                maxIndexList.add(currentIndex)
+            }
+            ComparisonResult.LeftIsGreaterThanRight -> {}
+        }
+    } while (hasNext())
+    return maxIndexList.toKoneUIntArray()
+}
+
+public inline fun <E, R> KoneList<E>.maxIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray = iterator().maxIndexListWithBy(comparator, selector)
+
+public inline fun <E, R> KoneSequence<E>.maxIndexListWithBy(comparator: Comparator<R>, selector: (E) -> R): KoneUIntArray = iterator().maxIndexListWithBy(comparator, selector)
 
 public fun <E> KoneIterator<E>.hasDuplicates(
     elementEquality: Equality<E> = Equality.defaultFor(),

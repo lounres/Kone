@@ -9,11 +9,11 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.interop.asKoneSequence
-import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
+import dev.lounres.kone.collections.utils.max
 import dev.lounres.kone.collections.utils.sum
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -23,10 +23,11 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -44,10 +45,10 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
     override fun Matrix.hessenbergDecomposition(): HessenbergDecomposition<Number, Matrix> {
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
-        if (n == 0u) return HessenbergDecomposition(
-            leftUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
-            middleUpperHessenberg = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
-            rightUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
+        if (n <= 1u) return HessenbergDecomposition(
+            leftUnitary = matrixFactory.generateMatrix(n, n) { _, _ -> numberField.one },
+            middleUpperHessenberg = this,
+            rightUnitary = matrixFactory.generateMatrix(n, n) { _, _ -> numberField.one },
         )
         
         var q = matrixFactory.mapMatrix(
@@ -69,23 +70,7 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
         ) {
             val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
-            val _ = scope { // TODO: Move to collections module
-                val iterator = xElementNormsSquared.iterator()
-                if (!iterator.hasNext()) throw NoSuchElementException()
-                var maxIndex = iterator.nextIndex()
-                var maxElement = iterator.getAndMoveNext()
-                if (!iterator.hasNext()) return@scope maxIndex
-                do {
-                    val nextIndex = iterator.nextIndex()
-                    val nextElement = iterator.getAndMoveNext()
-                    if (maxElement lt nextElement) {
-                        maxIndex = nextIndex
-                        maxElement = nextElement
-                    }
-                } while (iterator.hasNext())
-                if (maxElement.isZero()) continue
-                return@scope maxIndex
-            } + k + 1u
+            if (xElementNormsSquared.max().isZero()) continue
             
             val u = matrixFactory.generateMatrix(rowNumber = n, columnNumber = 1u) { row, _ ->
                 when {

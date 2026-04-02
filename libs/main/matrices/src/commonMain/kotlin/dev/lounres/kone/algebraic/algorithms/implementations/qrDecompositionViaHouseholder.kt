@@ -9,11 +9,11 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.interop.asKoneSequence
-import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
+import dev.lounres.kone.collections.utils.maxIndex
 import dev.lounres.kone.collections.utils.sum
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -23,10 +23,11 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -68,23 +69,7 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
         ) {
             val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
-            val maxXElementIndex = scope { // TODO: Move to collections module
-                val iterator = xElementNormsSquared.iterator()
-                if (!iterator.hasNext()) throw NoSuchElementException()
-                var maxIndex = iterator.nextIndex()
-                var maxElement = iterator.getAndMoveNext()
-                if (!iterator.hasNext()) return@scope maxIndex
-                do {
-                    val nextIndex = iterator.nextIndex()
-                    val nextElement = iterator.getAndMoveNext()
-                    if (maxElement lt nextElement) {
-                        maxIndex = nextIndex
-                        maxElement = nextElement
-                    }
-                } while (iterator.hasNext())
-                if (maxElement.isZero()) continue
-                return@scope maxIndex
-            } + k
+            val maxXElementIndex = xElementNormsSquared.maxIndex().also { if (xElementNormsSquared[it].isZero()) continue } + k
             if (maxXElementIndex != k) {
                 val permutation = matrixFactory.mapMatrix(
                     rowNumber = n,

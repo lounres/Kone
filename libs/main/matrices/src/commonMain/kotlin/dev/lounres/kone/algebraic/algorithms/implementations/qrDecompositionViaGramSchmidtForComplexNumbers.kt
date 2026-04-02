@@ -5,23 +5,9 @@
 
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.FieldExtension
-import dev.lounres.kone.algebraic.MatrixFactory
-import dev.lounres.kone.algebraic.MatrixWithProperties
-import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
-import dev.lounres.kone.algebraic.algorithms.QRDecomposition
-import dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
-import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
-import dev.lounres.kone.algebraic.algorithms.qrDecomposition
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.norm
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
@@ -36,7 +22,6 @@ import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 
-// TODO: Move conjugation out
 private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val numberField: Field<Number>,
@@ -49,38 +34,35 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
         
         val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
-        fun ComplexNumber<Number>.conjugate(): ComplexNumber<Number> =
-            ComplexNumber(realPart = realPart, imaginaryPart = numberField { -imaginaryPart })
-        
-        for (i in 0u ..< n) context(numberField, complexNumberFieldExtension) {
-            for (j in 0u ..< i) {
-                var scalarProduct = complexNumberFieldExtension.zero
-                for (t in 0u ..< n) {
-                    scalarProduct += qBuilder[t, j].conjugate() * qBuilder[t, i]
+        context(numberField, complexNumberFieldExtension) {
+            for (i in 0u ..< n) {
+                for (j in 0u ..< i) {
+                    var scalarProduct = complexNumberFieldExtension.zero
+                    for (t in 0u ..< n) {
+                        scalarProduct += qBuilder[t, j].conjugate() * qBuilder[t, i]
+                    }
+                    for (t in 0u ..< n) qBuilder[t, i] -= scalarProduct * qBuilder[t, j]
                 }
-                for (t in 0u ..< n) qBuilder[t, i] -= scalarProduct * qBuilder[t, j]
+                
+                var normSquared = numberField.zero
+                for (t in 0u ..< n) normSquared += qBuilder[t, i].norm()
+                val norm = positiveSquareRootComputer { normSquared.positiveSquareRoot() }
+                for (t in 0u ..< n) qBuilder[t, i] /= norm
             }
             
-            var normSquared = numberField.zero
-            for (t in 0u ..< n) normSquared += qBuilder[t, i].norm()
-            val norm = positiveSquareRootComputer { normSquared.positiveSquareRoot() }
-            for (t in 0u ..< n) qBuilder[t, i] /= norm
-        }
-        
-        val q = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> qBuilder[row, column] }
-        val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
-            if (row > column) return@generateMatrix complexNumberFieldExtension.zero
-            var scalarProduct = complexNumberFieldExtension.zero
-            for (t in 0u ..< n) complexNumberFieldExtension {
-                scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
+            val q = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> qBuilder[row, column] }
+            val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
+                if (row > column) return@generateMatrix complexNumberFieldExtension.zero
+                var scalarProduct = complexNumberFieldExtension.zero
+                for (t in 0u ..< n) scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
+                scalarProduct
             }
-            scalarProduct
+            
+            return QRDecomposition(
+                leftUnitary = q,
+                rightUpperTriangular = r,
+            )
         }
-        
-        return QRDecomposition(
-            leftUnitary = q,
-            rightUpperTriangular = r,
-        )
     }
 }
 
