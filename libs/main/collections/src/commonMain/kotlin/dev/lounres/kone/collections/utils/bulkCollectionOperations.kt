@@ -275,7 +275,7 @@ public fun <E> KoneSettableList<E>.reverse() {
     }
 }
 
-public fun <E> KoneIterable<E>.reversed(): KoneList<E> {
+public fun <E> KoneList<E>.reversed(): KoneList<E> {
     if (isEmpty()) return KoneList.empty()
     
     val result = KoneMutableArray.generate<Any?>(size) { null }
