@@ -84,12 +84,12 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                     val lambdaDiscriminantSquareRoot: ComplexNumber<Number>
                     scope {
                         val absoluteValue = lambdaDiscriminant.absoluteValue()
-                        val cosWhole = lambdaDiscriminant.realPart / absoluteValue
-                        val sinWhole = lambdaDiscriminant.imaginaryPart / absoluteValue
-                        val cosHalf = ((1 + cosWhole) / 2).positiveSquareRoot()
-                        val sinHalfAbsoluteValue = ((1 - cosWhole) / 2).positiveSquareRoot()
+                        val cosWhole = lambdaDiscriminant.realPart
+                        val sinWhole = lambdaDiscriminant.imaginaryPart
+                        val cosHalf = ((absoluteValue + cosWhole) / 2).positiveSquareRoot()
+                        val sinHalfAbsoluteValue = ((absoluteValue - cosWhole) / 2).positiveSquareRoot()
                         val sinHalf = if (sinWhole.isNonNegative()) sinHalfAbsoluteValue else -sinHalfAbsoluteValue
-                        lambdaDiscriminantSquareRoot = ComplexNumber(cosHalf, sinHalf) * absoluteValue.positiveSquareRoot()
+                        lambdaDiscriminantSquareRoot = ComplexNumber(cosHalf, sinHalf)
                     }
                     
                     val lambda = (lambdaSum + lambdaDiscriminantSquareRoot) / 2
