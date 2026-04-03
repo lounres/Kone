@@ -34,7 +34,7 @@ import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.reflect.KVariance.OUT
 
 
-val HessenbergDecompositionTests by testSuite {
+val HessenbergDecompositionImplementationsTests by testSuite {
     testSuite("real case") {
         typealias Number = Double
         val numberType = Number.suppliedType

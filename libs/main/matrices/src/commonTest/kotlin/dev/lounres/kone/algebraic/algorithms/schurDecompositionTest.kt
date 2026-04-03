@@ -35,7 +35,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.suppliedType
 
 
-val SchurDecompositionTests by testSuite {
+val SchurDecompositionImplementationsTests by testSuite {
     testSuite("real case") {
         typealias Number = Double
         val numberType = Number.suppliedType
