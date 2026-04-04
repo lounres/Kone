@@ -321,6 +321,7 @@ val SchurDecompositionImplementationsTests by testSuite {
                     ComplexNumber.setFieldExtensionOver<Number>(numberType = numberType)
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
+                    SquareRootsComputer.setViaDefaultForComplexNumbers<Number>(numberType = numberType)
                     MatrixFactory.setDefault<ComplexNumber<Number>>(numberType = complexNumberType)
                     MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)
                     MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(numberType = complexNumberType, matrixType = matrixType)

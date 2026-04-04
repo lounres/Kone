@@ -11,6 +11,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
+import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -38,6 +39,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
     private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     private val numberOrder: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    private val complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     private val matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     private val conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
@@ -62,6 +64,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
             complexNumberFieldExtension,
             numberOrder,
             positiveSquareRootComputer,
+            complexNumberSquareRootComputer,
             matrixCategoryOverField,
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
@@ -81,17 +84,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                     val lambdaSum = h[n - k - 2u, n - k - 2u] + h[n - k - 1u, n - k - 1u]
                     val lambdaProduct = h[n - k - 2u, n - k - 2u] * h[n - k - 1u, n - k - 1u] - h[n - k - 2u, n - k - 1u] * h[n - k - 1u, n - k - 2u]
                     val lambdaDiscriminant = lambdaSum * lambdaSum - 4 * lambdaProduct
-                    val lambdaDiscriminantSquareRoot: ComplexNumber<Number>
-                    scope {
-                        val absoluteValue = lambdaDiscriminant.absoluteValue()
-                        val cosWhole = lambdaDiscriminant.realPart
-                        val sinWhole = lambdaDiscriminant.imaginaryPart
-                        val cosHalf = ((absoluteValue + cosWhole) / 2).positiveSquareRoot()
-                        val sinHalfAbsoluteValue = ((absoluteValue - cosWhole) / 2).positiveSquareRoot()
-                        val sinHalf = if (sinWhole.isNonNegative()) sinHalfAbsoluteValue else -sinHalfAbsoluteValue
-                        lambdaDiscriminantSquareRoot = ComplexNumber(cosHalf, sinHalf)
-                    }
-                    
+                    val lambdaDiscriminantSquareRoot = lambdaDiscriminant.squareRoots().first()
                     val lambda = (lambdaSum + lambdaDiscriminantSquareRoot) / 2
                     val lambdaMinusBottomRight = lambda - h[n - k - 1u, n - k - 1u]
                     val bottomLeft = h[n - k - 1u, n - k - 2u]
@@ -329,6 +322,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
@@ -340,6 +334,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     complexNumberFieldExtension = complexNumberFieldExtension,
     numberOrder = numberOrder,
     positiveSquareRootComputer = positiveSquareRootComputer,
+    complexNumberSquareRootComputer = complexNumberSquareRootComputer,
     matrixCategoryOverField = matrixCategoryOverField,
     matrixProductComputer = matrixProductComputer,
     conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
@@ -381,6 +376,9 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
         positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
             "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
         },
+        complexNumberSquareRootComputer = koneContextRegistry.requestFor(SquareRootsComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType)) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        },
         matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
             "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
         },
@@ -405,6 +403,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
@@ -418,6 +417,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
             complexNumberFieldExtension = complexNumberFieldExtension,
             numberOrder = numberOrder,
             positiveSquareRootComputer = positiveSquareRootComputer,
+            complexNumberSquareRootComputer = complexNumberSquareRootComputer,
             matrixCategoryOverField = matrixCategoryOverField,
             matrixProductComputer = matrixProductComputer,
             conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
@@ -451,18 +451,30 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
     hessenbergDecompositionComputer: HessenbergDecompositionComputer<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
+    val complexNumberType = SuppliedType.Regular(
+        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
+        typeArguments = listOf(
+            SuppliedProjection.Regular(
+                variance = OUT,
+                type = numberType,
+            ),
+        ),
+        isNullable = false,
+    )
+    @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(
         fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
         typeArguments = listOf(
             SuppliedProjection.Regular(
                 variance = INVARIANT,
-                type = numberType,
+                type = complexNumberType,
             ),
             SuppliedProjection.Regular(
                 variance = INVARIANT,
@@ -479,6 +491,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
             complexNumberFieldExtension = complexNumberFieldExtension,
             numberOrder = numberOrder,
             positiveSquareRootComputer = positiveSquareRootComputer,
+            complexNumberSquareRootComputer = complexNumberSquareRootComputer,
             matrixCategoryOverField = matrixCategoryOverField,
             matrixProductComputer = matrixProductComputer,
             conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
