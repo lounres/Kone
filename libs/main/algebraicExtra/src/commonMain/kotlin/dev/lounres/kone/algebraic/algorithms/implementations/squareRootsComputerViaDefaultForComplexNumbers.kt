@@ -20,7 +20,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance.OUT
 
 
-private class PositiveSquareRootViaDefaultForComplexNumbers<Number>(
+private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
     private val field: Field<Number>,
     private val order: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
@@ -55,7 +55,7 @@ public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(
     field: Field<Number>,
     order: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-): SquareRootsComputer<ComplexNumber<Number>> = PositiveSquareRootViaDefaultForComplexNumbers(
+): SquareRootsComputer<ComplexNumber<Number>> = SquareRootsComputerViaDefaultForComplexNumbers(
     field = field,
     order = order,
     positiveSquareRootComputer = positiveSquareRootComputer,
