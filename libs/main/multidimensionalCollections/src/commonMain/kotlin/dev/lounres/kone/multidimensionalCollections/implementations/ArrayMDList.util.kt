@@ -6,6 +6,7 @@
 package dev.lounres.kone.multidimensionalCollections.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
+import dev.lounres.kone.collections.array.empty
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.multidimensionalCollections.*
@@ -63,6 +64,13 @@ public inline fun <E> ArrayMDList2.Companion.generate(
     columnNumber: UInt,
     initializer: (rowIndex: UInt, columnIndex: UInt) -> E,
 ): ArrayMDList2<E> {
+    if (rowNumber == 0u || columnNumber == 0u)
+        return ArrayMDList2(
+            rowNumber = rowNumber,
+            columnNumber = columnNumber,
+            data = KoneMutableArray.empty()
+        )
+    
     val data = KoneMutableArray.generate<Any?>(rowNumber * columnNumber) { null }
 
     var row = 0u

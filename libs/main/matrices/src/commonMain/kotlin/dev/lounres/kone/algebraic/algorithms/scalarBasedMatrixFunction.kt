@@ -19,10 +19,6 @@ public fun interface ScalarBaseForMatrixFunction<Number> {
     public companion object
 }
 
-public interface ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> : ScalarBaseForMatrixFunction<ComplexNumber<Number>> {
-    public fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number
-}
-
 public class ScalarBaseForMatrixExponentKey<Number>(
     public val numberType: SuppliedType,
 ) : RegistryKey<ScalarBaseForMatrixFunction<Number>> {
@@ -37,6 +33,28 @@ public class ScalarBaseForMatrixLogarithmKey<Number>(
     override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixLogarithmKey<*> && numberType == other.numberType
     override fun hashCode(): Int = numberType.hashCode()
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmKey<$numberType>"
+}
+
+public interface ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> : ScalarBaseForMatrixFunction<ComplexNumber<Number>> {
+    public fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number
+    
+    public companion object
+}
+
+public class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(
+    public val numberType: SuppliedType,
+) : RegistryKey<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> {
+    override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
+    override fun hashCode(): Int = numberType.hashCode()
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<$numberType>"
+}
+
+public class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>(
+    public val numberType: SuppliedType,
+) : RegistryKey<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> {
+    override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
+    override fun hashCode(): Int = numberType.hashCode()
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<$numberType>"
 }
 
 public fun interface ScalarBasedMatrixFunctionApplier<Number, Matrix : MDList2<Number>, in Function: ScalarBaseForMatrixFunction<Number>> : KoneContext {

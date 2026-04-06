@@ -13,6 +13,8 @@ import dev.lounres.kone.algebraic.absoluteValue
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
 import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.assertions.AssertionScope
 import dev.lounres.kone.assertions.Expect
 import dev.lounres.kone.assertions.fail
@@ -96,6 +98,73 @@ public fun <Number> Expect<MDList2<Number>>.toBeEqualToWithTolerance(other: MDLi
     }
 }
 
+context(_: AssertionScope, ring: CommutativeRing<Number>, _: Order<Number>)
+public fun <Number> Expect<MDList2<Number>>.toBeEqualToWithLinearTolerance(other: MDList2<Number>, relativeTolerance: Number, absoluteTolerance: Number = ring.zero) {
+    val value = this.exposeValue()
+    
+    if (!(value.size contentEquals other.size)) {
+        fail(
+            message = buildString {
+                appendLine("Incompatible sizes.")
+                appendLine("Expected: ${other.size}")
+                appendLine("Actual: ${value.size}")
+            }
+        )
+        return
+    }
+    
+    val isEqualWithTolerance = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        val expected = other[row, column]
+        val actual = value[row, column]
+        (actual - expected).absoluteValue() lt relativeTolerance * expected.absoluteValue() + absoluteTolerance
+    }
+    
+    if (isEqualWithTolerance.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Inequal elements in 2-dimensional lists.")
+                appendLine("Inequal elements diagram (■ means inequality, □ means equality):")
+                append('⎛')
+                repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isEqualWithTolerance.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                isEqualWithTolerance[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine("Inequal elements list:")
+                isEqualWithTolerance.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${other[row, column]}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
 context(_: AssertionScope, _: CommutativeRing<Number>, _: PositiveSquareRootComputer<Number>, _: Order<Number>, _: CommutativeRing<ComplexNumber<Number>>)
 public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeEqualToWithTolerance(other: MDList2<ComplexNumber<Number>>, tolerance: Number) {
     val value = this.exposeValue()
@@ -115,6 +184,75 @@ public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeEqualToWithTolera
         val expected = other[row, column]
         val actual = value[row, column]
         (actual - expected).absoluteValue() lt tolerance
+    }
+    
+    if (isEqualWithTolerance.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Inequal elements in 2-dimensional lists.")
+                appendLine()
+                appendLine("Inequal elements diagram (■ means inequality, □ means equality):")
+                append('⎛')
+                repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isEqualWithTolerance.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                isEqualWithTolerance[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isEqualWithTolerance.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine()
+                appendLine("Inequal elements list:")
+                isEqualWithTolerance.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${other[row, column]}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+context(_: AssertionScope, ring: CommutativeRing<Number>, _: PositiveSquareRootComputer<Number>, _: Order<Number>, _: CommutativeRing<ComplexNumber<Number>>)
+public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeEqualToWithLinearTolerance(other: MDList2<ComplexNumber<Number>>, relativeTolerance: Number, absoluteTolerance: Number = ring.zero) {
+    val value = this.exposeValue()
+    
+    if (!(value.size contentEquals other.size)) {
+        fail(
+            message = buildString {
+                appendLine("Incompatible sizes.")
+                appendLine("Expected: ${other.size}")
+                appendLine("Actual: ${value.size}")
+            }
+        )
+        return
+    }
+    
+    val isEqualWithTolerance = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        val expected = other[row, column]
+        val actual = value[row, column]
+        (actual - expected).absoluteValue() lt relativeTolerance * expected.absoluteValue() + absoluteTolerance
     }
     
     if (isEqualWithTolerance.any { !it }) {
