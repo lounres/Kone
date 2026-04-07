@@ -11,25 +11,21 @@ import dev.lounres.kone.algebraic.algorithms.implementations.*
 import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithLinearTolerance
 import dev.lounres.kone.assertions.*
-import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.registry.get
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.suppliedType
-import kotlin.math.cos
-import kotlin.math.exp
-import kotlin.math.sin
 import kotlin.reflect.KVariance.OUT
 
 
@@ -462,17 +458,17 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
             )
         )
         
-        val exponentFunction = object : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
-            override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> {
-                val absoluteValue = exp(value.realPart)
-                val cos = cos(value.imaginaryPart)
-                val sin = sin(value.imaginaryPart)
-                return ComplexNumber(cos * absoluteValue, sin * absoluteValue)
-            }
-            
-            override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
-                exp(convexHullVertices.maxOf { it.realPart })
+        val scalarFunctionsKoneContextRegistry = KoneContextRegistry.buildWithProvider {
+            Number.setSafeField()
+            Number.setSafeOrder()
+            ExponentComputer.setViaDefaultForDouble()
+            SineComputer.setViaDefaultForDouble()
+            CosineComputer.setViaDefaultForDouble()
+            ExponentComputer.setViaDefaultForComplexNumbers<Number>(numberType = numberType)
+            ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.setExponentViaDefault<Number>(numberType = numberType)
         }
+        
+        val exponentFunction = scalarFunctionsKoneContextRegistry[ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType)]
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(

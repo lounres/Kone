@@ -9,8 +9,12 @@ import dev.lounres.kone.algebraic.ComplexNumber
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
+import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import kotlin.reflect.KVariance.OUT
 
 
 public fun interface ScalarBaseForMatrixFunction<Number> {
@@ -44,6 +48,20 @@ public interface ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Num
 public class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(
     public val numberType: SuppliedType,
 ) : RegistryKey<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> {
+    override val impliedKeys: ImpliedKeysRegistry<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> = ImpliedKeysRegistry {
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        val complexNumberType = SuppliedType.Regular(
+            fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
+            typeArguments = listOf(
+                SuppliedProjection.Regular(
+                    variance = OUT,
+                    type = numberType,
+                ),
+            ),
+            isNullable = false,
+        )
+        ScalarBaseForMatrixExponentKey<ComplexNumber<Number>>(numberType = complexNumberType) implies { it }
+    }
     override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
     override fun hashCode(): Int = numberType.hashCode()
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<$numberType>"
@@ -52,6 +70,20 @@ public class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Numb
 public class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>(
     public val numberType: SuppliedType,
 ) : RegistryKey<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> {
+    override val impliedKeys: ImpliedKeysRegistry<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> = ImpliedKeysRegistry {
+        @OptIn(DelicateSuppliedTypeConstructor::class)
+        val complexNumberType = SuppliedType.Regular(
+            fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
+            typeArguments = listOf(
+                SuppliedProjection.Regular(
+                    variance = OUT,
+                    type = numberType,
+                ),
+            ),
+            isNullable = false,
+        )
+        ScalarBaseForMatrixLogarithmKey<ComplexNumber<Number>>(numberType = complexNumberType) implies { it }
+    }
     override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
     override fun hashCode(): Int = numberType.hashCode()
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<$numberType>"
