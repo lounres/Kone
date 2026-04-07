@@ -54,7 +54,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
             rightUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
         )
         
-        val (q0, h0) = hessenbergDecompositionComputer { this.hessenbergDecomposition() }
+        (val q0 = leftUnitary, val h0 = middleUpperHessenberg) = hessenbergDecompositionComputer { this.hessenbergDecomposition() }
         
         val q = SettableMDList2.generate(n, n) { row, column -> q0[row, column] }
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }

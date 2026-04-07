@@ -66,14 +66,14 @@ class IntContextEqualityBulkBenchmarks {
     
     @Benchmark
     fun Blackhole.equality_via_primitives() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(a == b)
         index = (index + 1) % inputs.size
     }
     
     @Benchmark
     fun Blackhole.equality_via_defaultEquality() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(equality { a eq b })
         index = (index + 1) % inputs.size
     }
@@ -113,14 +113,14 @@ class IntContextOrderBulkBenchmarks {
     
     @Benchmark
     fun Blackhole.comparison_via_primitives() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(a < b)
         index = (index + 1) % inputs.size
     }
     
     @Benchmark
     fun Blackhole.comparison_via_defaultOrder_compareWith_with_boxing() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(order { a lt b })
         index = (index + 1) % inputs.size
     }

@@ -27,7 +27,7 @@ public abstract class KoneIterableSerializationStrategyTemplate<E, in C: KoneIte
 
     final override fun serialize(encoder: Encoder, value: C) {
         encoder.encodeCollection(descriptor, value.size.toInt()) {
-            for ((index, element) in value.withIndex())
+            for ((val index, val element = value) in value.withIndex())
                 encodeSerializableElement(descriptor, index.toInt(), elementSerializer, element)
         }
     }

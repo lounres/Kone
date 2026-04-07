@@ -46,7 +46,7 @@ public class RegistrySerializer(
     override fun serialize(encoder: Encoder, value: Registry) {
         encoder.encodeStructure(descriptor) {
             var registrationIndex = 0
-            for ((keyName, key) in serializableKeys) {
+            for ((val keyName = key, val key = value) in serializableKeys) {
                 val value = if (key in value) value[key] else continue
                 encodeStringElement(descriptor, registrationIndex++, keyName)
                 @Suppress("UNCHECKED_CAST")

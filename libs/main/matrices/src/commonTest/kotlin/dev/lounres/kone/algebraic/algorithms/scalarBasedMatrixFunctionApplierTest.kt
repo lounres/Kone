@@ -586,7 +586,7 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                 SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>, ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>(matrixType = matrixType, functionType = functionType),
             ) {
-                for ((index, inputData) in inputs.withIndex()) testSuite("input #$index") {
+                for ((val index, val input = value) in inputs.withIndex()) testSuite("input #$index") {
                     val (input, exponentOutput, squareOutput) = inputData
                     test("exponent") {
                         AssertionScope.withClue(

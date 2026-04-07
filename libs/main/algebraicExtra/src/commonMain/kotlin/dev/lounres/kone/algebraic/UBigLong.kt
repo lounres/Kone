@@ -553,7 +553,7 @@ public fun UBigLong.toString(radix: UInt): String {
             
             var result = this@toString
             while (result.isNotZero()) {
-                val (newResult, digit) = result divrem radix
+                (val newResult = quotient, val digit = remainder) = result divrem radix
                 append(possibleDigits[digit.toUInt()])
                 result = newResult
             }

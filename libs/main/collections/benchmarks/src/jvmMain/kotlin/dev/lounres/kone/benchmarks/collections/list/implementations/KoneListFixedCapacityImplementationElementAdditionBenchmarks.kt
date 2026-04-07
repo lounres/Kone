@@ -25,7 +25,7 @@ class KoneListFixedCapacityImplementationElementAdditionBenchmarks {
     
     @Setup
     fun setup() {
-        val (capacity, size) = capacityAndSize.split(":")
+        val [capacity, size] = capacityAndSize.split(":")
         this.capacity = capacity.toUInt()
         this.size = size.toUInt()
     }

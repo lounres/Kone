@@ -127,8 +127,8 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     
     // region Order
     override fun BigLongRational.compareWith(other: BigLongRational): ComparisonResult = context(BigLong.context) {
-        val (thisReducedNumerator, otherReducedNumerator) = divideByGCD(numerator, other.numerator)
-        val (thisReducedDenominator, otherReducedDenominator) = divideByGCD(denominator, other.denominator)
+        (val thisReducedNumerator = first, val otherReducedNumerator = second) = divideByGCD(numerator, other.numerator)
+        (val thisReducedDenominator = first, val otherReducedDenominator = second) = divideByGCD(denominator, other.denominator)
         
         (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator)
     }
@@ -164,7 +164,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.times(other: Int): BigLongRational = context(BigLong.context) {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, BigLong.context.valueOf(other))
+        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
         return BigLongRational(
             numerator = numerator * reducedOther,
             denominator = reducedDenominator,
@@ -173,7 +173,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun BigLongRational.div(other: Int): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
         if (other == 0) divisionByZero()
         val sign = this.numerator.sign * other.sign()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toUInt()))
+        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toUInt()))
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             denominator * reducedOther,
@@ -195,7 +195,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.times(other: UInt): BigLongRational = context(BigLong.context) {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, UBigLong.context.valueOf(other))
+        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
         return BigLongRational(
             numerator = numerator * reducedOther,
             denominator = reducedDenominator,
@@ -203,7 +203,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun BigLongRational.div(other: UInt): BigLongRational = context(UBigLong.context) {
         if (other == 0u) divisionByZero()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, UBigLong.context.valueOf(other))
+        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
         return BigLongRational(
             reducedNumerator,
             denominator * reducedOther,
@@ -225,7 +225,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.times(other: Long): BigLongRational = context(BigLong.context) {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, BigLong.context.valueOf(other))
+        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
         return BigLongRational(
             numerator = numerator * reducedOther,
             denominator = reducedDenominator,
@@ -234,7 +234,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun BigLongRational.div(other: Long): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
         if (other == 0L) divisionByZero()
         val sign = this.numerator.sign * other.sign()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toULong()))
+        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toULong()))
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             denominator * reducedOther,
@@ -256,7 +256,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun BigLongRational.times(other: ULong): BigLongRational = context(BigLong.context) {
-        val (reducedDenominator, reducedOther) = divideByGCD(denominator, UBigLong.context.valueOf(other))
+        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
         return BigLongRational(
             numerator = numerator * reducedOther,
             denominator = reducedDenominator,
@@ -264,7 +264,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     }
     override fun BigLongRational.div(other: ULong): BigLongRational = context(UBigLong.context) {
         if (other == 0uL) divisionByZero()
-        val (reducedNumerator, reducedOther) = divideByGCD(numerator, UBigLong.context.valueOf(other))
+        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
         return BigLongRational(
             reducedNumerator,
             denominator * reducedOther,
@@ -286,7 +286,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun Int.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        val (reducedThis, reducedDenominator) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
+        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
         return BigLongRational(
             numerator = reducedThis * other.numerator,
             denominator = reducedDenominator,
@@ -295,7 +295,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun Int.div(other: BigLongRational): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = this.sign() * other.numerator.sign
-        val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toUInt()), other.numerator.absoluteValue)
+        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toUInt()), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             other.denominator * reducedThis,
@@ -317,7 +317,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun UInt.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        val (reducedThis, reducedDenominator) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
+        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
         return BigLongRational(
             numerator = reducedThis * other.numerator,
             denominator = reducedDenominator,
@@ -326,7 +326,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun UInt.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = other.numerator.sign
-        val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
+        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             other.denominator * reducedThis,
@@ -348,7 +348,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun Long.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        val (reducedThis, reducedDenominator) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
+        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
         return BigLongRational(
             numerator = reducedThis * other.numerator,
             denominator = reducedDenominator,
@@ -357,7 +357,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun Long.div(other: BigLongRational): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = this.sign() * other.numerator.sign
-        val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toULong()), other.numerator.absoluteValue)
+        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toULong()), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             other.denominator * reducedThis,
@@ -379,7 +379,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         )
     }
     override fun ULong.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        val (reducedThis, reducedDenominator) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
+        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
         return BigLongRational(
             numerator = reducedThis * other.numerator,
             denominator = reducedDenominator,
@@ -388,7 +388,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun ULong.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
         if (other.isZero()) divisionByZero()
         val sign = other.numerator.sign
-        val (reducedThis, reducedNumerator) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
+        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
         return BigLongRational(
             BigLong(sign, reducedNumerator),
             other.denominator * reducedThis,
@@ -407,7 +407,7 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         val reducedThisDenominator = denominator / denominatorsGcd
         val reducedOtherDenominator = other.denominator / denominatorsGcd
         val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
-        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
+        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
         return BigLongRational(
             numerator = reducedNumeratorCandidate,
             denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
@@ -418,15 +418,15 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
         val reducedThisDenominator = denominator / denominatorsGcd
         val reducedOtherDenominator = other.denominator / denominatorsGcd
         val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator
-        val (reducedNumeratorCandidate, reducedDenominatorGcd) = divideByGCD(numeratorCandidate, denominatorsGcd)
+        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
         return BigLongRational(
             numerator = reducedNumeratorCandidate,
             denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
         )
     }
     override fun BigLongRational.times(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        val (reducedThisDenominator, reducedOtherNumeratorGcd) = divideByGCD(denominator, other.numerator)
-        val (reducedOtherDenominator, reducedThisNumeratorGcd) = divideByGCD(other.denominator, numerator)
+        (val reducedThisDenominator = first, val reducedOtherNumeratorGcd = second) = divideByGCD(denominator, other.numerator)
+        (val reducedOtherDenominator = first, val reducedThisNumeratorGcd = second) = divideByGCD(other.denominator, numerator)
         return BigLongRational(
             numerator = reducedThisNumeratorGcd * reducedOtherNumeratorGcd,
             denominator = reducedThisDenominator * reducedOtherDenominator,
@@ -435,8 +435,8 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
     override fun BigLongRational.div(other: BigLongRational): BigLongRational = context(BigLong.context, UBigLong.context) {
         if (other.numerator.isZero()) divisionByZero()
         val sign = this.numerator.sign * other.numerator.sign
-        val (reducedThisNumerator, reducedOtherNumerator) = divideByGCD(this.numerator.absoluteValue, other.numerator.absoluteValue)
-        val (reducedThisDenominator, reducedOtherDenominator) = divideByGCD(this.denominator, other.denominator)
+        (val reducedThisNumerator = first, val reducedOtherNumerator = second) = divideByGCD(this.numerator.absoluteValue, other.numerator.absoluteValue)
+        (val reducedThisDenominator = first, val reducedOtherDenominator = second) = divideByGCD(this.denominator, other.denominator)
         return BigLongRational(
             BigLong(sign, reducedThisNumerator * reducedOtherDenominator),
             reducedThisDenominator * reducedOtherNumerator,

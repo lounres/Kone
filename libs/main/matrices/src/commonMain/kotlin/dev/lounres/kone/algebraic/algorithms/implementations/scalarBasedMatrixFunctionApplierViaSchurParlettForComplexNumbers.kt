@@ -223,7 +223,7 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
                 var outerStartColumn = 0u
                 for (block in result.blocks) {
                     block!!
-                    block.forEachIndexed { (row, column), value ->
+                    block.forEachIndexed { [val row, val column], value ->
                         resultMatrixElements[row + outerStartRow, column + outerStartColumn] = value
                     }
                     outerStartColumn += block.columnNumber
@@ -299,7 +299,7 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
     private fun permutationBy(blockPattern: BlockPattern, blockSizes: KoneUIntArray): Permutation {
         val blockNextIndices = KoneMutableUIntArray.induce(blockSizes.size, 0u) { index, previous -> blockSizes[index - 1u] + previous }
         val result = KoneMutableUIntArray.fill(blockPattern.blockIndices.size)
-        for ((index, blockIndex) in blockPattern.blockIndices.withIndex()) {
+        for ((val index, val blockIndex = value) in blockPattern.blockIndices.withIndex()) {
             result[index] = blockNextIndices[blockIndex].also { blockNextIndices[blockIndex] = it + 1u }
         }
         return Permutation(result.asKoneUIntArray())

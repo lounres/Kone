@@ -35,7 +35,7 @@ public value class KoneContextRegistry(
 }
 
 public fun KoneContextRegistry.tryToGetAll() {
-    for ((_, provider) in this) {
+    for ((val provider = provider) in this) {
         val _ = provider.get()
     }
 }

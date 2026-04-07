@@ -134,7 +134,7 @@ val MinimumHeapImplementationsTests by testSuite {
 
                     impl.validator.validate(heap)
 
-                    for ((index, item) in init.withIndex()) withClue("Removing element # $index") {
+                    for ((val index, val item = value) in init.withIndex()) withClue("Removing element # $index") {
                         val min = heap.takeMinimum()
                         heap.takeMinimum() shouldBeSameInstanceAs min
                         heap.popMinimum() shouldBeSameInstanceAs min
@@ -156,7 +156,7 @@ val MinimumHeapImplementationsTests by testSuite {
                     val heap = buildHeap(init.size)
                     val nodes = KoneArrayFixedCapacityList<HeapNode<String, UInt>>(init.size)
 
-                    for ((index, item) in input.withIndex()) withClue("Adding element # $index") {
+                    for ((val index, val item = value) in input.withIndex()) withClue("Adding element # $index") {
                         val node = heap.add("$index", item)
                         impl.validator.validate(heap)
                         node.element shouldBe "$index"
@@ -168,7 +168,7 @@ val MinimumHeapImplementationsTests by testSuite {
 
                     val isNodeDetached = KoneMutableBooleanArray.generate(nodes.size) { false }
 
-                    for ((index, item) in init.withIndex()) withClue("Removing element # $index") {
+                    for ((val index, val item = value) in init.withIndex()) withClue("Removing element # $index") {
                         val min = heap.takeMinimum()
                         min.priority shouldBe item
                         val minIndex = min.element.toUInt()
@@ -238,7 +238,7 @@ val MinimumHeapImplementationsTests by testSuite {
                         val heap = buildHeap(newInput.size)
                         val nodes = KoneArrayFixedCapacityList<HeapNode<String, UInt>>(newInput.size)
 
-                        for ((index, item) in newInput.withIndex()) withClue("Adding element # $index") {
+                        for ((val index, val item = value) in newInput.withIndex()) withClue("Adding element # $index") {
                             val node = heap.add("$index", item)
                             impl.validator.validate(heap)
                             node.element shouldBe "$index"
@@ -256,7 +256,7 @@ val MinimumHeapImplementationsTests by testSuite {
 
                         val isNodeDetached = KoneMutableBooleanArray.generate(nodes.size) { false }
 
-                        for ((index, item) in newInit.withIndex()) withClue("Removing element # $index") {
+                        for ((val index, val item = value) in newInit.withIndex()) withClue("Removing element # $index") {
                             val min = heap.takeMinimum()
                             min.priority shouldBe item
                             val minIndex = min.element.toUInt()

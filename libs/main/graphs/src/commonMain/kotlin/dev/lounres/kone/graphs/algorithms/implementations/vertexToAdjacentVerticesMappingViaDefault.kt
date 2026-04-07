@@ -40,9 +40,9 @@ private object VertexToAdjacentVerticesMappingComputerViaDefault : VertexToAdjac
         for (vertex in vertices) {
             vertexToAdjacentVerticesMapping.let { it[vertex] = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor()) }
         }
-        for (edge in edges) for ((i, vertex) in edge.vertices.withIndex()) {
+        for (edge in edges) for ((val i = index, val vertex = value) in edge.vertices.withIndex()) {
             vertexToAdjacentVerticesMapping.let {
-                for ((j, otherVertex) in edge.vertices.withIndex()) if (i != j) it[vertex].add(otherVertex)
+                for ((val j = index, val otherVertex = value) in edge.vertices.withIndex()) if (i != j) it[vertex].add(otherVertex)
             }
         }
         

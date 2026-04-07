@@ -11,7 +11,7 @@ import dev.lounres.kone.registry.internal.RegistryKeyMapWrapper
 
 public data class ImplicationRegistration<in I, T>(
     val key: RegistryKey<T>,
-    val value: (I) -> T,
+    val mapping: (I) -> T,
 )
 
 public interface ImpliedKeysRegistry<in I> : Iterable<ImplicationRegistration<I, *>> {
@@ -43,7 +43,7 @@ public class ImpliedKeysRegistryBuilder<I> @PublishedApi internal constructor() 
     
     override fun iterator(): Iterator<ImplicationRegistration<I, *>> {
         val content = content /*?: error(NO_CONTENT_MESSAGE)*/
-        return content.entries.map { (key, mapping) -> ImplicationRegistration(key.key as RegistryKey<Any?>, mapping) }.iterator()
+        return content.entries.map { (val key, val mapping = value) -> ImplicationRegistration(key.key as RegistryKey<Any?>, mapping) }.iterator()
     }
     
     public infix fun <T> RegistryKey<in T>.implies(value: (I) -> T) {

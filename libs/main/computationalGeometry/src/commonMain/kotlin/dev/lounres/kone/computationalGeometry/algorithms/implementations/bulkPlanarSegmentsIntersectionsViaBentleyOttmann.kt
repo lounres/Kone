@@ -144,7 +144,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                         segments.size
                     ) { null }
                 
-                for ((index, segment) in segments.withIndex()) {
+                for ((val index, val segment = value) in segments.withIndex()) {
                     val structuralStart = segment.start
                     val structuralEnd = segment.end
                     val start: Point
@@ -179,7 +179,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                     
                     when (currentEvent) {
                         is EventForBentleyOttmann.SegmentStart<Point> -> {
-                            val (sSegmentIndex, start) = currentEvent
+                            (val sSegmentIndex = segmentIndex, val start) = currentEvent
                             val sNode = segmentsSearchTree.add(SegmentNodeForBentleyOttmann(sSegmentIndex)) { t ->
                                 val tSegmentIndex = t.segmentIndex
                                 val tSegment = segments[tSegmentIndex]
@@ -214,7 +214,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                         }
                         
                         is EventForBentleyOttmann.SegmentEnd<Point> -> {
-                            val (sSegmentIndex, _) = currentEvent
+                            val sSegmentIndex = currentEvent.segmentIndex
                             val sNode = segmentsSearchTreeNodes[sSegmentIndex]!!
                             val rNode = sNode.previousNode
                             val tNode = sNode.nextNode
@@ -232,7 +232,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                         }
                         
                         is EventForBentleyOttmann.SegmentsIntersection<Number, Vector, Point> -> {
-                            val (sSegmentIndex, tSegmentIndex, int) = currentEvent
+                            (val sSegmentIndex = segmentIndex1, val tSegmentIndex = segmentIndex2, val int = intersection) = currentEvent
                             yield(
                                 BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult(
                                     segmentIndex1 = sSegmentIndex,

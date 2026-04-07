@@ -275,6 +275,7 @@ stal {
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
+                        "-Xname-based-destructuring=complete",
                     )
                     optIn.addAll(
                         listOf(
@@ -313,6 +314,7 @@ stal {
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
+                        "-Xname-based-destructuring=complete",
                     )
                     optIn.set(
                         listOf(

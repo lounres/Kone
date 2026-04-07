@@ -106,7 +106,7 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
         vertices.withIndex().associate(
             keyEquality = KoneList.equality(UInt.equality()),
             keyHashing = KoneList.hashing(UInt.hashing()),
-        ) { (index, vertex) ->
+        ) { (val index, val vertex = value) ->
             KoneList.generate(dimension + 1u) { if (it == index) 1u else 0u } mapsTo vertex
         }
     )

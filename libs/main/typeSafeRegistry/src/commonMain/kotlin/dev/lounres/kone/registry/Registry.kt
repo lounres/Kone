@@ -13,8 +13,6 @@ import dev.lounres.kone.registry.internal.EmptyIterator
 import dev.lounres.kone.registry.internal.RegistryKeyMapWrapper
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.plus
 import kotlin.collections.set
 import kotlin.contracts.InvocationKind
@@ -42,7 +40,7 @@ public fun <T> RegisteredValueProvider.Companion.cached(provider: RegisteredValu
 
 public data class Registration<T>(
     val key: RegistryKey<T>,
-    val value: RegisteredValueProvider<T>,
+    val provider: RegisteredValueProvider<T>,
 )
 
 /**
@@ -134,11 +132,11 @@ public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
                 RegistryKeyMapWrapper(this@withImplied) to RegistryKeyInfo(emptyList(), { it })
             )
             while (keysToCheck.isNotEmpty()) {
-                val (nextKey, nextInfo) = keysToCheck.entries.first()
+                (val nextKey = key, val nextInfo = value) = keysToCheck.entries.first()
                 keysToCheck.remove(nextKey)
                 this[nextKey] = nextInfo
                 val newPath = nextInfo.path + nextKey
-                for ((newKey, newProducer) in nextKey.key.impliedKeys) {
+                for ((val newKey = key, val newProducer = mapping) in nextKey.key.impliedKeys) {
                     @Suppress("UNCHECKED_CAST")
                     newProducer as (Any?) -> Any?
                     val newInfo = RegistryKeyInfo(
@@ -148,7 +146,7 @@ public val <T> RegistryKey<in T>.withImplied: RegistryImplication<T>
                     if (RegistryKeyMapWrapper(newKey) in newPath) error("Cyclic implications: ${(newPath + RegistryKeyMapWrapper(newKey)).joinToString(separator = " -> ") { it.key.toString() }}")
                     val info = this[RegistryKeyMapWrapper(newKey)] ?: keysToCheck[RegistryKeyMapWrapper(newKey)]
                     if (info != null) {
-                        if (info.path.withIndex().any { (index, pathKey) -> newPath[index] != pathKey })
+                        if (info.path.withIndex().any { (val index, val pathKey = value) -> newPath[index] != pathKey })
                             error(
                                 "Overload implications for key ${newKey}: " +
                                         "path # 1 is ${(info.path + RegistryKeyMapWrapper(newKey)).joinToString(separator = " -> ") { it.key.toString() }}, " +
@@ -194,10 +192,10 @@ public val <T> RegistryKey<in T>.withImpliedUsingFirst: RegistryImplication<T>
                 )
             )
             while (keysToProcess.isNotEmpty()) {
-                val (nextKey, nextProducer) = keysToProcess.removeFirst()
+                (val nextKey = key, val nextProducer = producer) = keysToProcess.removeFirst()
                 if (nextKey in this) continue
                 this[nextKey] = nextProducer
-                for ((newKey, newProducer) in nextKey.key.impliedKeys) {
+                for ((val newKey = key, val newProducer = mapping) in nextKey.key.impliedKeys) {
                     @Suppress("UNCHECKED_CAST")
                     newProducer as (Any?) -> Any?
                     keysToProcess.addLast(
@@ -256,7 +254,7 @@ private class MutableRegistryImpl(private val content: MutableMap<RegistryKeyMap
         content[RegistryKeyMapWrapper(registryKey)] = provider
     }
     override fun setFrom(from: Registry) {
-        for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
+        for ((val registryKey = key, val provider) in from) content[RegistryKeyMapWrapper(registryKey)] = provider
     }
     override fun remove(registryKey: RegistryKey<*>) {
         content.remove(RegistryKeyMapWrapper(registryKey))
@@ -291,7 +289,7 @@ internal class RegistryBuilder : MutableRegistry {
     
     override fun setFrom(from: Registry) {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        for ((registryKey, value) in from) content[RegistryKeyMapWrapper(registryKey)] = value
+        for ((val registryKey = key, val provider) in from) content[RegistryKeyMapWrapper(registryKey)] = provider
     }
     
     override fun remove(registryKey: RegistryKey<*>) {

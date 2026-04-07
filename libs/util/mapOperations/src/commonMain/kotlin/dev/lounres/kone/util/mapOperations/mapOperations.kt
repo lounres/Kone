@@ -124,7 +124,7 @@ public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -
  */
 @IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D): D {
-    for ((key, value) in this) {
+    for ((val key, val value) in this) {
         destination[key] = value
     }
     return destination
@@ -142,7 +142,7 @@ public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D
  */
 @IgnorableReturnValue
 public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
-    for ((key, value) in this) {
+    for ((val key, val value) in this) {
         destination.putOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination
@@ -208,11 +208,11 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
  */
 @IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: Map<out K, V>, destination: D): D {
-    for ((key, value) in map1) {
-        destination.put(key, value)
+    for ((val key, val value) in map1) {
+        destination[key] = value
     }
-    for ((key, value) in map2) {
-        destination.put(key, value)
+    for ((val key, val value) in map2) {
+        destination[key] = value
     }
     return destination
 }
@@ -236,10 +236,10 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
     for (key in map2.keys) {
         destination.remove(key)
     }
-    for ((key, value) in map1) {
-        destination.put(key, value)
+    for ((val key, val value) in map1) {
+        destination[key] = value
     }
-    for ((key, value) in map2) {
+    for ((val key, val value) in map2) {
         @Suppress("UNCHECKED_CAST")
         destination.putOrChange(key, { value }, { resolve(key, it as V1, value) })
     }
@@ -293,7 +293,7 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<o
 @IgnorableReturnValue
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
-        val (key, value) = transform(element)
+        [val key, val value] = transform(element)
         destination.putOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination

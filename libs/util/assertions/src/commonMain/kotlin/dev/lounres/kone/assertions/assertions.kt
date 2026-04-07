@@ -105,7 +105,7 @@ public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(cr
         fail("No exception was thrown.")
     } catch (_: ThrowableType) {
     } catch (throwable: Throwable) {
-        fail("Exception of unexpected type was thrown.\nExpected: ${ThrowableType::class.qualifiedName}\nActual: ${throwable::class.qualifiedName}")
+        fail("Exception of unexpected type was thrown.\nExpected: ${ThrowableType::class.simpleName}\nActual: ${throwable::class.simpleName}")
     }
 }
 
@@ -118,6 +118,6 @@ public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(cr
     } catch (throwable: ThrowableType) {
         of(throwable, checker)
     } catch (throwable: Throwable) {
-        fail("Exception of unexpected type was thrown.\nExpected: ${ThrowableType::class.qualifiedName}\nActual: ${throwable::class.qualifiedName}")
+        fail("Exception of unexpected type was thrown.\nExpected: ${ThrowableType::class.simpleName}\nActual: ${throwable::class.simpleName}")
     }
 }

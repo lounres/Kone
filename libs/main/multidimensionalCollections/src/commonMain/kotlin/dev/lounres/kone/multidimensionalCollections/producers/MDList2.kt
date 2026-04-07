@@ -39,7 +39,7 @@ internal value class MDList2ProducerWrapper(val producer: MDListProducer) : MDLi
         columnNumber: UInt,
         initializer: (row: UInt, column: UInt) -> Element
     ): MDList2<Element> =
-        MDList2Wrapper(producer.produceBy(MDSize.of(rowNumber, columnNumber)) { (row, column) -> initializer(row, column) })
+        MDList2Wrapper(producer.produceBy(MDSize.of(rowNumber, columnNumber)) { [row, column] -> initializer(row, column) })
 }
 
 @JvmInline
@@ -49,7 +49,7 @@ internal value class SettableMDList2ProducerWrapper(val producer: SettableMDList
         columnNumber: UInt,
         initializer: (row: UInt, column: UInt) -> Element
     ): SettableMDList2<Element> =
-        SettableMDList2Wrapper(producer.produceBy(MDSize.of(rowNumber, columnNumber)) { (row, column) -> initializer(row, column) })
+        SettableMDList2Wrapper(producer.produceBy(MDSize.of(rowNumber, columnNumber)) { [row, column] -> initializer(row, column) })
 }
 
 public fun MDListProducer.as2D(): MDList2Producer = MDList2ProducerWrapper(this)

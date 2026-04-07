@@ -102,42 +102,42 @@ class IntDefaultEqualityImplementationsBulkBenchmarks {
 
     @Benchmark
     fun Blackhole.structural_equality_via_primitives() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(a == b)
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.structural_equality_via_generics() {
-        val (a, b) = inputsBoxed[index]
+        val [a, b] = inputsBoxed[index]
         consume(a == b)
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.structural_equality_via_defaultEquality() {
-        val (a, b) = inputsBoxed[index]
+        val [a, b] = inputsBoxed[index]
         consume(structuralEquality { a eq b })
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.structural_equality_via_defaultEquality_with_boxing() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(structuralEquality { a eq b })
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.reference_equality_via_generics() {
-        val (a, b) = inputsBoxed[index]
+        val [a, b] = inputsBoxed[index]
         consume(a === b)
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.reference_equality_via_absoluteEquality() {
-        val (a, b) = inputsBoxed[index]
+        val [a, b] = inputsBoxed[index]
         consume(referencesEquality { a eq b })
         index = (index + 1) % inputs.size
     }
@@ -218,42 +218,42 @@ class IntDefaultOrderImplementationsBulkBenchmarks {
 
     @Benchmark
     fun Blackhole.comparison_via_primitives() {
-        val (a, b) = inputs[index]
+        val [a, b] = inputs[index]
         consume(a < b)
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.comparison_via_comparability() {
-        val (a, b) = inputsBoxed[index]
+        val [a, b] = inputsBoxed[index]
         consume(a < b)
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.comparison_via_defaultOrder_compareTo() {
-        val (a: Any, b: Any) = inputsBoxed[index]
+        val [a: Any, b: Any] = inputsBoxed[index]
         consume(order { a < b })
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.comparison_via_defaultOrder_compareTo_with_boxing() {
-        val (a: Any, b: Any) = inputs[index]
+        val [a: Any, b: Any] = inputs[index]
         consume(order { a < b })
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.comparison_via_defaultOrder_compareWith() {
-        val (a: Any, b: Any) = inputsBoxed[index]
+        val [a: Any, b: Any] = inputsBoxed[index]
         consume(order { a lt b })
         index = (index + 1) % inputs.size
     }
 
     @Benchmark
     fun Blackhole.comparison_via_defaultOrder_compareWith_with_boxing() {
-        val (a: Any, b: Any) = inputs[index]
+        val [a: Any, b: Any] = inputs[index]
         consume(order { a lt b })
         index = (index + 1) % inputs.size
     }

@@ -128,7 +128,7 @@ val QRDecompositionImplementationsTests by testSuite {
                 InverseMatrixComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
                 QRDecompositionComputer.Key<Number, MDList2<Number>>(matrixType = matrixType),
             ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
+                for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
                     AssertionScope.withClue(
                         {
                             buildString {
@@ -323,7 +323,7 @@ val QRDecompositionImplementationsTests by testSuite {
                 InverseMatrixComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
             ) {
-                for ((index, input) in inputs.withIndex()) test("input #$index") {
+                for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
                     AssertionScope.withClue(
                         {
                             buildString {

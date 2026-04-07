@@ -86,7 +86,7 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
     override fun BigInteger.minus(other: BigInteger): BigInteger = this.subtract(other)
     override fun BigInteger.times(other: BigInteger): BigInteger = this.multiply(other)
     override fun BigInteger.divrem(other: BigInteger): EuclideanDivisionResult<BigInteger> {
-        val (quotient, remainder) = this.divideAndRemainder(other)
+        val [quotient, remainder] = this.divideAndRemainder(other)
         return EuclideanDivisionResult(quotient = quotient, remainder = remainder)
     }
     override fun BigInteger.div(other: BigInteger): BigInteger = this.divide(other)

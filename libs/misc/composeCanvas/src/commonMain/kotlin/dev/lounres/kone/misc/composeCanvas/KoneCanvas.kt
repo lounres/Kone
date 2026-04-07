@@ -201,7 +201,7 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
 
                             PointerEventType.Move -> {
                                 if (currentPressPosition != null) {
-                                    val (oldOffset, oldZoom, oldRotation) = getKoneCanvasState()
+                                    (val oldOffset = offset, val oldZoom = zoom, val oldRotation = rotation) = getKoneCanvasState()
                                     val lastPosition = event.changes.last().position
                                     val offset = lastPosition - currentPressPosition
                                     val cos = cos(oldRotation)
@@ -223,8 +223,8 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
 
                             PointerEventType.Scroll -> {
                                 val lastChange = event.changes.last()
-
-                                val (oldOffset, oldZoom, oldRotation) = getKoneCanvasState()
+                                
+                                (val oldOffset = offset, val oldZoom = zoom, val oldRotation = rotation) = getKoneCanvasState()
 
                                 val pointerOffset =
                                     lastChange.position.let {

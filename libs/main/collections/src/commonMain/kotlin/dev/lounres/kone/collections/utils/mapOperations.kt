@@ -303,7 +303,7 @@ public inline fun <reified K, V1: W, V2: W, W> mergeByReified(
 
 public inline fun <T, K, V, D : KoneMutableMap<K, V>> KoneIterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
-        val (key, value) = transform(element)
+        [val key, val value] = transform(element)
         destination.setOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination

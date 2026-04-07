@@ -71,7 +71,7 @@ class KoneConcurrentSundellTsigasNoddedDequeueLogicTest : FunSpec({
         checkAll(arbSundellTsigasNoddedDequeueOperation(arbElements = Arb.uInt(), numberOfOperations = 100u)) { arbData ->
             val deque = KoneConcurrentSundellTsigasNoddedDequeue<UInt>()
             
-            for ((index, operation) in arbData.withIndex())
+            for ((val index, val operation = value) in arbData.withIndex())
                 withClue({ "at iteration $index with operation $operation" }) {
                     when (operation) {
                         is SundellTsigasNoddedDequeueOperation.GetFirst<UInt> -> /*deque.getFirst() shouldBe operation.expected*/ {} // TODO
