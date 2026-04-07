@@ -115,13 +115,13 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     val koneContextRegistry = koneContextRegistry.get()
     return exponentViaDefault(
         order = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
-            "ScalarBaseForMatrixFunction.exponentViaDefault<$numberType>"
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
         },
         exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunction.exponentViaDefault<$numberType>"
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
         },
         complexNumberExponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType)) {
-            "ScalarBaseForMatrixFunction.exponentViaDefault<$numberType>"
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
         },
     )
 }

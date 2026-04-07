@@ -5,7 +5,9 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
+import dev.lounres.kone.algebraic.algorithms.planarVectorArgument
 import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -422,3 +424,5 @@ context(_: CommutativeRing<Number>)
 public fun <Number> ComplexNumber<Number>.norm(): Number = realPart * realPart + imaginaryPart * imaginaryPart
 context(_: CommutativeRing<Number>, _: PositiveSquareRootComputer<Number>)
 public fun <Number> ComplexNumber<Number>.absoluteValue(): Number = norm().positiveSquareRoot()
+context(_: PlanarVectorArgumentComputer<Number>)
+public fun <Number> ComplexNumber<Number>.argument(): Number = planarVectorArgument(realPart, imaginaryPart)

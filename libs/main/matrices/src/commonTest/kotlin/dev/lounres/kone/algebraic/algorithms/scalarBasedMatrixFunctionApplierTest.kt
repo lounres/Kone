@@ -11,12 +11,15 @@ import dev.lounres.kone.algebraic.algorithms.implementations.*
 import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithLinearTolerance
 import dev.lounres.kone.assertions.*
+import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
+import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.koneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -232,6 +235,7 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
         data class TestData(
             val input: MDList2<ComplexNumber<Number>>,
             val exponentOutput: MDList2<ComplexNumber<Number>>,
+            val squareOutput: MDList2<ComplexNumber<Number>>,
         )
         
         val inputs = KoneList.of<TestData>(
@@ -247,7 +251,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(2.378024613547364, 0.9093306736314786), ComplexNumber(-0.9093306736314786, 1.3780246135473637),
                     ComplexNumber(1.3780246135473637, 0.9093306736314786), ComplexNumber(0.09066932636852143, 1.3780246135473637),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(1.0, 1.0), ComplexNumber(-1.0, 1.0),
+                    ComplexNumber(1.0, 1.0), ComplexNumber(-1.0, 1.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -261,7 +271,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
                     ComplexNumber(1.0, 0.0), ComplexNumber(1.0, 0.0),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(1.0E-34, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(1.0E-17, 0.0), ComplexNumber(0.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -275,7 +291,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(1.0, 0.0), ComplexNumber(-0.45969769413186023, 0.8414709848078965),
                     ComplexNumber(0.0, 0.0), ComplexNumber(0.5403023058681398, 0.8414709848078965),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -289,7 +311,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
                     ComplexNumber(0.0, 0.0), ComplexNumber(1.0, 0.0),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -303,7 +331,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(0.5403023058681398, 0.0), ComplexNumber(-0.8414709848078965, 0.0),
                     ComplexNumber(0.8414709848078965, 0.0), ComplexNumber(0.5403023058681398, 0.0),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(-1.0, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -317,7 +351,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     columnNumber = 2u,
                     ComplexNumber(2.718281828459045, 0.0), ComplexNumber(0.0, 0.0),
                     ComplexNumber(2.718281828459045, 0.0), ComplexNumber(2.718281828459045, 0.0),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 2u,
+                    columnNumber = 2u,
+                    ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(2.0, 0.0), ComplexNumber(1.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -333,7 +373,14 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(1.6609793441972227, 2.6984455045169025), ComplexNumber(-2.6984455045169025, 0.6609793441972227), ComplexNumber(-2.0374661603196795, 3.359424848714125),
                     ComplexNumber(0.6609793441972227, 2.6984455045169025), ComplexNumber(-1.6984455045169022, 0.6609793441972227), ComplexNumber(-2.0374661603196795, 3.359424848714125),
                     ComplexNumber(0.6609793441972227, 2.6984455045169025), ComplexNumber(-2.6984455045169025, 0.6609793441972227), ComplexNumber(-1.0374661603196795, 3.359424848714125),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 3u,
+                    columnNumber = 3u,
+                    ComplexNumber(2.0, 2.0), ComplexNumber(-2.0, 2.0), ComplexNumber(0.0, 4.0),
+                    ComplexNumber(2.0, 2.0), ComplexNumber(-2.0, 2.0), ComplexNumber(0.0, 4.0),
+                    ComplexNumber(2.0, 2.0), ComplexNumber(-2.0, 2.0), ComplexNumber(0.0, 4.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -349,7 +396,14 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(-0.45969769413186023, 0.8414709848078965),
                     ComplexNumber(0.0, 0.0), ComplexNumber(1.0, 0.0), ComplexNumber(-0.45969769413186023, 0.8414709848078965),
                     ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(0.5403023058681398, 0.8414709848078965),
-                )
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 3u,
+                    columnNumber = 3u,
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(-1.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -366,6 +420,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(0.0, 0.0), ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
                     ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(1.0, 0.0),
                 ),
+                squareOutput = MDList2.of(
+                    rowNumber = 3u,
+                    columnNumber = 3u,
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+                    ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0), ComplexNumber(0.0, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -381,6 +442,13 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(3.999763357482291E11, 4.933477797905842E11), ComplexNumber(5.029960477248986E11, 6.067731612589069E11), ComplexNumber(6.060157597025681E11, 7.201985427272295E11),
                     ComplexNumber(1.028900143601709E12, 1.117105909054648E12), ComplexNumber(1.2918521915411143E12, 1.3722722829525188E12), ComplexNumber(1.5548042394785193E12, 1.6274386568503892E12),
                     ComplexNumber(1.657823951456189E12, 1.740864038318712E12), ComplexNumber(2.0807083353553298E12, 2.1377714046461309E12), ComplexNumber(2.5035927192554707E12, 2.534678770973549E12),
+                ),
+                squareOutput = MDList2.of(
+                    rowNumber = 3u,
+                    columnNumber = 3u,
+                    ComplexNumber(-33.0, 204.0), ComplexNumber(-39.0, 246.0), ComplexNumber(-45.0, 288.0),
+                    ComplexNumber(-51.0, 474.0), ComplexNumber(-57.0, 588.0), ComplexNumber(-63.0, 702.0),
+                    ComplexNumber(-69.0, 744.0), ComplexNumber(-75.0, 930.0), ComplexNumber(-81.0, 1116.0),
                 ),
             ),
             TestData(
@@ -402,6 +470,15 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(1.7845507173203659, 0.0), ComplexNumber(1.190871082005485, 0.0), ComplexNumber(1.0697444539722698, 0.0), ComplexNumber(2.4824541604078223, 0.0), ComplexNumber(1.6614162125677499, 0.0),
                     ComplexNumber(2.7582113971525875, 0.0), ComplexNumber(1.225238817530138, 0.0), ComplexNumber(2.243929671708349, 0.0), ComplexNumber(2.8350341541274813, 0.0), ComplexNumber(3.5349801763546136, 0.0),
                 ),
+                squareOutput = MDList2.of(
+                    rowNumber = 5u,
+                    columnNumber = 5u,
+                    ComplexNumber(0.8735592762893539, 0.0), ComplexNumber(0.4315318680090838, 0.0), ComplexNumber(0.5189338102709428, 0.0), ComplexNumber(0.6112027106992046, 0.0), ComplexNumber(0.7295193559363394, 0.0),
+                    ComplexNumber(1.6235125330318403, 0.0), ComplexNumber(0.8311368882476904, 0.0), ComplexNumber(1.1389241047349767, 0.0), ComplexNumber(1.5729216741643928, 0.0), ComplexNumber(1.3778998790283272, 0.0),
+                    ComplexNumber(1.3494481457014724, 0.0), ComplexNumber(0.5442504058685852, 0.0), ComplexNumber(1.2838143005392677, 0.0),ComplexNumber(1.486604238216516, 0.0), ComplexNumber(1.4053660894560194, 0.0),
+                    ComplexNumber(1.06340341698806, 0.0), ComplexNumber(0.5295773271087055, 0.0), ComplexNumber(0.6719621974021709, 0.0), ComplexNumber(1.021873822745816, 0.0), ComplexNumber(1.0254570950732143, 0.0),
+                    ComplexNumber(1.636239115287523, 0.0), ComplexNumber(0.8889798640892621, 0.0), ComplexNumber(1.2356959717452236, 0.0), ComplexNumber(1.4061581199350015, 0.0), ComplexNumber(1.6037960059455372, 0.0),
+                ),
             ),
             TestData(
                 input = MDList2.of(
@@ -422,7 +499,16 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                     ComplexNumber(-3.142608377861831, -0.25956907445535005), ComplexNumber(-2.2471898249069344, 0.3308911528169346), ComplexNumber(-3.3054197921658237, 0.939394700411359), ComplexNumber(-2.23235962343116, 0.3543538812395831), ComplexNumber(-2.619410533860688, -0.22418741585010493),
                     ComplexNumber(-2.9668688213006558, 0.23984801637015618), ComplexNumber(-2.285814630334815, 0.8865703848651736), ComplexNumber(-3.1513332894239587, 1.2483727179591306), ComplexNumber(-2.8300787834780463, 1.2115418776068283), ComplexNumber(-1.8267207486469719, 0.1531538545827389),
                 ),
-            )
+                squareOutput = MDList2.of(
+                    rowNumber = 5u,
+                    columnNumber = 5u,
+                    ComplexNumber(-0.534010809788983, 3.1779478836152206), ComplexNumber(0.30090734228906557, 2.0671433659986067), ComplexNumber(0.7449513745025292, 3.7856873790044183), ComplexNumber(-0.09743930985316279, 2.729230060840288), ComplexNumber(-0.21091814916849314, 2.8726949226561276),
+                    ComplexNumber(0.06766739943131686, 3.0193163783474297), ComplexNumber(1.0068921481692288, 2.0151744899966877), ComplexNumber(1.6249920722943147, 3.516897607901409), ComplexNumber(1.072183248523162, 2.7990803089266945), ComplexNumber(0.4691042644105897, 2.6919759613625005),
+                    ComplexNumber(-0.8424510056246154, 3.6593960353706936), ComplexNumber(-0.37168385003861887, 2.3943244357385414), ComplexNumber(0.5958376114260696, 3.093382278424135), ComplexNumber(-0.24015856422221235, 3.23361051205698), ComplexNumber(-1.221744174099417, 2.612172239742347),
+                    ComplexNumber(-1.329347949301052, 2.554388491588982), ComplexNumber(-0.34557286106270413, 2.2581772733263716), ComplexNumber(-0.8180984839039672, 3.5893441044435206), ComplexNumber(-0.7518483934480593, 2.9862972685989764), ComplexNumber(-1.3106148813163123, 2.7578113937969313),
+                    ComplexNumber(-1.3863627655165047, 2.7264763826810743), ComplexNumber(0.06222522296081315, 1.982265666651038), ComplexNumber(0.17186936192296193, 4.122714422327642), ComplexNumber(-0.1899587835650991, 2.953551141441026), ComplexNumber(-0.43939294933519796, 2.8050514542761285),
+                ),
+            ),
         )
         
         data class Algorithm(
@@ -469,6 +555,27 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
         }
         
         val exponentFunction = scalarFunctionsKoneContextRegistry[ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType)]
+        val squareFunction = object : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
+            private val numberField = Double.safeField()
+            private val complexNumberFieldExtension = ComplexNumber.fieldExtensionOver(numberField)
+            private val positiveSquareRootComputer = PositiveSquareRootComputer.viaDefaultForDouble()
+            override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> =
+                complexNumberFieldExtension {
+                    when (derivativeOrder) {
+                        0u -> value * value
+                        1u -> 2 * value
+                        else -> complexNumberFieldExtension.zero
+                    }
+                }
+            override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
+                context(numberField, positiveSquareRootComputer) {
+                    when (derivativeOrder) {
+                        0u -> convexHullVertices.maxOf<_, Number> { it.norm() }
+                        1u -> 2 * convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot()
+                        else -> numberField.zero
+                    }
+                }
+        }
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
             algorithm.koneContextRegistry.koneContext(
@@ -479,34 +586,59 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                 SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(matrixType = matrixType),
                 ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>, ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>(matrixType = matrixType, functionType = functionType),
             ) {
-                for ((index, inputData) in inputs.withIndex()) test("input #$index") {
-                    val (input, exponentOutput) = inputData
-                    AssertionScope.withClue(
-                        {
-                            buildString {
-                                appendLine("Received the following matrix as input.")
-                                appendLine()
-                                appendLine("Input:")
-                                appendLine(input.toMatrixString())
+                for ((index, inputData) in inputs.withIndex()) testSuite("input #$index") {
+                    val (input, exponentOutput, squareOutput) = inputData
+                    test("exponent") {
+                        AssertionScope.withClue(
+                            {
+                                buildString {
+                                    appendLine("Input:")
+                                    appendLine(input.toMatrixString())
+                                }
+                            }
+                        ) {
+                            Expect.notToThrow({ exponentFunction(input) }) {
+                                val result = exposeValue()
+                                withClue(
+                                    {
+                                        buildString {
+                                            appendLine("Expected exponent output:")
+                                            appendLine(exponentOutput.toMatrixString())
+                                            appendLine()
+                                            appendLine("Actual exponent output:")
+                                            appendLine(result.toMatrixString())
+                                        }
+                                    }
+                                ) {
+                                    Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
+                                }
                             }
                         }
-                    ) {
-                        Expect.notToThrow({ exponentFunction(input) }) {
-                            val result = exposeValue()
-                            withClue(
-                                {
-                                    buildString {
-                                        appendLine("Received the following matrix as exponent.")
-                                        appendLine()
-                                        appendLine("Expected exponent output:")
-                                        appendLine(exponentOutput.toMatrixString())
-                                        appendLine()
-                                        appendLine("Actual exponent output:")
-                                        appendLine(result.toMatrixString())
-                                    }
+                    }
+                    test("square") {
+                        AssertionScope.withClue(
+                            {
+                                buildString {
+                                    appendLine("Input:")
+                                    appendLine(input.toMatrixString())
                                 }
-                            ) {
-                                Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
+                            }
+                        ) {
+                            Expect.notToThrow({ squareFunction(input) }) {
+                                val result = exposeValue()
+                                withClue(
+                                    {
+                                        buildString {
+                                            appendLine("Expected output:")
+                                            appendLine(squareOutput.toMatrixString())
+                                            appendLine()
+                                            appendLine("Actual output:")
+                                            appendLine(result.toMatrixString())
+                                        }
+                                    }
+                                ) {
+                                    Expect.of(result).toBeEqualToWithLinearTolerance(squareOutput, 1E-10, 1E-15)
+                                }
                             }
                         }
                     }
