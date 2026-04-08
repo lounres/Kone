@@ -26,7 +26,6 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
 
 @Serializable

@@ -27,7 +27,6 @@ import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.Equality
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
 
 @Serializable

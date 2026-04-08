@@ -11,9 +11,6 @@ import dev.lounres.kone.algebraic.equality
 import dev.lounres.kone.algebraic.order
 import dev.lounres.kone.algebraic.reification
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.lt
 import kotlinx.benchmark.Benchmark

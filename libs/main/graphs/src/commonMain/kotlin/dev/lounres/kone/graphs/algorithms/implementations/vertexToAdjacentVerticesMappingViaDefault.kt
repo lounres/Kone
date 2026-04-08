@@ -17,7 +17,6 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.graphs.Hypergraph
-import dev.lounres.kone.graphs.HypergraphEdge
 import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.algorithms.VertexToAdjacentVerticesMappingComputer
 import dev.lounres.kone.graphs.algorithms.VertexToAdjacentVerticesMappingKey

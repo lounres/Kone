@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.computationalGeometry.polytopes
 
-import dev.lounres.kone.algebraic.Monoid
 import dev.lounres.kone.algebraic.equality
 import dev.lounres.kone.algebraic.hashing
 import dev.lounres.kone.algebraic.monoid
