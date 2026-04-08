@@ -1,0 +1,25 @@
+/*
+ * Copyright © 2026 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+package dev.lounres.kone.algebraic.algorithms.implementations
+
+import dev.lounres.kone.algebraic.algorithms.HyperbolicCosineComputer
+import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.suppliedTypes.suppliedType
+
+
+private object HyperbolicCosineComputerViaDefaultForDouble : HyperbolicCosineComputer<Double> {
+    override fun Double.cosh(): Double = kotlin.math.cosh(this)
+}
+
+public fun HyperbolicCosineComputer.Companion.viaDefaultForDouble(): HyperbolicCosineComputer<Double> =
+    HyperbolicCosineComputerViaDefaultForDouble
+
+context(_: MutableOwnedRegistry<KoneContextRegistry>)
+public fun HyperbolicCosineComputer.Companion.setViaDefaultForDouble() {
+    HyperbolicCosineComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+}
