@@ -156,7 +156,7 @@ val SchurDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.schurDecomposition() }) {
-                            val (q, t, p) = exposeValue()
+                            (val q = leftUnitary, val t = middleUpperTriangular, val p = rightUnitary) = exposeValue()
                             withClue(
                                 {
                                     buildString {
@@ -355,7 +355,7 @@ val SchurDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.schurDecomposition() }) {
-                            val (q, t, p) = exposeValue()
+                            (val q = leftUnitary, val t = middleUpperTriangular, val p = rightUnitary) = exposeValue()
                             withClue(
                                 {
                                     buildString {

@@ -126,7 +126,7 @@ val HessenbergDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.hessenbergDecomposition() }) {
-                            val (q, h, p) = exposeValue()
+                            (val q = leftUnitary, val h = middleUpperHessenberg, val p = rightUnitary) = exposeValue()
                             withClue(
                                 {
                                     buildString {
@@ -313,7 +313,7 @@ val HessenbergDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.hessenbergDecomposition() }) {
-                            val (q, h, p) = exposeValue()
+                            (val q = leftUnitary, val h = middleUpperHessenberg, val p = rightUnitary) = exposeValue()
                             withClue(
                                 {
                                     buildString {

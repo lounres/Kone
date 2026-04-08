@@ -587,7 +587,7 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                 ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>, ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>(matrixType = matrixType, functionType = functionType),
             ) {
                 for ((val index, val input = value) in inputs.withIndex()) testSuite("input #$index") {
-                    val (input, exponentOutput, squareOutput) = inputData
+                    (val input, val exponentOutput, val squareOutput) = input
                     test("exponent") {
                         AssertionScope.withClue(
                             {

@@ -140,7 +140,7 @@ val QRDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.qrDecomposition() }) {
-                            val (q, r) = exposeValue()
+                            (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
                             withClue(
                                 {
                                     buildString {
@@ -335,7 +335,7 @@ val QRDecompositionImplementationsTests by testSuite {
                         }
                     ) {
                         Expect.notToThrow({ input.qrDecomposition() }) {
-                            val (q, r) = exposeValue()
+                            (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
                             withClue(
                                 {
                                     buildString {
