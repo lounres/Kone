@@ -41,6 +41,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 
 
+@Suppress("FunctionName")
 internal fun KoneSetImplementationDescriptor(
     implementationName: String,
     elementDescriptor: SerialDescriptor,
@@ -49,6 +50,7 @@ internal fun KoneSetImplementationDescriptor(
     elementDescriptor = elementDescriptor,
 )
 
+@Suppress("FunctionName")
 internal fun KoneSetDeclarationDescriptor(
     declarationName: String,
     elementDescriptor: SerialDescriptor,

@@ -55,6 +55,7 @@ internal class KoneIterableDescriptor(
     override fun toString(): String = "$serialName($elementDescriptor)"
 }
 
+@Suppress("FunctionName")
 internal fun KoneIterableDeclarationDescriptor(
     declarationName: String,
     elementDescriptor: SerialDescriptor,

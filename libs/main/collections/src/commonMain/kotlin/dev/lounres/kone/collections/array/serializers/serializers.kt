@@ -3,14 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalSerializationApi::class)
-@file:Suppress("FunctionName")
 
 package dev.lounres.kone.collections.array.serializers
 
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.KoneMutableArray
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ArraySerializer
 import kotlinx.serialization.descriptors.SerialDescriptor

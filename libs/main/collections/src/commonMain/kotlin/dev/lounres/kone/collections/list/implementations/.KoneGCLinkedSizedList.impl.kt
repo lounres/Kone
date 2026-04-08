@@ -347,8 +347,7 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
                 var currentIndex = 0u
                 var currentNode: Node<Element> = this
                 while (true) {
-                    val previousNode = currentNode._previousNode
-                    if (previousNode == null) break
+                    val previousNode = currentNode._previousNode ?: break
                     currentNode = previousNode
                     currentIndex++
                 }

@@ -3,9 +3,6 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalSerializationApi::class)
-@file:Suppress("FunctionName")
-
 package dev.lounres.kone.collections.iterables.serializers
 
 import dev.lounres.kone.collections.iterables.*
@@ -13,7 +10,6 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableListSerializer
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableListSerializer
 import dev.lounres.kone.collections.utils.withIndex
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor

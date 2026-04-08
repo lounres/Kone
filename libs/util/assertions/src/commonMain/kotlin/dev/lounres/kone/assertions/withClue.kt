@@ -27,7 +27,7 @@ public inline fun AssertionScope.withClue(clue: String, block: context(Assertion
     block(softAssertionScope)
 }
 
-@JvmName("softlyContextual")
+@JvmName("withClueContextual")
 context(assertionScope: AssertionScope)
 public fun withClue(clue: String, block: context(AssertionScope) () -> Unit) {
     assertionScope.withClue(clue, block)
@@ -52,7 +52,7 @@ public inline fun AssertionScope.withClue(crossinline clue: () -> String, block:
     block(softAssertionScope)
 }
 
-@JvmName("softlyContextual")
+@JvmName("withClueContextual")
 context(assertionScope: AssertionScope)
 public fun withClue(clue: () -> String, block: context(AssertionScope) () -> Unit) {
     assertionScope.withClue(clue, block)

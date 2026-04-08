@@ -796,12 +796,12 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
             }
         )
     
-    internal sealed interface NodeHolder<E> : Disposable {
+    sealed interface NodeHolder<E> : Disposable {
         var parent: NodeHolder<E>?
         val isItBottom: Boolean
         val tree: TwoThreeTreeForBentleyOttmann<E>
     }
-    internal class TwoNodeHolder<E>(
+    class TwoNodeHolder<E>(
         tree: TwoThreeTreeForBentleyOttmann<E>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<E>?,
@@ -829,7 +829,7 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
             isDisposed = true
         }
     }
-    internal class ThreeNodeHolder<E>(
+    class ThreeNodeHolder<E>(
         tree: TwoThreeTreeForBentleyOttmann<E>,
         override val isItBottom: Boolean,
         var firstChild: NodeHolder<E>?,
@@ -917,20 +917,18 @@ private class TwoThreeTreeForBentleyOttmann<E> : ConnectedSearchTreeForBentleyOt
         return newHolder
     }
     
-    internal class Node<E>(
+    class Node<E>(
         override var element: E,
     ) : SearchTreeNodeForBentleyOttmann<E> {
         var isDetached: Boolean = false
             private set
         
         private var _holder: NodeHolder<E>? = null
-        internal var holder: NodeHolder<E>
+        var holder: NodeHolder<E>
             get() = _holder!!
             set(value) { _holder = value }
         override var nextNode: Node<E>? = null
-            internal set
         override var previousNode: Node<E>? = null
-            internal set
         
         fun detach() {
             if (isDetached) return

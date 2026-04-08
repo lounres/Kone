@@ -326,8 +326,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
                 var currentIndex = 0u
                 var currentNode: Node<Element> = this
                 while (true) {
-                    val previousNode = currentNode._previousNode
-                    if (previousNode == null) break
+                    val previousNode = currentNode._previousNode ?: break
                     currentNode = previousNode
                     currentIndex++
                 }

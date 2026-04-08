@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("FunctionName", "unused")
+
 package dev.lounres.kone.benchmarks.collections.list.implementations
 
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList

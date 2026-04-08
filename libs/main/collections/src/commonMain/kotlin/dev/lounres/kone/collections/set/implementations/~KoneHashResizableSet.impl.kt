@@ -211,7 +211,7 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         var iterator = data[dataInnerIndex].iterator()
         while (true) when {
             iterator.hasNext() -> {
-                hashCode = hashCode + iterator.getAndMoveNext().hashCode()
+                hashCode += iterator.getAndMoveNext().hashCode()
             }
             ++dataInnerIndex == data.size -> break
             else -> iterator = data[dataInnerIndex].iterator()
