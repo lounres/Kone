@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.deque.isNotEmpty
@@ -16,15 +17,12 @@ import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.scope
-import org.jetbrains.kotlinx.lincheck.annotations.StateRepresentation
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.Operation
 import org.jetbrains.lincheck.datastructures.StressOptions
-import kotlin.test.Test
 
 
-class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
+class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyOperations {
     typealias Element = Int
     
     private val dequeue = KoneConcurrentSundellTsigasNoddedDequeue<Element>()
@@ -167,18 +165,17 @@ class KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest {
             if (nodesDequeue.isNotEmpty()) nodesDequeue.popLast().also { if (!it.isDetached) it.remove() }.element
             else null
     }
-    
-    @Test
-    fun stress() {
+}
+
+val KoneConcurrentSundellTsigasNoddedDequeueConcurrencyTest by testSuite {
+    test("stress") {
         StressOptions()
-            .sequentialSpecification(SequentialSpecification::class.java)
-            .check(this::class)
+            .sequentialSpecification(KoneConcurrentSundellTsigasNoddedDequeueConcurrencyOperations.SequentialSpecification::class.java)
+            .check(KoneConcurrentSundellTsigasNoddedDequeueConcurrencyOperations::class)
     }
-    
-    @Test
-    fun modelChecking() {
+    test("modelChecking") {
         ModelCheckingOptions()
-            .sequentialSpecification(SequentialSpecification::class.java)
-            .check(this::class)
+            .sequentialSpecification(KoneConcurrentSundellTsigasNoddedDequeueConcurrencyOperations.SequentialSpecification::class.java)
+            .check(KoneConcurrentSundellTsigasNoddedDequeueConcurrencyOperations::class)
     }
 }

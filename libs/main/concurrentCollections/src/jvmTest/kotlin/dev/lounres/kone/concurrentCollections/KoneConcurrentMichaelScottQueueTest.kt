@@ -5,13 +5,13 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import de.infix.testBalloon.framework.core.testSuite
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.Operation
 import org.jetbrains.lincheck.datastructures.StressOptions
-import kotlin.test.Test
 
 
-class KoneConcurrentMichaelScottQueueTest {
+class KoneConcurrentMichaelScottQueueOperations {
     private val queue = KoneConcurrentMichaelScottQueue<Int>()
     
     @Operation
@@ -26,16 +26,13 @@ class KoneConcurrentMichaelScottQueueTest {
     
     @Operation
     fun popFirstMaybe() = queue.popFirstMaybe()
-    
-    @Test
-    fun stress() {
-        StressOptions()
-            .check(this::class)
+}
+
+val KoneConcurrentMichaelScottQueueTest by testSuite {
+    test("stress") {
+        StressOptions().check(KoneConcurrentMichaelScottQueueOperations::class)
     }
-    
-    @Test
-    fun modelChecking() {
-        ModelCheckingOptions()
-            .check(this::class)
+    test("modelChecking") {
+        ModelCheckingOptions().check(KoneConcurrentMichaelScottQueueOperations::class)
     }
 }

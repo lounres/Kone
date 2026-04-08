@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.concurrentCollections
 
+import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.deque.isNotEmpty
@@ -19,10 +20,9 @@ import dev.lounres.kone.collections.utils.last
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.Operation
 import org.jetbrains.lincheck.datastructures.StressOptions
-import kotlin.test.Test
 
 
-class KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyTest {
+class KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyOperations {
     typealias Element = Int
     
     private val dequeue = KoneConcurrentSundellTsigasNoddedDequeueCleaned<Element>()
@@ -165,18 +165,17 @@ class KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyTest {
             if (nodesDequeue.isNotEmpty()) nodesDequeue.popLast().also { if (!it.isDetached) it.remove() }.element
             else null
     }
-    
-    @Test
-    fun stress() {
+}
+
+val KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyTest by testSuite {
+    test("stress") {
         StressOptions()
-            .sequentialSpecification(SequentialSpecification::class.java)
-            .check(this::class)
+            .sequentialSpecification(KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyOperations.SequentialSpecification::class.java)
+            .check(KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyOperations::class)
     }
-    
-    @Test
-    fun modelChecking() {
+    test("modelChecking") {
         ModelCheckingOptions()
-            .sequentialSpecification(SequentialSpecification::class.java)
-            .check(this::class)
+            .sequentialSpecification(KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyOperations.SequentialSpecification::class.java)
+            .check(KoneConcurrentSundellTsigasNoddedDequeueCleanedConcurrencyOperations::class)
     }
 }
