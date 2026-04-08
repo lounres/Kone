@@ -22,7 +22,7 @@ import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance.INVARIANT
 
 
-private class ExponentMatrixComputerViaSchurParlett<Number, Matrix : MDList2<ComplexNumber<Number>>>(
+private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Number, Matrix : MDList2<ComplexNumber<Number>>>(
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val field: Field<Number>,
     private val order: Order<Number>,
@@ -48,20 +48,11 @@ private class ExponentMatrixComputerViaSchurParlett<Number, Matrix : MDList2<Com
             matrixProductComputer = matrixProductComputer,
             inverseMatrixComputer = inverseMatrixComputer,
             isDiagonalMatrixChecker = isDiagonalMatrixChecker,
-            parlettRecurrenceAtomicBlockImageComputer = ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexNumbers(
-                matrixFactory = matrixFactory,
-                field = field,
-                order = order,
-                complexNumberFieldExtension = complexNumberFieldExtension,
-                matrixCategoryOverField = matrixCategoryOverField,
-                matrixProductComputer = matrixProductComputer,
-                atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
-                function = ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault(
-                    order = order,
-                    exponentComputer = exponentComputer,
-                    complexNumberExponentComputer = complexNumberExponentComputer,
-                ),
-            ),
+            parlettRecurrenceAtomicBlockImageComputer = object : ParlettRecurrenceAtomicBlockImageComputer<ComplexNumber<Number>, Matrix> {
+                override fun Matrix.atomicBlockImage(): Matrix {
+                    TODO("Not yet implemented")
+                }
+            },
             blockingParameter = blockingParameter,
         )
     
@@ -74,7 +65,7 @@ private class ExponentMatrixComputerViaSchurParlett<Number, Matrix : MDList2<Com
     }
 }
 
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.viaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.viaSchurParlettUsingScalingAndSquaring(
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     field: Field<Number>,
     order: Order<Number>,
@@ -88,7 +79,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
     isDiagonalMatrixChecker: IsDiagonalMatrixChecker<ComplexNumber<Number>, Matrix>,
     atomicBlockImageComputationTolerance: Number,
     blockingParameter: Number,
-): ExponentComputer<Matrix> = ExponentMatrixComputerViaSchurParlett(
+): ExponentComputer<Matrix> = ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring(
     matrixFactory = matrixFactory,
     field = field,
     order = order,
@@ -105,7 +96,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.viaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.viaSchurParlettUsingScalingAndSquaring(
     numberType: SuppliedType,
     matrixType: SuppliedType,
     atomicBlockImageComputationTolerance: Number,
@@ -123,7 +114,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
         isNullable = false,
     )
     val koneContextRegistry = koneContextRegistry.get()
-    return viaSchurParlett(
+    return viaSchurParlettUsingScalingAndSquaring(
         matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
             "ExponentComputer.viaSchurParlett<$numberType, $matrixType>"
         },
@@ -163,7 +154,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.setViaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.setViaSchurParlettUsingScalingAndSquaring(
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     field: Field<Number>,
@@ -180,7 +171,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
     blockingParameter: Number,
 ) {
     ExponentComputer.Key<Matrix>(numberType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        viaSchurParlett(
+        viaSchurParlettUsingScalingAndSquaring(
             matrixFactory = matrixFactory,
             field = field,
             order = order,
@@ -199,14 +190,14 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.setViaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.setViaSchurParlettUsingScalingAndSquaring(
     numberType: SuppliedType,
     matrixType: SuppliedType,
     atomicBlockImageComputationTolerance: Number,
     blockingParameter: Number,
 ) {
     ExponentComputer.Key<Matrix>(numberType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        viaSchurParlett(
+        viaSchurParlettUsingScalingAndSquaring(
             numberType = numberType,
             matrixType = matrixType,
             atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
@@ -216,7 +207,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.useViaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.useViaSchurParlettUsingScalingAndSquaring(
     numberType: SuppliedType,
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
@@ -260,7 +251,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
         isNullable = false,
     )
     ExponentKey<MatrixWithProperties<ComplexNumber<Number>, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val exponentComputer = viaSchurParlett<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
+        val exponentComputer = viaSchurParlettUsingScalingAndSquaring<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
             matrixFactory = matrixFactory,
             field = field,
             order = order,
@@ -280,7 +271,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
 }
 
 context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.useViaSchurParlett(
+public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Companion.useViaSchurParlettUsingScalingAndSquaring(
     numberType: SuppliedType,
     matrixType: SuppliedType,
     atomicBlockImageComputationTolerance: Number,
@@ -313,7 +304,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ExponentComputer.Co
         isNullable = false,
     )
     ExponentKey<MatrixWithProperties<ComplexNumber<Number>, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val exponentComputer = viaSchurParlett<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
+        val exponentComputer = viaSchurParlettUsingScalingAndSquaring<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
             numberType = numberType,
             matrixType = matrixWithPropertiesType,
             atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
