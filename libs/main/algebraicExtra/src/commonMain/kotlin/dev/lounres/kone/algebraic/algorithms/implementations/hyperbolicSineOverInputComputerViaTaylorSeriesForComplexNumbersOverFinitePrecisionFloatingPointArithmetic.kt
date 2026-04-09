@@ -13,57 +13,46 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.get
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import kotlin.reflect.KVariance.OUT
 
 
-private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>(
-    private val field: Field<Number>,
+private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
     private val complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    private val cosineComputer: CosineComputer<Number>,
-    private val sineComputer: SineComputer<Number>,
-    private val hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
-    private val hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> =
         context(
-            field,
             complexNumbersFieldExtension,
-            cosineComputer,
-            sineComputer,
-            hyperbolicCosineComputer,
-            hyperbolicSineComputer,
         ) {
-            if (this.isNotZero())
-                ComplexNumber(
-                    realPart.sinh() * imaginaryPart.cos(),
-                    realPart.cosh() * imaginaryPart.sin(),
-                ) / this
-            else
-                complexNumbersFieldExtension.one
+            var result = complexNumbersFieldExtension.one
+            var step = complexNumbersFieldExtension.one
+            var stepNumber = 1u
+            while (true) {
+                stepNumber++
+                step *= this / stepNumber
+                stepNumber++
+                step *= this / stepNumber
+                if (step.isZero()) break
+                
+                val oldResult = result
+                result += step
+                if (oldResult eq result) break
+            }
+            result
         }
 }
 
-public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(
-    field: Field<Number>,
+public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    cosineComputer: CosineComputer<Number>,
-    sineComputer: SineComputer<Number>,
-    hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
-    hyperbolicSineComputer: HyperbolicSineComputer<Number>,
-): HyperbolicSineOverInputComputer<ComplexNumber<Number>> = HyperbolicSineOverInputComputerViaDefaultForComplexNumbers(
-    field = field,
+): HyperbolicSineOverInputComputer<ComplexNumber<Number>> = HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     complexNumbersFieldExtension = complexNumbersFieldExtension,
-    cosineComputer = cosineComputer,
-    sineComputer = sineComputer,
-    hyperbolicCosineComputer = hyperbolicCosineComputer,
-    hyperbolicSineComputer = hyperbolicSineComputer,
 )
 
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(
+public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberType: SuppliedType,
 ): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -78,25 +67,15 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForCompl
         isNullable = false,
     )
     val koneContextRegistry = koneContextRegistry.get()
-    return viaDefaultForComplexNumbers<Number>(
-        field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+    return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
         complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-        cosineComputer = koneContextRegistry[CosineComputer.Key<Number>(numberType = numberType)],
-        sineComputer = koneContextRegistry[SineComputer.Key<Number>(numberType = numberType)],
-        hyperbolicCosineComputer = koneContextRegistry[HyperbolicCosineComputer.Key<Number>(numberType = numberType)],
-        hyperbolicSineComputer = koneContextRegistry[HyperbolicSineComputer.Key<Number>(numberType = numberType)],
     )
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
+public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberType: SuppliedType,
-    field: Field<Number>,
     complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    cosineComputer: CosineComputer<Number>,
-    sineComputer: SineComputer<Number>,
-    hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
-    hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val complexNumberType = SuppliedType.Regular(
@@ -110,19 +89,14 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForCo
         isNullable = false,
     )
     HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(
-            field = field,
+        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
             complexNumbersFieldExtension = complexNumbersFieldExtension,
-            cosineComputer = cosineComputer,
-            sineComputer = sineComputer,
-            hyperbolicCosineComputer = hyperbolicCosineComputer,
-            hyperbolicSineComputer = hyperbolicSineComputer,
         )
     }
 }
 
 context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
+public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberType: SuppliedType,
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
@@ -137,6 +111,6 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForCo
         isNullable = false,
     )
     HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(numberType = numberType)
+        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(numberType = numberType)
     }
 }
