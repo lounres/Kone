@@ -17,7 +17,7 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -53,7 +53,7 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.exponentViaDefault(
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
     numberType: SuppliedType,
     exponentComputer: ExponentComputer<Number>,
@@ -65,7 +65,7 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
     numberType: SuppliedType,
 ) {
@@ -126,7 +126,7 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault(
     numberType: SuppliedType,
     order: Order<Number>,
@@ -142,7 +142,7 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault(
     numberType: SuppliedType,
 ) {

@@ -193,7 +193,7 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> = ImpliedKeysRegistry {
-            CommutativeMonoid.Key<Number>(numberType) implies { it }
+            CommutativeMonoid.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -355,7 +355,7 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeSemiring<Number>> = ImpliedKeysRegistry {
-            Semiring.Key<Number>(numberType) implies { it }
+            Semiring.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

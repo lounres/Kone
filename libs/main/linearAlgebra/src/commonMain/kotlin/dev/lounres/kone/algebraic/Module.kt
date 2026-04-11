@@ -41,7 +41,7 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<LeftModule<Number, Vector>> = ImpliedKeysRegistry {
-            CommutativeGroup.Key<Vector>(numberType) implies { it }
+            CommutativeGroup.Key<Vector>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -80,7 +80,7 @@ public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<RightModule<Number, Vector>> = ImpliedKeysRegistry {
-            CommutativeGroup.Key<Vector>(numberType) implies { it }
+            CommutativeGroup.Key<Vector>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -116,8 +116,8 @@ public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModul
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Module<Number, Vector>> = ImpliedKeysRegistry {
-            LeftModule.Key<Number, Vector>(numberType, vectorType) implies { it }
-            RightModule.Key<Number, Vector>(numberType, vectorType) implies { it }
+            LeftModule.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            RightModule.Key<Number, Vector>(numberType, vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

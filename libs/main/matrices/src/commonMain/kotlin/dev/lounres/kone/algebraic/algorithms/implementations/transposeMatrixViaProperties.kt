@@ -63,7 +63,7 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
     fallbackTransposeMatrixComputer = block()
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -93,7 +93,7 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

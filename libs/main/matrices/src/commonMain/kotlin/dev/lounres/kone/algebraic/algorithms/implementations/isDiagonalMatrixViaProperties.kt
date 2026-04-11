@@ -10,7 +10,7 @@ import dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixChecker
 import dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -42,7 +42,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     fallbackIsDiagonalMatrixChecker = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -70,7 +70,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

@@ -7,10 +7,9 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.registry.getOrNull
@@ -94,7 +93,7 @@ public inline fun <Element> Hashing.Companion.getForOrElse(suppliedElementType: 
 /**
  * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
  */
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Element> Hashing.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
     Hashing.Key<Element>(suppliedElementType) correspondsTo Hashing.defaultFor<Element>()
 }

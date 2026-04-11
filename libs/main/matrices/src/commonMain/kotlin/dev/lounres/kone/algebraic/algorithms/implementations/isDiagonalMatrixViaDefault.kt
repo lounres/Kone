@@ -15,7 +15,7 @@ import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -53,7 +53,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault(
     matrixType: SuppliedType,
     numberRing: CommutativeRing<Number>,
@@ -65,7 +65,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -77,7 +77,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault(
     numberRing: CommutativeRing<Number>,
 ) {
@@ -89,7 +89,7 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault(
     numberType: SuppliedType,
 ) {

@@ -10,10 +10,11 @@ import dev.lounres.kone.algebraic.algorithms.ExponentComputer
 import dev.lounres.kone.algebraic.algorithms.ExponentKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.provideOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -67,7 +68,7 @@ public fun <Number, Matrix : MDList2<Number>> ExponentComputer.Companion.viaProp
     fallbackExponentMatrixComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -97,7 +98,7 @@ public fun <Number, Matrix : MDList2<Number>> ExponentComputer.Companion.setViaP
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

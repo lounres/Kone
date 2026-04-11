@@ -64,7 +64,7 @@ public fun <Number, Matrix : MDList2<Number>> HessenbergDecompositionComputer.Co
     fallbackHessenbergDecompositionComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -94,7 +94,7 @@ public fun <Number, Matrix : MDList2<Number>> HessenbergDecompositionComputer.Co
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

@@ -17,8 +17,8 @@ import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.collections.utils.forEachIndexed
 import dev.lounres.kone.collections.utils.lastIndexThat
-import dev.lounres.kone.registry.MutableRegistry
-import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.MutableProviderRegistry
+import dev.lounres.kone.registry.ProviderRegistry
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -31,7 +31,7 @@ import kotlin.contracts.contract
 public interface PolytopicConstruction {
     public val polytopes: KoneList<KoneReifiedSet<Polytope>>
     
-    public val properties: Registry get() = Registry.Empty
+    public val properties: ProviderRegistry get() = ProviderRegistry.Empty
     
     public companion object
 }
@@ -40,19 +40,19 @@ public interface MutablePolytopicConstruction : PolytopicConstruction {
     public fun add(polytope: Polytope)
     public fun remove(polytope: Polytope)
     
-    override val properties: MutableRegistry
+    override val properties: MutableProviderRegistry
     
     public companion object
 }
 
 public fun MutablePolytopicConstruction(
-    properties: MutableRegistry = MutableRegistry(),
+    properties: MutableProviderRegistry = MutableProviderRegistry(),
 ): MutablePolytopicConstruction = MutablePolytopicConstructionImpl(
     properties = properties,
 )
 
 private class MutablePolytopicConstructionImpl(
-    override val properties: MutableRegistry
+    override val properties: MutableProviderRegistry
 ) : MutablePolytopicConstruction {
     override var polytopes: KoneMutableList<KoneMutableReifiedSet<Polytope>> = KoneArrayGrowableList()
     
@@ -112,7 +112,7 @@ internal class PolytopicConstructionBuilderImpl : PolytopicConstructionBuilder {
             polytopes = KoneArrayGrowableList.generate(lastNonEmptyIndex + 1u) { polytopes[it] }
     }
     
-    override val properties: MutableRegistry = MutableRegistry()
+    override val properties: MutableProviderRegistry = MutableProviderRegistry()
 }
 
 public inline fun PolytopicConstruction.Companion.build(block: PolytopicConstructionBuilder.() -> Unit): PolytopicConstruction {

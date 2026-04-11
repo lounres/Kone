@@ -10,12 +10,11 @@ import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -61,7 +60,7 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverRing<Number, Vector, Point>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -114,8 +113,8 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverField<Number, Vector, Point>> = ImpliedKeysRegistry {
-            VectorSpace.Key<Number, Vector>(numberType, vectorType) implies { it }
-            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+            VectorSpace.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -144,7 +143,7 @@ public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vector
     AffineSpaceOverFieldViaVectorSpace(vectorSpace)
 
 @OptIn(DelicateSuppliedTypeConstructor::class)
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor(numberType: SuppliedType, vectorType: SuppliedType) {
     AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>(
         numberType,

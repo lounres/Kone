@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.ComplexNumber
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.DeterminantComputer
@@ -21,7 +20,7 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -91,7 +90,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaG
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination(
     matrixType: SuppliedType,
     field: Field<Number>,
@@ -103,7 +102,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -115,7 +114,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination(
     numberType: SuppliedType,
     field: Field<Number>,
@@ -128,7 +127,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useV
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination(
     numberType: SuppliedType,
 ) {

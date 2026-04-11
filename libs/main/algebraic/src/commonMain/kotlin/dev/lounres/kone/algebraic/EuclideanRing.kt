@@ -75,7 +75,7 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanSemiring<Number>> = ImpliedKeysRegistry {
-            CommutativeSemiring.Key<Number>(numberType) implies { it }
+            CommutativeSemiring.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -132,8 +132,8 @@ public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemir
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanRing<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>(numberType) implies { it }
-            EuclideanSemiring.Key<Number>(numberType) implies { it }
+            CommutativeRing.Key<Number>(numberType).impliesSame()
+            EuclideanSemiring.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

@@ -44,7 +44,7 @@ public fun VertexToAdjacentVerticesMappingComputer.Companion.properties(
     fallbackComputer = koneContextRegistry[VertexToAdjacentVerticesMappingComputer.Key]
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToAdjacentVerticesMappingComputer.Companion.setProperties(
     fallbackComputer: VertexToAdjacentVerticesMappingComputer,
 ) {
@@ -53,7 +53,7 @@ public fun VertexToAdjacentVerticesMappingComputer.Companion.setProperties(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToAdjacentVerticesMappingComputer.Companion.setProperties(
     block: VertexToAdjacentVerticesMappingComputer.Companion.() -> VertexToAdjacentVerticesMappingComputer,
 ) {

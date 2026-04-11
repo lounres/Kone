@@ -11,7 +11,6 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSetIterator
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.get
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)

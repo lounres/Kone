@@ -41,7 +41,7 @@ public interface EuclideanVectorSpaceOverRing<Number, Vector> : Module<Number, V
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanVectorSpaceOverRing<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -79,8 +79,8 @@ public interface EuclideanVectorSpaceOverField<Number, Vector> : VectorSpace<Num
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanVectorSpaceOverField<Number, Vector>> = ImpliedKeysRegistry {
-            VectorSpace.Key<Number, Vector>(numberType, vectorType) implies { it }
-            EuclideanVectorSpaceOverRing.Key<Number, Vector>(numberType, vectorType) implies { it }
+            VectorSpace.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            EuclideanVectorSpaceOverRing.Key<Number, Vector>(numberType, vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

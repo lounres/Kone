@@ -36,7 +36,7 @@ public interface Semigroup<Number> : Equality<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> = ImpliedKeysRegistry {
-            Equality.Key<Number>(numberType) implies { it }
+            Equality.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -73,7 +73,7 @@ public interface CommutativeSemigroup<Number> : Semigroup<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeSemigroup<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>(numberType) implies { it }
+            Semigroup.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

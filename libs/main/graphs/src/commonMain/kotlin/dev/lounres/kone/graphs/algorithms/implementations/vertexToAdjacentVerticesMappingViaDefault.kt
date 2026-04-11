@@ -21,7 +21,7 @@ import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.algorithms.VertexToAdjacentVerticesMappingComputer
 import dev.lounres.kone.graphs.algorithms.VertexToAdjacentVerticesMappingKey
 import dev.lounres.kone.graphs.algorithms.vertexToAdjacentVerticesMapping
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -51,12 +51,12 @@ private object VertexToAdjacentVerticesMappingComputerViaDefault : VertexToAdjac
 
 public fun VertexToAdjacentVerticesMappingComputer.Companion.default(): VertexToAdjacentVerticesMappingComputer = VertexToAdjacentVerticesMappingComputerViaDefault
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToAdjacentVerticesMappingComputer.Companion.setDefault() {
     VertexToAdjacentVerticesMappingComputer.Key correspondsTo RegisteredValueProvider.cached { default() }
 }
 
-context(_: MutableOwnedRegistry<Hypergraph>, graph: Hypergraph.Provider)
+context(_: MutableOwnedProviderRegistry<Hypergraph>, graph: Hypergraph.Provider)
 public fun VertexToAdjacentVerticesMappingComputer.Companion.useDefault() {
     VertexToAdjacentVerticesMappingKey correspondsTo RegisteredValueProvider.cached {
         (default()) {

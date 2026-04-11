@@ -9,10 +9,9 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.registry.getOrNull
@@ -106,7 +105,7 @@ context(koneContextRegistry: KoneContextRegistry)
 public inline fun <Element> Order.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> =
     koneContextRegistry.getOrElse(Order.Key(suppliedElementType), block)
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Element: Comparable<Element>> Order.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
     Order.Key<Element>(suppliedElementType) correspondsTo Order.defaultFor<Element>()
 }

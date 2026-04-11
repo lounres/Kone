@@ -5,13 +5,12 @@
 
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.DeterminantComputer
 import dev.lounres.kone.algebraic.algorithms.DeterminantKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -48,7 +47,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaP
     fallbackDeterminantComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -77,7 +76,7 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

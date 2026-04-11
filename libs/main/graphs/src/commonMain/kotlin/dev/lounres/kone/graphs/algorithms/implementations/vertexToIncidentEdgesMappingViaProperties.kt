@@ -13,11 +13,10 @@ import dev.lounres.kone.graphs.HypergraphEdge
 import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.algorithms.VertexToIncidentEdgesMappingComputer
 import dev.lounres.kone.graphs.algorithms.VertexToIncidentEdgesMappingKey
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
 
 
@@ -50,7 +49,7 @@ public fun VertexToIncidentEdgesMappingComputer.Companion.properties(
     fallbackComputer = koneContextRegistry[VertexToIncidentEdgesMappingComputer.Key]
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToIncidentEdgesMappingComputer.Companion.setProperties(
     fallbackComputer: VertexToIncidentEdgesMappingComputer,
 ) {
@@ -59,7 +58,7 @@ public fun VertexToIncidentEdgesMappingComputer.Companion.setProperties(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToIncidentEdgesMappingComputer.Companion.setProperties(
     block: VertexToIncidentEdgesMappingComputer.Companion.() -> VertexToIncidentEdgesMappingComputer,
 ) {

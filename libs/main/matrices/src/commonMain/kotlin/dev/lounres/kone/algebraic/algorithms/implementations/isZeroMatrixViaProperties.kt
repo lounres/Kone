@@ -38,7 +38,7 @@ public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaP
     fallbackIsZeroMatrixChecker = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -66,7 +66,7 @@ public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

@@ -22,11 +22,10 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
@@ -324,7 +323,7 @@ public fun <Number> EuclideanSpaceOverRing.Companion.mdList1(ring: Ring<Number>,
 public fun <Number> EuclideanSpaceOverField.Companion.mdList1(field: Field<Number>, dimension: UInt): EuclideanSpaceOverField<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> =
     MDList1EuclideanSpaceOverField(field, dimension)
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
@@ -364,7 +363,7 @@ public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: S
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(

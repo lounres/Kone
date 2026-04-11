@@ -10,10 +10,9 @@ import dev.lounres.kone.collections.utils.reversed
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.registry.MutableRegistry
-import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.MutableProviderRegistry
+import dev.lounres.kone.registry.ProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.set
 import kotlin.jvm.JvmName
 
@@ -28,10 +27,10 @@ public data class TopologicallySortedVertices(
     }
 }
 
-public val Registry.topologicallySortedVertices: TopologicallySortedVertices
+public val ProviderRegistry.topologicallySortedVertices: TopologicallySortedVertices
     @JvmName("getHypergraphOwnedRegistryTopologicallySortedVertices") get() = get(TopologicallySortedVertices.Key)
 
-public var MutableRegistry.topologicallySortedVertices: TopologicallySortedVertices
+public var MutableProviderRegistry.topologicallySortedVertices: TopologicallySortedVertices
     @JvmName("getHypergraphMutableOwnedRegistryTopologicallySortedVertices") get() = get(TopologicallySortedVertices.Key)
     @JvmName("setHypergraphMutableOwnedRegistryTopologicallySortedVertices") set(value) { set(TopologicallySortedVertices.Key, value) }
 

@@ -62,8 +62,8 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Algebra<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
-            Ring.Key<Vector>(vectorType) implies { it }
+            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            Ring.Key<Vector>(vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -107,8 +107,8 @@ public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, C
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeAlgebra<Number, Vector>> = ImpliedKeysRegistry {
-            Algebra.Key<Number, Vector>(numberType, vectorType) implies { it }
-            CommutativeRing.Key<Vector>(vectorType) implies { it }
+            Algebra.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            CommutativeRing.Key<Vector>(vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

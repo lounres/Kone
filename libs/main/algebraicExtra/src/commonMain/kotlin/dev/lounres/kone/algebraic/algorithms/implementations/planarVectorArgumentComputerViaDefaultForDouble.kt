@@ -7,7 +7,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.atan2
@@ -20,7 +20,7 @@ private object PlanarVectorArgumentComputerViaDefaultForDouble : PlanarVectorArg
 public fun PlanarVectorArgumentComputer.Companion.viaDefaultForDouble(): PlanarVectorArgumentComputer<Double> =
     PlanarVectorArgumentComputerViaDefaultForDouble
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun PlanarVectorArgumentComputer.Companion.setViaDefaultForDouble() {
     PlanarVectorArgumentComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
 }

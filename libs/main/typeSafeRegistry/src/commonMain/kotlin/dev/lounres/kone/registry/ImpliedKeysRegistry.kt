@@ -51,6 +51,11 @@ public class ImpliedKeysRegistryBuilder<I> @PublishedApi internal constructor() 
         content[RegistryKeyMapWrapper(this)] = value
     }
     
+    public fun RegistryKey<in I>.impliesSame() {
+        val content = content /*?: error(NO_CONTENT_MESSAGE)*/
+        content[RegistryKeyMapWrapper(this)] = { it }
+    }
+    
     public companion object {
         private const val NO_CONTENT_MESSAGE = "The implied keys registry builder is already finalized. Apply the operation to the built result."
     }

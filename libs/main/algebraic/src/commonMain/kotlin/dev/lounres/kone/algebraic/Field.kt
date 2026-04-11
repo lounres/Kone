@@ -131,7 +131,7 @@ public interface Field<Number> : CommutativeRing<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Field<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>(numberType) implies { it }
+            CommutativeRing.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

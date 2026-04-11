@@ -34,3 +34,28 @@ public inline fun <Owner> OwnedRegistry.Companion.build(block: MutableOwnedRegis
     }
     return OwnedRegistry(registry = Registry.build { MutableOwnedRegistry<Owner>(this).block() })
 }
+
+@JvmInline
+public value class OwnedProviderRegistry<Owner>(public val registry: ProviderRegistry) : ProviderRegistry by registry {
+    override fun toString(): String = registry.toString()
+    
+    public companion object
+}
+
+public fun <Owner> OwnedProviderRegistry.Companion.empty(): OwnedProviderRegistry<Owner> = OwnedProviderRegistry(ProviderRegistry.Empty)
+
+@JvmInline
+public value class MutableOwnedProviderRegistry<Owner>(public val registry: MutableProviderRegistry) : MutableProviderRegistry by registry {
+    override fun toString(): String = registry.toString()
+}
+
+public fun <Owner> MutableOwnedProviderRegistry(): MutableOwnedProviderRegistry<Owner> = MutableOwnedProviderRegistry(MutableProviderRegistry())
+
+public fun <Owner> MutableOwnedProviderRegistry<Owner>.asImmutable(): OwnedProviderRegistry<Owner> = OwnedProviderRegistry(this.registry)
+
+public inline fun <Owner> OwnedProviderRegistry.Companion.build(block: MutableOwnedProviderRegistry<Owner>.() -> Unit): OwnedProviderRegistry<Owner> {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return OwnedProviderRegistry(registry = ProviderRegistry.build { MutableOwnedProviderRegistry<Owner>(this).block() })
+}

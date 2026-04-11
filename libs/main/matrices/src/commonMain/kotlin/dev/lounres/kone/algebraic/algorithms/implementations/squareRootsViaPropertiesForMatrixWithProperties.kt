@@ -65,7 +65,7 @@ public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.viaP
     fallbackSquareRootComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -95,7 +95,7 @@ public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

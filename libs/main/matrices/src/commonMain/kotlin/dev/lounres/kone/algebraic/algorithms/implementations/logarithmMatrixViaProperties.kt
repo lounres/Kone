@@ -11,10 +11,11 @@ import dev.lounres.kone.algebraic.algorithms.LogarithmKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.orThrow
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.provideOrNull
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -68,7 +69,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaPro
     fallbackLogarithmMatrixComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -98,7 +99,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setVia
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

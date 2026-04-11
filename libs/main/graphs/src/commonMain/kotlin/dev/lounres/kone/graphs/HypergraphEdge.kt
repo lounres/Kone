@@ -7,15 +7,13 @@ package dev.lounres.kone.graphs
 
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.empty
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.set
 import kotlin.jvm.JvmName
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -24,7 +22,7 @@ import kotlin.reflect.KProperty
 @Suppress("EqualsOrHashCode")
 public class HypergraphEdge(
     public val vertices: KoneList<HypergraphVertex>,
-    public val properties: OwnedRegistry<HypergraphEdge> = OwnedRegistry.empty(),
+    public val properties: OwnedProviderRegistry<HypergraphEdge> = OwnedProviderRegistry.empty(),
 ) {
     override fun equals(other: Any?): Boolean = this === other
     
@@ -53,16 +51,16 @@ public class HypergraphEdge(
 
 public inline fun HypergraphEdge(
     vertices: KoneList<HypergraphVertex>,
-    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit
+    propertiesBuilder: MutableOwnedProviderRegistry<HypergraphEdge>.() -> Unit
 ): HypergraphEdge =
     HypergraphEdge(
         vertices = vertices,
-        properties = OwnedRegistry.build(propertiesBuilder),
+        properties = OwnedProviderRegistry.build(propertiesBuilder),
     )
 
 public fun HypergraphEdge(
     vararg vertices: HypergraphVertex,
-    properties: OwnedRegistry<HypergraphEdge> = OwnedRegistry.empty(),
+    properties: OwnedProviderRegistry<HypergraphEdge> = OwnedProviderRegistry.empty(),
 ): HypergraphEdge =
     HypergraphEdge(
         vertices = KoneArray(vertices),
@@ -71,17 +69,17 @@ public fun HypergraphEdge(
 
 public inline fun HypergraphEdge(
     vararg vertices: HypergraphVertex,
-    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit
+    propertiesBuilder: MutableOwnedProviderRegistry<HypergraphEdge>.() -> Unit
 ): HypergraphEdge =
     HypergraphEdge(
         vertices = KoneArray(vertices),
-        properties = OwnedRegistry.build(propertiesBuilder),
+        properties = OwnedProviderRegistry.build(propertiesBuilder),
     )
 
 public fun HypergraphEdge.Companion.directed(
     start: HypergraphVertex,
     end: HypergraphVertex,
-    properties: OwnedRegistry<HypergraphEdge> = OwnedRegistry.empty(),
+    properties: OwnedProviderRegistry<HypergraphEdge> = OwnedProviderRegistry.empty(),
 ): HypergraphEdge =
     HypergraphEdge(start, end) {
         setFrom(properties)
@@ -91,17 +89,17 @@ public fun HypergraphEdge.Companion.directed(
 public inline fun HypergraphEdge.Companion.directed(
     start: HypergraphVertex,
     end: HypergraphVertex,
-    propertiesBuilder: MutableOwnedRegistry<HypergraphEdge>.() -> Unit,
+    propertiesBuilder: MutableOwnedProviderRegistry<HypergraphEdge>.() -> Unit,
 ): HypergraphEdge =
     HypergraphEdge(start, end) {
         propertiesBuilder()
         GraphEdgeDirection.Key correspondsTo GraphEdgeDirection.FromFirstToSecond
     }
 
-public val OwnedRegistry<HypergraphEdge>.name: String
+public val OwnedProviderRegistry<HypergraphEdge>.name: String
     @JvmName("getHypergraphEdgeOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
 
-public var MutableOwnedRegistry<HypergraphEdge>.name: String
+public var MutableOwnedProviderRegistry<HypergraphEdge>.name: String
     @JvmName("getHypergraphEdgeMutableOwnedRegistryName") get() = get(HypergraphEdge.NameKey)
     @JvmName("setHypergraphEdgeMutableOwnedRegistryName") set(value) { set(HypergraphEdge.NameKey, value) }
 

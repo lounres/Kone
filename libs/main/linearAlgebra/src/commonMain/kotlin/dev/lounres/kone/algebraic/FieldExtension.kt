@@ -49,8 +49,8 @@ public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vec
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<FieldExtension<Number, Vector>> = ImpliedKeysRegistry {
-            Algebra.Key<Number, Vector>(numberType, vectorType) implies { it }
-            Field.Key<Vector>(vectorType) implies { it }
+            Algebra.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            Field.Key<Vector>(vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

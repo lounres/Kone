@@ -7,20 +7,20 @@ package dev.lounres.kone.registry
 
 
 /**
- * Describes how [RegistryKey]s are equated and stored in [Registry].
+ * Describes how [RegistryKey]s are equated and stored in [ProviderRegistry].
  */
 public interface RegistryKeyContext {
     /**
      * Checks equality between the [left] and the [right] keys.
      *
-     * This equality is used by [Registry] to decide how the keys are stored and what value to retrieve by the key.
+     * This equality is used by [ProviderRegistry] to decide how the keys are stored and what value to retrieve by the key.
      */
     public fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean
     
     /**
      * Defines hash code of the key.
      *
-     * This hash code is used by [Registry] to decide how the keys are stored and what value to retrieve by the key.
+     * This hash code is used by [ProviderRegistry] to decide how the keys are stored and what value to retrieve by the key.
      */
     public fun hashCodeOf(key: RegistryKey<*>): Int
 }

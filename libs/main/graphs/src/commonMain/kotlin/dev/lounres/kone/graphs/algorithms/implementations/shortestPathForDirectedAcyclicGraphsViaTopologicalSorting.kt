@@ -27,11 +27,10 @@ import dev.lounres.kone.graphs.Path
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.graphs.end
 import dev.lounres.kone.graphs.weightOfType
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
@@ -127,7 +126,7 @@ public fun <Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companio
     topologicalSortingComputer = topologicalSortingComputer,
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting(
     weightType: SuppliedType,
 ) {
@@ -232,7 +231,7 @@ public fun <Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Compani
     topologicalSortingComputer = topologicalSortingComputer,
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting(
     weightType: SuppliedType,
 ) {

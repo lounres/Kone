@@ -29,12 +29,11 @@ import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
@@ -242,7 +241,7 @@ public class EuclideanSpace2OverRing<Number>(
                     ),
                     isNullable = false
                 ),
-            ) implies { it }
+            ).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -250,7 +249,7 @@ public class EuclideanSpace2OverRing<Number>(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun EuclideanSpace2OverRing.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpace2OverRing.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {
@@ -417,7 +416,7 @@ public class EuclideanSpace2OverField<Number>(
                     ),
                     isNullable = false
                 ),
-            ) implies { it }
+            ).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -425,7 +424,7 @@ public class EuclideanSpace2OverField<Number>(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun EuclideanSpace2OverField.Companion.setFor(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     EuclideanSpace2OverField.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {

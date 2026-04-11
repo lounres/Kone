@@ -16,7 +16,7 @@ import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -54,7 +54,7 @@ public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Compa
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaDefault(
     matrixType: SuppliedType,
     numberRing: CommutativeRing<Number>,
@@ -66,7 +66,7 @@ public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Compa
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaDefault(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -78,7 +78,7 @@ public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Compa
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.useViaDefault(
     numberRing: CommutativeRing<Number>,
 ) {
@@ -90,7 +90,7 @@ public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Compa
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.useViaDefault(
     numberType: SuppliedType,
 ) {

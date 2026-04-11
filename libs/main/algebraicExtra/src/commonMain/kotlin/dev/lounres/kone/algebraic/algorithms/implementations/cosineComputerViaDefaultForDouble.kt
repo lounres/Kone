@@ -7,7 +7,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.algorithms.CosineComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.suppliedType
 
@@ -19,7 +19,7 @@ private object CosineComputerViaDefaultForDouble : CosineComputer<Double> {
 public fun CosineComputer.Companion.viaDefaultForDouble(): CosineComputer<Double> =
     CosineComputerViaDefaultForDouble
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun CosineComputer.Companion.setViaDefaultForDouble() {
     CosineComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
 }

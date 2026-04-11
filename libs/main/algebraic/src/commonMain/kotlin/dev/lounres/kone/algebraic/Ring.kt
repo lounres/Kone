@@ -196,8 +196,8 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Ring<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>(numberType) implies { it }
-            CommutativeGroup.Key<Number>(numberType) implies { it }
+            Semigroup.Key<Number>(numberType).impliesSame()
+            CommutativeGroup.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -382,8 +382,8 @@ public interface CommutativeRing<Number> : Ring<Number>, CommutativeSemiring<Num
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeRing<Number>> = ImpliedKeysRegistry {
-            Ring.Key<Number>(numberType) implies { it }
-            CommutativeSemiring.Key<Number>(numberType) implies { it }
+            Ring.Key<Number>(numberType).impliesSame()
+            CommutativeSemiring.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

@@ -14,11 +14,10 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -394,7 +393,7 @@ public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberType: Suppl
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> ComplexNumber.Companion.setFieldExtensionOver(numberType: SuppliedType) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val complexNumberType = SuppliedType.Regular(

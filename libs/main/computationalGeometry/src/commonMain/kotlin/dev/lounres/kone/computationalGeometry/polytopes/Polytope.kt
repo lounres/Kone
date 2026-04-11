@@ -8,14 +8,12 @@ package dev.lounres.kone.computationalGeometry.polytopes
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.empty
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.set
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Reification
@@ -30,7 +28,7 @@ import kotlin.reflect.KProperty
 public class Polytope(
     public val dimension: UInt,
     public val faces: KoneList<KoneReifiedSet<Polytope>>,
-    public val properties: OwnedRegistry<Polytope> = OwnedRegistry.empty(),
+    public val properties: OwnedProviderRegistry<Polytope> = OwnedProviderRegistry.empty(),
 ) {
     init {
         require(faces.size == dimension) { "Cannot instantiate polytope: dimension parameter $dimension is not equal to size ${faces.size} of faces list" }
@@ -63,12 +61,12 @@ public class Polytope(
 public fun Polytope(
     dimension: UInt,
     faces: KoneList<KoneReifiedSet<Polytope>>,
-    propertiesBuilder: MutableOwnedRegistry<Polytope>.() -> Unit
+    propertiesBuilder: MutableOwnedProviderRegistry<Polytope>.() -> Unit
 ): Polytope =
     Polytope(
         dimension = dimension,
         faces = faces,
-        properties = OwnedRegistry.build(propertiesBuilder),
+        properties = OwnedProviderRegistry.build(propertiesBuilder),
     )
 
 public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
@@ -81,10 +79,10 @@ public val Polytope.verticesOrSelf: KoneReifiedSet<Polytope>
             elementHashing = Hashing.defaultFor(),
         )
 
-public val OwnedRegistry<Polytope>.name: String
+public val OwnedProviderRegistry<Polytope>.name: String
     @JvmName("getPolytopeOwnedRegistryName") get() = get(Polytope.NameKey)
 
-public var MutableOwnedRegistry<Polytope>.name: String
+public var MutableOwnedProviderRegistry<Polytope>.name: String
     @JvmName("getPolytopeMutableOwnedRegistryName") get() = get(Polytope.NameKey)
     @JvmName("setPolytopeMutableOwnedRegistryName") set(value) { set(Polytope.NameKey, value) }
 

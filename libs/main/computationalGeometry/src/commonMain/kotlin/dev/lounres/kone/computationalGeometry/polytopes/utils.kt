@@ -36,8 +36,8 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
@@ -52,7 +52,7 @@ public fun Polytope.validate(): Boolean {
 }
 
 public inline fun Polytope.copyMapping(
-    propertiesMapper: (currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> OwnedRegistry<Polytope>
+    propertiesMapper: (currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> OwnedProviderRegistry<Polytope>
 ): Polytope {
     val faces = KoneArrayFixedCapacityList<KoneMap<Polytope, Polytope>>(this.dimension)
     for (dim in 0u ..< this.dimension) {
@@ -91,8 +91,8 @@ public inline fun Polytope.copyMapping(
 }
 
 public inline fun Polytope.copyBuilding(
-    propertiesMapper: MutableOwnedRegistry<Polytope>.(currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> Unit
-): Polytope = copyMapping { currentPolytope, polytopesMapping -> OwnedRegistry.build { propertiesMapper(currentPolytope, polytopesMapping) } }
+    propertiesMapper: MutableOwnedProviderRegistry<Polytope>.(currentPolytope: Polytope, polytopesMapping: KoneList<KoneMap<Polytope, Polytope>>) -> Unit
+): Polytope = copyMapping { currentPolytope, polytopesMapping -> OwnedProviderRegistry.build { propertiesMapper(currentPolytope, polytopesMapping) } }
 
 public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
     require(vertices.isNotEmpty()) { TODO() }

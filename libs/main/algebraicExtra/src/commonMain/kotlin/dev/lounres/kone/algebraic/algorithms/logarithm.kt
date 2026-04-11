@@ -44,7 +44,7 @@ public interface LogarithmSoftComputer<Number> : LogarithmComputer<Number> {
         public val numberType: SuppliedType,
     ) : RegistryKey<LogarithmSoftComputer<Number>> {
         override val impliedKeys: ImpliedKeysRegistry<LogarithmSoftComputer<Number>> = ImpliedKeysRegistry {
-            LogarithmComputer.Key<Number>(numberType) implies { it }
+            LogarithmComputer.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
         override fun hashCode(): Int = numberType.hashCode()

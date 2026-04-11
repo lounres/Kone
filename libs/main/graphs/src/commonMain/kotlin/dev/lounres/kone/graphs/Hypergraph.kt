@@ -24,7 +24,7 @@ public interface Hypergraph {
     public val vertices: KoneReifiedSet<HypergraphVertex>
     public val edges: KoneReifiedSet<HypergraphEdge>
     
-    public val properties: Registry get() = Registry.Empty
+    public val properties: ProviderRegistry get() = ProviderRegistry.Empty
     
     public companion object;
     
@@ -75,23 +75,23 @@ public interface MutableHypergraph : Hypergraph {
     public fun remove(vertex: HypergraphVertex)
     public fun remove(edge: HypergraphEdge)
     
-    override val properties: MutableRegistry
+    override val properties: MutableProviderRegistry
     
     public companion object
 }
 
-public inline fun MutableHypergraph.properties(block: MutableOwnedRegistry<Hypergraph>.() -> Unit) {
-    MutableOwnedRegistry<Hypergraph>(this.properties).block()
+public inline fun MutableHypergraph.properties(block: MutableOwnedProviderRegistry<Hypergraph>.() -> Unit) {
+    MutableOwnedProviderRegistry<Hypergraph>(this.properties).block()
 }
 
 public fun MutableHypergraph(
-    properties: MutableRegistry = MutableRegistry(),
+    properties: MutableProviderRegistry = MutableProviderRegistry(),
 ): MutableHypergraph = MutableHypergraphImpl(
     properties = properties,
 )
 
 private class MutableHypergraphImpl(
-    override val properties: MutableRegistry
+    override val properties: MutableProviderRegistry
 ) : MutableHypergraph {
     override val vertices: KoneMutableReifiedSet<HypergraphVertex> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
     override val edges: KoneMutableReifiedSet<HypergraphEdge> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
@@ -147,7 +147,7 @@ internal class HypergraphBuilderImpl : HypergraphBuilder {
         edges.remove(edge)
     }
     
-    override val properties = MutableRegistry()
+    override val properties = MutableProviderRegistry()
 }
 
 public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit): Hypergraph {
@@ -179,7 +179,7 @@ public fun Hypergraph.Companion.Factory(
         )
     }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Hypergraph.Companion.setFactory(
     block: context(Provider) HypergraphBuilder.() -> Unit = {},
 ) {

@@ -12,12 +12,11 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.registry.getOrNull
@@ -118,7 +117,7 @@ public inline fun <Element> Reification.Companion.getForOrElse(suppliedElementTy
  * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
  * The set reification just only checks that the element is of type [Element].
  */
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public inline fun <reified Element> Reification.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
     Reification.Key<Element>(suppliedElementType) correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
 }

@@ -16,15 +16,13 @@ import dev.lounres.kone.algebraic.algorithms.sin
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
-import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.reflect.KVariance.OUT
 
 
@@ -67,7 +65,7 @@ public fun <Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
     numberRing: CommutativeRing<Number>,
@@ -96,7 +94,7 @@ public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
 ) {

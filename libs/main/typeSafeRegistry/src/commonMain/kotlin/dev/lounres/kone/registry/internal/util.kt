@@ -10,3 +10,7 @@ internal object EmptyIterator : Iterator<Nothing> {
     override fun hasNext(): Boolean = false
     override fun next(): Nothing = throw NoSuchElementException("Empty iterator does not contain anything")
 }
+
+internal object EmptyIterable : Iterable<Nothing> {
+    override fun iterator(): Iterator<Nothing> = EmptyIterator
+}

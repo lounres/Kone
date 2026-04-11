@@ -8,7 +8,6 @@ package dev.lounres.kone.computationalGeometry
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -45,8 +44,8 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanSpaceOverRing<Number, Vector, Point>> = ImpliedKeysRegistry {
-            EuclideanVectorSpaceOverRing.Key<Number, Vector>(numberType, vectorType) implies { it }
-            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+            EuclideanVectorSpaceOverRing.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            AffineSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -87,9 +86,9 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<EuclideanSpaceOverField<Number, Vector, Point>> = ImpliedKeysRegistry {
-            EuclideanVectorSpaceOverField.Key<Number, Vector>(numberType, vectorType) implies { it }
-            AffineSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
-            EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType) implies { it }
+            EuclideanVectorSpaceOverField.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            AffineSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType).impliesSame()
+            EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

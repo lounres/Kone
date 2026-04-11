@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -145,7 +145,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBa
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
     matrixType: SuppliedType,
     functionType: SuppliedType,
@@ -178,7 +178,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBa
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
     numberType: SuppliedType,
     matrixType: SuppliedType,

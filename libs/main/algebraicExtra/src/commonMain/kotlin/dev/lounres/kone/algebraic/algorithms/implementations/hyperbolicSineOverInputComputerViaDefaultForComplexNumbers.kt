@@ -8,11 +8,10 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
@@ -88,7 +87,7 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForCompl
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
     field: Field<Number>,
@@ -121,7 +120,7 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForCo
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
 ) {

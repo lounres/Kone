@@ -5,12 +5,11 @@
 
 package dev.lounres.kone.contexts
 
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistry
-import dev.lounres.kone.registry.Registry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.OwnedProviderRegistry
+import dev.lounres.kone.registry.ProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
-import dev.lounres.kone.registry.get
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmInline
@@ -25,8 +24,8 @@ public value class KoneContextRegistry(
     /**
      * Underlying type-safe registry.
      */
-    public val contexts: OwnedRegistry<KoneContextRegistry>
-) : Registry by contexts {
+    public val contexts: OwnedProviderRegistry<KoneContextRegistry>
+) : ProviderRegistry by contexts {
     public companion object;
     
     public fun interface Provider {
@@ -35,9 +34,8 @@ public value class KoneContextRegistry(
 }
 
 public fun KoneContextRegistry.tryToGetAll() {
-    for ((val provider = provider) in this) {
-        val _ = provider.get()
-    }
+    @Suppress("ControlFlowWithEmptyBody")
+    for (_ in this.asRegistrationIterable()) {}
 }
 
 ///**
@@ -806,15 +804,15 @@ public annotation class KoneContextRegistryBuilderDsl
 /**
  * Builder function for [KoneContextRegistry].
  */
-public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl MutableOwnedRegistry<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
+public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    return KoneContextRegistry(OwnedRegistry.build { this.block() })
+    return KoneContextRegistry(OwnedProviderRegistry.build { this.block() })
 }
 
 public inline fun KoneContextRegistry.Companion.buildWithProvider(
-    block: context(KoneContextRegistry.Provider) (@KoneContextRegistryBuilderDsl MutableOwnedRegistry<KoneContextRegistry>).() -> Unit
+    block: context(KoneContextRegistry.Provider) (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit
 ): KoneContextRegistry {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -824,7 +822,7 @@ public inline fun KoneContextRegistry.Companion.buildWithProvider(
         override fun get(): KoneContextRegistry =
             result ?: error("KoneContextRegistry is not yet initialized but was requested by its properties.")
     }
-    val result = KoneContextRegistry(OwnedRegistry.build { block(provider, this) })
+    val result = KoneContextRegistry(OwnedProviderRegistry.build { block(provider, this) })
     provider.result = result
     return result
 }

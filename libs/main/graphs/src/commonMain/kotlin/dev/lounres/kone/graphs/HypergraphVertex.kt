@@ -5,14 +5,12 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.registry.MutableOwnedRegistry
-import dev.lounres.kone.registry.OwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import dev.lounres.kone.registry.empty
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.set
 import kotlin.jvm.JvmName
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -20,7 +18,7 @@ import kotlin.reflect.KProperty
 
 @Suppress("EqualsOrHashCode")
 public class HypergraphVertex(
-    public val properties: OwnedRegistry<HypergraphVertex> = OwnedRegistry.empty(),
+    public val properties: OwnedProviderRegistry<HypergraphVertex> = OwnedProviderRegistry.empty(),
 ) {
     override fun equals(other: Any?): Boolean = this === other
     
@@ -52,15 +50,15 @@ public class HypergraphVertex(
     }
 }
 
-public fun HypergraphVertex(propertiesBuilder: MutableOwnedRegistry<HypergraphVertex>.() -> Unit): HypergraphVertex =
+public fun HypergraphVertex(propertiesBuilder: MutableOwnedProviderRegistry<HypergraphVertex>.() -> Unit): HypergraphVertex =
     HypergraphVertex(
-        properties = OwnedRegistry.build(propertiesBuilder),
+        properties = OwnedProviderRegistry.build(propertiesBuilder),
     )
 
-public val OwnedRegistry<HypergraphVertex>.name: String
+public val OwnedProviderRegistry<HypergraphVertex>.name: String
     @JvmName("getHypergraphVertexOwnedRegistryName") get() = get(HypergraphVertex.NameKey)
 
-public var MutableOwnedRegistry<HypergraphVertex>.name: String
+public var MutableOwnedProviderRegistry<HypergraphVertex>.name: String
     @JvmName("getHypergraphVertexMutableOwnedRegistryName") get() = get(HypergraphVertex.NameKey)
     @JvmName("setHypergraphVertexMutableOwnedRegistryName") set(value) { set(HypergraphVertex.NameKey, value) }
 

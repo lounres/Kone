@@ -64,7 +64,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     fallbackQRDecompositionComputer = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -94,7 +94,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

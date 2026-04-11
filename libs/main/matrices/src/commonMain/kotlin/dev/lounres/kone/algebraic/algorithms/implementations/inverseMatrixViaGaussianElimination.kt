@@ -107,7 +107,7 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.vi
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<Number, Matrix>,
@@ -121,7 +121,7 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.se
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -134,7 +134,7 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.se
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -163,7 +163,7 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.us
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
     numberType: SuppliedType,
     matrixType: SuppliedType,

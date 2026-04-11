@@ -7,7 +7,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.algorithms.HyperbolicCosineComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.suppliedType
 
@@ -19,7 +19,7 @@ private object HyperbolicCosineComputerViaDefaultForDouble : HyperbolicCosineCom
 public fun HyperbolicCosineComputer.Companion.viaDefaultForDouble(): HyperbolicCosineComputer<Double> =
     HyperbolicCosineComputerViaDefaultForDouble
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun HyperbolicCosineComputer.Companion.setViaDefaultForDouble() {
     HyperbolicCosineComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
 }

@@ -21,7 +21,7 @@ import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.algorithms.VertexToIncidentEdgesMappingComputer
 import dev.lounres.kone.graphs.algorithms.VertexToIncidentEdgesMappingKey
 import dev.lounres.kone.graphs.algorithms.vertexToIncidentEdgesMapping
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -48,12 +48,12 @@ private object VertexToIncidentEdgesMappingComputerViaDefault : VertexToIncident
 
 public fun VertexToIncidentEdgesMappingComputer.Companion.default(): VertexToIncidentEdgesMappingComputer = VertexToIncidentEdgesMappingComputerViaDefault
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun VertexToIncidentEdgesMappingComputer.Companion.setDefault() {
     VertexToIncidentEdgesMappingComputer.Key correspondsTo RegisteredValueProvider.cached { default() }
 }
 
-context(_: MutableOwnedRegistry<Hypergraph>, graph: Hypergraph.Provider)
+context(_: MutableOwnedProviderRegistry<Hypergraph>, graph: Hypergraph.Provider)
 public fun VertexToIncidentEdgesMappingComputer.Companion.useDefault() {
     VertexToIncidentEdgesMappingKey correspondsTo RegisteredValueProvider.cached {
         (default()) {

@@ -7,7 +7,7 @@ package dev.lounres.kone.registry
 
 
 /**
- * A key that is used to retrieve a value of type [T] from [Registry].
+ * A key that is used to retrieve a value of type [T] from [ProviderRegistry].
  */
 public interface RegistryKey<T> {
     /**

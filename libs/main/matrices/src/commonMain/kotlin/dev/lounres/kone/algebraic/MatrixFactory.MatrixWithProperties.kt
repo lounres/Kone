@@ -10,7 +10,7 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -22,7 +22,7 @@ import kotlin.reflect.KVariance.INVARIANT
 
 private class MatrixWithPropertiesFactory<Number, Matrix : MDList2<Number>>(
     private val matrixFactory: MatrixFactory<Number, Matrix>,
-    private val propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit,
+    private val propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit,
 ) : MatrixFactory<Number, MatrixWithProperties<Number, Matrix>> {
     override fun generateMatrix(
         rowNumber: UInt,
@@ -57,18 +57,18 @@ private class MatrixWithPropertiesFactory<Number, Matrix : MDList2<Number>>(
 
 public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.forMatrixWithProperties(
     matrixFactory: MatrixFactory<Number, Matrix>,
-    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit,
+    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit,
 ): MatrixFactory<Number, MatrixWithProperties<Number, Matrix>> =
     MatrixWithPropertiesFactory(
         matrixFactory = matrixFactory,
         propertiesBuilder = propertiesBuilder,
     )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
-    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
+    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
 ) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val matrixWithPropertiesType = SuppliedType.Regular(

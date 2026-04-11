@@ -58,7 +58,7 @@ public interface Monoid<Number> : Semigroup<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>(numberType) implies { it }
+            Semigroup.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -145,8 +145,8 @@ public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigrou
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeMonoid<Number>> = ImpliedKeysRegistry {
-            Monoid.Key<Number>(numberType) implies { it }
-            CommutativeSemigroup.Key<Number>(numberType) implies { it }
+            Monoid.Key<Number>(numberType).impliesSame()
+            CommutativeSemigroup.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

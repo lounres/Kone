@@ -10,7 +10,7 @@ import dev.lounres.kone.algebraic.algorithms.IsScalarMatrixChecker
 import dev.lounres.kone.algebraic.algorithms.IsScalarMatrixKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -42,7 +42,7 @@ public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.vi
     fallbackIsScalarMatrixChecker = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.viaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -70,7 +70,7 @@ public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.vi
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.viaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

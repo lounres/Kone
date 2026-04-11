@@ -73,7 +73,7 @@ public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
     field: Field<Number>,
@@ -100,7 +100,7 @@ public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
     numberType: SuppliedType,
 ) {

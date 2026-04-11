@@ -60,7 +60,7 @@ public class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Numb
             ),
             isNullable = false,
         )
-        ScalarBaseForMatrixExponentKey<ComplexNumber<Number>>(numberType = complexNumberType) implies { it }
+        ScalarBaseForMatrixExponentKey<ComplexNumber<Number>>(numberType = complexNumberType).impliesSame()
     }
     override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
     override fun hashCode(): Int = numberType.hashCode()
@@ -82,7 +82,7 @@ public class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Num
             ),
             isNullable = false,
         )
-        ScalarBaseForMatrixLogarithmKey<ComplexNumber<Number>>(numberType = complexNumberType) implies { it }
+        ScalarBaseForMatrixLogarithmKey<ComplexNumber<Number>>(numberType = complexNumberType).impliesSame()
     }
     override fun equals(other: Any?): Boolean = other is ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<*> && numberType == other.numberType
     override fun hashCode(): Int = numberType.hashCode()

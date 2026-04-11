@@ -54,7 +54,7 @@ public interface Group<Number> : Monoid<Number> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<Group<Number>> = ImpliedKeysRegistry {
-            Monoid.Key<Number>(numberType) implies { it }
+            Monoid.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -140,8 +140,8 @@ public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Num
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<CommutativeGroup<Number>> = ImpliedKeysRegistry {
-            Group.Key<Number>(numberType) implies { it }
-            CommutativeMonoid.Key<Number>(numberType) implies { it }
+            Group.Key<Number>(numberType).impliesSame()
+            CommutativeMonoid.Key<Number>(numberType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()

@@ -150,7 +150,7 @@ public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : Matr
         public val matrixType: SuppliedType,
     ) : RegistryKey<MatrixCategoryOverField<Number, Matrix>> {
         override val impliedKeys: ImpliedKeysRegistry<MatrixCategoryOverField<Number, Matrix>> = ImpliedKeysRegistry {
-            MatrixCategoryOverRing.Key<Number, Matrix>(matrixType = matrixType) implies { it }
+            MatrixCategoryOverRing.Key<Number, Matrix>(matrixType = matrixType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
         override fun hashCode(): Int = matrixType.hashCode()

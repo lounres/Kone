@@ -38,7 +38,7 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                 isNullable = false
             )
         override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType) implies { it }
+            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
         }
         override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
         override fun hashCode(): Int = typeKey.hashCode()
@@ -71,7 +71,7 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
                     isNullable = false
                 )
             override val impliedKeys: ImpliedKeysRegistry<FiniteDimensional<Number, Vector>> = ImpliedKeysRegistry {
-                VectorSpace.Key<Number, Vector>(numberType, vectorType) implies { it }
+                VectorSpace.Key<Number, Vector>(numberType, vectorType).impliesSame()
             }
             override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
             override fun hashCode(): Int = typeKey.hashCode()

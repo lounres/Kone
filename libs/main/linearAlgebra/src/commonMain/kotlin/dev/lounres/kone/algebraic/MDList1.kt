@@ -12,11 +12,10 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
@@ -137,7 +136,7 @@ private class MDList1Module<Number>(
 public fun <Number> Module.Companion.mdList1(ring: CommutativeRing<Number>, dimension: UInt): Module<Number, MDList1<Number>> =
     MDList1Module(ring = ring, dimension = dimension)
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val mdList1Type = SuppliedType.Regular(
@@ -274,7 +273,7 @@ private class MDList1VectorSpace<Number>(
 public fun <Number> VectorSpace.Companion.mdList1(field: Field<Number>, dimension: UInt): VectorSpace<Number, MDList1<Number>> =
     MDList1VectorSpace(field = field, dimension = dimension)
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
     @OptIn(DelicateSuppliedTypeConstructor::class)
     val mdList1Type = SuppliedType.Regular(

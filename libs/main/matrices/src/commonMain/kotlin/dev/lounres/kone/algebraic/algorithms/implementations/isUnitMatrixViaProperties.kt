@@ -38,7 +38,7 @@ public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaP
     fallbackIsUnitMatrixChecker = block(),
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -66,7 +66,7 @@ public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setV
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

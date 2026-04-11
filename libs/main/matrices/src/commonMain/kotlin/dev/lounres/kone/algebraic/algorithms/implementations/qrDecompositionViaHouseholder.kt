@@ -23,7 +23,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -165,7 +165,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaHouseholder(
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<Number, Matrix>,
@@ -189,7 +189,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaHouseholder(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -202,7 +202,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaHouseholder(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -243,7 +243,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaHouseholder(
     numberType: SuppliedType,
     matrixType: SuppliedType,

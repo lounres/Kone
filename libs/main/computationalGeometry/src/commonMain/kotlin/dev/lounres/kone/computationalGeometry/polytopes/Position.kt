@@ -6,7 +6,6 @@
 package dev.lounres.kone.computationalGeometry.polytopes
 
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.get
 import dev.lounres.kone.suppliedTypes.SuppliedType
 
 

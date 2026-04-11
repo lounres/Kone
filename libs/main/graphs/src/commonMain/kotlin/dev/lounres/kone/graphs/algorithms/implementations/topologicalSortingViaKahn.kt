@@ -20,7 +20,7 @@ import dev.lounres.kone.graphs.algorithms.TopologicalSortingComputer
 import dev.lounres.kone.graphs.algorithms.TopologicallySortedVertices
 import dev.lounres.kone.graphs.algorithms.incomingDegreeOf
 import dev.lounres.kone.graphs.algorithms.outgoingIncidentEdgesOf
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.absoluteFor
@@ -69,7 +69,7 @@ private object TopologicalSortingComputerByKahn : TopologicalSortingComputer {
 
 public fun TopologicalSortingComputer.Companion.kahn(): TopologicalSortingComputer = TopologicalSortingComputerByKahn
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun TopologicalSortingComputer.Companion.setKahn() {
     TopologicalSortingComputer.Key correspondsTo kahn()
 }

@@ -59,7 +59,7 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault(
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault(
     numberType: SuppliedType,
     numberField: Field<Number>,
@@ -73,7 +73,7 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault(
     numberType: SuppliedType,
 ) {
@@ -163,7 +163,7 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault(
     numberType: SuppliedType,
     order: Order<Number>,
@@ -187,7 +187,7 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault(
     numberType: SuppliedType,
 ) {

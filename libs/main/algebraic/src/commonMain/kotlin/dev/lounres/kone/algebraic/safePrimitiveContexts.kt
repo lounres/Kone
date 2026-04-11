@@ -15,7 +15,7 @@ import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Equality
@@ -217,67 +217,67 @@ public fun Long.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Long>
 public fun Long.Companion.safeSemigroup(): Semigroup<Long> = SafeLongContext
 public fun Long.Companion.safeEquality(): Equality<Long> = SafeLongContext
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeReification() {
     Reification.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeOrder() {
     Order.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeHashing() {
     Hashing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEuclideanRing() {
     EuclideanRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEuclideanSemiring() {
     EuclideanSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeRing() {
     CommutativeRing.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeRing() {
     Ring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeSemiring() {
     CommutativeSemiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeSemiring() {
     Semiring.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeGroup() {
     CommutativeGroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeGroup() {
     Group.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeMonoid() {
     CommutativeMonoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeMonoid() {
     Monoid.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeSemigroup() {
     CommutativeSemigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeSemigroup() {
     Semigroup.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEquality() {
     Equality.Key<Long>(Long.suppliedType).withImpliedUsingFirst correspondsTo SafeLongContext
 }
@@ -566,59 +566,59 @@ public fun Double.Companion.safeMonoid(): Monoid<Double> = SafeDoubleContext
 public fun Double.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Double> = SafeDoubleContext
 public fun Double.Companion.safeSemigroup(): Semigroup<Double> = SafeDoubleContext
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeReification() {
     Reification.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeOrder() {
     Order.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeHashing() {
     Hashing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeField() {
     Field.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeRing() {
     CommutativeRing.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeRing() {
     Ring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeSemiring() {
     CommutativeSemiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeSemiring() {
     Semiring.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeGroup() {
     CommutativeGroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeGroup() {
     Group.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeMonoid() {
     CommutativeMonoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeMonoid() {
     Monoid.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeSemigroup() {
     CommutativeSemigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeSemigroup() {
     Semigroup.Key<Double>(Double.suppliedType).withImpliedUsingFirst correspondsTo SafeDoubleContext
 }

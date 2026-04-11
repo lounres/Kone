@@ -73,7 +73,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeM
     fallbackConjugateTransposeMatrixComputer = block()
 )
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,
@@ -112,7 +112,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeM
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
     numberType: SuppliedType,
     matrixType: SuppliedType,

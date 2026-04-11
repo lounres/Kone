@@ -19,7 +19,7 @@ import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
 import dev.lounres.kone.multidimensionalCollections.utils.sumOf
-import dev.lounres.kone.registry.MutableOwnedRegistry
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
@@ -246,7 +246,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     )
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.setViaSchurParlettUsingScalingAndSquaring(
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<ComplexNumber<Double>, Matrix>,
@@ -282,7 +282,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
 public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.setViaSchurParlettUsingScalingAndSquaring(
     matrixType: SuppliedType,
     blockingParameter: Double,
@@ -295,7 +295,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Double>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Double>, Matrix>)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Double>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Double>, Matrix>)
 public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.useViaSchurParlettUsingScalingAndSquaring(
     matrixType: SuppliedType,
     matrixFactory: MatrixFactory<ComplexNumber<Double>, MatrixWithProperties<ComplexNumber<Double>, Matrix>>,
@@ -358,7 +358,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     }
 }
 
-context(_: MutableOwnedRegistry<MatrixWithProperties<ComplexNumber<Double>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Double>, Matrix>, _: KoneContextRegistry.Provider)
+context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Double>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Double>, Matrix>, _: KoneContextRegistry.Provider)
 public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.useViaSchurParlettUsingScalingAndSquaring(
     matrixType: SuppliedType,
     blockingParameter: Double,
