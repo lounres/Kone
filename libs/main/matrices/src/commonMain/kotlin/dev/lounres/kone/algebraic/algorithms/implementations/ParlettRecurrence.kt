@@ -37,6 +37,7 @@ import dev.lounres.kone.scope
 import kotlin.jvm.JvmInline
 
 
+// TODO: Clean up and move the API to public state
 @RequiresOptIn(level = RequiresOptIn.Level.ERROR)
 public annotation class ParlettRecurrenceInternalApi
 

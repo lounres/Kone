@@ -5,9 +5,7 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.algebraic.semiring
-import dev.lounres.kone.collections.utils.product
-import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.collections.utils.fold
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 import dev.lounres.kone.multidimensionalCollections.implementations.generate
 
@@ -19,7 +17,7 @@ public fun <E> MDList.Companion.generate(
 ): MDList<E> = ArrayMDList.generate(size = size, offsetting = offsetting, initializer = initializer)
 
 public val MDList<*>.dimension: UInt get() = size.size
-public val MDList<*>.contentSize: UInt get() = (UInt.semiring()) { size.product() }
+public val MDList<*>.contentSize: UInt get() = size.fold(0u) { acc, dim -> acc * dim }
 
 public operator fun <E> MDList<E>.get(vararg index: UInt): E = get(MDIndex.of(dims = index))
 
