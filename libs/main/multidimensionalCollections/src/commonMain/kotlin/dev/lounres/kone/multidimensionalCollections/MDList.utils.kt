@@ -17,7 +17,7 @@ public fun <E> MDList.Companion.generate(
 ): MDList<E> = ArrayMDList.generate(size = size, offsetting = offsetting, initializer = initializer)
 
 public val MDList<*>.dimension: UInt get() = size.size
-public val MDList<*>.contentSize: UInt get() = size.fold(0u) { acc, dim -> acc * dim }
+public val MDList<*>.contentSize: UInt get() = size.fold(1u) { acc, dim -> acc * dim }
 
 public operator fun <E> MDList<E>.get(vararg index: UInt): E = get(MDIndex.of(dims = index))
 
