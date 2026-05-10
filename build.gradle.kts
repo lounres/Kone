@@ -262,20 +262,18 @@ stal {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
-                    languageVersion = KotlinVersion.KOTLIN_2_4
                     progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
-                        "-Xcontext-parameters",
 //                        "-Xvalue-classes",
 //                        "-Xcontract-syntax-v2",
-                        "-Xexplicit-backing-fields",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
+                        "-Xcollection-literals"
                     )
                     optIn.addAll(
                         listOf(
@@ -301,20 +299,18 @@ stal {
                 applyDefaultHierarchyTemplate()
                 
                 compilerOptions {
-                    languageVersion = KotlinVersion.KOTLIN_2_4
                     progressiveMode = true
                     freeCompilerArgs.addAll(
 //                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
-                        "-Xcontext-parameters",
 //                        "-Xvalue-classes",
 //                        "-Xcontract-syntax-v2",
-                        "-Xexplicit-backing-fields",
                         "-Xexpect-actual-classes",
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xcontext-sensitive-resolution",
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
+                        "-Xcollection-literals",
                     )
                     optIn.set(
                         listOf(

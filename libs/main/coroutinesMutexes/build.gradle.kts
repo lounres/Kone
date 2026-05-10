@@ -1,3 +1,7 @@
+plugins {
+//    alias(versions.plugins.fray)
+}
+
 kotlin {
     sourceSets {
         commonMain {
@@ -21,8 +25,12 @@ kotlin {
         }
         jvmTest {
             dependencies {
-                implementation(versions.kotlinx.lincheck)
+                implementation(projects.libs.util.concurrencyTestUtils)
             }
         }
     }
 }
+
+//fray {
+//    testTask = "jvmTest"
+//}
