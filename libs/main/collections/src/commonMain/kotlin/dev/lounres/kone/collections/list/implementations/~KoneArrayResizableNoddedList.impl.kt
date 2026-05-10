@@ -231,12 +231,13 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
+        data[index]!!.detach()
         val newSize = size - 1u
         if (newSize < sizeLowerBound) {
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < newSize -> get(it+1u).also { node -> node!!.index = it }
+                    it < newSize -> get(it + 1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
