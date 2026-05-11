@@ -26,6 +26,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(projects.libs.util.concurrencyTestUtils)
+//                implementation("org.pastalab.fray:fray-runtime:0.8.5")
             }
         }
     }

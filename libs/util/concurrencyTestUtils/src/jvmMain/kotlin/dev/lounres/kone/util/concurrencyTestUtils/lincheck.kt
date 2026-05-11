@@ -7,18 +7,26 @@ package dev.lounres.kone.util.concurrencyTestUtils
 
 import de.infix.testBalloon.framework.core.TestConfig
 import de.infix.testBalloon.framework.core.TestSuiteScope
+import de.infix.testBalloon.framework.core.testScope
 import de.infix.testBalloon.framework.shared.TestDisplayName
 import de.infix.testBalloon.framework.shared.TestElementName
 import de.infix.testBalloon.framework.shared.TestRegistering
+import org.jetbrains.kotlinx.lincheck.Actor
 import org.jetbrains.kotlinx.lincheck.execution.ExecutionGenerator
 import org.jetbrains.kotlinx.lincheck.execution.ExecutionScenario
 import org.jetbrains.lincheck.datastructures.DSLScenarioBuilder
+import org.jetbrains.lincheck.datastructures.DSLThreadScenario
 import org.jetbrains.lincheck.datastructures.ManagedStrategyGuarantee
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.StressOptions
+import org.jetbrains.lincheck.datastructures.forClasses
 import org.jetbrains.lincheck.datastructures.verifier.Verifier
 import org.jetbrains.lincheck.util.LoggingLevel
+import java.lang.IllegalStateException
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.jvm.javaMethod
+import kotlin.time.Duration
 
 
 public class StressOptionsBuilder {
@@ -96,7 +104,7 @@ public fun TestSuiteScope.testWithLincheckStress(
     test(
         name = name,
         displayName = displayName,
-        testConfig = testConfig,
+        testConfig = TestConfig.testScope(isEnabled = true, timeout = Duration.INFINITE).chainedWith(testConfig),
     ) {
         StressOptionsBuilder().apply { options() }.stressOptions.check(testClass)
     }
@@ -135,8 +143,77 @@ public inline fun <reified TestClass> TestSuiteScope.testWithLincheckStress(
     )
 }
 
+public fun DSLThreadScenario.actor(
+    f: KFunction<*>,
+    vararg args: Any?,
+    cancelOnSuspension: Boolean = false,
+    blocking: Boolean = false,
+    causesBlocking: Boolean = false,
+) {
+    val method = f.javaMethod ?: throw IllegalStateException("The function is a constructor or cannot be represented by a Java Method")
+    require(method.exceptionTypes.all { Throwable::class.java.isAssignableFrom(it) }) { "Not all declared exceptions are Throwable" }
+    val requiredArgsCount = method.parameters.size - if (f.isSuspend) 1 else 0
+    require(requiredArgsCount == args.size) { "Invalid number of the operation ${f.name} parameters: $requiredArgsCount expected, ${args.size} provided." }
+    add(
+        Actor(
+            method = method,
+            arguments = args.toList(),
+            cancelOnSuspension = cancelOnSuspension,
+            blocking = blocking,
+            causesBlocking = causesBlocking,
+        )
+    )
+}
+
+public class ManagedStrategyGuaranteeInstanceBuilder {
+    @PublishedApi
+    internal val classPredicates: MutableList<(String) -> Boolean> = mutableListOf()
+    @PublishedApi
+    internal val methodPredicates: MutableList<(String) -> Boolean> = mutableListOf()
+    
+    public fun classThat(predicate: (fullClassName: String) -> Boolean) {
+        classPredicates.add(predicate)
+    }
+    public fun classNamed(name: String) {
+        classThat { it == name }
+    }
+    public inline fun <reified T> classIs() {
+        classNamed(T::class.qualifiedName ?: error("The class ${T::class} is local or is a class of an anonymous object"))
+    }
+    public fun methodThat(predicate: (methodName: String) -> Boolean) {
+        methodPredicates.add(predicate)
+    }
+    public fun allMethods() {
+        methodThat { true }
+    }
+}
+
+public class ManagedStrategyGuaranteesBuilder {
+    @PublishedApi
+    internal val guarantees: MutableList<ManagedStrategyGuarantee> = mutableListOf()
+    
+    public inline fun ignore(builder: ManagedStrategyGuaranteeInstanceBuilder.() -> Unit) {
+        val instance = ManagedStrategyGuaranteeInstanceBuilder().apply(builder)
+        guarantees.add(
+            forClasses { name -> instance.classPredicates.any { it(name) } }
+                .methods { name -> instance.methodPredicates.any { it(name) }}
+                .ignore()
+        )
+    }
+    
+    public inline fun treatAsAtomic(builder: ManagedStrategyGuaranteeInstanceBuilder.() -> Unit) {
+        val instance = ManagedStrategyGuaranteeInstanceBuilder().apply(builder)
+        guarantees.add(
+            forClasses { name -> instance.classPredicates.any { it(name) } }
+                .methods { name -> instance.methodPredicates.any { it(name) }}
+                .treatAsAtomic()
+        )
+    }
+}
+
 public class ModelCheckingOptionsBuilder {
-    internal var modelCheckingOptions = ModelCheckingOptions()
+    @PublishedApi
+    internal var modelCheckingOptions: ModelCheckingOptions = ModelCheckingOptions()
     
     public fun iterations(iterations: Int) {
         modelCheckingOptions = modelCheckingOptions.iterations(iterations)
@@ -209,6 +286,13 @@ public class ModelCheckingOptionsBuilder {
     public fun addGuarantee(guarantee: ManagedStrategyGuarantee) {
         modelCheckingOptions = modelCheckingOptions.addGuarantee(guarantee)
     }
+    
+    public inline fun addGuarantees(guaranteesBuilder: ManagedStrategyGuaranteesBuilder.() -> Unit) {
+        val instance = ManagedStrategyGuaranteesBuilder().apply(guaranteesBuilder)
+        for (guarantee in instance.guarantees) {
+            modelCheckingOptions = modelCheckingOptions.addGuarantee(guarantee)
+        }
+    }
 }
 
 @TestRegistering
@@ -222,7 +306,7 @@ public fun TestSuiteScope.testWithLincheckModelChecking(
     test(
         name = name,
         displayName = displayName,
-        testConfig = testConfig,
+        testConfig = TestConfig.testScope(isEnabled = true, timeout = Duration.INFINITE).chainedWith(testConfig),
     ) {
         ModelCheckingOptionsBuilder().apply { options() }.modelCheckingOptions.check(testClass)
     }
