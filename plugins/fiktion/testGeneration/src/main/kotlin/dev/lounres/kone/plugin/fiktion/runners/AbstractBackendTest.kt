@@ -61,18 +61,18 @@ abstract class AbstractBackendTest(
 //open class AbstractBackendTestForPhase4 : AbstractBackendTestForPhase(4)
 //open class AbstractBackendTestForPhase5 : AbstractBackendTestForPhase(5)
 
-open class ErasureAbstractBackendTestComplete : AbstractBackendTest(::ErasureExtensionRegistrarConfigurator) {
+open class AbstractErasureBackendTestComplete : AbstractBackendTest(::ErasureExtensionRegistrarConfigurator) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
 }
 
-open class InterceptionAbstractBackendTestComplete : AbstractBackendTest(::InterceptionExtensionRegistrarConfigurator) {
+open class AbstractInterceptionBackendTestComplete : AbstractBackendTest(::InterceptionExtensionRegistrarConfigurator) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
 }
 
-open class ErasureAbstractBoxTest : AbstractBackendTest(::ErasureExtensionRegistrarConfigurator, runJvmBoxTest = true) {
+open class AbstractErasureBoxTest : AbstractBackendTest(::ErasureExtensionRegistrarConfigurator, runJvmBoxTest = true) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
 }
 
-open class InterceptionAbstractBoxTest : AbstractBackendTest(::InterceptionExtensionRegistrarConfigurator, runJvmBoxTest = true) {
+open class AbstractInterceptionBoxTest : AbstractBackendTest(::InterceptionExtensionRegistrarConfigurator, runJvmBoxTest = true) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
 }

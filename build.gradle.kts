@@ -273,7 +273,8 @@ stal {
                         "-Xreturn-value-checker=full",
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
-                        "-Xcollection-literals"
+                        "-Xcollection-literals",
+                        "-Xallow-returns-result-of",
                     )
                     optIn.addAll(
                         listOf(
@@ -311,6 +312,7 @@ stal {
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
+                        "-Xallow-returns-result-of",
                     )
                     optIn.set(
                         listOf(
@@ -417,6 +419,7 @@ stal {
                         named("main") {
                             dependencies {
                                 compileOnly(versions.kotlin.compiler)
+                                implementation(projects.libs.util.kotlinCompilerUtils)
                             }
                         }
                         named("test") {
@@ -531,7 +534,7 @@ stal {
             tasks.register("generateTests", JavaExec::class) {
                 dependsOn(compileKotlin)
                 classpath = project.the<SourceSetContainer>().getByName("main").runtimeClasspath
-                mainClass.set("dev.lounres.kone.plugin.suppliedTypes.GenerateTestsKt")
+                mainClass.set("dev.lounres.kone.plugin.${project.parent!!.name}.GenerateTestsKt")
             }
         }
         "atomicfu" {

@@ -1,0 +1,15 @@
+FILE: imaginaryCallableRealCall2.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/fiktion/Fiktion.Imaginary|() public final val R|kotlin/Int|.foo: R|kotlin/Int|
+        public get(): R|kotlin/Int| {
+            ^ this@R|foo/bar/foo|
+        }
+    public final fun bar(): R|kotlin/Unit| {
+        lvar value: R|kotlin/Int| = Int(57)
+        while(!=(R|<local>/value|, Int(179))) {
+            R|kotlin/io/println|(R|<local>/value|)
+            R|<local>/value| = R|<local>/value|.R|foo/bar/foo|
+        }
+
+    }

@@ -7,10 +7,10 @@ package dev.lounres.kone.fiktion
 
 
 @PublishedApi
-internal var webAtomicCallInterceptor: AtomicCallInterceptor = AtomicCallInterceptor.Idle
+internal var webCallInterceptor: CallInterceptor = CallInterceptor.Idle
 
-@Fiktion
+@Fiktion.Imaginary
 @Fiktion.AtomicCallInterceptorDelicateApi
-public actual inline var atomicCallInterceptor: AtomicCallInterceptor
-    get() = webAtomicCallInterceptor
-    set(value) { webAtomicCallInterceptor = value }
+public actual inline var callInterceptor: CallInterceptor
+    get() = webCallInterceptor
+    set(value) { webCallInterceptor = value }

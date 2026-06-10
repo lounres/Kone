@@ -9,10 +9,10 @@ import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestComplete
 import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestDeclarations
 import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestDiagnostic
 import dev.lounres.kone.plugin.fiktion.runners.AbstractTestWithoutPlugin
-import dev.lounres.kone.plugin.fiktion.runners.ErasureAbstractBackendTestComplete
-import dev.lounres.kone.plugin.fiktion.runners.ErasureAbstractBoxTest
-import dev.lounres.kone.plugin.fiktion.runners.InterceptionAbstractBackendTestComplete
-import dev.lounres.kone.plugin.fiktion.runners.InterceptionAbstractBoxTest
+import dev.lounres.kone.plugin.fiktion.runners.AbstractErasureBackendTestComplete
+import dev.lounres.kone.plugin.fiktion.runners.AbstractErasureBoxTest
+import dev.lounres.kone.plugin.fiktion.runners.AbstractInterceptionBackendTestComplete
+import dev.lounres.kone.plugin.fiktion.runners.AbstractInterceptionBoxTest
 import generatedTestsPath
 import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
 import testDataPath
@@ -49,10 +49,10 @@ fun main() {
 //            testClass<ErasureAbstractBackendTestForPhase5> {
 //                model("ir/erasure/phase5")
 //            }
-            testClass<ErasureAbstractBackendTestComplete> {
+            testClass<AbstractErasureBackendTestComplete> {
                 model("ir/erasure/complete")
             }
-            testClass<ErasureAbstractBoxTest> {
+            testClass<AbstractErasureBoxTest> {
                 model("ir/erasure/box")
             }
 
@@ -74,10 +74,10 @@ fun main() {
 //            testClass<InterceptionAbstractBackendTestForPhase5> {
 //                model("ir/interception/phase5")
 //            }
-            testClass<InterceptionAbstractBackendTestComplete> {
+            testClass<AbstractInterceptionBackendTestComplete> {
                 model("ir/interception/complete")
             }
-            testClass<InterceptionAbstractBoxTest> {
+            testClass<AbstractInterceptionBoxTest> {
                 model("ir/interception/box")
             }
 

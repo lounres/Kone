@@ -7,12 +7,12 @@ package dev.lounres.kone.fiktion
 
 
 @PublishedApi
-internal object AtomicCallInterceptorThreadLocal : ThreadLocal<AtomicCallInterceptor>() {
-    override fun initialValue(): AtomicCallInterceptor = AtomicCallInterceptor.Idle
+internal object AtomicCallInterceptorThreadLocal : ThreadLocal<CallInterceptor>() {
+    override fun initialValue(): CallInterceptor = CallInterceptor.Idle
 }
 
-@Fiktion
+@Fiktion.Imaginary
 @Fiktion.AtomicCallInterceptorDelicateApi
-public actual inline var atomicCallInterceptor: AtomicCallInterceptor
+public actual inline var callInterceptor: CallInterceptor
     get() = AtomicCallInterceptorThreadLocal.get()
     set(value) { AtomicCallInterceptorThreadLocal.set(value) }
