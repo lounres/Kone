@@ -12,97 +12,111 @@ import org.jetbrains.kotlin.name.Name
 
 
 const val koneSuppliedTypesPackageFQNameString = "dev.lounres.kone.suppliedTypes"
-const val suppliedTypeShortNameString = "SuppliedType"
-const val suppliedTypeRegularShortNameString = "Regular"
-const val suppliedTypeDynamicShortNameString = "Dynamic"
-const val suppliedProjectionShortNameString = "SuppliedProjection"
-const val suppliedProjectionRegularShortNameString = "Regular"
-const val suppliedProjectionStarShortNameString = "Star"
-const val supplyShortNameString = "Supply"
-const val suppliableShortNameString = "Suppliable"
-const val supplianceProvidedShortNameString = "SupplianceProvided"
-const val noSuppliedTypeParameterInClassStubShortNameString = "NoSuppliedTypeParameterInClassStub"
-const val suppliedTypesStorageDelegateShortNameString = "suppliedTypesStorageDelegate"
-const val suppliableClassShortNameString = "SuppliableClass"
-const val suppliedTypeOfShortNameString = "suppliedTypeOf"
+const val suppliedTypeClassShortNameString = "SuppliedType"
+const val suppliedTypeRegularClassShortNameString = "Regular"
+const val suppliedTypeDynamicSingletonShortNameString = "Dynamic"
+const val suppliedProjectionClassShortNameString = "SuppliedProjection"
+const val suppliedProjectionRegularClassShortNameString = "Regular"
+const val suppliedProjectionStarSingletonShortNameString = "Star"
+const val supplyAnnotationShortNameString = "Supply"
+const val suppliableAnnotationShortNameString = "Suppliable"
+const val supplianceProvidedAnnotationShortNameString = "SupplianceProvided"
+const val noSuppliedTypeParameterInClassStubSingletonShortNameString = "NoSuppliedTypeParameterInClassStub"
+const val suppliedTypesStorageDelegateFunctionShortNameString = "suppliedTypesStorageDelegate"
+const val suppliableClassClassShortNameString = "SuppliableClass"
+const val suppliedTypeOfFunctionShortNameString = "suppliedTypeOf"
+//const val supplyFunctionShortNameString = "supply"
+const val withSuppliedFunctionShortNameString = "withSupplied"
 
 val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString)
-val suppliedTypeShortName = FqName(suppliedTypeShortNameString)
-val suppliedTypeRegularShortName = FqName("$suppliedTypeShortNameString.$suppliedTypeRegularShortNameString")
-val suppliedTypeDynamicShortName = FqName("$suppliedTypeShortNameString.$suppliedTypeDynamicShortNameString")
-val suppliedProjectionShortName = FqName(suppliedProjectionShortNameString)
-val suppliedProjectionRegularShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionRegularShortNameString")
-val suppliedProjectionStarShortName = FqName("$suppliedProjectionShortNameString.$suppliedProjectionStarShortNameString")
-val supplyShortName = FqName(supplyShortNameString)
-val suppliableShortName = FqName(suppliableShortNameString)
-val supplianceProvidedShortName = FqName(supplianceProvidedShortNameString)
-val noSuppliedTypeParameterInClassStubShortName = FqName(noSuppliedTypeParameterInClassStubShortNameString)
-val suppliedTypesStorageDelegateShortName = Name.identifier(suppliedTypesStorageDelegateShortNameString)
-val suppliableClassShortName = FqName(suppliableClassShortNameString)
-val suppliedTypeOfName = Name.identifier(suppliedTypeOfShortNameString)
+val suppliedTypeClassShortName = FqName(suppliedTypeClassShortNameString)
+val suppliedTypeRegularClassShortName = FqName("$suppliedTypeClassShortNameString.$suppliedTypeRegularClassShortNameString")
+val suppliedTypeDynamicSingletonShortName = FqName("$suppliedTypeClassShortNameString.$suppliedTypeDynamicSingletonShortNameString")
+val suppliedProjectionClassShortName = FqName(suppliedProjectionClassShortNameString)
+val suppliedProjectionRegularClassShortName = FqName("$suppliedProjectionClassShortNameString.$suppliedProjectionRegularClassShortNameString")
+val suppliedProjectionStarSingletonShortName = FqName("$suppliedProjectionClassShortNameString.$suppliedProjectionStarSingletonShortNameString")
+val supplyAnnotationShortName = FqName(supplyAnnotationShortNameString)
+val suppliableAnnotationShortName = FqName(suppliableAnnotationShortNameString)
+val supplianceProvidedAnnotationShortName = FqName(supplianceProvidedAnnotationShortNameString)
+val noSuppliedTypeParameterInClassStubSingletonShortName = FqName(noSuppliedTypeParameterInClassStubSingletonShortNameString)
+val suppliedTypesStorageDelegateFunctionShortName = Name.identifier(suppliedTypesStorageDelegateFunctionShortNameString)
+val suppliableClassClassShortName = FqName(suppliableClassClassShortNameString)
+val suppliedTypeOfFunctionShortName = Name.identifier(suppliedTypeOfFunctionShortNameString)
+//val supplyFunctionShortName = Name.identifier(supplyFunctionShortNameString)
+val withSuppliedFunctionShortName = Name.identifier(withSuppliedFunctionShortNameString)
 
-val suppliedTypeClassId = ClassId(
+val suppliedTypeClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedTypeShortName,
+    relativeClassName = suppliedTypeClassShortName,
     isLocal = false
 )
-val suppliedTypeRegularClassId = ClassId(
+val suppliedTypeRegularClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedTypeRegularShortName,
+    relativeClassName = suppliedTypeRegularClassShortName,
     isLocal = false
 )
-val suppliedTypeDynamicClassId = ClassId(
+val suppliedTypeDynamicSingletonClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedTypeDynamicShortName,
+    relativeClassName = suppliedTypeDynamicSingletonShortName,
     isLocal = false
 )
-val suppliedProjectionClassId = ClassId(
+val suppliedProjectionClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedProjectionShortName,
+    relativeClassName = suppliedProjectionClassShortName,
     isLocal = false,
 )
-val suppliedProjectionRegularClassId = ClassId(
+val suppliedProjectionRegularClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedProjectionRegularShortName,
+    relativeClassName = suppliedProjectionRegularClassShortName,
     isLocal = false,
 )
-val suppliedProjectionStarClassId = ClassId(
+val suppliedProjectionStarSingletonClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliedProjectionStarShortName,
+    relativeClassName = suppliedProjectionStarSingletonShortName,
     isLocal = false,
 )
-val supplyClassId = ClassId(
+val supplyAnnotationClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = supplyShortName,
+    relativeClassName = supplyAnnotationShortName,
     isLocal = false
 )
-val suppliableClassId = ClassId(
+val suppliableAnnotationClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliableShortName,
+    relativeClassName = suppliableAnnotationShortName,
     isLocal = false
 )
-val supplianceProvidedClassId = ClassId(
+val supplianceProvidedAnnotationClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = supplianceProvidedShortName,
+    relativeClassName = supplianceProvidedAnnotationShortName,
     isLocal = false
 )
-val noSuppliedTypeParameterInClassStubClassId = ClassId(
+val noSuppliedTypeParameterInClassStubSingletonClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = noSuppliedTypeParameterInClassStubShortName,
+    relativeClassName = noSuppliedTypeParameterInClassStubSingletonShortName,
     isLocal = false,
 )
-val suppliedTypesStorageDelegateCallableId = CallableId(
+val suppliedTypesStorageDelegateFunctionCallableId = CallableId(
     packageName = koneSuppliedTypesPackageFQName,
     className = null,
-    callableName = suppliedTypesStorageDelegateShortName,
+    callableName = suppliedTypesStorageDelegateFunctionShortName,
 )
-val suppliableClassClassId = ClassId(
+val suppliableClassClassClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
-    relativeClassName = suppliableClassShortName,
+    relativeClassName = suppliableClassClassShortName,
     isLocal = false
 )
-val suppliedTypeOfCallableId = CallableId(
+val suppliedTypeOfFunctionCallableId = CallableId(
     packageName = koneSuppliedTypesPackageFQName,
     className = null,
-    callableName = suppliedTypeOfName,
+    callableName = suppliedTypeOfFunctionShortName,
+)
+//val supplyFunctionCallableId = CallableId(
+//    packageName = koneSuppliedTypesPackageFQName,
+//    className = null,
+//    callableName = supplyFunctionShortName,
+//)
+val withSuppliedFunctionCallableId = CallableId(
+    packageName = koneSuppliedTypesPackageFQName,
+    className = null,
+    callableName = withSuppliedFunctionShortName,
 )

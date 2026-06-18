@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfCallableId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfFunctionCallableId
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrElement
@@ -154,7 +154,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     
     override fun visitCall(expression: IrCall, data: TransformationContext): IrElement {
         val declaration = expression.symbol.owner
-        if (declaration.callableId != suppliedTypeOfCallableId) return super.visitCall(expression, data)
+        if (declaration.callableId != suppliedTypeOfFunctionCallableId) return super.visitCall(expression, data)
         val typeToSupply = expression.typeArguments.single()!!
         val declarationIrBuilder = DeclarationIrBuilder(pluginContext, data.localSymbol!!)
         return declarationIrBuilder.irBlock {
@@ -163,7 +163,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
                     irStatementsBuilder = this,
-                    initialSuppliedTypes = data.suppliedTypes.mapValues { (_, builder) -> lazy { builder() } }
+                    initialSuppliedTypes = data.suppliedTypes.mapValues { [_, builder] -> lazy { builder() } }
                 ).resolve(typeToSupply)
             )
         }

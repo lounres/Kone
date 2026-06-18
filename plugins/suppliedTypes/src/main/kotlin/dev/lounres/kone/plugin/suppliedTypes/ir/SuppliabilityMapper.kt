@@ -235,7 +235,7 @@ fun SuppliabilityMapper(
     
     for (scope in moduleScopeToSuppliabilityFunctions.values) {
         check(scope.suppliable.size == scope.suppliance.size) { TODO() }
-        for ((signature, suppliable) in scope.suppliable) {
+        for ([signature, suppliable] in scope.suppliable) {
             val suppliance = scope.suppliance[signature]
             check(suppliance != null) { TODO() }
             check(suppliable !in moduleFunctionsSuppliableToSupplianceMapping) { TODO() }
@@ -245,7 +245,7 @@ fun SuppliabilityMapper(
         }
     }
     check(moduleTopLevelSuppliabilityFunctions.suppliable.size == moduleTopLevelSuppliabilityFunctions.suppliance.size) { TODO() }
-    for ((signature, suppliable) in moduleTopLevelSuppliabilityFunctions.suppliable) {
+    for ([signature, suppliable] in moduleTopLevelSuppliabilityFunctions.suppliable) {
         val suppliance = moduleTopLevelSuppliabilityFunctions.suppliance[signature]
         check(suppliance != null) { TODO() }
         check(suppliable !in moduleFunctionsSuppliableToSupplianceMapping) { TODO() }
@@ -255,7 +255,7 @@ fun SuppliabilityMapper(
     }
     for (scope in moduleScopeToSuppliabilityConstructors.values) {
         check(scope.suppliable.size == scope.suppliance.size) { TODO() }
-        for ((signature, suppliable) in scope.suppliable) {
+        for ([signature, suppliable] in scope.suppliable) {
             val suppliance = scope.suppliance[signature]
             check(suppliance != null) { TODO() }
             check(suppliable !in moduleConstructorsSuppliableToSupplianceMapping) { TODO() }

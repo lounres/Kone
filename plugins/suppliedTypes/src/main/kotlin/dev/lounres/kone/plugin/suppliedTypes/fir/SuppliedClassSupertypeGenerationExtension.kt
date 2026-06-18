@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
@@ -24,16 +24,16 @@ class SuppliedClassSupertypeGenerationExtension(session: FirSession) : FirSupert
     private val symbolProvider by lazy { session.symbolProvider }
     
     private val suppliableClassFirClassLikeSymbol by lazy {
-        symbolProvider.getClassLikeSymbolByClassId(suppliableClassClassId)!!
+        symbolProvider.getClassLikeSymbolByClassId(suppliableClassClassClassId)!!
     }
     
     private val suppliableClassConeClassLikeType by lazy {
         suppliableClassFirClassLikeSymbol.defaultType()
     }
     
-    private val FirClassLikeDeclaration.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
-    private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
-    private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyClassId, session)
+    private val FirClassLikeDeclaration.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
+    private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
+    private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, session)
     
     override fun needTransformSupertypes(declaration: FirClassLikeDeclaration): Boolean =
         declaration.isSuppliable

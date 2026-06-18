@@ -21,7 +21,7 @@ fun supplyFunctionsParameters(
     irRuntimeReferences: IrRuntimeReferences,
     suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
+    for ([suppliance, suppliable] in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         val supplianceSupplyTypeParameters = suppliable.typeParameters.withIndex().filter { it.value.isSupply }.map { suppliance.typeParameters[it.index] }
         val parametersSubstitutionTransformer = ParametersSubstitutionTransformer(
             typeParametersSubstitution = suppliable.typeParameters.zip(suppliance.typeParameters).toMap(),
@@ -59,7 +59,7 @@ fun supplyConstructorsParameters(
     irRuntimeReferences: IrRuntimeReferences,
     suppliabilityMapper: SuppliabilityMapper,
 ) {
-    for ((suppliance, suppliable) in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
+    for ([suppliance, suppliable] in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
         val classSupplyTypeParameters = suppliance.parentAsClass.typeParameters.filter { it.isSupply }
         val parametersSubstitutionTransformer = ParametersSubstitutionTransformer(
             valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),

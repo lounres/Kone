@@ -30,7 +30,7 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     
     companion object {
         val SUPPLIABLE_PREDICATE = LookupPredicate.create {
-            annotated(suppliableClassId.asSingleFqName())
+            annotated(suppliableAnnotationClassId.asSingleFqName())
         }
         val PREDICATES = listOf<AbstractPredicate<*>>(
             SUPPLIABLE_PREDICATE,
@@ -67,13 +67,13 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
         }
     }
     
-    val suppliedTypeFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassId)!! }
-    val supplianceProvidedFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedClassId)!! }
-    val noSuppliedTypeParameterInClassStubFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(noSuppliedTypeParameterInClassStubClassId)!! }
+    val suppliedTypeFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassClassId)!! }
+    val supplianceProvidedFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedAnnotationClassId)!! }
+    val noSuppliedTypeParameterInClassStubFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(noSuppliedTypeParameterInClassStubSingletonClassId)!! }
     val suppliedTypesStorageDelegateFirNamedFunctionSymbol by lazy {
         symbolProvider.getTopLevelFunctionSymbols(
-            packageFqName = suppliedTypesStorageDelegateCallableId.packageName,
-            name = suppliedTypesStorageDelegateCallableId.callableName,
+            packageFqName = suppliedTypesStorageDelegateFunctionCallableId.packageName,
+            name = suppliedTypesStorageDelegateFunctionCallableId.callableName,
         ).single()
     }
     
@@ -128,7 +128,7 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     val suppliableClasses get() = suppliables.filterIsInstance<FirClassSymbol<*>>()
     val suppliableTopLevelClasses get() = suppliableClasses.filter { !it.classId.isNestedClass }
     
-    val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
-    val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, session)
-    val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyClassId, session)
+    val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
+    val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
+    val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, session)
 }

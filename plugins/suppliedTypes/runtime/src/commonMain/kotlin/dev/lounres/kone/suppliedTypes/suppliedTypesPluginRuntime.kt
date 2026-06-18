@@ -6,12 +6,14 @@
 package dev.lounres.kone.suppliedTypes
 
 import kotlin.concurrent.atomics.AtomicReference
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 
 @Target(AnnotationTarget.TYPE_PARAMETER)
-public annotation class Supply(/*val parameterName: String = ""*/)
+public annotation class Supply
 
 @Target(
     AnnotationTarget.FUNCTION,
@@ -66,3 +68,34 @@ public interface SuppliableClass {
 @Suppliable
 public fun <@Supply T> suppliedTypeOf(): SuppliedType =
     error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
+
+//public fun <T> supply(suppliedType: SuppliedType) {
+//    error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
+//}
+
+@Suppress("WRONG_INVOCATION_KIND", "unused")
+public inline fun <T1, R> withSupplied(suppliedType1: SuppliedType, block: () -> R): R {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
+}
+
+@Suppress("WRONG_INVOCATION_KIND", "unused")
+public inline fun <T1, T2, R> withSupplied(suppliedType1: SuppliedType, suppliedType2: SuppliedType, block: () -> R): R {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
+}
+
+@Suppress("WRONG_INVOCATION_KIND", "unused")
+public inline fun <T1, T2, T3, R> withSupplied(suppliedType1: SuppliedType, suppliedType2: SuppliedType, suppliedType3: SuppliedType, block: () -> R): R {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
+}

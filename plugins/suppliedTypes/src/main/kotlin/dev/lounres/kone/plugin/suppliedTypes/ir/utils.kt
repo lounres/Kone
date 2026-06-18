@@ -7,18 +7,18 @@ package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierPropertyName
-import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionRegularClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionStarClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeDynamicClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfCallableId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeRegularClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubSingletonClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionRegularClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedProjectionStarSingletonClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeDynamicSingletonClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfFunctionCallableId
+import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeRegularClassClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
 import org.jetbrains.kotlin.backend.common.extensions.DeclarationFinder
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.jvm.functionByName
@@ -60,15 +60,15 @@ inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId,
 
 val IrDeclarationWithName.fqName: FqName get() = fqNameWhenAvailable ?: error("Expected declaration with available FQ name")
 val IrClass.fqNameStringForSuppliedTypes: String get() = fqNameWhenAvailable?.toString() ?: "${SpecialNames.LOCAL}.$name"
-val IrTypeParameter.isSupply: Boolean get() = hasAnnotation(supplyClassId)
-val IrClass.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId)
-val IrSimpleFunction.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId)
-val IrValueParameter.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedClassId)
-val IrConstructor.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedClassId)
-val IrSimpleFunction.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedClassId)
+val IrTypeParameter.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId)
+val IrClass.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId)
+val IrSimpleFunction.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId)
+val IrValueParameter.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId)
+val IrConstructor.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId)
+val IrSimpleFunction.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId)
 val IrTypeParameter.providedSupplierParameterName: Name?
     get() {
-        val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == supplyClassId }
+        val supplyingAnnotationConstructorCallOrNull = annotations.first { it.symbol.owner.parentAsClass.classId == supplyAnnotationClassId }
         val theOnlyArgumentOrNull = supplyingAnnotationConstructorCallOrNull.arguments[0] as IrConst?
         val suppliedParameterName = (theOnlyArgumentOrNull?.value as? String?)?.takeIf { it.isNotEmpty() }
         return suppliedParameterName?.let { Name.identifier(it) }
@@ -79,21 +79,21 @@ val IrTypeParameter.supplierParameterName: Name get() = /*providedSupplierParame
 
 class IrRuntimeReferences(pluginContext: IrPluginContext) {
     private val finder = pluginContext.finderForBuiltins()
-    val suppliedTypeIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeClassId)
+    val suppliedTypeIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeClassClassId)
     val suppliedTypeIrType: IrType = suppliedTypeIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedTypeRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeRegularClassId)
+    val suppliedTypeRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeRegularClassClassId)
     val suppliedTypeRegularIrType: IrType = suppliedTypeRegularIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeDynamicClassId)
+    val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeDynamicSingletonClassId)
     val suppliedTypeDynamicIrType: IrType = suppliedTypeDynamicIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
-    val suppliedProjectionIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionClassId)
-    val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionRegularClassId)
-    val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarClassId)
+    val suppliedProjectionIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionClassClassId)
+    val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionRegularClassClassId)
+    val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarSingletonClassId)
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
     
-    val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubClassId)
-    val suppliableClassIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliableClassClassId)
+    val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubSingletonClassId)
+    val suppliableClassIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliableClassClassClassId)
     val suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertyGetter("suppliedTypesStorage")!!
     val suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertySetter("suppliedTypesStorage")!!
     val suppliableClassAfterSupplianceIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = suppliableClassIrClassSymbol.functionByName("afterSuppliance")
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfCallableId)
+    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfFunctionCallableId)
 }

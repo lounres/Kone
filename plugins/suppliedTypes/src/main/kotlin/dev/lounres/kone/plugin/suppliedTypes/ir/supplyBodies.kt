@@ -52,7 +52,7 @@ fun supplyFunctionsBodies(
         .findFunctions(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("error")))
         .single()
     
-    for ((suppliance, suppliable) in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
+    for ([suppliance, suppliable] in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         suppliance.body = suppliable.body
             ?.deepCopyWithSymbols(initialParent = suppliance)
             ?.transform(
@@ -156,7 +156,7 @@ fun supplyConstructorsBodies(
                         typeArguments[1] = listOfSuppliedTypeIrType
                         arguments[0] = irVararg(
                             elementType = pairOfStringAndListOfSuppliedTypeIrType,
-                            values = variablesForSuppliedTypesStorage.entries.map { (fqName, suppliedTypes) ->
+                            values = variablesForSuppliedTypesStorage.entries.map { [fqName, suppliedTypes] ->
                                 irCallConstructor(
                                     callee = pairIrConstructorSymbol,
                                     typeArguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType),
@@ -255,7 +255,7 @@ class SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
                                 typeArguments[1] = listOfSuppliedTypeIrType
                                 arguments[0] = irVararg(
                                     elementType = pairOfStringAndListOfSuppliedTypeIrType,
-                                    values = variablesForSuppliedTypesStorage.entries.map { (fqName, suppliedTypes) ->
+                                    values = variablesForSuppliedTypesStorage.entries.map { [fqName, suppliedTypes] ->
                                         irCallConstructor(
                                             callee = pairIrConstructorSymbol,
                                             typeArguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType),

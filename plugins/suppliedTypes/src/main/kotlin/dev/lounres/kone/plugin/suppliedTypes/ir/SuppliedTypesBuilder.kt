@@ -59,7 +59,7 @@ class SuppliedTypesBuilder(
                             is IrClassSymbol -> {
                                 val irClass = classifierSymbol.owner
                                 val fullyQualifiedName: String = irClass.fqNameStringForSuppliedTypes
-                                val typeArguments: List<IrExpression> = irClass.typeParameters.zip(type.arguments).map { (typeParameter, typeArgument) ->
+                                val typeArguments: List<IrExpression> = irClass.typeParameters.zip(type.arguments).map { [typeParameter, typeArgument] ->
                                     when (typeArgument) {
                                         is IrStarProjection -> irGetObject(irRuntimeReferences.suppliedProjectionStarIrClassSymbol)
                                         is IrTypeProjection -> {
@@ -103,7 +103,7 @@ class SuppliedTypesBuilder(
                             is IrScriptSymbol -> {
                                 val irClass = classifierSymbol.owner.targetClass!!.owner
                                 val fullyQualifiedName: String = irClass.fqNameStringForSuppliedTypes
-                                val typeArguments: List<IrExpression> = irClass.typeParameters.zip(type.arguments).map { (typeParameter, typeArgument) ->
+                                val typeArguments: List<IrExpression> = irClass.typeParameters.zip(type.arguments).map { [typeParameter, typeArgument] ->
                                     when (typeArgument) {
                                         is IrStarProjection -> irGetObject(irRuntimeReferences.suppliedProjectionStarIrClassSymbol)
                                         is IrTypeProjection -> {

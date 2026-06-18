@@ -47,7 +47,7 @@ class SuppliableCallSubstitutionTransformer(
                     typeArguments = expression.typeArguments.requireNoNulls(),
                 ).apply {
                     var initialParameterIndex = 0
-                    for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
+                    for ([parameterIndex, parameter] in suppliance.parameters.withIndex()) {
                         if (parameter.isSupplianceProvided) {
                             arguments[parameterIndex] =
                                 if (parameter.name == Name.special("<supplianceStub>"))
@@ -88,7 +88,7 @@ class SuppliableCallSubstitutionTransformer(
                     callee = suppliance.symbol,
                 ).apply {
                     var initialParameterIndex = 0
-                    for ((parameterIndex, parameter) in suppliance.parameters.withIndex()) {
+                    for ([parameterIndex, parameter] in suppliance.parameters.withIndex()) {
                         if (parameter.isSupplianceProvided) {
                             arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol

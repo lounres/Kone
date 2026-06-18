@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedClassId
-import dev.lounres.kone.plugin.suppliedTypes.supplyClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactory1
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactory2
@@ -65,15 +65,15 @@ import org.jetbrains.kotlin.psi.KtElement
 class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckersExtension(session) {
     companion object {
         context(context: CheckerContext)
-        private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyClassId, context.session)
+        private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, context.session)
         context(context: CheckerContext)
-        private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, context.session)
+        private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, context.session)
         context(context: CheckerContext)
-        private val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableClassId, context.session)
+        private val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, context.session)
         context(context: CheckerContext)
-        private val FirNamedFunctionSymbol.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedClassId, context.session)
+        private val FirNamedFunctionSymbol.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId, context.session)
         context(context: CheckerContext)
-        private val FirConstructorSymbol.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedClassId, context.session)
+        private val FirConstructorSymbol.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId, context.session)
     }
     
     override val declarationCheckers: DeclarationCheckers get() = SuppliedTypeDeclarationCheckers
@@ -175,7 +175,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         override fun check(declaration: FirTypeParameter) {
             if (!declaration.symbol.isSupply) return
             
-            if (!declaration.containingDeclarationSymbol.hasAnnotation(suppliableClassId, context.session))
+            if (!declaration.containingDeclarationSymbol.hasAnnotation(suppliableAnnotationClassId, context.session))
                 reporter.reportOn(
                     source = declaration.source,
                     factory = Errors.USELESS_SUPPLIANCE,
@@ -204,7 +204,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
                                 val typeParameterSymbol = type.lookupTag.typeParameterSymbol
                                 if (
                                     !typeParameterSymbol.isSupply ||
-                                    !typeParameterSymbol.containingDeclarationSymbol.hasAnnotation(suppliableClassId, context.session)
+                                    !typeParameterSymbol.containingDeclarationSymbol.hasAnnotation(suppliableAnnotationClassId, context.session)
                                 ) return false
                             }
                             else -> error("Unexpected 'ConeLookupTagBasedType' inheritor: ${type::class.qualifiedName}")

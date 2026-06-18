@@ -6,7 +6,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
-import dev.lounres.kone.plugin.suppliedTypes.suppliableClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
@@ -152,7 +152,7 @@ class SuppliableFunctionsDuplicatesGenerationExtension(session: FirSession) : Fi
                         argumentMapping = FirEmptyAnnotationArgumentMapping
                     }
                     functionToSupply.resolvedAnnotationsWithArguments.filterTo(this) {
-                        it.toAnnotationClassId(session) != suppliableClassId
+                        it.toAnnotationClassId(session) != suppliableAnnotationClassId
                     }
                 }
             )
