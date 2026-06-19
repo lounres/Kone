@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
-import dev.lounres.kone.plugin.suppliedTypes.ir.isSupplianceProvided
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubParameterName
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
+import org.jetbrains.kotlin.ir.builders.irDelegatingConstructorCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irString
@@ -34,7 +35,6 @@ import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.isVararg
-import org.jetbrains.kotlin.ir.util.statements
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
@@ -100,18 +100,23 @@ fun supplyConstructorsBodies(
     val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
     val pairOfStringAndListOfSuppliedTypeIrType = pairIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
     
-    for (suppliance in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping.keys) {
-        val oldBody = suppliance.body!!
+    for ([suppliance, suppliable] in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
+        check(suppliance.body == null) { TODO() }
         suppliance.body = DeclarationIrBuilder(
             generatorContext = pluginContext,
             symbol = suppliance.symbol,
         ).run {
             irBlockBody {
-                for (statement in oldBody.statements) +statement
+                +irDelegatingConstructorCall(suppliable).apply {
+                    typeArguments.clear()
+                    typeArguments.addAll(suppliable.constructedClass.typeParameters.map { it.defaultType })
+                    arguments.clear()
+                    arguments.addAll(suppliance.parameters.filter { !it.isSupplianceProvided }.map { irGet(it) })
+                }
                 
                 val irClass = suppliance.constructedClass
                 val suppliableTypeParameters = irClass.typeParameters.filter { it.isSupply }
-                val suppliedTypes = suppliance.parameters.filter { it.isSupplianceProvided && it.name != Name.special("<supplianceStub>") }
+                val suppliedTypes = suppliance.parameters.filter { it.isSupplianceProvided && it.name != noSuppliedTypeParameterInClassStubParameterName }
                 
                 check(suppliableTypeParameters.size == suppliedTypes.size) { TODO() }
                 

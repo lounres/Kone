@@ -9,4 +9,4 @@ import dev.lounres.kone.suppliedTypes.*
 fun <@Supply Gee> baz(): Gee? = null
 
 @Suppliable
-<!CONFLICTING_OVERLOADS!>fun <Gee> baz(suppliedTypeParameterForGee: SuppliedType): Gee?<!> = null
+fun <Gee> baz(suppliedTypeParameterForGee: SuppliedType): Gee? = null

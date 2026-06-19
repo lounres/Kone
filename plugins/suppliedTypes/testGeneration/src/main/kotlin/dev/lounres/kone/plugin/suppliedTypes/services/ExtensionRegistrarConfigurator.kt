@@ -11,7 +11,6 @@ import dev.lounres.kone.plugin.suppliedTypes.fir.DeclarationExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.fir.DiagnosticExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.fir.FirSuppliedTypeExtensionRegistrar
 import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
-import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypePartialIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage
@@ -60,13 +59,13 @@ class FirCompleteExtensionRegistrarConfigurator(testServices: TestServices) : En
 
 class IrPartialExtensionRegistrarConfigurator(
     testServices: TestServices,
-    private val phases: List<SuppliedTypeIrGenerationExtension.Phase>,
+    private val lastPhase: UInt = UInt.MAX_VALUE,
 ) : EnvironmentConfigurator(testServices) {
     companion object {
         fun Constructor(
-            phases: List<SuppliedTypeIrGenerationExtension.Phase>
+            lastPhase: UInt = UInt.MAX_VALUE,
         ): Constructor<IrPartialExtensionRegistrarConfigurator> =
-            { testServices -> IrPartialExtensionRegistrarConfigurator(testServices = testServices, phases = phases) }
+            { testServices -> IrPartialExtensionRegistrarConfigurator(testServices = testServices, lastPhase = lastPhase) }
     }
     
     override fun ExtensionStorage.registerCompilerExtensions(
@@ -77,9 +76,9 @@ class IrPartialExtensionRegistrarConfigurator(
 
         FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
         IrGenerationExtension.registerExtension(
-            SuppliedTypePartialIrGenerationExtension(
+            SuppliedTypeIrGenerationExtension(
                 messageCollector = messageCollector,
-                phases = phases
+                lastPhase = lastPhase
             )
         )
     }

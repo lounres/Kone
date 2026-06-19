@@ -1,37 +1,32 @@
 FILE fqName:<root> fileName:/test.kt
-  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any]
-    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Foo
-    PROPERTY name:gee visibility:public modality:FINAL [val]
-      FIELD PROPERTY_BACKING_FIELD name:gee type:kotlin.Int visibility:private [final]
-        EXPRESSION_BODY
-          CONST Int type=kotlin.Int value=57
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-gee> visibility:public modality:FINAL returnType:kotlin.Int
-        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
-        correspondingProperty: PROPERTY name:gee visibility:public modality:FINAL [val]
-        BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public final fun <get-gee> (): kotlin.Int declared in <root>.Foo'
-            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:gee type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
-              receiver: GET_VAR '<this>: <root>.Foo declared in <root>.Foo.<get-gee>' type=<root>.Foo origin=null
-    CONSTRUCTOR visibility:public returnType:<root>.Foo [primary]
-      BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
-        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
-      overridden:
-        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
-    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      overridden:
-        public open fun hashCode (): kotlin.Int declared in kotlin.Any
-    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
-      overridden:
-        public open fun toString (): kotlin.String declared in kotlin.Any
-    FUN name:bar visibility:public modality:FINAL returnType:kotlin.Unit
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
-      BLOCK_BODY
-        TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
-          PROPERTY_REFERENCE 'public final gee: kotlin.Int declared in <root>.Foo' field=null getter='public final fun <get-gee> (): kotlin.Int declared in <root>.Foo' setter=null type=kotlin.reflect.KProperty0<kotlin.Int> origin=null
-            ARG 1: GET_VAR '<this>: <root>.Foo declared in <root>.Foo.bar' type=<root>.Foo origin=IMPLICIT_ARGUMENT
+  FUN name:bar visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER kind:Regular name:arg index:0 type:kotlin.Any?
+    VALUE_PARAMETER kind:Regular name:block index:1 type:kotlin.Function0<kotlin.Unit>
+    BLOCK_BODY
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.Unit
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="1"
+      CALL 'public final fun with <T, R> (receiver: T of kotlin.with, block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.with, R of kotlin.with>): R of kotlin.with declared in kotlin' type=kotlin.Unit origin=null
+        TYPE_ARG T: kotlin.Unit
+        TYPE_ARG R: kotlin.Unit
+        ARG receiver: CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+          ARG message: CONST String type=kotlin.String value="2"
+        ARG block: FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<kotlin.Unit, kotlin.Unit> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+            VALUE_PARAMETER kind:ExtensionReceiver name:$this$with index:0 type:kotlin.Unit
+            BLOCK_BODY
+              CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+                ARG message: CONST String type=kotlin.String value="3"
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="4"
+      CALL 'public final fun bar (arg: kotlin.Any?, block: kotlin.Function0<kotlin.Unit>): kotlin.Unit declared in <root>' type=kotlin.Unit origin=null
+        ARG arg: CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+          ARG message: CONST String type=kotlin.String value="5"
+        ARG block: FUN_EXPR type=kotlin.Function0<kotlin.Unit> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+            BLOCK_BODY
+              CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+                ARG message: CONST String type=kotlin.String value="6"
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="7"

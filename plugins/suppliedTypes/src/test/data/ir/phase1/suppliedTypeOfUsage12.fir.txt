@@ -1,0 +1,26 @@
+FILE: suppliedTypeOfUsage12.kt
+    public abstract interface Foo : R|kotlin/Any| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String|
+
+    }
+    public final object Bar : R|Foo| {
+        private constructor(): R|Bar| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public open override fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String| {
+            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T?|>().R|kotlin/Any.toString|()
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==((Q|Bar| as R|Foo|).R|/Foo.foo|<R|kotlin/String|>(), String(kotlin.String?)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

@@ -1,14 +1,16 @@
 FILE: test.kt
-    public final class Foo : R|kotlin/Any| {
-        public constructor(): R|Foo| {
-            super<R|kotlin/Any|>()
+    public final fun bar(arg: R|kotlin/Any?|, block: R|() -> kotlin/Unit|): R|kotlin/Unit| {
+    }
+    public final fun foo(): R|kotlin/Unit| {
+        R|kotlin/io/println|(String(1))
+        R|kotlin/with|<R|kotlin/Unit|, R|kotlin/Unit|>(R|kotlin/io/println|(String(2)), <L> = with@fun R|kotlin/Unit|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+            R|kotlin/io/println|(String(3))
         }
-
-        public final val gee: R|kotlin/Int| = Int(57)
-            public get(): R|kotlin/Int|
-
-        public final fun bar(): R|kotlin/Unit| {
-            ::R|/Foo.gee|
+        )
+        R|kotlin/io/println|(String(4))
+        R|/bar|(R|kotlin/io/println|(String(5)), <L> = bar@fun <anonymous>(): R|kotlin/Unit| <inline=NoInline>  {
+            R|kotlin/io/println|(String(6))
         }
-
+        )
+        R|kotlin/io/println|(String(7))
     }

@@ -5,15 +5,15 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubParameterName
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
-import org.jetbrains.kotlin.ir.builders.irGetObjectValue
+import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.parentAsClass
-import org.jetbrains.kotlin.name.Name
 
 
 fun supplyFunctionsParameters(
@@ -73,10 +73,9 @@ fun supplyConstructorsParameters(
                     generatorContext = pluginContext,
                     symbol = parameter.symbol,
                 ).run {
-                    if (parameter.name == Name.special("<supplianceStub>"))
+                    if (parameter.name == noSuppliedTypeParameterInClassStubParameterName)
                         irExprBody(
-                            value = irGetObjectValue(
-                                type = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol.defaultType,
+                            value = irGetObject(
                                 classSymbol = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol,
                             )
                         )

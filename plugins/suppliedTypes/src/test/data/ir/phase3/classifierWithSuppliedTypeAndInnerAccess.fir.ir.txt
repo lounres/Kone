@@ -34,7 +34,7 @@ FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
             TYPE_ARG T: kotlin.collections.List<T of <root>.Foo>
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
-        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
       FUN FAKE_OVERRIDE name:<get-suppliedTypesStorage> visibility:public modality:ABSTRACT returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> [fake_override]

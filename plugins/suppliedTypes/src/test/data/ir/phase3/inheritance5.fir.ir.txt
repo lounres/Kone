@@ -39,17 +39,12 @@ FILE fqName:<root> fileName:/inheritance5.kt
             ARG thisRef: GET_VAR '<this>: <root>.Gee declared in <root>.Gee.<set-suppliedTypesStorage>' type=<root>.Gee origin=null
             ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Gee' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Gee' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Gee' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
             ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Gee.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-    CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:<root>.Gee
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:<supplianceStub> index:0 type:dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
+    CONSTRUCTOR visibility:public returnType:<root>.Gee
+      VALUE_PARAMETER kind:Regular name:$noSuppliedTypeParameterInClassStub index:0 type:dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
         annotations:
           SupplianceProvided
-        EXPRESSION_BODY
-          GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:NoSuppliedTypeParameterInClassStub modality:FINAL visibility:public superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
       annotations:
         SupplianceProvided
-        Deprecated(message = "Pseudo-supplied types's constructor. Should be used by compiler plugin only.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
-      BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Gee'
     CONSTRUCTOR visibility:public returnType:<root>.Gee [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
@@ -109,7 +104,7 @@ FILE fqName:<root> fileName:/inheritance5.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
-        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
@@ -156,7 +151,7 @@ FILE fqName:<root> fileName:/inheritance5.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
-        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
@@ -202,7 +197,7 @@ FILE fqName:<root> fileName:/inheritance5.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliableClass
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
-        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
       FUN FAKE_OVERRIDE name:<get-suppliedTypesStorage> visibility:public modality:ABSTRACT returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> [fake_override]

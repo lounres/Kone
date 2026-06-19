@@ -16,5 +16,5 @@ fun internalSupplierPropertyName(classifierFqName: FqName, typeParameterName: Na
 fun internalSupplierPropertyName(classifierClassId: ClassId, typeParameterName: Name): Name =
     internalSupplierPropertyName(classifierClassId.asSingleFqName(), typeParameterName)
 
-fun internalSupplierParameterName(typeParameterName: Name): Name =
-    Name.identifier("suppliedTypeParameterFor${typeParameterName.identifier.replaceFirstChar { it.uppercase() }}")
+fun internalSupplierParameterName(typeParameterName: Name): Name = Name.identifier("\$suppliedTypeParameterFor_${typeParameterName}")
+val noSuppliedTypeParameterInClassStubParameterName: Name = Name.identifier("\$noSuppliedTypeParameterInClassStub")

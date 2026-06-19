@@ -1,0 +1,143 @@
+/*
+ * Copyright © 2026 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+package dev.lounres.kone.plugin.suppliedTypes.ir
+
+import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
+import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
+import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.jvm.codegen.AnnotationCodegen.Companion.annotationClass
+import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrStatement
+import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
+import org.jetbrains.kotlin.ir.builders.declarations.buildFun
+import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrFile
+import org.jetbrains.kotlin.ir.declarations.IrPackageFragment
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
+import org.jetbrains.kotlin.ir.expressions.impl.IrAnnotationImpl
+import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
+import org.jetbrains.kotlin.ir.types.defaultType
+import org.jetbrains.kotlin.ir.util.addChild
+import org.jetbrains.kotlin.ir.util.classId
+import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.copyAnnotations
+import org.jetbrains.kotlin.ir.util.copyFunctionSignatureFrom
+import org.jetbrains.kotlin.ir.visitors.IrTransformer
+
+
+class FunctionSuppliancesGenerationTransformer(
+    val pluginContext: IrPluginContext,
+    val irRuntimeReferences: IrRuntimeReferences,
+) : IrTransformer<Nothing?>() {
+//    data class TransformationContext(
+//        val localSymbol: IrSymbol?,
+//    ) {
+//        companion object {
+////            val INIT: TransformationContext = TransformationContext(
+////                suppliedTypes = emptyMap(),
+////                localSymbol = null,
+////            )
+//        }
+//    }
+    
+    private fun createSupplianceFor(function: IrSimpleFunction): IrSimpleFunction =
+        pluginContext.irFactory.buildFun {
+            name = function.name
+            updateFrom(function)
+        }.apply {
+            annotations += function.copyAnnotations { it.annotationClass.classId != suppliableAnnotationClassId }
+            annotations += IrAnnotationImpl.fromSymbolOwner(
+                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
+                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
+            )
+            copyFunctionSignatureFrom(function)
+            for (typeParameter in function.typeParameters) {
+                if (!typeParameter.isSupply) continue
+                addValueParameter(internalSupplierParameterName(typeParameter.name), irRuntimeReferences.suppliedTypeIrType).also { newValueParameter ->
+                    newValueParameter.annotations += IrAnnotationImpl.fromSymbolOwner(
+                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
+                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
+                    )
+//                    newValueParameter.defaultValue = DeclarationIrBuilder(pluginContext, this.symbol).run {
+//                        irExprBody(
+//                            irCall(irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol).also { call ->
+//                                call.typeArguments.add(typeParameter.defaultType)
+//                            }
+//                        )
+//                    }
+                }
+            }
+        }
+    
+//    override fun visitBody(body: IrBody, data: TransformationContext): IrBody {
+//        var createdNewDeclaration = false
+//        val newDeclarations = buildList {
+//            for (statement in body.statements) {
+//                add(statement)
+//                if (statement is IrSimpleFunction && statement.isSuppliable && statement) {
+//                    createdNewDeclaration = true
+//                    add(
+//                        pluginContext.irFactory.buildFun {
+//                            updateFrom(statement)
+//                        }.apply {
+//                            typeParameters = statement.typeParameters.map { parameter ->
+//                                parameter.deepCopyWithoutPatchingParents().apply {
+//                                    parent = statement
+//                                }
+//                            }
+//                            parameters = statement.parameters.map { parameter ->
+//                                parameter.deepCopyWithoutPatchingParents().apply {
+//                                    parent = statement
+//                                }
+//                            }
+//                            val
+//                            returnType = statement.returnType
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//        return super.visitBody(body, data)
+//    }
+    
+//    override fun visitContainerExpression(
+//        expression: IrContainerExpression,
+//        data: TransformationContext
+//    ): IrExpression {
+//        return super.visitContainerExpression(expression, data)
+//    }
+    
+    override fun visitClass(declaration: IrClass, data: Nothing?): IrStatement {
+        for (subdeclaration in declaration.declarations.toList()) {
+            if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
+                declaration.addChild(createSupplianceFor(subdeclaration))
+            }
+        }
+        return super.visitClass(declaration, data)
+    }
+    
+    override fun visitPackageFragment(declaration: IrPackageFragment, data: Nothing?): IrElement {
+        for (subdeclaration in declaration.declarations.toList()) {
+            if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
+                val newSubdeclaration = createSupplianceFor(subdeclaration)
+                declaration.addChild(newSubdeclaration)
+                pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(newSubdeclaration)
+            }
+        }
+        return super.visitPackageFragment(declaration, data)
+    }
+    
+    override fun visitFile(declaration: IrFile, data: Nothing?): IrFile {
+        for (subdeclaration in declaration.declarations.toList()) {
+            if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
+                val newSubdeclaration = createSupplianceFor(subdeclaration)
+                declaration.addChild(newSubdeclaration)
+                pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(newSubdeclaration)
+            }
+        }
+        return super.visitFile(declaration, data)
+    }
+}

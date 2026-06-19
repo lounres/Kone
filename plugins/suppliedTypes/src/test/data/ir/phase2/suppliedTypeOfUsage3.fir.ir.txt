@@ -17,37 +17,18 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage3.kt
         correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
         overridden:
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        EXPRESSION_BODY
-          CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=V of kotlin.properties.ReadWriteProperty origin=null
-            ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
-            ARG thisRef: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
-            ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
       FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
         VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
         correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
         overridden:
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        BLOCK_BODY
-          CALL 'public abstract fun setValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>, value: V of kotlin.properties.ReadWriteProperty): kotlin.Unit declared in kotlin.properties.ReadWriteProperty' type=kotlin.Unit origin=null
-            ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<set-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
-            ARG thisRef: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<set-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
-            ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-            ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-    CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:<root>.Foo<T of <root>.Foo>
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+    CONSTRUCTOR visibility:public returnType:<root>.Foo<T of <root>.Foo>
+      VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_T index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
         annotations:
           SupplianceProvided
-        EXPRESSION_BODY
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: T of <root>.Foo
       annotations:
         SupplianceProvided
-      BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Foo'
-          TYPE_ARG T: T of <root>.Foo
     CONSTRUCTOR visibility:public returnType:<root>.Foo<T of <root>.Foo> [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'

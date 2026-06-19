@@ -1,0 +1,21 @@
+FILE: withSuppliedUsage1.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String| {
+        ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+    }
+    public final fun <T> bar(arg: R|dev/lounres/kone/suppliedTypes/SuppliedType|): R|kotlin/String| {
+        ^bar R|dev/lounres/kone/suppliedTypes/withSupplied|<R|T|, R|kotlin/String|>(R|<local>/arg|, <L> = withSupplied@fun <anonymous>(): R|kotlin/String| <inline=Inline, kind=EXACTLY_ONCE>  {
+            ^ R|/foo|<R|kotlin/collections/Map<out T, T?>|>()
+        }
+        )
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|/bar|<R|kotlin/String|>(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/String|>()), String(kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

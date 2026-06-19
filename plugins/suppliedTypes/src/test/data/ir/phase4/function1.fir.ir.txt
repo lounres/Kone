@@ -3,15 +3,7 @@ FILE fqName:foo.bar fileName:/function1.kt
     TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supply
-    annotations:
-      Suppliable
-    EXPRESSION_BODY
-      CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-        ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
-FILE fqName:foo.bar fileName:foo/bar/__GENERATED__CALLABLES__.kt
-  FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.baz?
-    TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
-    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForGee index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+    VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Gee index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
       annotations:
         SupplianceProvided
       EXPRESSION_BODY
@@ -19,6 +11,12 @@ FILE fqName:foo.bar fileName:foo/bar/__GENERATED__CALLABLES__.kt
           TYPE_ARG T: Gee of foo.bar.baz
     annotations:
       SupplianceProvided
+  FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.baz?
+    TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    annotations:
+      Suppliable
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.baz? declared in foo.bar'
         CONST Null type=kotlin.Nothing? value=null

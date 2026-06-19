@@ -36,15 +36,14 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage4.kt
             ARG thisRef: GET_VAR '<this>: <root>.Bar declared in <root>.Bar.<set-suppliedTypesStorage>' type=<root>.Bar origin=null
             ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Bar' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Bar' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in <root>.Bar' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
             ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Bar.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-    CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:<root>.Bar
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:<supplianceStub> index:0 type:dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
+    CONSTRUCTOR visibility:public returnType:<root>.Bar
+      VALUE_PARAMETER kind:Regular name:$noSuppliedTypeParameterInClassStub index:0 type:dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
         annotations:
           SupplianceProvided
         EXPRESSION_BODY
           GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:NoSuppliedTypeParameterInClassStub modality:FINAL visibility:public superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
       annotations:
         SupplianceProvided
-        Deprecated(message = "Pseudo-supplied types's constructor. Should be used by compiler plugin only.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.Bar'
         VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
@@ -154,7 +153,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage4.kt
                 GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.Foo.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
-        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+        Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
       FUN FAKE_OVERRIDE name:<get-suppliedTypesStorage> visibility:public modality:ABSTRACT returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> [fake_override]
@@ -175,8 +174,8 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage4.kt
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.Bar' type=kotlin.String origin=null
-                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> (<supplianceStub>: dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub) declared in <root>.Bar' type=<root>.Bar origin=null
-                  ARG <supplianceStub>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:NoSuppliedTypeParameterInClassStub modality:FINAL visibility:public superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
+                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($noSuppliedTypeParameterInClassStub: dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub) declared in <root>.Bar' type=<root>.Bar origin=null
+                  ARG $noSuppliedTypeParameterInClassStub: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:NoSuppliedTypeParameterInClassStub modality:FINAL visibility:public superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.NoSuppliedTypeParameterInClassStub
               ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.String>"
             then: CONST String type=kotlin.String value="OK"
           BRANCH

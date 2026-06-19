@@ -13,92 +13,108 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
 class SuppliedTypeIrGenerationExtension(
     private val messageCollector: MessageCollector,
+    private val lastPhase: UInt = UInt.MAX_VALUE,
 ) : IrGenerationExtension {
-    typealias Phase = (
-        moduleFragment: IrModuleFragment,
-        pluginContext: IrPluginContext,
-        irRuntimeReferences: IrRuntimeReferences,
-        suppliabilityMapper: SuppliabilityMapper,
-    ) -> Unit
-    
-    companion object {
-        val phases: List<Phase> = listOf(
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
-                moduleFragment.transform(
-                    SuppliedTypesStorageAccessorsTransformer(
-                        pluginContext = pluginContext,
-                        irRuntimeReferences = irRuntimeReferences,
-                        suppliabilityMapper = suppliabilityMapper,
-                    ),
-                    null
-                )
-            },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
-                supplyFunctionsParameters(
-                    pluginContext = pluginContext,
-                    irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityMapper = suppliabilityMapper,
-                )
-                
-                supplyConstructorsParameters(
-                    pluginContext = pluginContext,
-                    irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityMapper = suppliabilityMapper,
-                )
-            },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
-                moduleFragment.transform(
-                    SuppliableCallSubstitutionTransformer(
-                        pluginContext = pluginContext,
-                        irRuntimeReferences = irRuntimeReferences,
-                        suppliabilityMapper = suppliabilityMapper,
-                    ),
-                    null,
-                )
-            },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
-                supplyFunctionsBodies(
-                    pluginContext = pluginContext,
-                    irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityMapper = suppliabilityMapper,
-                )
-                
-                supplyConstructorsBodies(
-                    pluginContext = pluginContext,
-                    irRuntimeReferences = irRuntimeReferences,
-                    suppliabilityMapper = suppliabilityMapper,
-                )
-                
-                moduleFragment.accept(
-                    SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
-                        pluginContext = pluginContext,
-                        irRuntimeReferences = irRuntimeReferences,
-                        suppliabilityMapper = suppliabilityMapper,
-                    ),
-                    null
-                )
-            },
-            { moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper ->
-                moduleFragment.transform(
-                    SuppliedTypeOfSubstitutionTransformer(
-                        pluginContext = pluginContext,
-                        irRuntimeReferences = irRuntimeReferences,
-                        suppliabilityMapper = suppliabilityMapper,
-                    ),
-                    SuppliedTypeOfSubstitutionTransformer.TransformationContext.INIT,
-                )
-            },
-        )
-    }
-    
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-        val irRuntimeReferences: IrRuntimeReferences = IrRuntimeReferences(pluginContext)
-        val suppliabilityMapper: SuppliabilityMapper = SuppliabilityMapper(
+        var currentPhase = 0u
+        
+        val irRuntimeReferences = IrRuntimeReferences(pluginContext)
+        
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.transform(
+            FunctionSuppliancesGenerationTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences
+            ),
+            null,
+        )
+        moduleFragment.transform(
+            ConstructorSuppliancesGenerationTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences
+            ),
+            null,
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        val suppliabilityMapper = SuppliabilityMapper(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
             moduleFragment = moduleFragment,
         )
         
-        for (phase in phases) phase(moduleFragment, pluginContext, irRuntimeReferences, suppliabilityMapper)
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.transform(
+            SuppliedTypesStorageAccessorsTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+                suppliabilityMapper = suppliabilityMapper,
+            ),
+            null
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        supplyFunctionsParameters(
+            pluginContext = pluginContext,
+            irRuntimeReferences = irRuntimeReferences,
+            suppliabilityMapper = suppliabilityMapper,
+        )
+        
+        supplyConstructorsParameters(
+            pluginContext = pluginContext,
+            irRuntimeReferences = irRuntimeReferences,
+            suppliabilityMapper = suppliabilityMapper,
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.transform(
+            SuppliableCallSubstitutionTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+                suppliabilityMapper = suppliabilityMapper,
+            ),
+            null,
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        supplyFunctionsBodies(
+            pluginContext = pluginContext,
+            irRuntimeReferences = irRuntimeReferences,
+            suppliabilityMapper = suppliabilityMapper,
+        )
+        
+        supplyConstructorsBodies(
+            pluginContext = pluginContext,
+            irRuntimeReferences = irRuntimeReferences,
+            suppliabilityMapper = suppliabilityMapper,
+        )
+        
+        moduleFragment.accept(
+            SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+                suppliabilityMapper = suppliabilityMapper,
+            ),
+            null
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.transform(
+            SuppliedTypeOfSubstitutionTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+                suppliabilityMapper = suppliabilityMapper,
+            ),
+            SuppliedTypeOfSubstitutionTransformer.TransformationContext.INIT,
+        )
+        
+        if (currentPhase++ == lastPhase) return
     }
 }

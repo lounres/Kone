@@ -6,6 +6,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfFunctionCallableId
+import dev.lounres.kone.plugin.suppliedTypes.withSuppliedFunctionCallableId
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrElement
@@ -16,15 +17,21 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.declarations.IrVariable
+import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
+import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
+import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.callableId
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -154,18 +161,64 @@ class SuppliedTypeOfSubstitutionTransformer(
     
     override fun visitCall(expression: IrCall, data: TransformationContext): IrElement {
         val declaration = expression.symbol.owner
-        if (declaration.callableId != suppliedTypeOfFunctionCallableId) return super.visitCall(expression, data)
-        val typeToSupply = expression.typeArguments.single()!!
-        val declarationIrBuilder = DeclarationIrBuilder(pluginContext, data.localSymbol!!)
-        return declarationIrBuilder.irBlock {
-            +irGet(
-                SuppliedTypesBuilder(
-                    pluginContext = pluginContext,
-                    irRuntimeReferences = irRuntimeReferences,
-                    irStatementsBuilder = this,
-                    initialSuppliedTypes = data.suppliedTypes.mapValues { [_, builder] -> lazy { builder() } }
-                ).resolve(typeToSupply)
-            )
+        return when {
+            declaration.callableId == suppliedTypeOfFunctionCallableId -> {
+                val typeToSupply = expression.typeArguments.single()!!
+                val declarationIrBuilder = DeclarationIrBuilder(pluginContext, data.localSymbol!!)
+                declarationIrBuilder.irBlock {
+                    +irGet(
+                        SuppliedTypesBuilder(
+                            pluginContext = pluginContext,
+                            irRuntimeReferences = irRuntimeReferences,
+                            irStatementsBuilder = this,
+                            initialSuppliedTypes = data.suppliedTypes.mapValues { [_, builder] -> lazy { builder() } }
+                        ).resolve(typeToSupply)
+                    )
+                }
+            }
+            declaration.callableId == withSuppliedFunctionCallableId -> @Suppress("UNCHECKED_CAST") {
+                val typesToSupply = expression.typeArguments.dropLast(1)
+                check(typesToSupply.all { it is IrSimpleType && it.nullability == NOT_SPECIFIED && it.classifier is IrTypeParameterSymbol }) { TODO() }
+                typesToSupply as List<IrSimpleType>
+                
+                val suppliances = expression.arguments.dropLast(1)
+                check(suppliances.all { it != null })
+                suppliances as List<IrExpression>
+                
+                check(typesToSupply.size == suppliances.size) { TODO() }
+                
+                val suppliedScope = expression.arguments.last()!!
+                check(suppliedScope is IrFunctionExpression) { TODO() }
+                val suppliedBody = suppliedScope.function.body ?: TODO()
+                check(suppliedBody is IrBlockBody) { TODO() }
+                
+                DeclarationIrBuilder(pluginContext, data.localSymbol!!).irBlock {
+                    val suppliedTypes = suppliances.map { irTemporary(it) }
+                    
+                    val data = TransformationContext(
+                        suppliedTypes = buildMap {
+                            putAll(data.suppliedTypes)
+                            
+                            putAll(typesToSupply.zip(suppliedTypes.map { { it } }))
+                        },
+                        localSymbol = data.localSymbol,
+                    )
+                    
+                    +irCall(
+                        pluginContext.finderForBuiltins().referenceFunctionThatOrFail(
+                            CallableId(
+                                packageName = FqName("kotlin"),
+                                callableName = Name.identifier("run"),
+                            )
+                        ) {
+                            it.owner.parameters.size == 1
+                        }
+                    ).apply {
+                        arguments[0] = visitExpression(suppliedScope, data)
+                    }
+                }
+            }
+            else -> super.visitCall(expression, data)
         }
     }
 }

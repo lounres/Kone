@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubParameterName
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrElement
@@ -19,7 +20,6 @@ import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
-import org.jetbrains.kotlin.name.Name
 
 
 class SuppliableCallSubstitutionTransformer(
@@ -50,7 +50,7 @@ class SuppliableCallSubstitutionTransformer(
                     for ([parameterIndex, parameter] in suppliance.parameters.withIndex()) {
                         if (parameter.isSupplianceProvided) {
                             arguments[parameterIndex] =
-                                if (parameter.name == Name.special("<supplianceStub>"))
+                                if (parameter.name == noSuppliedTypeParameterInClassStubParameterName)
                                     irGetObjectValue(
                                         type = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol.defaultType,
                                         classSymbol = irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol,

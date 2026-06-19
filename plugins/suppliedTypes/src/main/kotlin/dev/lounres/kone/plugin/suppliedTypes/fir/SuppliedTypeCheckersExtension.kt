@@ -8,9 +8,9 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedAnnotationClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
+import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory1Delegate
+import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory2Delegate
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporter
-import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactory1
-import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactory2
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactoryToRendererMap
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticsContainer
 import org.jetbrains.kotlin.diagnostics.SourceElementPositioningStrategies
@@ -61,7 +61,7 @@ import org.jetbrains.kotlin.psi.KtElement
 
 
 // TODO: Сделать диагностики на:
-//  - наследование suppliable функций.\
+//  - наследование suppliable функций.
 class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckersExtension(session) {
     companion object {
         context(context: CheckerContext)
@@ -91,7 +91,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
     
     object SuppliedTypeExpressionCheckers : ExpressionCheckers() {
         override val functionCallCheckers: Set<FirFunctionCallChecker> = setOf(
-            SuppliableFunctionCallChecker,
+//            SuppliableFunctionCallChecker,
         )
     }
     
@@ -263,40 +263,25 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
     }
     
     object Errors : KtDiagnosticsContainer() {
-        val SUPPLIABLE_INHERITED_BY_NON_SUPPLIABLE = KtDiagnosticFactory2<FirClassSymbol<*>, List<FirClassLikeSymbol<*>>>(
-            name = "SUPPLIABLE_INHERITED_BY_NON_SUPPLIABLE",
+        val SUPPLIABLE_INHERITED_BY_NON_SUPPLIABLE by KtDiagnosticFactory2Delegate<FirClassSymbol<*>, List<FirClassLikeSymbol<*>>>(
             severity = ERROR,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
-            psiType = KtElement::class,
-            rendererFactory = getRendererFactory()
         )
-        val USELESS_SUPPLIABILITY = KtDiagnosticFactory1<FirClassSymbol<*>>(
-            name = "USELESS_SUPPLIABILITY",
+        val USELESS_SUPPLIABILITY by KtDiagnosticFactory1Delegate<FirClassSymbol<*>>(
             severity = WARNING,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
-            psiType = KtElement::class,
-            rendererFactory = getRendererFactory()
         )
-        val SUPPLIANCE_IS_NEEDED = KtDiagnosticFactory2<FirTypeParameterSymbol, List<ConeKotlinType>>(
-            name = "SUPPLIANCE_IS_NEEDED",
+        val SUPPLIANCE_IS_NEEDED by KtDiagnosticFactory2Delegate<FirTypeParameterSymbol, List<ConeKotlinType>>(
             severity = ERROR,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
-            psiType = KtElement::class,
-            rendererFactory = getRendererFactory()
         )
-        val USELESS_SUPPLIANCE = KtDiagnosticFactory1<FirTypeParameterSymbol>(
-            name = "USELESS_SUPPLIANCE",
+        val USELESS_SUPPLIANCE by KtDiagnosticFactory1Delegate<FirTypeParameterSymbol>(
             severity = WARNING,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
-            psiType = KtElement::class,
-            rendererFactory = getRendererFactory()
         )
-        val NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT = KtDiagnosticFactory2<FirTypeParameterSymbol, ConeKotlinType>(
-            name = "NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT",
+        val NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT by KtDiagnosticFactory2Delegate<FirTypeParameterSymbol, ConeKotlinType>(
             severity = ERROR,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
-            psiType = KtElement::class,
-            rendererFactory = getRendererFactory()
         )
         
         override fun getRendererFactory(): BaseDiagnosticRendererFactory = DefaultMessages

@@ -147,8 +147,7 @@ class SuppliedTypesBuilder(
                             is IrTypeParameterSymbol -> {
                                 val typeParameter = classifierSymbol.owner
                                 val typeParameterType = typeParameter.defaultType
-                                if (typeParameterType == type)
-                                    error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.")
+                                if (typeParameterType == type) error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.")
                                 val suppliedTypeVariable = resolve(typeParameterType)
                                 val nullability = type.nullability
                                 
@@ -170,7 +169,7 @@ class SuppliedTypesBuilder(
                                                         )
                                                     )
                                                     
-                                                    irCallConstructor(
+                                                    +irCallConstructor(
                                                         irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single {
                                                             it.owner.parameters.let { it.size == 3 && it[0].name.toString() == "fullyQualifiedName" && it[1].name.toString() == "typeArguments" && it[2].name.toString() == "isNullable" }
                                                         },
@@ -183,7 +182,7 @@ class SuppliedTypesBuilder(
                                                         }
                                                         arguments[1] = irCall(
                                                             irRuntimeReferences.suppliedTypeRegularIrClassSymbol.owner.properties.single { it.name.identifier == "typeArguments" }.getter!!
-                                                        ).also {
+                                                        ).apply {
                                                             arguments[0] = irGet(castedSuppliedTypeVariable)
                                                         }
                                                         arguments[2] = irBoolean(true)
@@ -218,7 +217,7 @@ class SuppliedTypesBuilder(
                                                         )
                                                     )
                                                     
-                                                    irCallConstructor(
+                                                    +irCallConstructor(
                                                         irRuntimeReferences.suppliedTypeRegularIrClassSymbol.constructors.single {
                                                             it.owner.parameters.let { it.size == 3 && it[0].name.toString() == "fullyQualifiedName" && it[1].name.toString() == "typeArguments" && it[2].name.toString() == "isNullable" }
                                                         },
@@ -231,7 +230,7 @@ class SuppliedTypesBuilder(
                                                         }
                                                         arguments[1] = irCall(
                                                             irRuntimeReferences.suppliedTypeRegularIrClassSymbol.owner.properties.single { it.name.identifier == "typeArguments" }.getter!!
-                                                        ).also {
+                                                        ).apply {
                                                             arguments[0] = irGet(castedSuppliedTypeVariable)
                                                         }
                                                         arguments[2] = irBoolean(false)

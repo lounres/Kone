@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
-import dev.lounres.kone.plugin.suppliedTypes.ir.SuppliedTypeIrGenerationExtension
 import dev.lounres.kone.plugin.suppliedTypes.services.ExtensionRegistrarConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator
 import org.jetbrains.kotlin.test.Constructor
@@ -49,18 +48,19 @@ abstract class AbstractBackendTest(
 }
 
 open class AbstractBackendTestForPhase(
-    phases: List<SuppliedTypeIrGenerationExtension.Phase>
-) : AbstractBackendTest(IrPartialExtensionRegistrarConfigurator.Constructor(phases)) {
-    constructor(phases: Int) : this(SuppliedTypeIrGenerationExtension.phases.take(phases))
+    lastPhase: UInt = UInt.MAX_VALUE,
+) : AbstractBackendTest(IrPartialExtensionRegistrarConfigurator.Constructor(lastPhase)) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.FIR2IR
 }
 
-open class AbstractBackendTestForPhase0 : AbstractBackendTestForPhase(0)
-open class AbstractBackendTestForPhase1 : AbstractBackendTestForPhase(1)
-open class AbstractBackendTestForPhase2 : AbstractBackendTestForPhase(2)
-open class AbstractBackendTestForPhase3 : AbstractBackendTestForPhase(3)
-open class AbstractBackendTestForPhase4 : AbstractBackendTestForPhase(4)
-open class AbstractBackendTestForPhase5 : AbstractBackendTestForPhase(5)
+open class AbstractBackendTestForPhase0 : AbstractBackendTestForPhase(0u)
+open class AbstractBackendTestForPhase1 : AbstractBackendTestForPhase(1u)
+open class AbstractBackendTestForPhase2 : AbstractBackendTestForPhase(2u)
+open class AbstractBackendTestForPhase3 : AbstractBackendTestForPhase(3u)
+open class AbstractBackendTestForPhase4 : AbstractBackendTestForPhase(4u)
+open class AbstractBackendTestForPhase5 : AbstractBackendTestForPhase(5u)
+open class AbstractBackendTestForPhase6 : AbstractBackendTestForPhase(6u)
+open class AbstractBackendTestForPhase7 : AbstractBackendTestForPhase(7u)
 
 open class AbstractBackendTestComplete : AbstractBackendTest(::ExtensionRegistrarConfigurator) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND

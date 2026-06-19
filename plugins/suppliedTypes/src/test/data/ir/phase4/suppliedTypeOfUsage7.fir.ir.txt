@@ -14,17 +14,6 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage7.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
         public open fun toString (): kotlin.String declared in kotlin.Any
-    FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:foo visibility:public modality:ABSTRACT returnType:kotlin.String
-      TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
-        annotations:
-          SupplianceProvided
-        EXPRESSION_BODY
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: T of <root>.Foo.foo
-      annotations:
-        SupplianceProvided
     FUN name:foo visibility:public modality:ABSTRACT returnType:kotlin.String
       TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
         annotations:
@@ -32,9 +21,19 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage7.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
       annotations:
         Suppliable
-      EXPRESSION_BODY
-        CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-          ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+    FUN name:foo visibility:public modality:ABSTRACT returnType:kotlin.String
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+        annotations:
+          Supply
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo
+      VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_T index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
+        annotations:
+          SupplianceProvided
+        EXPRESSION_BODY
+          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            TYPE_ARG T: T of <root>.Foo.foo
+      annotations:
+        SupplianceProvided
   CLASS OBJECT name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.Bar
     CONSTRUCTOR visibility:private returnType:<root>.Bar [primary]
@@ -54,19 +53,15 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage7.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
         public open fun toString (): kotlin.String declared in <root>.Foo
-    FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:foo visibility:public modality:OPEN returnType:kotlin.String
-      TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
-      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Bar
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForT index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
+    FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
         annotations:
-          SupplianceProvided
-        EXPRESSION_BODY
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: T of <root>.Bar.foo
+          Supply
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Bar
       annotations:
-        SupplianceProvided
+        Suppliable
       overridden:
-        public abstract fun foo <T> (suppliedTypeParameterForT: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>.Foo
+        public abstract fun foo <T> (): kotlin.String declared in <root>.Foo
       BLOCK_BODY
         RETURN type=kotlin.Nothing from='public open fun foo <T> (): kotlin.String declared in <root>.Bar'
           CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
@@ -78,25 +73,24 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage7.kt
         annotations:
           Supply
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Bar
+      VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_T index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
+        annotations:
+          SupplianceProvided
+        EXPRESSION_BODY
+          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            TYPE_ARG T: T of <root>.Bar.foo
       annotations:
-        Suppliable
-      overridden:
-        public abstract fun foo <T> (): kotlin.String declared in <root>.Foo
-      EXPRESSION_BODY
-        CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-          ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+        SupplianceProvided
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
-              ARG arg0: CALL 'public abstract fun foo <T> (suppliedTypeParameterForT: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>.Foo' type=kotlin.String origin=null
+              ARG arg0: CALL 'public abstract fun foo <T> (): kotlin.String declared in <root>.Foo' type=kotlin.String origin=null
                 TYPE_ARG T: kotlin.String
                 ARG <this>: TYPE_OP type=<root>.Foo origin=CAST typeOperand=<root>.Foo
                   GET_OBJECT 'CLASS OBJECT name:Bar modality:FINAL visibility:public superTypes:[<root>.Foo]' type=<root>.Bar
-                ARG suppliedTypeParameterForT: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-                  TYPE_ARG T: kotlin.String
               ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.String>"
             then: CONST String type=kotlin.String value="OK"
           BRANCH

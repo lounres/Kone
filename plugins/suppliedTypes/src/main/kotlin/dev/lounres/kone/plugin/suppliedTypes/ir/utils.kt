@@ -19,6 +19,7 @@ import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeDynamicSingletonClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfFunctionCallableId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeRegularClassClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.withSuppliedFunctionCallableId
 import org.jetbrains.kotlin.backend.common.extensions.DeclarationFinder
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.jvm.functionByName
@@ -90,10 +91,17 @@ class IrRuntimeReferences(pluginContext: IrPluginContext) {
     val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarSingletonClassId)
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.createType(false, emptyList())
     
+    val supplianceProvidedAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(supplianceProvidedAnnotationClassId)
     val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubSingletonClassId)
     val suppliableClassIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliableClassClassClassId)
     val suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertyGetter("suppliedTypesStorage")!!
     val suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol = suppliableClassIrClassSymbol.getPropertySetter("suppliedTypesStorage")!!
     val suppliableClassAfterSupplianceIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = suppliableClassIrClassSymbol.functionByName("afterSuppliance")
     val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfFunctionCallableId)
+//    val supplyIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(supplyFunctionCallableId)
+    fun withSuppliedIrSimpleFunctionSymbol(arity: Int): IrSimpleFunctionSymbol =
+        finder.referenceFunctionThatOrFail(withSuppliedFunctionCallableId) {
+            val simpleFunction = it.owner
+            simpleFunction.typeParameters.size == arity && simpleFunction.parameters.size == arity + 1
+        }
 }

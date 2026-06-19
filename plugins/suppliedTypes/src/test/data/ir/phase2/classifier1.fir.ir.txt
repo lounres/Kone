@@ -17,37 +17,18 @@ FILE fqName:foo.bar fileName:/classifier1.kt
         correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
         overridden:
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        EXPRESSION_BODY
-          CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=V of kotlin.properties.ReadWriteProperty origin=null
-            ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in foo.bar.Baz' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              receiver: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<get-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-            ARG thisRef: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<get-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-            ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Baz' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
       FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Baz<Gee of foo.bar.Baz>
         VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
         correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
         overridden:
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-        BLOCK_BODY
-          CALL 'public abstract fun setValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>, value: V of kotlin.properties.ReadWriteProperty): kotlin.Unit declared in kotlin.properties.ReadWriteProperty' type=kotlin.Unit origin=null
-            ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in foo.bar.Baz' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              receiver: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<set-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-            ARG thisRef: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<set-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-            ARG property: PROPERTY_REFERENCE 'public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz' field=null getter='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz' setter='public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Baz' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-            ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-    CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] visibility:public returnType:foo.bar.Baz<Gee of foo.bar.Baz>
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableConstructorsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForGee index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
+    CONSTRUCTOR visibility:public returnType:foo.bar.Baz<Gee of foo.bar.Baz>
+      VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Gee index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
         annotations:
           SupplianceProvided
-        EXPRESSION_BODY
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-            TYPE_ARG T: Gee of foo.bar.Baz
       annotations:
         SupplianceProvided
-      BLOCK_BODY
-        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Baz'
-          TYPE_ARG Gee: Gee of foo.bar.Baz
     CONSTRUCTOR visibility:public returnType:foo.bar.Baz<Gee of foo.bar.Baz>
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'

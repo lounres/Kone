@@ -148,6 +148,8 @@ stal {
             extra["artifactId"] = "kone.plugin.${project.parent!!.name}.runtime"
             extra["alias"] = "plugin-${project.parent!!.name}-runtime"
             extra["androidNamespace"] = "dev.lounres.kone.plugin.${project.parent!!.name}.runtime"
+            extra["jvmTargetVersion"] = settings.extra["pluginRuntimeJvmTargetVersion"]
+            extra["jvmVendor"] = settings.extra["pluginRuntimeJvmVendor"]
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"

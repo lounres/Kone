@@ -6,6 +6,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
+import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubParameterName
 import dev.lounres.kone.util.mapOperations.copyTo
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.descriptors.ClassKind
@@ -177,7 +178,7 @@ class SuppliableConstructorsDuplicatesGenerationExtension(session: FirSession) :
                         isFun = suppliedConstructor.rawStatus.isFun
                     }
                     valueParameter(
-                        name = Name.special("<supplianceStub>"),
+                        name = noSuppliedTypeParameterInClassStubParameterName,
                         type = noSuppliedTypeParameterInClassStubConeClassLikeType,
                         hasDefaultValue = true,
                         key = Key,

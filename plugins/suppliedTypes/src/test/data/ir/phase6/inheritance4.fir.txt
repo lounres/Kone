@@ -1,0 +1,9 @@
+FILE: inheritance4.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Foo<kotlin/collections/Map<out U, kotlin/String>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Baz<@R|dev/lounres/kone/suppliedTypes/Supply|() V> : R|Foo<kotlin/collections/Map<out kotlin/Int, V>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Gee : R|Bar<kotlin/Int>|, R|Baz<kotlin/String>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }

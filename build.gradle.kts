@@ -556,9 +556,7 @@ stal {
                     sourceSets {
                         val test by getting {
                             dependencies {
-                                with(versions.testBaloon) {
-                                    implementation(framework.core)
-                                }
+                                implementation(versions.testBaloon.framework.core)
                             }
                         }
                     }
@@ -570,9 +568,7 @@ stal {
                     sourceSets {
                         commonTest {
                             dependencies {
-                                with(versions.testBaloon) {
-                                    implementation(framework.core)
-                                }
+                                implementation(versions.testBaloon.framework.core)
                             }
                         }
                     }

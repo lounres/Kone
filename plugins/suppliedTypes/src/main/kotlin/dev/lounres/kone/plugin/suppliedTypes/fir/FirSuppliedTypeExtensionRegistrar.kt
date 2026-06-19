@@ -12,8 +12,8 @@ class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::SuppliedClassSupertypeGenerationExtension
         +::SuppliedTypesStoragePropertyGenerationExtension
-        +::SuppliableFunctionsDuplicatesGenerationExtension
-        +::SuppliableConstructorsDuplicatesGenerationExtension
+//        +::SuppliableFunctionsDuplicatesGenerationExtension
+//        +::SuppliableConstructorsDuplicatesGenerationExtension
         +::SuppliedTypeCheckersExtension
         
         registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)

@@ -12,6 +12,8 @@ import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase3
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase4
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase5
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase6
+import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBackendTestForPhase7
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractBoxTest
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractTestWithoutPlugin
 import dev.lounres.kone.plugin.suppliedTypes.runners.AbstractFrontendTestDeclarations
@@ -51,6 +53,12 @@ fun main() {
             }
             testClass<AbstractBackendTestForPhase5> {
                 model("ir/phase5")
+            }
+            testClass<AbstractBackendTestForPhase6> {
+                model("ir/phase6")
+            }
+            testClass<AbstractBackendTestForPhase7> {
+                model("ir/phase7")
             }
             testClass<AbstractBackendTestComplete> {
                 model("ir/complete")

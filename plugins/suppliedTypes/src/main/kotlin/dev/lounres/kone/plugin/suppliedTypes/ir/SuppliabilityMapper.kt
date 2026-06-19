@@ -110,7 +110,7 @@ private data class IrSimpleFunctionSignature(
 )
 private typealias IrConstructorSignature = List<IrType>
 
-private class IrSimpleFunctionSuppliabilityScope{
+private class IrSimpleFunctionSuppliabilityScope {
     val suppliable: Map<IrSimpleFunctionSignature, IrSimpleFunction>
         field: MutableMap<IrSimpleFunctionSignature, IrSimpleFunction> = mutableMapOf()
     val suppliance: Map<IrSimpleFunctionSignature, IrSimpleFunction>

@@ -20,17 +20,6 @@ FILE fqName:foo.bar fileName:/method3.kt
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
         overridden:
           public open fun toString (): kotlin.String declared in kotlin.Any
-      FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.Foo.Bar.baz?
-        TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
-        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo.Bar
-        VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliableFunctionsDuplicatesGenerationExtension.Key] kind:Regular name:suppliedTypeParameterForGee index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
-          annotations:
-            SupplianceProvided
-          EXPRESSION_BODY
-            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-              TYPE_ARG T: Gee of foo.bar.Foo.Bar.baz
-        annotations:
-          SupplianceProvided
       FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.Foo.Bar.baz?
         TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
           annotations:
@@ -41,6 +30,16 @@ FILE fqName:foo.bar fileName:/method3.kt
         BLOCK_BODY
           RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.Foo.Bar.baz? declared in foo.bar.Foo.Bar'
             CONST Null type=kotlin.Nothing? value=null
+      FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.Foo.Bar.baz?
+        TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
+          annotations:
+            Supply
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo.Bar
+        VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Gee index:1 type:dev.lounres.kone.suppliedTypes.SuppliedType
+          annotations:
+            SupplianceProvided
+        annotations:
+          SupplianceProvided
     CONSTRUCTOR visibility:private returnType:foo.bar.Foo [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'

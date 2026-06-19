@@ -12,8 +12,8 @@ class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::SuppliedClassSupertypeGenerationExtension
         +::SuppliedTypesStoragePropertyGenerationExtension
-        +::SuppliableFunctionsDuplicatesGenerationExtension
-        +::SuppliableConstructorsDuplicatesGenerationExtension
+//        +::SuppliableFunctionsDuplicatesGenerationExtension
+//        +::SuppliableConstructorsDuplicatesGenerationExtension
     }
 }
 
