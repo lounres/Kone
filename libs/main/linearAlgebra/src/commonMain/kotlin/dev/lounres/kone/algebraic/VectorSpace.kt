@@ -22,8 +22,10 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
     
     @Suppliable
     public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<VectorSpace<Number, Vector>>() {
-        override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                Module.Key<Number, Vector>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
