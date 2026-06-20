@@ -22,8 +22,10 @@ public interface Semigroup<Number> : Equality<Number> {
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semigroup<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> = ImpliedKeysRegistry {
-            Equality.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Equality.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Semigroup.Key<${suppliedTypeOf<Number>()}>"
     }
@@ -44,8 +46,10 @@ public interface CommutativeSemigroup<Number> : Semigroup<Number> {
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeSemigroup<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeSemigroup<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeSemigroup<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Semigroup.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemigroup.Key<${suppliedTypeOf<Number>()}>"
     }

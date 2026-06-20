@@ -44,8 +44,10 @@ public interface Monoid<Number> : Semigroup<Number> {
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Monoid<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Semigroup.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Monoid.Key<${suppliedTypeOf<Number>()}>"
     }
@@ -116,9 +118,11 @@ public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigrou
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeMonoid<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeMonoid<Number>> = ImpliedKeysRegistry {
-            Monoid.Key<Number>().impliesSame()
-            CommutativeSemigroup.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeMonoid<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Monoid.Key<Number>().impliesSame()
+                CommutativeSemigroup.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeMonoid.Key<${suppliedTypeOf<Number>()}>"
     }

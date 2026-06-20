@@ -117,8 +117,10 @@ public interface Field<Number> : CommutativeRing<Number> {
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Field<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Field<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<Field<Number>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeRing.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Field.Key<${suppliedTypeOf<Number>()}>"
     }

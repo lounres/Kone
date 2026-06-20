@@ -60,8 +60,10 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSemiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSemiring<Number>> = ImpliedKeysRegistry {
-            CommutativeSemiring.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSemiring<Number>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeSemiring.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.EuclideanSemiring.Key<${suppliedTypeOf<Number>()}>"
     }
@@ -102,9 +104,11 @@ public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemir
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanRing<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>().impliesSame()
-            EuclideanSemiring.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanRing<Number>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeRing.Key<Number>().impliesSame()
+                EuclideanSemiring.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<${suppliedTypeOf<Number>()}>"
     }

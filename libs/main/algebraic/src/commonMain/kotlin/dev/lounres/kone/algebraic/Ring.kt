@@ -182,9 +182,11 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Ring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Ring<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>().impliesSame()
-            CommutativeGroup.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<Ring<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Semigroup.Key<Number>().impliesSame()
+                CommutativeGroup.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Ring.Key<${suppliedTypeOf<Number>()}>"
     }
@@ -353,9 +355,11 @@ public interface CommutativeRing<Number> : Ring<Number>, CommutativeSemiring<Num
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeRing<Number>> = ImpliedKeysRegistry {
-            Ring.Key<Number>().impliesSame()
-            CommutativeSemiring.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeRing<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Ring.Key<Number>().impliesSame()
+                CommutativeSemiring.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<${suppliedTypeOf<Number>()}>"
     }

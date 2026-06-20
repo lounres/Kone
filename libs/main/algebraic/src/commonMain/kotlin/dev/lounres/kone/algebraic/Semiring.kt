@@ -179,8 +179,10 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
      */
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> = ImpliedKeysRegistry {
-            CommutativeMonoid.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeMonoid.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Semiring.Key<${suppliedTypeOf<Number>()}>"
     }
@@ -326,8 +328,10 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeSemiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeSemiring<Number>> = ImpliedKeysRegistry {
-            Semiring.Key<Number>().impliesSame()
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeSemiring<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Semiring.Key<Number>().impliesSame()
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemiring.Key<${suppliedTypeOf<Number>()}>"
     }

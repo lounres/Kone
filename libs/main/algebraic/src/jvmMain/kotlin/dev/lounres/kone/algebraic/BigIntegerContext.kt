@@ -6,13 +6,6 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.asComparisonResult
-import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -20,8 +13,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.relations.*
 import java.math.BigInteger
 
 
