@@ -5,10 +5,15 @@
 
 package dev.lounres.kone.assertions
 
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 
 
 public inline fun AssertionScope.withClue(clue: String, block: context(AssertionScope) () -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     val softAssertionScope = object : AssertionScope {
         override fun consumeAssertion(assertionResult: AssertionScope.Assertion) {
             this@withClue.consumeAssertion(
@@ -29,11 +34,17 @@ public inline fun AssertionScope.withClue(clue: String, block: context(Assertion
 
 @JvmName("withClueContextual")
 context(assertionScope: AssertionScope)
-public fun withClue(clue: String, block: context(AssertionScope) () -> Unit) {
+public inline fun withClue(clue: String, block: context(AssertionScope) () -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     assertionScope.withClue(clue, block)
 }
 
 public inline fun AssertionScope.withClue(crossinline clue: () -> String, block: context(AssertionScope) () -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     val softAssertionScope = object : AssertionScope {
         override fun consumeAssertion(assertionResult: AssertionScope.Assertion) {
             this@withClue.consumeAssertion(
@@ -54,6 +65,9 @@ public inline fun AssertionScope.withClue(crossinline clue: () -> String, block:
 
 @JvmName("withClueContextual")
 context(assertionScope: AssertionScope)
-public fun withClue(clue: () -> String, block: context(AssertionScope) () -> Unit) {
+public inline fun withClue(crossinline clue: () -> String, block: context(AssertionScope) () -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     assertionScope.withClue(clue, block)
 }

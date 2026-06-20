@@ -5,6 +5,9 @@
 
 package dev.lounres.kone.assertions
 
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+
 
 @Expect.Dsl
 public fun interface Expect<out Value> {
@@ -18,29 +21,44 @@ public fun interface Expect<out Value> {
 
 public fun <Value> Expect.Companion.of(value: Value): Expect<Value> = Expect { value }
 public inline fun <Value> Expect.Companion.of(value: Value, block: Expect<Value>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     of(value).block()
 }
 
 public fun <Value> Expect.Companion.using(provider: () -> Value): Expect<Value> = Expect { provider() }
-public fun <Value> Expect.Companion.using(provider: () -> Value, block: Expect<Value>.() -> Unit) {
+public inline fun <Value> Expect.Companion.using(noinline provider: () -> Value, block: Expect<Value>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     using(provider).block()
 }
 public fun <OldValue, NewValue> Expect<OldValue>.using(provider: (OldValue) -> NewValue): Expect<NewValue> = Expect { provider(this.exposeValue()) }
-public fun <OldValue, NewValue> Expect<OldValue>.using(provider: (OldValue) -> NewValue, block: Expect<NewValue>.() -> Unit) {
+public inline fun <OldValue, NewValue> Expect<OldValue>.using(noinline provider: (OldValue) -> NewValue, block: Expect<NewValue>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     using(provider).block()
 }
 
-public fun <Value> Expect.Companion.usingLazily(provider: () -> Value): Expect<Value> {
+public fun <Value> Expect.Companion.ofLazy(provider: () -> Value): Expect<Value> {
     val value by lazy(provider)
     return Expect { value }
 }
-public fun <Value> Expect.Companion.usingLazily(provider: () -> Value, block: Expect<Value>.() -> Unit) {
-    usingLazily(provider).block()
+public inline fun <Value> Expect.Companion.ofLazy(noinline provider: () -> Value, block: Expect<Value>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    ofLazy(provider).block()
 }
 public fun <OldValue, NewValue> Expect<OldValue>.usingLazily(provider: (OldValue) -> NewValue): Expect<NewValue> {
     val value by lazy { provider(this.exposeValue()) }
     return Expect { value }
 }
-public fun <OldValue, NewValue> Expect<OldValue>.usingLazily(provider: (OldValue) -> NewValue, block: Expect<NewValue>.() -> Unit) {
+public inline fun <OldValue, NewValue> Expect<OldValue>.usingLazily(noinline provider: (OldValue) -> NewValue, block: Expect<NewValue>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
     usingLazily(provider).block()
 }

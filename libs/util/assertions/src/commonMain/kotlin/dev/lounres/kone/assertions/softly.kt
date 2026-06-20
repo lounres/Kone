@@ -53,6 +53,6 @@ public inline fun AssertionScope.softly(block: context(AssertionScope) () -> Uni
 
 @JvmName("softlyContextual")
 context(assertionScope: AssertionScope)
-public fun softly(block: context(AssertionScope) () -> Unit) {
+public inline fun softly(block: context(AssertionScope) () -> Unit) {
     assertionScope.softly(block)
 }

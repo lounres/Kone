@@ -5,10 +5,15 @@
 
 package dev.lounres.kone.assertions
 
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 
 
 public inline fun AssertionScope.assert(checker: () -> AssertionScope.Assertion) {
+    contract {
+        callsInPlace(checker, InvocationKind.EXACTLY_ONCE)
+    }
     val assertionResult = try {
         checker()
     } catch (throwable: Throwable) {
@@ -20,11 +25,17 @@ public inline fun AssertionScope.assert(checker: () -> AssertionScope.Assertion)
 @JvmName("assertContextual")
 context(assertionScope: AssertionScope)
 public inline fun assert(checker: () -> AssertionScope.Assertion) {
+    contract {
+        callsInPlace(checker, InvocationKind.EXACTLY_ONCE)
+    }
     assertionScope.assert(checker)
 }
 
 context(assertionScope: AssertionScope)
 public inline fun <Value> Expect<Value>.assert(checker: (Value) -> AssertionScope.Assertion) {
+    contract {
+        callsInPlace(checker, InvocationKind.EXACTLY_ONCE)
+    }
     assertionScope.assert { checker(exposeValue()) }
 }
 
