@@ -12,114 +12,53 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
-private class SquareRootsViaPropertiesForMatrixWithProperties<Number, Matrix : MDList2<Number>>(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+private class SquareRootsViaPropertiesForMatrixWithProperties<@Supply Number, @Supply Matrix : MDList2<Number>>(
     private val fallbackSquareRootComputer: SquareRootsComputer<MatrixWithProperties<Number, Matrix>>,
 ) : SquareRootsComputer<MatrixWithProperties<Number, Matrix>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    private val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    
     override fun MatrixWithProperties<Number, Matrix>.squareRoots(): KoneList<MatrixWithProperties<Number, Matrix>> =
-        properties.getOrElse(SquareRootsKey<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType)) {
+        properties.getOrElse(SquareRootsKey<MatrixWithProperties<Number, Matrix>>()) {
             with(fallbackSquareRootComputer) { this@squareRoots.squareRoots() }
         }
 }
 
-public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.viaPropertiesForMatrixWithProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> SquareRootsComputer.Companion.viaPropertiesForMatrixWithProperties(
     fallbackSquareRootComputer: SquareRootsComputer<MatrixWithProperties<Number, Matrix>>,
 ): SquareRootsComputer<MatrixWithProperties<Number, Matrix>> = SquareRootsViaPropertiesForMatrixWithProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackSquareRootComputer = fallbackSquareRootComputer,
 )
 
-public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.viaPropertiesForMatrixWithProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> SquareRootsComputer.Companion.viaPropertiesForMatrixWithProperties(
     block: SquareRootsComputer.Companion.() -> SquareRootsComputer<MatrixWithProperties<Number, Matrix>>,
 ): SquareRootsComputer<MatrixWithProperties<Number, Matrix>> = viaPropertiesForMatrixWithProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackSquareRootComputer = block(),
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
     fallbackSquareRootComputer: SquareRootsComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SquareRootsComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    SquareRootsComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaPropertiesForMatrixWithProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackSquareRootComputer = fallbackSquareRootComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> SquareRootsComputer.Companion.setViaPropertiesForMatrixWithProperties(
     block: SquareRootsComputer.Companion.() -> SquareRootsComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SquareRootsComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    SquareRootsComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaPropertiesForMatrixWithProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackSquareRootComputer = block(),
         )
     }

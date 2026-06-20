@@ -11,10 +11,8 @@ import dev.lounres.kone.algebraic.algorithms.IsUnitMatrixKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class IsUnitMatrixCheckerViaProperties<Number, Matrix : MDList2<Number>>(
@@ -38,56 +36,24 @@ public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaP
     fallbackIsUnitMatrixChecker = block(),
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
     fallbackIsUnitMatrixChecker: IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
             fallbackIsUnitMatrixChecker = fallbackIsUnitMatrixChecker,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
     block: IsUnitMatrixChecker.Companion.() -> IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
             fallbackIsUnitMatrixChecker = block(),
         )

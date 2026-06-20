@@ -14,10 +14,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class MatrixWithPropertiesFactory<Number, Matrix : MDList2<Number>>(
@@ -64,32 +63,16 @@ public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.forMatrixW
         propertiesBuilder = propertiesBuilder,
     )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
     propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         forMatrixWithProperties(
-            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
-                "MatrixFactory.setForMatrixWithProperties<$numberType, $matrixType>"
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "MatrixFactory.setForMatrixWithProperties<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             propertiesBuilder = propertiesBuilder,
         )

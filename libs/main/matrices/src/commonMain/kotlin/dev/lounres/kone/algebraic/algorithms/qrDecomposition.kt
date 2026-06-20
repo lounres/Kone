@@ -7,8 +7,10 @@ package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 // A = QR where Q is unitary and R is upper triangular
@@ -16,12 +18,9 @@ public data class QRDecomposition<out Number, out Matrix : MDList2<Number>>(
     val leftUnitary: Matrix,
     val rightUpperTriangular: Matrix,
 ) {
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<QRDecomposition<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecomposition.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<QRDecomposition<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecomposition.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 
@@ -30,12 +29,9 @@ public fun interface QRDecompositionComputer<out Number, Matrix : MDList2<Number
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<QRDecompositionComputer<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<QRDecompositionComputer<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

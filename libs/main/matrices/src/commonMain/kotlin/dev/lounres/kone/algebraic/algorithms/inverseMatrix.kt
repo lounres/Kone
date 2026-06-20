@@ -7,16 +7,15 @@ package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class InverseMatrixKey<Number, Matrix : MDList2<Number>>(
-    public val matrixType: SuppliedType,
-) : RegistryKey<Matrix?> {
-    override fun equals(other: Any?): Boolean = other is InverseMatrixKey<*, *> && matrixType == other.matrixType
-    override fun hashCode(): Int = matrixType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixKey<?, $matrixType>"
+@Suppliable
+public class InverseMatrixKey<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<Matrix?>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixKey<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
 }
 
 public fun interface InverseMatrixComputer<out Number, Matrix : MDList2<Number>> : KoneContext {
@@ -24,12 +23,9 @@ public fun interface InverseMatrixComputer<out Number, Matrix : MDList2<Number>>
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<InverseMatrixComputer<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<InverseMatrixComputer<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

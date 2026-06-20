@@ -16,114 +16,54 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.provideOrNull
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
-private class LogarithmComputerViaProperties<Number, Matrix : MDList2<Number>>(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+private class LogarithmComputerViaProperties<@Supply Number, @Supply Matrix : MDList2<Number>>(
     private val fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ) : LogarithmComputer<MatrixWithProperties<Number, Matrix>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    private val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
     override fun MatrixWithProperties<Number, Matrix>.logarithm(): MatrixWithProperties<Number, Matrix> {
-        val key = LogarithmKey<MatrixWithProperties<Number, Matrix>>(matrixWithPropertiesType)
+        val key = LogarithmKey<MatrixWithProperties<Number, Matrix>>()
         val provider = properties.provideOrNull(key) ?: return with(fallbackLogarithmMatrixComputer) { this@logarithm.logarithm() }
         return provider.get().orThrow { IllegalArgumentException("Cannot compute logarithm of $this: it has a property $key that corresponds to 'None'") }
     }
 }
 
-public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
     fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ): LogarithmComputer<MatrixWithProperties<Number, Matrix>> = LogarithmComputerViaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
 )
 
-public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmComputer.Companion.viaProperties(
     block: LogarithmComputer.Companion.() -> LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ): LogarithmComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackLogarithmMatrixComputer = block(),
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     fallbackLogarithmMatrixComputer: LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmComputer.Companion.setViaProperties(
     block: LogarithmComputer.Companion.() -> LogarithmComputer<MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackLogarithmMatrixComputer = block(),
         )
     }

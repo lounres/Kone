@@ -12,140 +12,53 @@ import dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
-private class ConjugateTransposeMatrixComputerViaProperties<Number, Matrix : MDList2<ComplexNumber<Number>>>(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+private class ConjugateTransposeMatrixComputerViaProperties<@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>>(
     private val fallbackConjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ) : ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    private val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType,
-                        )
-                    ),
-                    isNullable = false,
-                ),
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
     override fun MatrixWithProperties<ComplexNumber<Number>, Matrix>.conjugateTranspose(): MatrixWithProperties<ComplexNumber<Number>, Matrix> =
-        properties.getOrElse(ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType)) {
+        properties.getOrElse(ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>()) {
             with(fallbackConjugateTransposeMatrixComputer) { this@conjugateTranspose.conjugateTranspose() }
         }
 }
 
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaProperties(
     fallbackConjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ): ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>> = ConjugateTransposeMatrixComputerViaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackConjugateTransposeMatrixComputer = fallbackConjugateTransposeMatrixComputer,
 )
 
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaProperties(
     block: ConjugateTransposeMatrixComputer.Companion.() -> ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ): ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>> = viaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackConjugateTransposeMatrixComputer = block()
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
     fallbackConjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType,
-                        )
-                    ),
-                    isNullable = false,
-                ),
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackConjugateTransposeMatrixComputer = fallbackConjugateTransposeMatrixComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaProperties(
     block: ConjugateTransposeMatrixComputer.Companion.() -> ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType,
-                        )
-                    ),
-                    isNullable = false,
-                ),
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    ConjugateTransposeMatrixComputer.Key<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackConjugateTransposeMatrixComputer = block(),
         )
     }

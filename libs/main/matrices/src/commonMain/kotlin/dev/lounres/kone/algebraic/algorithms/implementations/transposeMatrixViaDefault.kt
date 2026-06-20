@@ -18,10 +18,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class TransposeMatrixComputerViaDefault<Number, Matrix : MDList2<Number>>(
@@ -37,93 +36,54 @@ public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.
     matrixFactory = matrixFactory,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaDefault(
-    matrixType: SuppliedType,
-): TransposeMatrixComputer<Number, Matrix> {
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaDefault(): TransposeMatrixComputer<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
-            "TransposeMatrixComputer.viaDefault<?, $matrixType>"
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+            "TransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         }
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaDefault(
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaDefault(
     matrixFactory: MatrixFactory<Number, Matrix>,
 ) {
-    TransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+    TransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
         viaDefault<Number, Matrix>(
             matrixFactory = matrixFactory,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaDefault(
-    matrixType: SuppliedType,
-) {
-    TransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            matrixType = matrixType,
-        )
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaDefault() {
+    TransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+        viaDefault<Number, Matrix>()
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.useViaDefault(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.useViaDefault(
     matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    TransposeMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    TransposeMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         (viaDefault(matrixFactory = matrixFactory)) {
             matrix.get().transpose()
         }
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.useViaDefault(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    TransposeMatrixKey<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val transposeMatrixComputer = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            matrixType = matrixWithPropertiesType
-        )
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.useViaDefault() {
+    TransposeMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+        val transposeMatrixComputer = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
         transposeMatrixComputer {
             matrix.get().transpose()
         }

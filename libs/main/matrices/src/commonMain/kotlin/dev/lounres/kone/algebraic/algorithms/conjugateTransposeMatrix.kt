@@ -8,16 +8,15 @@ package dev.lounres.kone.algebraic.algorithms
 import dev.lounres.kone.algebraic.ComplexNumber
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class ConjugateTransposeMatrixKey<Number, Matrix : MDList2<ComplexNumber<Number>>>(
-    public val matrixType: SuppliedType,
-) : RegistryKey<Matrix> {
-    override fun equals(other: Any?): Boolean = other is ConjugateTransposeMatrixKey<*, *> && matrixType == other.matrixType
-    override fun hashCode(): Int = matrixType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixKey<?, $matrixType>"
+@Suppliable
+public class ConjugateTransposeMatrixKey<@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> : SuppliedTypeRegistryKey<Matrix>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixKey<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
 }
 
 public fun interface ConjugateTransposeMatrixComputer<out Number, Matrix : MDList2<ComplexNumber<Number>>> : KoneContext {
@@ -25,12 +24,9 @@ public fun interface ConjugateTransposeMatrixComputer<out Number, Matrix : MDLis
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<ComplexNumber<Number>>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<ConjugateTransposeMatrixComputer<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixComputer.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> : SuppliedTypeRegistryKey<ConjugateTransposeMatrixComputer<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ConjugateTransposeMatrixComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

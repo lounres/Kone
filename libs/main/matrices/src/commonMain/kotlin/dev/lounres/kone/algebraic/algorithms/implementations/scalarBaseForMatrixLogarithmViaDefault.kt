@@ -21,10 +21,9 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class ScalarBaseForMatrixLogarithmViaDefault<Number>(
@@ -44,28 +43,27 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault(
     logarithmComputer = logarithmComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault(
-    numberType: SuppliedType,
-) : ScalarBaseForMatrixFunction<Number> {
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault() : ScalarBaseForMatrixFunction<Number> {
     val koneContextRegistry = koneContextRegistry.get()
     return logarithmViaDefault(
-        numberField = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunction.logarithmViaDefault<$numberType>"
+        numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+            "ScalarBaseForMatrixFunction.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunction.logarithmViaDefault<$numberType>"
+        logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunction.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault(
-    numberType: SuppliedType,
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault(
     numberField: Field<Number>,
     logarithmComputer: LogarithmComputer<Number>,
 ) {
-    ScalarBaseForMatrixLogarithmKey<Number>(numberType = numberType) correspondsTo RegisteredValueProvider.cached {
+    ScalarBaseForMatrixLogarithmKey<Number>() correspondsTo RegisteredValueProvider.cached {
         logarithmViaDefault(
             numberField = numberField,
             logarithmComputer = logarithmComputer,
@@ -73,12 +71,11 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault(
-    numberType: SuppliedType,
-) {
-    ScalarBaseForMatrixLogarithmKey<Number>(numberType = numberType) correspondsTo RegisteredValueProvider.cached {
-        logarithmViaDefault<Number>(numberType = numberType)
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.setLogarithmViaDefault() {
+    ScalarBaseForMatrixLogarithmKey<Number>() correspondsTo RegisteredValueProvider.cached {
+        logarithmViaDefault<Number>()
     }
 }
 
@@ -122,50 +119,38 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     planarVectorArgumentComputer = planarVectorArgumentComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.logarithmViaDefault(
-    numberType: SuppliedType,
-) : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.logarithmViaDefault() : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
     val koneContextRegistry = koneContextRegistry.get()
     return logarithmViaDefault(
-        order = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        order = koneContextRegistry.requestFor(Order.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        numberField = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        complexNumberLogarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        complexNumberLogarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<ComplexNumber<Number>>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        planarVectorArgumentComputer = koneContextRegistry.requestFor(PlanarVectorArgumentComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<$numberType>"
+        planarVectorArgumentComputer = koneContextRegistry.requestFor(PlanarVectorArgumentComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
         }
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault(
-    numberType: SuppliedType,
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault(
     order: Order<Number>,
     numberField: Field<Number>,
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
@@ -174,7 +159,7 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
     planarVectorArgumentComputer: PlanarVectorArgumentComputer<Number>,
 ) {
-    ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+    ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         logarithmViaDefault(
             order = order,
             numberField = numberField,
@@ -187,11 +172,10 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault(
-    numberType: SuppliedType,
-) {
-    ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        logarithmViaDefault<Number>(numberType = numberType)
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setLogarithmViaDefault() {
+    ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<Number>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+        logarithmViaDefault<Number>()
     }
 }

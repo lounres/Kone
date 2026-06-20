@@ -7,16 +7,15 @@ package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class DeterminantKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Number> {
-    override fun equals(other: Any?): Boolean = other is DeterminantKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.DeterminantKey<$numberType>"
+@Suppliable
+public class DeterminantKey<@Supply Number> : SuppliedTypeRegistryKey<Number>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.DeterminantKey<${suppliedTypeOf<Number>()}>"
 }
 
 public fun interface DeterminantComputer<out Number, Matrix : MDList2<Number>> : KoneContext {
@@ -24,12 +23,9 @@ public fun interface DeterminantComputer<out Number, Matrix : MDList2<Number>> :
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<DeterminantComputer<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.DeterminantComputer.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<DeterminantComputer<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.DeterminantComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

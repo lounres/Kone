@@ -11,114 +11,55 @@ import dev.lounres.kone.algebraic.algorithms.QRDecompositionComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
-private class QRDecompositionComputerViaProperties<Number, Matrix : MDList2<Number>>(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+private class QRDecompositionComputerViaProperties<@Supply Number, @Supply Matrix : MDList2<Number>>(
     private val fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) : QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
     override fun MatrixWithProperties<Number, Matrix>.qrDecomposition(): QRDecomposition<Number, MatrixWithProperties<Number, Matrix>> =
-        properties.getOrElse(QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType)) {
+        properties.getOrElse(QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>()) {
             with(fallbackQRDecompositionComputer) {
                 this@qrDecomposition.qrDecomposition()
             }
         }
 }
 
-public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
     fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
 )
 
-public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
     block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
-    numberType = numberType,
-    matrixType = matrixType,
     fallbackQRDecompositionComputer = block(),
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
     fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
     block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
-            matrixType = matrixType,
             fallbackQRDecompositionComputer = block(),
         )
     }

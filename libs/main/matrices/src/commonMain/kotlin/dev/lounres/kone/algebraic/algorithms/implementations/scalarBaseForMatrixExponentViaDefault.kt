@@ -23,10 +23,9 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class ScalarBaseForMatrixExponentViaDefault<Number>(
@@ -41,36 +40,34 @@ public fun <Number> ScalarBaseForMatrixFunction.Companion.exponentViaDefault(
     exponentComputer = exponentComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.exponentViaDefault(
-    numberType: SuppliedType,
-) : ScalarBaseForMatrixFunction<Number> {
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.exponentViaDefault() : ScalarBaseForMatrixFunction<Number> {
     val koneContextRegistry = koneContextRegistry.get()
     return exponentViaDefault(
-        exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunction.exponentViaDefault<$numberType>"
+        exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunction.exponentViaDefault<${suppliedTypeOf<Number>()}>"
         },
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
-    numberType: SuppliedType,
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
     exponentComputer: ExponentComputer<Number>,
 ) {
-    ScalarBaseForMatrixExponentKey<Number>(numberType = numberType) correspondsTo RegisteredValueProvider.cached {
+    ScalarBaseForMatrixExponentKey<Number>() correspondsTo RegisteredValueProvider.cached {
         exponentViaDefault(
             exponentComputer = exponentComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault(
-    numberType: SuppliedType,
-) {
-    ScalarBaseForMatrixExponentKey<Number>(numberType = numberType) correspondsTo RegisteredValueProvider.cached {
-        exponentViaDefault<Number>(numberType = numberType)
+public fun <@Supply Number> ScalarBaseForMatrixFunction.Companion.setExponentViaDefault() {
+    ScalarBaseForMatrixExponentKey<Number>() correspondsTo RegisteredValueProvider.cached {
+        exponentViaDefault<Number>()
     }
 }
 
@@ -97,43 +94,31 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     complexNumberExponentComputer = complexNumberExponentComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.exponentViaDefault(
-    numberType: SuppliedType,
-) : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.exponentViaDefault() : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
     val koneContextRegistry = koneContextRegistry.get()
     return exponentViaDefault(
-        order = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
+        order = koneContextRegistry.requestFor(Order.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>(numberType = numberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
+        exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
         },
-        complexNumberExponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType)) {
-            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<$numberType>"
+        complexNumberExponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<ComplexNumber<Number>>()) {
+            "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
         },
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault(
-    numberType: SuppliedType,
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault(
     order: Order<Number>,
     exponentComputer: ExponentComputer<Number>,
     complexNumberExponentComputer: ExponentComputer<ComplexNumber<Number>>,
 ) {
-    ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+    ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         exponentViaDefault(
             order = order,
             exponentComputer = exponentComputer,
@@ -142,11 +127,10 @@ public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault(
-    numberType: SuppliedType,
-) {
-    ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>(numberType = numberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        exponentViaDefault<Number>(numberType = numberType)
+public fun <@Supply Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.setExponentViaDefault() {
+    ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<Number>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+        exponentViaDefault<Number>()
     }
 }

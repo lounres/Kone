@@ -8,10 +8,13 @@ package dev.lounres.kone.algebraic.algorithms
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public object IsDiagonalMatrixKey : RegistryKey<Boolean> {
+public data object IsDiagonalMatrixKey : RegistryKey<Boolean> {
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixKey"
 }
 
@@ -20,12 +23,9 @@ public fun interface IsDiagonalMatrixChecker<out Number, in Matrix : MDList2<Num
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<IsDiagonalMatrixChecker<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixChecker.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<IsDiagonalMatrixChecker<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsDiagonalMatrixChecker.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

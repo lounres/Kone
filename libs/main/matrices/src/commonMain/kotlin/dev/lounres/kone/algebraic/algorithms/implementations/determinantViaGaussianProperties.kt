@@ -16,90 +16,56 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.reflect.KVariance.INVARIANT
 
 
-private class DeterminantComputerViaProperties<Number, Matrix : MDList2<Number>>(
-    private val numberType: SuppliedType,
+@Suppliable
+private class DeterminantComputerViaProperties<@Supply Number, Matrix : MDList2<Number>>(
     private val fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) : DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> {
     override fun MatrixWithProperties<Number, Matrix>.determinant(): Number =
-        properties.getOrElse(DeterminantKey<Number>(numberType = numberType)) {
+        properties.getOrElse(DeterminantKey<Number>()) {
             with(fallbackDeterminantComputer) { this@determinant.determinant() }
         }
 }
 
-public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
-    numberType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
     fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = DeterminantComputerViaProperties(
-    numberType = numberType,
     fallbackDeterminantComputer = fallbackDeterminantComputer,
 )
 
-public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
-    numberType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
     block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
-    numberType = numberType,
     fallbackDeterminantComputer = block(),
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
     fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
             fallbackDeterminantComputer = fallbackDeterminantComputer,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
     block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         viaProperties(
-            numberType = numberType,
             fallbackDeterminantComputer = block(),
         )
     }

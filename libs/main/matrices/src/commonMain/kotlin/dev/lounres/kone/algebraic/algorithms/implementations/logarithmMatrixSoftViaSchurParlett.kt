@@ -19,10 +19,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class LogarithmMatrixSoftComputerViaSchurParlett<Number, Matrix : MDList2<Number>>(
@@ -66,37 +65,35 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.vi
     isDiagonalMatrixChecker = isDiagonalMatrixChecker,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaSchurParlett(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
-): LogarithmSoftComputer<Matrix> {
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaSchurParlett(): LogarithmSoftComputer<Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaSchurParlett(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>(matrixType = matrixType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        field = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>(matrixType = matrixType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>(matrixType = matrixType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<Number, Matrix>(matrixType = matrixType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<Number, Matrix>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<Number, Matrix>(matrixType = matrixType)) {
-            "LogarithmSoftComputer.viaSchurParlett<$numberType, $matrixType>"
+        isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<Number, Matrix>()) {
+            "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaSchurParlett(
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaSchurParlett(
     matrixFactory: MatrixFactory<Number, Matrix>,
     field: Field<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -104,7 +101,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.se
     schurDecompositionComputer: SchurDecompositionComputer<Number, Matrix>,
     isDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, Matrix>,
 ) {
-    LogarithmComputer.Key<Matrix>(numberType = matrixType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmComputer.Key<Matrix>() correspondsTo RegisteredValueProvider.cached {
         viaSchurParlett(
             matrixFactory = matrixFactory,
             field = field,
@@ -116,23 +113,17 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.se
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaSchurParlett(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
-) {
-    LogarithmSoftComputer.Key<Matrix>(numberType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        viaSchurParlett(
-            numberType = numberType,
-            matrixType = matrixType,
-        )
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaSchurParlett() {
+    LogarithmSoftComputer.Key<Matrix>() correspondsTo RegisteredValueProvider.cached {
+        viaSchurParlett()
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.useViaSchurParlett(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.useViaSchurParlett(
     matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
     field: Field<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
@@ -140,22 +131,7 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.us
     schurDecompositionComputer: SchurDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
     isDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    LogarithmKey<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    LogarithmKey<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         val logarithmComputer = viaSchurParlett<Number, MatrixWithProperties<Number, Matrix>>(
             matrixFactory = matrixFactory,
             field = field,
@@ -168,31 +144,11 @@ public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.us
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.useViaSchurParlett(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = numberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    LogarithmKey<MatrixWithProperties<Number, Matrix>>(numberType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
-        val logarithmComputer = viaSchurParlett<Number, MatrixWithProperties<Number, Matrix>>(
-            numberType = numberType,
-            matrixType = matrixWithPropertiesType,
-        )
+public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.useViaSchurParlett() {
+    LogarithmKey<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+        val logarithmComputer = viaSchurParlett<Number, MatrixWithProperties<Number, Matrix>>()
         logarithmComputer { matrix.get().logarithmMaybe() }
     }
 }

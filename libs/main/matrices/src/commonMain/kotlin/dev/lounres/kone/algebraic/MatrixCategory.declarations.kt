@@ -8,8 +8,10 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 // The underlying ring is commutative
@@ -62,12 +64,9 @@ public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneC
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<MatrixCategoryOverRing<Number, Matrix>> {
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverRing.Key<?, $matrixType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<MatrixCategoryOverRing<Number, Matrix>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverRing.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 
@@ -146,15 +145,14 @@ public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : Matr
     
     public companion object;
     
-    public class Key<Number, Matrix : MDList2<Number>>(
-        public val matrixType: SuppliedType,
-    ) : RegistryKey<MatrixCategoryOverField<Number, Matrix>> {
-        override val impliedKeys: ImpliedKeysRegistry<MatrixCategoryOverField<Number, Matrix>> = ImpliedKeysRegistry {
-            MatrixCategoryOverRing.Key<Number, Matrix>(matrixType = matrixType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<MatrixCategoryOverField<Number, Matrix>>() {
+        override val impliedKeys: ImpliedKeysRegistry<MatrixCategoryOverField<Number, Matrix>> by lazy {
+            ImpliedKeysRegistry {
+                MatrixCategoryOverRing.Key<Number, Matrix>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && matrixType == other.matrixType
-        override fun hashCode(): Int = matrixType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverField.Key<?, $matrixType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverField.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
     }
 }
 

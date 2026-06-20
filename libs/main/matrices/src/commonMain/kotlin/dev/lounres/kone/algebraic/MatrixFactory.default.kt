@@ -18,10 +18,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class MDList2MatrixFactory<Number>(
@@ -42,33 +41,22 @@ private class MDList2MatrixFactory<Number>(
     }
 }
 
-public fun <Number> MatrixFactory.Companion.default(ring: CommutativeRing<Number>): MatrixFactory<Number, MDList2<Number>> =
+public fun <Number> MatrixFactory.Companion.viaDefault(ring: CommutativeRing<Number>): MatrixFactory<Number, MDList2<Number>> =
     MDList2MatrixFactory(ring = ring)
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> MatrixFactory.Companion.default(numberType: SuppliedType): MatrixFactory<Number, MDList2<Number>> {
+public fun <@Supply Number> MatrixFactory.Companion.viaDefault(): MatrixFactory<Number, MDList2<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
-    return default(
-        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>(numberType = numberType)) {
-            "MatrixFactory.default<$numberType>"
-        }
+    return viaDefault(
+        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.default<${suppliedTypeOf<Number>()}>" }
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> MatrixFactory.Companion.setDefault(numberType: SuppliedType) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList2",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType
-            )
-        ),
-        isNullable = false,
-    )
-    MatrixFactory.Key<Number, MDList2<Number>>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
-        default(numberType = numberType)
+public fun <@Supply Number> MatrixFactory.Companion.setViaDefault() {
+    MatrixFactory.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
+        viaDefault()
     }
 }

@@ -26,10 +26,9 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.scope
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -341,62 +340,50 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     hessenbergDecompositionComputer = hessenbergDecompositionComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.viaGolubVanLoanForComplexNumbers(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.viaGolubVanLoanForComplexNumbers(
     tolerance: Number,
 ): SchurDecompositionComputer<ComplexNumber<Number>, Matrix> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
     val koneContextRegistry = koneContextRegistry.get()
     return viaGolubVanLoanForComplexNumbers(
         tolerance = tolerance,
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        numberField = koneContextRegistry.requestFor(Field.Key<Number>(numberType = numberType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>(elementType = numberType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>(numberType = numberType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        complexNumberSquareRootComputer = koneContextRegistry.requestFor(SquareRootsComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        complexNumberSquareRootComputer = koneContextRegistry.requestFor(SquareRootsComputer.Key<ComplexNumber<Number>>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>(matrixType = matrixType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
-        hessenbergDecompositionComputer = koneContextRegistry.requestFor(HessenbergDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType)) {
-            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<$numberType, $matrixType>"
+        hessenbergDecompositionComputer = koneContextRegistry.requestFor(HessenbergDecompositionComputer.Key<ComplexNumber<Number>, Matrix>()) {
+            "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
         },
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.setViaGolubVanLoanForComplexNumbers(
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.setViaGolubVanLoanForComplexNumbers(
     tolerance: Number,
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     numberField: Field<Number>,
@@ -409,7 +396,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
     hessenbergDecompositionComputer: HessenbergDecompositionComputer<ComplexNumber<Number>, Matrix>,
 ) {
-    SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+    SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
         viaGolubVanLoanForComplexNumbers<Number, Matrix>(
             tolerance = tolerance,
             matrixFactory = matrixFactory,
@@ -426,25 +413,21 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.setViaGolubVanLoanForComplexNumbers(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.setViaGolubVanLoanForComplexNumbers(
     tolerance: Number,
 ) {
-    SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>(matrixType = matrixType) correspondsTo RegisteredValueProvider.cached {
+    SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
         viaGolubVanLoanForComplexNumbers<Number, Matrix>(
-            numberType = numberType,
-            matrixType = matrixType,
             tolerance = tolerance,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.useViaGolubVanLoanForComplexNumbers(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.useViaGolubVanLoanForComplexNumbers(
     tolerance: Number,
     matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
     numberField: Field<Number>,
@@ -457,33 +440,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
     hessenbergDecompositionComputer: HessenbergDecompositionComputer<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = complexNumberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SchurDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    SchurDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         val schurDecompositionComputer = viaGolubVanLoanForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
             tolerance = tolerance,
             matrixFactory = matrixFactory,
@@ -501,42 +458,13 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.useViaGolubVanLoanForComplexNumbers(
-    numberType: SuppliedType,
-    matrixType: SuppliedType,
+public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionComputer.Companion.useViaGolubVanLoanForComplexNumbers(
     tolerance: Number,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val matrixWithPropertiesType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.MatrixWithProperties",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = complexNumberType,
-            ),
-            SuppliedProjection.Regular(
-                variance = INVARIANT,
-                type = matrixType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SchurDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(matrixType = matrixWithPropertiesType) correspondsTo RegisteredValueProvider.cached {
+    SchurDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
         val schurDecompositionComputer = viaGolubVanLoanForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>(
-            numberType = numberType,
-            matrixType = matrixWithPropertiesType,
             tolerance = tolerance,
         )
         schurDecompositionComputer { matrix.get().schurDecomposition() }
