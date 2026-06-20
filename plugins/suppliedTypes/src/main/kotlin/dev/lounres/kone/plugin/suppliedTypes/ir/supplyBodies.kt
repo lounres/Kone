@@ -12,25 +12,15 @@ import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
-import org.jetbrains.kotlin.ir.builders.irBlockBody
-import org.jetbrains.kotlin.ir.builders.irCall
-import org.jetbrains.kotlin.ir.builders.irCallConstructor
-import org.jetbrains.kotlin.ir.builders.irDelegatingConstructorCall
-import org.jetbrains.kotlin.ir.builders.irExprBody
-import org.jetbrains.kotlin.ir.builders.irGet
-import org.jetbrains.kotlin.ir.builders.irString
-import org.jetbrains.kotlin.ir.builders.irTemporary
-import org.jetbrains.kotlin.ir.builders.irVararg
+import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
+import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.expressions.IrReturn
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
-import org.jetbrains.kotlin.ir.types.IrSimpleType
-import org.jetbrains.kotlin.ir.types.IrTypeProjection
-import org.jetbrains.kotlin.ir.types.classOrFail
-import org.jetbrains.kotlin.ir.types.createType
-import org.jetbrains.kotlin.ir.types.defaultType
+import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
@@ -53,12 +43,19 @@ fun supplyFunctionsBodies(
         .single()
     
     for ([suppliance, suppliable] in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
-        suppliance.body = suppliable.body
-            ?.deepCopyWithSymbols(initialParent = suppliance)
-            ?.transform(
+        check(suppliance.body == null) { TODO() }
+        suppliance.body = suppliable.body!!
+            .deepCopyWithSymbols(initialParent = suppliance)
+            .transform(
                 ParametersSubstitutionTransformer(
                     typeParametersSubstitution = suppliable.typeParameters.zip(suppliance.typeParameters).toMap(),
                     valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),
+                ),
+                null
+            )
+            .transform(
+                FunctionSubstitutionTransformer(
+                    symbolSubstitution = mapOf(suppliable.symbol to suppliance.symbol),
                 ),
                 null
             )
@@ -74,6 +71,15 @@ fun supplyFunctionsBodies(
                 }
             )
         }
+    }
+}
+
+class FunctionSubstitutionTransformer(
+    private val symbolSubstitution: Map<IrSimpleFunctionSymbol, IrSimpleFunctionSymbol>,
+) : IrElementTransformerVoid() {
+    override fun visitReturn(expression: IrReturn): IrExpression {
+        expression.returnTargetSymbol = symbolSubstitution[expression.returnTargetSymbol] ?: expression.returnTargetSymbol
+        return super.visitReturn(expression)
     }
 }
 

@@ -5,18 +5,12 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeOfFunctionCallableId
-import dev.lounres.kone.plugin.suppliedTypes.withSuppliedFunctionCallableId
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.*
-import org.jetbrains.kotlin.ir.declarations.IrClass
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
-import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
-import org.jetbrains.kotlin.ir.declarations.IrValueParameter
-import org.jetbrains.kotlin.ir.declarations.IrVariable
+import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
@@ -28,14 +22,9 @@ import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
-import org.jetbrains.kotlin.ir.util.callableId
 import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
-import org.jetbrains.kotlin.name.CallableId
-import org.jetbrains.kotlin.name.ClassId
-import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.name.SpecialNames
+import org.jetbrains.kotlin.name.*
 
 
 class SuppliedTypeOfSubstitutionTransformer(
@@ -114,6 +103,44 @@ class SuppliedTypeOfSubstitutionTransformer(
             )
         )
     
+    override fun visitField(declaration: IrField, data: TransformationContext): IrStatement =
+        super.visitField(
+            declaration = declaration,
+            data = TransformationContext(
+                suppliedTypes = buildMap {
+                    putAll(data.suppliedTypes)
+                    
+                    val parent = declaration.parent
+                    if (parent is IrClass && parent.isSuppliable && parent.typeParameters.any { it.isSupply }) {
+                        val supplyTypeParameters = parent.typeParameters.filter { it.isSupply }
+                        val fqNameString = parent.fqNameStringForSuppliedTypes
+                        val dispatchReceiver = parent.thisReceiver!!
+
+                        for (i in supplyTypeParameters.indices)
+                            put(supplyTypeParameters[i].defaultType) {
+                                irTemporary(
+                                    irCall(listGetIrSimpleFunctionSymbol).apply {
+                                        arguments[0] = irImplicitCast(
+                                            argument = irCall(mapGetIrSimpleFunctionSymbol).apply {
+                                                arguments[0] = irCall(irRuntimeReferences.suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol).apply {
+                                                    arguments[0] = irGet(dispatchReceiver)
+                                                }
+                                                arguments[1] = irString(fqNameString)
+                                            },
+                                            type = listOfSuppliedTypeIrType
+                                        )
+                                        arguments[1] = irInt(i)
+                                    }
+                                )
+                            }
+
+                        // TODO: Handle outer classes of the class as well
+                    }
+                },
+                localSymbol = data.localSymbol
+            )
+        )
+    
     val declarationFinder = pluginContext.finderForBuiltins()
     val listIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))!!
     val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(irRuntimeReferences.suppliedTypeIrType))
@@ -162,7 +189,7 @@ class SuppliedTypeOfSubstitutionTransformer(
     override fun visitCall(expression: IrCall, data: TransformationContext): IrElement {
         val declaration = expression.symbol.owner
         return when {
-            declaration.callableId == suppliedTypeOfFunctionCallableId -> {
+            declaration.symbol == irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol -> {
                 val typeToSupply = expression.typeArguments.single()!!
                 val declarationIrBuilder = DeclarationIrBuilder(pluginContext, data.localSymbol!!)
                 declarationIrBuilder.irBlock {
@@ -176,7 +203,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                     )
                 }
             }
-            declaration.callableId == withSuppliedFunctionCallableId -> @Suppress("UNCHECKED_CAST") {
+            declaration.symbol in irRuntimeReferences.allWithSuppliedIrSimpleFunctionSymbols -> @Suppress("UNCHECKED_CAST") {
                 val typesToSupply = expression.typeArguments.dropLast(1)
                 check(typesToSupply.all { it is IrSimpleType && it.nullability == NOT_SPECIFIED && it.classifier is IrTypeParameterSymbol }) { TODO() }
                 typesToSupply as List<IrSimpleType>

@@ -1,0 +1,28 @@
+FILE: suppliedTypeOfUsage28.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() T>(): R|Foo<T>| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val foo: R|kotlin/String|by R|kotlin/lazy|<R|kotlin/String|>(<L> = lazy@fun <anonymous>(): R|kotlin/String| <inline=NoInline>  {
+            ^ R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+        }
+        )
+            public get(): R|kotlin/String| {
+                ^ this@R|/Foo|.D|/Foo.foo|.R|kotlin/getValue|<R|kotlin/String|>(this@R|/Foo|, ::R|/Foo.foo|)
+            }
+
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|/Foo.Foo|<R|kotlin/String|>().R|SubstitutionOverride</Foo.foo: R|kotlin/String|>|, String(kotlin.collections.List<out kotlin.String>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

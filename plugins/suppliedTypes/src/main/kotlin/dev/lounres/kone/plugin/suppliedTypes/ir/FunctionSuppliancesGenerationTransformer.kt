@@ -31,17 +31,18 @@ import org.jetbrains.kotlin.ir.visitors.IrTransformer
 class FunctionSuppliancesGenerationTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
-) : IrTransformer<Nothing?>() {
-//    data class TransformationContext(
-//        val localSymbol: IrSymbol?,
-//    ) {
-//        companion object {
-////            val INIT: TransformationContext = TransformationContext(
-////                suppliedTypes = emptyMap(),
-////                localSymbol = null,
-////            )
-//        }
-//    }
+) : IrTransformer<FunctionSuppliancesGenerationTransformer.TransformationContext>() {
+    data class TransformationContext(
+        val suppliableToSupplianceMapping: MutableMap<IrSimpleFunction, IrSimpleFunction>,
+        val supplianceToSuppliableMapping: MutableMap<IrSimpleFunction, IrSimpleFunction>,
+    ) {
+        companion object {
+            val INIT: TransformationContext = TransformationContext(
+                suppliableToSupplianceMapping = mutableMapOf(),
+                supplianceToSuppliableMapping = mutableMapOf(),
+            )
+        }
+    }
     
     private fun createSupplianceFor(function: IrSimpleFunction): IrSimpleFunction =
         pluginContext.irFactory.buildFun {
@@ -110,32 +111,40 @@ class FunctionSuppliancesGenerationTransformer(
 //        return super.visitContainerExpression(expression, data)
 //    }
     
-    override fun visitClass(declaration: IrClass, data: Nothing?): IrStatement {
+    override fun visitClass(declaration: IrClass, data: TransformationContext): IrStatement {
         for (subdeclaration in declaration.declarations.toList()) {
             if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
-                declaration.addChild(createSupplianceFor(subdeclaration))
+                val newSubdeclaration = createSupplianceFor(subdeclaration)
+                declaration.addChild(newSubdeclaration)
+                pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(newSubdeclaration)
+                data.suppliableToSupplianceMapping[subdeclaration] = newSubdeclaration
+                data.supplianceToSuppliableMapping[newSubdeclaration] = subdeclaration
             }
         }
         return super.visitClass(declaration, data)
     }
     
-    override fun visitPackageFragment(declaration: IrPackageFragment, data: Nothing?): IrElement {
+    override fun visitPackageFragment(declaration: IrPackageFragment, data: TransformationContext): IrElement {
         for (subdeclaration in declaration.declarations.toList()) {
             if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
                 val newSubdeclaration = createSupplianceFor(subdeclaration)
                 declaration.addChild(newSubdeclaration)
                 pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(newSubdeclaration)
+                data.suppliableToSupplianceMapping[subdeclaration] = newSubdeclaration
+                data.supplianceToSuppliableMapping[newSubdeclaration] = subdeclaration
             }
         }
         return super.visitPackageFragment(declaration, data)
     }
     
-    override fun visitFile(declaration: IrFile, data: Nothing?): IrFile {
+    override fun visitFile(declaration: IrFile, data: TransformationContext): IrFile {
         for (subdeclaration in declaration.declarations.toList()) {
             if (subdeclaration is IrSimpleFunction && subdeclaration.isSuppliable && subdeclaration.typeParameters.any { it.isSupply }) {
                 val newSubdeclaration = createSupplianceFor(subdeclaration)
                 declaration.addChild(newSubdeclaration)
                 pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(newSubdeclaration)
+                data.suppliableToSupplianceMapping[subdeclaration] = newSubdeclaration
+                data.supplianceToSuppliableMapping[newSubdeclaration] = subdeclaration
             }
         }
         return super.visitFile(declaration, data)

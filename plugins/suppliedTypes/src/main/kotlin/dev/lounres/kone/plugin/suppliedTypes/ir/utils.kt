@@ -102,6 +102,7 @@ class IrRuntimeReferences(pluginContext: IrPluginContext) {
     fun withSuppliedIrSimpleFunctionSymbol(arity: Int): IrSimpleFunctionSymbol =
         finder.referenceFunctionThatOrFail(withSuppliedFunctionCallableId) {
             val simpleFunction = it.owner
-            simpleFunction.typeParameters.size == arity && simpleFunction.parameters.size == arity + 1
+            simpleFunction.typeParameters.size == arity + 1 && simpleFunction.parameters.size == arity + 1
         }
+    val allWithSuppliedIrSimpleFunctionSymbols = List(3) { withSuppliedIrSimpleFunctionSymbol(it + 1) }.toSet()
 }

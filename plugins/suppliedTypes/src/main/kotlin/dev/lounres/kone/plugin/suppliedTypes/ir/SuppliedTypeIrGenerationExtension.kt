@@ -22,27 +22,37 @@ class SuppliedTypeIrGenerationExtension(
         
         if (currentPhase++ == lastPhase) return
         
+        val functionMappings = FunctionSuppliancesGenerationTransformer.TransformationContext.INIT
         moduleFragment.transform(
             FunctionSuppliancesGenerationTransformer(
                 pluginContext = pluginContext,
                 irRuntimeReferences = irRuntimeReferences
             ),
-            null,
+            functionMappings,
         )
+        val constructorMappings = ConstructorSuppliancesGenerationTransformer.TransformationContext.INIT
         moduleFragment.transform(
             ConstructorSuppliancesGenerationTransformer(
                 pluginContext = pluginContext,
                 irRuntimeReferences = irRuntimeReferences
             ),
-            null,
+            constructorMappings,
         )
         
         if (currentPhase++ == lastPhase) return
         
+//        val suppliabilityMapper = SuppliabilityMapper(
+//            pluginContext = pluginContext,
+//            irRuntimeReferences = irRuntimeReferences,
+//            moduleFragment = moduleFragment,
+//        )
         val suppliabilityMapper = SuppliabilityMapper(
-            pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
-            moduleFragment = moduleFragment,
+            declarationFinder = pluginContext.finderForBuiltins(),
+            moduleFunctionsSuppliableToSupplianceMapping = functionMappings.suppliableToSupplianceMapping,
+            moduleFunctionsSupplianceToSuppliableMapping = functionMappings.supplianceToSuppliableMapping,
+            moduleConstructorsSuppliableToSupplianceMapping = constructorMappings.suppliableToSupplianceMapping,
+            moduleConstructorsSupplianceToSuppliableMapping = constructorMappings.supplianceToSuppliableMapping,
         )
         
         if (currentPhase++ == lastPhase) return

@@ -1,6 +1,7 @@
 plugins {
     alias(versions.plugins.kotlin.jvm)
     alias(versions.plugins.kotlinx.serialization)
+    `kotlin-dsl`
 }
 
 repositories {

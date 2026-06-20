@@ -17,9 +17,11 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.types.IrType
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.callableId
 import org.jetbrains.kotlin.ir.util.classIdOrFail
 import org.jetbrains.kotlin.ir.util.parentAsClass
+import org.jetbrains.kotlin.ir.util.substitute
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
 import org.jetbrains.kotlin.name.Name
 
@@ -55,10 +57,24 @@ class SuppliabilityMapper(
         if (!function.isReallySuppliable) null
         else moduleFunctionsSuppliableToSupplianceMapping[function] ?:
         externalFunctionsSuppliableToSupplianceMapping.getOrPut(function) {
-            val argumentTypes = function.parameters.map { it.type }
-            declarationFinder.findFunctions(function.callableId).map { it.owner }.single {
-                it.isReallySuppliance && it.parameters.filter { !it.isSupplianceProvided }.map { it.type } == argumentTypes
-            }.also { externalFunctionsSupplianceToSuppliableMapping[it] = function }
+            val parameters = function.parameters
+            val typeParameters = function.typeParameters
+            val candidates = declarationFinder.findFunctions(function.callableId).map { it.owner }.filter {
+                if (!it.isReallySuppliance) return@filter false
+                val otherParameters = it.parameters.filter { !it.isSupplianceProvided }
+                val otherTypeParameters = it.typeParameters
+                if (parameters.size != otherParameters.size || typeParameters.size != otherTypeParameters.size) return@filter false
+                val typeParametersSubstitution = typeParameters.map { it.symbol }.zip(otherTypeParameters.map { it.defaultType }).toMap()
+                for (index in parameters.indices) {
+                    val parameter = parameters[index]
+                    val otherParameter = otherParameters[index]
+                    if (parameter.kind != otherParameter.kind || parameter.type.substitute(typeParametersSubstitution) != otherParameter.type) return@filter false
+                }
+                true
+            }
+            check(candidates.isNotEmpty()) { "Did not receive any suppliance of function.\n  CallableId: ${function.callableId}\n  Suppliable: ${function.symbol}" }
+//            check(candidates.size <= 1) { "Received several suppliances of function.\n  CallableId: ${function.callableId}\n  Suppliable: ${function.symbol}\n  Suppliances:${candidates.joinToString(separator = "") { "\n    ${it.symbol}" }}" }
+            candidates.first().also { externalFunctionsSupplianceToSuppliableMapping[it] = function }
         }
     fun mapSupplianceToSuppliableOrNull(function: IrSimpleFunction): IrSimpleFunction? =
         if (!function.isReallySuppliance) null

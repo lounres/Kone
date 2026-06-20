@@ -7,6 +7,7 @@ package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.*
 import org.jetbrains.kotlin.fir.FirSession
+import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
 import org.jetbrains.kotlin.fir.extensions.predicate.AbstractPredicate
 import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate
@@ -14,6 +15,7 @@ import org.jetbrains.kotlin.fir.extensions.predicateBasedProvider
 import org.jetbrains.kotlin.fir.references.builder.buildResolvedNamedReference
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
+import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
@@ -122,13 +124,14 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
         }
     }
     
-    val suppliables get() = predicateBasedProvider.getSymbolsByPredicate(SUPPLIABLE_PREDICATE)
+    val suppliables by lazy { predicateBasedProvider.getSymbolsByPredicate(SUPPLIABLE_PREDICATE) }
     val suppliableFunctions get() = suppliables.filterIsInstance<FirNamedFunctionSymbol>()
     val suppliableTopLevelFunctions get() = suppliableFunctions.filter { it.callableId.className == null }
     val suppliableClasses get() = suppliables.filterIsInstance<FirClassSymbol<*>>()
     val suppliableTopLevelClasses get() = suppliableClasses.filter { !it.classId.isNestedClass }
     
-    val FirClassSymbol<*>.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
-    val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
+    val FirClassLikeSymbol<*>.isSuppliable: Boolean get() = this in suppliableClasses
+    val FirClassLikeDeclaration.isSuppliable: Boolean get() = this.symbol.isSuppliable
+    val FirNamedFunctionSymbol.isSuppliable: Boolean get() = this in suppliableFunctions
     val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, session)
 }

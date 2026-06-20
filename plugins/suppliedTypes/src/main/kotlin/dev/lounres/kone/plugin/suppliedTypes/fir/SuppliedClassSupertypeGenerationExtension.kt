@@ -11,6 +11,7 @@ import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
+import org.jetbrains.kotlin.fir.extensions.FirDeclarationPredicateRegistrar
 import org.jetbrains.kotlin.fir.extensions.FirSupertypeGenerationExtension
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
@@ -21,6 +22,12 @@ import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
 
 
 class SuppliedClassSupertypeGenerationExtension(session: FirSession) : FirSupertypeGenerationExtension(session) {
+    private val utils = SuppliedTypeGenerationExtensionUtils(session)
+    
+    override fun FirDeclarationPredicateRegistrar.registerPredicates() {
+        register(SuppliedTypeGenerationExtensionUtils.PREDICATES)
+    }
+    
     private val symbolProvider by lazy { session.symbolProvider }
     
     private val suppliableClassFirClassLikeSymbol by lazy {
@@ -31,18 +38,13 @@ class SuppliedClassSupertypeGenerationExtension(session: FirSession) : FirSupert
         suppliableClassFirClassLikeSymbol.defaultType()
     }
     
-    private val FirClassLikeDeclaration.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
-    private val FirNamedFunctionSymbol.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId, session)
-    private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, session)
-    
-    override fun needTransformSupertypes(declaration: FirClassLikeDeclaration): Boolean =
-        declaration.isSuppliable
+    override fun needTransformSupertypes(declaration: FirClassLikeDeclaration): Boolean = with(utils) { declaration.isSuppliable }
     
     override fun computeAdditionalSupertypes(
         classLikeDeclaration: FirClassLikeDeclaration,
         resolvedSupertypes: List<FirResolvedTypeRef>,
         typeResolver: TypeResolveService
     ): List<ConeKotlinType> =
-        if (classLikeDeclaration.isSuppliable) listOf(suppliableClassConeClassLikeType)
+        if (with(utils) { classLikeDeclaration.isSuppliable }) listOf(suppliableClassConeClassLikeType)
         else emptyList()
 }

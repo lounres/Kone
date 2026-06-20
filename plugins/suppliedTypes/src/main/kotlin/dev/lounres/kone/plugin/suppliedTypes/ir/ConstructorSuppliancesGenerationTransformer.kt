@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildConstructor
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.impl.IrAnnotationImpl
 import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.types.defaultType
@@ -24,7 +25,19 @@ import org.jetbrains.kotlin.ir.visitors.IrTransformer
 class ConstructorSuppliancesGenerationTransformer(
     val pluginContext: IrPluginContext,
     val irRuntimeReferences: IrRuntimeReferences,
-) : IrTransformer<Nothing?>() {
+) : IrTransformer<ConstructorSuppliancesGenerationTransformer.TransformationContext>() {
+    data class TransformationContext(
+        val suppliableToSupplianceMapping: MutableMap<IrConstructor, IrConstructor>,
+        val supplianceToSuppliableMapping: MutableMap<IrConstructor, IrConstructor>,
+    ) {
+        companion object {
+            val INIT: TransformationContext = TransformationContext(
+                suppliableToSupplianceMapping = mutableMapOf(),
+                supplianceToSuppliableMapping = mutableMapOf(),
+            )
+        }
+    }
+    
     private fun createSupplianceFor(constructor: IrConstructor): IrConstructor =
         pluginContext.irFactory.buildConstructor {
             updateFrom(constructor)
@@ -68,12 +81,14 @@ class ConstructorSuppliancesGenerationTransformer(
             }
         }
     
-    override fun visitClass(declaration: IrClass, data: Nothing?): IrStatement {
+    override fun visitClass(declaration: IrClass, data: TransformationContext): IrStatement {
         if (declaration.kind in listOf<ClassKind>(CLASS/*, ENUM_CLASS*/) && declaration.isSuppliable)
             for (constructor in declaration.constructors.toList()) {
                 val newConstructor = createSupplianceFor(constructor)
                 declaration.addChild(newConstructor)
                 pluginContext.metadataDeclarationRegistrar.registerConstructorAsMetadataVisible(newConstructor)
+                data.suppliableToSupplianceMapping[constructor] = newConstructor
+                data.supplianceToSuppliableMapping[newConstructor] = constructor
             }
         return super.visitClass(declaration, data)
     }

@@ -1,0 +1,22 @@
+FILE: suppliedTypeOfUsage26.kt
+    public final object Bar : R|kotlin/Any| {
+        private constructor(): R|Bar| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String| {
+            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T & Any|>().R|kotlin/Any.toString|()
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(Q|Bar|.R|/Bar.foo|<R|kotlin/String|>(), String(kotlin.String)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

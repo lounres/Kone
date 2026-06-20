@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 @OptIn(ExperimentalCompilerApi::class)
 class FiktionCompilerPluginRegistrar : CompilerPluginRegistrar() {
-    override val pluginId: String get() = "dev.lounres.kone.plugin.suppliedTypes"
+    override val pluginId: String get() = "dev.lounres.kone.plugin.fiktion"
     
     override val supportsK2: Boolean get() = true
     

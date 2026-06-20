@@ -48,7 +48,8 @@ class SuppliedTypesBuilder(
     private fun IrBuilderWithScope.irGetEnumEntry(enumEntry: IrEnumEntry) =
         IrGetEnumValueImpl(startOffset, endOffset, enumEntry.parentAsClass.defaultType, enumEntry.symbol)
     
-    fun resolve(type: IrType): IrVariable = suppliedTypes.getOrPut(type) {
+    fun resolve(type: IrType): IrVariable =
+    suppliedTypes.getOrPut(type) {
         lazy {
             with (irStatementsBuilder) {
                 irTemporary(
@@ -147,7 +148,8 @@ class SuppliedTypesBuilder(
                             is IrTypeParameterSymbol -> {
                                 val typeParameter = classifierSymbol.owner
                                 val typeParameterType = typeParameter.defaultType
-                                if (typeParameterType == type) error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.")
+                                if (typeParameterType == type)
+                                    error("Supplied type is not provided but was requested for type parameter: $classifierSymbol.")
                                 val suppliedTypeVariable = resolve(typeParameterType)
                                 val nullability = type.nullability
                                 
