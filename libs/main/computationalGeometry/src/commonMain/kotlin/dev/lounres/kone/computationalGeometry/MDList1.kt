@@ -28,9 +28,8 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class MDList1EuclideanSpaceOverRing<Number>(
@@ -323,82 +322,20 @@ public fun <Number> EuclideanSpaceOverRing.Companion.mdList1(ring: Ring<Number>,
 public fun <Number> EuclideanSpaceOverField.Companion.mdList1(field: Field<Number>, dimension: UInt): EuclideanSpaceOverField<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> =
     MDList1EuclideanSpaceOverField(field, dimension)
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> EuclideanSpaceOverRing.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
-        numberType,
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = numberType
-                )
-            ),
-            isNullable = false,
-        ),
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.PointWrapper",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = numberType
-                            )
-                        ),
-                        isNullable = false,
-                    ),
-                )
-            ),
-            isNullable = false,
-        ),
-    ).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> EuclideanSpaceOverRing.Companion.setMDList1For(dimension: UInt) {
+    EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Ring.Key<Number>(numberType)], dimension)
+        mdList1(koneContextRegistry[Ring.Key<Number>()], dimension)
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> EuclideanSpaceOverField.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>(
-        numberType,
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = numberType
-                )
-            ),
-            isNullable = false,
-        ),
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.PointWrapper",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = SuppliedType.Regular(
-                        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-                        typeArguments = listOf(
-                            SuppliedProjection.Regular(
-                                variance = OUT,
-                                type = numberType
-                            )
-                        ),
-                        isNullable = false,
-                    ),
-                )
-            ),
-            isNullable = false,
-        ),
-    ).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> EuclideanSpaceOverField.Companion.setMDList1For(dimension: UInt) {
+    EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Field.Key<Number>(numberType)], dimension)
+        mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
     }
 }

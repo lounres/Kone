@@ -5,14 +5,8 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Field
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.basis.VectorSpaceBasis
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.sign
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
@@ -39,14 +33,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.compareTo
-import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.relations.contains
-import dev.lounres.kone.relations.gt
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.relations.rangeTo
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.relations.*
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private sealed interface EventForBentleyOttmann<out Number, out Vector, out Point> {
@@ -297,18 +286,15 @@ public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldCompu
         euclideanSpace = euclideanSpace,
     )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann(
-    numberType: SuppliedType,
-    vectorType: SuppliedType,
-    pointType: SuppliedType,
-) {
-    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number, @Supply Vector, @Supply Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann() {
+    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         bentleyOttmann(
-            numberField = koneContextRegistry[Field.Key<Number>(numberType)],
-            numberOrder = koneContextRegistry[Order.Key<Number>(numberType)],
-            euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+            numberField = koneContextRegistry[Field.Key<Number>()],
+            numberOrder = koneContextRegistry[Order.Key<Number>()],
+            euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>()],
         )
     }
 }

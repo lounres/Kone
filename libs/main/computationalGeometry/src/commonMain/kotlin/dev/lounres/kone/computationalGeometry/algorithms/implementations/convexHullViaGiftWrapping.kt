@@ -39,7 +39,8 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 context(ring: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
@@ -332,8 +333,8 @@ private fun <
     return wrappingResult
 }
 
-private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, Point>(
-    private val pointType: SuppliedType,
+@Suppliable
+private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply Point>(
     private val ring: Ring<Number>,
     private val order: Order<Number>,
     private val euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
@@ -342,7 +343,7 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, Point>(
         basis: ModuleBasis.Finite<Number, Vector>
     ): Polytope {
         require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
-        val positionKey = Position<Point>(pointType)
+        val positionKey = Position<Point>()
         return context(ring, order, euclideanSpaceOverRing) {
             giftWrappingFull(
                 positionKey = positionKey,
@@ -361,32 +362,27 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, Point>(
     }
 }
 
-public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.giftWrapping(
-    pointType: SuppliedType,
+@Suppliable
+public fun <Number, Vector, @Supply Point> ConvexHullOverRingComputer.Companion.giftWrapping(
     ring: Ring<Number>,
     order: Order<Number>,
     euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : ConvexHullOverRingComputer<Number, Vector, Point> =
     ConvexHullOverRingViaGiftWrappingComputer(
-        pointType = pointType,
         ring = ring,
         order = order,
         euclideanSpaceOverRing = euclideanSpaceOverRing,
     )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Vector, Point> ConvexHullOverRingComputer.Companion.setGiftWrapping(
-    numberType: SuppliedType,
-    vectorType: SuppliedType,
-    pointType: SuppliedType,
-) {
-    ConvexHullOverRingComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number, @Supply Vector, @Supply Point> ConvexHullOverRingComputer.Companion.setGiftWrapping() {
+    ConvexHullOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         giftWrapping(
-            pointType = pointType,
-            ring = koneContextRegistry[Ring.Key<Number>(numberType)],
-            order = koneContextRegistry[Order.Key<Number>(numberType)],
-            euclideanSpaceOverRing = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+            ring = koneContextRegistry[Ring.Key<Number>()],
+            order = koneContextRegistry[Order.Key<Number>()],
+            euclideanSpaceOverRing = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
         )
     }
 }

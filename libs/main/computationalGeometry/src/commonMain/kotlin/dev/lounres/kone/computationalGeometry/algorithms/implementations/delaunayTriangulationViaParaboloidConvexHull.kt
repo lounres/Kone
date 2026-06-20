@@ -59,8 +59,10 @@ import dev.lounres.kone.relations.absoluteFor
 import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.SuppliedProjection
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.reflect.KVariance.OUT
 
 
@@ -220,38 +222,19 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
         ring { initialEuclideanSpaceOverRing { this.vector dot other.vector } + this.extraCoordinate * other.extraCoordinate }
 }
 
-private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector, Point>(
-    numberType: SuppliedType,
-    pointType: SuppliedType,
+@Suppliable
+private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number, Vector, @Supply Point>(
     private val ring: Ring<Number>,
     private val order: Order<Number>,
     private val euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : DelaunayTriangulationOverRingComputer<Number, Vector, Point> {
-    val paraboloidPointType =
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        SuppliedType.Regular(
-            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.algorithms.ParaboloidPoint",
-            typeArguments = listOf(
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = numberType
-                ),
-                SuppliedProjection.Regular(
-                    variance = OUT,
-                    type = pointType
-                ),
-            ),
-            isNullable = false
-        )
-    
-    private val positionKey = Position<Point>(pointType = pointType)
-    private val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>(pointType = paraboloidPointType)
+    private val positionKey = Position<Point>()
+    private val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>()
     
     private val paraboloidEuclideanSpaceOverRing = ParaboloidEuclideanSpaceOverRing(ring, euclideanSpace)
     
     private val paraboloidConvexHullOverRingComputer =
         ConvexHullOverRingComputer.giftWrapping(
-            pointType = paraboloidPointType,
             ring = ring,
             order = order,
             euclideanSpaceOverRing = paraboloidEuclideanSpaceOverRing,
@@ -381,35 +364,27 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<Number, Vector,
     }
 }
 
-public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Companion.convexHull(
-    numberType: SuppliedType,
-    pointType: SuppliedType,
+@Suppliable
+public fun <@Supply Number, Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.convexHull(
     ring: Ring<Number>,
     order: Order<Number>,
     euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
 ): DelaunayTriangulationOverRingComputer<Number, Vector, Point> =
     DelaunayTriangulationOverRingComputerViaConvexHull(
-        numberType = numberType,
-        pointType = pointType,
         ring = ring,
         order = order,
         euclideanSpace = euclideanSpace,
     )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number, Vector, Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull(
-    numberType: SuppliedType,
-    vectorType: SuppliedType,
-    pointType: SuppliedType,
-) {
-    DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>(numberType, vectorType, pointType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number, @Supply Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull() {
+    DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         convexHull(
-            numberType = numberType,
-            pointType = pointType,
-            ring = koneContextRegistry[Ring.Key<Number>(numberType)],
-            order = koneContextRegistry[Order.Key<Number>(numberType)],
-            euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>(numberType, vectorType, pointType)],
+            ring = koneContextRegistry[Ring.Key<Number>()],
+            order = koneContextRegistry[Order.Key<Number>()],
+            euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
         )
     }
 }

@@ -5,14 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry.default2
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.interop.toKoneList
@@ -21,26 +14,16 @@ import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.multidimensionalCollections.MDList1
-import dev.lounres.kone.multidimensionalCollections.MDSize
-import dev.lounres.kone.multidimensionalCollections.contentEquals
-import dev.lounres.kone.multidimensionalCollections.generate
-import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
-import kotlin.reflect.KVariance.OUT
 
 
 @Serializable
@@ -176,85 +159,23 @@ public class EuclideanSpace2OverRing<Number>(
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<EuclideanSpace2OverRing<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverRing",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = SuppliedType.Regular(
-                            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
-                            typeArguments = listOf(
-                                SuppliedProjection.Regular(
-                                    variance = OUT,
-                                    type = numberType
-                                ),
-                            ),
-                            isNullable = false
-                        ),
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = SuppliedType.Regular(
-                            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
-                            typeArguments = listOf(
-                                SuppliedProjection.Regular(
-                                    variance = OUT,
-                                    type = numberType
-                                ),
-                            ),
-                            isNullable = false
-                        ),
-                    ),
-                ),
-                isNullable = false
-            )
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverRing<Number>> = ImpliedKeysRegistry {
-            EuclideanSpaceOverRing.Key<Number, Vector2<Number>, Point2<Number>>(
-                numberType,
-                SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType
-                        ),
-                    ),
-                    isNullable = false
-                ),
-                SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType
-                        ),
-                    ),
-                    isNullable = false
-                ),
-            ).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace2OverRing<Number>>() {
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverRing<Number>> by lazy {
+            ImpliedKeysRegistry {
+                EuclideanSpaceOverRing.Key<Number, Vector2<Number>, Point2<Number>>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverRing.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverRing.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun EuclideanSpace2OverRing.Companion.setFor(numberType: SuppliedType) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace2OverRing.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> EuclideanSpace2OverRing.Companion.setFor() {
+    EuclideanSpace2OverRing.Key<Number>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        EuclideanSpace2OverRing(koneContextRegistry[Ring.Key<Number>(numberType)])
+        EuclideanSpace2OverRing(koneContextRegistry[Ring.Key<Number>()])
     }
 }
 
@@ -351,84 +272,22 @@ public class EuclideanSpace2OverField<Number>(
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<EuclideanSpace2OverField<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = SuppliedType.Regular(
-                            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
-                            typeArguments = listOf(
-                                SuppliedProjection.Regular(
-                                    variance = OUT,
-                                    type = numberType
-                                ),
-                            ),
-                            isNullable = false
-                        ),
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = SuppliedType.Regular(
-                            fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
-                            typeArguments = listOf(
-                                SuppliedProjection.Regular(
-                                    variance = OUT,
-                                    type = numberType
-                                ),
-                            ),
-                            isNullable = false
-                        ),
-                    ),
-                ),
-                isNullable = false
-            )
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverField<Number>> = ImpliedKeysRegistry {
-            EuclideanSpaceOverField.Key<Number, Vector2<Number>, Point2<Number>>(
-                numberType,
-                SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Vector2",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType
-                        ),
-                    ),
-                    isNullable = false
-                ),
-                SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.computationalGeometry.default2.Point2",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = OUT,
-                            type = numberType
-                        ),
-                    ),
-                    isNullable = false
-                ),
-            ).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace2OverField<Number>>() {
+        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverField<Number>> by lazy {
+            ImpliedKeysRegistry {
+                EuclideanSpaceOverField.Key<Number, Vector2<Number>, Point2<Number>>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun EuclideanSpace2OverField.Companion.setFor(numberType: SuppliedType) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    EuclideanSpace2OverField.Key<Number>(numberType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> EuclideanSpace2OverField.Companion.setFor() {
+    EuclideanSpace2OverField.Key<Number>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        EuclideanSpace2OverField(koneContextRegistry[Field.Key<Number>(numberType)])
+        EuclideanSpace2OverField(koneContextRegistry[Field.Key<Number>()])
     }
 }

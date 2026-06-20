@@ -11,10 +11,10 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in Point> : KoneContext {
@@ -24,34 +24,9 @@ public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in
     
     public companion object;
     
-    public class Key<Number, Vector, Point>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-        public val pointType: SuppliedType,
-    ) : RegistryKey<DelaunayTriangulationOverRingComputer<Number, Vector, Point>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = pointType
-                    ),
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*, *, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer.Key<$numberType, $vectorType, $pointType>"
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<DelaunayTriangulationOverRingComputer<Number, Vector, Point>>() {
+        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
     }
 }
 
