@@ -51,7 +51,8 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.repeat
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.random.Random
 import kotlin.random.nextUInt
 
@@ -1687,17 +1688,16 @@ public inline fun <E, K> KoneIterable<E>.groupBy(
         keySelector = keySelector
     )
 
-context(_: KoneContextRegistry)
-public inline fun <E, K> KoneIterable<E>.groupContextualBy(
-    keyType: SuppliedType,
-    keySelector: (E) -> K
-): KoneMap<K, KoneList<E>> =
-    groupByTo(
-        destination = KoneMutableMap.contextualOf(
-            keyType = keyType,
-        ),
-        keySelector = keySelector
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(_: KoneContextRegistry)
+//public inline fun <E, @Supply K> KoneIterable<E>.groupContextualBy(
+//    keySelector: (E) -> K
+//): KoneMap<K, KoneList<E>> =
+//    groupByTo(
+//        destination = KoneMutableMap.contextualOf(),
+//        keySelector = keySelector
+//    )
 
 public inline fun <E, K, V> KoneIterable<E>.groupBy(
     keyEquality: Equality<K> = Equality.defaultFor(),
@@ -1716,19 +1716,18 @@ public inline fun <E, K, V> KoneIterable<E>.groupBy(
         valueTransform = valueTransform,
     )
 
-context(_: KoneContextRegistry)
-public inline fun <E, K, V> KoneIterable<E>.groupContextualBy(
-    keyType: SuppliedType,
-    keySelector: (E) -> K,
-    valueTransform: (E) -> V,
-): KoneMap<K, KoneList<V>> =
-    groupByTo(
-        destination = KoneMutableMap.contextualOf(
-            keyType = keyType,
-        ),
-        keySelector = keySelector,
-        valueTransform = valueTransform,
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(_: KoneContextRegistry)
+//public inline fun <E, @Supply K, V> KoneIterable<E>.groupContextualBy(
+//    keySelector: (E) -> K,
+//    valueTransform: (E) -> V,
+//): KoneMap<K, KoneList<V>> =
+//    groupByTo(
+//        destination = KoneMutableMap.contextualOf(),
+//        keySelector = keySelector,
+//        valueTransform = valueTransform,
+//    )
 
 public fun <E: Comparable<E>> KoneSettableList<E>.sort() {
     heapsort()

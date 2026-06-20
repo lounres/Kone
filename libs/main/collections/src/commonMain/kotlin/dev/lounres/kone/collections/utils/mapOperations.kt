@@ -17,7 +17,8 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.contracts.InvocationKind.AT_MOST_ONCE
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 
@@ -59,16 +60,17 @@ public inline fun <K, V> KoneMap<K, V>.withChanged(
         change(key, transform)
     }
 
-context(_: KoneContextRegistry)
-public inline fun <K, V> KoneMap<K, V>.withChangedContextual(
-    key: K,
-    keyType: SuppliedType,
-    transform: (currentValue: V) -> V
-): KoneMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    KoneMap.buildContextual(initialCapacity = size, keyType = keyType) {
-        +this@withChangedContextual
-        change(key, transform)
-    }
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(_: KoneContextRegistry)
+//public inline fun <@Supply K, V> KoneMap<K, V>.withChangedContextual(
+//    key: K,
+//    transform: (currentValue: V) -> V
+//): KoneMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
+//    KoneMap.buildContextual(initialCapacity = size) {
+//        +this@withChangedContextual
+//        change(key, transform)
+//    }
 
 public inline fun <K, V> KoneMap<K, V>.withChangedReified(
     key: K,
@@ -99,16 +101,17 @@ public inline fun <reified K, V> KoneMap<K, V>.withChangedReified(
         transform = transform,
     )
 
-context(_: KoneContextRegistry)
-public inline fun <K, V> KoneMap<K, V>.withChangedContextualReified(
-    key: K,
-    keyType: SuppliedType,
-    transform: (currentValue: V) -> V
-): KoneReifiedMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
-    KoneReifiedMap.buildContextual(initialCapacity = size, keyType = keyType) {
-        setAllFrom(this@withChangedContextualReified)
-        change(key, transform)
-    }
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(_: KoneContextRegistry)
+//public inline fun <@Supply K, V> KoneMap<K, V>.withChangedContextualReified(
+//    key: K,
+//    transform: (currentValue: V) -> V
+//): KoneReifiedMap<K, V> contract [ callsInPlace(transform, AT_MOST_ONCE) ] =
+//    KoneReifiedMap.buildContextual(initialCapacity = size) {
+//        setAllFrom(this@withChangedContextualReified)
+//        change(key, transform)
+//    }
 
 public inline fun <K, V> KoneMap<out K, V>.withSetOrChanged(
     key: K,

@@ -30,10 +30,10 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.getFor
 import dev.lounres.kone.relations.getForOrNull
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.experimental.ExperimentalTypeInference
 
 
 // TODO: Add builders for nodded sets and linked sets
@@ -51,15 +51,15 @@ public fun <Element> KoneSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = KoneSet.empty()
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneSet.Companion.contextualOf(
-    elementType: SuppliedType,
-): KoneSet<Element> =
-    KoneSet.of(
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneSet.Companion.contextualOf(): KoneSet<Element> =
+//    KoneSet.of(
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 @Suppress("UNUSED_PARAMETER")
 public inline fun <reified Element> KoneReifiedSet.Companion.of(
@@ -76,16 +76,16 @@ public fun <Element> KoneReifiedSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneReifiedSet<Element> = KoneReifiedSet.empty()
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneReifiedSet.Companion.contextualOf(
-    elementType: SuppliedType,
-): KoneReifiedSet<Element> =
-    KoneReifiedSet.of(
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(): KoneReifiedSet<Element> =
+//    KoneReifiedSet.of(
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 @Suppress("unused")
 public fun <Element> KoneSet.Companion.of(
@@ -95,17 +95,18 @@ public fun <Element> KoneSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = KoneSingletonNoddedSet(element, elementEquality)
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneSet.Companion.contextualOf(
-    element: Element,
-    elementType: SuppliedType,
-): KoneSet<Element> =
-    KoneSet.of(
-        element = element,
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneSet.Companion.contextualOf(
+//    element: Element,
+//): KoneSet<Element> =
+//    KoneSet.of(
+//        element = element,
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 @Suppress("unused")
 public inline fun <reified Element> KoneReifiedSet.Companion.of(
@@ -125,18 +126,19 @@ public fun <Element> KoneReifiedSet.Companion.of(
 ): KoneReifiedSet<Element> =
     KoneSingletonNoddedReifiedSet(element, elementReification = elementReification, elementEquality = elementEquality)
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneReifiedSet.Companion.contextualOf(
-    element: Element,
-    elementType: SuppliedType,
-): KoneReifiedSet<Element> =
-    KoneReifiedSet.of(
-        element = element,
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(
+//    element: Element,
+//): KoneReifiedSet<Element> =
+//    KoneReifiedSet.of(
+//        element = element,
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public fun <Element> KoneSet.Companion.of(
     vararg elements: Element,
@@ -153,17 +155,18 @@ public fun <Element> KoneSet.Companion.of(
         KoneListBackedSet(elementEquality, backingList)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneSet.Companion.contextualOf(
-    vararg elements: Element,
-    elementType: SuppliedType,
-): KoneSet<Element> =
-    KoneSet.of(
-        elements = elements,
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneSet.Companion.contextualOf(
+//    vararg elements: Element,
+//): KoneSet<Element> =
+//    KoneSet.of(
+//        elements = elements,
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Element> KoneReifiedSet.Companion.of(
     vararg elements: Element,
@@ -197,18 +200,19 @@ public fun <Element> KoneReifiedSet.Companion.of(
         KoneListBackedReifiedSet(elementReification, elementEquality, backingList)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneReifiedSet.Companion.contextualOf(
-    vararg elements: Element,
-    elementType: SuppliedType,
-): KoneReifiedSet<Element> =
-    KoneReifiedSet.of(
-        elements = elements,
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(
+//    vararg elements: Element,
+//): KoneReifiedSet<Element> =
+//    KoneReifiedSet.of(
+//        elements = elements,
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public fun <Element> KoneMutableSet.Companion.of(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -218,15 +222,15 @@ public fun <Element> KoneMutableSet.Companion.of(
     if (elementHashing != null) KoneHashResizableSet(elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableSet(elementEquality = elementEquality)
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneMutableSet.Companion.contextualOf(
-    elementType: SuppliedType,
-): KoneMutableSet<Element> =
-    KoneMutableSet.of(
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneMutableSet.Companion.contextualOf(): KoneMutableSet<Element> =
+//    KoneMutableSet.of(
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Element> KoneMutableReifiedSet.Companion.of(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -248,16 +252,16 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
     if (elementHashing != null) KoneHashResizableReifiedSet(elementReification = elementReification, elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableReifiedSet(elementReification = elementReification, elementEquality = elementEquality)
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
-    elementType: SuppliedType,
-): KoneMutableReifiedSet<Element> =
-    KoneMutableReifiedSet.of(
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneMutableReifiedSet.Companion.contextualOf(): KoneMutableReifiedSet<Element> =
+//    KoneMutableReifiedSet.of(
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public fun <Element> KoneMutableSet.Companion.of(
     vararg elements: Element,
@@ -274,17 +278,18 @@ public fun <Element> KoneMutableSet.Companion.of(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneMutableSet.Companion.contextualOf(
-    vararg elements: Element,
-    elementType: SuppliedType,
-): KoneMutableSet<Element> =
-    KoneMutableSet.of(
-        elements = elements,
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneMutableSet.Companion.contextualOf(
+//    vararg elements: Element,
+//): KoneMutableSet<Element> =
+//    KoneMutableSet.of(
+//        elements = elements,
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Element> KoneMutableReifiedSet.Companion.of(
     vararg elements: Element,
@@ -323,18 +328,19 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
         )
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneMutableReifiedSet.Companion.contextualOf(
-    vararg elements: Element,
-    elementType: SuppliedType,
-): KoneMutableReifiedSet<Element> =
-    KoneMutableReifiedSet.of(
-        elements = elements,
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneMutableReifiedSet.Companion.contextualOf(
+//    vararg elements: Element,
+//): KoneMutableReifiedSet<Element> =
+//    KoneMutableReifiedSet.of(
+//        elements = elements,
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public fun <Element> KoneIterable<Element>.toKoneMutableSet(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -350,15 +356,15 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneIterable<Element>.toKoneContextualMutableSet(
-    elementType: SuppliedType,
-): KoneMutableSet<Element> =
-    toKoneMutableSet(
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneIterable<Element>.toKoneContextualMutableSet(): KoneMutableSet<Element> =
+//    toKoneMutableSet(
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneMutableReifiedSet(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -387,16 +393,16 @@ public fun <Element> KoneIterable<Element>.toKoneMutableReifiedSet(
         KoneListBackedMutableReifiedSet(elementReification, elementEquality, backingList)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(
-    elementType: SuppliedType,
-): KoneMutableReifiedSet<Element> =
-    toKoneMutableReifiedSet(
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(): KoneMutableReifiedSet<Element> =
+//    toKoneMutableReifiedSet(
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public fun <Element> KoneIterable<Element>.toKoneSet(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -409,15 +415,15 @@ public fun <Element> KoneIterable<Element>.toKoneSet(
         else -> this.toKoneMutableSet(elementEquality = elementEquality, elementHashing = elementHashing, elementOrder = elementOrder)
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneIterable<Element>.toKoneContextualSet(
-    elementType: SuppliedType,
-): KoneSet<Element> =
-    toKoneSet(
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneIterable<Element>.toKoneContextualSet(): KoneSet<Element> =
+//    toKoneSet(
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Element> KoneIterable<Element>.toKoneReifiedSet(
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -452,16 +458,16 @@ public fun <Element> KoneIterable<Element>.toKoneReifiedSet(
         )
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> KoneIterable<Element>.toKoneContextualReifiedSet(
-    elementType: SuppliedType,
-): KoneReifiedSet<Element> =
-    toKoneReifiedSet(
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Element> KoneIterable<Element>.toKoneContextualReifiedSet(): KoneReifiedSet<Element> =
+//    toKoneReifiedSet(
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//    )
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneSetBuilder<Element> @PublishedApi internal constructor(result: KoneMutableSet<Element>) : KoneMutableSet<Element> {
@@ -595,7 +601,6 @@ public class KoneReifiedSetBuilder<Element> @PublishedApi internal constructor(r
     }
 }
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> KoneSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
@@ -610,20 +615,19 @@ public inline fun <Element> KoneSet.Companion.build(
     return KoneSetBuilder(result).apply(builderAction).build()
 }
 
-@OptIn(ExperimentalTypeInference::class)
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> KoneSet.Companion.buildContextual(
-    elementType: SuppliedType,
-    builderAction: KoneSetBuilder<Element>.() -> Unit,
-): KoneSet<Element> =
-    KoneSet.build(
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-        builderAction = builderAction
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Element> KoneSet.Companion.buildContextual(
+//    builderAction: KoneSetBuilder<Element>.() -> Unit,
+//): KoneSet<Element> =
+//    KoneSet.build(
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//        builderAction = builderAction
+//    )
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <reified Element> KoneReifiedSet.Companion.build(
     elementEquality: Equality<Element> = Equality.defaultFor(),
     elementHashing: Hashing<Element>? = null,
@@ -638,7 +642,6 @@ public inline fun <reified Element> KoneReifiedSet.Companion.build(
         builderAction = builderAction
     )
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> KoneReifiedSet.Companion.build(
     elementReification: Reification<Element>,
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -654,21 +657,20 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     return KoneReifiedSetBuilder(result).apply(builderAction).build()
 }
 
-@OptIn(ExperimentalTypeInference::class)
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
-    elementType: SuppliedType,
-    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
-): KoneReifiedSet<Element> =
-    KoneReifiedSet.build(
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-        builderAction = builderAction,
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Element> KoneReifiedSet.Companion.buildContextual(
+//    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit,
+//): KoneReifiedSet<Element> =
+//    KoneReifiedSet.build(
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//        builderAction = builderAction,
+//    )
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> KoneSet.Companion.build(
     initialCapacity: UInt,
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -684,22 +686,21 @@ public inline fun <Element> KoneSet.Companion.build(
     return KoneSetBuilder(result).apply(builderAction).build()
 }
 
-@OptIn(ExperimentalTypeInference::class)
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> KoneSet.Companion.buildContextual(
-    initialCapacity: UInt,
-    elementType: SuppliedType,
-    builderAction: KoneSetBuilder<Element>.() -> Unit,
-): KoneSet<Element> =
-    KoneSet.build(
-        initialCapacity = initialCapacity,
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-        builderAction = builderAction,
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Element> KoneSet.Companion.buildContextual(
+//    initialCapacity: UInt,
+//    builderAction: KoneSetBuilder<Element>.() -> Unit,
+//): KoneSet<Element> =
+//    KoneSet.build(
+//        initialCapacity = initialCapacity,
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//        builderAction = builderAction,
+//    )
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <reified Element> KoneReifiedSet.Companion.build(
     initialCapacity: UInt,
     elementEquality: Equality<Element> = Equality.defaultFor(),
@@ -716,7 +717,6 @@ public inline fun <reified Element> KoneReifiedSet.Companion.build(
         builderAction = builderAction,
     )
 
-@OptIn(ExperimentalTypeInference::class)
 public inline fun <Element> KoneReifiedSet.Companion.build(
     initialCapacity: UInt,
     elementReification: Reification<Element>,
@@ -733,18 +733,18 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     return KoneReifiedSetBuilder(result).apply(builderAction).build()
 }
 
-@OptIn(ExperimentalTypeInference::class)
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> KoneReifiedSet.Companion.buildContextual(
-    initialCapacity: UInt,
-    elementType: SuppliedType,
-    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
-): KoneReifiedSet<Element> =
-    KoneReifiedSet.build(
-        initialCapacity = initialCapacity,
-        elementReification = Reification.getFor(elementType),
-        elementEquality = Equality.getFor(elementType),
-        elementHashing = Hashing.getForOrNull(elementType),
-        elementOrder = Order.getForOrNull(elementType),
-        builderAction = builderAction,
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Element> KoneReifiedSet.Companion.buildContextual(
+//    initialCapacity: UInt,
+//    builderAction: KoneReifiedSetBuilder<Element>.() -> Unit
+//): KoneReifiedSet<Element> =
+//    KoneReifiedSet.build(
+//        initialCapacity = initialCapacity,
+//        elementReification = Reification.getFor(),
+//        elementEquality = Equality.getFor(),
+//        elementHashing = Hashing.getForOrNull(),
+//        elementOrder = Order.getForOrNull(),
+//        builderAction = builderAction,
+//    )

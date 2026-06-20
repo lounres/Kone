@@ -3,8 +3,6 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalTypeInference::class)
-
 package dev.lounres.kone.collections.map
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
@@ -24,9 +22,9 @@ import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.*
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.contracts.InvocationKind
-import kotlin.experimental.ExperimentalTypeInference
 
 
 // TODO: Add builders with vararg map nodes
@@ -44,11 +42,11 @@ public fun <Key, Value> KoneMap.Companion.of(
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> = KoneMap.empty()
 
-@Suppress("unused")
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMap.Companion.contextualOf(
-    keyType: SuppliedType,
-): KoneMap<Key, Value> = KoneMap.empty()
+// FIXME: Wait for KT-87097
+//@Suppress("unused")
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMap.Companion.contextualOf(): KoneMap<Key, Value> = KoneMap.empty()
 
 @Suppress("unused")
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
@@ -65,16 +63,16 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> = KoneReifiedMap.empty()
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneReifiedMap.Companion.contextualOf(
-    keyType: SuppliedType,
-): KoneReifiedMap<Key, Value> =
-    KoneReifiedMap.of(
-        keyReification = Reification.getFor(keyType),
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneReifiedMap.Companion.contextualOf(): KoneReifiedMap<Key, Value> =
+//    KoneReifiedMap.of(
+//        keyReification = Reification.getFor(),
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 @Suppress("unused")
 public fun <Key, Value> KoneMap.Companion.of(
@@ -89,17 +87,18 @@ public fun <Key, Value> KoneMap.Companion.of(
         keyEquality = keyEquality,
     )
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMap.Companion.contextualOf(
-    entry: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType,
-): KoneMap<Key, Value> =
-    KoneMap.of(
-        entry = entry,
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMap.Companion.contextualOf(
+//    entry: KoneMapEntry<Key, Value>,
+//): KoneMap<Key, Value> =
+//    KoneMap.of(
+//        entry = entry,
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 @Suppress("unused")
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
@@ -148,17 +147,18 @@ public fun <Key, Value> KoneMap.Companion.of(
         else -> TODO()
     }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMap.Companion.contextualOf(
-    vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType,
-): KoneMap<Key, Value> =
-    KoneMap.of(
-        entries = entries,
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMap.Companion.contextualOf(
+//    vararg entries: KoneMapEntry<Key, Value>,
+//): KoneMap<Key, Value> =
+//    KoneMap.of(
+//        entries = entries,
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
@@ -200,15 +200,15 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
     if (keyHashing != null) KoneHashResizableMap(keyEquality = keyEquality, keyHashing = keyHashing)
     else KoneListBackedMutableMap(keyEquality = keyEquality)
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
-    keyType: SuppliedType,
-): KoneMutableMap<Key, Value> =
-    KoneMutableMap.of(
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMutableMap.Companion.contextualOf(): KoneMutableMap<Key, Value> =
+//    KoneMutableMap.of(
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
     keyEquality: Equality<Key> = Equality.defaultFor(),
@@ -240,17 +240,18 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
     if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMutableMap.Companion.contextualOf(
-    vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType,
-): KoneMutableMap<Key, Value> =
-    KoneMutableMap.of(
-        entries = entries,
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMutableMap.Companion.contextualOf(
+//    vararg entries: KoneMapEntry<Key, Value>,
+//): KoneMutableMap<Key, Value> =
+//    KoneMutableMap.of(
+//        entries = entries,
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 public inline fun <reified Key, Value> KoneMutableReifiedMap.Companion.of(
     vararg entries: KoneMapEntry<Key, Value>,
@@ -276,18 +277,19 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-context(koneContextRegistry: KoneContextRegistry)
-public fun <Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
-    vararg entries: KoneMapEntry<Key, Value>,
-    keyType: SuppliedType,
-): KoneMutableReifiedMap<Key, Value> =
-    KoneMutableReifiedMap.of(
-        entries = entries,
-        keyReification = Reification.getFor(keyType),
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public fun <@Supply Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
+//    vararg entries: KoneMapEntry<Key, Value>,
+//): KoneMutableReifiedMap<Key, Value> =
+//    KoneMutableReifiedMap.of(
+//        entries = entries,
+//        keyReification = Reification.getFor(),
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//    )
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(result: KoneMutableMap<Key, Value>) : KoneMutableMap<Key, Value> {
@@ -474,17 +476,18 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     return KoneMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Key, Value> KoneMap.Companion.buildContextual(
-    keyType: SuppliedType,
-    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
-): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    KoneMap.build(
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-        builderAction = builderAction
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Key, Value> KoneMap.Companion.buildContextual(
+//    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+//): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+//    KoneMap.build(
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//        builderAction = builderAction
+//    )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
     keyEquality: Equality<Key> = Equality.defaultFor(),
@@ -513,18 +516,19 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     return KoneReifiedMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
-    keyType: SuppliedType,
-    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
-): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    KoneReifiedMap.build(
-        keyReification = Reification.getFor(keyType),
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-        builderAction = builderAction
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Key, Value> KoneReifiedMap.Companion.buildContextual(
+//    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+//): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+//    KoneReifiedMap.build(
+//        keyReification = Reification.getFor(),
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//        builderAction = builderAction
+//    )
 
 public inline fun <Key, Value> KoneMap.Companion.build(
     initialCapacity: UInt,
@@ -539,19 +543,20 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     return KoneMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Key, Value> KoneMap.Companion.buildContextual(
-    initialCapacity: UInt,
-    keyType: SuppliedType,
-    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
-): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    KoneMap.build(
-        initialCapacity = initialCapacity,
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-        builderAction = builderAction
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Key, Value> KoneMap.Companion.buildContextual(
+//    initialCapacity: UInt,
+//    builderAction: KoneMapBuilder<Key, Value>.() -> Unit
+//): KoneMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+//    KoneMap.build(
+//        initialCapacity = initialCapacity,
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//        builderAction = builderAction
+//    )
 
 public inline fun <reified Key, Value> KoneReifiedMap.Companion.build(
     initialCapacity: UInt,
@@ -583,20 +588,21 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     return KoneReifiedMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Key, Value> KoneReifiedMap.Companion.buildContextual(
-    initialCapacity: UInt,
-    keyType: SuppliedType,
-    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
-): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
-    KoneReifiedMap.build(
-        initialCapacity = initialCapacity,
-        keyReification = Reification.getFor(keyType),
-        keyEquality = Equality.getFor(keyType),
-        keyHashing = Hashing.getForOrNull(keyType),
-        keyOrder = Order.getForOrNull(keyType),
-        builderAction = builderAction
-    )
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(koneContextRegistry: KoneContextRegistry)
+//public inline fun <@Supply Key, Value> KoneReifiedMap.Companion.buildContextual(
+//    initialCapacity: UInt,
+//    builderAction: KoneReifiedMapBuilder<Key, Value>.() -> Unit
+//): KoneReifiedMap<Key, Value> contract [ callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) ] =
+//    KoneReifiedMap.build(
+//        initialCapacity = initialCapacity,
+//        keyReification = Reification.getFor(),
+//        keyEquality = Equality.getFor(),
+//        keyHashing = Hashing.getForOrNull(),
+//        keyOrder = Order.getForOrNull(),
+//        builderAction = builderAction
+//    )
 
 // TODO: Move the following functions somewhere else
 public inline fun <Element, Key, Value, Destination: KoneMutableMap<in Key, in Value>> KoneIterable<Element>.associateTo(destination: Destination, transform: (Element) -> KoneMapEntry<Key, Value>): Destination {

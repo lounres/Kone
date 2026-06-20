@@ -19,7 +19,6 @@ import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.set.KoneMutableSet
-import dev.lounres.kone.collections.set.contextualOf
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
@@ -34,7 +33,8 @@ import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.lt
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 public inline fun <E : Comparable<E>> KoneIterator<E>.minOrElse(default: () -> E): E {
@@ -3150,12 +3150,14 @@ public fun <E> KoneIterator<E>.hasDuplicates(
     return false
 }
 
-context(_: KoneContextRegistry)
-public fun <E> KoneIterable<E>.hasDuplicatesContextual(elementType: SuppliedType): Boolean {
-    val setOfElements = KoneMutableSet.contextualOf<E>(elementType)
-    for (element in this) {
-        if (element in setOfElements) return true
-        setOfElements.add(element)
-    }
-    return false
-}
+// FIXME: Wait for KT-87097
+//@Suppliable
+//context(_: KoneContextRegistry)
+//public fun <@Supply E> KoneIterable<E>.hasDuplicatesContextual(): Boolean {
+//    val setOfElements = KoneMutableSet.contextualOf<E>()
+//    for (element in this) {
+//        if (element in setOfElements) return true
+//        setOfElements.add(element)
+//    }
+//    return false
+//}
