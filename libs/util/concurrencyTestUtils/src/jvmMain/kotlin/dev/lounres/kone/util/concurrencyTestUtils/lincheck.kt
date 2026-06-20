@@ -8,7 +8,6 @@ package dev.lounres.kone.util.concurrencyTestUtils
 import de.infix.testBalloon.framework.core.TestConfig
 import de.infix.testBalloon.framework.core.TestSuiteScope
 import de.infix.testBalloon.framework.core.testScope
-import de.infix.testBalloon.framework.shared.TestDisplayName
 import de.infix.testBalloon.framework.shared.TestElementName
 import de.infix.testBalloon.framework.shared.TestRegistering
 import org.jetbrains.kotlinx.lincheck.Actor
@@ -96,14 +95,12 @@ public class StressOptionsBuilder {
 @TestRegistering
 public fun TestSuiteScope.testWithLincheckStress(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     testClass: Class<*>,
     options: suspend StressOptionsBuilder.() -> Unit = {}
 ) {
     test(
         name = name,
-        displayName = displayName,
         testConfig = TestConfig.testScope(isEnabled = true, timeout = Duration.INFINITE).chainedWith(testConfig),
     ) {
         StressOptionsBuilder().apply { options() }.stressOptions.check(testClass)
@@ -113,14 +110,12 @@ public fun TestSuiteScope.testWithLincheckStress(
 @TestRegistering
 public fun TestSuiteScope.testWithLincheckStress(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     testClass: KClass<*>,
     options: suspend StressOptionsBuilder.() -> Unit = {}
 ) {
     testWithLincheckStress(
         name = name,
-        displayName = displayName,
         testConfig = testConfig,
         testClass = testClass.java,
         options = options,
@@ -130,13 +125,11 @@ public fun TestSuiteScope.testWithLincheckStress(
 @TestRegistering
 public inline fun <reified TestClass> TestSuiteScope.testWithLincheckStress(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     noinline options: suspend StressOptionsBuilder.() -> Unit = {},
 ) {
     testWithLincheckStress(
         name = name,
-        displayName = displayName,
         testConfig = testConfig,
         testClass = TestClass::class,
         options = options,
@@ -149,6 +142,7 @@ public fun DSLThreadScenario.actor(
     cancelOnSuspension: Boolean = false,
     blocking: Boolean = false,
     causesBlocking: Boolean = false,
+    promptCancellation: Boolean = false,
 ) {
     val method = f.javaMethod ?: throw IllegalStateException("The function is a constructor or cannot be represented by a Java Method")
     require(method.exceptionTypes.all { Throwable::class.java.isAssignableFrom(it) }) { "Not all declared exceptions are Throwable" }
@@ -161,6 +155,7 @@ public fun DSLThreadScenario.actor(
             cancelOnSuspension = cancelOnSuspension,
             blocking = blocking,
             causesBlocking = causesBlocking,
+            promptCancellation = promptCancellation,
         )
     )
 }
@@ -279,9 +274,9 @@ public class ModelCheckingOptionsBuilder {
         modelCheckingOptions = modelCheckingOptions.checkObstructionFreedom(checkObstructionFreedom)
     }
     
-    public fun hangingDetectionThreshold(hangingDetectionThreshold: Int) {
-        modelCheckingOptions = modelCheckingOptions.hangingDetectionThreshold(hangingDetectionThreshold)
-    }
+//    public fun hangingDetectionThreshold(hangingDetectionThreshold: Int) {
+//        modelCheckingOptions = modelCheckingOptions.hangingDetectionThreshold(hangingDetectionThreshold)
+//    }
     
     public fun addGuarantee(guarantee: ManagedStrategyGuarantee) {
         modelCheckingOptions = modelCheckingOptions.addGuarantee(guarantee)
@@ -298,14 +293,12 @@ public class ModelCheckingOptionsBuilder {
 @TestRegistering
 public fun TestSuiteScope.testWithLincheckModelChecking(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     testClass: Class<*>,
     options: suspend ModelCheckingOptionsBuilder.() -> Unit = {}
 ) {
     test(
         name = name,
-        displayName = displayName,
         testConfig = TestConfig.testScope(isEnabled = true, timeout = Duration.INFINITE).chainedWith(testConfig),
     ) {
         ModelCheckingOptionsBuilder().apply { options() }.modelCheckingOptions.check(testClass)
@@ -315,14 +308,12 @@ public fun TestSuiteScope.testWithLincheckModelChecking(
 @TestRegistering
 public fun TestSuiteScope.testWithLincheckModelChecking(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     testClass: KClass<*>,
     options: suspend ModelCheckingOptionsBuilder.() -> Unit = {}
 ) {
     testWithLincheckModelChecking(
         name = name,
-        displayName = displayName,
         testConfig = testConfig,
         testClass = testClass.java,
         options = options,
@@ -332,13 +323,11 @@ public fun TestSuiteScope.testWithLincheckModelChecking(
 @TestRegistering
 public inline fun <reified TestClass> TestSuiteScope.testWithLincheckModelChecking(
     @TestElementName name: String,
-    @TestDisplayName displayName: String = name,
     testConfig: TestConfig = TestConfig,
     noinline options: suspend ModelCheckingOptionsBuilder.() -> Unit = {},
 ) {
     testWithLincheckModelChecking(
         name = name,
-        displayName = displayName,
         testConfig = testConfig,
         testClass = TestClass::class,
         options = options,
