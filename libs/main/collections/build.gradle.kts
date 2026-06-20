@@ -5,7 +5,7 @@ plugins {
 }
 
 konePlugins {
-    +projects.plugins.suppliedTypes
+    +"suppliedTypes"
 }
 
 kotlin {

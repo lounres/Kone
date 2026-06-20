@@ -7,6 +7,8 @@ package dev.lounres.kone.registry
 
 import dev.lounres.kone.registry.internal.EmptyIterator
 import dev.lounres.kone.registry.internal.RegistryKeyMapWrapper
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 
 public data class ImplicationRegistration<in I, T>(
@@ -25,8 +27,12 @@ public interface ImpliedKeysRegistry<in I> : Iterable<ImplicationRegistration<I,
     }
 }
 
-public fun <I> ImpliedKeysRegistry(builder: ImpliedKeysRegistryBuilder<I>.() -> Unit): ImpliedKeysRegistry<I> =
-    ImpliedKeysRegistryBuilder<I>().apply(builder)
+public inline fun <I> ImpliedKeysRegistry(builder: ImpliedKeysRegistryBuilder<I>.() -> Unit): ImpliedKeysRegistry<I> {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+    return ImpliedKeysRegistryBuilder<I>().apply(builder)
+}
 
 @Suppress("UNCHECKED_CAST")
 public class ImpliedKeysRegistryBuilder<I> @PublishedApi internal constructor() : ImpliedKeysRegistry<I> {

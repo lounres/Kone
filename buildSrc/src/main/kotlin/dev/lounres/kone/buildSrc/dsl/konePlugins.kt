@@ -6,7 +6,6 @@
 package dev.lounres.kone.buildSrc.dsl
 
 import org.gradle.api.Project
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
@@ -16,16 +15,16 @@ import org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME
 
 
 public class KonePluginsCollector(private val project: Project) {
-    public operator fun ProjectDependency.unaryPlus() {
+    public operator fun String.unaryPlus() {
         project.dependencies {
-            add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, this@unaryPlus)
+            add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(":plugins:${this@unaryPlus}"))
         }
         project.pluginManager.withPlugins("org.jetbrains.kotlin.multiplatform") {
             project.configure<KotlinMultiplatformExtension> {
                 sourceSets {
                     commonMain {
                         dependencies {
-                            api(project("${this@unaryPlus.path}:runtime"))
+                            api(project(":plugins:${this@unaryPlus}:runtime"))
                         }
                     }
                 }
@@ -36,7 +35,7 @@ public class KonePluginsCollector(private val project: Project) {
                 sourceSets {
                     named("main") {
                         dependencies {
-                            api(project("${this@unaryPlus.path}:runtime"))
+                            api(project(":plugins:${this@unaryPlus}:runtime"))
                         }
                     }
                 }

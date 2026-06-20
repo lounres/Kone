@@ -1,7 +1,7 @@
 import dev.lounres.kone.buildSrc.dsl.konePlugins
 
 konePlugins {
-    +projects.plugins.suppliedTypes
+    +"suppliedTypes"
 }
 
 kotlin {
