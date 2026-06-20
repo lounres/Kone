@@ -10,14 +10,14 @@ package dev.lounres.kone.relations
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.registry.getOrNull
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -42,24 +42,9 @@ public interface Equality<in Element> : KoneContext {
     /**
      * Registry key for [Equality] interface in [KoneContextRegistry].
      */
-    public class Key<Element>(
-        public val elementType: SuppliedType,
-    ) : RegistryKey<Equality<Element>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Equality",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = elementType
-                    )
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<$elementType>"
+    @Suppliable
+    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Equality<Element>>() {
+        override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<${suppliedTypeOf<Element>()}>"
     }
 }
 
@@ -67,44 +52,50 @@ public interface Equality<in Element> : KoneContext {
  * Shortcut for getting [Equality] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Equality.Companion.getFor(suppliedElementType: SuppliedType): Equality<Element> =
-    koneContextRegistry[Equality.Key(suppliedElementType)]
+public fun <@Supply Element> Equality.Companion.getFor(): Equality<Element> =
+    koneContextRegistry[Equality.Key()]
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Equality.Companion.getForOrNull(suppliedElementType: SuppliedType): Equality<Element>? =
-    koneContextRegistry.getOrNull(Equality.Key(suppliedElementType))
+public fun <@Supply Element> Equality.Companion.getForOrNull(): Equality<Element>? =
+    koneContextRegistry.getOrNull(Equality.Key())
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Equality.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Equality<Element>): Equality<Element> =
-    koneContextRegistry.getOrDefault(Equality.Key(suppliedElementType), default)
+public fun <@Supply Element> Equality.Companion.getForOrDefault(default: Equality<Element>): Equality<Element> =
+    koneContextRegistry.getOrDefault(Equality.Key(), default)
 /**
  * Shortcut for getting [Equality] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> Equality.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Equality<Element>): Equality<Element> =
-    koneContextRegistry.getOrElse(Equality.Key(suppliedElementType), block)
+public inline fun <@Supply Element> Equality.Companion.getForOrElse(block: () -> Equality<Element>): Equality<Element> =
+    koneContextRegistry.getOrElse(Equality.Key(), block)
 
 /**
  * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
  */
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Element> Equality.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
-    Equality.Key<Element>(suppliedElementType) correspondsTo Equality.defaultFor<Element>()
+public fun <@Supply Element> Equality.Companion.setDefaultFor() {
+    Equality.Key<Element>() correspondsTo Equality.defaultFor<Element>()
 }
 /**
  * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
  */
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Element> Equality.Companion.setAbsoluteFor(suppliedElementType: SuppliedType) {
-    Equality.Key<Element>(suppliedElementType) correspondsTo Equality.absoluteFor<Element>()
+public fun <@Supply Element> Equality.Companion.setAbsoluteFor() {
+    Equality.Key<Element>() correspondsTo Equality.absoluteFor<Element>()
 }
 
 /**

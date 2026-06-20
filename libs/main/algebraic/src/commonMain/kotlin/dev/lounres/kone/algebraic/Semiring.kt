@@ -7,13 +7,13 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -177,27 +177,12 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     /**
      * Registry key for [Semiring] interface in [KoneContextRegistry].
      */
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<Semiring<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Semiring",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semiring<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> = ImpliedKeysRegistry {
-            CommutativeMonoid.Key<Number>(numberType).impliesSame()
+            CommutativeMonoid.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Semiring.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Semiring.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
@@ -339,27 +324,12 @@ public infix fun <Number> Number.pow(exponent: ULong): Number = with(ring) { thi
 public interface CommutativeSemiring<Number> : Semiring<Number> {
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<CommutativeSemiring<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeSemiring",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeSemiring<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<CommutativeSemiring<Number>> = ImpliedKeysRegistry {
-            Semiring.Key<Number>(numberType).impliesSame()
+            Semiring.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemiring.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemiring.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

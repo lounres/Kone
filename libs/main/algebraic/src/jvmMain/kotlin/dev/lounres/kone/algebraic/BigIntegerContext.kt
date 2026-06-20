@@ -121,17 +121,11 @@ public data object BigIntegerContext : Reification<BigInteger>, EuclideanRing<Bi
  */
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun BigIntegerContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val bigIntegerSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "java.math.BigInteger",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
     listOf<RegistryKey<in BigIntegerContext>>(
-        Reification.Key(bigIntegerSuppliedType),
-        EuclideanRing.Key(bigIntegerSuppliedType),
-        Order.Key(bigIntegerSuppliedType),
-        Hashing.Key(bigIntegerSuppliedType),
+        Reification.Key(),
+        EuclideanRing.Key(),
+        Order.Key(),
+        Hashing.Key(),
     ).forEach {
         it.withImpliedUsingFirst correspondsTo BigIntegerContext
     }

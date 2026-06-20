@@ -6,11 +6,11 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface Semigroup<Number> : Equality<Number> {
@@ -20,27 +20,12 @@ public interface Semigroup<Number> : Equality<Number> {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<Semigroup<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Semigroup",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semigroup<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> = ImpliedKeysRegistry {
-            Equality.Key<Number>(numberType).impliesSame()
+            Equality.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Semigroup.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Semigroup.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
@@ -57,26 +42,11 @@ public operator fun <Number> Number.plus(other: Number): Number = with(semigroup
 public interface CommutativeSemigroup<Number> : Semigroup<Number> {
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<CommutativeSemigroup<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeSemigroup",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeSemigroup<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<CommutativeSemigroup<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>(numberType).impliesSame()
+            Semigroup.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemigroup.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemigroup.Key<${suppliedTypeOf<Number>()}>"
     }
 }

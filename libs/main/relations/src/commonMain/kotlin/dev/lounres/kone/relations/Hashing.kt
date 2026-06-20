@@ -8,14 +8,15 @@ package dev.lounres.kone.relations
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegistryKey
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.getOrDefault
 import dev.lounres.kone.registry.getOrElse
 import dev.lounres.kone.registry.getOrNull
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -40,24 +41,9 @@ public interface Hashing<in Element> : KoneContext {
     /**
      * Registry key for [Hashing] interface in [KoneContextRegistry].
      */
-    public class Key<Element>(
-        public val elementType: SuppliedType,
-    ) : RegistryKey<Hashing<Element>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Hashing",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = elementType
-                    )
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.relations.Hashing.Key<$elementType>"
+    @Suppliable
+    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Hashing<Element>>() {
+        override fun toString(): String = "dev.lounres.kone.relations.Hashing.Key<${suppliedTypeOf<Element>()}>"
     }
 }
 
@@ -65,37 +51,42 @@ public interface Hashing<in Element> : KoneContext {
  * Shortcut for getting [Hashing] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Hashing.Companion.getFor(suppliedElementType: SuppliedType): Hashing<Element> =
-    koneContextRegistry[Hashing.Key(suppliedElementType)]
+public fun <@Supply Element> Hashing.Companion.getFor(): Hashing<Element> =
+    koneContextRegistry[Hashing.Key()]
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Hashing.Companion.getForOrNull(suppliedElementType: SuppliedType): Hashing<Element>? =
-    koneContextRegistry.getOrNull(Hashing.Key(suppliedElementType))
+public fun <@Supply Element> Hashing.Companion.getForOrNull(): Hashing<Element>? =
+    koneContextRegistry.getOrNull(Hashing.Key())
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Hashing.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Hashing<Element>): Hashing<Element> =
-    koneContextRegistry.getOrDefault(Hashing.Key(suppliedElementType), default)
+public fun <@Supply Element> Hashing.Companion.getForOrDefault(default: Hashing<Element>): Hashing<Element> =
+    koneContextRegistry.getOrDefault(Hashing.Key(), default)
 /**
  * Shortcut for getting [Hashing] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> Hashing.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Hashing<Element>): Hashing<Element> =
-    koneContextRegistry.getOrElse(Hashing.Key(suppliedElementType), block)
+public inline fun <@Supply Element> Hashing.Companion.getForOrElse(block: () -> Hashing<Element>): Hashing<Element> =
+    koneContextRegistry.getOrElse(Hashing.Key(), block)
 
 /**
  * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
  */
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Element> Hashing.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
-    Hashing.Key<Element>(suppliedElementType) correspondsTo Hashing.defaultFor<Element>()
+public fun <@Supply Element> Hashing.Companion.setDefaultFor() {
+    Hashing.Key<Element>() correspondsTo Hashing.defaultFor<Element>()
 }
 
 /**

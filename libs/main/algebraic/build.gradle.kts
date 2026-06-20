@@ -1,5 +1,11 @@
+import dev.lounres.kone.buildSrc.dsl.konePlugins
+
 plugins {
     alias(versions.plugins.kotlinx.serialization)
+}
+
+konePlugins {
+    +projects.plugins.suppliedTypes
 }
 
 kotlin {

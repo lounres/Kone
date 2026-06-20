@@ -7,12 +7,11 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
 
 /**
@@ -59,27 +58,12 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
     /**
      * Registry key for [EuclideanSemiring] interface in [KoneContextRegistry].
      */
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<EuclideanSemiring<Number>> {
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        public val typeKey: SuppliedType.Regular =
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanSemiring",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType,
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSemiring<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<EuclideanSemiring<Number>> = ImpliedKeysRegistry {
-            CommutativeSemiring.Key<Number>(numberType).impliesSame()
+            CommutativeSemiring.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.EuclideanSemiring.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.EuclideanSemiring.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
@@ -116,27 +100,12 @@ public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemir
     /**
      * Registry key for [EuclideanRing] interface in [KoneContextRegistry].
      */
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<EuclideanRing<Number>> {
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        public val typeKey: SuppliedType.Regular =
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.EuclideanRing",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType,
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanRing<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<EuclideanRing<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>(numberType).impliesSame()
-            EuclideanSemiring.Key<Number>(numberType).impliesSame()
+            CommutativeRing.Key<Number>().impliesSame()
+            EuclideanSemiring.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<${suppliedTypeOf<Number>()}>"
     }
 }

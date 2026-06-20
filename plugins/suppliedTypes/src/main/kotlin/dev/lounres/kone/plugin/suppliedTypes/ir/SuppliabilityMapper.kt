@@ -73,7 +73,7 @@ class SuppliabilityMapper(
                 true
             }
             check(candidates.isNotEmpty()) { "Did not receive any suppliance of function.\n  CallableId: ${function.callableId}\n  Suppliable: ${function.symbol}" }
-//            check(candidates.size <= 1) { "Received several suppliances of function.\n  CallableId: ${function.callableId}\n  Suppliable: ${function.symbol}\n  Suppliances:${candidates.joinToString(separator = "") { "\n    ${it.symbol}" }}" }
+            check(candidates.size <= 1) { "Received several suppliances of function.\n  CallableId: ${function.callableId}\n  Suppliable: ${function.symbol}\n  Suppliances:${candidates.joinToString(separator = "") { "\n    ${it.symbol}" }}" }
             candidates.first().also { externalFunctionsSupplianceToSuppliableMapping[it] = function }
         }
     fun mapSupplianceToSuppliableOrNull(function: IrSimpleFunction): IrSimpleFunction? =

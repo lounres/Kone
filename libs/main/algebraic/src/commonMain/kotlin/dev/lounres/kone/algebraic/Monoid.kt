@@ -7,10 +7,10 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface Monoid<Number> : Semigroup<Number> {
@@ -42,27 +42,12 @@ public interface Monoid<Number> : Semigroup<Number> {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<Monoid<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Monoid",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Monoid<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> = ImpliedKeysRegistry {
-            Semigroup.Key<Number>(numberType).impliesSame()
+            Semigroup.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Monoid.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Monoid.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
@@ -129,27 +114,12 @@ public operator fun <Number> ULong.times(other: Number): Number = with(monoid) {
 public interface CommutativeMonoid<Number> : Monoid<Number>, CommutativeSemigroup<Number> {
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<CommutativeMonoid<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeMonoid",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeMonoid<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<CommutativeMonoid<Number>> = ImpliedKeysRegistry {
-            Monoid.Key<Number>(numberType).impliesSame()
-            CommutativeSemigroup.Key<Number>(numberType).impliesSame()
+            Monoid.Key<Number>().impliesSame()
+            CommutativeSemigroup.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeMonoid.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeMonoid.Key<${suppliedTypeOf<Number>()}>"
     }
 }

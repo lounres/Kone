@@ -7,11 +7,10 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.INVARIANT
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface Group<Number> : Monoid<Number> {
@@ -38,27 +37,12 @@ public interface Group<Number> : Monoid<Number> {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<Group<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Group",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Group<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Group<Number>> = ImpliedKeysRegistry {
-            Monoid.Key<Number>(numberType).impliesSame()
+            Monoid.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
@@ -124,28 +108,13 @@ public operator fun <Number> Number.minus(other: Number): Number = with(group) {
 public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Number> {
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<CommutativeGroup<Number>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeGroup",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeGroup<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<CommutativeGroup<Number>> = ImpliedKeysRegistry {
-            Group.Key<Number>(numberType).impliesSame()
-            CommutativeMonoid.Key<Number>(numberType).impliesSame()
+            Group.Key<Number>().impliesSame()
+            CommutativeMonoid.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

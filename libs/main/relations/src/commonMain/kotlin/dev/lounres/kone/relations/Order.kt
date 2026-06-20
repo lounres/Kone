@@ -9,17 +9,12 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrDefault
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.getOrNull
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.Comparator as KotlinStdlibComparator
+import dev.lounres.kone.registry.*
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmField
+import kotlin.Comparator as KotlinStdlibComparator
 import kotlin.ranges.ClosedRange as KotlinClosedRange
 import kotlin.ranges.OpenEndRange as KotlinOpenEndRange
 
@@ -55,24 +50,9 @@ public interface Order<in Element> : KoneContext {
     /**
      * Registry key for [Order] interface in [KoneContextRegistry].
      */
-    public class Key<Element>(
-        public val elementType: SuppliedType,
-    ) : RegistryKey<Order<Element>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Order",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = IN,
-                        type = elementType
-                    )
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.relations.Order.Key<$elementType>"
+    @Suppliable
+    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Order<Element>>() {
+        override fun toString(): String = "dev.lounres.kone.relations.Order.Key<${suppliedTypeOf<Element>()}>"
     }
 }
 
@@ -80,34 +60,39 @@ public interface Order<in Element> : KoneContext {
  * Shortcut for getting [Order] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Order.Companion.getFor(suppliedElementType: SuppliedType): Order<Element> =
-    koneContextRegistry[Order.Key(suppliedElementType)]
+public fun <@Supply Element> Order.Companion.getFor(): Order<Element> =
+    koneContextRegistry[Order.Key()]
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Order.Companion.getForOrNull(suppliedElementType: SuppliedType): Order<Element>? =
-    koneContextRegistry.getOrNull(Order.Key(suppliedElementType))
+public fun <@Supply Element> Order.Companion.getForOrNull(): Order<Element>? =
+    koneContextRegistry.getOrNull(Order.Key())
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Order.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Order<Element>): Order<Element> =
-    koneContextRegistry.getOrDefault(Order.Key(suppliedElementType), default)
+public fun <@Supply Element> Order.Companion.getForOrDefault(default: Order<Element>): Order<Element> =
+    koneContextRegistry.getOrDefault(Order.Key(), default)
 /**
  * Shortcut for getting [Order] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> Order.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Order<Element>): Order<Element> =
-    koneContextRegistry.getOrElse(Order.Key(suppliedElementType), block)
+public inline fun <@Supply Element> Order.Companion.getForOrElse(block: () -> Order<Element>): Order<Element> =
+    koneContextRegistry.getOrElse(Order.Key(), block)
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Element: Comparable<Element>> Order.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
-    Order.Key<Element>(suppliedElementType) correspondsTo Order.defaultFor<Element>()
+public fun <@Supply Element: Comparable<Element>> Order.Companion.setDefaultFor() {
+    Order.Key<Element>() correspondsTo Order.defaultFor<Element>()
 }
 
 /**

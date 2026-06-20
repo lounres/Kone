@@ -12,17 +12,11 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrDefault
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.getOrNull
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
+import dev.lounres.kone.registry.*
+import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 /**
  * Describes a context that checks if the element lays in specific domain.
@@ -63,24 +57,9 @@ public interface Reification<out Element> : KoneContext {
     /**
      * Registry key for [Reification] interface in [KoneContextRegistry].
      */
-    public class Key<Element>(
-        public val elementType: SuppliedType,
-    ) : RegistryKey<Reification<Element>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.relations.Reification",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = elementType
-                    )
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.relations.Reification.Key<$elementType>"
+    @Suppliable
+    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Reification<Element>>() {
+        override fun toString(): String = "dev.lounres.kone.relations.Reification.Key<${suppliedTypeOf<Element>()}>"
     }
 }
 
@@ -88,38 +67,43 @@ public interface Reification<out Element> : KoneContext {
  * Shortcut for getting [Reification] context for the given [suppliedElementType].
  * Throws if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Reification.Companion.getFor(suppliedElementType: SuppliedType): Reification<Element> =
-    koneContextRegistry[Reification.Key(suppliedElementType)]
+public fun <@Supply Element> Reification.Companion.getFor(): Reification<Element> =
+    koneContextRegistry[Reification.Key()]
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or `null` if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Reification.Companion.getForOrNull(suppliedElementType: SuppliedType): Reification<Element>? =
-    koneContextRegistry.getOrNull(Reification.Key(suppliedElementType))
+public fun <@Supply Element> Reification.Companion.getForOrNull(): Reification<Element>? =
+    koneContextRegistry.getOrNull(Reification.Key())
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or [default] context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public fun <Element> Reification.Companion.getForOrDefault(suppliedElementType: SuppliedType, default: Reification<Element>): Reification<Element> =
-    koneContextRegistry.getOrDefault(Reification.Key(suppliedElementType), default)
+public fun <@Supply Element> Reification.Companion.getForOrDefault(default: Reification<Element>): Reification<Element> =
+    koneContextRegistry.getOrDefault(Reification.Key(), default)
 /**
  * Shortcut for getting [Reification] context for the given [suppliedElementType]
  * or compute [block] to get such context if there is no such context in the registry.
  */
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry)
-public inline fun <Element> Reification.Companion.getForOrElse(suppliedElementType: SuppliedType, block: () -> Reification<Element>): Reification<Element> =
-    koneContextRegistry.getOrElse(Reification.Key(suppliedElementType), block)
+public inline fun <@Supply Element> Reification.Companion.getForOrElse(block: () -> Reification<Element>): Reification<Element> =
+    koneContextRegistry.getOrElse(Reification.Key(), block)
 
 /**
  * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
  * The set reification just only checks that the element is of type [Element].
  */
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public inline fun <reified Element> Reification.Companion.setDefaultFor(suppliedElementType: SuppliedType) {
-    Reification.Key<Element>(suppliedElementType) correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
+public inline fun <@Supply reified Element> Reification.Companion.setDefaultFor() {
+    Reification.Key<Element>() correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
 }
 
 /**

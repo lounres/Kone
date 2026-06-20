@@ -7,10 +7,10 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -115,27 +115,12 @@ public interface Field<Number> : CommutativeRing<Number> {
     /**
      * Registry key for [Field] interface in [KoneContextRegistry].
      */
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<Field<Number>> {
-        @OptIn(DelicateSuppliedTypeConstructor::class)
-        public val typeKey: SuppliedType.Regular =
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Field",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    )
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Field<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Field<Number>> = ImpliedKeysRegistry {
-            CommutativeRing.Key<Number>(numberType).impliesSame()
+            CommutativeRing.Key<Number>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Field.Key<$numberType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Field.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
