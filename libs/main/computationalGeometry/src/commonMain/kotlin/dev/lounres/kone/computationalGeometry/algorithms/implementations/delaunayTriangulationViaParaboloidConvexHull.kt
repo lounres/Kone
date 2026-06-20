@@ -5,15 +5,9 @@
 
 package dev.lounres.kone.computationalGeometry.algorithms.implementations
 
-import dev.lounres.kone.algebraic.Ring
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.basis.ModuleBasis
 import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
-import dev.lounres.kone.algebraic.isPositive
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
@@ -24,46 +18,22 @@ import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.collections.utils.filter
-import dev.lounres.kone.collections.utils.first
-import dev.lounres.kone.collections.utils.firstThat
-import dev.lounres.kone.collections.utils.last
-import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.collections.utils.mapTo
-import dev.lounres.kone.collections.utils.single
-import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
+import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.computationalGeometry.*
 import dev.lounres.kone.computationalGeometry.algorithms.ConvexHullOverRingComputer
 import dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer
 import dev.lounres.kone.computationalGeometry.algorithms.convexHull
 import dev.lounres.kone.computationalGeometry.algorithms.gramSchmidtOrthogonalization
-import dev.lounres.kone.computationalGeometry.dot
-import dev.lounres.kone.computationalGeometry.lengthSquared
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
-import dev.lounres.kone.computationalGeometry.polytopes.Polytope
-import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
-import dev.lounres.kone.computationalGeometry.polytopes.Position
-import dev.lounres.kone.computationalGeometry.polytopes.build
-import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
+import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.relations.eq
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.relations.*
 import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import kotlin.reflect.KVariance.OUT
 
 
 private data class ParaboloidVector<Number, Vector>(
