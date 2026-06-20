@@ -61,7 +61,7 @@ public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModul
     public companion object;
     
     @Suppliable
-    public class Key<@Supply Number, @Supply Vector> : RegistryKey<Module<Number, Vector>> {
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<Module<Number, Vector>>() {
         override val impliedKeys: ImpliedKeysRegistry<Module<Number, Vector>> by lazy {
             ImpliedKeysRegistry {
                 LeftModule.Key<Number, Vector>().impliesSame()

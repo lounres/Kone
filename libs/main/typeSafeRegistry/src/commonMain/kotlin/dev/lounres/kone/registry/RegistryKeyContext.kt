@@ -29,7 +29,7 @@ public interface RegistryKeyContext {
  * Naive implementation of the [RegistryKeyContext].
  */
 // TODO: Review `NaiveRegistryKeyContext` and all `RegistryKey` implementations
-public object NaiveRegistryKeyContext : RegistryKeyContext {
+public data object NaiveRegistryKeyContext : RegistryKeyContext {
     override fun checkEqualityOf(left: RegistryKey<*>, right: RegistryKey<*>): Boolean = left::class == right::class && left == right
     override fun hashCodeOf(key: RegistryKey<*>): Int = key.hashCode()
 }
