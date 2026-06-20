@@ -76,7 +76,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                     if (parent is IrClass && parent.isSuppliable && parent.typeParameters.any { it.isSupply }) {
                         val supplyTypeParameters = parent.typeParameters.filter { it.isSupply }
                         val fqNameString = parent.fqNameStringForSuppliedTypes
-                        val dispatchReceiver = declaration.parameters.single { it.name == SpecialNames.THIS }
+                        val dispatchReceiver = declaration.parameters.single { it.kind == IrParameterKind.DispatchReceiver }
                         
                         for (i in supplyTypeParameters.indices)
                             put(supplyTypeParameters[i].defaultType) {

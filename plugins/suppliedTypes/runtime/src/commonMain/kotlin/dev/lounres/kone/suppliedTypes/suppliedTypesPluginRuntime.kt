@@ -65,6 +65,7 @@ public interface SuppliableClass {
     public fun afterSuppliance() {}
 }
 
+// TODO: Replace with 'SuppliedType.Companion.of'
 @Suppliable
 public fun <@Supply T> suppliedTypeOf(): SuppliedType =
     error("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")

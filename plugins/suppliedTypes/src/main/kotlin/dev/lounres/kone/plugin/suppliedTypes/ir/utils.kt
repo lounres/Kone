@@ -60,7 +60,7 @@ inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId,
     findFunctions(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
 
 val IrDeclarationWithName.fqName: FqName get() = fqNameWhenAvailable ?: error("Expected declaration with available FQ name")
-val IrClass.fqNameStringForSuppliedTypes: String get() = fqNameWhenAvailable?.toString() ?: "${SpecialNames.LOCAL}.$name"
+val IrClass.fqNameStringForSuppliedTypes: String get() = fqNameWhenAvailable?.toString() ?: "${SpecialNames.LOCAL}.$name" // TODO: Think about local classes more.
 val IrTypeParameter.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId)
 val IrClass.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId)
 val IrSimpleFunction.isSuppliable: Boolean get() = hasAnnotation(suppliableAnnotationClassId)
