@@ -12,15 +12,10 @@ import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class MDList1Module<Number>(
@@ -136,23 +131,12 @@ private class MDList1Module<Number>(
 public fun <Number> Module.Companion.mdList1(ring: CommutativeRing<Number>, dimension: UInt): Module<Number, MDList1<Number>> =
     MDList1Module(ring = ring, dimension = dimension)
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> Module.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val mdList1Type = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType
-            )
-        ),
-        isNullable = false,
-    )
-    
-    Module.Key<Number, MDList1<Number>>(numberType, mdList1Type).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> Module.Companion.setMDList1For(dimension: UInt) {
+    Module.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[CommutativeRing.Key<Number>(numberType)], dimension)
+        mdList1(koneContextRegistry[CommutativeRing.Key<Number>()], dimension)
     }
 }
 
@@ -273,22 +257,11 @@ private class MDList1VectorSpace<Number>(
 public fun <Number> VectorSpace.Companion.mdList1(field: Field<Number>, dimension: UInt): VectorSpace<Number, MDList1<Number>> =
     MDList1VectorSpace(field = field, dimension = dimension)
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> VectorSpace.Companion.setMDList1For(numberType: SuppliedType, dimension: UInt) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val mdList1Type = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.multidimensionalCollections.MDList1",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType
-            )
-        ),
-        isNullable = false,
-    )
-    
-    VectorSpace.Key<Number, MDList1<Number>>(numberType, mdList1Type).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Number> VectorSpace.Companion.setMDList1For(dimension: UInt) {
+    VectorSpace.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Field.Key<Number>(numberType)], dimension)
+        mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
     }
 }

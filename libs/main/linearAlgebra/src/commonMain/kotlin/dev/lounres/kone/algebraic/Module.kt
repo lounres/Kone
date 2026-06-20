@@ -7,9 +7,10 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmName
 
 
@@ -20,32 +21,14 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
     
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<LeftModule<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.LeftModule",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
-        override val impliedKeys: ImpliedKeysRegistry<LeftModule<Number, Vector>> = ImpliedKeysRegistry {
-            CommutativeGroup.Key<Vector>(numberType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<LeftModule<Number, Vector>>() {
+        override val impliedKeys: ImpliedKeysRegistry<LeftModule<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeGroup.Key<Vector>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.LeftModule.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.LeftModule.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
 
@@ -59,32 +42,14 @@ public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
     
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<RightModule<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.RightModule",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
-        override val impliedKeys: ImpliedKeysRegistry<RightModule<Number, Vector>> = ImpliedKeysRegistry {
-            CommutativeGroup.Key<Vector>(numberType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<RightModule<Number, Vector>>() {
+        override val impliedKeys: ImpliedKeysRegistry<RightModule<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                CommutativeGroup.Key<Vector>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.RightModule.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.RightModule.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
 
@@ -95,32 +60,14 @@ public operator fun <Number, Vector> Vector.times(other: Number): Vector = with(
 public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModule<Number, Vector> {
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<Module<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Module",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
-        override val impliedKeys: ImpliedKeysRegistry<Module<Number, Vector>> = ImpliedKeysRegistry {
-            LeftModule.Key<Number, Vector>(numberType, vectorType).impliesSame()
-            RightModule.Key<Number, Vector>(numberType, vectorType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : RegistryKey<Module<Number, Vector>> {
+        override val impliedKeys: ImpliedKeysRegistry<Module<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                LeftModule.Key<Number, Vector>().impliesSame()
+                RightModule.Key<Number, Vector>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Module.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Module.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }

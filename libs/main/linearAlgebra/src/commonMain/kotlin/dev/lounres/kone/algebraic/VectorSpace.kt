@@ -6,43 +6,26 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import kotlin.jvm.JvmName
 
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
+    @JvmName("divVectorNumber")
     public operator fun Vector.div(other: Number): Vector
     
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<VectorSpace<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<VectorSpace<Number, Vector>>() {
         override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
+            Module.Key<Number, Vector>().impliesSame()
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
     
     public interface FiniteDimensional<Number, Vector> : VectorSpace<Number, Vector> {
@@ -50,32 +33,14 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
         
         public companion object;
         
-        public class Key<Number, Vector>(
-            public val numberType: SuppliedType,
-            public val vectorType: SuppliedType,
-        ) : RegistryKey<FiniteDimensional<Number, Vector>> {
-            public val typeKey: SuppliedType.Regular =
-                @OptIn(DelicateSuppliedTypeConstructor::class)
-                SuppliedType.Regular(
-                    fullyQualifiedName = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional",
-                    typeArguments = listOf(
-                        SuppliedProjection.Regular(
-                            variance = INVARIANT,
-                            type = numberType
-                        ),
-                        SuppliedProjection.Regular(
-                            variance = INVARIANT,
-                            type = vectorType
-                        ),
-                    ),
-                    isNullable = false
-                )
-            override val impliedKeys: ImpliedKeysRegistry<FiniteDimensional<Number, Vector>> = ImpliedKeysRegistry {
-                VectorSpace.Key<Number, Vector>(numberType, vectorType).impliesSame()
+        @Suppliable
+        public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<FiniteDimensional<Number, Vector>>() {
+            override val impliedKeys: ImpliedKeysRegistry<FiniteDimensional<Number, Vector>> by lazy {
+                ImpliedKeysRegistry {
+                    VectorSpace.Key<Number, Vector>().impliesSame()
+                }
             }
-            override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-            override fun hashCode(): Int = typeKey.hashCode()
-            override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional.Key<$numberType, $vectorType>"
+            override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
         }
     }
 }

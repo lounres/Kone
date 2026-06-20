@@ -6,12 +6,11 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmName
-import kotlin.reflect.KVariance.INVARIANT
 
 
 // unital, associative
@@ -41,33 +40,15 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<Algebra<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.Algebra",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
-        override val impliedKeys: ImpliedKeysRegistry<Algebra<Number, Vector>> = ImpliedKeysRegistry {
-            Module.Key<Number, Vector>(numberType, vectorType).impliesSame()
-            Ring.Key<Vector>(vectorType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<Algebra<Number, Vector>>() {
+        override val impliedKeys: ImpliedKeysRegistry<Algebra<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                Module.Key<Number, Vector>().impliesSame()
+                Ring.Key<Vector>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.Algebra.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.Algebra.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
 
@@ -86,32 +67,14 @@ public operator fun <Number, Vector> Vector.minus(other: Number): Vector = with(
 public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, CommutativeRing<Vector> {
     public companion object;
     
-    public class Key<Number, Vector>(
-        public val numberType: SuppliedType,
-        public val vectorType: SuppliedType,
-    ) : RegistryKey<CommutativeAlgebra<Number, Vector>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.algebraic.CommutativeAlgebra",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = numberType
-                    ),
-                    SuppliedProjection.Regular(
-                        variance = INVARIANT,
-                        type = vectorType
-                    ),
-                ),
-                isNullable = false
-            )
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeAlgebra<Number, Vector>> = ImpliedKeysRegistry {
-            Algebra.Key<Number, Vector>(numberType, vectorType).impliesSame()
-            CommutativeRing.Key<Vector>(vectorType).impliesSame()
+    @Suppliable
+    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<CommutativeAlgebra<Number, Vector>>() {
+        override val impliedKeys: ImpliedKeysRegistry<CommutativeAlgebra<Number, Vector>> by lazy {
+            ImpliedKeysRegistry {
+                Algebra.Key<Number, Vector>().impliesSame()
+                CommutativeRing.Key<Vector>().impliesSame()
+            }
         }
-        override fun equals(other: Any?): Boolean = other is Key<*, *> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeAlgebra.Key<$numberType, $vectorType>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeAlgebra.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
