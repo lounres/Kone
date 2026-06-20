@@ -5,14 +5,16 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class HypergraphEdgeWeightKey<Weight>(public val weightType: SuppliedType) : RegistryKey<Weight> {
-    override fun equals(other: Any?): Boolean = other is HypergraphEdgeWeightKey<*> && weightType == other.weightType
-    override fun hashCode(): Int = weightType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<$weightType>"
+@Suppliable
+public class HypergraphEdgeWeightKey<@Supply Weight> : SuppliedTypeRegistryKey<Weight>() {
+    override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<${suppliedTypeOf<Weight>()}>"
 }
 
-public fun <Weight> HypergraphEdge.weightOfType(weightType: SuppliedType): Weight = properties[HypergraphEdgeWeightKey<Weight>(weightType)]
+@Suppliable
+public fun <@Supply Weight> HypergraphEdge.weightOfType(): Weight = properties[HypergraphEdgeWeightKey<Weight>()]

@@ -14,7 +14,6 @@ import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 

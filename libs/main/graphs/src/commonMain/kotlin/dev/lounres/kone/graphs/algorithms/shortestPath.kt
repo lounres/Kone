@@ -9,10 +9,10 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.Path
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public fun interface HypergraphShortestPathWithFixedEndsProvider<out Weight> {
@@ -45,24 +45,9 @@ public fun interface HypergraphShortestPathWithFixedEndsComputer<out Weight> : K
     
     public companion object;
     
-    public class Key<Weight>(
-        public val weightType: SuppliedType,
-    ) : RegistryKey<HypergraphShortestPathWithFixedEndsComputer<Weight>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsComputer",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = weightType
-                    ),
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsComputer.Key<$weightType>"
+    @Suppliable
+    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphShortestPathWithFixedEndsComputer<Weight>>() {
+        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsComputer.Key<${suppliedTypeOf<Weight>()}>"
     }
 }
 
@@ -75,24 +60,9 @@ public fun interface HypergraphShortestPathWithFixedStartComputer<out Weight> : 
     
     public companion object;
     
-    public class Key<Weight>(
-        public val weightType: SuppliedType,
-    ) : RegistryKey<HypergraphShortestPathWithFixedStartComputer<Weight>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartComputer",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = weightType
-                    ),
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartComputer.Key<$weightType>"
+    @Suppliable
+    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphShortestPathWithFixedStartComputer<Weight>>() {
+        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartComputer.Key<${suppliedTypeOf<Weight>()}>"
     }
 }
 
@@ -105,24 +75,9 @@ public fun interface HypergraphShortestPathWithoutFixedEndsComputer<out Weight> 
     
     public companion object;
     
-    public class Key<Weight>(
-        public val weightType: SuppliedType,
-    ) : RegistryKey<HypergraphShortestPathWithoutFixedEndsComputer<Weight>> {
-        public val typeKey: SuppliedType.Regular =
-            @OptIn(DelicateSuppliedTypeConstructor::class)
-            SuppliedType.Regular(
-                fullyQualifiedName = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithoutFixedEndsComputer",
-                typeArguments = listOf(
-                    SuppliedProjection.Regular(
-                        variance = OUT,
-                        type = weightType
-                    ),
-                ),
-                isNullable = false
-            )
-        override fun equals(other: Any?): Boolean = other is Key<*> && typeKey == other.typeKey
-        override fun hashCode(): Int = typeKey.hashCode()
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithoutFixedEndsComputer.Key<$weightType>"
+    @Suppliable
+    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphShortestPathWithoutFixedEndsComputer<Weight>>() {
+        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithoutFixedEndsComputer.Key<${suppliedTypeOf<Weight>()}>"
     }
 }
 

@@ -36,8 +36,7 @@ import dev.lounres.kone.relations.absoluteFor
  * Topological sort of oriented acyclic graph.
  */
 private object TopologicalSortingComputerViaDepthFirstSearch : TopologicalSortingComputer {
-    private val nonExistentVertex = HypergraphVertex()
-    private data class SearchLevel(var state: HypergraphVertex = nonExistentVertex, val nextElementsIterator: KoneIterator<HypergraphVertex>)
+    private data class SearchLevel(var state: HypergraphVertex? = null, val nextElementsIterator: KoneIterator<HypergraphVertex>)
     
     override fun Hypergraph.sortVerticesTopologically(): TopologicallySortedVertices {
         val result = KoneArrayFixedCapacityList<HypergraphVertex>(vertices.size)
@@ -57,11 +56,11 @@ private object TopologicalSortingComputerViaDepthFirstSearch : TopologicalSortin
             
             while (stack.isNotEmpty()) {
                 val lastLevel = stack.last()
-                if (lastLevel.state !== nonExistentVertex) {
-                    val lastLevelStateNode = isVertexMarked.getNodeOrNull(lastLevel.state)
+                if (lastLevel.state !== null) {
+                    val lastLevelStateNode = isVertexMarked.getNodeOrNull(lastLevel.state!!)
                     check(lastLevelStateNode != null) { "For some reason, node in progress was marked as 'visited'." }
                     lastLevelStateNode.remove()
-                    result += lastLevel.state
+                    result += lastLevel.state!!
                 }
                 if (lastLevel.nextElementsIterator.hasNext()) {
                     val nextVertex = lastLevel.nextElementsIterator.getAndMoveNext()

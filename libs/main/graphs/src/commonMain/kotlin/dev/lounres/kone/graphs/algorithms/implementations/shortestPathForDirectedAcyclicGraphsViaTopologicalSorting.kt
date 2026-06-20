@@ -21,23 +21,12 @@ import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.graphs.Hypergraph
-import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.graphs.Path
+import dev.lounres.kone.graphs.*
 import dev.lounres.kone.graphs.algorithms.*
-import dev.lounres.kone.graphs.end
-import dev.lounres.kone.graphs.weightOfType
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.gt
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.*
+import dev.lounres.kone.relations.*
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
@@ -45,8 +34,8 @@ import kotlinx.atomicfu.locks.synchronized
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyclicGraphsViaTopologicalSorting<Weight>(
-    private val weightType: SuppliedType,
+@Suppliable
+private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyclicGraphsViaTopologicalSorting<@Supply Weight>(
     private val weightMonoid: CommutativeMonoid<Weight>,
     private val weightsOrder: Order<Weight>,
     private val topologicalSortingComputer: TopologicalSortingComputer,
@@ -90,7 +79,7 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
                     if (paths.last().let { it != null && it.weight lt vPath.weight }) continue
                     val v = verticesList[vIndex]
                     for (e in outgoingIncidentEdgesOf(v)) {
-                        val newWeight = vPath.weight + e.weightOfType<Weight>(weightType)
+                        val newWeight = vPath.weight + e.weightOfType<Weight>()
                         if (paths.last().let { it != null && it.weight lt newWeight }) continue
                         val u = e.end
                         val uIndex = vertexIndex[u]
@@ -114,28 +103,25 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
     }
 }
 
-public fun <Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companion.forDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType: SuppliedType,
+@Suppliable
+public fun <@Supply Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companion.forDirectedAcyclicGraphsViaTopologicalSorting(
     weightMonoid: CommutativeMonoid<Weight>,
     weightsOrder: Order<Weight>,
     topologicalSortingComputer: TopologicalSortingComputer,
 ): HypergraphDirectedShortestPathWithFixedEndsComputer<Weight> = HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType = weightType,
     weightMonoid = weightMonoid,
     weightsOrder = weightsOrder,
     topologicalSortingComputer = topologicalSortingComputer,
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType: SuppliedType,
-) {
-    HypergraphDirectedShortestPathWithFixedEndsComputer.Key<Weight>(weightType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting() {
+    HypergraphDirectedShortestPathWithFixedEndsComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         forDirectedAcyclicGraphsViaTopologicalSorting(
-            weightType = weightType,
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>(weightType)],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>(weightType)],
+            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
             topologicalSortingComputer = koneContextRegistry[TopologicalSortingComputer.Key],
         )
     }
@@ -144,8 +130,8 @@ public fun <Weight> HypergraphDirectedShortestPathWithFixedEndsComputer.Companio
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcyclicGraphsViaTopologicalSorting<Weight>(
-    private val weightType: SuppliedType,
+@Suppliable
+private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcyclicGraphsViaTopologicalSorting<@Supply Weight>(
     private val weightMonoid: CommutativeMonoid<Weight>,
     private val weightsOrder: Order<Weight>,
     private val topologicalSortingComputer: TopologicalSortingComputer,
@@ -197,7 +183,7 @@ private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcy
                             val vPath = paths[vIndex - startIndex] ?: continue
                             val v = verticesList[vIndex]
                             for (e in outgoingIncidentEdgesOf(v)) {
-                                val newWeight = vPath.weight + e.weightOfType<Weight>(weightType)
+                                val newWeight = vPath.weight + e.weightOfType<Weight>()
                                 val u = e.end
                                 val uIndex = vertexIndex[u]
                                 check(uIndex >= vIndex) { "For some reason topological sorting returned incorrect result." }
@@ -219,28 +205,25 @@ private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcy
         }
 }
 
-public fun <Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Companion.forDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType: SuppliedType,
+@Suppliable
+public fun <@Supply Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Companion.forDirectedAcyclicGraphsViaTopologicalSorting(
     weightMonoid: CommutativeMonoid<Weight>,
     weightsOrder: Order<Weight>,
     topologicalSortingComputer: TopologicalSortingComputer,
 ): HypergraphDirectedShortestPathWithFixedStartComputer<Weight> = HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType = weightType,
     weightMonoid = weightMonoid,
     weightsOrder = weightsOrder,
     topologicalSortingComputer = topologicalSortingComputer,
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting(
-    weightType: SuppliedType,
-) {
-    HypergraphDirectedShortestPathWithFixedStartComputer.Key<Weight>(weightType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Weight> HypergraphDirectedShortestPathWithFixedStartComputer.Companion.setForDirectedAcyclicGraphsViaTopologicalSorting() {
+    HypergraphDirectedShortestPathWithFixedStartComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         forDirectedAcyclicGraphsViaTopologicalSorting(
-            weightType = weightType,
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>(weightType)],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>(weightType)],
+            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
             topologicalSortingComputer = koneContextRegistry[TopologicalSortingComputer.Key],
         )
     }

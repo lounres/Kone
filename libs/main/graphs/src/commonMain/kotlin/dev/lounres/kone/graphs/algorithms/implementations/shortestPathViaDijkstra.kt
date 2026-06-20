@@ -22,27 +22,15 @@ import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.graphs.Hypergraph
-import dev.lounres.kone.graphs.HypergraphVertex
-import dev.lounres.kone.graphs.Path
-import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsComputer
-import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedEndsProvider
-import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartComputer
-import dev.lounres.kone.graphs.algorithms.HypergraphShortestPathWithFixedStartProvider
-import dev.lounres.kone.graphs.algorithms.incidentEdgesOf
-import dev.lounres.kone.graphs.ends
-import dev.lounres.kone.graphs.minus
-import dev.lounres.kone.graphs.weightOfType
+import dev.lounres.kone.graphs.*
+import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.geq
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.relations.*
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
@@ -50,8 +38,8 @@ import kotlinx.atomicfu.locks.synchronized
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<Weight>(
-    private val weightType: SuppliedType,
+@Suppliable
+private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<@Supply Weight>(
     private val weightMonoid: CommutativeMonoid<Weight>,
     private val weightsOrder: Order<Weight>,
 ) : HypergraphShortestPathWithFixedEndsComputer<Weight> {
@@ -84,7 +72,7 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<Weight>(
                     for (edge in incidentEdgesOf(currentVertex)) {
                         val neighbor = edge.ends - currentVertex
                         val currentPathToNeighbor = paths.getOrNull(neighbor)
-                        val alternativeWeight = currentWeight + edge.weightOfType(weightType)
+                        val alternativeWeight = currentWeight + edge.weightOfType()
                         val alternativePath = Path(
                             weight = alternativeWeight,
                             vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
@@ -113,26 +101,23 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<Weight>(
     }
 }
 
-public fun <Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.dijkstra(
-    weightType: SuppliedType,
+@Suppliable
+public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.dijkstra(
     weightMonoid: CommutativeMonoid<Weight>,
     weightsOrder: Order<Weight>,
 ): HypergraphShortestPathWithFixedEndsComputer<Weight> = HypergraphShortestPathWithFixedEndsComputerByDijkstra(
-    weightType = weightType,
     weightMonoid = weightMonoid,
     weightsOrder = weightsOrder,
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.setDijkstra(
-    weightType: SuppliedType,
-) {
-    HypergraphShortestPathWithFixedEndsComputer.Key<Weight>(weightType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.setDijkstra() {
+    HypergraphShortestPathWithFixedEndsComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         dijkstra(
-            weightType = weightType,
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>(weightType)],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>(weightType)],
+            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
         )
     }
 }
@@ -140,8 +125,8 @@ public fun <Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.setDij
 /**
  * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
  */
-private class HypergraphShortestPathWithFixedStartComputerByDijkstra<Weight>(
-    private val weightType: SuppliedType,
+@Suppliable
+private class HypergraphShortestPathWithFixedStartComputerByDijkstra<@Supply Weight>(
     private val weightMonoid: CommutativeMonoid<Weight>,
     private val weightsOrder: Order<Weight>,
 ) : HypergraphShortestPathWithFixedStartComputer<Weight> {
@@ -183,7 +168,7 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<Weight>(
                             for (edge in incidentEdgesOf(currentVertex)) {
                                 val neighbor = edge.ends - currentVertex
                                 val currentPathToNeighbor = paths.getOrNull(neighbor)
-                                val alternativeWeight = currentWeight + edge.weightOfType(weightType)
+                                val alternativeWeight = currentWeight + edge.weightOfType()
                                 val alternativePath = Path(
                                     weight = alternativeWeight,
                                     vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
@@ -212,26 +197,23 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<Weight>(
         }
 }
 
-public fun <Weight> HypergraphShortestPathWithFixedStartComputer.Companion.dijkstra(
-    weightType: SuppliedType,
+@Suppliable
+public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.dijkstra(
     weightMonoid: CommutativeMonoid<Weight>,
     weightsOrder: Order<Weight>,
 ): HypergraphShortestPathWithFixedStartComputer<Weight> = HypergraphShortestPathWithFixedStartComputerByDijkstra(
-    weightType = weightType,
     weightMonoid = weightMonoid,
     weightsOrder = weightsOrder,
 )
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Weight> HypergraphShortestPathWithFixedStartComputer.Companion.setDijkstra(
-    weightType: SuppliedType,
-) {
-    HypergraphShortestPathWithFixedStartComputer.Key<Weight>(weightType) correspondsTo RegisteredValueProvider.cached {
+public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.setDijkstra() {
+    HypergraphShortestPathWithFixedStartComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
         val koneContextRegistry = koneContextRegistry.get()
         dijkstra(
-            weightType = weightType,
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>(weightType)],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>(weightType)],
+            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
         )
     }
 }

@@ -7,14 +7,8 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrDefault
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.getOrNull
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
