@@ -10,17 +10,9 @@ import dev.lounres.kone.algebraic.algorithms.DeterminantComputer
 import dev.lounres.kone.algebraic.algorithms.DeterminantKey
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import kotlin.reflect.KVariance.INVARIANT
 
 
 @Suppliable
