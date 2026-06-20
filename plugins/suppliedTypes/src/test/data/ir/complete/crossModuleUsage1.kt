@@ -2,14 +2,20 @@
 
 // MODULE: foo
 // FILE: IntX.kt
+import dev.lounres.kone.suppliedTypes.*
 
+
+@Suppliable
 context(_: List<String>)
-fun <T> Int.foo(): Set<T> = emptySet<T>().also { println("Int-hey-ho!") }
+fun <@Supply T> Int.foo(): Set<T> = emptySet<T>().also { println(suppliedTypeOf<T>()) }
 
 // FILE: LongX.kt
+import dev.lounres.kone.suppliedTypes.*
 
+
+@Suppliable
 context(_: List<String>)
-fun <T> Long.foo(): Set<T> = emptySet<T>().also { println("Long-hey-ho!") }
+fun <@Supply T> Long.foo(): Set<T> = emptySet<T>().also { println(suppliedTypeOf<T>()) }
 
 // MODULE: bar(foo)
 import dev.lounres.kone.suppliedTypes.*

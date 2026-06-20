@@ -1,0 +1,82 @@
+FILE fqName:<root> fileName:/IntX.kt
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.collections.Set<T of <root>.foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    VALUE_PARAMETER UNDERSCORE_PARAMETER kind:Context name:$context-List index:0 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:kotlin.Int
+    annotations:
+      Suppliable
+    EXPRESSION_BODY
+      CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
+        ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.collections.Set<T of <root>.foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    VALUE_PARAMETER UNDERSCORE_PARAMETER kind:Context name:$context-List index:0 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:kotlin.Int
+    VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_T index:2 type:dev.lounres.kone.suppliedTypes.SuppliedType
+      annotations:
+        SupplianceProvided
+      EXPRESSION_BODY
+        CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+          TYPE_ARG T: T of <root>.foo
+    annotations:
+      SupplianceProvided
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun foo <T> ($context-List: kotlin.collections.List<kotlin.String>, <this>: kotlin.Int, $suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.collections.Set<T of <root>.foo> declared in <root>'
+        CALL 'public final fun also <T> (<this>: T of kotlin.also, block: kotlin.Function1<T of kotlin.also, kotlin.Unit>): T of kotlin.also declared in kotlin' type=kotlin.collections.Set<T of <root>.foo> origin=null
+          TYPE_ARG T: kotlin.collections.Set<T of <root>.foo>
+          ARG <this>: CALL 'public final fun emptySet <T> (): kotlin.collections.Set<T of kotlin.collections.emptySet> declared in kotlin.collections' type=kotlin.collections.Set<T of <root>.foo> origin=null
+            TYPE_ARG T: T of <root>.foo
+          ARG block: FUN_EXPR type=kotlin.Function1<kotlin.collections.Set<T of <root>.foo>, kotlin.Unit> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+              VALUE_PARAMETER kind:Regular name:it index:0 type:kotlin.collections.Set<T of <root>.foo>
+              BLOCK_BODY
+                CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+                  ARG message: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+                      GET_VAR '$suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    GET_VAR 'val tmp_0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+FILE fqName:<root> fileName:/LongX.kt
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.collections.Set<T of <root>.foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    VALUE_PARAMETER UNDERSCORE_PARAMETER kind:Context name:$context-List index:0 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:kotlin.Long
+    annotations:
+      Suppliable
+    EXPRESSION_BODY
+      CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
+        ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+  FUN name:foo visibility:public modality:FINAL returnType:kotlin.collections.Set<T of <root>.foo>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    VALUE_PARAMETER UNDERSCORE_PARAMETER kind:Context name:$context-List index:0 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:kotlin.Long
+    VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_T index:2 type:dev.lounres.kone.suppliedTypes.SuppliedType
+      annotations:
+        SupplianceProvided
+      EXPRESSION_BODY
+        CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+          TYPE_ARG T: T of <root>.foo
+    annotations:
+      SupplianceProvided
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun foo <T> ($context-List: kotlin.collections.List<kotlin.String>, <this>: kotlin.Long, $suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.collections.Set<T of <root>.foo> declared in <root>'
+        CALL 'public final fun also <T> (<this>: T of kotlin.also, block: kotlin.Function1<T of kotlin.also, kotlin.Unit>): T of kotlin.also declared in kotlin' type=kotlin.collections.Set<T of <root>.foo> origin=null
+          TYPE_ARG T: kotlin.collections.Set<T of <root>.foo>
+          ARG <this>: CALL 'public final fun emptySet <T> (): kotlin.collections.Set<T of kotlin.collections.emptySet> declared in kotlin.collections' type=kotlin.collections.Set<T of <root>.foo> origin=null
+            TYPE_ARG T: T of <root>.foo
+          ARG block: FUN_EXPR type=kotlin.Function1<kotlin.collections.Set<T of <root>.foo>, kotlin.Unit> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+              VALUE_PARAMETER kind:Regular name:it index:0 type:kotlin.collections.Set<T of <root>.foo>
+              BLOCK_BODY
+                CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+                  ARG message: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+                      GET_VAR '$suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    GET_VAR 'val tmp_0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null

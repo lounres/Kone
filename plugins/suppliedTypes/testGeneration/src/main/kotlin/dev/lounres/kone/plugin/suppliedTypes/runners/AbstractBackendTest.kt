@@ -5,8 +5,9 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.runners
 
-import dev.lounres.kone.plugin.suppliedTypes.services.ExtensionRegistrarConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.CompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.IrPartialExtensionRegistrarConfigurator
+import dev.lounres.kone.plugin.suppliedTypes.services.TestExtensionRegistrarConfigurator
 import org.jetbrains.kotlin.test.Constructor
 import org.jetbrains.kotlin.test.backend.BlackBoxCodegenSuppressor
 import org.jetbrains.kotlin.test.backend.handlers.IrTextDumpHandler
@@ -62,10 +63,14 @@ open class AbstractBackendTestForPhase5 : AbstractBackendTestForPhase(5u)
 open class AbstractBackendTestForPhase6 : AbstractBackendTestForPhase(6u)
 open class AbstractBackendTestForPhase7 : AbstractBackendTestForPhase(7u)
 
-open class AbstractBackendTestComplete : AbstractBackendTest(::ExtensionRegistrarConfigurator) {
+open class AbstractBackendTestComplete : AbstractBackendTest(::CompleteExtensionRegistrarConfigurator) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
 }
 
-open class AbstractBoxTest : AbstractBackendTest(::ExtensionRegistrarConfigurator, runJvmBoxTest = true) {
+open class AbstractBoxTest : AbstractBackendTest(::CompleteExtensionRegistrarConfigurator, runJvmBoxTest = true) {
     override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
+}
+
+open class AbstractTestWithoutPlugin: AbstractBackendTest(::TestExtensionRegistrarConfigurator, runJvmBoxTest = true) {
+    override val runPipelineTillPhase: TestPhase = TestPhase.BACKEND
 }

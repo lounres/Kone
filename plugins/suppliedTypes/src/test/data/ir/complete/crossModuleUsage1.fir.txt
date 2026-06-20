@@ -1,22 +1,22 @@
 Module: foo
 FILE: IntX.kt
     context(<unused var>: R|kotlin/collections/List<kotlin/String>|)
-    public final fun <T> R|kotlin/Int|.foo(): R|kotlin/collections/Set<T>| {
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> R|kotlin/Int|.foo(): R|kotlin/collections/Set<T>| {
         ^foo R|kotlin/collections/emptySet|<R|T|>().R|kotlin/also|<R|kotlin/collections/Set<T>|>(<L> = also@fun <anonymous>(it: R|kotlin/collections/Set<T>|): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
-            R|kotlin/io/println|(String(Int-hey-ho!))
+            R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T|>())
         }
         )
     }
 FILE: LongX.kt
     context(<unused var>: R|kotlin/collections/List<kotlin/String>|)
-    public final fun <T> R|kotlin/Long|.foo(): R|kotlin/collections/Set<T>| {
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> R|kotlin/Long|.foo(): R|kotlin/collections/Set<T>| {
         ^foo R|kotlin/collections/emptySet|<R|T|>().R|kotlin/also|<R|kotlin/collections/Set<T>|>(<L> = also@fun <anonymous>(it: R|kotlin/collections/Set<T>|): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
-            R|kotlin/io/println|(String(Long-hey-ho!))
+            R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T|>())
         }
         )
     }
 Module: bar
-FILE: module_bar_test.kt
+FILE: module_bar_crossModuleUsage1.kt
     public final fun box(): R|kotlin/String| {
         lval result: R|kotlin/collections/Set<kotlin/Double>| = R|kotlin/context|<R|kotlin/collections/List<kotlin/String>|, R|kotlin/collections/Set<kotlin/Double>|>(R|kotlin/collections/listOf|<R|kotlin/String|>(vararg(String(compile), String(me), String(please))), <L> = context(<unused var>: R|kotlin/collections/List<kotlin/String>|) context@fun <anonymous>(): R|kotlin/collections/Set<kotlin/Double>| <inline=Inline, kind=EXACTLY_ONCE>  {
             ^ context(R|<local>/<unused var>|) Int(57).R|/foo|<R|kotlin/Double|>()
