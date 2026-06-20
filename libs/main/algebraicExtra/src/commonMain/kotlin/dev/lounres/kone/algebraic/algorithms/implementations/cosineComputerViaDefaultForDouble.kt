@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.algorithms.CosineComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 
 
 private object CosineComputerViaDefaultForDouble : CosineComputer<Double> {
@@ -21,5 +20,5 @@ public fun CosineComputer.Companion.viaDefaultForDouble(): CosineComputer<Double
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun CosineComputer.Companion.setViaDefaultForDouble() {
-    CosineComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    CosineComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

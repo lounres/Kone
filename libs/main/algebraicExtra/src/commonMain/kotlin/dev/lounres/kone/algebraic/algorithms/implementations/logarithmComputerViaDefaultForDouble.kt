@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.algorithms.LogarithmComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.ln
 
 
@@ -22,5 +21,5 @@ public fun LogarithmComputer.Companion.viaDefaultForDouble(): LogarithmComputer<
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun LogarithmComputer.Companion.setViaDefaultForDouble() {
-    LogarithmComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    LogarithmComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

@@ -6,16 +6,15 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class HyperbolicSineOverInputKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Number> {
-    override fun equals(other: Any?): Boolean = other is HyperbolicSineOverInputKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputKey<$numberType>"
+@Suppliable
+public class HyperbolicSineOverInputKey<@Supply Number> : SuppliedTypeRegistryKey<Number>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputKey<${suppliedTypeOf<Number>()}>"
 }
 
 public fun interface HyperbolicSineOverInputComputer<Number> : KoneContext {
@@ -23,12 +22,9 @@ public fun interface HyperbolicSineOverInputComputer<Number> : KoneContext {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<HyperbolicSineOverInputComputer<Number>> {
-        override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
-        override fun hashCode(): Int = numberType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputComputer.Key<$numberType>"
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<HyperbolicSineOverInputComputer<Number>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputComputer.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

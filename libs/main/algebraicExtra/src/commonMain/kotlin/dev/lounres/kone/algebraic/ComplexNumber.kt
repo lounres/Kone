@@ -14,22 +14,11 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.eq
-import dev.lounres.kone.relations.hash
-import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.*
+import dev.lounres.kone.relations.*
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KVariance.OUT
 
 
 @Serializable
@@ -385,31 +374,20 @@ private class ComplexNumberFieldExtension<Number>(
 public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberField: Field<Number>): FieldExtension<Number, ComplexNumber<Number>> =
     ComplexNumberFieldExtension(numberField)
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberType: SuppliedType): FieldExtension<Number, ComplexNumber<Number>> {
+public fun <@Supply Number> ComplexNumber.Companion.fieldExtensionOver(): FieldExtension<Number, ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return fieldExtensionOver(
-        numberField = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
+        numberField = koneContextRegistry[Field.Key<Number>()],
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ComplexNumber.Companion.setFieldExtensionOver(numberType: SuppliedType) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            )
-        ),
-        isNullable = false,
-    )
-    FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType).withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        fieldExtensionOver(
-            numberType = numberType,
-        )
+public fun <@Supply Number> ComplexNumber.Companion.setFieldExtensionOver() {
+    FieldExtension.Key<Number, ComplexNumber<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+        fieldExtensionOver()
     }
 }
 

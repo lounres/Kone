@@ -7,12 +7,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.algorithms.CosineComputer
-import dev.lounres.kone.algebraic.algorithms.ExponentComputer
-import dev.lounres.kone.algebraic.algorithms.SineComputer
-import dev.lounres.kone.algebraic.algorithms.cos
-import dev.lounres.kone.algebraic.algorithms.exponent
-import dev.lounres.kone.algebraic.algorithms.sin
+import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
@@ -20,10 +15,8 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class ExponentComputerViaDefaultForComplexNumbers<Number>(
@@ -52,39 +45,27 @@ public fun <Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(
     numberSineComputer = numberSineComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-): ExponentComputer<ComplexNumber<Number>> {
+public fun <@Supply Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(): ExponentComputer<ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefaultForComplexNumbers(
-        numberRing = koneContextRegistry[CommutativeRing.Key<Number>(numberType = numberType)],
-        numberExponentComputer = koneContextRegistry[ExponentComputer.Key<Number>(numberType = numberType)],
-        numberCosineComputer = koneContextRegistry[CosineComputer.Key<Number>(numberType = numberType)],
-        numberSineComputer = koneContextRegistry[SineComputer.Key<Number>(numberType = numberType)],
+        numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
+        numberExponentComputer = koneContextRegistry[ExponentComputer.Key<Number>()],
+        numberCosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
+        numberSineComputer = koneContextRegistry[SineComputer.Key<Number>()],
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
+public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
     numberRing: CommutativeRing<Number>,
     numberExponentComputer: ExponentComputer<Number>,
     numberCosineComputer: CosineComputer<Number>,
     numberSineComputer: SineComputer<Number>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    ExponentComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
+    ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
         viaDefaultForComplexNumbers<Number>(
             numberRing = numberRing,
             numberExponentComputer = numberExponentComputer,
@@ -94,22 +75,10 @@ public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    ExponentComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(numberType = numberType)
+public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers() {
+    ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+        viaDefaultForComplexNumbers<Number>()
     }
 }

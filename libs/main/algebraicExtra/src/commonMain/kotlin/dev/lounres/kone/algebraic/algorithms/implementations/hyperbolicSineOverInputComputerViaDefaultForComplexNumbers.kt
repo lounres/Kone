@@ -12,10 +12,8 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>(
@@ -61,35 +59,23 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForCompl
     hyperbolicSineComputer = hyperbolicSineComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefaultForComplexNumbers<Number>(
-        field = koneContextRegistry[Field.Key<Number>(numberType = numberType)],
-        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
-        cosineComputer = koneContextRegistry[CosineComputer.Key<Number>(numberType = numberType)],
-        sineComputer = koneContextRegistry[SineComputer.Key<Number>(numberType = numberType)],
-        hyperbolicCosineComputer = koneContextRegistry[HyperbolicCosineComputer.Key<Number>(numberType = numberType)],
-        hyperbolicSineComputer = koneContextRegistry[HyperbolicSineComputer.Key<Number>(numberType = numberType)],
+        field = koneContextRegistry[Field.Key<Number>()],
+        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
+        cosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
+        sineComputer = koneContextRegistry[SineComputer.Key<Number>()],
+        hyperbolicCosineComputer = koneContextRegistry[HyperbolicCosineComputer.Key<Number>()],
+        hyperbolicSineComputer = koneContextRegistry[HyperbolicSineComputer.Key<Number>()],
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
     field: Field<Number>,
     complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     cosineComputer: CosineComputer<Number>,
@@ -97,18 +83,7 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForCo
     hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
     hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
+    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
         viaDefaultForComplexNumbers<Number>(
             field = field,
             complexNumbersFieldExtension = complexNumbersFieldExtension,
@@ -120,22 +95,10 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForCo
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(numberType = numberType)
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers() {
+    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+        viaDefaultForComplexNumbers<Number>()
     }
 }

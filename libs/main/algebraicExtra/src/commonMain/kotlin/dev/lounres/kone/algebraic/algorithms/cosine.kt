@@ -6,16 +6,15 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class CosineKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Number> {
-    override fun equals(other: Any?): Boolean = other is CosineKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CosineKey<$numberType>"
+@Suppliable
+public class CosineKey<@Supply Number> : SuppliedTypeRegistryKey<Number>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CosineKey<${suppliedTypeOf<Number>()}>"
 }
 
 public fun interface CosineComputer<Number> : KoneContext {
@@ -23,12 +22,9 @@ public fun interface CosineComputer<Number> : KoneContext {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<CosineComputer<Number>> {
-        override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
-        override fun hashCode(): Int = numberType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CosineComputer.Key<$numberType>"
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CosineComputer<Number>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CosineComputer.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

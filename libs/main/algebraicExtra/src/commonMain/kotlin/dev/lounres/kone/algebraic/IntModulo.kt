@@ -8,9 +8,6 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -18,8 +15,9 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.relations.Hashing
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.reificationException
 
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER", "OVERRIDE_BY_INLINE")
@@ -85,18 +83,11 @@ public class IntModuloRing(modulus: Int) : Reification<Int>, Ring<Int>, Hashing<
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun IntModuloRing.Companion.set(modulus: Int) {
-    val ring = IntModuloRing(modulus)
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val intModuloSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "kotlin.Int",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
     listOf<RegistryKey<in IntModuloRing>>(
-        Reification.Key(intModuloSuppliedType),
-        Ring.Key(intModuloSuppliedType),
-        Hashing.Key(intModuloSuppliedType),
+        Reification.Key(),
+        Ring.Key(),
+        Hashing.Key(),
     ).forEach {
-        it.withImpliedUsingFirst correspondsTo ring
+        it.withImpliedUsingFirst correspondsTo IntModuloRing(modulus)
     }
 }

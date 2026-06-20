@@ -7,16 +7,15 @@ package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class LogarithmOnePlusInputOverInputKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Maybe<Number>> {
-    override fun equals(other: Any?): Boolean = other is LogarithmOnePlusInputOverInputKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputKey<?, $numberType>"
+@Suppliable
+public class LogarithmOnePlusInputOverInputKey<@Supply Number> : SuppliedTypeRegistryKey<Maybe<Number>>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputKey<${suppliedTypeOf<Number>()}>"
 }
 
 public fun interface LogarithmOnePlusInputOverInputComputer<Number> : KoneContext {
@@ -24,12 +23,9 @@ public fun interface LogarithmOnePlusInputOverInputComputer<Number> : KoneContex
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<LogarithmOnePlusInputOverInputComputer<Number>> {
-        override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
-        override fun hashCode(): Int = numberType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputComputer.Key<?, $numberType>"
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<LogarithmOnePlusInputOverInputComputer<Number>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputComputer.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

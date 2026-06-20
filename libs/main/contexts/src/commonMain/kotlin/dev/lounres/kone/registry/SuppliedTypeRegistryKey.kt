@@ -15,6 +15,6 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 public open class SuppliedTypeRegistryKey<@Supply T> : RegistryKey<T> {
     private val typeKey: SuppliedType by lazy { suppliedTypeOf<T>() }
     final override val context: RegistryKeyContext get() = NaiveRegistryKeyContext
-    final override fun equals(other: Any?): Boolean = other is SuppliedTypeRegistryKey<*> && typeKey == other.typeKey
+    final override fun equals(other: Any?): Boolean = other is SuppliedTypeRegistryKey<*> && this::class == other::class && typeKey == other.typeKey
     final override fun hashCode(): Int = typeKey.hashCode()
 }

@@ -6,17 +6,15 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.algebraic.algorithms.*
+import dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.eq
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
@@ -50,66 +48,31 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesFor
     complexNumbersFieldExtension = complexNumbersFieldExtension,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    numberType: SuppliedType,
-): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>(numberType = numberType, vectorType = complexNumberType)],
+        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    numberType: SuppliedType,
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
+    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
         viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
             complexNumbersFieldExtension = complexNumbersFieldExtension,
         )
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    numberType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(numberType = numberType)
+public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic() {
+    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>()
     }
 }

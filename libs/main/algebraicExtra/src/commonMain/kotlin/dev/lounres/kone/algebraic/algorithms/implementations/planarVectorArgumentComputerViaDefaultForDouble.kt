@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.atan2
 
 
@@ -22,5 +21,5 @@ public fun PlanarVectorArgumentComputer.Companion.viaDefaultForDouble(): PlanarV
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun PlanarVectorArgumentComputer.Companion.setViaDefaultForDouble() {
-    PlanarVectorArgumentComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    PlanarVectorArgumentComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

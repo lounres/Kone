@@ -5,17 +5,10 @@
 
 package dev.lounres.kone.numberTheory
 
-import dev.lounres.kone.algebraic.EuclideanRing
-import dev.lounres.kone.algebraic.EuclideanSemiring
-import dev.lounres.kone.algebraic.divrem
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.rem
-import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
-import kotlin.jvm.JvmInline
-import kotlin.math.*
+import kotlin.math.abs
 
 
 /**

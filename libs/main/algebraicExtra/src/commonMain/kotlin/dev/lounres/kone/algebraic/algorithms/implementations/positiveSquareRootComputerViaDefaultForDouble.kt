@@ -12,7 +12,6 @@ import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.sqrt
 
 
@@ -30,5 +29,5 @@ public fun PositiveSquareRootComputer.Companion.viaDefaultForDouble(): PositiveS
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun PositiveSquareRootComputer.Companion.setViaDefaultForDouble() {
-    PositiveSquareRootComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    PositiveSquareRootComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

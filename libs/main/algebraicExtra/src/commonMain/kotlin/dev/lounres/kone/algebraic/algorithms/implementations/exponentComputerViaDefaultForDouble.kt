@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.algorithms.ExponentComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 import kotlin.math.exp
 
 
@@ -22,5 +21,5 @@ public fun ExponentComputer.Companion.viaDefaultForDouble(): ExponentComputer<Do
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ExponentComputer.Companion.setViaDefaultForDouble() {
-    ExponentComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    ExponentComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

@@ -9,7 +9,6 @@ import dev.lounres.kone.algebraic.algorithms.SineComputer
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.suppliedTypes.suppliedType
 
 
 private object SineComputerViaDefaultForDouble : SineComputer<Double> {
@@ -21,5 +20,5 @@ public fun SineComputer.Companion.viaDefaultForDouble(): SineComputer<Double> =
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun SineComputer.Companion.setViaDefaultForDouble() {
-    SineComputer.Key<Double>(numberType = Double.suppliedType) correspondsTo viaDefaultForDouble()
+    SineComputer.Key<Double>() correspondsTo viaDefaultForDouble()
 }

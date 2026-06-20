@@ -12,12 +12,13 @@ import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedProjection
-import dev.lounres.kone.suppliedTypes.SuppliedType
-import kotlin.reflect.KVariance.OUT
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
@@ -61,37 +62,25 @@ public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(
     positiveSquareRootComputer = positiveSquareRootComputer,
 )
 
+@Suppliable
 context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-): SquareRootsComputer<ComplexNumber<Number>> {
+public fun <@Supply Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(): SquareRootsComputer<ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefaultForComplexNumbers(
-        field = koneContextRegistry[Field.Key<Number>(numberType = numberType)], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
-        order = koneContextRegistry[Order.Key<Number>(elementType = numberType)], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
-        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>(numberType = numberType)], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
+        field = koneContextRegistry[Field.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
+        order = koneContextRegistry[Order.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
+        positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
     )
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
+public fun <@Supply Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
     field: Field<Number>,
     order: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
 ) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SquareRootsComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
+    SquareRootsComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
         viaDefaultForComplexNumbers(
             field = field,
             order = order,
@@ -100,22 +89,10 @@ public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers
     }
 }
 
+@Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
-    numberType: SuppliedType,
-) {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val complexNumberType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.ComplexNumber",
-        typeArguments = listOf(
-            SuppliedProjection.Regular(
-                variance = OUT,
-                type = numberType,
-            ),
-        ),
-        isNullable = false,
-    )
-    SquareRootsComputer.Key<ComplexNumber<Number>>(numberType = complexNumberType) correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(numberType = numberType)
+public fun <@Supply Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers() {
+    SquareRootsComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+        viaDefaultForComplexNumbers<Number>()
     }
 }

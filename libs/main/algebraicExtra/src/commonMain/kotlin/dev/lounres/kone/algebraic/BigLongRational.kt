@@ -7,24 +7,15 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.numberTheory.gcd
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.relations.equalsTo
-import dev.lounres.kone.relations.hash
-import dev.lounres.kone.relations.reificationException
-import dev.lounres.kone.suppliedTypes.DelicateSuppliedTypeConstructor
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.relations.*
 import kotlinx.serialization.Serializable
 
 
@@ -446,17 +437,11 @@ public data object BigLongRationalContext : Reification<BigLongRational>, Field<
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun BigLongRationalContext.set() {
-    @OptIn(DelicateSuppliedTypeConstructor::class)
-    val bigLongRationalSuppliedType = SuppliedType.Regular(
-        fullyQualifiedName = "dev.lounres.kone.algebraic.BigLongRational",
-        typeArguments = emptyList(),
-        isNullable = false,
-    )
     listOf<RegistryKey<in BigLongRationalContext>>(
-        Reification.Key(bigLongRationalSuppliedType),
-        Field.Key(bigLongRationalSuppliedType),
-        Order.Key(bigLongRationalSuppliedType),
-        Hashing.Key(bigLongRationalSuppliedType),
+        Reification.Key(),
+        Field.Key(),
+        Order.Key(),
+        Hashing.Key(),
     ).forEach {
         it.withImpliedUsingFirst correspondsTo BigLongRationalContext
     }

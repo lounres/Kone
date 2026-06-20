@@ -7,16 +7,15 @@ package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class PositiveSquareRootKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Maybe<Number>> {
-    override fun equals(other: Any?): Boolean = other is SquareRootsKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootKey<$numberType>"
+@Suppliable
+public class PositiveSquareRootKey<@Supply Number> : SuppliedTypeRegistryKey<Maybe<Number>>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootKey<${suppliedTypeOf<Number>()}>"
 }
 
 public interface PositiveSquareRootComputer<Number> : KoneContext {
@@ -26,12 +25,9 @@ public interface PositiveSquareRootComputer<Number> : KoneContext {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<PositiveSquareRootComputer<Number>> {
-        override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
-        override fun hashCode(): Int = numberType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer.Key<$numberType>"
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<PositiveSquareRootComputer<Number>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 

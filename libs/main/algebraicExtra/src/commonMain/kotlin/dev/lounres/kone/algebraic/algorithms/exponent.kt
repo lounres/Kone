@@ -6,16 +6,15 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.suppliedTypes.SuppliedType
+import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public class ExponentKey<Number>(
-    public val numberType: SuppliedType,
-) : RegistryKey<Number> {
-    override fun equals(other: Any?): Boolean = other is ExponentKey<*> && numberType == other.numberType
-    override fun hashCode(): Int = numberType.hashCode()
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentKey<$numberType>"
+@Suppliable
+public class ExponentKey<@Supply Number> : SuppliedTypeRegistryKey<Number>() {
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentKey<${suppliedTypeOf<Number>()}>"
 }
 
 public fun interface ExponentComputer<Number> : KoneContext {
@@ -23,12 +22,9 @@ public fun interface ExponentComputer<Number> : KoneContext {
     
     public companion object;
     
-    public class Key<Number>(
-        public val numberType: SuppliedType,
-    ) : RegistryKey<ExponentComputer<Number>> {
-        override fun equals(other: Any?): Boolean = other is Key<*> && numberType == other.numberType
-        override fun hashCode(): Int = numberType.hashCode()
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentComputer.Key<$numberType>"
+    @Suppliable
+    public class Key<@Supply Number> : SuppliedTypeRegistryKey<ExponentComputer<Number>>() {
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentComputer.Key<${suppliedTypeOf<Number>()}>"
     }
 }
 
