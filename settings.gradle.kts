@@ -50,7 +50,7 @@ plugins {
 
 stal {
     structure {
-        taggedWith("publishing", "version catalog")
+        taggedWith("version catalog")
         defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
         "libs" {
             "main" {
@@ -73,7 +73,7 @@ stal {
             subdirs("kotlin compiler plugin") {
                 "runtime"("kotlin compiler plugin runtime")
                 "testGeneration"("kotlin compiler plugin test generator")
-//                "gradleWrapper"()
+                "gradleWrapper"("kotlin compiler plugin gradle wrapper")
             }
         }
         "docs"()
@@ -89,10 +89,12 @@ stal {
         "assertions" since { has("libs main assertions") }
         "benchmarks" since { has("libs main benchmarks") }
         "examples" since { has("libs main examples") }
-        // Kotlin set up
+        // Gradle plugin setup
+        "gradle plugin" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
+        // Kotlin setup
         "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom", "kotlin compiler plugin runtime") }
-        "kotlin jvm" since { hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
-        "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "bom") }
+        "kotlin jvm" since { hasAnyOf("gradle plugin") || hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
+        "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "kotlin compiler plugin runtime", "bom") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
         "kotlin library settings" since { hasAnyOf("libs", "kotlin compiler plugin runtime", "algorithms", "assertions", "bom") }
         // Extra
@@ -100,7 +102,8 @@ stal {
 //        "kover" since { has("libs public") }
         "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
         "kotlin multiplatform publication" since { hasAnyOf("libs", "bom", "kotlin compiler plugin runtime") }
-        "publishing" since { hasAnyOf("libs", /*"kotlin compiler plugin", "kotlin compiler plugin runtime", "bom"*/) }
+        "gradle plugin publication" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
+        "publishing" since { hasAnyOf("version catalog", "libs", "kotlin compiler plugin", "kotlin compiler plugin runtime", "kotlin compiler plugin gradle wrapper", /*"bom"*/) }
         "dokka" since { hasAnyOf("libs", /*"kotlin compiler plugin runtime"*/) }
     }
 
@@ -142,14 +145,18 @@ stal {
         }
         "kotlin compiler plugin" {
             extra["artifactId"] = "kone.plugin.${project.name}"
-            extra["alias"] = "plugin-${project.name}"
+//            extra["alias"] = "plugin-${project.name}"
         }
         "kotlin compiler plugin runtime" {
             extra["artifactId"] = "kone.plugin.${project.parent!!.name}.runtime"
-            extra["alias"] = "plugin-${project.parent!!.name}-runtime"
+//            extra["alias"] = "plugin-${project.parent!!.name}-runtime"
             extra["androidNamespace"] = "dev.lounres.kone.plugin.${project.parent!!.name}.runtime"
             extra["jvmTargetVersion"] = settings.extra["pluginRuntimeJvmTargetVersion"]
             extra["jvmVendor"] = settings.extra["pluginRuntimeJvmVendor"]
+        }
+        "kotlin compiler plugin gradle wrapper" {
+            extra["artifactId"] = "kone.plugin.${project.parent!!.name}.gradle"
+            extra["alias"] = "plugin-${project.parent!!.name}"
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"

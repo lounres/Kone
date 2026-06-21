@@ -2,6 +2,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.KotlinMultiplatform
@@ -35,6 +36,7 @@ import kotlin.text.replace
 
 
 plugins {
+    `kotlin-dsl` apply false
 //    alias(versions.plugins.kotlin.multiplatform) apply false
     alias(versions.plugins.android.library) apply false
     alias(versions.plugins.kotlinx.atomicfu) apply false
@@ -215,13 +217,15 @@ gradle.projectsEvaluated {
     val bundleMainProjects = stal.lookUp.projectsThat { has("libs main") }
     val bundleMiscProjects = stal.lookUp.projectsThat { has("libs misc") }
     val bundleUtilProjects = stal.lookUp.projectsThat { has("libs util") }
-    val bundleProjects = bundleMainProjects + bundleMiscProjects + bundleUtilProjects
+    val pluginProjects = stal.lookUp.projectsThat { has("kotlin compiler plugin gradle wrapper") }
     val bundleMainAliases = bundleMainProjects.map { it.alias }
     val bundleMiscAliases = bundleMiscProjects.map { it.alias }
     val bundleUtilAliases = bundleUtilProjects.map { it.alias }
     catalog.versionCatalog {
-        for (p in bundleProjects)
-            library(p.alias, koneGroup, p.artifact).versionRef("kone")
+        for (project in bundleMainProjects + bundleMiscProjects + bundleUtilProjects)
+            library(project.alias, koneGroup, project.artifact).versionRef("kone")
+        for (project in pluginProjects)
+            plugin(project.alias, project.artifact).versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -251,6 +255,15 @@ gradle.projectsEvaluated {
 
 stal {
     action {
+        "gradle plugin" {
+            apply(plugin = "java-gradle-plugin")
+            apply(plugin = "org.gradle.kotlin.kotlin-dsl")
+            
+            configure<GradlePluginDevelopmentExtension> {
+                website = rootProject.properties["koneGradlePluginsWebsite"] as String
+                vcsUrl = rootProject.properties["koneGradlePluginsVcsUrl"] as String
+            }
+        }
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
@@ -528,6 +541,40 @@ stal {
                 dependsOn(compileKotlin)
                 classpath = project.the<SourceSetContainer>().getByName("main").runtimeClasspath
                 mainClass.set("dev.lounres.kone.plugin.${project.parent!!.name}.GenerateTestsKt")
+            }
+        }
+        "kotlin compiler plugin gradle wrapper" {
+            val constsSourceDirectory = projectDir.resolve("build/generated/konePluginConsts/main")
+            
+            val writePaths by tasks.registering {
+                doFirst {
+                    val parentProject = project.parent!!
+                    val pluginDependency = "${rootProject.properties["group"] as String}:${parentProject.extra["artifactId"] as String}:${project.version as String}"
+                    val runtimeDependency = "${rootProject.properties["group"] as String}:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:${project.version as String}"
+                    constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
+                        """
+                            internal val plguinDependency: String = "$pluginDependency"
+                            internal val runtimeDependency: String = "$runtimeDependency"
+                        """.trimIndent()
+                    )
+                }
+            }
+            
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                configure<KotlinJvmProjectExtension> {
+                    sourceSets {
+                        named("main") {
+                            kotlin.srcDir(constsSourceDirectory)
+                            dependencies {
+                                implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.versions.kotlin.asProvider().get()}") // TODO: Replace
+                            }
+                        }
+                    }
+                }
+                
+                tasks.named("compileKotlin") {
+                    dependsOn(writePaths)
+                }
             }
         }
         "atomicfu" {
@@ -856,12 +903,25 @@ stal {
                 }
             }
         }
+        "gradle plugin publication" {
+            pluginManager.withPlugin(versions.plugins.gradle.maven.publish.plugin) {
+                configure<MavenPublishBaseExtension> {
+                    configure(
+                        GradlePlugin(
+                            javadocJar =
+                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
+                                else JavadocJar.Empty(),
+                            sourcesJar = SourcesJar.Sources(),
+                        )
+                    )
+                }
+            }
+        }
         "publishing" {
             apply(versions.plugins.gradle.maven.publish.plugin)
             configure<MavenPublishBaseExtension> {
                 publishToMavenCentral()
                 
-                // FIXME
                 signAllPublications()
                 
                 coordinates(groupId = rootProject.properties["group"] as String, artifactId = project.artifact, version = project.version as String)
