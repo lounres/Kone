@@ -6,6 +6,7 @@
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubParameterName
+import dev.lounres.kone.plugin.suppliedTypes.suppliableFunctionGeneratedBodyMessage
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -22,14 +23,8 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.constructedClass
-import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
-import org.jetbrains.kotlin.ir.util.isVararg
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
-import org.jetbrains.kotlin.name.CallableId
-import org.jetbrains.kotlin.name.ClassId
-import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.name.Name
 
 
 fun supplyFunctionsBodies(
@@ -37,11 +32,6 @@ fun supplyFunctionsBodies(
     irRuntimeReferences: IrRuntimeReferences,
     suppliabilityMapper: SuppliabilityMapper,
 ) {
-    val errorIrSimpleFunctionSymbol = pluginContext
-        .finderForBuiltins()
-        .findFunctions(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("error")))
-        .single()
-    
     for ([suppliance, suppliable] in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         check(suppliance.body == null) { TODO() }
         suppliance.body = suppliable.body!!
@@ -63,13 +53,15 @@ fun supplyFunctionsBodies(
             generatorContext = pluginContext,
             symbol = suppliable.symbol,
         ).run {
-            irExprBody(
-                value = irCall(
-                    callee = errorIrSimpleFunctionSymbol,
-                ).apply {
-                    arguments[0] = irString("Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin.")
-                }
-            )
+            irBlockBody {
+                +irReturn(
+                    irCall(
+                        callee = irRuntimeReferences.suppliedTypesPluginExceptionForPluginMachineryIrSimpleFunctionSymbol,
+                    ).apply {
+                        arguments[0] = irString(suppliableFunctionGeneratedBodyMessage)
+                    }
+                )
+            }
         }
     }
 }
@@ -88,24 +80,6 @@ fun supplyConstructorsBodies(
     irRuntimeReferences: IrRuntimeReferences,
     suppliabilityMapper: SuppliabilityMapper,
 ) {
-    val declarationFinder = pluginContext.finderForBuiltins()
-    
-    val listOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        declarationFinder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
-            val parameters = symbol.owner.parameters
-            parameters.size == 1 && parameters[0].isVararg
-        }
-    val mapOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        declarationFinder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("mapOf"))) { symbol ->
-            val parameters = symbol.owner.parameters
-            parameters.size == 1 && parameters[0].isVararg
-        }
-    val listIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))!!
-    val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(irRuntimeReferences.suppliedTypeIrType))
-    val pairIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))!!
-    val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
-    val pairOfStringAndListOfSuppliedTypeIrType = pairIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
-    
     for ([suppliance, suppliable] in suppliabilityMapper.moduleConstructorsSupplianceToSuppliableMapping) {
         check(suppliance.body == null) { TODO() }
         suppliance.body = DeclarationIrBuilder(
@@ -162,20 +136,20 @@ fun supplyConstructorsBodies(
                 
                 +irCall(irRuntimeReferences.suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol).apply {
                     arguments[0] = irGet(irClass.thisReceiver!!)
-                    arguments[1] = irCall(mapOfIrSimpleFunction).apply {
+                    arguments[1] = irCall(irRuntimeReferences.mapOfIrSimpleFunction).apply {
                         typeArguments[0] = pluginContext.irBuiltIns.stringType
-                        typeArguments[1] = listOfSuppliedTypeIrType
+                        typeArguments[1] = irRuntimeReferences.listOfSuppliedTypeIrType
                         arguments[0] = irVararg(
-                            elementType = pairOfStringAndListOfSuppliedTypeIrType,
+                            elementType = irRuntimeReferences.pairOfStringAndListOfSuppliedTypeIrType,
                             values = variablesForSuppliedTypesStorage.entries.map { [fqName, suppliedTypes] ->
                                 irCallConstructor(
-                                    callee = pairIrConstructorSymbol,
-                                    typeArguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType),
+                                    callee = irRuntimeReferences.pairIrConstructorSymbol,
+                                    typeArguments = listOf(pluginContext.irBuiltIns.stringType, irRuntimeReferences.listOfSuppliedTypeIrType),
                                 ).apply {
                                     arguments[0] = irString(fqName)
                                     arguments[1] = irCall(
-                                        callee = listOfIrSimpleFunction,
-                                        type = listOfSuppliedTypeIrType,
+                                        callee = irRuntimeReferences.listOfIrSimpleFunction,
+                                        type = irRuntimeReferences.listOfSuppliedTypeIrType,
                                         typeArguments = listOf(irRuntimeReferences.suppliedTypeIrType),
                                     ).apply {
                                         arguments[0] = irVararg(
@@ -204,24 +178,6 @@ class SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
 ) : IrElementTransformerVoid() {
     private object Key : GeneratedDeclarationKey()
     private val origin = IrDeclarationOrigin.GeneratedByPlugin(Key)
-    
-    val declarationFinder = pluginContext.finderForBuiltins()
-    
-    val listOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        declarationFinder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
-            val parameters = symbol.owner.parameters
-            parameters.size == 1 && parameters[0].isVararg
-        }
-    val mapOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        declarationFinder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("mapOf"))) { symbol ->
-            val parameters = symbol.owner.parameters
-            parameters.size == 1 && parameters[0].isVararg
-        }
-    val listIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))!!
-    val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(irRuntimeReferences.suppliedTypeIrType))
-    val pairIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))!!
-    val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
-    val pairOfStringAndListOfSuppliedTypeIrType = pairIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
     
     override fun visitClass(declaration: IrClass): IrStatement {
         if (declaration.isSuppliable && declaration.kind in listOf<ClassKind>(OBJECT)) {
@@ -261,20 +217,20 @@ class SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
                         
                         +irCall(irRuntimeReferences.suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol).apply {
                             arguments[0] = irGet(declaration.thisReceiver!!)
-                            arguments[1] = irCall(mapOfIrSimpleFunction).apply {
+                            arguments[1] = irCall(irRuntimeReferences.mapOfIrSimpleFunction).apply {
                                 typeArguments[0] = pluginContext.irBuiltIns.stringType
-                                typeArguments[1] = listOfSuppliedTypeIrType
+                                typeArguments[1] = irRuntimeReferences.listOfSuppliedTypeIrType
                                 arguments[0] = irVararg(
-                                    elementType = pairOfStringAndListOfSuppliedTypeIrType,
+                                    elementType = irRuntimeReferences.pairOfStringAndListOfSuppliedTypeIrType,
                                     values = variablesForSuppliedTypesStorage.entries.map { [fqName, suppliedTypes] ->
                                         irCallConstructor(
-                                            callee = pairIrConstructorSymbol,
-                                            typeArguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType),
+                                            callee = irRuntimeReferences.pairIrConstructorSymbol,
+                                            typeArguments = listOf(pluginContext.irBuiltIns.stringType, irRuntimeReferences.listOfSuppliedTypeIrType),
                                         ).apply {
                                             arguments[0] = irString(fqName)
                                             arguments[1] = irCall(
-                                                callee = listOfIrSimpleFunction,
-                                                type = listOfSuppliedTypeIrType,
+                                                callee = irRuntimeReferences.listOfIrSimpleFunction,
+                                                type = irRuntimeReferences.listOfSuppliedTypeIrType,
                                                 typeArguments = listOf(irRuntimeReferences.suppliedTypeIrType),
                                             ).apply {
                                                 arguments[0] = irVararg(

@@ -564,6 +564,12 @@ stal {
                                 implementation(versions.testBaloon.framework.core)
                             }
                         }
+//                        named("androidHostTest") {
+//                            dependencies {
+//                                implementation(versions.testBaloon.framework.core)
+//                                // TODO
+//                            }
+//                        }
                     }
                 }
             }

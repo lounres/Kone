@@ -14,11 +14,11 @@ import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildConstructor
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
-import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
-import org.jetbrains.kotlin.ir.expressions.impl.IrAnnotationImpl
-import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.types.defaultType
-import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.ir.util.addChild
+import org.jetbrains.kotlin.ir.util.constructedClass
+import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.copyFunctionSignatureFrom
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
@@ -43,21 +43,16 @@ class ConstructorSuppliancesGenerationTransformer(
             updateFrom(constructor)
             isPrimary = false
         }.apply {
-            annotations += IrAnnotationImpl.fromSymbolOwner(
-                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
-                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
-            )
+            annotations += irRuntimeReferences.newSupplianceProvidedAnnotation()
             copyFunctionSignatureFrom(constructor)
             var addFalseSuppliedArgument = true
             for (typeParameter in constructor.constructedClass.typeParameters) {
                 if (!typeParameter.isSupply) continue
                 addFalseSuppliedArgument = false
                 addValueParameter(internalSupplierParameterName(typeParameter.name), irRuntimeReferences.suppliedTypeIrType).also { newValueParameter ->
-                    newValueParameter.annotations += IrAnnotationImpl.fromSymbolOwner(
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
-                    )
+                    newValueParameter.annotations += irRuntimeReferences.newSupplianceProvidedAnnotation()
 //                    newValueParameter.defaultValue = DeclarationIrBuilder(pluginContext, this.symbol).run {
+//                        // TODO: KT-53992
 //                        irExprBody(
 //                            irCall(irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol).also { call ->
 //                                call.typeArguments[0] = typeParameter.defaultType
@@ -68,11 +63,9 @@ class ConstructorSuppliancesGenerationTransformer(
             }
             if (addFalseSuppliedArgument) {
                 addValueParameter(noSuppliedTypeParameterInClassStubParameterName, irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol.defaultType).also { newValueParameter ->
-                    newValueParameter.annotations += IrAnnotationImpl.fromSymbolOwner(
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
-                    )
+                    newValueParameter.annotations += irRuntimeReferences.newSupplianceProvidedAnnotation()
 //                    newValueParameter.defaultValue = DeclarationIrBuilder(pluginContext, this.symbol).run {
+//                        // TODO: KT-53992
 //                        irExprBody(
 //                            irGetObject(irRuntimeReferences.noSuppliedTypeParameterInClassStubIrClassSymbol)
 //                        )

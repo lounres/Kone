@@ -15,16 +15,12 @@ import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
-import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
-import org.jetbrains.kotlin.ir.util.getSimpleFunction
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
-import org.jetbrains.kotlin.name.*
 
 
 class SuppliedTypeOfSubstitutionTransformer(
@@ -60,8 +56,9 @@ class SuppliedTypeOfSubstitutionTransformer(
                 suppliedTypes = buildMap {
                     putAll(data.suppliedTypes)
                     
-                    if (declaration.isSupplianceProvided && suppliabilityMapper.mapSupplianceToSuppliable(declaration).typeParameters.any { it.isSupply }) {
-                        val supplyTypeParameters = suppliabilityMapper.mapSupplianceToSuppliable(declaration).typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
+                    val correspondingSuppliable = suppliabilityMapper.mapSupplianceToSuppliableOrNull(declaration)
+                    if (correspondingSuppliable != null) {
+                        val supplyTypeParameters = correspondingSuppliable.typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
                         val suppliedTypes = declaration.parameters.filter { it.isSupplianceProvided }
                         
                         check(supplyTypeParameters.size == suppliedTypes.size) { TODO() }
@@ -81,15 +78,15 @@ class SuppliedTypeOfSubstitutionTransformer(
                         for (i in supplyTypeParameters.indices)
                             put(supplyTypeParameters[i].defaultType) {
                                 irTemporary(
-                                    irCall(listGetIrSimpleFunctionSymbol).apply {
+                                    irCall(irRuntimeReferences.listGetIrSimpleFunctionSymbol).apply {
                                         arguments[0] = irImplicitCast(
-                                            argument = irCall(mapGetIrSimpleFunctionSymbol).apply {
+                                            argument = irCall(irRuntimeReferences.mapGetIrSimpleFunctionSymbol).apply {
                                                 arguments[0] = irCall(irRuntimeReferences.suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol).apply {
                                                     arguments[0] = irGet(dispatchReceiver)
                                                 }
                                                 arguments[1] = irString(fqNameString)
                                             },
-                                            type = listOfSuppliedTypeIrType
+                                            type = irRuntimeReferences.listOfSuppliedTypeIrType
                                         )
                                         arguments[1] = irInt(i)
                                     }
@@ -119,15 +116,15 @@ class SuppliedTypeOfSubstitutionTransformer(
                         for (i in supplyTypeParameters.indices)
                             put(supplyTypeParameters[i].defaultType) {
                                 irTemporary(
-                                    irCall(listGetIrSimpleFunctionSymbol).apply {
+                                    irCall(irRuntimeReferences.listGetIrSimpleFunctionSymbol).apply {
                                         arguments[0] = irImplicitCast(
-                                            argument = irCall(mapGetIrSimpleFunctionSymbol).apply {
+                                            argument = irCall(irRuntimeReferences.mapGetIrSimpleFunctionSymbol).apply {
                                                 arguments[0] = irCall(irRuntimeReferences.suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol).apply {
                                                     arguments[0] = irGet(dispatchReceiver)
                                                 }
                                                 arguments[1] = irString(fqNameString)
                                             },
-                                            type = listOfSuppliedTypeIrType
+                                            type = irRuntimeReferences.listOfSuppliedTypeIrType
                                         )
                                         arguments[1] = irInt(i)
                                     }
@@ -140,14 +137,6 @@ class SuppliedTypeOfSubstitutionTransformer(
                 localSymbol = data.localSymbol
             )
         )
-    
-    val declarationFinder = pluginContext.finderForBuiltins()
-    val listIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))!!
-    val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(irRuntimeReferences.suppliedTypeIrType))
-    val listOfSuppliedTypeNullableIrType = listIrClassSymbol.createType(hasQuestionMark = true, arguments = listOf(irRuntimeReferences.suppliedTypeIrType))
-    val listGetIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = listIrClassSymbol.getSimpleFunction("get")!!
-    val mapIrClassSymbol = declarationFinder.findClass(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("Map")))!!
-    val mapGetIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = mapIrClassSymbol.getSimpleFunction("get")!!
     
 //    override fun visitClass(declaration: IrClass, data: TransformationContext): IrStatement =
 //        if (declaration.isSuppliable && declaration.typeParameters.any { it.isSupply })
@@ -231,18 +220,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                         localSymbol = data.localSymbol,
                     )
                     
-                    +irCall(
-                        pluginContext.finderForBuiltins().referenceFunctionThatOrFail(
-                            CallableId(
-                                packageName = FqName("kotlin"),
-                                callableName = Name.identifier("run"),
-                            )
-                        ) {
-                            it.owner.parameters.size == 1
-                        }
-                    ).apply {
-                        arguments[0] = visitExpression(suppliedScope, data)
-                    }
+                    +visitExpression(suppliedScope, data)
                 }
             }
             else -> super.visitCall(expression, data)

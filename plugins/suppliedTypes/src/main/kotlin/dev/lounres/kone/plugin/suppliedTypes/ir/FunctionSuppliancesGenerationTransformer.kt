@@ -6,7 +6,6 @@
 package dev.lounres.kone.plugin.suppliedTypes.ir
 
 import dev.lounres.kone.plugin.suppliedTypes.internalSupplierParameterName
-import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.jvm.codegen.AnnotationCodegen.Companion.annotationClass
 import org.jetbrains.kotlin.ir.IrElement
@@ -17,12 +16,7 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFile
 import org.jetbrains.kotlin.ir.declarations.IrPackageFragment
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
-import org.jetbrains.kotlin.ir.expressions.impl.IrAnnotationImpl
-import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
-import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.addChild
-import org.jetbrains.kotlin.ir.util.classId
-import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.copyAnnotations
 import org.jetbrains.kotlin.ir.util.copyFunctionSignatureFrom
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
@@ -49,20 +43,15 @@ class FunctionSuppliancesGenerationTransformer(
             name = function.name
             updateFrom(function)
         }.apply {
-            annotations += function.copyAnnotations { it.annotationClass.classId != suppliableAnnotationClassId }
-            annotations += IrAnnotationImpl.fromSymbolOwner(
-                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
-                irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
-            )
+            annotations += function.copyAnnotations { it.annotationClass.symbol != irRuntimeReferences.suppliableAnnotationIrClassSymbol }
+            annotations += irRuntimeReferences.newSupplianceProvidedAnnotation()
             copyFunctionSignatureFrom(function)
             for (typeParameter in function.typeParameters) {
                 if (!typeParameter.isSupply) continue
                 addValueParameter(internalSupplierParameterName(typeParameter.name), irRuntimeReferences.suppliedTypeIrType).also { newValueParameter ->
-                    newValueParameter.annotations += IrAnnotationImpl.fromSymbolOwner(
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.defaultType,
-                        irRuntimeReferences.supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
-                    )
+                    newValueParameter.annotations += irRuntimeReferences.newSupplianceProvidedAnnotation()
 //                    newValueParameter.defaultValue = DeclarationIrBuilder(pluginContext, this.symbol).run {
+//                        // TODO: KT-53992
 //                        irExprBody(
 //                            irCall(irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol).also { call ->
 //                                call.typeArguments.add(typeParameter.defaultType)
