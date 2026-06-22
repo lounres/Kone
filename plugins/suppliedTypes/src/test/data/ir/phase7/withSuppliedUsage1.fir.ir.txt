@@ -87,7 +87,7 @@ FILE fqName:<root> fileName:/withSuppliedUsage1.kt
     annotations:
       SupplianceProvided
     BLOCK_BODY
-      RETURN type=kotlin.Nothing from='public final fun foo <T> (): kotlin.String declared in <root>'
+      RETURN type=kotlin.Nothing from='public final fun foo <T> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>'
         CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
           ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
             BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
@@ -110,6 +110,7 @@ FILE fqName:<root> fileName:/withSuppliedUsage1.kt
         Supply
     annotations:
       Suppliable
-    EXPRESSION_BODY
-      CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-        ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun foo <T> (): kotlin.String declared in <root>'
+        CALL 'public final fun suppliedTypesPluginExceptionForPluginMachinery (message: kotlin.String?, reason: kotlin.Throwable?): kotlin.Nothing declared in dev.lounres.kone.suppliedTypes' type=kotlin.Nothing origin=null
+          ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."

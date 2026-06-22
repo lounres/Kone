@@ -1,0 +1,15 @@
+FILE: suppliedTypeOfUsage29.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(arg: R|T?|): R|kotlin/String| {
+        ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|/foo|<R|kotlin/String|>(Null(null)), String(kotlin.collections.List<out kotlin.String>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

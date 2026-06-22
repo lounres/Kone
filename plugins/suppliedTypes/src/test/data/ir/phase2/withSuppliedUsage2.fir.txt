@@ -1,0 +1,33 @@
+FILE: withSuppliedUsage2.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T, X> foo(): R|kotlin/collections/List<kotlin/String>| {
+        ^foo R|kotlin/collections/buildList|<R|kotlin/String|>(<L> = buildList@fun R|kotlin/collections/MutableList<kotlin/String>|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+            this@R|special/anonymous|.R|SubstitutionOverride<kotlin/collections/MutableList.add: R|kotlin/Boolean|>|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/Map<T, kotlin/String>|>().R|kotlin/Any.toString|())
+            R|dev/lounres/kone/suppliedTypes/withSupplied|<R|X|, R|kotlin/Unit|>(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/Long|>(), <L> = withSupplied@fun <anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+                this@R|special/anonymous|.R|SubstitutionOverride<kotlin/collections/MutableList.add: R|kotlin/Boolean|>|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/Map<T, X>|>().R|kotlin/Any.toString|())
+            }
+            )
+        }
+        )
+    }
+    public final fun box(): R|kotlin/String| {
+        lval list: R|kotlin/collections/List<kotlin/String>| = R|/foo|<R|kotlin/Int|, R|kotlin/Unit|>()
+        when () {
+            !=(R|<local>/list|.R|SubstitutionOverride<kotlin/collections/List.size: R|kotlin/Int|>|, Int(2)) ->  {
+                ^box String(INCORRECT)
+            }
+        }
+
+        when () {
+            !=(R|<local>/list|.R|SubstitutionOverride<kotlin/collections/List.get: R|kotlin/String|>|(Int(0)), String(kotlin.collections.Map<kotlin.Int, out kotlin.String>)) ->  {
+                ^box String(INCORRECT)
+            }
+        }
+
+        when () {
+            !=(R|<local>/list|.R|SubstitutionOverride<kotlin/collections/List.get: R|kotlin/String|>|(Int(1)), String(kotlin.collections.Map<kotlin.Int, out kotlin.Long>)) ->  {
+                ^box String(INCORRECT)
+            }
+        }
+
+        ^box String(OK)
+    }

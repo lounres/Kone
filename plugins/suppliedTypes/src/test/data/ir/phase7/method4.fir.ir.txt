@@ -27,9 +27,10 @@ FILE fqName:foo.bar fileName:/method4.kt
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.foo.Bar
           annotations:
             Suppliable
-          EXPRESSION_BODY
-            CALL 'public final fun error (message: kotlin.Any): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null
-              ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.foo.Bar.baz? declared in foo.bar.foo.Bar'
+              CALL 'public final fun suppliedTypesPluginExceptionForPluginMachinery (message: kotlin.String?, reason: kotlin.Throwable?): kotlin.Nothing declared in dev.lounres.kone.suppliedTypes' type=kotlin.Nothing origin=null
+                ARG message: CONST String type=kotlin.String value="Intrinsic function call was not substituted. Ensure you have applied supplied types compiler plugin."
         FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.foo.Bar.baz?
           TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
             annotations:
@@ -44,5 +45,5 @@ FILE fqName:foo.bar fileName:/method4.kt
           annotations:
             SupplianceProvided
           BLOCK_BODY
-            RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.foo.Bar.baz? declared in foo.bar.foo.Bar'
+            RETURN type=kotlin.Nothing from='public final fun baz <Gee> ($suppliedTypeParameterFor_Gee: dev.lounres.kone.suppliedTypes.SuppliedType): Gee of foo.bar.foo.Bar.baz? declared in foo.bar.foo.Bar'
               CONST Null type=kotlin.Nothing? value=null
